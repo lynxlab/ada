@@ -15,6 +15,8 @@
  * @version		0.1
  */
 
+use Dompdf\Dompdf;
+
 /**
  * ARE
  *
@@ -1170,8 +1172,7 @@ class  Generic_Html extends Output
 				mkdir (ADA_UPLOAD_PATH.'tmp-dompdf', 0775, true);
 				umask($oldmask);
       	}
-      	// include dompdf autoloader
-		require_once 'dompdf/autoload.inc.php';
+
       	$dompdf_options = array(
       			// Rendering
       			"default_media_type"       => 'print',
@@ -1188,7 +1189,8 @@ class  Generic_Html extends Output
       			"enable_html5_parser"      => false,
       			"enable_font_subsetting"   => false
       	);
-      	$dompdf = new \Dompdf\Dompdf($dompdf_options);
+
+      	$dompdf = new Dompdf($dompdf_options);
       	$dompdf->setPaper('A4',$this->orientation);
       	$dompdf->loadHtml($data);
       	$dompdf->render();
