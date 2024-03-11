@@ -283,8 +283,7 @@ class AudioPlayer {
     public static function view( $http_file_path, $file_name, $AudioPlayingPreferences = AUDIO_PLAYING_MODE, $audioTitle = null ) {
     	$http_root_dir = $GLOBALS['http_root_dir'];
 
-    	require_once ROOT_DIR.'/include/getid3/getid3.php';
-    	$getID3 = new getID3();
+    	$getID3 = new \getID3();
     	$toAnalyze = ( !empty($http_file_path) ? $http_file_path : ROOT_DIR).$file_name;
     	$fileInfo = $getID3->analyze(urldecode(str_replace (HTTP_ROOT_DIR,ROOT_DIR,$toAnalyze)));
 
@@ -359,9 +358,7 @@ class VideoPlayer {
      */
     public static function view( $http_file_path, $file_name, $VideoPlayingPreferences = VIDEO_PLAYING_MODE, $videoTitle = null, $width = null,$height = null) {
 
-    	require_once ROOT_DIR.'/include/getid3/getid3.php';
-
-    	$getID3 = new getID3();
+    	$getID3 = new \getID3();
     	$toAnalyze = ( !empty($http_file_path) ? $http_file_path : ROOT_DIR).$file_name;
     	$fileInfo = $getID3->analyze(urldecode(str_replace (HTTP_ROOT_DIR,ROOT_DIR,$toAnalyze)));
 

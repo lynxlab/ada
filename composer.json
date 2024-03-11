@@ -3,7 +3,8 @@
     "description": "ADA stand for Ambiente Digitale di Apprendimento. It is a knowledge and e-learning management system that allows you to create, administer and follow courses via the Internet or intranet with ease, flexibility and customization.",
     "require" : {
         "php": ">=8.0",
-        "mobiledetect/mobiledetectlib": "^4.8"
+        "mobiledetect/mobiledetectlib": "^4.8",
+        "james-heinrich/getid3": "^1.9"
     },
     "autoload": {
         "psr-4": {
