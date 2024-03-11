@@ -5,7 +5,8 @@
         "php": ">=8.0",
         "mobiledetect/mobiledetectlib": "^4.8",
         "james-heinrich/getid3": "^1.9",
-        "dompdf/dompdf": "^2.0"
+        "dompdf/dompdf": "^2.0",
+        "rospdf/pdf-php": "^0.12.67"
     },
     "autoload": {
         "psr-4": {
