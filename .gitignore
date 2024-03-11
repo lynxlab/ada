@@ -9,3 +9,7 @@
 /docs/
 /nbproject/
 /log/
+/vendor/
+*.cache
+
+
