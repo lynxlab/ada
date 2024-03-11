@@ -14,6 +14,8 @@
  * @version		0.1
  */
 
+use Detection\MobileDetect;
+
 /**
  *
  * @return unknown_type
@@ -75,7 +77,7 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
    */
   if (!isset($_SESSION['mobile-detect']))
   {
-  	$_SESSION['mobile-detect'] = new Mobile_Detect();
+  	$_SESSION['mobile-detect'] = new MobileDetect();
   }
 
   /**
