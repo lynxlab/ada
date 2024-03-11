@@ -10,6 +10,8 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
+
 /**
  * Base config file
  */
@@ -565,15 +567,13 @@ switch ($op) {
 
                     if  ( $notification_interval == ADA_NOTIFICATION_REALTIME ){
 
-                    	// require phpmailer
-                    	require_once ROOT_DIR.'/include/phpMailer/ADAPHPMailer.php';
                     	require_once ROOT_DIR.'/include/data_validation.inc.php';
 
                     	/**
                     	 * Send the message an email message
                     	 * via PHPMailer
                     	 */
-                    	$phpmailer = new \PHPMailer\PHPMailer\ADAPHPMailer();
+                    	$phpmailer = new ADAPHPMailer();
                     	$phpmailer->CharSet = 'UTF-8';
                     	$phpmailer->configSend();
                     	$phpmailer->SetFrom(ADA_NOREPLY_MAIL_ADDRESS);

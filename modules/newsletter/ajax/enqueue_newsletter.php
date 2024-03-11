@@ -9,6 +9,9 @@
  * @link			newsletter
  * @version		0.1
  */
+
+use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
+
 ini_set('display_errors', '0'); error_reporting(E_ALL);
 /**
  * Base config file
@@ -39,7 +42,6 @@ require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 require_once ROOT_DIR.'/include/logger_class.inc.php';
-require_once ROOT_DIR.'/include/phpMailer/ADAPHPMailer.php';
 
 // MODULE's OWN IMPORTS
 require_once MODULES_NEWSLETTER_PATH.'/include/AMANewsletterDataHandler.inc.php';
@@ -139,7 +141,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST')
 			$HTMLModelText = preg_replace('/(src=[\'"])\/?[^>]*(\/?services\/media\/)/', '$1'.HTTP_ROOT_DIR.'/$2', $HTMLModelText);
 
 			// email class init and common values
-			$phpmailer = new \PHPMailer\PHPMailer\ADAPHPMailer();
+			$phpmailer = new ADAPHPMailer();
 			$phpmailer->CharSet = 'UTF-8';
 
 			$phpmailer->configSend();

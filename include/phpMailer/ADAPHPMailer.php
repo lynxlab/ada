@@ -1,10 +1,8 @@
 <?php
-namespace PHPMailer\PHPMailer;
+namespace Lynxlab\ADA\ADAPHPMailer;
 
-require_once 'src/PHPMailer.php';
-require_once 'src/SMTP.php';
-require_once 'src/Exception.php';
-
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 
 class ADAPHPMailer extends PHPMailer {
     public function configSend() {
@@ -25,7 +23,7 @@ class ADAPHPMailer extends PHPMailer {
                 }
             }
             if (defined('ADA_SMTP_DEBUG') && ADA_SMTP_DEBUG) {
-                $this->SMTPDebug = \PHPMailer\PHPMailer\SMTP::DEBUG_SERVER;
+                $this->SMTPDebug = SMTP::DEBUG_SERVER;
                 $this->Debugoutput = function($str, $level) {
                     $logFile = ROOT_DIR . '/log/smtp-debug.log';
                     if (!is_file($logFile)) touch ($logFile);

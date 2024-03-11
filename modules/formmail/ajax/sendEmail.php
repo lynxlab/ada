@@ -10,6 +10,8 @@
  * @version		   0.1
  */
 
+use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
+
 ini_set('display_errors', '0'); error_reporting(E_ALL);
 /**
  * Base config file
@@ -58,14 +60,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' &&
 	isset($_POST['msgbody'])    && strlen(trim($_POST['msgbody']))>0) {
 
 	$GLOBALS['dh'] = AMAFormmailDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
-	require_once ROOT_DIR.'/include/phpMailer/ADAPHPMailer.php';
 
 	$selfSend = isset($_POST['selfSend']) && (intval($_POST['selfSend'])===1);
 
 	/**
 	 * Initializre the PHPMailer
 	 */
-	$phpmailer = new \PHPMailer\PHPMailer\ADAPHPMailer();
+	$phpmailer = new ADAPHPMailer();
 	$phpmailer->CharSet = strtolower(ADA_CHARSET);
 	$phpmailer->configSend();
 	$phpmailer->SetFrom($userObj->getEmail(), $userObj->getFullName());

@@ -10,6 +10,8 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
+
 /**
  * Spool extends the AMA_DataHandler, to communicate with the DB,
  * and implements the API to access data regarding messages.
@@ -1625,7 +1627,7 @@ class Mailer
                  . sprintf(translateFN("Messaggio generato da %s. Per maggiori informazioni consulta %s"), PORTAL_NAME, BaseHtmlLib::link(HTTP_ROOT_DIR, HTTP_ROOT_DIR)->getHtml());
 
         if (defined('ADA_SMTP') && ADA_SMTP) {
-          $phpmailer = new \PHPMailer\PHPMailer\ADAPHPMailer();
+          $phpmailer = new ADAPHPMailer();
           $phpmailer->CharSet = ADA_CHARSET;
           $phpmailer->configSend();
           $phpmailer->SetFrom($sender_email);

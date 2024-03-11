@@ -10,6 +10,8 @@
 
 namespace Lynxlab\ADA\Module\Notifications;
 
+use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
+
 class QueueManager extends NotificationBase
 {
     private $logFile;
@@ -84,8 +86,7 @@ class QueueManager extends NotificationBase
         /**
          * Initializre the PHPMailer
          */
-        require_once ROOT_DIR.'/include/phpMailer/ADAPHPMailer.php';
-        $phpmailer = new \PHPMailer\PHPMailer\ADAPHPMailer();
+        $phpmailer = new ADAPHPMailer();
         $phpmailer->CharSet = strtolower(ADA_CHARSET);
         $phpmailer->configSend();
         $phpmailer->SetFrom(ADA_NOREPLY_MAIL_ADDRESS);

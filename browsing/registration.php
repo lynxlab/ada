@@ -1,4 +1,6 @@
 <?php
+
+use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
 use Lynxlab\ADA\Module\GDPR\GdprAcceptPoliciesForm;
 
 /**
@@ -69,8 +71,6 @@ BrowsingHelper::init($neededObjAr);
 
 require_once ROOT_DIR.'/include/Forms/UserRegistrationForm.inc.php';
 include_once ROOT_DIR.'/include/token_classes.inc.php';
-
-require_once ROOT_DIR.'/include/phpMailer/ADAPHPMailer.php';
 
 $self =  whoami();
 /**
@@ -235,7 +235,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	         * Send the message an email message
 	         * via PHPMailer
 	         */
-	        $phpmailer = new \PHPMailer\PHPMailer\ADAPHPMailer();
+	        $phpmailer = new ADAPHPMailer();
 	        $phpmailer->CharSet = ADA_CHARSET;
 	        $phpmailer->configSend();
 	        $phpmailer->SetFrom($adm_email);

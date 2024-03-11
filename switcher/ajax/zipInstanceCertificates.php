@@ -9,6 +9,9 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 /**
  * Base config file
 */
@@ -184,10 +187,8 @@ if(is_null($data)) {
 			readfile($file);
 		} else if ($sendEmail) {
 			// code to send the email here
-			require_once ROOT_DIR.'/include/phpMailer/ADAPHPMailer.php';
-			require_once ROOT_DIR.'/include/phpMailer/src/Exception.php';
 			// true will make PHPMailer throw exceptions
-			$phpmailer = new \PHPMailer\PHPMailer\ADAPHPMailer(true);
+			$phpmailer = new ADAPHPMailer(true);
 			// $phpmailer->SMTPDebug = 1;
 			// $phpmailer->Debugoutput = function($str, $level) use ($logfile) {
 			// 	if ($level <= 1) ADAFileLogger::log('MAILER: '.$str, $logfile);
