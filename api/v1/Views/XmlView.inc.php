@@ -11,7 +11,7 @@
 */
 namespace AdaApi;
 
-use Lynxlab\ADA\Core\ArrayToXML\ArrayToXML;
+use Lynxlab\ADA\Main\ArrayToXML\ArrayToXML;
 
 class XmlView extends \Slim\View {
 

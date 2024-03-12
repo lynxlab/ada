@@ -10,7 +10,7 @@
  * @version   0.8
  */
 
-namespace Lynxlab\ADA\Core\ArrayToXML;
+namespace Lynxlab\ADA\Main\ArrayToXML;
 
 use SimpleXMLElement;
 

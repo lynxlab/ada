@@ -11,9 +11,10 @@
     },
     "autoload": {
         "psr-4": {
-            "Lynxlab\\Ada\\Admin\\": "admin/include",
-            "Lynxlab\\Ada\\ADAPHPMailer\\": "include/phpMailer",
-            "Lynxlab\\Ada\\Core\\": "include"
+            "Lynxlab\\ADA\\Admin\\": "admin/include/",
+            "Lynxlab\\ADA\\ADAPHPMailer\\": "include/phpMailer/",
+            "Lynxlab\\ADA\\Main\\": "include/",
+            "Lynxlab\\ADA\\CORE\\": "include/COREv0.1/"
         }
     },
     "authors": [
