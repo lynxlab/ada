@@ -2,6 +2,9 @@
 /*
  * widgets_inc.php Copyright 2013 Lynx This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
+
+use Lynxlab\ADA\Core\ArrayToXML\ArrayToXML;
+
 define ( "ADA_WIDGET_ASYNC_MODE", 1 );
 define ( "ADA_WIDGET_SYNC_MODE", 0 );
 
@@ -89,8 +92,8 @@ class Widget {
 
 		if (isset ( $widget ['param'] ) && ! empty ( $widget ['param'] )) {
 			foreach ( $widget ['param'] as $paramElement ) {
-				if (isset ( $paramElement [ArrayToXML::attr_arr_string] ))
-					$curEl = $paramElement [ArrayToXML::attr_arr_string];
+				if (isset ( $paramElement [ArrayToXML::ATTR_ARR_STRING] ))
+					$curEl = $paramElement [ArrayToXML::ATTR_ARR_STRING];
 				else
 					$curEl = $paramElement;
 				$this->setParam ( $curEl ['name'], $curEl ['value'] );
