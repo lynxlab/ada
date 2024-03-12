@@ -11,6 +11,8 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Admin\HtmlAdmOutput;
+
 /*
  * THE AUTHOR IS NOT ALLOWED TO CREATE A COURSE.
  * COURSES ARE CREATED BY THE ADMIN.
@@ -230,10 +232,10 @@ else {
     );
 
     // visualizzazione form di input
-    $op = new htmladmoutput();
+    $op = new HtmlAdmOutput();
     $is_author = 1;
     $home = "author.php";
-    $dati = $op->form_addcourse("add_course.php",$home,$author,$is_author);
+    $dati = $op->formAddCourse("add_course.php",$home,$author,$is_author);
 }
 
 // preparazione output HTML e print dell' output

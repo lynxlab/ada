@@ -1,40 +1,41 @@
 <?php
+
 /**
  * ADMIN.
  *
  *
  * @package
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2009, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @author      Stefano Penge <steve@lynxlab.com>
+ * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
+ * @author      Vito Modena <vito@lynxlab.com>
+ * @copyright   Copyright (c) 2009, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link
- * @version		0.1
+ * @version     0.1
  */
 
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
+require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'course_instance');
+$variableToClearAR = ['node', 'layout', 'course', 'course_instance'];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_ADMIN);
+$allowedUsersAr = [AMA_TYPE_ADMIN];
 
 /**
  * Performs basic controls before entering this module
  */
-$neededObjAr = array(
-  AMA_TYPE_ADMIN => array('layout')
-);
+$neededObjAr = [
+  AMA_TYPE_ADMIN => ['layout'],
+];
 
-require_once ROOT_DIR.'/include/module_init.inc.php';
+require_once ROOT_DIR . '/include/module_init.inc.php';
 $self =  whoami();  // = admin!
 
 include_once 'include/admin_functions.inc.php';
@@ -81,7 +82,7 @@ $table = AdminModuleHtmlLib::getTestersActivityReport($testers_dataAr);
 $label = translateFN("Home dell'amministratore");
 $help  = translateFN("Report sintetico dell'attivit&agrave; dei provider");
 
-$content_dataAr = array(
+$content_dataAr = [
   'user_name'    => $user_name,
   'user_type'    => $user_type,
   'status'       => $status,
@@ -89,10 +90,9 @@ $content_dataAr = array(
   'help'         => $help,
   'data'         => $table->getHtml(),
   'module'       => $label,
-);
+];
 
 /**
  * Sends data to the rendering engine
  */
-ARE::render($layout_dataAr,$content_dataAr);
-?>
+ARE::render($layout_dataAr, $content_dataAr);

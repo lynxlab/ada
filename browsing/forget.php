@@ -23,6 +23,9 @@
 /**
  * Base config file
  */
+
+use Lynxlab\ADA\Admin\HtmlAdmOutput;
+
 require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
 /**
  * Clear node and layout variable in $_SESSION
@@ -382,9 +385,9 @@ switch ($op){
       $home = 'user.php';
       $menu = '';
 
-      $op   = new htmladmoutput();
+      $op   = new HtmlAdmOutput();
 
-      $dati = $op->form_confirmpassword('forget.php',$home,$username,$userid,isset($id_course) ? $id_course : null,$token);
+      $dati = $op->formConfirmpassword('forget.php',$home,$username,$userid,isset($id_course) ? $id_course : null,$token);
       $dati = $welcome.$dati;
       $title = translateFN('ADA - Modifica Dati Utente');
     }
@@ -418,7 +421,7 @@ switch ($op){
     $menu = '';
     $op   = new htmladmoutput();
 
-    $dati = $op->form_getUsername('forget.php');
+    $dati = $op->formGetUsername('forget.php');
     $dati = $welcome.$dati;
     $title = translateFN('ADA - Changing password');
     break;
