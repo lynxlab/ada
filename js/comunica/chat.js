@@ -1,1 +1,1 @@
-document.write("<script type='text/javascript' src='../js/include/chat_includes.js'></script>");
+load_js("../js/include/chat_includes.js");

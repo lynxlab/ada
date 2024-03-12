@@ -1,7 +1,9 @@
 // vito, 28 nov 2008
-document.write("<script type='text/javascript' src='../js/include/menu_functions.js'></script>");
-// document.write("<script type='text/javascript' src='../js/include/tablekit/tablekit.js'></script>");
-document.write("<script type='text/javascript' src='../js/include/basic.js'></script>");
+load_js([
+	'../js/include/menu_functions.js',
+	// '../js/include/tablekit/tablekit.js',
+	'../js/include/basic.js',
+]);
 
 // vito, 21 luglio 2008
 function toggleVisibilityByClassName(container_div, item_class)

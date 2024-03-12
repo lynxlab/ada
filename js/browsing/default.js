@@ -1,6 +1,8 @@
-document.write("<script type='text/javascript' src='../js/include/basic.js'></script>");
-document.write("<script type='text/javascript' src='../js/include/menu_functions.js'></script>");
-document.write("<script type='text/javascript' src='../external/mediaplayer/flowplayer/flowplayer.min.js'></script>");
+load_js([
+	'../js/include/basic.js',
+	'../js/include/menu_functions.js',
+	'../external/mediaplayer/flowplayer/flowplayer.min.js'
+]);
 
 function toggleVisibilityByDiv(className, mode)
 {
@@ -49,7 +51,7 @@ function toggleVisibilityByClassName(className, idName, mode)
 	}
 }
 
-function printit() 
+function printit()
 {
   if (typeof window.print == 'function') {
     window.print();
@@ -57,7 +59,7 @@ function printit()
 }
 
 function openInRightPanel(httpFilePath, fileExtension) {
-	
+
     var rightPanel = '#rightpanel';
     if ($j(rightPanel).hasClass('sottomenu_off')){
     	$j(rightPanel).removeClass('sottomenu_off');
@@ -67,7 +69,7 @@ function openInRightPanel(httpFilePath, fileExtension) {
     if ($j(rightPanel).is(':visible')) {
     	$j(rightPanel).hide();
     } else {
-    	$j('#flvplayer').html('');        
+    	$j('#flvplayer').html('');
         $j(rightPanel + ' .loader-wrapper .loader').toggleClass('active').show();
         $j(rightPanel).show();
     	$j.ajax({

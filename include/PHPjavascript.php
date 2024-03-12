@@ -78,7 +78,7 @@ $JS_i18n = array(
 /**
  * GIORGIO, this is not needed and exposes a security hole.
  * Removed and placed here on 13/set/2013
- * 
+ *
  * // var MODULES_DIR='<?php echo MODULES_DIR;?>';
  */
 ?>
@@ -127,6 +127,34 @@ var MEDIA_FINGER_SPELLING = '<?php echo _FINGER_SPELLING;?>';
 var MEDIA_LABIALE = '<?php echo _LABIALE;?>';
 var MEDIA_LIS = '<?php echo _LIS;?>';
 var MEDIA_MONTESSORI = '<?php echo _MONTESSORI;?>';
+
+const load_js = function(data, callback) {
+  if(typeof data === 'string') {
+    data = [data];
+  }
+  const head = document.getElementsByTagName("head")[0];
+  var script = null;
+  data.forEach(function(scriptSrc) {
+    script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = scriptSrc;
+    head.appendChild(script);
+  });
+  if(script!= null && callback != undefined) {
+    if(script.onreadystatechange) {
+      script.onreadystatechange = function() {
+        if(script.readyState == "complete"  || script.readyState=="loaded") {
+          script.onreadystatechange = false;
+          callback();
+        }
+      }
+    } else {
+      script.onload = function() {
+        callback();
+      }
+    }
+  }
+};
 
 //translations
 <?php
