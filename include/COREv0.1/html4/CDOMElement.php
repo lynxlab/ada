@@ -1,12 +1,14 @@
 <?php
+
+namespace Lynxlab\ADA\CORE\html4;
+
 class CDOMElement
 {
-    public static function create($element_name, $a_list_of_attribute_values_pairs=NULL)
+    public static function create($element_name, $a_list_of_attribute_values_pairs = null)
     {
         $element_name = strtolower($element_name);
-        
-        switch($element_name)
-        {
+
+        switch ($element_name) {
             case 'ol':
                 $element = new COl();
                 break;
@@ -82,93 +84,91 @@ class CDOMElement
             case 'label':
                 $element = new CLabel();
                 break;
-           case 'legend':
+            case 'legend':
                 $element = new CLegend();
                 break;
-           case 'object':
+            case 'object':
                 $element = new CTObject();
                 break;
-           case 'map':
+            case 'map':
                 $element = new CMap();
                 break;
-           case 'form':
+            case 'form':
                 $element = new CForm();
                 break;
-           case 'col':
+            case 'col':
                 $element = new CCol();
                 break;
-           case 'link':
+            case 'link':
                 $element = new CLink();
                 break;
-           case 'img':
+            case 'img':
                 $element = new CImg();
                 break;
-           case 'area':
+            case 'area':
                 $element = new CArea();
                 break;
-           case 'file':
+            case 'file':
                 $element = new CFileInput();
                 break;
-           case 'hidden':
+            case 'hidden':
                 $element = new CHiddenInput();
                 break;
-           case 'submit':
+            case 'submit':
                 $element = new CSubmitInput();
                 break;
-           case 'reset':
+            case 'reset':
                 $element = new CResetInput();
                 break;
-           case 'text':
+            case 'text':
                 $element = new CInputText();
                 break;
-           case 'password':
+            case 'password':
                 $element = new CInputPassword();
                 break;
-           case 'input_button':
-                 $element = new CButtonInput();
-                 break;
-           case 'checkbox':
+            case 'input_button':
+                $element = new CButtonInput();
+                break;
+            case 'checkbox':
                 $element = new CCheckbox();
                 break;
-           case 'radio':
+            case 'radio':
                 $element = new CRadio();
                 break;
-           case 'iframe':
+            case 'iframe':
                 $element = new CIFrame();
                 break;
-           case 'i':
+            case 'i':
                 $element = new CI();
-               	break;                
-           case 'h1':
-           		$element = new CH1();
-           		break;
-           case 'h2':
-           		$element = new CH2();
-           		break;
-           case 'h3':
-           		$element = new CH3();
-           		break;
-           case 'h4':
-           		$element = new CH4();
-           		break;
+                break;
+            case 'h1':
+                $element = new CH1();
+                break;
+            case 'h2':
+                $element = new CH2();
+                break;
+            case 'h3':
+                $element = new CH3();
+                break;
+            case 'h4':
+                $element = new CH4();
+                break;
             default:
-                return NULL;
+                return null;
         }
-        
-        if($element instanceof CBaseElement)
-        {
+
+        if ($element instanceof CBaseElement) {
             $element->setAttributes($a_list_of_attribute_values_pairs);
             return $element;
         }
-        
-        return NULL;
-        
+
+        return null;
+
         /* //funziona dal 5.3?
         $element_class = 'Element_'.$element_name;
         $element = new $element_class();
         $element->setAttributes($a_list_of_attribute_values_pairs);
         return $element;
-		*/
+        */
     }
 }
-?>

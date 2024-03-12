@@ -4,7 +4,10 @@
  *
  * @author vito
  */
-class CHtml_tags
+
+namespace Lynxlab\ADA\CORE\html4;
+
+class CHtmlTags
 {
     public static function getTagForHtmlElement($element_class)
     {
@@ -23,8 +26,7 @@ class CHtml_tags
         $table_attributes = "%summary% %width% %border% %frame% %rules% %cellspacing% %cellpadding%";
 
 
-        switch($element_class)
-        {
+        switch ($element_class) {
             case 'COl':
                 return "<ol %start% $core_attributes $i18n_attributes $event_attributes>\n%children%\n</ol>\n";
             case 'CUl':
@@ -50,11 +52,11 @@ class CHtml_tags
             case 'CH1':
                 return "<h1 $core_attributes $i18n_attributes $event_attributes>\n%children%\n</h1>\n";
             case 'CH2':
-               	return "<h2 $core_attributes $i18n_attributes $event_attributes>\n%children%\n</h2>\n";
+                return "<h2 $core_attributes $i18n_attributes $event_attributes>\n%children%\n</h2>\n";
             case 'CH3':
-               	return "<h3 $core_attributes $i18n_attributes $event_attributes>\n%children%\n</h3>\n";
+                return "<h3 $core_attributes $i18n_attributes $event_attributes>\n%children%\n</h3>\n";
             case 'CH4':
-            	return "<h4 $core_attributes $i18n_attributes $event_attributes>\n%children%\n</h4>\n";
+                return "<h4 $core_attributes $i18n_attributes $event_attributes>\n%children%\n</h4>\n";
             case 'CDiv':
                 return "<div $core_attributes $i18n_attributes $event_attributes>\n%children%\n</div>\n";
             case 'COptgroup':
@@ -118,4 +120,3 @@ class CHtml_tags
         }
     }
 }
-?>
