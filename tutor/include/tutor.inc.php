@@ -1,5 +1,7 @@
 <?php
 
+use Lynxlab\ADA\Main\form\PhpOpenFormGen;
+
 function get_courses_tutorFN($id_user, $isSuper=false) {
     $dh = $GLOBALS['dh'];
     $ymdhms= $GLOBALS['ymdhms'];
@@ -409,7 +411,7 @@ function form_exercise($file_action,$file_back,$data_ha) {
 
     $submit_desc = translateFN("Salva");
     // creazione del form
-    $str = MakeForm($fields,$names,$edittypes,$necessary,$values,$options,$maxsize,$file_action,"add",false,true,$submit_desc);
+    $str = PhpOpenFormGen::makeForm($fields,$names,$edittypes,$necessary,$values,$options,$maxsize,$file_action,"add",false,true,$submit_desc);
 
     // scrittura stringa back
     // $str .= $this->go_file_back($file_back,"Home");
@@ -525,7 +527,7 @@ function form_list_register($id_course,$id_instance,$id_tutor,$file_action,$file
     $maxsize["add"][]=12;
 
     // creazione del form
-    $dati = MakeForm($fields,$names,$edittypes,$necessary,$values,$options,$maxsize,$file_action,"add",false,true);
+    $dati = PhpOpenFormGen::makeForm($fields,$names,$edittypes,$necessary,$values,$options,$maxsize,$file_action,"add",false,true);
     return $dati;
 
 }
@@ -618,7 +620,7 @@ function form_single_register($id_course,$id_instance,$file_action,$file_back) {
     $maxsize["add"][]=12;
 
     // creazione del form
-    $str = MakeForm($fields,$names,$edittypes,$necessary,$values,$options,$maxsize,$file_action,"add",false,true);
+    $str = PhpOpenFormGen::makeForm($fields,$names,$edittypes,$necessary,$values,$options,$maxsize,$file_action,"add",false,true);
 
     return $str ;
 }

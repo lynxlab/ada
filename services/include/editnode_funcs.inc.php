@@ -1,4 +1,7 @@
 <?php
+
+use Lynxlab\ADA\Main\form\PhpOpenFormGen;
+
 /**
  * EDITNODE FUNCTIONS
  *
@@ -79,7 +82,7 @@ function delete_nodeFN($id_node,$id_course,$action) {
       $options["add"][]="";
       $maxsize["add"][]="";
       // creazione del form
-      $form = MakeForm($fields,$names,$edittypes,$necessary,$values,$options,$maxsize,$action.".php?op=delete","add",false,true,$invia);
+      $form = PhpOpenFormGen::makeForm($fields,$names,$edittypes,$necessary,$values,$options,$maxsize,$action.".php?op=delete","add",false,true,$invia);
 
       //
     } else {
@@ -157,7 +160,7 @@ function copy_nodeFN($id_node,$id_course,$action){
       $options["add"][]="";
       $maxsize["add"][]="";
       // creazione del form
-      $form = MakeForm($fields,$names,$edittypes,$necessary,$values,$options,$maxsize,$self.".php","add",false,true,$invia);
+      $form = PhpOpenFormGen::makeForm($fields,$names,$edittypes,$necessary,$values,$options,$maxsize,$self.".php","add",false,true,$invia);
 
       //
     } else {
@@ -351,7 +354,7 @@ function preview_nodeFN($id_node,$id_course,$action){
   $head_form.=  "<p>$no_slashed_text</p><hr>";
 
   // creazione del form
-  $form = MakeForm($fields,$names,$edittypes,$necessary,$values,$options,$maxsize,$action.".php?op=save","add",false,true,$invia,$reset);
+  $form = PhpOpenFormGen::makeForm($fields,$names,$edittypes,$necessary,$values,$options,$maxsize,$action.".php?op=save","add",false,true,$invia,$reset);
   $data['head_form'] = $head_form;
   $data['menu'] = $menu;
   $data['form'] = $form;
@@ -659,7 +662,7 @@ function edit_nodeFN($id_node,$id_course,$action){
     $head_form="";
     $menu = "<a href=$http_root_dir/browsing/view.php?id_node=$sess_id_node>".translateFN('Torna')."</a>";
     // creazione del form
-    $form = MakeForm($fields,$names,$edittypes,$necessary,$values,$options,$maxsize,$action.".php?op=preview","add",false,true,$invia,$reset);
+    $form = PhpOpenFormGen::makeForm($fields,$names,$edittypes,$necessary,$values,$options,$maxsize,$action.".php?op=preview","add",false,true,$invia,$reset);
 
     $data['head_form'] = $head_form;
     $data['menu'] = $menu;

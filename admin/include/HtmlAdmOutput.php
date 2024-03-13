@@ -21,6 +21,8 @@
 
 namespace Lynxlab\ADA\Admin;
 
+use Lynxlab\ADA\Main\form\PhpOpenFormGen;
+
 class HtmlAdmOutput
 {
     // Metodi
@@ -255,7 +257,7 @@ class HtmlAdmOutput
         }
 
         // creazione del form
-        $str = MakeForm($fields, $names, $edittypes, $necessary, $values, $options, $maxsize, $file_action, "add", false, true);
+        $str = PhpOpenFormGen::makeForm($fields, $names, $edittypes, $necessary, $values, $options, $maxsize, $file_action, "add", false, true);
 
         // scrittura stringa back
         //  $str .= $this->goFileBack($file_back,"Home");
@@ -322,7 +324,7 @@ class HtmlAdmOutput
         $maxsize["add"][] = "";
 
         // creazione del form
-        $str = MakeForm($fields, $names, $edittypes, $necessary, $values, $options, $maxsize, $file_action, "add", false, true);
+        $str = PhpOpenFormGen::makeForm($fields, $names, $edittypes, $necessary, $values, $options, $maxsize, $file_action, "add", false, true);
 
         // scrittura stringa back
         //  $str .= $this->goFileBack($file_back,translateFN("Indietro"));
@@ -348,7 +350,7 @@ class HtmlAdmOutput
         $maxsize["add"][] = 50;
 
         // creazione del form
-        $str = MakeForm($fields, $names, $edittypes, $necessary, $values, $options, $maxsize, $file_action, "add", false, true);
+        $str = PhpOpenFormGen::makeForm($fields, $names, $edittypes, $necessary, $values, $options, $maxsize, $file_action, "add", false, true);
 
         // scrittura stringa back
         // $str .= $this->goFileBack($file_back,translateFN("Indietro"));

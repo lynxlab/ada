@@ -69,7 +69,6 @@ include_once 'include/admin_functions.inc.php';
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
  */
-AdminHelper::init($neededObjAr);
 
 /*
  * YOUR CODE HERE
