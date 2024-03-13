@@ -17,6 +17,12 @@
  * 				TO EDIT A USER PROFILE.
  * 				PAY ATTENTION TO SWITHCER ROLE WHEN EDITING THE FILE
  */
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Forms\UserExtraForm;
+use Lynxlab\ADA\Main\Forms\UserProfileForm;
+
 /**
  * Base config file
  */
@@ -200,7 +206,7 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
 
     	// the extra UserExtraForm is needed as well
     	require_once ROOT_DIR . '/include/Forms/UserExtraForm.inc.php';
-    	$extraForm = new UserExtraForm ();
+    	$extraForm = new UserExtraForm();
     	$extraForm->fillWithArrayData ($user_dataAr);
 
 		$tabContents = array ();
@@ -354,7 +360,7 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
 			if (isset($extraForm)) {
 				// if there are extra controls and NO tabs
 				// add the extra controls to the standard form
-				UserExtraForm::addExtraControls($form);
+				UserExtraForm::addExtraControls($form, true);
 				$form->fillWithArrayData($user_dataAr);
 			}
 			$data .= $form->render();
