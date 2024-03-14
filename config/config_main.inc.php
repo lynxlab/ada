@@ -248,11 +248,6 @@ define('EDIT_OPERATION', 1);
  * AMA
  */
 
-/**
- * AMA_LIB
- */
-define('AMA_LIB', ROOT_DIR.'/include/ama.inc.php');
-
 // Constant signaling that a connection with the DB is not established
 define('AMA_DB_NOT_CONNECTED',	NULL);
 // Separator between errors
