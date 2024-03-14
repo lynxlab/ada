@@ -23,11 +23,6 @@
 require_once ROOT_DIR.'/include/utilities.inc.php';
 
 /**
- * Database and data validator classes
- */
-require_once ROOT_DIR.'/include/database_includes.inc.php';
-
-/**
  * Functions used in this module
  */
 require_once ROOT_DIR.'/include/module_init_functions.inc.php';
