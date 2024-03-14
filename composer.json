@@ -15,7 +15,10 @@
             "Lynxlab\\ADA\\ADAPHPMailer\\": "include/phpMailer/",
             "Lynxlab\\ADA\\Main\\": "include/",
             "Lynxlab\\ADA\\CORE\\": "include/COREv0.1/"
-        }
+        },
+        "files": [
+            "include/AMA/DBRead.php"
+        ]
     },
     "authors": [
         {
