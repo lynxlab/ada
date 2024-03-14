@@ -6,7 +6,6 @@
  * @license	http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @version	0.1
  */
-require_once(ROOT_DIR.'/include/ama.inc.php');
 class AMAImpExportDataHandler extends AMA_DataHandler {
 
 	/**
@@ -76,17 +75,17 @@ class AMAImpExportDataHandler extends AMA_DataHandler {
 
 	/**
 	 * gets all the nodes that have an internal link in their text (aka testo) field.
-	 * 
+	 *
 	 * @param int $course_id the id of the course to search for
-	 * 
+	 *
 	 * @return array of fetched rows
-	 * 
+	 *
 	 * @access public
 	 */
 	public function get_nodes_with_internal_link_for_course ($course_id, $start_import_time=null)
 	{
 		$sql = 'SELECT `id_nodo`  FROM `nodo` WHERE UPPER(`testo`) LIKE ? AND `id_nodo` LIKE ?';
-		
+
 		$values = array ( '<%LINK%TYPE="INTERNAL"%VALUE%>%' , $course_id.'_%');
 
 		if (!is_null($start_import_time))
@@ -94,35 +93,35 @@ class AMAImpExportDataHandler extends AMA_DataHandler {
 			$sql .= ' AND `data_creazione`>= ?';
 			array_push ($values, $start_import_time);
 		}
-		
+
 		return $this->getAllPrepared($sql, $values );
 	}
-	
+
 	/**
-	 * gets all the course nodes that 
-	 * 
+	 * gets all the course nodes that
+	 *
 	 * @param int $course_id the id of the course to search for
-	 * 
+	 *
 	 * @return array of fetched rows
-	 * 
+	 *
 	 * @access public
 	 */
 	public function get_nodes_with_test_link_for_course ($course_id, $start_import_time=null)
 	{
-		$sql = 'SELECT N.`id_nodo`FROM `nodo` N 
-				JOIN 
+		$sql = 'SELECT N.`id_nodo`FROM `nodo` N
+				JOIN
 				`module_test_nodes` MT ON N.`id_nodo` = MT.`id_nodo_riferimento`
 				WHERE N.`id_nodo` LIKE ? AND N.`testo` LIKE \'%modules/test/index.php?id_test=%\'';
-		
+
 		$values = array ($course_id.'%');
-		
+
 		if (!is_null($start_import_time))
 		{
 			$sql .= ' AND N.`data_creazione`>= ?';
 			array_push ($values, $start_import_time);
 		}
 
-		return $this->getAllPrepared ( $sql, $values);		
+		return $this->getAllPrepared ( $sql, $values);
 	}
 }
 

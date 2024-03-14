@@ -12,7 +12,6 @@ namespace Lynxlab\ADA\Module\BBBIntegration;
 
 use Ramsey\Uuid\Uuid;
 
-require_once(ROOT_DIR . '/include/ama.inc.php');
 class AMABBBIntegrationDataHandler extends \AMA_DataHandler
 {
 

@@ -9,7 +9,6 @@
 
 namespace Lynxlab\ADA\Module\ForkedPaths;
 
-require_once(ROOT_DIR.'/include/ama.inc.php');
 class AMAForkedPathsDataHandler extends \AMA_DataHandler {
 
 	/**

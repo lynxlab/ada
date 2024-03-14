@@ -10,7 +10,6 @@
 
 namespace Lynxlab\ADA\Module\CollaboraACL;
 
-require_once(ROOT_DIR . '/include/ama.inc.php');
 class AMACollaboraACLDataHandler extends \AMA_DataHandler
 {
 
@@ -422,7 +421,7 @@ class AMACollaboraACLDataHandler extends \AMA_DataHandler
      */
     private function beginTransaction()
     {
-        return $this->getConnection()->connection_object()->beginTransaction();
+        return $this->getConnection()->connectionObject()->beginTransaction();
     }
 
     /**
@@ -432,7 +431,7 @@ class AMACollaboraACLDataHandler extends \AMA_DataHandler
      */
     private function rollBack()
     {
-        return $this->getConnection()->connection_object()->rollBack();
+        return $this->getConnection()->connectionObject()->rollBack();
     }
 
     /**
@@ -442,6 +441,6 @@ class AMACollaboraACLDataHandler extends \AMA_DataHandler
      */
     private function commit()
     {
-        return $this->getConnection()->connection_object()->commit();
+        return $this->getConnection()->connectionObject()->commit();
     }
 }

@@ -1,17 +1,19 @@
 <?php
 /**
  * Redirect.
- * 
+ *
  * @package		tutor
  * @author		Stefano Penge <steve@lynxlab.com>
  * @copyright	Copyright (c) 2009, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link		tutor			
+ * @link		tutor
  * @version		0.1
  */
 
+use function Lynxlab\ADA\Main\AMA\DBRead\read_user;
+
 /**
- * Base config file 
+ * Base config file
  */
 require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
 
@@ -42,7 +44,7 @@ $userObj = read_user($sess_id_user);
 if($userObj instanceof ADAGenericUser) {
   $homepage = $userObj->getHomePage();
   header('Location: ' . $homepage);
-  exit();  
+  exit();
 }
 
 header('Location: '.HTTP_ROOT_DIR);

@@ -7,7 +7,6 @@
  * @version		0.1
  */
 
-require_once(ROOT_DIR.'/include/ama.inc.php');
 class AMASecretQuestionDataHandler extends \AMA_Common_DataHandler {
 
 	/**

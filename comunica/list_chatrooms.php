@@ -11,6 +11,8 @@
  * @version		0.1
  */
 
+use function Lynxlab\ADA\Main\AMA\DBRead\read_course;
+
 /**
  * Base config file
  */

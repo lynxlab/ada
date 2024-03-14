@@ -7,7 +7,6 @@
  * @version	0.1
  */
 
-require_once($root_dir.'/include/ama.inc.php');
 class AMATestDataHandler extends AMA_DataHandler {
 
 	public static $PREFIX = 'module_test_';

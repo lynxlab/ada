@@ -16,6 +16,9 @@
 
 use Detection\MobileDetect;
 
+use function Lynxlab\ADA\Main\AMA\DBRead\read_course;
+use function Lynxlab\ADA\Main\AMA\DBRead\read_user;
+
 /**
  *
  * @return unknown_type

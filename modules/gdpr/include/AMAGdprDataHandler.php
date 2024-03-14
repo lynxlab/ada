@@ -9,7 +9,6 @@
 
 namespace Lynxlab\ADA\Module\GDPR;
 
-require_once(ROOT_DIR.'/include/ama.inc.php');
 class AMAGdprDataHandler extends \AMA_DataHandler {
 
 	/**

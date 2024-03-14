@@ -37,7 +37,7 @@ final class CoreEvent extends GenericEvent
   const PAGEPRERENDER = self::namespace . '.page.prerender';
 
   /**
-   * The AMAPDOPREGETALL event occurs before the AMA_PDO_wrapper::getAll runs its query
+   * The AMAPDOPREGETALL event occurs before the AMAPDOWrapper::getAll runs its query
    *
    * This event allows you manipulate the query being executed
    *
@@ -48,7 +48,7 @@ final class CoreEvent extends GenericEvent
   const AMAPDOPREGETALL = self::namespace . '.amapdo.pregetall';
 
   /**
-   * The AMAPDOPOSTGETALL event occurs after the AMA_PDO_wrapper::getAll is run
+   * The AMAPDOPOSTGETALL event occurs after the AMAPDOWrapper::getAll is run
    *
    * This event allows you to manipulate the retunred results array
    *

@@ -10,7 +10,6 @@
 
 namespace Lynxlab\ADA\Module\JitsiIntegration;
 
-require_once(ROOT_DIR . '/include/ama.inc.php');
 class AMAJitsiIntegrationDataHandler extends \AMA_DataHandler
 {
 

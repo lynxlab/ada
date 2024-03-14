@@ -12,8 +12,6 @@
 
 namespace Lynxlab\ADA\Module\Login;
 
-require_once(ROOT_DIR . '/include/ama.inc.php');
-
 class AMALoginDataHandler extends \AMA_DataHandler
 {
 	/**

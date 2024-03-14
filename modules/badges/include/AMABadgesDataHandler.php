@@ -11,7 +11,6 @@ namespace Lynxlab\ADA\Module\Badges;
 
 use Ramsey\Uuid\Uuid;
 
-require_once(ROOT_DIR.'/include/ama.inc.php');
 class AMABadgesDataHandler extends \AMA_DataHandler {
 
 	/**

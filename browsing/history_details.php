@@ -26,6 +26,9 @@ Initializating variables and including modules
 
 */
 
+use function Lynxlab\ADA\Main\AMA\DBRead\read_course_from_DB;
+use function Lynxlab\ADA\Main\AMA\DBRead\read_layout_from_DB;
+use function Lynxlab\ADA\Main\AMA\DBRead\read_user_from_DB;
 
 $ada_config_path = realpath(dirname(__FILE__).'/..');
 

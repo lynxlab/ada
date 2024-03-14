@@ -12,7 +12,6 @@ namespace Lynxlab\ADA\Module\StudentsGroups;
 
 use Subscription;
 
-require_once(ROOT_DIR . '/include/ama.inc.php');
 class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
 {
 

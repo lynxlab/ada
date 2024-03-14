@@ -10,6 +10,10 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
+
+use function Lynxlab\ADA\Main\AMA\DBRead\read_course_instance_from_DB;
+
 /**
  * Base config file
  */

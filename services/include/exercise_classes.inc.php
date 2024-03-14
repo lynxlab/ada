@@ -1,4 +1,7 @@
 <?php
+
+use function Lynxlab\ADA\Main\AMA\DBRead\get_max_idFN;
+
 include_once "$root_dir/include/HtmlLibrary/BaseHtmlLib.inc.php";
 
 /**

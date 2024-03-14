@@ -12,7 +12,6 @@ namespace Lynxlab\ADA\Module\ZoomIntegration;
 
 use Ramsey\Uuid\Uuid;
 
-require_once(ROOT_DIR . '/include/ama.inc.php');
 class AMAZoomIntegrationDataHandler extends \AMA_DataHandler
 {
 

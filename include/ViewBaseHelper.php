@@ -8,6 +8,14 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
+
+use function Lynxlab\ADA\Main\AMA\DBRead\read_course;
+use function Lynxlab\ADA\Main\AMA\DBRead\read_course_instance_from_DB;
+use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
+use function Lynxlab\ADA\Main\AMA\DBRead\read_user;
+
  /**
   * View helper base class
   *

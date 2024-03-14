@@ -31,8 +31,6 @@ if (count($data) == 0) $data = $_REQUEST;
 
 if (isset($data['p']) && strlen($data['p']) && DataValidator::validate_testername($data['p'])) {
 
-  require_once ROOT_DIR . '/include/multiport.inc.php';
-  require_once ROOT_DIR . '/include/ama.inc.php';
   require_once ROOT_DIR . '/comunica/include/videoroom.classes.inc.php';
 
   $GLOBALS['dh'] = new \AMA_DataHandler(\MultiPort::getDSN($data['p']));

@@ -7,6 +7,8 @@
  * @version	0.1
  */
 
+use function Lynxlab\ADA\Main\AMA\DBRead\read_user;
+
 require_once(ROOT_DIR.'/comunica/include/MessageHandler.inc.php');
 
 class TestTest extends RootTest

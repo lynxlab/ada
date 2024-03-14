@@ -12,6 +12,9 @@
  * @link
  * @version		0.2
  */
+
+use function Lynxlab\ADA\Main\AMA\DBRead\read_user_from_DB;
+
 /**
  * Base config file
  */

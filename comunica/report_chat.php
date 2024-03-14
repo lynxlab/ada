@@ -16,6 +16,9 @@ Initializating variables and including modules
 /**
  * Base config file
  */
+
+use function Lynxlab\ADA\Main\AMA\DBRead\read_course;
+
 require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 
 /**

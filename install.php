@@ -178,7 +178,6 @@ foreach ([
 require_once realpath(dirname(__FILE__)).'/config_path.inc.php';
 require_once ROOT_DIR.'/include/layout_classes.inc.php';
 require_once ROOT_DIR.'/include/output_classes.inc.php';
-require_once ROOT_DIR.'/include/DB_read.inc.php';
 require_once ROOT_DIR.'/include/user_class.inc.php';
 
 /**

@@ -6,7 +6,6 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @version		0.1
  */
-require_once(ROOT_DIR.'/include/ama.inc.php');
 class AMARepositoryDataHandler extends \AMA_Common_DataHandler {
 	/**
 	 * module's own data tables prefix

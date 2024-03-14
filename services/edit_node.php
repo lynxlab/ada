@@ -12,6 +12,8 @@
 
 use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
 
+use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
+
 /**
  * Base config file
  */

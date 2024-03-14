@@ -1,4 +1,10 @@
 <?php
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+
+use function Lynxlab\ADA\Main\AMA\DBRead\get_max_idFN;
+
 /**
  * @package test
  * @author	Valerio Riva <valerio@lynxlab.com>

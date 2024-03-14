@@ -1,4 +1,10 @@
 <?php
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+
+use function Lynxlab\ADA\Main\AMA\DBRead\get_max_idFN;
+
 /**
  * @package test
  * @author	Valerio Riva <valerio@lynxlab.com>
@@ -61,7 +67,7 @@ class SwitcherManagementTest {
 		$nodo_test['pos_x1']			= 0;
 		$nodo_test['pos_y1']			= 0;
 		$id_node = $dh->add_node($nodo_test);
-		
+
 		if (empty($id_node) || $dh->isError($id_node)) {
 			return false;
 		}
@@ -87,7 +93,7 @@ class SwitcherManagementTest {
 	 */
 	public function delete($id_test) {
 		$dh = $GLOBALS['dh'];
-		
+
 		$coursetest = $dh->test_getCourseSurveys(array('id_corso'=>$this->courseObj->id,'id_test'=>$id_test));
 		if ($dh->isError($coursetest) || empty($coursetest[0])) {
 			return false;
@@ -95,7 +101,7 @@ class SwitcherManagementTest {
 		$id_nodo = $coursetest[0]['id_nodo'];
 
 		$res = $dh->test_removeCourseTest($this->courseObj->id, $id_test);
-		
+
 		if ($dh->isError($res)) {
 			return false;
 		}
@@ -129,7 +135,7 @@ class SwitcherManagementTest {
 
 		require_once(MODULES_TEST_PATH.'/include/forms/switcherFormTest.inc.php');
 		$form = new SwitcherFormTest($this->courseObj->id);
-		
+
 		$return = array(
 			'html' => $form->getHtml(),
 			'path' => $this->courseObj->titolo,

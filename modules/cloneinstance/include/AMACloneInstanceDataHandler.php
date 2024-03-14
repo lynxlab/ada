@@ -12,7 +12,6 @@ namespace Lynxlab\ADA\Module\CloneInstance;
 
 use ClosedGeneratorException;
 
-require_once(ROOT_DIR . '/include/ama.inc.php');
 class AMACloneInstanceDataHandler extends \AMA_DataHandler
 {
 
@@ -391,7 +390,7 @@ class AMACloneInstanceDataHandler extends \AMA_DataHandler
      */
     private function beginTransaction()
     {
-        return $this->getConnection()->connection_object()->beginTransaction();
+        return $this->getConnection()->connectionObject()->beginTransaction();
     }
 
     /**
@@ -401,7 +400,7 @@ class AMACloneInstanceDataHandler extends \AMA_DataHandler
      */
     private function rollBack()
     {
-        return $this->getConnection()->connection_object()->rollBack();
+        return $this->getConnection()->connectionObject()->rollBack();
     }
 
     /**
@@ -411,7 +410,7 @@ class AMACloneInstanceDataHandler extends \AMA_DataHandler
      */
     private function commit()
     {
-        return $this->getConnection()->connection_object()->commit();
+        return $this->getConnection()->connectionObject()->commit();
     }
 
     private function insertMultiRow(&$valuesArray = array(), $tableName = null, $subPrefix = '')

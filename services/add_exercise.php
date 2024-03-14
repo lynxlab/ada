@@ -11,6 +11,8 @@
  * @version		0.1
  */
 
+use function Lynxlab\ADA\Main\AMA\DBRead\get_max_idFN;
+
 /**
  * Base config file
  */
