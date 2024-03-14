@@ -1786,11 +1786,10 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
         } elseif ($message_text[1] == '"' && $message_text[$last_char] == '"') {
             $sql_prepared_text = $this->sql_prepared(trim($message_text, '\"'));
             $sql_for_where     = "testo_messaggio=$sql_prepared_text";
-        }
-        /*
-         * The user entered some search tokens (e.g. 'some text')
-         */
-        else {
+        } else {
+            /*
+             * The user entered some search tokens (e.g. 'some text')
+             */
             $sql_for_where = "";
             $token = strtok($message_text, ' ');
             $sql_prepared_text = $this->sql_prepared("%$token%");
