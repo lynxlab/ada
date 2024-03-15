@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Layout.inc.php file
  *
@@ -9,6 +10,7 @@
  * @copyright Copyright (c) 2010, Lynx s.r.l.
  * @license   http://opensource.org/licenses/gpl-2.0.php GNU Public License
  */
+
 /**
  *
  *
@@ -17,32 +19,33 @@
  * @copyright Copyright (c) 2010, Lynx s.r.l.
  * @license   http://opensource.org/licenses/gpl-2.0.php GNU Public License
  */
+
+namespace Lynxlab\ADA\Main\Output;
+
 class UILayout
 {
     public function __construct()
     {
-    	if (!MULTIPROVIDER && isset($GLOBALS['user_provider']))
-    	{
-    		$this->_pathToLayoutDir = ROOT_DIR . DIRECTORY_SEPARATOR . 'clients' .DIRECTORY_SEPARATOR . $GLOBALS['user_provider'] . DIRECTORY_SEPARATOR .  'layout';    		
-    	} else 
-    	{
-        	$this->_pathToLayoutDir = ROOT_DIR . DIRECTORY_SEPARATOR . 'layout';
-    	}
-
-        if(isset($_GET['family']) && !empty($_GET['family'])) {
-            $this->_layoutsPrecedence[] = $_GET['family'];
+        if (!MULTIPROVIDER && isset($GLOBALS['user_provider'])) {
+            $this->pathToLayoutDir = ROOT_DIR . DIRECTORY_SEPARATOR . 'clients' . DIRECTORY_SEPARATOR . $GLOBALS['user_provider'] . DIRECTORY_SEPARATOR .  'layout';
+        } else {
+            $this->pathToLayoutDir = ROOT_DIR . DIRECTORY_SEPARATOR . 'layout';
         }
-        $this->_layoutsPrecedence[] = ADA_TEMPLATE_FAMILY;
+
+        if (isset($_GET['family']) && !empty($_GET['family'])) {
+            $this->layoutsPrecedence[] = $_GET['family'];
+        }
+        $this->layoutsPrecedence[] = ADA_TEMPLATE_FAMILY;
         // $conf_base = basename(HTTP_ROOT_DIR));
     }
 
     private function createAvailableLayoutsList()
     {
 
-        $handle = opendir($this->_pathToLayoutDir);
+        $handle = opendir($this->pathToLayoutDir);
         while ($handle && (false !== ($layout = readdir($handle)))) {
             if ($this->isLayoutInstalled($layout)) {
-                $this->_availableLayouts[$layout] = $layout;
+                $this->availableLayouts[$layout] = $layout;
             }
         }
         closedir($handle);
@@ -50,9 +53,10 @@ class UILayout
 
     private function isLayoutInstalled($layout)
     {
-        if ($layout !== '.' && $layout !== '..'
-           && is_dir($this->_pathToLayoutDir . DIRECTORY_SEPARATOR . $layout)) {
-
+        if (
+            $layout !== '.' && $layout !== '..'
+            && is_dir($this->pathToLayoutDir . DIRECTORY_SEPARATOR . $layout)
+        ) {
             return true;
         }
         return false;
@@ -61,10 +65,10 @@ class UILayout
     public function getAvailableLayouts()
     {
         $this->createAvailableLayoutsList();
-        return $this->_availableLayouts;
+        return $this->availableLayouts;
     }
 
-    private $_layoutsPrecedence = array();
-    private $_availableLayouts = array();
-    private $_pathToLayoutDir = '';
+    private $layoutsPrecedence = [];
+    private $availableLayouts = [];
+    private $pathToLayoutDir = '';
 }

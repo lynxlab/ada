@@ -17,7 +17,8 @@
             "Lynxlab\\ADA\\CORE\\": "include/COREv0.1/"
         },
         "files": [
-            "include/AMA/DBRead.php"
+            "include/AMA/DBRead.php",
+            "include/Output/functions.php"
         ]
     },
     "authors": [
