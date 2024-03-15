@@ -8,12 +8,14 @@
  * @link
  * @version		0.2
  */
+
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
+
 require_once 'CourseViewer.inc.php';
 require_once ROOT_DIR.'/include/ViewBaseHelper.php';
-require_once ROOT_DIR.'/include/media_viewing_classes.inc.php';
 require_once ROOT_DIR.'/comunica/include/MessageHandler.inc.php';
 require_once ROOT_DIR.'/comunica/include/UserDataHandler.inc.php';
-require_once ROOT_DIR.'/comunica/include/ADAEventProposal.inc.php';
 
 /**
  * Browsing helper class
@@ -196,7 +198,7 @@ class BrowsingHelper extends ViewBaseHelper
       if (
         intval($courseInstanceId)>0 && intval($courseId)>0 && isset($userObj) && is_object($userObj)) {
         // need the badges module data handler
-        $bdh = \Lynxlab\ADA\Module\Badges\AMABadgesDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+        $bdh = AMABadgesDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
         // need the service-complete module data handler
         require_once MODULES_SERVICECOMPLETE_PATH . '/include/init.inc.php';
         $cdh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));

@@ -12,13 +12,18 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\Media\MediaViewer;
+use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
+
 // Classes Structure:
 // Node
 //     Exercise
 // Resource
 //      Media
 //      Link
-require_once(ROOT_DIR .'/include/media_viewing_classes.inc.php');
 include_once(ROOT_DIR . '/services/include/exercise_classes.inc.php');
 
 class Node
@@ -191,7 +196,7 @@ class Node
       }
 
       if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS) {
-        $this->isForkedPaths = \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode::checkNode($this);
+        $this->isForkedPaths = ForkedPathsNode::checkNode($this);
       } else $this->isForkedPaths = false;
 
     }
