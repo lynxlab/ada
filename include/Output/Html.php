@@ -20,6 +20,7 @@ namespace Lynxlab\ADA\Main\Output;
 
 use Exception;
 use Lynxlab\ADA\Main\ArrayToXML\ArrayToXML;
+use Lynxlab\ADA\Main\User\ADAGenericUser;
 
 class Html extends GenericHtml
 {

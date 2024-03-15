@@ -12,6 +12,17 @@
  * @link
  * @version		0.1
  */
+
+use Lynxlab\ADA\Admin\AdminUtils;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Forms\UserSubscriptionForm;
+use Lynxlab\ADA\Main\User\ADAAdmin;
+use Lynxlab\ADA\Main\User\ADAAuthor;
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+use Lynxlab\ADA\Main\User\ADASwitcher;
+use Lynxlab\ADA\Main\User\ADAUser;
+
 /**
  * Base config file
  */
@@ -69,7 +80,6 @@ include_once 'include/switcher_functions.inc.php';
  */
 SwitcherHelper::init($neededObjAr);
 
-include_once ROOT_DIR . '/admin/include/AdminUtils.inc.php';
 /*
  * YOUR CODE HERE
  */

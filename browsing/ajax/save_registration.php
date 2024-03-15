@@ -9,6 +9,11 @@
  * @link
  * @version		0.1
  */
+
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Forms\UserProfileForm;
+use Lynxlab\ADA\Main\User\ADAUser;
+
 /**
  * Base config file
  */

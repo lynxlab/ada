@@ -13,6 +13,10 @@ namespace Lynxlab\ADA\Module\Login;
 
 use Hybridauth\Hybridauth;
 use Hybridauth\HttpClient;
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\User\ADALoggableUser;
 
 /**
  * google login provider implementation
@@ -76,7 +80,7 @@ class hybridLogin extends abstractLogin
 	public function addADASuccessCallBack($userObj, $downloadURL, $avatar)
 	{
 
-		if (is_object($userObj) && $userObj instanceof \ADALoggableUser) {
+		if (is_object($userObj) && $userObj instanceof ADALoggableUser) {
 
 			if (!is_null($avatar) && !is_null($downloadURL)) {
 				$destDir = ADA_UPLOAD_PATH.$userObj->getId();
@@ -294,15 +298,15 @@ class hybridLogin extends abstractLogin
 		// If no option id return abstract config page (aka 'no options to configure' message)
 		if (is_null($optionID)) return parent::generateConfigPage();
 
-		$configIndexDIV = \CDOMElement::create('div','id:configindex');
+		$configIndexDIV = CDOMElement::create('div','id:configindex');
 
-		$newButton = \CDOMElement::create('button');
+		$newButton = CDOMElement::create('button');
 		$newButton->setAttribute('class', 'newButton tooltip top');
 		$newButton->setAttribute('title', translateFN('Clicca per creare un nuova chiave'));
 		$newButton->setAttribute('onclick', 'javascript:addOptionRow();');
-		$newButton->addChild (new \CText(translateFN('Nuova Chiave')));
+		$newButton->addChild (new CText(translateFN('Nuova Chiave')));
 		$configIndexDIV->addChild($newButton);
-		$configIndexDIV->addChild(\CDOMElement::create('div','class:clearfix'));
+		$configIndexDIV->addChild(CDOMElement::create('div','class:clearfix'));
 
 		$tableOutData = array();
 		if (!\AMA_DB::isError($optionSetList)) {
@@ -329,8 +333,8 @@ class hybridLogin extends abstractLogin
 					}
 
 					if (isset($type)) {
-						$links[$j] = \CDOMElement::create('li','class:liactions');
-						$linkshref = \CDOMElement::create('button');
+						$links[$j] = CDOMElement::create('li','class:liactions');
+						$linkshref =CDOMElement::create('button');
 						$linkshref->setAttribute('onclick','javascript:'.$link);
 						$linkshref->setAttribute('class', $type.'Button tooltip');
 						$linkshref->setAttribute('title',$title);
@@ -341,7 +345,7 @@ class hybridLogin extends abstractLogin
 					}
 				}
 				if (!empty($links)) {
-					$linksul = \CDOMElement::create('ul','class:ulactions');
+					$linksul = CDOMElement::create('ul','class:ulactions');
 					foreach ($links as $link) $linksul->addChild ($link);
 					$linksHtml = $linksul->getHtml();
 				} else $linksHtml = '';
@@ -353,11 +357,11 @@ class hybridLogin extends abstractLogin
 			}
 
 			$emptyrow = array(array_shift($tableOutData));
-			$EmptyTable = \BaseHtmlLib::tableElement('id:empty'.strtoupper((new \ReflectionClass($this))->getShortName()),$labels,$emptyrow);
+			$EmptyTable = BaseHtmlLib::tableElement('id:empty'.strtoupper((new \ReflectionClass($this))->getShortName()),$labels,$emptyrow);
 			$EmptyTable->setAttribute('style', 'display:none');
 			$EmptyTable->setAttribute('class', ADA_SEMANTICUI_TABLECLASS);
 
-			$OutTable = \BaseHtmlLib::tableElement('id:complete'.strtoupper((new \ReflectionClass($this))->getShortName()).'List',
+			$OutTable = BaseHtmlLib::tableElement('id:complete'.strtoupper((new \ReflectionClass($this))->getShortName()).'List',
 					$labels,$tableOutData,'',translateFN('Opzioni '.strtoupper($this->loadProviderName())));
 			$OutTable->setAttribute('data-optionid', $optionID);
 			$OutTable->setAttribute('class', ADA_SEMANTICUI_TABLECLASS);

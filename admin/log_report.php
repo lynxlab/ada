@@ -14,6 +14,12 @@
  * @version     0.1
  */
 
+use Lynxlab\ADA\Admin\AdminHelper;
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+
 /**
  * Base config file
  */
@@ -38,8 +44,6 @@ $neededObjAr = [
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self =  whoami();  // = admin!
-
-include_once 'include/admin_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -94,7 +98,7 @@ if ($userObj->getType() == AMA_TYPE_ADMIN) {
             $Services_Type[DEFAULT_SERVICE_TYPE] = translateFN(DEFAULT_SERVICE_TYPE_NAME);
         }
     }
-    $log_dataAr =  Multiport::log_report(null, $Services_Type);
+    $log_dataAr =  MultiPort::log_report(null, $Services_Type);
 } elseif ($userObj->getType() == AMA_TYPE_SWITCHER) {
     $log_dataAr = Multiport::log_report($userObj->getDefaultTester(), null);
     $Services_Type = $_SESSION['service_level'];

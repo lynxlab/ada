@@ -10,6 +10,8 @@
 
 namespace Lynxlab\ADA\Module\StudentsGroups;
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\User\ADAUser;
 use Subscription;
 
 class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
@@ -209,9 +211,9 @@ class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
 						$userDataAr = explode(',', $row);
 						if (is_array($userDataAr) && count($userDataAr) == MODULES_STUDENTSGROUPS_FIELDS_IN_CSVROW) {
 							$userDataAr = array_map('trim', explode(',', $row));
-							$subscriberObj = \MultiPort::findUserByUsername($userDataAr[2]);
+							$subscriberObj = MultiPort::findUserByUsername($userDataAr[2]);
 							if ($subscriberObj == NULL) {
-								$subscriberObj = new \ADAUser(
+								$subscriberObj = new ADAUser(
 									array(
 										'nome' => trim($userDataAr[0]),
 										'cognome' => trim($userDataAr[1]),
@@ -230,7 +232,7 @@ class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
 									/**
 									 * save the user and add it to the providers of the session user (that is a switcher)
 									 */
-									$result = \MultiPort::addUser($subscriberObj, $providers);
+									$result = MultiPort::addUser($subscriberObj, $providers);
 									if ($result > 0) {
 										++$counters['registered'];
 										$usersToAdd[] = $result;
@@ -247,7 +249,7 @@ class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
 								/**
 								 * add the user to the providers of the session user (that is a switcher)
 								 */
-								\MultiPort::setUser($subscriberObj, $providers, false);
+								MultiPort::setUser($subscriberObj, $providers, false);
 								$usersToAdd[] = $subscriberObj->getId();
 							}
 						} else {
@@ -306,7 +308,7 @@ class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
 					if (!in_array($student->getId(), $subscribedIds)) {
 						if (!in_array($courseProviderAr['puntatore'], $student->getTesters())) {
 							// subscribe user to course provider
-							$isUserInProvider = \Multiport::setUser($student, [$courseProviderAr['puntatore']]);
+							$isUserInProvider = Multiport::setUser($student, [$courseProviderAr['puntatore']]);
 						} else {
 							$isUserInProvider = true;
 						}

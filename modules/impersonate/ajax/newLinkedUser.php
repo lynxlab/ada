@@ -8,7 +8,11 @@
  * @version     0.1
  */
 
-use Lynxlab\ADA\Module\GDPR\GdprAPI;
+use Lynxlab\ADA\Admin\AdminUtils;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\User\ADAAuthor;
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+use Lynxlab\ADA\Main\User\ADASwitcher;
 use Lynxlab\ADA\Module\Impersonate\AMAImpersonateDataHandler;
 use Lynxlab\ADA\Module\Impersonate\ImpersonateActions;
 use Lynxlab\ADA\Module\Impersonate\ImpersonateException;
@@ -44,7 +48,7 @@ BrowsingHelper::init($neededObjAr);
 /**
  * @var AMACollaboraACLDataHandler $impDH
  */
-$impDH = AMAImpersonateDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+$impDH = AMAImpersonateDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 $retArray = array('status' => 'ERROR');
 session_write_close();
@@ -102,11 +106,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                     return strlen(trim($el))>0 ? trim($el) : null;
                 }, $targetArr);
                 if ($passedData['linkedType'] == AMA_TYPE_SWITCHER) {
-                    $targetUser = new \ADASwitcher($targetArr);
+                    $targetUser = new ADASwitcher($targetArr);
                 } else if ($passedData['linkedType'] == AMA_TYPE_AUTHOR) {
-                    $targetUser = new \ADAAuthor($targetArr);
+                    $targetUser = new ADAAuthor($targetArr);
                 } else if ($passedData['linkedType'] == AMA_TYPE_TUTOR) {
-                    $targetUser = new \ADAPractitioner($targetArr);
+                    $targetUser = new ADAPractitioner($targetArr);
                 }
                 // set a random password, 24 char length
                 $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._";
@@ -116,15 +120,15 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 // fix the type that was copied from the sourceUser
                 $targetUser->setType($passedData['linkedType']);
                 // save the new user
-                $result = \MultiPort::addUser($targetUser, array($_SESSION['sess_selected_tester']));
+                $result = MultiPort::addUser($targetUser, array($_SESSION['sess_selected_tester']));
                 if ($result > 0) {
                     $targetUser->setUserId($result);
-                    if ($targetUser instanceof \ADAAuthor) {
+                    if ($targetUser instanceof ADAAuthor) {
                         require_once ROOT_DIR . '/admin/include/AdminUtils.inc.php';
-                        \AdminUtils::performCreateAuthorAdditionalSteps($targetUser->getId());
-                    } else if ($targetUser instanceof \ADASwitcher || $targetUser instanceof \ADAPractitioner) {
+                        AdminUtils::performCreateAuthorAdditionalSteps($targetUser->getId());
+                    } else if ($targetUser instanceof ADASwitcher || $targetUser instanceof ADAPractitioner) {
                         require_once ROOT_DIR . '/admin/include/AdminUtils.inc.php';
-                        \AdminUtils::createUploadDirForUser($targetUser->getId());
+                        AdminUtils::createUploadDirForUser($targetUser->getId());
                     }
                 } else $res = new ImpersonateException(translateFN("Impossibile creare l'utente collegato"));
 

@@ -2,6 +2,9 @@
 
 namespace Lynxlab\ADA\Module\StudentsGroups;
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\User\ADAUser;
+
 if (!defined('StudentsGroupsTable')) define('StudentsGroupsTable', AMAStudentsGroupsDataHandler::PREFIX . 'groups');
 if (!defined('StudentsGroupsUtenteRel')) define('StudentsGroupsUtenteRel', AMAStudentsGroupsDataHandler::PREFIX . 'groups_utente');
 
@@ -101,8 +104,8 @@ class Groups extends StudentsGroupsBase
         $retArr = [];
         foreach($resArr as $aRes) {
             foreach($aRes as $userId) {
-                $user = \MultiPort::findUser($userId);
-                if ($user instanceof \ADAUser) {
+                $user = MultiPort::findUser($userId);
+                if ($user instanceof ADAUser) {
                     array_push($retArr, $user);
                 }
             }

@@ -8,6 +8,9 @@
  * @version     0.1
  */
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Main\User\ADAUser;
 use Lynxlab\ADA\Module\Impersonate\AMAImpersonateDataHandler;
 use Lynxlab\ADA\Module\Impersonate\ImpersonateActions;
 use Lynxlab\ADA\Module\Impersonate\ImpersonateException;
@@ -49,7 +52,7 @@ if (isset($_SESSION[MODULES_IMPERSONATE_SESSBACKDATA])) {
     /**
      * @var AMAImpersonateDataHandler $impDH
      */
-    $impDH = AMAImpersonateDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+    $impDH = AMAImpersonateDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
     try {
         $impObj = LinkedUsers::getSessionLinkedUser();
         if (count($impObj) > 0) {
@@ -77,11 +80,11 @@ if (!isset($impersonateObj)) {
     $impersonateObj = $impersonateId > 0 ? read_user($impersonateId) : $userObj;
 }
 
-if ($impersonateObj instanceof \ADALoggableUser) {
+if ($impersonateObj instanceof ADALoggableUser) {
     if (isset($_SESSION[MODULES_IMPERSONATE_SESSBACKDATA])) {
         $impersonateObj->setStatus(ADA_STATUS_REGISTERED);
     }
-    \ADAUser::setSessionAndRedirect(
+    ADAUser::setSessionAndRedirect(
         $impersonateObj,
         false,
         $impersonateObj->getLanguage(),

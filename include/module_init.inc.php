@@ -27,16 +27,7 @@ require_once ROOT_DIR.'/include/utilities.inc.php';
  */
 require_once ROOT_DIR.'/include/module_init_functions.inc.php';
 
-/**
- * Ada Rendering Engine, used to render module output data
- */
-require_once ROOT_DIR.'/include/layout_classes.inc.php';
-require_once ROOT_DIR.'/include/output_classes.inc.php';
-
-
 require_once ROOT_DIR.'/include/translator_class.inc.php';
-require_once ROOT_DIR.'/include/output_funcs.inc.php';
-//require_once ROOT_DIR.'/include/layout_classes.inc.php';
 
 // provvisoriamente includiamo anche le vecchie classi di oggetti HTML:
 require_once ROOT_DIR . '/include/HTML_element_classes.inc.php';

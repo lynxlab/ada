@@ -1,4 +1,11 @@
 <?php
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+use Lynxlab\ADA\Main\User\ADAUser;
+
 /**
  * Course, Course_instance and Student_class classes
  *
@@ -1728,11 +1735,11 @@ class Student_class {
                     if (array_key_exists(REPORT_COLUMN_STATUS, $columns)) {
                         //build level HTML
                         if (defined('MODULES_SERVICECOMPLETE') && MODULES_SERVICECOMPLETE && $stausIsButton) {
-                            $stBtn = \CDOMElement::create('button','class:ui tiny button servicecomplete-summary-modal');
+                            $stBtn = CDOMElement::create('button','class:ui tiny button servicecomplete-summary-modal');
                             $stBtn->setAttribute('data-student-id', $id_student);
                             $stBtn->setAttribute('data-instance-id', $id_instance);
                             $stBtn->setAttribute('data-course-id',$id_course);
-                            $stBtn->addChild(new \CText(Subscription::subscriptionStatusArray()[$dati_stude[$key]['status']]));
+                            $stBtn->addChild(new CText(Subscription::subscriptionStatusArray()[$dati_stude[$key]['status']]));
                             $dati_stude[$key]['status'] = $stBtn->getHtml();
                         } else {
                             $dati_stude[$key]['status'] = Subscription::subscriptionStatusArray()[$dati_stude[$key]['status']];

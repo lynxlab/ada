@@ -11,6 +11,15 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
+use Lynxlab\ADA\CORE\html4\CBaseElement;
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\User\ADAUser;
+
 /**
  * Base config file
  */
@@ -499,8 +508,7 @@ if ($op !== false && $op == 'course_info') {
 								 * Send the message an email message
 								 * via PHPMailer
 								 */
-								require_once ROOT_DIR.'/include/phpMailer/ADAPHPMailer.php';
-								$phpmailer = new \PHPMailer\PHPMailer\ADAPHPMailer();
+								$phpmailer = new ADAPHPMailer();
 								$phpmailer->CharSet = ADA_CHARSET;
 								$phpmailer->configSend();
 								$phpmailer->SetFrom(ADA_NOREPLY_MAIL_ADDRESS);

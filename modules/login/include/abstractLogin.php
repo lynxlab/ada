@@ -12,6 +12,12 @@
 
 namespace Lynxlab\ADA\Module\Login;
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\User\ADAUser;
+use ReflectionClass;
+
 /**
  * abstract class for login provider implementations
  */
@@ -61,7 +67,7 @@ abstract class abstractLogin implements iLogin
 	public function __construct($id = null)
 	{
 		if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && !empty($GLOBALS['user_provider'])) {
-			$dsn = \MultiPort::getDSN($GLOBALS['user_provider']);
+			$dsn = MultiPort::getDSN($GLOBALS['user_provider']);
 		} else $dsn = null;
 
 		$this->dataHandler = AMALoginDataHandler::instance($dsn);
@@ -145,7 +151,7 @@ abstract class abstractLogin implements iLogin
 		 * or the ones in the common db if they're not found in the provider DB
 		 */
 		if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && !empty($GLOBALS['user_provider'])) {
-			$dsn = \MultiPort::getDSN($GLOBALS['user_provider']);
+			$dsn = MultiPort::getDSN($GLOBALS['user_provider']);
 		} else $dsn = null;
 
 		$res = AMALoginDataHandler::instance($dsn)->getLoginProviders($enabled, ' `displayOrder` ASC');
@@ -176,14 +182,14 @@ abstract class abstractLogin implements iLogin
 		$id = $this->loadProviderName();
 		if (!is_null($id)) $id = strtolower($id) . '-button';
 		if (strlen($buttonLabel) > 0) {
-			$className = (new \ReflectionClass($this))->getShortName();
-			$button = \CDOMElement::create('button', 'id:' . $id . ',type:button');
+			$className = (new ReflectionClass($this))->getShortName();
+			$button = CDOMElement::create('button', 'id:' . $id . ',type:button');
 			$button->setAttribute('class', $className . ' ui login small button');
 			$button->setAttribute('onclick', 'javascript:' .
 				'$j(\'#selectedLoginProvider\').val(\'' . $className . '\');' .
 				'$j(\'#selectedLoginProviderID\').val(\'' . $this->id . '\');' .
 				'$j(this).parents(\'form\').first().submit();');
-			$button->addChild(new \CText(translateFN($buttonLabel)));
+			$button->addChild(new CText(translateFN($buttonLabel)));
 
 			return (($returnHtml) ? $button->getHtml() : $button);
 		} else return null;
@@ -198,7 +204,7 @@ abstract class abstractLogin implements iLogin
 	 */
 	public function checkADAUser($username)
 	{
-		return \MultiPort::findUserByUsername($username);
+		return MultiPort::findUserByUsername($username);
 	}
 
 	/**
@@ -217,7 +223,7 @@ abstract class abstractLogin implements iLogin
 		/**
 		 * build user object
 		 */
-		$userObj = new \ADAUser($userArr);
+		$userObj = new ADAUser($userArr);
 		$userObj->setLayout('');
 		$userObj->setType(isset($userArr['tipo']) ? $userArr['tipo'] : AMA_TYPE_STUDENT);
 		$userObj->setStatus(ADA_STATUS_REGISTERED);
@@ -232,7 +238,7 @@ abstract class abstractLogin implements iLogin
 			$regProvider = array(ADA_PUBLIC_TESTER);
 		}
 
-		$id_user = \Multiport::addUser($userObj, $regProvider);
+		$id_user = MultiPort::addUser($userObj, $regProvider);
 
 		if ($id_user < 0) {
 			if (!is_null($errorCallback)) call_user_func($errorCallback);
@@ -244,7 +250,7 @@ abstract class abstractLogin implements iLogin
 			/**
 			 * reload user object just to double check
 			 */
-			$retObj = \MultiPort::findUserByUsername($userArr['username']);
+			$retObj = MultiPort::findUserByUsername($userArr['username']);
 			if (!is_null($successCallback)) call_user_func($successCallback, $retObj);
 			return $retObj;
 		}
@@ -332,9 +338,9 @@ abstract class abstractLogin implements iLogin
 	 */
 	public function generateConfigPage()
 	{
-		$configIndexDIV = \CDOMElement::create('div', 'id:configindex');
-		$noConfigSpan = \CDOMElement::create('span');
-		$noConfigSpan->addChild(new \CText('Nessuna opzione da configurare'));
+		$configIndexDIV = CDOMElement::create('div', 'id:configindex');
+		$noConfigSpan = CDOMElement::create('span');
+		$noConfigSpan->addChild(new CText('Nessuna opzione da configurare'));
 		$configIndexDIV->addChild($noConfigSpan);
 		return $configIndexDIV;
 	}

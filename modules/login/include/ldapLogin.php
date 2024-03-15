@@ -11,12 +11,12 @@
 
 namespace Lynxlab\ADA\Module\Login;
 
-use \ADALoggableUser;
-use AMA_DB;
-use BaseHtmlLib;
-use CDOMElement;
-use CText;
-use \Exception;
+use Exception;
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\User\ADALoggableUser;
+use ReflectionClass;
 
 /**
  * LDAP login provider implementation
@@ -271,7 +271,7 @@ class ldapLogin extends abstractLogin
 						$labels[3]=>$linksHtml);
 			}
 
-			$OutTable = BaseHtmlLib::tableElement('id:complete'.strtoupper((new \ReflectionClass($this))->getShortName()).'List',
+			$OutTable = BaseHtmlLib::tableElement('id:complete'.strtoupper((new ReflectionClass($this))->getShortName()).'List',
 					$labels,$tableOutData,'',translateFN('Elenco delle fonti '.strtoupper($this->loadProviderName())));
 			$OutTable->setAttribute('class', ADA_SEMANTICUI_TABLECLASS);
 			$configIndexDIV->addChild($OutTable);

@@ -13,6 +13,8 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\User\ADAGuest;
+
 use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
 
 /**

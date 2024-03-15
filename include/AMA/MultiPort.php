@@ -14,6 +14,14 @@
 
 namespace Lynxlab\ADA\Main\AMA;
 
+use Lynxlab\ADA\Main\User\ADAAdmin;
+use Lynxlab\ADA\Main\User\ADAAuthor;
+use Lynxlab\ADA\Main\User\ADAGenericUser;
+use Lynxlab\ADA\Main\User\ADAGuest;
+use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+use Lynxlab\ADA\Main\User\ADASwitcher;
+use Lynxlab\ADA\Main\User\ADAUser;
 use PDOException;
 
 class MultiPort

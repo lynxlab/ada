@@ -10,7 +10,10 @@
 
 namespace Lynxlab\ADA\Module\Impersonate;
 
-use ADALoggableUser;
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\User\ADALoggableUser as UserADALoggableUser;
+use Lynxlab\ADA\Main\User\ADAUser;
 
 class Utils
 {
@@ -21,10 +24,10 @@ class Utils
      */
     public static function generateMenu()
     {
-        $div = \CDOMElement::create('div', 'class:impersonate-link-container');
+        $div = CDOMElement::create('div', 'class:impersonate-link-container');
         if (isset($_SESSION[MODULES_IMPERSONATE_SESSBACKDATA])) {
-            $link = \CDOMElement::create('a', 'class:ui tiny button impersonatelink, href:' . MODULES_IMPERSONATE_HTTP . '/impersonate.php');
-            $link->addChild(new \CText(sprintf(translateFN('Torna %s'), $_SESSION[MODULES_IMPERSONATE_SESSBACKDATA]->getTypeAsString())));
+            $link = CDOMElement::create('a', 'class:ui tiny button impersonatelink, href:' . MODULES_IMPERSONATE_HTTP . '/impersonate.php');
+            $link->addChild(new CText(sprintf(translateFN('Torna %s'), $_SESSION[MODULES_IMPERSONATE_SESSBACKDATA]->getTypeAsString())));
             $div->addChild($link);
         } else {
             try {
@@ -34,12 +37,12 @@ class Utils
             }
             if (count($impersonateObj) > 0) {
                 foreach ($impersonateObj as $iObj) {
-                    $link = \CDOMElement::create('a', 'class:ui tiny button impersonatelink, href:' . MODULES_IMPERSONATE_HTTP . '/impersonate.php?t=' . $iObj->getLinked_type());
+                    $link = CDOMElement::create('a', 'class:ui tiny button impersonatelink, href:' . MODULES_IMPERSONATE_HTTP . '/impersonate.php?t=' . $iObj->getLinked_type());
                     // create a user object to have getTypeAsString
-                    $tmpUser = new \ADAUser();
+                    $tmpUser = new ADAUser();
                     $tmpUser->isSuper = false;
                     $tmpUser->setType($iObj->getLinked_type());
-                    $link->addChild(new \CText(sprintf(translateFN('Diventa %s'), $tmpUser->getTypeAsString())));
+                    $link->addChild(new CText(sprintf(translateFN('Diventa %s'), $tmpUser->getTypeAsString())));
                     $div->addChild($link);
                 }
             }
@@ -53,7 +56,7 @@ class Utils
      * @return boolean
      */
     public static function isImpersonating() {
-        return (array_key_exists(MODULES_IMPERSONATE_SESSBACKDATA, $_SESSION) && $_SESSION[MODULES_IMPERSONATE_SESSBACKDATA] instanceof \ADALoggableUser);
+        return (array_key_exists(MODULES_IMPERSONATE_SESSBACKDATA, $_SESSION) && $_SESSION[MODULES_IMPERSONATE_SESSBACKDATA] instanceof UserADALoggableUser);
     }
 
     /**
@@ -70,7 +73,7 @@ class Utils
         $supportedLinks = LinkedUsers::getSupportedLinks()[$userType];
         foreach ($supportedLinks as $linkedType) {
             // create a user object to have getTypeAsString
-            $tmpUser = new \ADAUser();
+            $tmpUser = new ADAUser();
             $tmpUser->setType($linkedType);
             if ($tmpUser->getType() == AMA_TYPE_TUTOR) {
                 $tmpUser->isSuper = false;
@@ -82,8 +85,8 @@ class Utils
             });
 
             $addLink = false;
-            $img = \CDOMElement::create('img');
-            $link = \CDOMElement::create('a','class:tooltip,href:javascript:void(0);');
+            $img = CDOMElement::create('img');
+            $link = CDOMElement::create('a','class:tooltip,href:javascript:void(0);');
             if (count($filteredUsers) > 0) {
                 if (ImpersonateActions::canDo(ImpersonateActions::DELETE_LINKEDUSER)) {
                     // unlink

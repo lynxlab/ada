@@ -12,6 +12,13 @@
  * @link		view
  * @version		0.1
  */
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\User\ADAGuest;
+use Lynxlab\ADA\Main\User\ADALoggableUser;
+
 /**
  * Base config file
  */
@@ -107,7 +114,7 @@ if ($userObj instanceof ADAGuest) {
 		if (AMA_DB::isError($subCheck) && $subCheck->getCode() == AMA_ERR_NOT_FOUND) {
 			// subscribe: mimc the info.php / subscribe section behaviour
 			// 00. add the user to the session provider
-			if (false !== Multiport::setUser($userObj,array($_SESSION['sess_selected_tester']))) {
+			if (false !== MultiPort::setUser($userObj,array($_SESSION['sess_selected_tester']))) {
 				// 01. presubscribe
 				$temp = $dh->course_instance_student_presubscribe_add($courseInstanceObj->getId(), $userObj->getId(),$courseInstanceObj->getStartLevelStudent());
 				if (!AMA_DB::isError($temp) || $temp->code == AMA_ERR_UNIQUE_KEY) {

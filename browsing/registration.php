@@ -1,6 +1,12 @@
 <?php
 
 use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Forms\UserRegistrationForm;
+use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Main\User\ADAUser;
 use Lynxlab\ADA\Module\GDPR\GdprAcceptPoliciesForm;
 
 /**
@@ -124,7 +130,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         	$regProvider = array (ADA_PUBLIC_TESTER);
         }
 
-        $id_user = Multiport::addUser($userObj,$regProvider);
+        $id_user = MultiPort::addUser($userObj,$regProvider);
         if($id_user < 0) {
             $message = translateFN('Impossibile procedere. Un utente con questi dati esiste?')
                      . ' ' . urlencode(

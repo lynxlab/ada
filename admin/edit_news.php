@@ -16,6 +16,10 @@
  * @version     0.1
  */
 
+use Lynxlab\ADA\Admin\AdminHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+
 /**
  * Base config file
  */
@@ -39,8 +43,6 @@ $neededObjAr = [
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami();  // = admin!
-
-include_once 'include/admin_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.

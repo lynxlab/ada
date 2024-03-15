@@ -11,6 +11,9 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\HtmlLibrary\ServicesModuleHtmlLib;
+use Lynxlab\ADA\Main\User\ADAGenericUser;
+
 use function Lynxlab\ADA\Main\AMA\DBRead\get_max_idFN;
 
 /**

@@ -10,6 +10,10 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\User\ADALoggableUser;
+
 use function Lynxlab\ADA\Main\AMA\DBRead\read_user;
 
 /**

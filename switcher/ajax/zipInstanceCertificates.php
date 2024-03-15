@@ -10,6 +10,7 @@
  */
 
 use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
+use Lynxlab\ADA\Main\User\ADAUser;
 use PHPMailer\PHPMailer\Exception;
 
 /**

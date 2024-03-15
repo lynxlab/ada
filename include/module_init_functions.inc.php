@@ -15,8 +15,13 @@
  */
 
 use Detection\MobileDetect;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\User\ADAAuthor;
+use Lynxlab\ADA\Main\User\ADAGenericUser;
+use Lynxlab\ADA\Main\User\ADAGuest;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_course;
+use function Lynxlab\ADA\Main\AMA\DBRead\read_course_instance_from_DB;
 use function Lynxlab\ADA\Main\AMA\DBRead\read_user;
 
 /**

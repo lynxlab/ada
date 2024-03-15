@@ -12,6 +12,9 @@
  * @link		view
  * @version		0.1
  */
+
+use Lynxlab\ADA\Main\User\ADALoggableUser;
+
 /**
  * Base config file
  */

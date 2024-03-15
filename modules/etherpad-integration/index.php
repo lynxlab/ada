@@ -8,6 +8,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Module\EtherpadIntegration\AMAEtherpadDataHandler;
 use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadActions;
 use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadException;
@@ -45,7 +46,7 @@ try {
     /**
      * @var AMAEtherpadDataHandler $etDH
      */
-    $etDH = AMAEtherpadDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+    $etDH = AMAEtherpadDataHandler::instance(\Lynxlab\ADA\Main\AMA\MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
     if (!array_key_exists('id_node', $_REQUEST)) {
         throw new EtherpadException('Specificare un nodo');

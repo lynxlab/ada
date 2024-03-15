@@ -34,19 +34,10 @@ require_once ROOT_DIR.'/include/utilities.inc.php';
  */
 require_once ROOT_DIR.'/include/module_init_functions.inc.php';
 
-// old translateFN function
-require_once ROOT_DIR.'/include/output_funcs.inc.php';
-
 // new translator class
 require_once ROOT_DIR.'/include/translator_class.inc.php';
 
 //include_once ROOT_DIR.'browsing/include/browsing_functions.inc.php';
-
-/**
- * Ada Rendering Engine, used to render module output data
- */
-// require_once ROOT_DIR.'/include/layout_classes.inc.php';
-// require_once ROOT_DIR.'/include/output_classes.inc.php';
 
 require_once ROOT_DIR . '/include/HTML_element_classes.inc.php';
 require_once ROOT_DIR . '/include/navigation_history.inc.php';

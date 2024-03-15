@@ -20,8 +20,12 @@
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Forms\UserExtraForm;
 use Lynxlab\ADA\Main\Forms\UserProfileForm;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\HtmlLibrary\UserExtraModuleHtmlLib;
+use Lynxlab\ADA\Main\User\ADAUser;
 
 /**
  * Base config file

@@ -11,6 +11,9 @@
  * @version	    0.1
  */
 
+use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
 /**
  * Base config file
  */

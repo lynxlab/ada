@@ -26,6 +26,9 @@ Initializating variables and including modules
 
 */
 
+use Lynxlab\ADA\Main\Output\Html;
+use Lynxlab\ADA\Main\User\ADAUser;
+
 use function Lynxlab\ADA\Main\AMA\DBRead\read_course_from_DB;
 use function Lynxlab\ADA\Main\AMA\DBRead\read_layout_from_DB;
 use function Lynxlab\ADA\Main\AMA\DBRead\read_user_from_DB;
@@ -234,7 +237,7 @@ HTML page building
 */
 
 
-$htmlObj = new HTML($layout_template,$layout_CSS,$course_title,$node_title);
+$htmlObj = new Html($layout_template,$layout_CSS,$course_title,$node_title);
 
 $node_data = array(
 

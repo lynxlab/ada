@@ -14,6 +14,7 @@
 namespace Lynxlab\ADA\Main\Forms;
 
 use Lynxlab\ADA\Main\Forms\lib\classes\FormControl;
+use Lynxlab\ADA\Main\Output\UILayout;
 
 class UserProfileForm extends UserRegistrationForm
 {
@@ -114,7 +115,7 @@ class UserProfileForm extends UserRegistrationForm
           ''         => translateFN('seleziona un layout'),
         ];
         require_once ROOT_DIR . '/include/Layout.inc.php';
-        $layoutObj = new \UILayout();
+        $layoutObj = new UILayout();
         $avalaibleLayoutAr = $layoutObj->getAvailableLayouts();
         $layouts = array_merge($layoutsAr, $avalaibleLayoutAr);
         $this->addSelect(

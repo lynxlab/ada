@@ -1,4 +1,7 @@
 <?php
+
+use Lynxlab\ADA\Main\User\ADALoggableUser;
+
 /**
  * ADA Error class
  *

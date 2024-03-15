@@ -9,6 +9,8 @@
 
 namespace Lynxlab\ADA\Module\GDPR;
 
+use Lynxlab\ADA\Main\User\ADALoggableUser;
+
 /**
  * class for managing Gdpr API to be used by external modules
  *
@@ -75,7 +77,7 @@ class GdprAPI {
 	 * @return GdprUser
 	 */
 	public function getGdprUserByID($userID) {
-		if ($userID instanceof \ADALoggableUser) $userID = $userID->getId();
+		if ($userID instanceof ADALoggableUser) $userID = $userID->getId();
 		else if (is_numeric($userID)) $userID = intval($userID);
 		else $userID = -1;
 		$res = $this->_dh->findBy('GdprUser', array('id_utente' => $userID));
@@ -90,7 +92,7 @@ class GdprAPI {
 	 * @return boolean
 	 */
 	public function isGdprUserType($user, $gdprUserTypes) {
-		if ($user instanceof \ADALoggableUser) $user = $user->getId();
+		if ($user instanceof ADALoggableUser) $user = $user->getId();
 		if (!is_array($gdprUserTypes)) $gdprUserTypes = array($gdprUserTypes);
 		$result = array_filter(
 			$this->_dh->findBy('GdprUser', array('id_utente' => intval($user))),
@@ -245,7 +247,7 @@ class GdprAPI {
 	 * @param \ADALoggableUser $userObj
 	 * @return boolean
 	 */
-	public function checkMandatoryPoliciesForUser(\ADALoggableUser $userObj) {
+	public function checkMandatoryPoliciesForUser(ADALoggableUser $userObj) {
 		if ($userObj->getType() == AMA_TYPE_ADMIN) {
 			/**
 			 * the ADMIN is not required to accept all mandatory policies
@@ -343,7 +345,7 @@ class GdprAPI {
 	 * @param \ADALoggableUser $user
 	 * @return \Lynxlab\ADA\Module\GDPR\GdprUser
 	 */
-	public static function createGdprUserFromADALoggable(\ADALoggableUser $user) {
+	public static function createGdprUserFromADALoggable(ADALoggableUser $user) {
 		return new GdprUser(array('id_utente' => $user->getId()));
 	}
 

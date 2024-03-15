@@ -14,6 +14,19 @@
  * @version     0.1
  */
 
+use Lynxlab\ADA\Admin\AdminHelper;
+use Lynxlab\ADA\Admin\AdminUtils;
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
+use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\User\ADAAdmin;
+use Lynxlab\ADA\Main\User\ADAAuthor;
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+use Lynxlab\ADA\Main\User\ADASwitcher;
+use Lynxlab\ADA\Main\User\ADAUser;
+
 /**
  * Base config file
  */
@@ -37,8 +50,6 @@ $neededObjAr = [
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self =  whoami();  // = admin!
-
-include_once 'include/admin_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.

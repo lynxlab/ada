@@ -17,6 +17,13 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Forms\ConfirmPasswordForm;
+use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+use Lynxlab\ADA\Main\User\ADAUser;
 use Lynxlab\ADA\Module\GDPR\GdprAPI;
 
 /**
@@ -128,8 +135,8 @@ switch ($op){
                              .urlencode(translateFN('Impossibile confermare la richiesta')));
   }
 
-  $userObj = MultiPort::findUser($userid); 
-  
+  $userObj = MultiPort::findUser($userid);
+
   if ((($userObj instanceof ADAUser) || ($userObj instanceof ADAPractitioner)) && $userObj->getStatus() == ADA_STATUS_PRESUBSCRIBED) {
     $username = $userObj->getUserName();
      /*
@@ -282,7 +289,7 @@ case 'set_new_password':
   }
 
   $userObj = MultiPort::findUser($userid);
-  
+
   if (($userObj instanceof ADAUser) || ($userObj instanceof ADAPractitioner)) {
     // se stato != preiscritto mostrare un messaggio adeguato
     if($userObj->getStatus() != ADA_STATUS_PRESUBSCRIBED) {

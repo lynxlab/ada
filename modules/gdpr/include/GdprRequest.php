@@ -9,6 +9,10 @@
 
 namespace Lynxlab\ADA\Module\GDPR;
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -77,8 +81,8 @@ class GdprRequest extends GdprBase {
 	 * @return NULL|\CBaseElement
 	 */
 	public function getActionButton($isClose = false) {
-		$button = \CDOMElement::create('button','type:button,class:ui tiny button');
-		$button->addChild(new \CText(translateFN($isClose ? self::closeButtonLabel : self::actionButtonLabel)));
+		$button = CDOMElement::create('button','type:button,class:ui tiny button');
+		$button->addChild(new CText(translateFN($isClose ? self::closeButtonLabel : self::actionButtonLabel)));
 		$button->setAttribute('data-requestuuid', $this->getUuid());
 		$button->setAttribute('data-requesttype', $this->getType()->getType());
 		$button->setAttribute('data-isclose', $isClose ? 1 :0);
@@ -141,8 +145,8 @@ class GdprRequest extends GdprBase {
 			 * Check on user type to prevent multiport to do its error handling if no user found
 			 */
 			if (!\AMA_DB::isError($GLOBALS['common_dh']->get_user_type ($this->getGeneratedBy()))) {
-				$targetUser = \MultiPort::findUser(intval($this->getGeneratedBy()));
-				if($targetUser instanceof \ADALoggableUser) {
+				$targetUser = MultiPort::findUser(intval($this->getGeneratedBy()));
+				if($targetUser instanceof ADALoggableUser) {
 					if ($_SESSION['sess_userObj']->getId() != $targetUser->getId()) {
 						if ($this->getType()->getType() == GdprRequestType::ONHOLD) {
 			            	$targetUser->setStatus(ADA_STATUS_PRESUBSCRIBED);
@@ -151,7 +155,7 @@ class GdprRequest extends GdprBase {
 								$targetUser->anonymize();
 							} else throw new GdprException(translateFN("Prima di cancellare un utente, deve essere disattivato"));
 						}
-						\MultiPort::setUser($targetUser ,array(), true);
+						MultiPort::setUser($targetUser ,array(), true);
 		            	$this->close();
 					} else {
 						throw new GdprException(translateFN($selfUserErrMessages[$this->getType()->getType()]));

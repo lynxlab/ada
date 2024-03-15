@@ -16,6 +16,11 @@ namespace Lynxlab\ADA\Main\HtmlLibrary;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\User\ADAGenericUser;
+use Lynxlab\ADA\Main\User\ADAGuest;
+use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Main\User\ADAPractitioner;
 
 require_once ROOT_DIR . '/comunica/include/ADAEventProposal.inc.php';
 

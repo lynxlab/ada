@@ -27,6 +27,8 @@
 
 namespace Lynxlab\ADA\Main\AMA;
 
+use Lynxlab\ADA\Main\User\ADAUser;
+
 /**
  * AMA_DataHandler.
  *

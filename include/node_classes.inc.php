@@ -16,6 +16,7 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Media\MediaViewer;
+use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 
 // Classes Structure:

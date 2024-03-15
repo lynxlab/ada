@@ -8,6 +8,12 @@
  * @author    vito <vito@lynxlab.com>
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  */
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\User\ADAUser;
+
 /**
  *
  * @package

@@ -9,6 +9,11 @@
  * @link           service-complete
  * @version		   0.1
  */
+
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\User\ADAUser;
+
 require_once  MODULES_SERVICECOMPLETE_PATH . '/include/completeCondition.class.inc.php';
 
 /**

@@ -11,6 +11,9 @@
 
 namespace Lynxlab\ADA\Module\Login;
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\User\ADALoggableUser;
+
 /**
  * ADA login provider implementation
  */
@@ -24,8 +27,8 @@ class adaLogin extends abstractLogin
 	 */
 	public function doLogin($name, $pass, $remindMe, $language)
 	{
-		$user = \MultiPort::loginUser($name, $pass);
-		if (is_object($user) && $user instanceof \ADALoggableUser) {
+		$user = MultiPort::loginUser($name, $pass);
+		if (is_object($user) && $user instanceof ADALoggableUser) {
 			// WARNING! For this login provider, no set of options is supported
 			$this->setSuccessfulOptionsID(0);
 		}

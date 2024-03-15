@@ -12,6 +12,11 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\HtmlLibrary\GuestHtmlLib;
+use Lynxlab\ADA\Main\User\ADAGuest;
+
 /* Questa versione è diversa dalla versione ADA;
  * se non è passato nessun parametro,
  * 		redirect a /info.php
