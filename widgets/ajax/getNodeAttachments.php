@@ -20,6 +20,10 @@
  *	name="userId"           mandatory, value: user id from which to load the attachments
  */
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLActions;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLException;
 use Lynxlab\ADA\Module\CollaboraACL\FileACL;
@@ -39,7 +43,6 @@ require_once ROOT_DIR . '/widgets/include/widget_includes.inc.php';
 list($allowedUsersAr, $neededObjAr) = array_values(CollaboraACLActions::getAllowedAndNeededAr());
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
-include_once ROOT_DIR . '/browsing/include/browsing_functions.inc.php';
 extract(BrowsingHelper::init($neededObjAr));
 
 function cleanFilename($complete_file_name)
@@ -111,7 +114,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
         if (!isset($testerName)) throw new CollaboraACLException(translateFN('Spiacente, non so a che fornitore di servizi sei collegato'));
 
         if (defined('MODULES_COLLABORAACL') && MODULES_COLLABORAACL) {
-            $aclDH = \Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler::instance(\MultiPort::getDSN($testerName));
+            $aclDH = \Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler::instance(MultiPort::getDSN($testerName));
 
             if (!isset($courseObj)) {
                 $courseObj = new Course($courseId);
@@ -204,12 +207,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
     } catch (CollaboraACLException $e) {
         $divClass = 'error';
         $divMessage = basename($_SERVER['PHP_SELF']) . ': ' . $e->getMessage();
-        $outDIV = \CDOMElement::create('div', "class:ui $divClass message");
-        $closeIcon = \CDOMElement::create('i', 'class:close icon');
+        $outDIV = CDOMElement::create('div', "class:ui $divClass message");
+        $closeIcon = CDOMElement::create('i', 'class:close icon');
         $closeIcon->setAttribute('onclick', 'javascript:$j(this).parents(\'.ui.message\').remove();');
         $outDIV->addChild($closeIcon);
-        $errorSpan = \CDOMElement::create('span');
-        $errorSpan->addChild(new \CText($divMessage));
+        $errorSpan = CDOMElement::create('span');
+        $errorSpan->addChild(new CText($divMessage));
         $outDIV->addChild($errorSpan);
         $output = $outDIV->getHtml();
     }

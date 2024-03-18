@@ -1,4 +1,8 @@
 <?php
+
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+
 header('Location: list_courses.php');
 exit();
 /**
@@ -38,7 +42,6 @@ $neededObjAr = array(
 
 require_once ROOT_DIR.'/include/module_init.inc.php';
 $self = whoami();
-include_once 'include/switcher_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.

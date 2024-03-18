@@ -8,6 +8,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Module\EtherpadIntegration\AMAEtherpadDataHandler;
 use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadActions;
@@ -36,7 +37,6 @@ list($allowedUsersAr, $neededObjAr) = array_values(EtherpadActions::getAllowedAn
  * Performs basic controls before entering this module
  */
 require_once(ROOT_DIR . '/include/module_init.inc.php');
-require_once(ROOT_DIR . '/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
 $self = whoami();
 

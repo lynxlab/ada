@@ -1,24 +1,24 @@
 <?php
 /**
  * VIDEOCHAT.
- * 
+ *
  * @package		videochat
  * @author		Stefano Penge <steve@lynxlab.com>
  * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
  * @author		Vito Modena <vito@lynxlab.com>
  * @copyright	Copyright (c) 2009, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link		view			
+ * @link		view
  * @version		0.1
  */
 
 /**
- * Base config file 
+ * Base config file
  */
 require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
 
 /**
- * Specific Openmeetings config file 
+ * Specific Openmeetings config file
  */
 require_once 'include/videochat_config.inc.php';
 
@@ -54,9 +54,7 @@ $neededObjAr = array(
 require_once ROOT_DIR.'/include/module_init.inc.php';
 $self = whoami();
 
-include_once 'include/comunica_functions.inc.php';
-
-/* 
+/*
  * Redirect to correct home if comunication not enabled
  if (!$com_enabled){
   $homepage = $userObj->getHomepage();
@@ -69,7 +67,7 @@ include_once 'include/comunica_functions.inc.php';
 
 /**
 * VERSIONE CHE ALIMENTA UN IFRAME!!!
-* 
+*
 if (!isset($_SESSION['sess_id_user'])) {
        $_SESSION['sess_backurl'] = $_SERVER['REQUEST_URI'];
        header("Location: $http_root_dir"); // to login page

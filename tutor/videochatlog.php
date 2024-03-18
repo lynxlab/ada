@@ -11,6 +11,7 @@
  * @version	    0.1
  */
 
+use Lynxlab\ADA\Main\Helper\TutorHelper;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 
@@ -37,7 +38,6 @@ $neededObjAr = array(
 );
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-require_once 'include/tutor_functions.inc.php';
 
 $self =  whoami();
 TutorHelper::init($neededObjAr);

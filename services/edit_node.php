@@ -13,6 +13,7 @@
 use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Main\User\ADAAuthor;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
@@ -42,7 +43,6 @@ $neededObjAr = array(
 );
 
 require_once ROOT_DIR.'/include/module_init.inc.php';
-require_once 'include/author_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.

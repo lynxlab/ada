@@ -33,11 +33,10 @@ $neededObjAr = array(
 
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
-//require_once 'include/switcher_functions.inc.php';
 include_once '../include/Subscription.inc.php';
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
-   
+
     $userStatus=$_POST['status'];
     $id_user=$_POST['id_user'];
     $id_instance=$_POST['id_instance'];

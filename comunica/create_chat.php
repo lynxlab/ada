@@ -12,6 +12,8 @@
  * @version		0.2
  */
 
+use Lynxlab\ADA\Main\Helper\ComunicaHelper;
+
 /**
  * Base config file
  */
@@ -45,8 +47,6 @@ $neededObjAr = array(
 require_once ROOT_DIR.'/include/module_init.inc.php';
 //$self = whoami();
 $self = 'list_chatrooms'; // x template
-
-require_once 'include/comunica_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.

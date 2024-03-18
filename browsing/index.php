@@ -8,6 +8,9 @@
 /**
  * Base config file
  */
+
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
 require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
 
 /**
@@ -29,8 +32,6 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
 $self = 'index';
 
 
-
-include_once 'include/browsing_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.

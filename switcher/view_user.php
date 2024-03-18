@@ -16,6 +16,7 @@
 
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
@@ -45,8 +46,6 @@ $neededObjAr = array(
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami();
-
-include_once 'include/switcher_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -83,7 +82,6 @@ include_once ROOT_DIR . '/admin/include/AdminUtils.inc.php';
 /*
  * YOUR CODE HERE
  */
-require_once ROOT_DIR . '/include/Forms/UserProfileForm.inc.php';
 $userId = false;
 if ($_SESSION['sess_userObj']->getType() == AMA_TYPE_SWITCHER) {
 	$userId = DataValidator::is_uinteger($_GET['id_user']);

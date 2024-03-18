@@ -9,6 +9,11 @@
  * @link			impexport
  * @version		0.1
  */
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
 ini_set('display_errors', '0'); error_reporting(E_ALL);
 /**
  * Base config file
@@ -43,7 +48,6 @@ if (array_key_exists('id_course', $_GET) || array_key_exists('id_node', $_GET)) 
  * Performs basic controls before entering this module
 */
 require_once ROOT_DIR.'/include/module_init.inc.php';
-require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
 BrowsingHelper::init($neededObjAr);
 require_once ROOT_DIR . '/include/FileUploader.inc.php';
 
@@ -178,8 +182,8 @@ else
 		$spanSelNode = CDOMElement::create('span','id:selNode');
 		$spanSelNode->setAttribute('style', 'display:none');
 		if ($isAuthorImporting) {
-			$spanSelCourse->addChild(new \CText($courseObj->getId()));
-			$spanSelNode->addChild(new \CText($nodeObj->id));
+			$spanSelCourse->addChild(new CText($courseObj->getId()));
+			$spanSelNode->addChild(new CText($nodeObj->id));
 		}
 
 		$buttonDIV = CDOMElement::create('div','class:importSN2buttons');

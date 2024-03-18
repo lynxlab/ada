@@ -11,6 +11,9 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
 /**
  * Base config file
  */
@@ -47,8 +50,6 @@ if (!$forcereturn) {
     require_once ROOT_DIR .'/include/Course.inc.php';
     require_once ROOT_DIR .'/include/CourseInstance.inc.php';
 
-    require_once 'include/browsing_functions.inc.php';
-
     /**
     * This will at least import in the current symbol table the following vars.
     * For a complete list, please var_dump the array returned by the init method.
@@ -80,7 +81,6 @@ if (!$forcereturn) {
     */
     BrowsingHelper::init($neededObjAr);
 
-    require_once ROOT_DIR.'/switcher/include/switcher_functions.inc.php';
 }
 
 if (!isset($self)) {
@@ -125,7 +125,7 @@ if (!(isset($courseObj) && $courseObj instanceof Course)) {
 
 $codice_corso = $courseObj->getCode();
 
-$UserCertificateObj = Multiport::findUser($id_user,$id_instance);
+$UserCertificateObj = MultiPort::findUser($id_user,$id_instance);
 
 $userFullName = $UserCertificateObj->getFullName();
 $gender = $UserCertificateObj->getGender();

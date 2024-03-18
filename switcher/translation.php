@@ -20,6 +20,11 @@
 /**
  * Base config file
  */
+
+use Lynxlab\ADA\Main\Forms\EditTranslationForm;
+use Lynxlab\ADA\Main\Forms\TranslationForm;
+use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+
 require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
 
 /*
@@ -41,7 +46,6 @@ $neededObjAr = array(
 require_once ROOT_DIR.'/include/module_init.inc.php';
 //$self =  whoami();  // = admin!
 $self =  "switcher";
-include_once 'include/'.$self.'_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -75,13 +79,7 @@ include_once 'include/'.$self.'_functions.inc.php';
 SwitcherHelper::init($neededObjAr);
 
 $self =  "translation";
-/*
- * Html Library containing forms used in this module.
- */
-require_once ROOT_DIR.'/include/HtmlLibrary/AdminModuleHtmlLib.inc.php';
-require_once ROOT_DIR.'/include/HtmlLibrary/UserModuleHtmlLib.inc.php';
-require_once ROOT_DIR.'/include/Forms/TranslationForm.inc.php';
-require_once ROOT_DIR.'/include/Forms/EditTranslationForm.inc.php';
+
 /**
  *
  * if usertype is switcher assume as client the first element of the testers array

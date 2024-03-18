@@ -1,4 +1,7 @@
 <?php
+
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Ramsey\Uuid\Uuid;
 use Lynxlab\ADA\Module\Badges\BadgesActions;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
@@ -35,13 +38,12 @@ list($allowedUsersAr, $neededObjAr) = array_values(BadgesActions::getAllowedAndN
  */
 $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR . '/include/module_init.inc.php');
-require_once(ROOT_DIR . '/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 /**
  * @var AMABadgesDataHandler $GLOBALS['dh']
  */
-$GLOBALS['dh'] = AMABadgesDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+$GLOBALS['dh'] = AMABadgesDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 $retArray = array('status'=>'ERROR');
 

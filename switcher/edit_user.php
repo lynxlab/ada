@@ -13,6 +13,12 @@
  * @link
  * @version		0.1
  */
+
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Forms\UserProfileForm;
+use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+
 /**
  * Base config file
  */
@@ -36,8 +42,6 @@ $neededObjAr = array(
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami();
-
-include_once 'include/switcher_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -74,7 +78,6 @@ include_once ROOT_DIR . '/admin/include/AdminUtils.inc.php';
 /*
  * YOUR CODE HERE
  */
-require_once ROOT_DIR . '/include/Forms/UserProfileForm.inc.php';
 
 /**
  * Check if the switcher is editing a student profile

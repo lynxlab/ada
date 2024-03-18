@@ -16,6 +16,12 @@
  * @link
  * @version		0.1
  */
+
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+
 /**
  * Base config file
  */
@@ -38,7 +44,6 @@ $neededObjAr = array(
 );
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami();
-include_once 'include/switcher_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -105,7 +110,7 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
     }
 
     if (defined('MODULES_BADGES') && MODULES_BADGES) {
-        $bdh = \Lynxlab\ADA\Module\Badges\AMABadgesDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+        $bdh = \Lynxlab\ADA\Module\Badges\AMABadgesDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
         $badges = $bdh->findBy('CourseBadge', [ 'id_corso' => $courseObj->getId() ]);
         if (!\AMA_DB::isError($badges) && is_array($badges) && count($badges)>0) {
             $formData['badges'] = implode(', ', array_map(function($el) use ($bdh) {

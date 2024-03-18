@@ -10,6 +10,8 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\Helper\TutorHelper;
+
 /**
  * Base config file
  */
@@ -36,7 +38,6 @@ $neededObjAr = array(
  */
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
-require_once ROOT_DIR . '/tutor/include/tutor_functions.inc.php';
 require_once ROOT_DIR . '/comunica/include/videoroom.classes.inc.php';
 
 TutorHelper::init($neededObjAr);

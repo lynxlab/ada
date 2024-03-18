@@ -13,6 +13,13 @@
  * @link
  * @version		0.1
  */
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+
 /**
  * Base config file
  */
@@ -36,8 +43,6 @@ $neededObjAr = array(
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami();  // = admin!
-
-include_once 'include/switcher_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -112,7 +117,7 @@ switch($usersType) {
 
 if (defined('MODULES_IMPERSONATE') && MODULES_IMPERSONATE) {
     // get the list of users linked to the current listed type
-    $impDH = \Lynxlab\ADA\Module\Impersonate\AMAImpersonateDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+    $impDH = \Lynxlab\ADA\Module\Impersonate\AMAImpersonateDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
     try {
         $linkedUsers = $impDH->findBy('LinkedUsers', [
             'source_type' => $amaUserType,

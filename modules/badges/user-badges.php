@@ -7,6 +7,8 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Badges\BadgesActions;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
 
@@ -31,7 +33,6 @@ list($allowedUsersAr, $neededObjAr) = array_values(BadgesActions::getAllowedAndN
  * Performs basic controls before entering this module
  */
 require_once(ROOT_DIR . '/include/module_init.inc.php');
-require_once(ROOT_DIR . '/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 $self = 'user-badges';
@@ -39,7 +40,7 @@ $self = 'user-badges';
 if (in_array($userObj->getType(), [ AMA_TYPE_SWITCHER , AMA_TYPE_TUTOR ])) {
     if (isset($_GET['id_student'])) {
         $title = translateFN('Badges dello studente');
-        $studentObj = \MultiPort::findUser(trim($_GET['id_student']));
+        $studentObj = MultiPort::findUser(trim($_GET['id_student']));
         if(!AMA_DataHandler::isError($studentObj)) {
             $title .= ': <strong>'.$studentObj->getFullName().'</strong>';
         }

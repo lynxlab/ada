@@ -9,6 +9,12 @@
  * @link			newsletter
  * @version		0.1
  */
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
 ini_set('display_errors', '0'); error_reporting(E_ALL);
 /**
  * Base config file
@@ -35,7 +41,6 @@ $neededObjAr = array(
  * Performs basic controls before entering this module
 */
 require_once(ROOT_DIR.'/include/module_init.inc.php');
-require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS

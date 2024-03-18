@@ -10,6 +10,8 @@
  * @version		   0.1
  */
 
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
 /**
  * Base config file
 */
@@ -39,7 +41,6 @@ $neededObjAr = array(
 */
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
-require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
 BrowsingHelper::init($neededObjAr);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['sessionVar']) && strlen(trim($_POST['sessionVar']))>0) {

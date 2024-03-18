@@ -7,6 +7,10 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Module\CloneInstance\AMACloneInstanceDataHandler;
 use Lynxlab\ADA\Module\CloneInstance\CloneInstanceActions;
 use Lynxlab\ADA\Module\CloneInstance\CloneInstanceForm;
@@ -33,7 +37,6 @@ list($allowedUsersAr, $neededObjAr) = array_values(CloneInstanceActions::getAllo
  */
 require_once ROOT_DIR . '/include/module_init.inc.php';
 // neededObjArr grants access to switcher only
-require_once ROOT_DIR . '/switcher/include/switcher_functions.inc.php';
 SwitcherHelper::init($neededObjAr);
 
 require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
@@ -45,7 +48,7 @@ require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
 /**
  * @var AMACloneInstanceDataHandler $dh
  */
-$dh = AMACloneInstanceDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+$dh = AMACloneInstanceDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 $summaryArr = [];
 $okclass = "green";
@@ -125,20 +128,20 @@ $summaryArr['selfinstruction'] = [
 ];
 
 if (count($summaryArr) > 0) {
-    $summaryEl = \CDOMElement::create('div', 'class:ui large list');
+    $summaryEl = CDOMElement::create('div', 'class:ui large list');
     foreach ($summaryArr as $addKey => $addEl) {
-        $el = \CDOMElement::create('span', 'class:ui item ' . $addKey);
+        $el = CDOMElement::create('span', 'class:ui item ' . $addKey);
         if (array_key_exists('ok', $addEl)) {
             $el->setAttribute('class', $el->getAttribute('class'). ' ' . ($addEl['ok'] ? $okclass : $nonokclass));
-            $el->addChild(\CDOMElement::create('i','class:ui icon ' . ($addEl['ok'] ? $okicon : $nonokicon)));
+            $el->addChild(CDOMElement::create('i','class:ui icon ' . ($addEl['ok'] ? $okicon : $nonokicon)));
         } else {
-            $el->addChild(\CDOMElement::create('i','class:ui icon ' . $infoicon));
+            $el->addChild(CDOMElement::create('i','class:ui icon ' . $infoicon));
         }
-        $el->addChild(new \CText($addEl['text']));
+        $el->addChild(new CText($addEl['text']));
         $summaryEl->addChild($el);
     }
 } else {
-    $summaryEl = new \CText(translateFN("Impossibile costruire il riepilogo dell'instanza"));
+    $summaryEl = new CText(translateFN("Impossibile costruire il riepilogo dell'instanza"));
 }
 
 $publicServiceLevels = array_keys(
@@ -152,7 +155,7 @@ if (!\AMA_DB::isError($courses) && $courses !== false && count($courses) > 0) {
     $form = new CloneInstanceForm('cloneinstance', null, $courses, $courseInstanceObj);
     $form->withSubmit()->toSemanticUI();
 } else {
-    $form = new \CText(translateFN('Nessun corso trovato'));
+    $form = new CText(translateFN('Nessun corso trovato'));
 }
 
 $self = whoami();

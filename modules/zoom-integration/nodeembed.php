@@ -8,6 +8,10 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Helper\ComunicaHelper;
+
 /**
  * Base config file
  */
@@ -48,7 +52,6 @@ if (!defined('DATE_CONTROL')) {
  */
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
-require_once ROOT_DIR . '/comunica/include/comunica_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -100,7 +103,7 @@ if (is_null($videoroomObj->link_to_room)) {
   $header = CDOMElement::create('div','class:header');
   $header->addChild(new CText(translateFN('Video Conferenza')));
   $content->addChild($header);
-  $content->addChild(new \CText('<p>'.translateFN('Video Conferenza non ancora iniziata').'</p>'));
+  $content->addChild(new CText('<p>'.translateFN('Video Conferenza non ancora iniziata').'</p>'));
   $errdiv->addChild($content);
   die($errdiv->getHtml());
 } else if (is_string($videoroomObj->link_to_room) && strlen($videoroomObj->link_to_room) > 0) {

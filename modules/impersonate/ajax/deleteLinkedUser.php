@@ -8,6 +8,8 @@
  * @version     0.1
  */
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Impersonate\AMAImpersonateDataHandler;
 use Lynxlab\ADA\Module\Impersonate\ImpersonateActions;
 use Lynxlab\ADA\Module\Impersonate\ImpersonateException;
@@ -37,13 +39,12 @@ list($allowedUsersAr, $neededObjAr) = array_values(ImpersonateActions::getAllowe
  */
 $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR . '/include/module_init.inc.php');
-require_once(ROOT_DIR . '/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 /**
  * @var AMACollaboraACLDataHandler $impDH
  */
-$impDH = AMAImpersonateDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+$impDH = AMAImpersonateDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 $retArray = array('status' => 'ERROR');
 session_write_close();

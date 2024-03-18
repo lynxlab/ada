@@ -1,6 +1,8 @@
 <?php
 use Lynxlab\ADA\Module\ForkedPaths\AMAForkedPathsDataHandler;
 use Dompdf\Exception;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsException;
 
@@ -31,7 +33,6 @@ $neededObjAr = array(
  */
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
-require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
 BrowsingHelper::init($neededObjAr);
 
 $GLOBALS['dh'] = AMAForkedPathsDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));

@@ -10,6 +10,9 @@
  * @version		   0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\Main\Helper\ServiceHelper;
+
 ini_set('display_errors', '0'); error_reporting(E_ALL);
 /**
  * Base config file
@@ -36,7 +39,6 @@ $neededObjAr = array(
  * Performs basic controls before entering this module
 */
 require_once(ROOT_DIR.'/include/module_init.inc.php');
-include_once ROOT_DIR . '/services/include/author_functions.inc.php';
 ServiceHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS

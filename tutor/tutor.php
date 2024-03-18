@@ -15,6 +15,7 @@
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\TutorHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
@@ -45,8 +46,6 @@ $neededObjAr = array(
 
 require_once ROOT_DIR.'/include/module_init.inc.php';
 $self =  whoami();
-
-include_once 'include/'.$self.'_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -81,7 +80,6 @@ TutorHelper::init($neededObjAr);
 /*
  * YOUR CODE HERE
  */
-include_once ROOT_DIR.'/include/HtmlLibrary/BaseHtmlLib.inc.php';
 include_once 'include/tutor.inc.php';
 include_once ROOT_DIR.'/config/config_class_report.inc.php';
 

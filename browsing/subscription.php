@@ -11,6 +11,9 @@
  * @link		registration
  * @version		0.1
  */
+
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
 /* Questa versione consento solo la sottoscrizione ad un servizio ma non la registrazione
  * deve essere passato l'id del servizio (id_corse?)
  * l'utente deve essere in sessione
@@ -39,7 +42,6 @@ $neededObjAr = array(
   AMA_TYPE_STUDENT         => array('layout')
 );
 require_once ROOT_DIR.'/include/module_init.inc.php';
-include_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.

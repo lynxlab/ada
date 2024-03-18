@@ -13,18 +13,18 @@
 namespace Lynxlab\ADA\Admin;
 
 use Exception;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
+use Lynxlab\ADA\Main\Helper\ViewBaseHelper;
 use PDO;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RecursiveRegexIterator;
 use RegexIterator;
 
-require_once ROOT_DIR . '/include/ViewBaseHelper.php';
-
 /**
  * Admin helper class
  */
-class AdminHelper extends \ViewBaseHelper
+class AdminHelper extends ViewBaseHelper
 {
     /**
      * Builds array keys for the admin directory scripts
@@ -67,8 +67,8 @@ class AdminHelper extends \ViewBaseHelper
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         ];
         $modulesSQL = [];
-        $inCommon = \ModuleLoaderHelper::inCommon();
-        $inCommonIfMulti = \ModuleLoaderHelper::inCommonIfMulti();
+        $inCommon = ModuleLoaderHelper::inCommon();
+        $inCommonIfMulti = ModuleLoaderHelper::inCommonIfMulti();
         if ($hasConfigWithEnv = self::hasConfigWithEnv()) {
             $providerData['dbhost'] = getenv('MYSQL_HOST');
             $providerData['username'] = getenv('MYSQL_USER');

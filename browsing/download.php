@@ -12,6 +12,7 @@
  * @version		0.2
  */
 
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLActions;
 use Lynxlab\ADA\Module\CollaboraACL\FileACL;
@@ -40,8 +41,6 @@ $neededObjAr = array(
 require_once ROOT_DIR.'/include/module_init.inc.php';
 
 $self =  whoami();
-
-include_once 'include/browsing_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.

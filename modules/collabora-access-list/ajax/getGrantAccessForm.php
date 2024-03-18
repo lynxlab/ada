@@ -8,6 +8,8 @@
  * @version     0.1
  */
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLActions;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLException;
@@ -36,13 +38,12 @@ list($allowedUsersAr, $neededObjAr) = array_values(CollaboraACLActions::getAllow
  */
 $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR . '/include/module_init.inc.php');
-require_once(ROOT_DIR . '/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 /**
  * @var AMACollaboraACLDataHandler $GLOBALS['dh']
  */
-$GLOBALS['dh'] = AMACollaboraACLDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+$GLOBALS['dh'] = AMACollaboraACLDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 $retArray = array('status' => 'ERROR');
 session_write_close();

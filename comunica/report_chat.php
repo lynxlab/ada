@@ -17,6 +17,8 @@ Initializating variables and including modules
  * Base config file
  */
 
+use Lynxlab\ADA\Main\Helper\ComunicaHelper;
+
 use function Lynxlab\ADA\Main\AMA\DBRead\read_course;
 
 require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
@@ -45,8 +47,6 @@ $neededObjAr = array(
  * Performs basic controls before entering this module
  */
 require_once ROOT_DIR.'/include/module_init.inc.php';
-
-require_once 'include/comunica_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.

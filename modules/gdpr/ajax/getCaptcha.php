@@ -8,6 +8,7 @@
  */
 
 use Gregwar\Captcha\CaptchaBuilder;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\GDPR\GdprActions;
 
 /**
@@ -30,7 +31,6 @@ list($allowedUsersAr, $neededObjAr) = array_values(GdprActions::getAllowedAndNee
  */
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
-require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
 BrowsingHelper::init($neededObjAr);
 
 try {
@@ -40,7 +40,7 @@ try {
 	$_SESSION['captchaText'] = $builder->getPhrase();
 	header('Content-type: image/jpeg');
 	die($builder->inline());
-} catch (\Exception $e) {
+} catch (Exception $e) {
 	header(' ', true, 400);
 	die ();
 }

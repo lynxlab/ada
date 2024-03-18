@@ -16,6 +16,9 @@ ini_set('display_errors', '1');
  * @link		user
  * @version		0.1
  */
+
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
 /**
  * Base config file
  */
@@ -37,8 +40,6 @@ $neededObjAr = array(
 );
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami();
-
-require_once 'include/browsing_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.

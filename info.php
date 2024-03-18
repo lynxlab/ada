@@ -17,6 +17,7 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\User\ADAUser;
 
@@ -50,7 +51,6 @@ $neededObjAr = array(
 );
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-require_once ROOT_DIR . '/browsing/include/browsing_functions.inc.php';
 BrowsingHelper::init($neededObjAr);
 
 $op = isset($_GET['op']) ? DataValidator::validate_string($_GET['op']) : false;

@@ -11,6 +11,8 @@
  * @version		0.2
  */
 
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
 /**
  * Base config file
  */
@@ -36,7 +38,6 @@ $neededObjAr = array(
 );
 $self = 'student_course_instance_subscribe_confirm';
 require_once ROOT_DIR . '/include/module_init.inc.php';
-require_once ROOT_DIR . '/browsing/include/browsing_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.

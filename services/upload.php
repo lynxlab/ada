@@ -12,6 +12,8 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\Helper\ServiceHelper;
+
 use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
 
 /**
@@ -38,8 +40,6 @@ $neededObjAr = array(
 
 require_once ROOT_DIR.'/include/module_init.inc.php';
 $self =  whoami();
-
-include_once 'include/author_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.

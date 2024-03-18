@@ -12,6 +12,10 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\TutorHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\TutorModuleHtmlLib;
+
 /**
  * Base config file
  */
@@ -50,8 +54,6 @@ else {
   $is_popup = FALSE;
 }
 
-include_once 'include/tutor_functions.inc.php';
-
 /**
  * This will at least import in the current symbol table the following vars.
  * For a complete list, please var_dump the array returned by the init method.
@@ -89,8 +91,6 @@ include_once 'include/eguidance_tutor_form_functions.inc.php';
  * YOUR CODE HERE
  */
 
-include_once ROOT_DIR.'/include/HtmlLibrary/BaseHtmlLib.inc.php';
-include_once ROOT_DIR.'/include/HtmlLibrary/TutorModuleHtmlLib.inc.php';
 include_once ROOT_DIR.'/comunica/include/ADAEventProposal.inc.php';
 
 if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {

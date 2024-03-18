@@ -7,6 +7,10 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Module\GDPR\GdprActions;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
 use Lynxlab\ADA\Module\GDPR\GdprException;
@@ -33,7 +37,6 @@ list($allowedUsersAr, $neededObjAr) = array_values(GdprActions::getAllowedAndNee
  * Performs basic controls before entering this module
  */
 require_once(ROOT_DIR.'/include/module_init.inc.php');
-require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 $self = whoami();
@@ -66,7 +69,7 @@ try {
 
 	$optionsAr['onload_func'] = 'initDoc(\''.$tableID.'\','.htmlentities(json_encode($dataForJS, JSON_FORCE_OBJECT), ENT_COMPAT, ADA_CHARSET).');';
 
-} catch (\Exception $e) {
+} catch (Exception $e) {
 	$message = CDOMElement::create('div','class:ui icon error message');
 	$message->addChild(CDOMElement::create('i','class:attention icon'));
 	$mcont = CDOMElement::create('div','class:content');

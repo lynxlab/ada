@@ -12,6 +12,14 @@
  * @version   0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\TutorHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\HtmlLibrary\EguidanceSession;
+use Lynxlab\ADA\Main\HtmlLibrary\TutorModuleHtmlLib;
+
 /**
  * Base config file
  */
@@ -43,15 +51,12 @@ else {
   $self =  'default';//whoami();
   $href_suffix='';
 }
-include_once 'include/tutor_functions.inc.php';
 TutorHelper::init($neededObjAr);
 include_once 'include/eguidance_tutor_form_functions.inc.php';
 
 /*
  * YOUR CODE HERE
  */
-include_once ROOT_DIR.'/include/HtmlLibrary/TutorModuleHtmlLib.inc.php';
-
 /*
  * deve mostrare
  * 1. il report delle interazioni concluse, con la durata (?) e la tipologia

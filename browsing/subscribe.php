@@ -13,6 +13,7 @@
  */
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\User\ADAUser;
 
 /*
@@ -50,7 +51,6 @@ AMA_TYPE_VISITOR      => array('layout')
 );
 
 require_once ROOT_DIR.'/include/module_init.inc.php';
-include_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.

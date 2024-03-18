@@ -9,6 +9,8 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  */
 
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
 /**
  * Base config file
  */
@@ -40,8 +42,6 @@ $neededObjAr = array(
 require_once ROOT_DIR.'/include/module_init.inc.php';
 
 $self = whoami();
-
-include_once 'include/browsing_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.

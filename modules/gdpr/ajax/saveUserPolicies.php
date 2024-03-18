@@ -7,6 +7,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use Lynxlab\ADA\Module\GDPR\GdprActions;
 use Lynxlab\ADA\Module\GDPR\GdprException;
@@ -58,7 +59,7 @@ try {
 	} else {
 		throw new GdprException(ucfirst(strtolower(translateFN('Niente da salvare'))));
 	}
-} catch (\Exception $e) {
+} catch (Exception $e) {
 	header(' ', true, 400);
 	$data->title .= ' ('.$e->getCode().')';
 	$data->message = $e->getMessage();

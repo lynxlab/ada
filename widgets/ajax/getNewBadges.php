@@ -1,4 +1,9 @@
 <?php
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Badges\RewardedBadge;
 use Lynxlab\ADA\Module\Badges\Badge;
 
@@ -36,7 +41,6 @@ require_once ROOT_DIR . '/widgets/include/widget_includes.inc.php';
 $allowedUsersAr = array(AMA_TYPE_STUDENT);
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
-include_once ROOT_DIR . '/browsing/include/browsing_functions.inc.php';
 BrowsingHelper::init();
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
@@ -112,7 +116,7 @@ try {
 	if (!isset($testerName)) throw new \Exception(translateFN('Spiacente, non so a che fornitore di servizi sei collegato'));
 
 	if ($userObj->getType() == AMA_TYPE_STUDENT && defined('MODULES_BADGES') && MODULES_BADGES) {
-		$bdh = \Lynxlab\ADA\Module\Badges\AMABadgesDataHandler::instance(\MultiPort::getDSN($testerName));
+		$bdh = \Lynxlab\ADA\Module\Badges\AMABadgesDataHandler::instance(MultiPort::getDSN($testerName));
 		$findByArr['id_utente'] = $userObj->getId();
 		$findByArr['notified'] = 0;
 		$findByArr['approved'] = 1;
@@ -130,7 +134,7 @@ try {
 					$badge = reset($badge);
 					$div = CDOMElement::create('div','class:ui blue icon floating message,id:'.$reward->getUuid());
 					$div->setAttribute('data-badge', $badge->getUuid());
-					$closeIcon = \CDOMElement::create('i','class:close icon');
+					$closeIcon = CDOMElement::create('i','class:close icon');
 					$closeIcon->setAttribute('onclick','javascript:$j(this).parents(\'.ui.message\').fadeOut(function(){ $j(this).remove(); });');
 					$div->addChild($closeIcon);
 
@@ -138,7 +142,7 @@ try {
 
 					$headerMSG = translateFN('Congratulazioni!').' '.translateFN('Hai ottenuto il badge').': '.$badge->getName();
 					$header = CDOMElement::create('div','class:header');
-					$header->addChild(new \CText($headerMSG));
+					$header->addChild(new CText($headerMSG));
 					$div->addChild($header);
 
 					if (strlen($badge->getDescription())>0) {
@@ -155,15 +159,15 @@ try {
 		$output = implode(PHP_EOL, array_map (function($el) { return $el->getHtml(); }, $outputArr ));
 	}
 
-} catch (\Exception $e) {
+} catch (Exception $e) {
 	$divClass = 'error';
 	$divMessage = basename($_SERVER['PHP_SELF']) . ': ' . $e->getMessage();
-	$outDIV = \CDOMElement::create('div',"class:ui $divClass message");
-	$closeIcon = \CDOMElement::create('i','class:close icon');
+	$outDIV = CDOMElement::create('div',"class:ui $divClass message");
+	$closeIcon = CDOMElement::create('i','class:close icon');
 	$closeIcon->setAttribute('onclick','javascript:$j(this).parents(\'.ui.message\').remove();');
 	$outDIV->addChild($closeIcon);
-	$errorSpan = \CDOMElement::create('span');
-	$errorSpan->addChild(new \CText($divMessage));
+	$errorSpan = CDOMElement::create('span');
+	$errorSpan->addChild(new CText($divMessage));
 	$outDIV->addChild($errorSpan);
 	$output = $outDIV->getHtml();
 }

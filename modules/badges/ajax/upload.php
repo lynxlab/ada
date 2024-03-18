@@ -7,6 +7,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Badges\BadgesActions;
 
 /**
@@ -30,7 +31,6 @@ list($allowedUsersAr, $neededObjAr) = array_values(BadgesActions::getAllowedAndN
 */
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
-require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
 BrowsingHelper::init($neededObjAr);
 require_once ROOT_DIR . '/include/FileUploader.inc.php';
 

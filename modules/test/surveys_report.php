@@ -10,6 +10,11 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
 use function Lynxlab\ADA\Main\AMA\DBRead\read_course_instance_from_DB;
 
 /**
@@ -37,7 +42,6 @@ $neededObjAr = array(
  * Performs basic controls before entering this module
  */
 require_once(ROOT_DIR.'/include/module_init.inc.php');
-require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 require_once(MODULES_TEST_PATH.'/include/init.inc.php');

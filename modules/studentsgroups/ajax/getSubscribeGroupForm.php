@@ -8,6 +8,8 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\StudentsGroups\AMAStudentsGroupsDataHandler;
 use Lynxlab\ADA\Module\StudentsGroups\SubscribeGroupForm;
 use Lynxlab\ADA\Module\StudentsGroups\StudentsGroupsActions;
@@ -35,13 +37,12 @@ list($allowedUsersAr, $neededObjAr) = array_values(StudentsGroupsActions::getAll
  */
 $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR . '/include/module_init.inc.php');
-require_once(ROOT_DIR . '/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 /**
  * @var AMAStudentsGroupsDataHandler $GLOBALS['dh']
  */
-$GLOBALS['dh'] = AMAStudentsGroupsDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+$GLOBALS['dh'] = AMAStudentsGroupsDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 $retArray = array('status' => 'ERROR');
 

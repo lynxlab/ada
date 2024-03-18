@@ -10,6 +10,11 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+
 /**
  * Base config file
  */
@@ -35,8 +40,6 @@ $neededObjAr = array(
 
 require_once ROOT_DIR.'/include/module_init.inc.php';
 $self =  'switcher';  // = switcher!
-
-include_once 'include/'.$self.'_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -72,7 +75,6 @@ SwitcherHelper::init($neededObjAr);
 /*
  * YOUR CODE HERE
  */
-include_once ROOT_DIR.'/include/HtmlLibrary/BaseHtmlLib.inc.php';
 
 if(DataValidator::is_uinteger($id) !== FALSE) {
   /*

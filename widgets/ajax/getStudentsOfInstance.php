@@ -26,6 +26,11 @@
  *  name="emailIsLink"      optional, value: 1 if subscriber email must be a mailto: link
  */
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
 /**
  * Common initializations and include files
  */
@@ -41,7 +46,6 @@ require_once ROOT_DIR . '/widgets/include/widget_includes.inc.php';
 $allowedUsersAr = array(AMA_TYPE_STUDENT, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR, AMA_TYPE_SWITCHER);
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
-include_once ROOT_DIR . '/browsing/include/browsing_functions.inc.php';
 BrowsingHelper::init();
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
@@ -138,7 +142,7 @@ try {
 			usort($subscriptions, function ($a, $b) {
 				return strcasecmp($a->getSubscriberFullname(), $b->getSubscriberFullname());
 			});
-			$outCont = \CDOMElement::create('div', 'class:widget get-students-of-instance');
+			$outCont = CDOMElement::create('div', 'class:widget get-students-of-instance');
 			$cssString = [];
 			if (isset($styleHeight) && strlen($styleHeight) > 0) {
 				$cssString[] = 'height:'.$styleHeight;
@@ -149,11 +153,11 @@ try {
 			if (count($cssString) > 0) {
 				$outCont->setAttribute('style', implode(' ', $cssString));
 			}
-			$outDIV = \CDOMElement::create('div', 'class:ui large list');
+			$outDIV = CDOMElement::create('div', 'class:ui large list');
 			foreach ($subscriptions as $s) {
-				$sDIV = \CDOMElement::create('div', 'class:item');
-				$fns = \CDOMElement::create('div', 'class:header');
-				$fns->addChild(new \CText($s->getSubscriberFullname()));
+				$sDIV = CDOMElement::create('div', 'class:item');
+				$fns = CDOMElement::create('div', 'class:header');
+				$fns->addChild(new CText($s->getSubscriberFullname()));
 				$sDIV->addChild($fns);
 				$extras = [];
 				if (isset($showStatus) && $showStatus == 1) {
@@ -164,9 +168,9 @@ try {
 				if (isset($showEmail) && $showEmail == 1) {
 					if (strlen($s->getSubscriberEmail()) > 0) {
 						if (isset($emailIsLink) && $emailIsLink == 1) {
-							$maillink = \CDOMElement::create('a', 'class:dontcapitalize');
+							$maillink = CDOMElement::create('a', 'class:dontcapitalize');
 							$maillink->setAttribute('href', 'mailto:' . $s->getSubscriberEmail());
-							$maillink->addChild(new \CText($s->getSubscriberEmail()));
+							$maillink->addChild(new CText($s->getSubscriberEmail()));
 							$extras[] = $maillink->getHtml();
 						} else {
 							$extras[] = $s->getSubscriberEmail();
@@ -174,14 +178,14 @@ try {
 					}
 				}
 				if (count($extras) > 0) {
-					$sDIV->addChild(new \CText(implode('<br/>', $extras)));
+					$sDIV->addChild(new CText(implode('<br/>', $extras)));
 				}
 				$outDIV->addChild($sDIV);
 			}
 
 			if (isset($addHeader) && $addHeader == 1) {
-				$h = \CDOMElement::create('h3', 'class:ui header');
-				$h->addChild(new \CText(translateFN('Elenco iscritti al corso')));
+				$h = CDOMElement::create('h3', 'class:ui header');
+				$h->addChild(new CText(translateFN('Elenco iscritti al corso')));
 				$outCont->addChild($h);
 			}
 			$outCont->addChild($outDIV);
@@ -191,12 +195,12 @@ try {
 } catch (\Exception $e) {
 	$divClass = 'error';
 	$divMessage = basename($_SERVER['PHP_SELF']) . ': ' . $e->getMessage();
-	$outDIV = \CDOMElement::create('div', "class:ui $divClass message");
-	$closeIcon = \CDOMElement::create('i', 'class:close icon');
+	$outDIV = CDOMElement::create('div', "class:ui $divClass message");
+	$closeIcon = CDOMElement::create('i', 'class:close icon');
 	$closeIcon->setAttribute('onclick', 'javascript:$j(this).parents(\'.ui.message\').remove();');
 	$outDIV->addChild($closeIcon);
-	$errorSpan = \CDOMElement::create('span');
-	$errorSpan->addChild(new \CText($divMessage));
+	$errorSpan = CDOMElement::create('span');
+	$errorSpan->addChild(new CText($divMessage));
 	$outDIV->addChild($errorSpan);
 	$output = $outDIV->getHtml();
 } finally {

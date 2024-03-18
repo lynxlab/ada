@@ -7,6 +7,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Module\InstancesReport\AMAInstancesReportDataHandler;
 use Lynxlab\ADA\Module\InstancesReport\InstancesReportActions;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -36,7 +37,6 @@ list($allowedUsersAr, $neededObjAr) = array_values(InstancesReportActions::getAl
  */
 require_once ROOT_DIR . '/include/module_init.inc.php';
 // neededObjArr grants access to switcher only
-require_once ROOT_DIR . '/switcher/include/switcher_functions.inc.php';
 SwitcherHelper::init($neededObjAr);
 
 require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';

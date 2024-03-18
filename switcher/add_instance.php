@@ -15,6 +15,12 @@
  * @link
  * @version		0.1
  */
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Forms\CourseInstanceForm;
+use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+
 /**
  * Base config file
  */
@@ -37,7 +43,6 @@ $neededObjAr = array(
 );
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami();
-include_once 'include/switcher_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -68,9 +73,7 @@ include_once 'include/switcher_functions.inc.php';
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
  */
-SwitcherHelper::init($neededObjAr);
 
-require_once ROOT_DIR . '/comunica/include/comunica_functions.inc.php';
 require_once ROOT_DIR . '/comunica/include/ChatRoom.inc.php';
 require_once ROOT_DIR . '/comunica/include/ChatDataHandler.inc.php';
 

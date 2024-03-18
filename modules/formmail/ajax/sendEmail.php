@@ -11,6 +11,8 @@
  */
 
 use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
 ini_set('display_errors', '0'); error_reporting(E_ALL);
 /**

@@ -13,6 +13,7 @@
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Forms\UserFindForm;
+use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 use Lynxlab\ADA\Main\User\ADAUser;
 
@@ -52,8 +53,6 @@ $neededObjAr = array(
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami();
 
-require_once 'include/switcher_functions.inc.php';
-
 /**
  * This will at least import in the current symbol table the following vars.
  * For a complete list, please var_dump the array returned by the init method.
@@ -87,7 +86,6 @@ SwitcherHelper::init($neededObjAr);
 
 require_once 'include/Subscription.inc.php';
 
-require_once ROOT_DIR . '/include/Forms/UserFindForm.inc.php';
 /*
  * YOUR CODE HERE
  */

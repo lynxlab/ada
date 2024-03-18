@@ -1,4 +1,8 @@
 <?php
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Badges\BadgesActions;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
 
@@ -39,7 +43,7 @@ BrowsingHelper::init($neededObjAr);
  * @var AMABadgesDataHandler $GLOBALS['dh']
  */
 if (array_key_exists('sess_selected_tester', $_SESSION)) {
-	$GLOBALS['dh'] = AMABadgesDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+	$GLOBALS['dh'] = AMABadgesDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 }
 
 $data = ['error' => translateFN('errore sconosciuto')];
@@ -97,7 +101,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 						$linksHtml = $linksul->getHtml();
 					} else $linksHtml = '';
 
-					$tmpelement = \CDOMElement::create('img','class:ui tiny image,src:'.$badge->getImageUrl().'?t='.time());
+					$tmpelement = CDOMElement::create('img','class:ui tiny image,src:'.$badge->getImageUrl().'?t='.time());
 					$badgesData[] = array(
 						// NOTE: the timestamp parameter added to the png will prevent caching
 						$tmpelement->getHtml(),

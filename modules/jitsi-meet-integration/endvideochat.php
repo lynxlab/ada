@@ -8,6 +8,9 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\ComunicaHelper;
+
 /**
  * Base config file
  */
@@ -33,7 +36,7 @@ if (isset($data['p']) && strlen($data['p']) && DataValidator::validate_testernam
 
   require_once ROOT_DIR . '/comunica/include/videoroom.classes.inc.php';
 
-  $GLOBALS['dh'] = new \AMA_DataHandler(\MultiPort::getDSN($data['p']));
+  $GLOBALS['dh'] = new \AMA_DataHandler(MultiPort::getDSN($data['p']));
   $videoroomObj = videoroom::getVideoObj();
   $logData = [
     'event' => videoroom::EVENT_EXIT,
@@ -70,7 +73,6 @@ if (isset($data['p']) && strlen($data['p']) && DataValidator::validate_testernam
    */
   $trackPageToNavigationHistory = false;
   require_once ROOT_DIR . '/include/module_init.inc.php';
-  require_once ROOT_DIR . '/comunica/include/comunica_functions.inc.php';
 
   ComunicaHelper::init($neededObjAr);
   $logData = null;

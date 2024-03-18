@@ -12,6 +12,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\Helper\TutorHelper;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_course_from_DB;
@@ -42,7 +43,6 @@ $neededObjAr = array(
 require_once ROOT_DIR.'/include/module_init.inc.php';
 $self = 'default';
 
-include_once 'include/tutor_functions.inc.php';
 include_once 'include/tutor.inc.php';
 
 /**

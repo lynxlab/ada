@@ -23,6 +23,7 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Forms\UserExtraForm;
 use Lynxlab\ADA\Main\Forms\UserProfileForm;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\HtmlLibrary\UserExtraModuleHtmlLib;
 use Lynxlab\ADA\Main\User\ADAUser;
@@ -54,7 +55,6 @@ $neededObjAr = array(
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 //$self = whoami();
-include_once 'include/browsing_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.

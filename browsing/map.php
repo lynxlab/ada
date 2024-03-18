@@ -13,6 +13,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\User\ADAGuest;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
@@ -43,7 +44,6 @@ $neededObjAr = array(
 );
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-include_once 'include/browsing_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.

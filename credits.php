@@ -12,6 +12,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
 /**
  * Base config file
@@ -43,7 +44,6 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
 /**
  * Get needed objects
  */
-include_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
 BrowsingHelper::init($neededObjAr);
 
 $self = 'default';

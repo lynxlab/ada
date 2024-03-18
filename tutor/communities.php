@@ -12,6 +12,7 @@
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Helper\TutorHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 
@@ -44,7 +45,6 @@ $neededObjAr = array (
  * Performs basic controls before entering this module
  */
 require_once ROOT_DIR . '/include/module_init.inc.php';
-include_once 'include/tutor_functions.inc.php';
 include_once 'include/tutor.inc.php';
 
 /**

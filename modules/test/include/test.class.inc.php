@@ -7,6 +7,8 @@
  * @version	0.1
  */
 
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
 use function Lynxlab\ADA\Main\AMA\DBRead\read_user;
 
 require_once(ROOT_DIR.'/comunica/include/MessageHandler.inc.php');
@@ -173,9 +175,8 @@ class TestTest extends RootTest
 		}
 
 		// call helper function to check service completeness using modules/service-complete
-		require_once ROOT_DIR . '/browsing/include/browsing_functions.inc.php';
 		$userObj = read_user($_SESSION['sess_id_user']);
-		\BrowsingHelper::checkServiceComplete($userObj, $sess_id_course, $sess_id_course_instance);
+		BrowsingHelper::checkServiceComplete($userObj, $sess_id_course, $sess_id_course_instance);
 
 		return true;
 	}

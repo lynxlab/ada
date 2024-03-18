@@ -7,6 +7,11 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Module\Badges\BadgesActions;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
 use Lynxlab\ADA\Module\Badges\CourseBadgeForm;
@@ -32,7 +37,6 @@ list($allowedUsersAr, $neededObjAr) = array_values(BadgesActions::getAllowedAndN
  * Performs basic controls before entering this module
  */
 require_once(ROOT_DIR . '/include/module_init.inc.php');
-require_once(ROOT_DIR . '/browsing/include/browsing_functions.inc.php');
 require_once MODULES_SERVICECOMPLETE_PATH .'/include/init.inc.php';
 BrowsingHelper::init($neededObjAr);
 

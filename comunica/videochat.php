@@ -12,6 +12,9 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CBase;
+use Lynxlab\ADA\Main\Helper\ComunicaHelper;
+
 /**
  * Base config file
  */
@@ -44,8 +47,6 @@ $neededObjAr = array(
  */
 require_once ROOT_DIR.'/include/module_init.inc.php';
 $self = whoami();
-
-include_once 'include/comunica_functions.inc.php';
 
 /**
  * Specific Openmeetings config file

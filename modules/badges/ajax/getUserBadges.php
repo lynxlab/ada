@@ -1,4 +1,7 @@
 <?php
+
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Badges\BadgesActions;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
 
@@ -32,7 +35,6 @@ list($allowedUsersAr, $neededObjAr) = array_values(BadgesActions::getAllowedAndN
  */
 $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR . '/include/module_init.inc.php');
-require_once(ROOT_DIR . '/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 $badges = [];
@@ -56,7 +58,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 	}
 
 	foreach ($userObj->getTesters() as $provider) {
-		$bdh = AMABadgesDataHandler::instance(\MultiPort::getDSN($provider));
+		$bdh = AMABadgesDataHandler::instance(MultiPort::getDSN($provider));
 
 		/**
 		 * filter course instance that are associated to a level of service having:

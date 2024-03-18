@@ -19,6 +19,8 @@
  *	name="userId"		    mandatory,  value: user id from which to load the status
  */
 
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
 /**
  * Common initializations and include files
  */
@@ -34,7 +36,6 @@ require_once ROOT_DIR . '/widgets/include/widget_includes.inc.php';
 $allowedUsersAr = array(AMA_TYPE_STUDENT);
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
-include_once ROOT_DIR . '/browsing/include/browsing_functions.inc.php';
 BrowsingHelper::init();
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {

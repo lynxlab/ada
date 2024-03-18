@@ -1,4 +1,7 @@
 <?php
+
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
 header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");          // always modified
 header("Cache-Control: no-store, no-cache, must-revalidate");  // HTTP/1.1
@@ -29,7 +32,6 @@ if (!defined('DATE_CONTROL')) {
 }
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-require_once ROOT_DIR . '/browsing/include/browsing_functions.inc.php';
 require_once ROOT_DIR . '/comunica/include/videoroom.classes.inc.php';
 
 /**

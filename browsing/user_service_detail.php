@@ -12,6 +12,14 @@
  * @version   0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\HtmlLibrary\EguidanceSession;
+use Lynxlab\ADA\Main\HtmlLibrary\TutorModuleHtmlLib;
+
 /**
  * Base config file
  */
@@ -36,9 +44,6 @@ $neededObjAr = array(
 
 require_once ROOT_DIR.'/include/module_init.inc.php';
 $self =  'default';//whoami();
-
-include_once '../tutor/include/tutor_functions.inc.php';
-include_once '../tutor/include/browsing_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -76,7 +81,6 @@ include_once '../tutor/include/eguidance_tutor_form_functions.inc.php';
 /*
  * YOUR CODE HERE
  */
-include_once ROOT_DIR.'/include/HtmlLibrary/TutorModuleHtmlLib.inc.php';
 
 /*
  * deve mostrare

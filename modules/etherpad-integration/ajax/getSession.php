@@ -8,6 +8,8 @@
  * @version     0.1
  */
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\EtherpadIntegration\AMAEtherpadDataHandler;
 use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadActions;
 use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadClient;
@@ -43,7 +45,7 @@ BrowsingHelper::init($neededObjAr);
 /**
  * @var AMAEtherpadDataHandler $etDH
  */
-$etDH = AMAEtherpadDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+$etDH = AMAEtherpadDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 $retArray = array('status' => 'ERROR');
 session_write_close();

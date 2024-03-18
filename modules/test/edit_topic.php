@@ -11,6 +11,7 @@
  */
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 
 /**
@@ -39,7 +40,6 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
 //$self =  whoami();
 $self = 'form';
 
-require_once(ROOT_DIR.'/services/include/author_functions.inc.php');
 ServiceHelper::init($neededObjAr);
 $layout_dataAr['node_type'] = $self;
 

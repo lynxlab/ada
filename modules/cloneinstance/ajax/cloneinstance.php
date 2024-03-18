@@ -8,6 +8,8 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Module\CloneInstance\AMACloneInstanceDataHandler;
 use Lynxlab\ADA\Module\CloneInstance\CloneInstanceActions;
 use Lynxlab\ADA\Module\CloneInstance\CloneInstanceException;
@@ -34,13 +36,12 @@ list($allowedUsersAr, $neededObjAr) = array_values(CloneInstanceActions::getAllo
  */
 require_once ROOT_DIR . '/include/module_init.inc.php';
 // neededObjArr grants access to switcher only
-require_once ROOT_DIR . '/switcher/include/switcher_functions.inc.php';
 SwitcherHelper::init($neededObjAr);
 
 /**
  * @var AMACloneInstanceDataHandler $dh
  */
-$dh = AMACloneInstanceDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+$dh = AMACloneInstanceDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 $data = new stdClass();
 $data->title = '<i class="basic error icon"></i>' . translateFN('Errore clonazione');

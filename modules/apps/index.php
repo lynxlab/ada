@@ -10,6 +10,8 @@
  * @version		   0.1
  */
 
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
 /**
  * This module is responsible for generating client id and client secret pairs for each user
  * requesting them. Typically, this is done by a switcher. The generated (or retreived from the
@@ -49,7 +51,6 @@ $neededObjAr = array(
  * Performs basic controls before entering this module
 */
 require_once(ROOT_DIR.'/include/module_init.inc.php');
-require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS

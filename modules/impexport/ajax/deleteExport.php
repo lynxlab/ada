@@ -10,6 +10,8 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
 /**
  * Base config file
  */

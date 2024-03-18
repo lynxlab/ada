@@ -9,6 +9,9 @@
  * @link
  * @version		0.1
  */
+
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
 /**
  * Base config file
  */
@@ -40,8 +43,6 @@ $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 
 $self =  'download';
-
-include_once '../include/browsing_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.

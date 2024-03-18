@@ -1,4 +1,7 @@
 <?php
+
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Badges\BadgesActions;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
 
@@ -38,7 +41,7 @@ BrowsingHelper::init($neededObjAr);
 /**
  * @var AMABadgesDataHandler $GLOBALS['dh']
  */
-$GLOBALS['dh'] = AMABadgesDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+$GLOBALS['dh'] = AMABadgesDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 
 $retArray = array('status'=>'ERROR');

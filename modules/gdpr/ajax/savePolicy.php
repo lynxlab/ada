@@ -7,6 +7,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use Lynxlab\ADA\Module\GDPR\GdprActions;
 
@@ -30,7 +31,6 @@ list($allowedUsersAr, $neededObjAr) = array_values(GdprActions::getAllowedAndNee
  */
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
-require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
 BrowsingHelper::init($neededObjAr);
 
 $data = new stdClass();
@@ -50,7 +50,7 @@ try {
 	if (property_exists($result, 'redirecturl')) {
 		$data->saveResult['redirecturl'] = $result->redirecturl;
 	}
-} catch (\Exception $e) {
+} catch (Exception $e) {
 	header(' ', true, 400);
 	$data->title .= ' ('.$e->getCode().')';
 	$data->message = $e->getMessage();

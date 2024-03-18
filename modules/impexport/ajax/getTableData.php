@@ -10,6 +10,11 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CBase;
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
 /**
  * Base config file
  */
@@ -110,7 +115,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                     $retArr =  $el;
                     $retArr['actions']  =  array_reduce($actions, function($carry, $item) {
                         if (strlen($carry) <= 0) $carry = '';
-                        $carry .= ($item instanceof \CBase ? $item->getHtml() : '');
+                        $carry .= ($item instanceof CBase ? $item->getHtml() : '');
                         return $carry;
                     });
 

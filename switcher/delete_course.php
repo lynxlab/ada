@@ -15,6 +15,12 @@
  * @link
  * @version		0.1
  */
+
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Forms\CourseRemovalForm;
+use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+
 /**
  * Base config file
  */
@@ -38,7 +44,6 @@ $neededObjAr = array(
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami();
-require_once 'include/switcher_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.

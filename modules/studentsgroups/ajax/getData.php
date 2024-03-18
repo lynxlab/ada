@@ -7,6 +7,9 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\StudentsGroups\AMAStudentsGroupsDataHandler;
 use Lynxlab\ADA\Module\StudentsGroups\Groups;
 use Lynxlab\ADA\Module\StudentsGroups\StudentsGroupsActions;
@@ -34,14 +37,13 @@ list($allowedUsersAr, $neededObjAr) = array_values(StudentsGroupsActions::getAll
  */
 $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR . '/include/module_init.inc.php');
-require_once(ROOT_DIR . '/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 /**
  * @var AMAStudentsGroupsDataHandler $GLOBALS['dh']
  */
 if (array_key_exists('sess_selected_tester', $_SESSION)) {
-	$GLOBALS['dh'] = AMAStudentsGroupsDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+	$GLOBALS['dh'] = AMAStudentsGroupsDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 }
 
 $data = ['error' => translateFN('errore sconosciuto')];

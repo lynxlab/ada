@@ -9,6 +9,13 @@
  * @link
  * @version		0.1
  */
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Forms\TranslationForm;
+use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+
 /**
  * Base config file
  */
@@ -34,7 +41,6 @@ $neededObjAr = array(
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 $self =  "switcher";
-include_once '../include/'.$self.'_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -68,13 +74,6 @@ include_once '../include/'.$self.'_functions.inc.php';
 SwitcherHelper::init($neededObjAr);
 
 $self =  "translation";
-/*
- * Html Library containing forms used in this module.
- */
-require_once ROOT_DIR.'/include/HtmlLibrary/AdminModuleHtmlLib.inc.php';
-require_once ROOT_DIR.'/include/HtmlLibrary/UserModuleHtmlLib.inc.php';
-require_once ROOT_DIR.'/include/Forms/TranslationForm.inc.php';
-
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $form=$form=new TranslationForm();

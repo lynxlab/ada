@@ -7,6 +7,8 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CBase;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use Lynxlab\ADA\Module\GDPR\GdprActions;
 use Lynxlab\ADA\Module\GDPR\GdprException;
@@ -35,7 +37,6 @@ list($allowedUsersAr, $neededObjAr) = array_values(GdprActions::getAllowedAndNee
  */
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
-require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
 BrowsingHelper::init($neededObjAr);
 
 $showAll = null;
@@ -122,7 +123,7 @@ try {
 					}
 					$retArr['actions'] = array_reduce($actions, function($carry, $item) {
 						if (strlen($carry) <= 0) $carry = '';
-						$carry .= ($item instanceof \CBase ? $item->getHtml() : '');
+						$carry .= ($item instanceof CBase ? $item->getHtml() : '');
 						return $carry;
 					});
 				}

@@ -9,6 +9,7 @@
  * @version     0.1
  */
 
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Login\AMALoginDataHandler;
 
 ini_set('display_errors', '0'); error_reporting(E_ALL);
@@ -38,7 +39,6 @@ $neededObjAr = array(
 */
 $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR.'/include/module_init.inc.php');
-require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS

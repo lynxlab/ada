@@ -11,6 +11,9 @@
  * @link				help
  * @version		0.1
  */
+
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
 /*
  *
  * Comportamento:
@@ -47,7 +50,6 @@ $neededObjAr = array(
 
 require_once ROOT_DIR.'/include/module_init.inc.php';
 include_once ROOT_DIR.'/include/index_functions.inc.php';
-include_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
 BrowsingHelper::init($neededObjAr);
 
 $self =  'index';

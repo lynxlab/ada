@@ -7,6 +7,9 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
 /**
  * Base config file
  */
@@ -41,7 +44,7 @@ $data->exception = [];
 try {
 	$postParams = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 	if (array_key_exists('uname', $_POST) && strlen(trim($_POST['uname']))>0 && DataValidator::validate_username(trim($_POST['uname']))) {
-		$userId = \MultiPort::findUserByUsername(trim($_POST['uname']));
+		$userId = MultiPort::findUserByUsername(trim($_POST['uname']));
 		if (!AMA_DB::isError($userId) && $userId>0) {
 			// username exists
 			throw new \Exception(translateFN('Username esistente'));

@@ -16,6 +16,7 @@
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Forms\UserRemovalForm;
+use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
 /**
@@ -40,7 +41,6 @@ $neededObjAr = array(
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami();  // = admin!
-require_once 'include/switcher_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -73,7 +73,6 @@ require_once 'include/switcher_functions.inc.php';
  */
 SwitcherHelper::init($neededObjAr);
 
-require_once ROOT_DIR . '/include/Forms/UserRemovalForm.inc.php';
 /*
  * YOUR CODE HERE
  */

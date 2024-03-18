@@ -8,6 +8,8 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Notifications\AMANotificationsDataHandler;
 use Lynxlab\ADA\Module\Notifications\NotificationException;
 use Lynxlab\ADA\Module\Notifications\NotificationActions;
@@ -34,13 +36,12 @@ list($allowedUsersAr, $neededObjAr) = array_values(NotificationActions::getAllow
  */
 $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR . '/include/module_init.inc.php');
-require_once(ROOT_DIR . '/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 /**
  * @var AMANotificationsDataHandler $ntDH
  */
-$ntDH = AMANotificationsDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+$ntDH = AMANotificationsDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 $retArray = array('status' => 'ERROR');
 session_write_close();

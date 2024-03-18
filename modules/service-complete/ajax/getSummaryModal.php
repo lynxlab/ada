@@ -10,6 +10,12 @@
  * @link           service-complete
  * @version        0.1
  */
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
 ini_set('display_errors', '0');
 error_reporting(E_ALL);
 /**
@@ -39,7 +45,6 @@ $neededObjAr = array(
  */
 $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR . '/include/module_init.inc.php');
-require_once(ROOT_DIR . '/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS
@@ -52,17 +57,17 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
     $courseInstanceId = isset($_GET['instanceId']) ? (int) $_GET['instanceId'] : 0;
     $studentId = isset($_GET['studentId']) ? (int) $_GET['studentId'] : 0;
 
-    $modal = \CDOMElement::create('div', 'class:ui small modal');
+    $modal = CDOMElement::create('div', 'class:ui small modal');
 
-    $header = \CDOMElement::create('div', 'class:header');
-    $header->addChild(new \CText(translateFN('Resoconto condizioni di completamento')));
+    $header = CDOMElement::create('div', 'class:header');
+    $header->addChild(new CText(translateFN('Resoconto condizioni di completamento')));
 
-    $contentDIV = \CDOMElement::create('div', 'class:content');
-    $content = new \CText(translateFN('Erroe nella generazione del resoconto'));
+    $contentDIV = CDOMElement::create('div', 'class:content');
+    $content = new CText(translateFN('Erroe nella generazione del resoconto'));
 
-    $actions = \CDOMElement::create('div', 'class:actions');
-    $okbtn = \CDOMElement::create('div', 'class:ui green button');
-    $okbtn->addChild(new \CText(translateFN('OK')));
+    $actions = CDOMElement::create('div', 'class:actions');
+    $okbtn = CDOMElement::create('div', 'class:ui green button');
+    $okbtn->addChild(new CText(translateFN('OK')));
     $actions->addChild($okbtn);
 
     $modal->addChild($header);
@@ -76,18 +81,18 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             $condString = $conditionSet->toString();
             if (strlen($condString)>0) {
 
-                $codeCont = \CDOMElement::create('div', 'id:conditionCodeCont');
-                $codeBtn = \CDOMElement::create('button','class:ui icon blue small right floated button');
+                $codeCont = CDOMElement::create('div', 'id:conditionCodeCont');
+                $codeBtn = CDOMElement::create('button','class:ui icon blue small right floated button');
                 $codeBtn->setAttribute('onclick','javascript:$j(\'#conditionCode\').slideToggle();');
-                $codeBtn->addChild(\CDOMElement::create('i','class:code icon'));
+                $codeBtn->addChild(CDOMElement::create('i','class:code icon'));
                 $codeCont->addChild($codeBtn);
-                $codeCont->addChild(\CDOMElement::create('div','class:clearfix'));
+                $codeCont->addChild(CDOMElement::create('div','class:clearfix'));
 
-                $codeDIV = \CDOMElement::create('div','id:conditionCode');
-                $h3 = \CDOMElement::create('h3');
-                $h3->addChild(new \CText(translateFN('Codice della condizione')));
-                $pre = \CDOMElement::create('span','class:pre');
-                $pre->addChild(new \CText(str_replace('::buildAndCheck','', $condString)));
+                $codeDIV = CDOMElement::create('div','id:conditionCode');
+                $h3 = CDOMElement::create('h3');
+                $h3->addChild(new CText(translateFN('Codice della condizione')));
+                $pre = CDOMElement::create('span','class:pre');
+                $pre->addChild(new CText(str_replace('::buildAndCheck','', $condString)));
                 $codeDIV->addChild($h3);
                 $codeDIV->addChild($pre);
                 $codeCont->addChild($codeDIV);
@@ -96,7 +101,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 			// evaluate the conditionset for this instance ID and course ID
 			$summary = $conditionSet->buildSummary(array($courseInstanceId, $studentId));
 			if (is_array($summary) && count($summary)>0) {
-				$content = \CDOMElement::create('div','class:ui large list');
+				$content = CDOMElement::create('div','class:ui large list');
 				foreach($summary as $condition=>$condData) {
 					$content->addChild($condition::getCDOMSummary($condData));
 				}

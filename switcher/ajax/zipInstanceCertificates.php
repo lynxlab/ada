@@ -10,6 +10,7 @@
  */
 
 use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
+use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\User\ADAUser;
 use PHPMailer\PHPMailer\Exception;
 
@@ -39,7 +40,6 @@ $neededObjAr = array(
 */
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
-require_once '../include/switcher_functions.inc.php';
 require_once '../include/Subscription.inc.php';
 SwitcherHelper::init($neededObjAr);
 

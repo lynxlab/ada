@@ -18,6 +18,7 @@
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Forms\UserRegistrationForm;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\UserModuleHtmlLib;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Module\GDPR\GdprAcceptPoliciesForm;
@@ -46,7 +47,6 @@ $neededObjAr = array(
 );
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-require_once ROOT_DIR . '/browsing/include/browsing_functions.inc.php';
 BrowsingHelper::init($neededObjAr);
 include_once ROOT_DIR . '/include/index_functions.inc.php';
 $self= whoami();

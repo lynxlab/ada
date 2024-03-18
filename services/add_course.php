@@ -12,6 +12,7 @@
  */
 
 use Lynxlab\ADA\Admin\HtmlAdmOutput;
+use Lynxlab\ADA\Main\Helper\ServiceHelper;
 
 /*
  * THE AUTHOR IS NOT ALLOWED TO CREATE A COURSE.
@@ -43,8 +44,6 @@ $neededObjAr = array(
 require_once ROOT_DIR.'/include/module_init.inc.php';
 
 $self =  whoami();
-
-include_once 'include/author_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.
