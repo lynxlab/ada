@@ -11,6 +11,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\CORE\HmtlElements\Table;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;

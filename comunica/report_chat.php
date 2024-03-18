@@ -17,6 +17,7 @@ Initializating variables and including modules
  * Base config file
  */
 
+use Lynxlab\ADA\CORE\HmtlElements\Table;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_course;

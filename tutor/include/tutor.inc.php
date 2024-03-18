@@ -1,6 +1,9 @@
 <?php
 
+use Lynxlab\ADA\CORE\HmtlElements\Table;
+use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\Main\form\PhpOpenFormGen;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 
 function get_courses_tutorFN($id_user, $isSuper=false) {
     $dh = $GLOBALS['dh'];

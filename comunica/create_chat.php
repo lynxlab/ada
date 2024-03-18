@@ -12,6 +12,7 @@
  * @version		0.2
  */
 
+use Lynxlab\ADA\CORE\HmtlElements\Tform;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 
 /**

@@ -12,6 +12,8 @@
 * @version 0.1
 */
 
+use Lynxlab\ADA\CORE\HmtlElements\Form;
+use Lynxlab\ADA\CORE\HmtlElements\Table;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
@@ -78,9 +80,6 @@ include_once 'include/browsing_functions.inc.php';
  * e.g.: node_classes.inc.php:990
  */
 BrowsingHelper::init($neededObjAr);
-
-require_once ROOT_DIR.'/include/HTML_element_classes.inc.php';
-
 
 /* if($userObj instanceof ADAGuest) {
 $self = 'guest_view'; FIXME: we have to create a guest_search template

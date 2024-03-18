@@ -10,6 +10,10 @@
  * @version		   0.1
  */
 
+use Lynxlab\ADA\CORE\HmtlElements\Table;
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+
 /**
  * form for defining the operations used to say if
  * a course (or an instance) is considered complete

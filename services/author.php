@@ -12,6 +12,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\CORE\HmtlElements\IList;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 
 /**
@@ -177,7 +178,7 @@ if (isset($err_msg)) {
 // menu' table
 
 
-$lObj = new Ilist() ;
+$lObj = new IList() ;
 $data = array (
     crea_link(translateFN('report'),'author_report.php'),
 //    crea_link('crea corso vuoto','add_course.php'),

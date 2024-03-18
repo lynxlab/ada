@@ -19,6 +19,7 @@
 namespace Lynxlab\ADA\Main\Output;
 
 use Dompdf\Dompdf;
+use Lynxlab\ADA\CORE\HmtlElements\Table;
 
 /**
  * Classe generica di stampa su browser

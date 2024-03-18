@@ -12,6 +12,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\CORE\HmtlElements\Form;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Forms\AdvancedSearchForm;
@@ -80,10 +81,6 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
  * e.g.: node_classes.inc.php:990
  */
 BrowsingHelper::init($neededObjAr);
-
-require_once ROOT_DIR.'/include/HTML_element_classes.inc.php';
-
-require_once ROOT_DIR.'/include/Forms/AdvancedSearchForm.inc.php';
 
 if ($courseInstanceObj instanceof Course_instance) {
     $self_instruction = $courseInstanceObj->getSelfInstruction();
