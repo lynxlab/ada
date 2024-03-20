@@ -27,9 +27,6 @@
  */
 require_once ROOT_DIR.'/include/module_init_functions.inc.php';
 
-// new translator class
-require_once ROOT_DIR.'/include/translator_class.inc.php';
-
 require_once ROOT_DIR . '/include/navigation_history.inc.php';
 
 

@@ -18,6 +18,7 @@
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Forms\CourseModelForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+use Lynxlab\ADA\Main\Translator;
 
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -82,8 +83,6 @@ include_once ROOT_DIR . '/services/include/NodeEditing.inc.php';
 /*
  * YOUR CODE HERE
  */
-require_once ROOT_DIR . '/include/Forms/CourseModelForm.inc.php';
-
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $providerAuthors = $dh->find_authors_list(array('username'), '');

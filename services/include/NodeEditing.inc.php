@@ -10,6 +10,10 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Translator;
+
 /**
  * class NodeEditing, provides utility methods needed by
  * node editing activity.
@@ -26,11 +30,6 @@ class NodeEditing {
      * @return array  $media - an associative array ('media'=>'media_type')
      */
     public static function getMediaFromNodeText( $text ) {
-        // vito, 21 luglio 2008
-        if ( get_magic_quotes_gpc() /*|| get_magic_quotes_runtime()*/ ) {
-            $text = stripslashes($text);
-        }
-
         $media_type  = _IMAGE.'|'._SOUND.'|'._VIDEO.'|'._PRONOUNCE.'|'._MONTESSORI.'|'._LABIALE.'|'._LIS.'|'._FINGER_SPELLING.'|'._LINK.'|INTERNAL'; //'0|1|2|4|....';
         $media_value = '(?:[a-zA-Z0-9_\-]+\.[a-zA-Z0-9]{3,4})';
 
@@ -390,25 +389,13 @@ class NodeEditingViewer {
         if (isset($node_to_edit['text'])) $node_to_edit_text = $node_to_edit['text'];
         else $node_to_edit_text = '';
 
-        if (get_magic_quotes_gpc() /*|| get_magic_quotes_runtime()*/) {
-            $node_to_edit_text = stripslashes($node_to_edit_text);
-        }
-
         if ($node_to_edit['type'] == ADA_LEAF_WORD_TYPE OR $node_to_edit['type'] == ADA_GROUP_WORD_TYPE) {
             $node_to_edit_hyphenation = isset($node_to_edit['hyphenation']) ? $node_to_edit['hyphenation'] : null;
             $node_to_edit_semantic = isset($node_to_edit['semantic']) ? $node_to_edit['semantic'] : null;
             $node_to_edit_grammar = isset($node_to_edit['grammar']) ? $node_to_edit['grammar'] : null;
             $node_to_edit_notes = isset($node_to_edit['notes']) ? $node_to_edit['notes'] : null;
             $node_to_edit_examples = isset($node_to_edit['examples']) ? $node_to_edit['examples'] : null;
-            if (get_magic_quotes_gpc() /*|| get_magic_quotes_runtime()*/) {
-                $node_to_edit_hyphenation = stripslashes($node_to_edit_hyphenation);
-                $node_to_edit_semantic = stripslashes($node_to_edit_semantic);
-                $node_to_edit_grammar = stripslashes($node_to_edit_grammar);
-                $node_to_edit_notes = stripslashes($node_to_edit_notes);
-                $node_to_edit_examples = stripslashes($node_to_edit_examples);
-            }
         }
-
 
         $editing_form = CDOMElement::create('form',"id:jseditor_form, action:$form_action.php?op=preview, method:post");
         $editing_form->setAttribute('onsubmit','updateADACode();');
@@ -642,8 +629,8 @@ class NodeEditingViewer {
 //    $editor->addChild(self::getButtons($flags));
 //    $editor->addChild(self::getAddOns($flags, $id_course, $id_course_instance, $id_user, $node_to_edit['id']));
 
-        $edit_panel = \CDOMElement::create('div','id:editPanel');
-        $edit_panel_content = \CDOMElement::create('div','class:editPanelContent');
+        $edit_panel = CDOMElement::create('div','id:editPanel');
+        $edit_panel_content = CDOMElement::create('div','class:editPanelContent');
         $edit_panel->addChild($edit_panel_content);
         $edit_panel_content->addChild(self::getButtons($flags));
         $edit_panel_content->addChild(self::getAddOns($flags, $id_course, $id_course_instance, $id_user, $node_to_edit['id']));
@@ -665,74 +652,34 @@ class NodeEditingViewer {
         $node_data = getNodeDataFromPost($_POST);
         $_SESSION['sess_node_editing']['node_data'] = serialize($node_data);
 
-        /*
-        * vito, 17 luglio 2008: aggiunto il controllo su magic_quotes
-        */
-
-        if ( get_magic_quotes_gpc() /*|| get_magic_quotes_runtime()*/) {
-            $node_text = stripslashes($node_data['DataFCKeditor']);
-        }
-        else {
-            $node_text = $node_data['DataFCKeditor'];
-        }
+        $node_text = $node_data['DataFCKeditor'];
 
         if ($node_data['type'] == ADA_LEAF_WORD_TYPE OR $node_data['type'] == ADA_GROUP_WORD_TYPE) {
             // hyphenation
             $hyphenation_label = CDOMElement::create('DIV');
             $hyphenation_label->setAttribute('class', 'label_extended');
             $hyphenation_label->addChild(new CText(translateFN('hyphenation')));
-
-            if (get_magic_quotes_gpc() /*|| get_magic_quotes_runtime()*/) {
-                $node_hyphenation = stripslashes($node_data['DataFCK_hyphen']);
-            }
-            else {
-                $node_hyphenation = $node_data['DataFCK_hyphen'];
-            }
+            $node_hyphenation = $node_data['DataFCK_hyphen'];
             // semantic
             $semantic_label = CDOMElement::create('DIV');
             $semantic_label->setAttribute('class', 'label_extended');
             $semantic_label->addChild(new CText(translateFN('semantic')));
-
-            if (get_magic_quotes_gpc() /*|| get_magic_quotes_runtime()*/) {
-                $node_semantic = stripslashes($node_data['DataFCK_semantic']);
-            }
-            else {
-                $node_semantic = $node_data['DataFCK_semantic'];
-            }
+            $node_semantic = $node_data['DataFCK_semantic'];
             // grammar
             $grammar_label = CDOMElement::create('DIV');
             $grammar_label->setAttribute('class', 'label_extended');
             $grammar_label->addChild(new CText(translateFN('grammar')));
-
-            if (get_magic_quotes_gpc() /*|| get_magic_quotes_runtime()*/) {
-                $node_grammar = stripslashes($node_data['DataFCK_grammar']);
-            }
-            else {
-                $node_grammar = $node_data['DataFCK_grammar'];
-            }
+            $node_grammar = $node_data['DataFCK_grammar'];
             // notes
             $notes_label = CDOMElement::create('DIV');
             $notes_label->setAttribute('class', 'label_extended');
             $notes_label->addChild(new CText(translateFN('notes')));
-
-            if (get_magic_quotes_gpc() /*|| get_magic_quotes_runtime()*/) {
-                $node_notes = stripslashes($node_data['DataFCK_notes']);
-            }
-            else {
-                $node_notes = $node_data['DataFCK_notes'];
-            }
+            $node_notes = $node_data['DataFCK_notes'];
             // examples
             $examples_label = CDOMElement::create('DIV');
             $examples_label->setAttribute('class', 'label_extended');
             $examples_label->addChild(new CText(translateFN('examples')));
-
-            if (get_magic_quotes_gpc() /*|| get_magic_quotes_runtime()*/) {
-                $node_examples = stripslashes($node_data['DataFCK_examples']);
-            }
-            else {
-                $node_examples = $node_data['DataFCK_examples'];
-            }
-
+            $node_examples = $node_data['DataFCK_examples'];
         }
 
 

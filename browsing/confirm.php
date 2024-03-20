@@ -22,6 +22,7 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Forms\ConfirmPasswordForm;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 use Lynxlab\ADA\Main\User\ADAUser;
@@ -81,7 +82,6 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-include_once ROOT_DIR . '/include/Forms/ConfirmPasswordForm.inc.php';
 include_once ROOT_DIR.'/include/token_classes.inc.php';
 $self =  'registration';
 /**

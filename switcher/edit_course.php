@@ -20,6 +20,7 @@
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Forms\CourseModelForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+use Lynxlab\ADA\Main\Translator;
 
 use function Lynxlab\ADA\Main\Utilities\whoami;
 

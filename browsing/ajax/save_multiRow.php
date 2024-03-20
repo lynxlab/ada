@@ -11,6 +11,8 @@
  */
 
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\UserExtraModuleHtmlLib;
+use Lynxlab\ADA\Main\Translator;
 
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -75,7 +77,6 @@ BrowsingHelper::init($neededObjAr);
 /*
  * YOUR CODE HERE
 */
-require_once ROOT_DIR.'/include/HtmlLibrary/UserExtraModuleHtmlLib.inc.php';
 $languages = Translator::getLanguagesIdAndName();
 
 $retArray = array();

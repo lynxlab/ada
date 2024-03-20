@@ -16,6 +16,7 @@ use Hybridauth\HttpClient;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
 use function Lynxlab\ADA\Main\Utilities\redirect;
@@ -253,7 +254,7 @@ class hybridLogin extends abstractLogin
 				$lang = substr($user_profile->language, 0,2);
 			} else $lang = $user_profile->language;
 
-			foreach (\Translator::getSupportedLanguages() as $supportedLang) {
+			foreach (Translator::getSupportedLanguages() as $supportedLang) {
 				if (strtolower($supportedLang['codice_lingua']) === strtolower($lang)) {
 					$language = $supportedLang['id_lingua'];
 					break;

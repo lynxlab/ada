@@ -29,6 +29,7 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
 use function Lynxlab\ADA\Main\Utilities\redirect;
@@ -83,8 +84,6 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
 BrowsingHelper::init($neededObjAr);
 
 include_once ROOT_DIR.'/browsing/include/forget_functions.inc.php';
-include_once ROOT_DIR.'/include/form/phpOpenFormGen.inc.php';
-include_once ROOT_DIR.'/admin/include/htmladmoutput.inc.php';
 include_once ROOT_DIR.'/include/token_classes.inc.php';
 
 $common_dh= $GLOBALS['common_dh'];
@@ -425,7 +424,7 @@ switch ($op){
 
     $home = $userObj->getHomepage();
     $menu = '';
-    $op   = new htmladmoutput();
+    $op   = new HtmlAdmOutput();
 
     $dati = $op->formGetUsername('forget.php');
     $dati = $welcome.$dati;

@@ -13,6 +13,7 @@
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Forms\UserExtraForm;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\User\ADAUser;
 
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -78,7 +79,6 @@ BrowsingHelper::init($neededObjAr);
 /*
  * YOUR CODE HERE
 */
-require_once ROOT_DIR . '/include/Forms/UserExtraForm.inc.php';
 $languages = Translator::getLanguagesIdAndName();
 
 $retArray = array();

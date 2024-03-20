@@ -24,6 +24,7 @@
 use Lynxlab\ADA\Main\Forms\EditTranslationForm;
 use Lynxlab\ADA\Main\Forms\TranslationForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+use Lynxlab\ADA\Main\Translator;
 
 require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
 

@@ -12,7 +12,11 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\UserModuleHtmlLib;
+use Lynxlab\ADA\Main\Translator;
 
 use function Lynxlab\ADA\Main\Utilities\whoami;
 

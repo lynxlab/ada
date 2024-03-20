@@ -19,6 +19,7 @@
 use Lynxlab\ADA\Admin\AdminHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\Translator;
 
 use function Lynxlab\ADA\Main\Utilities\read_dir;
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -81,7 +82,6 @@ AdminHelper::init($neededObjAr);
 /*
  * YOUR CODE HERE
  */
-require_once ROOT_DIR . '/include/Forms/CourseModelForm.inc.php';
 $options = '';
 $languages = Translator::getSupportedLanguages();
 $files_news = read_dir(ROOT_DIR . '/docs/news', 'txt');

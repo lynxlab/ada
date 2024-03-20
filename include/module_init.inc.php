@@ -24,10 +24,7 @@ use function Lynxlab\ADA\Main\Utilities\today_dateFN;
  */
 require_once ROOT_DIR.'/include/module_init_functions.inc.php';
 
-require_once ROOT_DIR.'/include/translator_class.inc.php';
-
 // provvisoriamente includiamo anche le vecchie classi di oggetti HTML:
-require_once ROOT_DIR . '/include/HTML_element_classes.inc.php';
 require_once ROOT_DIR . '/include/navigation_history.inc.php';
 
 /**

@@ -17,6 +17,7 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Forms\UserProfileForm;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
+use Lynxlab\ADA\Main\Translator;
 
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -78,8 +79,6 @@ ServiceHelper::init($neededObjAr);
 /*
  * YOUR CODE HERE
  */
-require_once ROOT_DIR . '/include/Forms/UserProfileForm.inc.php';
-
 $languages = Translator::getLanguagesIdAndName();
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {

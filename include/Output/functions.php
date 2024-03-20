@@ -23,6 +23,8 @@
 
 namespace Lynxlab\ADA\Main\Output\Functions;
 
+use Lynxlab\ADA\Main\Translator;
+
 function translateFN($message, $language_from = null, $language_to = null)
 {
 

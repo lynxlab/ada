@@ -20,6 +20,7 @@
 use Lynxlab\ADA\Admin\AdminHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\Translator;
 
 use function Lynxlab\ADA\Main\Utilities\dirTree;
 use function Lynxlab\ADA\Main\Utilities\read_dir;
@@ -87,7 +88,6 @@ AdminHelper::init($neededObjAr);
 /*
  * YOUR CODE HERE
  */
-require_once ROOT_DIR . '/include/Forms/CourseModelForm.inc.php';
 $options = '';
 $languages = Translator::getSupportedLanguages();
 /**

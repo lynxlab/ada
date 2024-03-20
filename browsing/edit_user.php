@@ -26,6 +26,7 @@ use Lynxlab\ADA\Main\Forms\UserProfileForm;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\HtmlLibrary\UserExtraModuleHtmlLib;
+use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\User\ADAUser;
 
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -94,7 +95,6 @@ require_once ROOT_DIR . '/include/FileUploader.inc.php';
 /*
  * YOUR CODE HERE
  */
-require_once ROOT_DIR . '/include/Forms/UserProfileForm.inc.php';
 $self = whoami();
 $languages = Translator::getLanguagesIdAndName();
 
