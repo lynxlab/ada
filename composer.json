@@ -19,7 +19,8 @@
         "files": [
             "include/AMA/DBRead.php",
             "include/Output/functions.php",
-            "include/Utilities.php"
+            "include/Utilities.php",
+            "include/Upload.php"
         ]
     },
     "authors": [
