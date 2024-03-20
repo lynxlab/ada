@@ -11,6 +11,7 @@
 
 namespace Lynxlab\ADA\Main\AMA;
 
+use Lynxlab\ADA\Main\Stack\RBStack;
 use PDO;
 use PDOException;
 use PDOStatement;

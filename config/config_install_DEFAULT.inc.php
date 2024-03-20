@@ -419,11 +419,6 @@ $duplicate_dir_structure = 1;
 // TODO: vengono ancora utilizzati?
 // path to the ADA Middle API library  (absolute path)
 $ama_lib = ROOT_DIR.'/include/ama_class.inc.php';
-// path to the Stack library  library (absolute path)
-$stack_class =  ROOT_DIR.'/include/stack.inc.php';
-// path to the Rbstack library (absolute path)
-$rbstack_class = ROOT_DIR.'/include/rbstack.inc.php';
-
 
 //accepted mimetypes for upload
 // was $mimetypeHa + $mimetypeCodeHa in 1.7
