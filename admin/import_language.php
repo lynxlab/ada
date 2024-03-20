@@ -17,6 +17,7 @@
 use Lynxlab\ADA\Admin\AdminHelper;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\CORE\xml\XMLconverter;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
 
@@ -78,8 +79,6 @@ $self =  whoami();  // = admin!
  */
 AdminHelper::init($neededObjAr);
 
-include_once ROOT_DIR . '/include/xml_class.inc.php';
-
 /*
  * YOUR CODE HERE
  */
@@ -128,7 +127,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
         //  $array_lang = file($file_to_import);
         $lang_XML = file_get_contents($file_to_import);
-        $xmlObj = new xmlConverter();
+        $xmlObj = new XMLconverter();
         $xmlObj->setXml($lang_XML);
         $xmlObj->xml2array();
         $dataHa = $xmlObj->getdata();
@@ -163,7 +162,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 // inserisce le frasi di base in messaggi sistema dopo aver svuotato la tabella
                 $file_sistema_to_import = "../db/messaggi/ADA_messaggi_sistema.xml";
                 $lang_XML = file_get_contents($file_sistema_to_import);
-                $xmlObj = new xmlConverter();
+                $xmlObj = new XMLconverter();
                 $xmlObj->setXml($lang_XML);
                 $xmlObj->xml2array();
                 $dataHa = $xmlObj->getdata();

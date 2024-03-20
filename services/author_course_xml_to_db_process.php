@@ -10,6 +10,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\CORE\xml\course_xml_file_process;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 
 use function Lynxlab\ADA\Main\Utilities\mydebug;
@@ -73,8 +74,6 @@ ServiceHelper::init($neededObjAr);
 /*
  * YOUR CODE HERE
 */
-include_once ROOT_DIR .'/include/xml_parse_class.inc.php';
-
 // inizializzazione variabili
 $dati = '';
 $ris_ar = array();
@@ -122,7 +121,7 @@ if(!@is_dir($mediapath)) {
 
 // XML file process
 // utilizzo classe processa XML
-$xp = new course_xml_file_process ;
+$xp = new course_xml_file_process();
 
 $set_ha = array(
     'id_author' => $author_id,
