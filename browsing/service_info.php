@@ -16,8 +16,11 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\GuestHtmlLib;
+use Lynxlab\ADA\Main\Service\Service;
+use Lynxlab\ADA\Main\Service\ServiceImplementor;
 use Lynxlab\ADA\Main\User\ADAGuest;
 
+use function Lynxlab\ADA\Main\Service\Functions\_get_course_instance_info;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /* Questa versione è diversa dalla versione ADA;
@@ -98,11 +101,7 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-include_once ROOT_DIR.'/include/HtmlLibrary/BaseHtmlLib.inc.php';
-include_once ROOT_DIR.'/include/HtmlLibrary/GuestHtmlLib.inc.php';
 include_once ROOT_DIR.'/include/services_functions.inc.php';
-include_once ROOT_DIR.'/include/services_class.inc.php';
-
 
 $self = whoami();   // serve per scegliere il template
 
@@ -168,9 +167,9 @@ if (
       //$service_data = _get_service_info($_REQUEST['id_service']); // from services_functions
 
 
-      $serviceImplementationObj = Service_implementor::findImplementor($id_course);
+      $serviceImplementationObj = ServiceImplementor::findImplementor($id_course);
 
-      // $serviceImplementationObj = new Service_implementor($id_course);
+      // $serviceImplementationObj = new ServiceImplementor($id_course);
 
 	  $serviceImplementationAr = $serviceImplementationObj->get_implementor_info();
 

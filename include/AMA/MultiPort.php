@@ -24,6 +24,7 @@ use Lynxlab\ADA\Main\User\ADASwitcher;
 use Lynxlab\ADA\Main\User\ADAUser;
 use PDOException;
 
+use function Lynxlab\ADA\Main\Service\Functions\subscriptionType2stringFN;
 use function Lynxlab\ADA\Main\Utilities\today_dateFN;
 use function Lynxlab\ADA\Main\Utilities\today_timeFN;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
