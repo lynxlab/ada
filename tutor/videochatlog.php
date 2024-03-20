@@ -15,6 +15,8 @@ use Lynxlab\ADA\Main\Helper\TutorHelper;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * Base config file
  */

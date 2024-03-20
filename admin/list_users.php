@@ -21,6 +21,8 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * Base config file
  */

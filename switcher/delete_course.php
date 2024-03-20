@@ -21,6 +21,8 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Forms\CourseRemovalForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * Base config file
  */

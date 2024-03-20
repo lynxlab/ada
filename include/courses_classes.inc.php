@@ -1,10 +1,16 @@
 <?php
 
+use Lynxlab\ADA\CORE\HmtlElements\IList;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 use Lynxlab\ADA\Main\User\ADAUser;
+
+use function Lynxlab\ADA\Main\Utilities\dt2tsFN;
+use function Lynxlab\ADA\Main\Utilities\masort;
+use function Lynxlab\ADA\Main\Utilities\today_dateFN;
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 /**
  * Course, Course_instance and Student_class classes
@@ -112,7 +118,7 @@ class Course_Old {
 
 
     function tabled_explode_nodesFN($depth,$user_level,$id_parent,$id_profile,$order,$expand,$mode) {
-        $lObj = new Ilist();
+        $lObj = new IList();
         if ($order=='alfa') {
             $data =  $this->explode_nodes_iterativeFN($depth,$user_level,$id_parent,$id_profile,$order,$expand,$mode);
             $lObj->initList('1','1',1);

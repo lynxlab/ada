@@ -27,6 +27,8 @@ use Lynxlab\ADA\Main\User\ADAPractitioner;
 use Lynxlab\ADA\Main\User\ADAUser;
 use Lynxlab\ADA\Module\GDPR\GdprAPI;
 
+use function Lynxlab\ADA\Main\Utilities\redirect;
+
 /**
  * Base config file
  */

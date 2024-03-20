@@ -16,6 +16,8 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+
 /**
  * Base config file
  */

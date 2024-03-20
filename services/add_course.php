@@ -14,6 +14,8 @@
 use Lynxlab\ADA\Admin\HtmlAdmOutput;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /*
  * THE AUTHOR IS NOT ALLOWED TO CREATE A COURSE.
  * COURSES ARE CREATED BY THE ADMIN.

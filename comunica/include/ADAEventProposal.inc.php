@@ -3,6 +3,9 @@
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
+use function Lynxlab\ADA\Main\Utilities\get_timezone_offset;
+use function Lynxlab\ADA\Main\Utilities\sumDateTimeFN;
+
 /**
  *
  *

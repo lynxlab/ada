@@ -7,6 +7,8 @@
  * @version	0.1
  */
 
+use function Lynxlab\ADA\Main\Utilities\redirect;
+
 require_once(ROOT_DIR.'/include/node_classes.inc.php');
 abstract class NodeTest
 {

@@ -1,4 +1,7 @@
 <?php
+
+use function Lynxlab\ADA\Main\Utilities\redirect;
+
 /**
  * @package test
  * @author	Valerio Riva <valerio@lynxlab.com>

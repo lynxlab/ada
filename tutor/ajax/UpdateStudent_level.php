@@ -2,15 +2,17 @@
 
 /**
  * 22/10/2014
- * UpdateStudent_level.php - 
+ * UpdateStudent_level.php -
  *
  * @package
  * @author		sara <sara@lynxlab.com>
  * @copyright   Copyright (c) 2009-2013, Lynx s.r.l.
  * @license		http:www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link
- * 
+ *
  */
+
+use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -51,17 +53,17 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	$id_student=$_POST['id_student'];
 	$id_instance=$_POST['id_instance'];
 	$id_course = $_POST['id_course'];
-	    
+
 	$studenti_ar = array($id_student);
 	$info_course = $dh->get_course($id_course);
 	if (AMA_DataHandler::isError($info_course)) {
 	    $retArray=array("status"=>"ERROR","msg"=>  translateFN("Problemi nell'aggiornamento del livello").'<br/>'.translateFN('Provare ad aggiornare il report e ripetere l\'operazione'),"title"=>  translateFN('Notifica'));
-	} 
+	}
 	else {
 	    $updated = $dh->set_student_level($id_instance, $studenti_ar, $level);
 	    if(AMA_DataHandler::isError($updated)) {
 	       $retArray=array("status"=>"ERROR","msg"=>  translateFN("Problemi nell'aggiornamento del livello").'<br/>'.translateFN('Provare ad aggiornare il report e ripetere l\'operazione'),"title"=>  translateFN('Notifica'));
-	    } 
+	    }
 	    else {
 	        $retArray=array("status"=>"OK","msg"=>  translateFN("Hai aggiornato correttamente il livello dello studente").'<br />'.translateFN('Ricordarsi di aggiornare il report dopo aver finito le modifiche ai livelli degli studenti.'),"title"=>  translateFN('Notifica'));
 	    }
@@ -69,4 +71,3 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	 echo json_encode($retArray);
 }
 
- 

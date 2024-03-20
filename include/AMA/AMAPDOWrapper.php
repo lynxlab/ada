@@ -24,6 +24,8 @@ use PDO;
 use PDOException;
 use PDOStatement;
 
+use function Lynxlab\ADA\Main\Utilities\GetCallingMethodName;
+
 /**
  * AMAPDOWrapper maps calls to PEAR::DB or PEAR:MDBS methods to PDO methods.
  */
@@ -210,9 +212,9 @@ class AMAPDOWrapper
                     [
                         'eventClass' => 'CoreEvent',
                         'eventName' => 'AMAPDOPREGETALL',
-                        'eventPrefix' => \GetCallingMethodName(),
+                        'eventPrefix' => GetCallingMethodName(),
                     ],
-                    \GetCallingMethodName(),
+                    GetCallingMethodName(),
                     [
                         'query' => $query,
                         'params' => $params,
@@ -241,9 +243,9 @@ class AMAPDOWrapper
                 [
                     'eventClass' => 'CoreEvent',
                     'eventName' => 'AMAPDOPOSTGETALL',
-                    'eventPrefix' => \GetCallingMethodName(),
+                    'eventPrefix' => GetCallingMethodName(),
                 ],
-                \GetCallingMethodName(),
+                GetCallingMethodName(),
                 [
                     'query' => $query,
                     'params' => $params,

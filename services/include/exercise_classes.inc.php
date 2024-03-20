@@ -1,8 +1,11 @@
 <?php
 
-use function Lynxlab\ADA\Main\AMA\DBRead\get_max_idFN;
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 
-include_once "$root_dir/include/HtmlLibrary/BaseHtmlLib.inc.php";
+use function Lynxlab\ADA\Main\AMA\DBRead\get_max_idFN;
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 /**
  * @name ExerciseDAO
@@ -3017,7 +3020,7 @@ $http_root_dir = $GLOBALS['http_root_dir'];
 
         $div_rating = CDOMElement::create('div','id:exercise_rating');
         $label = CDOMElement::create('label','for:punteggio');
-        $label->addChild(new CText('Punteggio:').' ');
+        $label->addChild(new CText('Punteggio: '));
         $div_rating->addChild($label);
         $div_rating->addChild(CDOMElement::create('text',"id:punteggio,name:punteggio,value:{$exercise->getRating()}"));
         $form->addChild($div_rating);

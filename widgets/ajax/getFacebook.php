@@ -31,6 +31,12 @@
  *                                           if invalid or omitted 20 posts are displayed
  */
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+
 /**
  * Common initializations and include files
  */

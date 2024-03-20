@@ -11,6 +11,8 @@
 
 namespace Lynxlab\ADA\Main\AMA;
 
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+
 class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 {
     protected static $instance = null;

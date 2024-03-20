@@ -14,6 +14,8 @@ use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Module\StudentsGroups\Groups;
 use Lynxlab\ADA\Module\StudentsGroups\StudentsGroupsActions;
 
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * Base config file
  */

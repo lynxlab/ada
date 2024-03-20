@@ -1,4 +1,9 @@
 <?php
+
+use Lynxlab\ADA\Main\AMA\MultiPort;
+
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+
 /**
  * @package 	import/export course
  * @author		giorgio <g.consorti@lynxlab.com>

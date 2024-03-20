@@ -21,6 +21,9 @@ use Lynxlab\ADA\CORE\HmtlElements\Table;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_course;
+use function Lynxlab\ADA\Main\Utilities\today_dateFN;
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 
 require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 

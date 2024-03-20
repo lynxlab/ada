@@ -23,6 +23,10 @@ namespace Lynxlab\ADA\Admin;
 
 use Lynxlab\ADA\Main\form\PhpOpenFormGen;
 
+use function Lynxlab\ADA\Main\Utilities\dirTree;
+use function Lynxlab\ADA\Main\Utilities\read_dir;
+use function Lynxlab\ADA\Main\Utilities\today_dateFN;
+
 class HtmlAdmOutput
 {
     // Metodi

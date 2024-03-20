@@ -1,4 +1,7 @@
 <?php
+
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+
 /**
  * NEWSLETTER MODULE.
  *

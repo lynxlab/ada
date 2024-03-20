@@ -28,6 +28,8 @@ use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLActions;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLException;
 use Lynxlab\ADA\Module\CollaboraACL\FileACL;
 
+use function Lynxlab\ADA\Main\Utilities\leggidir;
+
 /**
  * Common initializations and include files
  */

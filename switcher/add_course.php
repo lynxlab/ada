@@ -19,6 +19,9 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Forms\CourseModelForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * Base config file
  */

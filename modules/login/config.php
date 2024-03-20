@@ -12,6 +12,8 @@
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Login\abstractLogin;
 
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 ini_set('display_errors', '0'); error_reporting(E_ALL);
 /**
  * Base config file

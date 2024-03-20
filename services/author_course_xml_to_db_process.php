@@ -12,6 +12,9 @@
 
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 
+use function Lynxlab\ADA\Main\Utilities\mydebug;
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * Base config file
  */

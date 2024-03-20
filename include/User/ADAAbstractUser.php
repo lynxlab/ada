@@ -23,6 +23,10 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\History;
 
+use function Lynxlab\ADA\Main\Utilities\aasort;
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
+
 /**
  * AdaAbstractUser class:
  *

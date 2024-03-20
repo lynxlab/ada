@@ -16,6 +16,8 @@ use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadException;
 use Lynxlab\ADA\Module\EtherpadIntegration\Pads;
 use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
 
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * Base config file
  */

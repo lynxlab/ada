@@ -15,6 +15,8 @@ use Lynxlab\ADA\Main\Forms\FileUploadForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\User\ADAUser;
 
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  *
  * @package

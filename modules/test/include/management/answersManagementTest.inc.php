@@ -1,4 +1,7 @@
 <?php
+
+use function Lynxlab\ADA\Main\Utilities\redirect;
+
 /**
  * @package test
  * @author	Valerio Riva <valerio@lynxlab.com>
@@ -79,12 +82,12 @@ class AnswersManagementTest {
 	 * Function that executes answer logic (add / mod)
 	 *
 	 * @global db $dh
-	 * 
+	 *
 	 * @return string
 	 */
 	protected function action() {
 		$dh = $GLOBALS['dh'];
-		
+
 		$tmp = $dh->test_getNodesByParent($this->question['id_nodo']);
 		$risposte = array();
 		if (!empty($tmp)) {
@@ -98,7 +101,7 @@ class AnswersManagementTest {
 					'ordine' => $v['ordine'],
 				);
 			}
-		}		
+		}
 
 		$case_sensitive = false;
 		$open_cloze = array(ADA_NORMAL_TEST_SIMPLICITY,ADA_MEDIUM_TEST_SIMPLICITY);
@@ -141,7 +144,7 @@ class AnswersManagementTest {
 				$result = true;
 				$tipo = ADA_LEAF_ANSWER.ADA_NO_OPEN_TEST_ANSWER.ADA_CASE_SENSITIVE_TEST.'000';
 				foreach($post as $k=>$v) {
-					$t = $tipo;					
+					$t = $tipo;
 					$t{1} = ($v['other_answer'])?ADA_OPEN_TEST_ANSWER:ADA_NO_OPEN_TEST_ANSWER;
 					$t{2} = ($v['case_sensitive'])?ADA_CASE_INSENSITIVE_TEST:ADA_CASE_SENSITIVE_TEST;
 
@@ -174,12 +177,12 @@ class AnswersManagementTest {
 
 				if ($result) {
 					$get_topic = (isset($_GET['topic'])?'&topic='.$_GET['topic']:'');
-					if ($_POST['return'] == 'here') {						
+					if ($_POST['return'] == 'here') {
 						redirect(MODULES_TEST_HTTP.'/edit_answers.php?id_question='.$this->question['id_nodo'].$get_topic);
 					}
 					else {
 						redirect(MODULES_TEST_HTTP.'/index.php?id_test='.$this->test['id_nodo'].$get_topic.'#liQuestion'.$this->question['id_nodo']);
-					}					
+					}
 				}
 			}
 		}
@@ -188,7 +191,7 @@ class AnswersManagementTest {
 			$div = CDOMElement::create('div','id:insertImage,class:hide');
 			$div->setAttribute('title',translateFN('Inserisci Immagine'));
 			$div->setAttribute('style','text-align:right;');
-			
+
 			$labelUrl = CDOMElement::create('label','for:inputUrl');
 			$labelUrl->addChild(new CText(translateFN('Url').':'));
 			$inputUrl = CDOMElement::create('text','id:inputUrl');
@@ -196,7 +199,7 @@ class AnswersManagementTest {
 			$div->addChild($inputUrl);
 			$div->addChild(new CText('<br />'));
 
-			
+
 
 			$labelTitle = CDOMElement::create('label','for:inputTitle');
 			$labelTitle->addChild(new CText(translateFN('Titolo').':'));
@@ -263,7 +266,7 @@ class AnswersManagementTest {
 				require_once(MODULES_TEST_PATH.'/include/forms/answersStandardFormTest.inc.php');
 				$form = new AnswersStandardFormTest($risposte,$question,$case_sensitive,$open_answer);
 			break;
-		
+
 			case ADA_CLOZE_TEST_TYPE:
 				require_once(MODULES_TEST_PATH.'/include/forms/answersClozeFormTest.inc.php');
 

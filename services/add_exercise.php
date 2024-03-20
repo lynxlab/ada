@@ -16,6 +16,8 @@ use Lynxlab\ADA\Main\HtmlLibrary\ServicesModuleHtmlLib;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\get_max_idFN;
+use function Lynxlab\ADA\Main\Utilities\today_dateFN;
+use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file

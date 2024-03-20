@@ -41,7 +41,8 @@ $neededObjAr = array(
 );
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = whoami();
+$self = whoami
+();
 
 /**
  * This will at least import in the current symbol table the following vars.

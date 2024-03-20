@@ -20,6 +20,9 @@ use Lynxlab\ADA\Main\Helper\TutorHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\HtmlLibrary\TutorModuleHtmlLib;
 
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * Base config file
  */

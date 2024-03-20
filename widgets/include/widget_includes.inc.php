@@ -22,13 +22,6 @@
  *
  */
 
-
-
-/**
- * utility functions
- */
-require_once ROOT_DIR.'/include/utilities.inc.php';
-
 /**
  * Functions used  to check session objects
  */

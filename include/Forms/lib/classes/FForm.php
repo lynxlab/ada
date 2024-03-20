@@ -22,6 +22,8 @@
 
 namespace Lynxlab\ADA\Main\Forms\lib\classes;
 
+use Lynxlab\ADA\CORE\html4\CBaseAttributesElement;
+
 abstract class FForm
 {
     public function __construct()
@@ -390,7 +392,7 @@ abstract class FForm
      * @param \CBaseAttributesElement $element
      * @return FForm
      */
-    public function addCDOM(\CBaseAttributesElement $element)
+    public function addCDOM(CBaseAttributesElement $element)
     {
         $this->controls[] = $element;
         return $this;

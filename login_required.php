@@ -25,6 +25,8 @@ use Lynxlab\ADA\Module\GDPR\GdprAcceptPoliciesForm;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
 use Lynxlab\ADA\Module\Login\abstractLogin;
 
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 require_once realpath(dirname(__FILE__)) . '/config_path.inc.php';
 
 /**
@@ -53,8 +55,6 @@ $self= whoami();
 /*
  * YOUR CODE HERE
  */
-require_once ROOT_DIR . '/include/Forms/UserLoginForm.inc.php';
-require_once ROOT_DIR . '/include/Forms/UserRegistrationForm.inc.php';
 require_once ROOT_DIR . '/include/token_classes.inc.php';
 
 $redirectURL = $_SESSION['subscription_page'];

@@ -17,6 +17,8 @@
 
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 
+use function Lynxlab\ADA\Main\Utilities\sumDateTimeFN;
+
 require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 
 /**

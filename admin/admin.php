@@ -18,6 +18,8 @@ use Lynxlab\ADA\Admin\AdminHelper;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
 
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * Base config file
  */

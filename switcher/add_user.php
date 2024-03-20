@@ -24,6 +24,8 @@ use Lynxlab\ADA\Main\User\ADAPractitioner;
 use Lynxlab\ADA\Main\User\ADASwitcher;
 use Lynxlab\ADA\Main\User\ADAUser;
 
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * Base config file
  */

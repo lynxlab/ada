@@ -28,6 +28,8 @@ use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\HtmlLibrary\UserExtraModuleHtmlLib;
 use Lynxlab\ADA\Main\User\ADAUser;
 
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * Base config file
  */

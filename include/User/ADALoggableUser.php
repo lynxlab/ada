@@ -25,6 +25,8 @@ use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
 use TypeError;
 
+use function Lynxlab\ADA\Main\Utilities\redirect;
+
 abstract class ADALoggableUser extends ADAGenericUser
 {
     public function __construct($user_dataHa = [])

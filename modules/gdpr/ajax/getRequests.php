@@ -17,6 +17,9 @@ use Lynxlab\ADA\Module\GDPR\GdprRequestType;
 use Ramsey\Uuid\Uuid;
 use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
 
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
+
 /**
  * Base config file
  */

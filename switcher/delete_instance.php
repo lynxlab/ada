@@ -21,6 +21,8 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Forms\CourseInstanceRemovalForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * Base config file
  */

@@ -17,6 +17,7 @@ use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_course;
+use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file

@@ -14,6 +14,8 @@
 
 namespace Lynxlab\ADA\CORE\HmtlElements;
 
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 class Form extends HTMLElement
 {
     /*

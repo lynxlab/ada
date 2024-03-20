@@ -12,6 +12,8 @@
 
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * This module is responsible for generating client id and client secret pairs for each user
  * requesting them. Typically, this is done by a switcher. The generated (or retreived from the

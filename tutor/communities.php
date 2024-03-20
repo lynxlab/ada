@@ -16,6 +16,8 @@ use Lynxlab\ADA\Main\Helper\TutorHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+
 /**
  * Base config file
  * This is generated from ADA Eclipse Developer Plugin, pls check if file path is ok!

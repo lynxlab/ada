@@ -15,6 +15,9 @@ use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CourseEvent;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 
+use function Lynxlab\ADA\Main\Utilities\today_dateFN;
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+
 abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler
 {
     protected static $instance = null;

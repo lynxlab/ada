@@ -31,6 +31,8 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
+use function Lynxlab\ADA\Main\Utilities\redirect;
+
 require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
 /**
  * Clear node and layout variable in $_SESSION

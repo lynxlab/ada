@@ -18,6 +18,8 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
+use function Lynxlab\ADA\Main\Utilities\redirect;
+
 /**
  * google login provider implementation
  */

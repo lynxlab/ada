@@ -19,6 +19,9 @@ use Lynxlab\ADA\Main\Media\MediaViewer;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 
+use function Lynxlab\ADA\Main\Utilities\check_javascriptFN;
+use function Lynxlab\ADA\Main\Utilities\read_dir;
+
 // Classes Structure:
 // Node
 //     Exercise

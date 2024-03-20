@@ -15,6 +15,9 @@ use Lynxlab\ADA\Module\GDPR\GdprActions;
 use Lynxlab\ADA\Module\GDPR\GdprException;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
 
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
+
 /**
  * Base config file
  */

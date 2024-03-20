@@ -24,6 +24,10 @@ use Lynxlab\ADA\Main\User\ADASwitcher;
 use Lynxlab\ADA\Main\User\ADAUser;
 use PDOException;
 
+use function Lynxlab\ADA\Main\Utilities\today_dateFN;
+use function Lynxlab\ADA\Main\Utilities\today_timeFN;
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+
 class MultiPort
 {
     /**
@@ -1308,7 +1312,7 @@ class MultiPort
         return $sub_course_dataHa;
     }
 
-    public function get_service_max_level($user_id)
+    public static function get_service_max_level($user_id)
     {
         /**
          * get_service_max_level

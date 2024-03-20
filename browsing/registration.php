@@ -10,6 +10,8 @@ use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Main\User\ADAUser;
 use Lynxlab\ADA\Module\GDPR\GdprAcceptPoliciesForm;
 
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * registration.php file
  *
@@ -75,7 +77,6 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-require_once ROOT_DIR.'/include/Forms/UserRegistrationForm.inc.php';
 include_once ROOT_DIR.'/include/token_classes.inc.php';
 
 $self =  whoami();

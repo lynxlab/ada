@@ -22,6 +22,10 @@ use Lynxlab\ADA\Main\User\ADAGuest;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 
+use function Lynxlab\ADA\Main\Utilities\check_javascriptFN;
+use function Lynxlab\ADA\Main\Utilities\get_timezone_offset;
+use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
+
 require_once ROOT_DIR . '/comunica/include/ADAEventProposal.inc.php';
 
 class CommunicationModuleHtmlLib

@@ -20,6 +20,9 @@ use Lynxlab\ADA\Admin\AdminHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 
+use function Lynxlab\ADA\Main\Utilities\read_dir;
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * Base config file
  */

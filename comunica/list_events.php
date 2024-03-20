@@ -17,6 +17,10 @@ use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
+use function Lynxlab\ADA\Main\Utilities\today_dateFN;
+use function Lynxlab\ADA\Main\Utilities\today_timeFN;
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * Base config file
  */
@@ -102,7 +106,7 @@ $banner = include ROOT_DIR.'/include/banner.inc.php';
 
 // default status:
 if ((empty($status)) or (!isset($status))) {
-  $status = translateFN('Lista appuntamenti del').' '.today_dateFN().' - '.today_timeFN();
+  $status = translateFN('Lista appuntamenti del').' ' . today_dateFN() . ' - ' . today_timeFN();
 }
 else {
   $status = urldecode($status);

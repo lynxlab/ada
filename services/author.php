@@ -14,6 +14,9 @@
 
 use Lynxlab\ADA\CORE\HmtlElements\IList;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 /**
  * Base config file
@@ -180,12 +183,8 @@ if (isset($err_msg)) {
 
 $lObj = new IList() ;
 $data = array (
-    crea_link(translateFN('report'),'author_report.php'),
-//    crea_link('crea corso vuoto','add_course.php'),
-//    crea_link("crea corso da modello","add_course.php?modello=1"),
-    //crea_link("invia corso","../upload_file/upload_xml_file_form.php"),
-    //crea_link("nuovo nodo","addnode.php"),
-    crea_link(translateFN('modifica il tuo profilo'),"edit_author.php?id=$sess_id_user"),
+    BaseHtmlLib::link('author_report.php', translateFN('report')),
+    BaseHtmlLib::link("edit_author.php?id=$sess_id_user", translateFN('modifica il tuo profilo')),
   );
 
 $lObj->setList($data);

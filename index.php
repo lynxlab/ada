@@ -28,6 +28,10 @@ use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
 use Lynxlab\ADA\Module\Login\abstractLogin;
 
+use function Lynxlab\ADA\Main\Utilities\getUserIpAddr;
+use function Lynxlab\ADA\Main\Utilities\redirect;
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 if (is_file(realpath(dirname(__FILE__)).'/config_path.inc.php')) {
 	require_once realpath(dirname(__FILE__)).'/config_path.inc.php';
 } else {

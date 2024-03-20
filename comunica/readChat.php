@@ -13,6 +13,9 @@
  * @version		0.1
  */
 
+use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * Base config file
  */

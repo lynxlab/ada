@@ -12,6 +12,8 @@
 
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
+use function Lynxlab\ADA\Main\Utilities\delTree;
+
 /**
  * Base config file
 */

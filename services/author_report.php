@@ -11,6 +11,10 @@
  */
 
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 
 /**
  * Base config file

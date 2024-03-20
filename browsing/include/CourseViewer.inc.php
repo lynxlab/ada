@@ -1,4 +1,13 @@
 <?php
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\User\ADALoggableUser;
+
+use function Lynxlab\ADA\Main\Utilities\substr_gentle;
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
+
 /**
  * class CourseViewer
  *
@@ -840,9 +849,9 @@ class CourseViewer
 
     $list_item = CDOMElement::create('span');
     $list_item->addChild(self::getDisclosureElement($params, $external_params));
-    $container = \CDOMElement::create('div','class:listItem container');
-    $container->addChild(\CDOMElement::create('a','name:'.$params['node']['id_nodo']));
-    $row = \CDOMElement::create('div','class:listItem row');
+    $container = CDOMElement::create('div','class:listItem container');
+    $container->addChild(CDOMElement::create('a','name:'.$params['node']['id_nodo']));
+    $row = CDOMElement::create('div','class:listItem row');
     $container->addChild($row);
 
     /**
@@ -859,8 +868,8 @@ class CourseViewer
         $img = str_replace([ROOT_DIR, '\\'], [HTTP_ROOT_DIR, '/'], ADA_UPLOAD_PATH . ADA_DEFAULT_AVATAR);
       }
       if (!is_null($img)) {
-        $avatar = \CDOMElement::create('div','class:avatar');
-        $avatar->addChild(\CDOMElement::create('img','class:ui small circular image,src:'.$img));
+        $avatar = CDOMElement::create('div','class:avatar');
+        $avatar->addChild(CDOMElement::create('img','class:ui small circular image,src:'.$img));
         $row->addChild($avatar);
       }
     }
@@ -868,13 +877,13 @@ class CourseViewer
     /**
      * second item: content
      */
-    $itemContent = \CDOMElement::create('div','class:listItem content');
+    $itemContent = CDOMElement::create('div','class:listItem content');
     $row->addChild($itemContent);
 
     /**
      * content first item: details
      */
-    $details = \CDOMElement::create('div','class:details');
+    $details = CDOMElement::create('div','class:details');
     $itemContent->addChild($details);
 
     $titleContainer = CDOMElement::create('div','class:noteTitle');
@@ -939,7 +948,7 @@ class CourseViewer
 		$link_zoom->setAttribute('onclick',"\$j('#messagePreview".$params['node']['id_nodo']."').slideToggle();");
 		$link_zoom->setAttribute('title',translateFN('Anteprima Messaggio'));
 		$link_zoom->setAttribute('class', 'previewMessage ui tiny icon button');
-		$link_zoom->addChild(\CDOMElement::create('i','class:zoom in icon'));
+		$link_zoom->addChild(CDOMElement::create('i','class:zoom in icon'));
 		// $zoom = CDOMElement::create('img','src:img/zoom.png, width:16, height:16');
 		// $link_zoom->addChild($zoom);
 		$actionsContainer->addChild($link_zoom);

@@ -14,6 +14,8 @@
 
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /* Questa versione consento solo la sottoscrizione ad un servizio ma non la registrazione
  * deve essere passato l'id del servizio (id_corse?)
  * l'utente deve essere in sessione

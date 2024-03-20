@@ -17,10 +17,7 @@
  * @version		0.1
  */
 
-/**
- * utility functions
- */
-require_once ROOT_DIR.'/include/utilities.inc.php';
+use function Lynxlab\ADA\Main\Utilities\today_dateFN;
 
 /**
  * Functions used in this module

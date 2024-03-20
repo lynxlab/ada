@@ -16,6 +16,8 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Helper\TutorHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 
+use function Lynxlab\ADA\Main\Utilities\leggidir;
+
 /**
  * Base config file
  */

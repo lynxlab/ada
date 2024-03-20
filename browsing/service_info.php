@@ -18,6 +18,8 @@ use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\GuestHtmlLib;
 use Lynxlab\ADA\Main\User\ADAGuest;
 
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /* Questa versione è diversa dalla versione ADA;
  * se non è passato nessun parametro,
  * 		redirect a /info.php

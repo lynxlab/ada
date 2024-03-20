@@ -1,6 +1,8 @@
 <?php
 /* FUNCTIONS */
 
+use function Lynxlab\ADA\Main\Utilities\mydebug;
+
 function make_image_mapFN($children_ha,$user_level,$id_profile) {
     $sess_id_node = $_SESSION['sess_id_node'];
     $media_path = $GLOBALS['media_path'];

@@ -17,6 +17,9 @@ use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLActions;
 use Lynxlab\ADA\Module\CollaboraACL\FileACL;
 
+use function Lynxlab\ADA\Main\Utilities\leggidir;
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * Base config file
  */

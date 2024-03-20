@@ -9,6 +9,12 @@
 
 namespace Lynxlab\ADA\Module\GDPR;
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
+
 /**
  * Class for the gpdr accept policies form
  *
@@ -43,18 +49,18 @@ class GdprAcceptPoliciesForm extends GdprAbstractForm {
 			if (array_key_exists('policies', $dataAr)) {
 				$firstElClass = 'active';
 				/** @var GdprPolicy $policy */
-				$accordion = \CDOMElement::create('div', 'id:policies-accordion,class:ui fluid accordion');
-				$accordion->addChild(\CDOMElement::create('a','name:privacypolicies'));
+				$accordion = CDOMElement::create('div', 'id:policies-accordion,class:ui fluid accordion');
+				$accordion->addChild(CDOMElement::create('a','name:privacypolicies'));
 				if (array_key_exists('extraclass', $dataAr)) {
 					$accordion->setAttribute('class', $accordion->getAttribute('class').' '.$dataAr['extraclass']);
 				}
 				foreach ($dataAr['policies'] as $i=>$policy) {
 					$acceptedPolicies[$policy->getPolicy_content_id()] = false;
-					$title = \CDOMElement::create('div', 'class:'.(($i==0) ? $firstElClass.' ':'').'title');
-					$title->addChild(\CDOMElement::create('i','class:dropdown icon'));
+					$title = CDOMElement::create('div', 'class:'.(($i==0) ? $firstElClass.' ':'').'title');
+					$title->addChild(CDOMElement::create('i','class:dropdown icon'));
 					// policy title, left side
-					$spanTitle = \CDOMElement::create('span','class:policy header');
-					$spanTitle->addChild(new \CText($policy->getTitle()));
+					$spanTitle = CDOMElement::create('span','class:policy header');
+					$spanTitle->addChild(new CText($policy->getTitle()));
 					$title->addChild($spanTitle);
 					// policy accepted labels, right side
 					$labelColor = 'black';
@@ -87,17 +93,17 @@ class GdprAcceptPoliciesForm extends GdprAbstractForm {
 						$icon = 'warning';
 					}
 
-					$statusContainer = \CDOMElement::create('div','class: policy status container');
+					$statusContainer = CDOMElement::create('div','class: policy status container');
 					$title->addChild($statusContainer);
 					if (isset($status)) {
-						$spanTitle = \CDOMElement::create('span','class:policy status ui '.$labelColor.' label');
+						$spanTitle = CDOMElement::create('span','class:policy status ui '.$labelColor.' label');
 						if (isset($labelTitle) && strlen($labelTitle)>0) {
 							$spanTitle->setAttribute('title', $labelTitle);
 						} else {
 							$spanTitle->setAttribute('title', translateFN($status));
 						}
 						// $spanTitle->addChild(new \CText(translateFN($status)));
-						$spanTitle->addChild(\CDOMElement::create('i','class:ui icon '.$icon));
+						$spanTitle->addChild(CDOMElement::create('i','class:ui icon '.$icon));
 						unset($status);
 						$statusContainer->addChild($spanTitle);
 					}
@@ -106,25 +112,25 @@ class GdprAcceptPoliciesForm extends GdprAbstractForm {
 						$status = "FACOLTATIVA";
 						$labelColor = 'purple';
 						$icon = 'empty checkbox';
-						$spanTitle = \CDOMElement::create('span','class:policy status ui '.$labelColor.' label');
+						$spanTitle = CDOMElement::create('span','class:policy status ui '.$labelColor.' label');
 						if (isset($labelTitle) && strlen($labelTitle)>0) {
 							$spanTitle->setAttribute('title', $labelTitle);
 						} else {
 							$spanTitle->setAttribute('title', translateFN($status));
 						}
 						// $spanTitle->addChild(new \CText(translateFN($status)));
-						$spanTitle->addChild(\CDOMElement::create('i','class:ui icon '.$icon));
+						$spanTitle->addChild(CDOMElement::create('i','class:ui icon '.$icon));
 						unset($status);
 						$statusContainer->addChild($spanTitle);
 					}
 					// policy content
-					$content = \CDOMElement::create('div','class:'.(($i==0) ? $firstElClass.' ':'').'content');
-					$textdiv = \CDOMElement::create('div','class:policy text');
-					$textdiv->addChild(new \CText($policy->getContent()));
+					$content = CDOMElement::create('div','class:'.(($i==0) ? $firstElClass.' ':'').'content');
+					$textdiv = CDOMElement::create('div','class:policy text');
+					$textdiv->addChild(new CText($policy->getContent()));
 					$content->addChild($textdiv);
 
 					// accept and deny radio buttons
-					$fieldsContainer = \CDOMElement::create('div','class:inline fields');
+					$fieldsContainer = CDOMElement::create('div','class:inline fields');
 					if ($isRegistration && $policy->getMandatory()) {
 						$fieldsContainer->setAttribute('data-mandatory-policy', '1');
 					}
@@ -133,14 +139,14 @@ class GdprAcceptPoliciesForm extends GdprAbstractForm {
 						0 => array('type' => 'deny', 'label' => 'Nego il consenso')
 					);
 					foreach ($radios as $value => $rData) {
-						$radioContainer = \CDOMElement::create('div','class:field');
-						$radio = \CDOMElement::create('radio','value:'.$value.',name:acceptPolicy['.$policy->getPolicy_content_id().'],id:'.$rData['type'].'_'.$policy->getPolicy_content_id());
+						$radioContainer = CDOMElement::create('div','class:field');
+						$radio = CDOMElement::create('radio','value:'.$value.',name:acceptPolicy['.$policy->getPolicy_content_id().'],id:'.$rData['type'].'_'.$policy->getPolicy_content_id());
 						if (!$isRegistration && (($value === 1 && $acceptedPolicies[$policy->getPolicy_content_id()] === true) ||
 							($value === 0 && $acceptedPolicies[$policy->getPolicy_content_id()] === false))) {
 							$radio->setAttribute('checked', 'checked');
 						}
-						$label = \CDOMElement::create('label','class:'.$rData['type'].',for:'.$rData['type'].'_'.$policy->getPolicy_content_id());
-						$label->addChild(new \CText(translateFN($rData['label'])));
+						$label = CDOMElement::create('label','class:'.$rData['type'].',for:'.$rData['type'].'_'.$policy->getPolicy_content_id());
+						$label->addChild(new CText(translateFN($rData['label'])));
 						$radioContainer->addChild($radio);
 						$radioContainer->addChild($label);
 						$fieldsContainer->addChild($radioContainer);
@@ -151,15 +157,15 @@ class GdprAcceptPoliciesForm extends GdprAbstractForm {
 				}
 				$formObj->addCDOM($accordion);
 
-				$alert = \CDOMElement::create('div','class:ui small modal,id:acceptPoliciesMSG');
-				$aHeader = \CDOMElement::create('div','class:header');
-				$aHeader->addChild(new \CText(translateFN('Attenzione')));
-				$aContent = \CDOMElement::create('div','class:content');
-				$aContent->addChild(new \CText('<i class="large warning icon"></i>'.translateFN('Per '.($isRegistration ? 'registrarsi': 'continuare' ).', è necessario prestare il consenso a tutte le politiche di gestione dei dati personali')));
+				$alert = CDOMElement::create('div','class:ui small modal,id:acceptPoliciesMSG');
+				$aHeader = CDOMElement::create('div','class:header');
+				$aHeader->addChild(new CText(translateFN('Attenzione')));
+				$aContent = CDOMElement::create('div','class:content');
+				$aContent->addChild(new CText('<i class="large warning icon"></i>'.translateFN('Per '.($isRegistration ? 'registrarsi': 'continuare' ).', è necessario prestare il consenso a tutte le politiche di gestione dei dati personali')));
 
-				$aActions = \CDOMElement::create('div','class:actions');
-				$button = \CDOMElement::create('div','class:ui red button');
-				$button->addChild(new \CText(translateFN('OK')));
+				$aActions = CDOMElement::create('div','class:actions');
+				$button = CDOMElement::create('div','class:ui red button');
+				$button->addChild(new CText(translateFN('OK')));
 				$aActions->addChild($button);
 
 				$alert->addChild($aHeader);

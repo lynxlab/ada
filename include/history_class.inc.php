@@ -1,4 +1,10 @@
 <?php
+
+use Lynxlab\ADA\CORE\HmtlElements\Table;
+
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
+
 /**
  * History class
  *

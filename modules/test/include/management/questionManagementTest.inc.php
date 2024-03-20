@@ -1,4 +1,7 @@
 <?php
+
+use function Lynxlab\ADA\Main\Utilities\redirect;
+
 /**
  * @package test
  * @author	Valerio Riva <valerio@lynxlab.com>
@@ -39,7 +42,7 @@ class QuestionManagementTest extends ManagementTest {
 		if (AMATestDataHandler::isError($test) || empty($test)) {
 			return;
 		}
-		$this->test = $test;			
+		$this->test = $test;
 	}
 
 	/**
@@ -186,7 +189,7 @@ class QuestionManagementTest extends ManagementTest {
 					$res = $this->saveQuestion($data);
 					unset($data);
 
-					if (!AMATestDataHandler::isError($res)) {						
+					if (!AMATestDataHandler::isError($res)) {
 						unset($new_q);
 						$get_topic = (isset($_GET['topic'])?'&topic='.$_GET['topic']:'');
 						redirect(MODULES_TEST_HTTP.'/index.php?id_test='.$this->test['id_nodo'].$get_topic.'#liQuestion'.$res);
@@ -388,7 +391,7 @@ class QuestionManagementTest extends ManagementTest {
 	 * @param int $id_nodo_parent parent node id
 	 * @param string $type node type string
 	 * @param int $cloze_type cloze type id
-	 * 
+	 *
 	 * @return QuestionStandardFormTest|QuestionOpenFormTest|QuestionSelectClozeFormTest|QuestionDragDropClozeFormTest
 	 */
 	protected function instantiateObject($id_test, $data, $id_nodo_parent, $type, $cloze_type = null) {
@@ -440,7 +443,7 @@ class QuestionManagementTest extends ManagementTest {
 	 *
 	 * @param array $data question data to be saved in database
 	 * @param int $question_id question node id
-	 * 
+	 *
 	 * @return node id in case of successful insert or boolean
 	 */
 	protected function saveQuestion($data,$question_id=null) {

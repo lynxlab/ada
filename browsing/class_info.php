@@ -20,6 +20,8 @@ ini_set('display_errors', '1');
 use Lynxlab\ADA\CORE\HmtlElements\Table;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * Base config file
  */

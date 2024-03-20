@@ -16,6 +16,7 @@
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
+use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file

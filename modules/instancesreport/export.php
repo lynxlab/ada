@@ -15,6 +15,8 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
+use function Lynxlab\ADA\Main\Utilities\dt2tsFN;
+
 /**
  * Base config file
  */
@@ -81,9 +83,9 @@ if (is_array($instancesAr) && count($instancesAr)>0) {
                 if (is_array($last) && count($last)>0) {
                     $last = reset($last);
                     if (array_key_exists('Data', $last)) {
-                        $lastVisit = new \DateTime();
+                        $lastVisit = new DateTime();
                         // Extract date only.
-                        $lastVisit->setTimestamp(\dt2tsFN(explode(" ", $last['Data'])[0]));
+                        $lastVisit->setTimestamp(dt2tsFN(explode(" ", $last['Data'])[0]));
                     }
                 }
 

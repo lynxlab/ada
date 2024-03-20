@@ -16,6 +16,8 @@ use Lynxlab\ADA\Module\GDPR\GdprActions;
 use Lynxlab\ADA\Module\GDPR\GdprLoginRepeaterForm;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
 
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 ini_set('display_errors', '0'); error_reporting(E_ALL);
 /**
  * Base config file

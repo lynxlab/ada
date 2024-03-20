@@ -2,6 +2,10 @@
 
 use Lynxlab\ADA\Main\User\ADAGuest;
 
+use function Lynxlab\ADA\Main\Utilities\delTree;
+use function Lynxlab\ADA\Main\Utilities\redirect;
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * INSTALLATION SCRIPT.
  *

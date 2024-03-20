@@ -15,7 +15,11 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
+use function Lynxlab\ADA\Main\Utilities\redirect;
+use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file

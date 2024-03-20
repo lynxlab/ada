@@ -12,6 +12,8 @@
  * @version		0.1
  */
 
+use function Lynxlab\ADA\Main\Utilities\getUserIpAddr;
+
 /**
  * DB and interface constants
  * This section can be modified  by the installer
@@ -125,7 +127,6 @@ if (!defined('PORTAL_NAME')) {
 $allowedIPs = [];
 if (!defined('MAINTENANCE_MODE')) {
     if (!empty($allowedIPs)) {
-        require_once ROOT_DIR . '/include/utilities.inc.php';
         define('MAINTENANCE_MODE', true !== in_array(getUserIpAddr(), $allowedIPs) );
     } else {
         define('MAINTENANCE_MODE', false);

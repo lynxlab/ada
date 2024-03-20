@@ -1,4 +1,10 @@
 <?php
+
+use Lynxlab\ADA\Main\AMA\MultiPort;
+
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
+
 /**
  * @package 	import/export course
  * @author		giorgio <g.consorti@lynxlab.com>
@@ -76,7 +82,7 @@ class AMARepositoryDataHandler extends \AMA_Common_DataHandler {
 						return $el['id_tester'] == $element['id_tester'];
 					});
 					$provider = reset($provider);
-					$pdh = \AMA_DataHandler::instance(\MultiPort::getDSN($provider['puntatore']));
+					$pdh = \AMA_DataHandler::instance(MultiPort::getDSN($provider['puntatore']));
 					$courseData = $pdh->get_course($element['id_course']);
 					if (!\AMA_DB::isError($courseData)) {
 						$cachedValues['courseTitles'][$element['id_course']] = $courseData['titolo'];

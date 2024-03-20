@@ -20,6 +20,10 @@ use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 
+use function Lynxlab\ADA\Main\Utilities\get_timezone_offset;
+use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * vito, 24/09/2008
  *

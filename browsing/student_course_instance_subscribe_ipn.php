@@ -15,6 +15,7 @@
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_user;
+use function Lynxlab\ADA\Main\Utilities\today_dateFN;
 
 /**
  * Base config file

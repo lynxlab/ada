@@ -9,6 +9,9 @@
  * @copyright Copyright (c) 2010, Lynx s.r.l.
  * @license   http://opensource.org/licenses/gpl-2.0.php GNU Public License
  */
+
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+
 /**
  * Description of Course_instance
  *

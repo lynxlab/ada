@@ -15,6 +15,8 @@
 use Lynxlab\ADA\CORE\HmtlElements\Tform;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 
+use function Lynxlab\ADA\Main\Utilities\sumDateTimeFN;
+
 /**
  * Base config file
  */

@@ -15,6 +15,10 @@
 use Lynxlab\ADA\CORE\HmtlElements\Table;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * Base config file
  */

@@ -12,6 +12,9 @@
 
 use Lynxlab\ADA\Main\Helper\TutorHelper;
 
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
+
 /**
  * Base config file
  */

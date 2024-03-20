@@ -18,6 +18,8 @@
 
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * Base config file
  */

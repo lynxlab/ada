@@ -16,6 +16,8 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+
 ini_set('display_errors', '0'); error_reporting(E_ALL);
 /**
  * Base config file

@@ -1,6 +1,13 @@
 <?php
 
+use Lynxlab\ADA\CORE\HmtlElements\Table;
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
+use Lynxlab\ADA\Main\HtmlLibrary\GuestHtmlLib;
 
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 function _get_services_to_subscribe($orderBy = 'service',$minLevel = 1,$maxLevel = 5){
 

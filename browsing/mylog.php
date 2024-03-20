@@ -20,6 +20,9 @@ use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_user_from_DB;
+use function Lynxlab\ADA\Main\Utilities\today_dateFN;
+use function Lynxlab\ADA\Main\Utilities\today_timeFN;
+use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -211,7 +214,7 @@ if (isset($op) && ($op=="export")){
     echo $log_text;
     exit;
 } else {
-    $date = today_dateFN()." ".today_timeFN()."\n";
+    $date = today_dateFN() . " " . today_timeFN() . "\n";
     $log_form = new Form();
     $log_data= array(
     array(

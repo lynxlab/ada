@@ -29,6 +29,8 @@ namespace Lynxlab\ADA\Main\AMA;
 
 use Lynxlab\ADA\Main\User\ADAUser;
 
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+
 /**
  * AMA_DataHandler.
  *

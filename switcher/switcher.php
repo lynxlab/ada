@@ -3,6 +3,8 @@
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 header('Location: list_courses.php');
 exit();
 /**

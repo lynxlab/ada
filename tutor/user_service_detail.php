@@ -20,6 +20,8 @@ use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\HtmlLibrary\EguidanceSession;
 use Lynxlab\ADA\Main\HtmlLibrary\TutorModuleHtmlLib;
 
+use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+
 /**
  * Base config file
  */

@@ -15,6 +15,8 @@
 use Lynxlab\ADA\CORE\HmtlElements\Table;
 use Lynxlab\ADA\Main\Helper\TutorHelper;
 
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * Base config file
  */

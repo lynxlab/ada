@@ -9,6 +9,9 @@
 
 namespace Lynxlab\ADA\Module\GDPR;
 
+use Lynxlab\ADA\CORE\html4\CBaseAttributesElement;
+use Lynxlab\ADA\Main\Forms\lib\classes\FForm;
+
 /**
  * class for handling all application forms
  *
@@ -17,7 +20,7 @@ namespace Lynxlab\ADA\Module\GDPR;
  */
 require_once(ROOT_DIR.'/include/Forms/lib/classes/FForm.inc.php');
 
-abstract class GdprAbstractForm extends \FForm {
+abstract class GdprAbstractForm extends FForm {
 
 	private $withSubmit;
 	private $isReadOnly;
@@ -33,13 +36,13 @@ abstract class GdprAbstractForm extends \FForm {
 		$this->withSubmit = false;
 	}
 
-	public function addCDOM(\CBaseAttributesElement $element) {
-		$this->_controls[] = $element;
+	public function addCDOM(CBaseAttributesElement $element) {
+		$this->controls[] = $element;
 		return $this;
 	}
 
 	public function getHtml() {
-		if (strlen($this->getName())<=0) $this->setName($this->_id);
+		if (strlen($this->getName())<=0) $this->setName($this->id);
 		if ($this->withSubmit === false) {
 			$this->removeSubmit();
 		}
@@ -54,12 +57,12 @@ abstract class GdprAbstractForm extends \FForm {
 	public function toSemanticUI() {
 		if (!$this->doNotSemanticUI) {
 			$this->setCustomJavascript('
-					$j("#'.$this->_id.' select").addClass("ui form input");
-					$j("#'.$this->_id.'").parents("div.fform").addClass("ui");
-					$j("#error_form_'.$this->_id.'").addClass("ui red message");', true);
+					$j("#'.$this->id.' select").addClass("ui form input");
+					$j("#'.$this->id.'").parents("div.fform").addClass("ui");
+					$j("#error_form_'.$this->id.'").addClass("ui red message");', true);
 			if ($this->withSubmit) {
 				$this->setCustomJavascript('
-					$j("#submit_'.$this->_id.'").addClass("ui button");',true);
+					$j("#submit_'.$this->id.'").addClass("ui button");',true);
 			}
 		}
 		return $this;
@@ -68,16 +71,16 @@ abstract class GdprAbstractForm extends \FForm {
 	public function addJSDataProperty($key, $value) {
 		if (is_string($value)) $value = '"'.$value.'"';
 		else if (is_bool($value)) $value = ($value ? 'true' : 'false');
-		$this->setCustomJavascript('$j("#'.$this->_id.'").data("'.$key.'",'.$value.');', true);
+		$this->setCustomJavascript('$j("#'.$this->id.'").data("'.$key.'",'.$value.');', true);
 	}
 
 	public function withUIClassOnLi() {
-		$this->setCustomJavascript('$j("#'.$this->_id.' ol.form>li.form").addClass("ui field");', true);
+		$this->setCustomJavascript('$j("#'.$this->id.' ol.form>li.form").addClass("ui field");', true);
 		return $this;
 	}
 
 	private function removeSubmit() {
-		$this->setCustomJavascript('$j("#'.$this->_id.' >p.submit").remove();');
+		$this->setCustomJavascript('$j("#'.$this->id.' >p.submit").remove();');
 	}
 
 	/**
