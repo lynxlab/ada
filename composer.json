@@ -18,7 +18,8 @@
         },
         "files": [
             "include/AMA/DBRead.php",
-            "include/Output/functions.php"
+            "include/Output/functions.php",
+            "include/Utilities.php"
         ]
     },
     "authors": [
