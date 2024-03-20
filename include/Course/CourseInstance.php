@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Course_instance file
+ * CourseInstance file
  *
  * PHP version 5
  *
@@ -10,10 +11,12 @@
  * @license   http://opensource.org/licenses/gpl-2.0.php GNU Public License
  */
 
+namespace Lynxlab\ADA\Main\Course;
+
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 /**
- * Description of Course_instance
+ * Description of CourseInstance
  *
  * @package   Default
  * @author    vito <vito@lynxlab.com>
@@ -21,94 +24,104 @@ use function Lynxlab\ADA\Main\Utilities\ts2dFN;
  * @license   http://opensource.org/licenses/gpl-2.0.php GNU Public License
  */
 
-/*
- * @FIXME
- * La classe che viene estesa (Course_instance_Old) non viene mai usata direttamente nel codice
- * Si potrebbe quindi fondere le due classi (Course_instance e Course_instance_Old) ed eliminare la classe
- * padre (Course_instance_Old)
- */
-
-class Course_instance extends Course_instance_Old
+class CourseInstance extends AbstractCourseInstance
 {
-    public function __construct($courseInstanceId) {
+    public function __construct($courseInstanceId)
+    {
         parent::__construct($courseInstanceId);
     }
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
-    public function getCourseId() {
+    public function getCourseId()
+    {
         return $this->id_corso;
     }
-    public function getStartDate() {
-        if($this->data_inizio > 0) {
+    public function getStartDate()
+    {
+        if ($this->data_inizio > 0) {
             return ts2dFN($this->data_inizio);
         }
         return '';
     }
-    public function getDuration() {
+    public function getDuration()
+    {
         return $this->durata;
     }
-    public function getScheduledStartDate() {
-        if($this->data_inizio_previsto > 0) {
+    public function getScheduledStartDate()
+    {
+        if ($this->data_inizio_previsto > 0) {
             return ts2dFN($this->data_inizio_previsto);
         }
         return '';
     }
-    public function getLayoutId() {
+    public function getLayoutId()
+    {
         return $this->id_layout;
     }
-    public function getEndDate() {
-        if($this->data_fine > 0) {
+    public function getEndDate()
+    {
+        if ($this->data_fine > 0) {
             return ts2dFN($this->data_fine);
         }
         return '';
     }
-    public function getStatus() {
-        return $this->status;
-    }
-    public function isFull() {
+
+    public function isFull()
+    {
         return $this->full == true;
     }
 
-    public function isStarted() {
+    public function isStarted()
+    {
         return $this->data_inizio > 0;
     }
 
-    public function getSelfInstruction() {
+    public function getSelfInstruction()
+    {
         return $this->self_instruction;
     }
 
-    public function getSelfRegistration() {
+    public function getSelfRegistration()
+    {
         return $this->self_registration;
     }
 
-    public function getPrice() {
+    public function getPrice()
+    {
         return $this->price;
     }
 
-    public function getTitle() {
+    public function getTitle()
+    {
         return $this->title;
     }
 
-    public function getDurationSubscription() {
+    public function getDurationSubscription()
+    {
         return $this->duration_subscription;
     }
 
-    public function getStartLevelStudent() {
+    public function getStartLevelStudent()
+    {
         return $this->start_level_student;
     }
 
-    public function getOpenSubscription() {
+    public function getOpenSubscription()
+    {
         return $this->open_subscription;
     }
-    public function getDurationHours() {
-    	return $this->duration_hours;
+    public function getDurationHours()
+    {
+        return $this->duration_hours;
     }
-    public function getServiceLevel() {
-    	return $this->service_level;
+    public function getServiceLevel()
+    {
+        return $this->service_level;
     }
-    public function isTutorCommunity() {
+    public function isTutorCommunity()
+    {
         return (int) $this->getServiceLevel() === ADA_SERVICE_TUTORCOMMUNITY;
     }
-
 }
