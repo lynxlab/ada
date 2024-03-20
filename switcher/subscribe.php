@@ -12,6 +12,7 @@
 
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Forms\UserFindForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
@@ -94,7 +95,7 @@ require_once 'include/Subscription.inc.php';
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $canSubscribeUser = false;
-    if($courseInstanceObj instanceof  Course_instance && $courseInstanceObj->isFull()) {
+    if($courseInstanceObj instanceof  CourseInstance && $courseInstanceObj->isFull()) {
         $startStudentLevel = $courseInstanceObj->start_level_student;
     }
 
@@ -108,7 +109,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($subscriberObj instanceof ADAUser) {
                 $result = $dh->student_can_subscribe_to_course_instance($subscriberObj->getId(), $courseInstanceId);
                 if (!AMA_DataHandler::isError($result) && $result !== false) {
-                    $canSubscribeUser = $courseInstanceObj instanceof Course_instance &&
+                    $canSubscribeUser = $courseInstanceObj instanceof CourseInstance &&
                     					$courseInstanceObj->isFull() &&
                     					$courseInstanceObj->getServiceLevel() != ADA_SERVICE_TUTORCOMMUNITY;
                 }
@@ -120,7 +121,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             	 * if the course instance belongs to a service of type
             	 * ADA_SERVICE_TUTORCOMMUNITY
             	 */
-            	$canSubscribeUser = $courseInstanceObj instanceof Course_instance &&
+            	$canSubscribeUser = $courseInstanceObj instanceof CourseInstance &&
             						$courseInstanceObj->isFull() &&
             						$courseInstanceObj->getServiceLevel() == ADA_SERVICE_TUTORCOMMUNITY;
             } else $canSubscribeUser = false;
@@ -156,7 +157,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $data = new CText('');
     }
 } else {
-    if($courseInstanceObj instanceof  Course_instance && $courseInstanceObj->isFull()) {
+    if($courseInstanceObj instanceof  CourseInstance && $courseInstanceObj->isFull()) {
         $formData = array(
             'id_course_instance' => $courseInstanceObj->getId()
         );

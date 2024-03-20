@@ -11,6 +11,8 @@
 
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Forms\FileUploadForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\Token\TokenManager;
@@ -342,7 +344,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 else {
     if(!($courseObj instanceof Course) || !$courseObj->isFull()) {
         $data = new CText(translateFN('Corso non trovato'));
-    } elseif(!($courseInstanceObj instanceof Course_instance) || !$courseInstanceObj->isFull()) {
+    } elseif(!($courseInstanceObj instanceof CourseInstance) || !$courseInstanceObj->isFull()) {
         $data = new CText(translateFN('Classe non trovata'));
     } else {
         $data = new FileUploadForm();

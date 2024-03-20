@@ -13,6 +13,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\User\ADAGuest;
 
@@ -199,7 +200,7 @@ $label = translateFN('mappa');
 
 //$help = translateFN('mappa');
 
-$menuOptions['self_instruction'] = isset($courseInstanceObj) && $courseInstanceObj instanceof Course_instance ? $courseInstanceObj->getSelfInstruction() : 0;
+$menuOptions['self_instruction'] = isset($courseInstanceObj) && $courseInstanceObj instanceof CourseInstance ? $courseInstanceObj->getSelfInstruction() : 0;
 $menuOptions['id_course'] = $sess_id_course;
 $menuOptions['id_course_instance'] = $sess_id_course_instance;
 $menuOptions['id_node'] = $sess_id_node;

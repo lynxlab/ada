@@ -12,6 +12,8 @@
  * @version		0.2
  */
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_user;
@@ -73,9 +75,6 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  * e.g.: node_classes.inc.php:990
  */
 BrowsingHelper::init($neededObjAr);
-
-require_once ROOT_DIR . '/include/CourseInstance.inc.php';
-
 
 /*
  * INCLUSIONE SPECIFICA PER PAYPAL
@@ -159,7 +158,7 @@ if (!is_file($lockfile)) {
             /**
              * Instance Object
              */
-            $instanceObj = new course_instance($instanceId);
+            $instanceObj = new CourseInstance($instanceId);
             $price = $instanceObj->getPrice();
             $user_level = $instanceObj->getStartLevelStudent();
             $course = $dh->get_course($courseId);

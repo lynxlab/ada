@@ -12,12 +12,17 @@
  * @version		0.2
  */
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLActions;
 use Lynxlab\ADA\Module\CollaboraACL\FileACL;
 
 use function Lynxlab\ADA\Main\Utilities\leggidir;
+use function Lynxlab\ADA\Main\Utilities\today_dateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -75,8 +80,6 @@ $self =  whoami();
  * e.g.: node_classes.inc.php:990
  */
 BrowsingHelper::init($neededObjAr);
-
-include_once ROOT_DIR.'/include/Course.inc.php';
 
 /*
  * YOUR CODE HERE
@@ -178,7 +181,7 @@ if (isset($_GET['file'])){
            $html = translateFN("Nessun file inviato dagli studenti di questa classe.");
 	} else {
           if (defined('MODULES_COLLABORAACL') && MODULES_COLLABORAACL) {
-            $aclDH = AMACollaboraACLDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+            $aclDH = AMACollaboraACLDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
             $filesACL = $aclDH->findBy('FileACL', [ 'id_corso' => $id_course, 'id_istanza' => $id_course_instance, 'id_nodo' => $id_node ] );
             $elencofile = array_filter($elencofile, function($fileel) use ($filesACL, $userObj) {
               $elPath = str_replace(ROOT_DIR. DIRECTORY_SEPARATOR, '', $fileel['path_to_file']);

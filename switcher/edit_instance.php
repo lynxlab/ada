@@ -19,6 +19,9 @@
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Forms\CourseInstanceForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 
@@ -90,7 +93,7 @@ include_once("$root_dir/comunica/include/ChatRoom.inc.php");
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
         $data = new CText(translateFN('Corso non trovato'));
-    } else if(!($courseInstanceObj instanceof Course_instance) || !$courseInstanceObj->isFull()) {
+    } else if(!($courseInstanceObj instanceof CourseInstance) || !$courseInstanceObj->isFull()) {
         $data = new CText(translateFN('Classe non trovata'));
     } else {
         $form = new CourseInstanceForm();
@@ -217,7 +220,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 } else {
     if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
         $data = new CText(translateFN('Corso non trovato'));
-    } else if(!($courseInstanceObj instanceof Course_instance) || !$courseInstanceObj->isFull()) {
+    } else if(!($courseInstanceObj instanceof CourseInstance) || !$courseInstanceObj->isFull()) {
         $data = new CText(translateFN('Classe non trovata'));
     } else {
 

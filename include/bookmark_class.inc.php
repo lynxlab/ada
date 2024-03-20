@@ -19,6 +19,8 @@
 //
 //
 
+use Lynxlab\ADA\Main\Course\Student;
+
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 /**************************
@@ -731,7 +733,7 @@ function get_class_tagsFN($sess_id_node,$sess_id_course_instance,$ordering='s'){
 				//???
 				break;
 			case 's': // somiglianza tra activity index degli autori con quello dell'utente
-				$student_classObj = New Student_class($sess_id_course_instance);
+				$student_classObj = new Student($sess_id_course_instance);
 				// conviene farsi dare la lista e ordinarla una volta per tutte ?
 				$student_listAr =  $student_classObj->student_list;
 				foreach ($student_listAr as $student){

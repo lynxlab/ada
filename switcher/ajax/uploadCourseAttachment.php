@@ -9,6 +9,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
 /**

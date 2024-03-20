@@ -15,6 +15,7 @@
 use Lynxlab\ADA\CORE\HmtlElements\Form;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Forms\AdvancedSearchForm;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
@@ -84,7 +85,7 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-if ($courseInstanceObj instanceof Course_instance) {
+if ($courseInstanceObj instanceof CourseInstance) {
     $self_instruction = $courseInstanceObj->getSelfInstruction();
 }
 if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))

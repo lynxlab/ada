@@ -13,6 +13,8 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
@@ -139,7 +141,7 @@ if (!isset($status)) {
     $status = '';
 }
 
-$courseInstanceObj = new Course_instance($id_course_instance);
+$courseInstanceObj = new CourseInstance($id_course_instance);
 $courseObj = new Course($courseInstanceObj->id_corso);
 $course_title = $courseObj->titolo;
 //show course istance name if isn't empty - valerio

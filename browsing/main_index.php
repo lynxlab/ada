@@ -13,6 +13,7 @@
 use Lynxlab\ADA\CORE\HmtlElements\Form;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
@@ -89,7 +90,7 @@ include_once 'include/cache_manager.inc.php';
 include_once CORE_LIBRARY_PATH.'/includes.inc.php';
 include_once ROOT_DIR.'/include/bookmark_class.inc.php';
 
-if (isset ($courseInstanceObj) && $courseInstanceObj instanceof Course_instance) {
+if (isset ($courseInstanceObj) && $courseInstanceObj instanceof CourseInstance) {
     $self_instruction = $courseInstanceObj->getSelfInstruction();
 }
 

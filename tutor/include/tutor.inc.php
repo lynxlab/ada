@@ -2,6 +2,7 @@
 
 use Lynxlab\ADA\CORE\HmtlElements\Table;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\Main\Course\Student;
 use Lynxlab\ADA\Main\form\PhpOpenFormGen;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 
@@ -109,23 +110,23 @@ function get_courses_tutorFN($id_user, $isSuper=false) {
 // @author giorgio 14/mag/2013
 // added type parameter that defaults to 'xls'
 function get_student_coursesFN($id_course_instance,$id_course,$order="",$type='HTML',$speed_mode=true) {
-// wrapper for Class Student_class (in courses_class.inc.php)
+// wrapper for Class \Lynxlab\ADA\Main\Course\Student
 	// 2nd parameter empty string means get all students
-    $student_classObj = New Student_class($id_course_instance, '');
+    $student_classObj = new Student($id_course_instance, '');
     return $student_classObj->get_class_reportFN($id_course,$order,'',$type,$speed_mode);
 
 }
 
 function get_student_courses_from_dbFN($id_course,$id_course_instance,$order="") {
-// wrapper for Class Student_class (in courses_class.inc.php)
-    $student_classObj = New Student_class($id_course_instance);
+// wrapper for Class \Lynxlab\ADA\Main\Course\Student
+    $student_classObj = new Student($id_course_instance);
     return $student_classObj->get_class_report_from_dbFN($id_course,$id_course_instance,$order);
 
 }
 
 function get_student_indexattFN($id_course_instance,$id_course,$id_student) {
-// wrapper for Class Student_class (in courses_class.inc.php)
-    $student_classObj = New Student_class($id_course_instance);
+// wrapper for Class \Lynxlab\ADA\Main\Course\Student
+    $student_classObj = new Student($id_course_instance);
     $student_dataHa =  $student_classObj->find_student_index_att($id_course,$id_course_instance,$id_student);
     if  (is_array($student_dataHa) ) {
         $dati_stude[0]['name_index_att'] = translateFN("Indice attivit&agrave;");

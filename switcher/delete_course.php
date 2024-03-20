@@ -18,6 +18,7 @@
 
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Forms\CourseRemovalForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 
@@ -78,7 +79,6 @@ $self = whoami();
  */
 SwitcherHelper::init($neededObjAr);
 
-require_once ROOT_DIR . '/include/Forms/CourseRemovalForm.inc.php';
 /*
  * YOUR CODE HERE
  */

@@ -1,4 +1,7 @@
 <?php
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
 /**
  * @package test
  * @author	Valerio Riva <valerio@lynxlab.com>
@@ -87,12 +90,12 @@ class SurveyTest extends RootTest
 	 * - get all questions that have at least one associated answer
 	 * - for each answer count how many people submitted that answer
 	 *
-	 * @param Course_instance $course_instanceObj
+	 * @param \Lynxlab\ADA\Main\Course\CourseInstance $course_instanceObj
 	 * @param AMATestDataHandler $dh the datahandler to use, or null to get it from GLOBALS
 	 *
 	 * @return array[]|NULL[]
 	 */
-	public static function getSurveysReportForCourseInstance(Course_instance $course_instanceObj, AMATestDataHandler $dh = null) {
+	public static function getSurveysReportForCourseInstance(CourseInstance $course_instanceObj, AMATestDataHandler $dh = null) {
 		if (is_null($dh)) $dh = $GLOBALS['dh'];
 		$noAnswerIndex = -1; // special index to store not answered questions
 		$noAnswerLabel = translateFN('Non risponde');

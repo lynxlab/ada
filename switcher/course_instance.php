@@ -11,6 +11,8 @@
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\User\ADAUser;
@@ -101,7 +103,7 @@ if(!($courseObj instanceof Course) || !$courseObj->isFull()) {
     $data = new CText(translateFN('Corso non trovato'));
     $data=$data->getHtml();
 }
-else if(!($courseInstanceObj instanceof Course_instance) || !$courseInstanceObj->isFull()) {
+else if(!($courseInstanceObj instanceof CourseInstance) || !$courseInstanceObj->isFull()) {
     $data = new CText(translateFN('Istanza corso non trovata'));
     $data=$data->getHtml();
 }

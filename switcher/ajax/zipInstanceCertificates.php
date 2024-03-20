@@ -10,6 +10,7 @@
  */
 
 use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\User\ADAUser;
 use PHPMailer\PHPMailer\Exception;
@@ -75,8 +76,8 @@ if (array_key_exists('selectedIds', $_REQUEST) && is_array($_REQUEST['selectedId
 	$selectedIs = $_REQUEST['selectedIds'];
 	if (count($selectedIs) <= MAX_CERTDOWNLOAD_COUNT) {
 		if (array_key_exists('id_instance', $_REQUEST) && intval($_REQUEST['id_instance'])>0) {
-			$courseInstanceObj = new Course_instance(intval($_REQUEST['id_instance']));
-			if ($courseInstanceObj instanceof Course_instance && $courseInstanceObj->full==1) {
+			$courseInstanceObj = new CourseInstance(intval($_REQUEST['id_instance']));
+			if ($courseInstanceObj instanceof CourseInstance && $courseInstanceObj->full==1) {
 				if(!$courseInstanceObj->isTutorCommunity() && defined('ADA_PRINT_CERTIFICATE') && (ADA_PRINT_CERTIFICATE)) {
 					$subscriptions = Subscription::findSubscriptionsToClassRoom($courseInstanceObj->getId(), true);
 					if (is_array($subscriptions) && count($subscriptions)>0) {

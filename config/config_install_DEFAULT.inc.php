@@ -567,7 +567,7 @@ define('ADA_SESSION_TIME', 		300);
 // default code language
 define('ADA_DEFAULT_LANGUAGE', "italiano");
 
-// Parameters for evaluation  of acts  (used by class Student_class)
+// Parameters for evaluation  of acts  (used by class \Lynxlab\ADA\Main\Course\Student)
 define("NOTE_PAR",          7);
 define("HIST_PAR",          1);
 define("MSG_PAR",           5);

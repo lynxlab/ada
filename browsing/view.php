@@ -17,6 +17,8 @@ use Lynxlab\ADA\CORE\HmtlElements\Form;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\User\ADAGuest;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
@@ -101,7 +103,7 @@ BrowsingHelper::init($neededObjAr);
 /** DYNAMIC mode
  *
  */
-if (isset($courseInstanceObj) && $courseInstanceObj instanceof Course_instance) {
+if (isset($courseInstanceObj) && $courseInstanceObj instanceof CourseInstance) {
     $self_instruction = $courseInstanceObj->getSelfInstruction();
 } else $self_instruction = null;
 
@@ -410,7 +412,7 @@ switch($id_profile) {
 /*  gli studenti dei corsi in autoistruzione non devono poter inviare media etc etc
 		 *  TODO: va riportata la modifica fatta per ADA Icon
 		 * */
-		if ($id_profile == AMA_TYPE_STUDENT && isset($courseInstanceObj) && $courseInstanceObj instanceof Course_instance && $courseInstanceObj->getSelfInstruction()){
+		if ($id_profile == AMA_TYPE_STUDENT && isset($courseInstanceObj) && $courseInstanceObj instanceof CourseInstance && $courseInstanceObj->getSelfInstruction()){
 		  $mod_enabled = FALSE;
 		  $com_enabled = FALSE;
 		} else if ($id_profile == AMA_TYPE_VISITOR) {
@@ -623,7 +625,7 @@ switch ($op){
 				 */
 				'isActive' => 0, // !$courseObj->getIsPublic() && !in_array($user_status, array(ADA_STATUS_COMPLETED, ADA_STATUS_TERMINATED)),
 				'courseId' => $courseObj->getId(),
-				'courseInstanceId' => (isset($courseInstanceObj) && $courseInstanceObj instanceof Course_instance) ? $courseInstanceObj->getId() : -1,
+				'courseInstanceId' => (isset($courseInstanceObj) && $courseInstanceObj instanceof CourseInstance) ? $courseInstanceObj->getId() : -1,
 				'userId' => $userObj->getId()
 			];
 
@@ -632,7 +634,7 @@ switch ($op){
 			$layout_dataAR['widgets']['badges'] = [
 				'isActive' => defined('MODULES_BADGES') && MODULES_BADGES,
 				'courseId' => $courseObj->getId(),
-				'courseInstanceId' => (isset($courseInstanceObj) && $courseInstanceObj instanceof Course_instance) ? $courseInstanceObj->getId() : -1,
+				'courseInstanceId' => (isset($courseInstanceObj) && $courseInstanceObj instanceof CourseInstance) ? $courseInstanceObj->getId() : -1,
 				'userId' => $userObj->getId()
 			];
 
@@ -661,7 +663,7 @@ switch ($op){
 		if (defined('MODULES_COLLABORAACL') && MODULES_COLLABORAACL) {
 			$layout_dataAR['widgets']['collaborafiles'] = [
 				'courseId' => $courseObj->getId(),
-				'courseInstanceId' => (isset($courseInstanceObj) && $courseInstanceObj instanceof Course_instance) ? $courseInstanceObj->getId() : -1,
+				'courseInstanceId' => (isset($courseInstanceObj) && $courseInstanceObj instanceof CourseInstance) ? $courseInstanceObj->getId() : -1,
 				'nodeId' => $nodeObj->id,
 				'userId' => $userObj->getId(),
 				'doneCallback' => 'nodeAttachmentsDone',

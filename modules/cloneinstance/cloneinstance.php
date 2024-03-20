@@ -45,7 +45,7 @@ require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
 
 // globals set by SwitcherHelper::init
 /** @var \Course $courseObj */
-/** @var \Course_instance $courseInstanceObj */
+/** @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj */
 
 /**
  * @var AMACloneInstanceDataHandler $dh

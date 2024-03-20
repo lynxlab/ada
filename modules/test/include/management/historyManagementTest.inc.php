@@ -17,7 +17,7 @@ class HistoryManagementTest extends TutorManagementTest {
 	 *
 	 * @param string $what 'test' or 'survey' string
 	 * @param Course $courseObj course object reference
-	 * @param Course_instance $course_instanceObj course instance object reference
+	 * @param \Lynxlab\ADA\Main\Course\CourseInstance $course_instanceObj course instance object reference
 	 * @param int $id_student id student
 	 * @param int $id_test id test
 	 * @param int $id_history_test id history test

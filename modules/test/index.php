@@ -13,6 +13,8 @@
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
 use function Lynxlab\ADA\Main\Utilities\redirect;
@@ -105,7 +107,7 @@ if (!AMATestDataHandler::isError($test)) {
 	$courseObj = new Course($sess_id_course); //present in session
 	$course_title = $courseObj->titolo;
 
-	$courseInstanceObj = new Course_instance($sess_id_course_instance); //present in session
+	$courseInstanceObj = new CourseInstance($sess_id_course_instance); //present in session
 	if (!empty($courseInstanceObj->title)) {
 		$course_title.= ' - '.$courseInstanceObj->title;
 	}

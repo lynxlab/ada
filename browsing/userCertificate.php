@@ -12,6 +12,8 @@
  */
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
@@ -49,9 +51,6 @@ if (!$forcereturn) {
     */
 
     require_once ROOT_DIR . '/include/module_init.inc.php';
-
-    require_once ROOT_DIR .'/include/Course.inc.php';
-    require_once ROOT_DIR .'/include/CourseInstance.inc.php';
 
     /**
     * This will at least import in the current symbol table the following vars.
@@ -116,8 +115,8 @@ if (isset($_GET['id_instance'])){
 }
 
 //instance
-if (!(isset($courseInstanceObj) && $courseInstanceObj instanceof Course_instance)) {
-    $courseInstanceObj =  new Course_instance($id_instance);
+if (!(isset($courseInstanceObj) && $courseInstanceObj instanceof CourseInstance)) {
+    $courseInstanceObj =  new CourseInstance($id_instance);
 }
 $courseId = $courseInstanceObj->getCourseId();
 

@@ -14,6 +14,8 @@
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Media\MediaViewer;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
@@ -625,7 +627,7 @@ function main_indexFN($id_toc='',$depth=1,$user_level=1,$user_history='',$user_t
 function class_main_indexFN($id_toc='',$depth=1,$id_profile,$order='struct',$expand=1){
   //  this version is intended for  tutor  or author use
   $sess_id_course_instance = $GLOBALS['sess_id_course_instance'];
-  $CourseInstanceObj = new Course_instance($sess_id_course_instance);
+  $CourseInstanceObj = new CourseInstance($sess_id_course_instance);
   $index = $CourseInstanceObj->class_main_indexFN($id_toc,$depth,$id_profile,$order,$expand);
   return $index;
 
@@ -636,7 +638,7 @@ function forum_main_indexFN($id_toc='',$depth=1,$id_profile,$order='chrono',$id_
   //  this version is intended for  tutor  and studente use
   // only notes are showed
   $sess_id_course_instance = $GLOBALS['sess_id_course_instance'];
-  $CourseInstanceObj = new Course_instance($sess_id_course_instance);
+  $CourseInstanceObj = new CourseInstance($sess_id_course_instance);
   $index = $CourseInstanceObj->forum_main_indexFN($id_toc,$depth,$id_profile,$order,$id_student,$mode);
   return $index;
 }

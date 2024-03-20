@@ -11,6 +11,7 @@
  */
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Translator;
 
@@ -76,8 +77,6 @@ $self =  'download';
  * e.g.: node_classes.inc.php:990
  */
 BrowsingHelper::init($neededObjAr);
-
-include_once ROOT_DIR.'/include/Course.inc.php';
 
 /*
  * YOUR CODE HERE

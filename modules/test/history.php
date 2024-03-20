@@ -11,6 +11,7 @@
  */
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_course_instance_from_DB;
@@ -47,7 +48,7 @@ require_once(MODULES_TEST_PATH.'/include/init.inc.php');
 //needed to promote AMADataHandler to AMATestDataHandler. $sess_selected_tester is already present in session
 $GLOBALS['dh'] = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
-if ($courseInstanceObj instanceof Course_instance) {
+if ($courseInstanceObj instanceof CourseInstance) {
     $self_instruction = $courseInstanceObj->getSelfInstruction();
 }
 if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
@@ -59,7 +60,7 @@ else
 $self = 'tutor';
 }
 
-if (!isset($course_instanceObj) || !is_a($course_instanceObj,'Course_instance')) {
+if (!isset($course_instanceObj) || !is_a($course_instanceObj,'CourseInstance')) {
 	$course_instanceObj = read_course_instance_from_DB($_GET['id_course_instance']);
 }
 

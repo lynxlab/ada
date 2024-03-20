@@ -11,6 +11,8 @@
  * @version		0.2
  */
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
 use function Lynxlab\ADA\Main\Utilities\today_dateFN;
@@ -72,9 +74,6 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-//require_once ROOT_DIR . '/include/CourseInstance.inc.php';
-
-
 /*
  * INCLUSIONE SPECIFICA PER PAYPAL
  */
@@ -104,14 +103,13 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
     /*
      * Instance Object
      */
-    $instanceObj = new course_instance($instanceId);
+    $instanceObj = new CourseInstance($instanceId);
 //    print_r($instanceObj);
     $price = $instanceObj->getPrice();
     $id_course = $instanceObj->getCourseId();
     $course = $dh->get_course($courseId);
 //    print_r($course);
     $course_name = $course['titolo'];
-    //$instance_name = $course_instance
 
     $item_desc = translateFN('Iscrizione al corso');
     if (floatval($price) > 0) {

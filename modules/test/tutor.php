@@ -52,7 +52,7 @@ $GLOBALS['dh'] = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_
 
 $self = whoami();
 
-if (!isset($course_instanceObj) || !is_a($course_instanceObj,'Course_instance')) {
+if (!isset($course_instanceObj) || !is_a($course_instanceObj,'CourseInstance')) {
 	$course_instanceObj = read_course_instance_from_DB($_GET['id_course_instance']);
 }
 

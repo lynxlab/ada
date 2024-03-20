@@ -16,6 +16,8 @@
  */
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
 use function Lynxlab\ADA\Main\Utilities\redirect;
@@ -112,7 +114,7 @@ if (!isset($_GET['instances']) && !isset($_GET['node']) &&
 	$selectInstanceOL = CDOMElement::create('ol','class:select-instance');
 
 	foreach ($instances as $instanceID) {
-		$courseInstanceObj = new Course_instance($instanceID);
+		$courseInstanceObj = new CourseInstance($instanceID);
 		$selectLI = CDOMElement::create('li');
 		$link = CDOMElement::create('a','href:view.php?id_node='.trim($_GET['node']).
 																'&id_course='.$courseInstanceObj->id_corso.

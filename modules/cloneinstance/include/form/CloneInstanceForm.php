@@ -10,6 +10,8 @@
 
 namespace Lynxlab\ADA\Module\CloneInstance;
 
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
 /**
  * Class for the group object form
  *
@@ -18,7 +20,7 @@ namespace Lynxlab\ADA\Module\CloneInstance;
 class CloneInstanceForm extends CloneInstanceAbstractForm
 {
 
-    public function __construct($formName = null, $action = null, array $courses, \Course_instance $instance)
+    public function __construct($formName = null, $action = null, array $courses, CourseInstance $instance)
     {
         parent::__construct($formName, $action);
         if (!is_null($formName)) {

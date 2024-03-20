@@ -14,9 +14,11 @@
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Forms\TutorSecondaryAssignmentForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -149,7 +151,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'
     exit();
 } else {
 //    $id_course = $_GET['id_course'];
-    if ($courseInstanceObj instanceof Course_instance && $courseInstanceObj->isFull()) {
+    if ($courseInstanceObj instanceof CourseInstance && $courseInstanceObj->isFull()) {
         $number = 'ALL';
         $id_course = $courseInstanceObj->getCourseId();
         $className = $courseInstanceObj->getTitle();
@@ -169,7 +171,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'
         $field_list_ar = array('nome', 'cognome');
         $tutors_ar = $dh->get_tutors_list($field_list_ar);
         if (AMA_DataHandler::isError($tutors_ar)) {
-            $errObj = new ADA_Error($tutors_ar, translate('Errore in lettura dei tutor'));
+            $errObj = new ADA_Error($tutors_ar, translateFN('Errore in lettura dei tutor'));
         }
 
 

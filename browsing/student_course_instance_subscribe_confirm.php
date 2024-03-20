@@ -15,6 +15,7 @@
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\User\ADAGuest;
@@ -80,8 +81,6 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-//require_once ROOT_DIR . '/include/CourseInstance.inc.php';
-
 $self = whoami(); // to select the right template
 /*
  * INCLUSIONE SPECIFICA PER PAYPAL
@@ -131,7 +130,7 @@ if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
     /*
      * Instance Object
      */
-    $instanceObj = new course_instance($instanceId);
+    $instanceObj = new CourseInstance($instanceId);
     //    print_r($instanceObj);
     $price = $instanceObj->getPrice();
     $course = $dh->get_course($courseId);

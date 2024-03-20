@@ -1,4 +1,8 @@
 <?php
+
+use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
 /**
  * @package test
  * @author	Valerio Riva <valerio@lynxlab.com>
@@ -30,12 +34,12 @@ class TutorManagementTest {
 	 *
 	 * @param string $what 'test' or 'survey' string
 	 * @param Course $courseObj course object reference
-	 * @param Course_instance $course_instanceObj course instance object reference
+	 * @param \Lynxlab\ADA\Main\Course\CourseInstance $course_instanceObj course instance object reference
 	 * @param int $id_student id student
 	 * @param int $id_test id test
 	 * @param int $id_history_test id history test
 	 */
-	public function __construct($what, Course $courseObj, Course_instance $course_instanceObj, $id_student = null, $id_test = null, $id_history_test = null) {
+	public function __construct($what, Course $courseObj, CourseInstance $course_instanceObj, $id_student = null, $id_test = null, $id_history_test = null) {
 		$dh = $GLOBALS['dh'];
 
 		$this->filepath = MODULES_TEST_HTTP.'/'.basename($_SERVER['PHP_SELF']);

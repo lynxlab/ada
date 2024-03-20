@@ -18,6 +18,7 @@
  */
 
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 
@@ -80,7 +81,7 @@ SwitcherHelper::init($neededObjAr);
 /*
  * YOUR CODE HERE
  */
-if($courseInstanceObj instanceof Course_instance && $courseInstanceObj->isFull()) {
+if($courseInstanceObj instanceof CourseInstance && $courseInstanceObj->isFull()) {
     if($courseInstanceObj->getStartDate() == '') {
         $start_date = translateFN('Non iniziata');
     } else {

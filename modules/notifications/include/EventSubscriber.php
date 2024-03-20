@@ -10,6 +10,8 @@
 
 namespace Lynxlab\ADA\Module\Notifications;
 
+use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use PHPSQLParser\PHPSQLCreator;
 use PHPSQLParser\PHPSQLParser;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -369,8 +371,8 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
                         $qItem = new EmailQueueItem();
                         $qItem->setEmailType(EmailQueueItem::NEWFORUMNOTE);
                         // prepare data for the emailqueue: course, course instance, layout objects
-                        $instanceObj = new \Course_instance($instanceId);
-                        $courseObj = new \Course($instanceObj->getCourseId());
+                        $instanceObj = new CourseInstance($instanceId);
+                        $courseObj = new Course($instanceObj->getCourseId());
                         $layoutObj = Notification::getLayoutObj(EmailQueueItem::getEmailConfigFromType($qItem->getEmailType())['template']);
                         $qItem->setSubject(
                             trim(

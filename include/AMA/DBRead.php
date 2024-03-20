@@ -16,6 +16,8 @@
 namespace Lynxlab\ADA\Main\AMA\DBRead;
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Output\Layout;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 use Lynxlab\ADA\Main\User\ADAGuest;
@@ -166,7 +168,7 @@ function read_course_instance_from_DB($id_course_instance)
     }
 
     if (isset($read_id_course_instance)) {
-        $courseInstanceObj = new Course_instance($read_id_course_instance);
+        $courseInstanceObj = new CourseInstance($read_id_course_instance);
         if ($courseInstanceObj->full == 0) {
             /*
              * Return a ADA_Error object with delayedErrorHandling set to TRUE.

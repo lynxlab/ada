@@ -71,8 +71,6 @@ $credits_data = "<p>"
               </ul>".
               "</p>";
 
-//$banner = include ROOT_DIR.'/include/banner.inc.php';
-
 $title=translateFN('Credits');
 
 $content_dataAr = array(

@@ -54,8 +54,8 @@ $dh = $GLOBALS['dh'];
 
 $self = whoami();
 
-/** @var Course_instance $course_instanceObj */
-if (!isset($course_instanceObj) || !is_a($course_instanceObj,'Course_instance')) {
+/** @var \Lynxlab\ADA\Main\Course\CourseInstance $course_instanceObj */
+if (!isset($course_instanceObj) || !is_a($course_instanceObj,'CourseInstance')) {
 	$course_instanceObj = read_course_instance_from_DB($_GET['id_course_instance']);
 }
 

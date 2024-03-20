@@ -2,6 +2,7 @@
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Course\Course;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\get_max_idFN;
 use function Lynxlab\ADA\Main\Utilities\redirect;

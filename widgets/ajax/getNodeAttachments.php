@@ -23,6 +23,7 @@
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLActions;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLException;
@@ -122,7 +123,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                 $courseObj = new Course($courseId);
             }
 
-            if (!($courseObj instanceof \Course)) {
+            if (!($courseObj instanceof Course)) {
                 throw new CollaboraACLException(translateFN('Impossibile caricare il corso'));
             }
 
