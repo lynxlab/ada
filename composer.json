@@ -19,6 +19,7 @@
         "files": [
             "include/AMA/DBRead.php",
             "include/Output/functions.php",
+            "include/Service/functions.php",
             "include/Utilities.php",
             "include/Upload.php"
         ]
