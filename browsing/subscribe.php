@@ -14,6 +14,7 @@
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Token\TokenFinder;
 use Lynxlab\ADA\Main\User\ADAUser;
 
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -87,7 +88,6 @@ BrowsingHelper::init($neededObjAr);
 
 include_once ROOT_DIR.'/include/services_functions.inc.php';
 include_once ROOT_DIR.'/include/services_class.inc.php';
-include_once ROOT_DIR.'/include/token_classes.inc.php';
 
 $self =  whoami();
 $error_page = HTTP_ROOT_DIR."/index.php";

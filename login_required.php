@@ -56,8 +56,6 @@ $self= whoami();
 /*
  * YOUR CODE HERE
  */
-require_once ROOT_DIR . '/include/token_classes.inc.php';
-
 $redirectURL = $_SESSION['subscription_page'];
 $navigationHistoryObj = $_SESSION['sess_navigation_history'];
 

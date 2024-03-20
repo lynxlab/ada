@@ -1,4 +1,8 @@
 <?php
+
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Token\TokenManager;
+
 /**
  * @package 	secretquestion module
  * @author		giorgio <g.consorti@lynxlab.com>
@@ -39,12 +43,11 @@ class AMASecretQuestionDataHandler extends \AMA_Common_DataHandler {
 		$sql = 'SELECT COUNT(DISTINCT(`id_utente`)) FROM `'.self::PREFIX.'qa` WHERE `id_utente`=? AND `answerhash`=?';
 		$result = $this->getOnePrepared($sql, array($userId, self::prepareAnswer($answer)));
 		if ($result == 1) {
-			$userObj = \MultiPort::findUser($userId);
+			$userObj = MultiPort::findUser($userId);
 			if (!self::isError($userObj)) {
 				/*
 				* Create a token to authorize this user to change his/her password
 				*/
-				include_once ROOT_DIR.'/include/token_classes.inc.php';
 				$tokenObj = TokenManager::createTokenForPasswordChange($userObj);
 				if ($tokenObj != false) {
 					return ['redirecturl' => HTTP_ROOT_DIR."/browsing/forget.php?uid=$userId&tok=".$tokenObj->getTokenString()];
