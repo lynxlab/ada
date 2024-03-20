@@ -1,4 +1,10 @@
 <?php
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+
+use function Lynxlab\ADA\Main\Upload\upload_file;
+
 /**
  * @package test
  * @author	Valerio Riva <valerio@lynxlab.com>
@@ -68,14 +74,14 @@ class QuestionOpenUploadTest extends QuestionTest
 			$file = CDOMElement::create('file');
 			$file->setAttribute('id', 'file_answer_test');
 			$file->setAttribute('name', $name.'['.self::POST_ATTACHMENT_VAR.']');
-			$div_file->addChild($file);			
+			$div_file->addChild($file);
 		}
 
 		$textArea = CDOMElement::create('textarea');
 		$textArea->setAttribute('name',$name.'['.self::POST_ANSWER_VAR.']');
 		$textArea->setAttribute('class','open_answer_test');
 		$li->addChild($textArea);
-		
+
 		if ($feedback) {
 			$textArea->addChild(new CText($this->givenAnswer['risposta'][self::POST_ANSWER_VAR]));
 			$textArea->setAttribute('disabled','');
@@ -127,7 +133,7 @@ class QuestionOpenUploadTest extends QuestionTest
 
 		if (!empty($post_data[self::POST_ANSWER_VAR])) {
 			$textArea->addChild(new CText($post_data[self::POST_ANSWER_VAR]));
-		}		
+		}
 
 		$ref->addChild($li);
 
@@ -147,8 +153,6 @@ class QuestionOpenUploadTest extends QuestionTest
         /*
          * upload del file
         */
-        require_once ROOT_DIR . '/include/upload_funcs.inc.php';
-
         $file_uploaded = false;
 
         if ( $_FILES[self::POST_TOPIC_VAR]['error'][$topic_id][$question_id] == UPLOAD_ERR_OK ) {

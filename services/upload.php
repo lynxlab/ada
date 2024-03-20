@@ -13,8 +13,10 @@
  */
 
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\UserModuleHtmlLib;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
+use function Lynxlab\ADA\Main\Upload\upload_file;
 use function Lynxlab\ADA\Main\Utilities\redirect;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -74,14 +76,9 @@ $self =  whoami();
  */
 ServiceHelper::init($neededObjAr);
 
-include_once ROOT_DIR.'/include/upload_funcs.inc.php';
-//var_dump($_SESSION);
-
 /*
  * YOUR CODE HERE
  */
-require_once ROOT_DIR.'/include/HtmlLibrary/UserModuleHtmlLib.inc.php';
-
 if (isset($err_msg)) {
     $status = $err_msg;
 } else {

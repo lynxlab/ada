@@ -76,10 +76,7 @@ $self =  whoami();
  */
 BrowsingHelper::init($neededObjAr);
 
-include_once ROOT_DIR.'/include/upload_funcs.inc.php';
 include_once ROOT_DIR.'/include/Course.inc.php';
-
-
 
 /*
  * YOUR CODE HERE

@@ -74,7 +74,6 @@ ServiceHelper::init($neededObjAr);
  * YOUR CODE HERE
 */
 include_once ROOT_DIR .'/include/xml_parse_class.inc.php';
-include_once ROOT_DIR .'/include/upload_funcs.inc.php';
 
 // inizializzazione variabili
 $dati = '';

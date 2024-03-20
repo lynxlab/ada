@@ -5,6 +5,7 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\get_max_idFN;
+use function Lynxlab\ADA\Main\Upload\upload_file;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 /**
@@ -3680,8 +3681,6 @@ class OpenUpload_ExerciseCorrection extends ExerciseCorrection {
         /*
          * upload del file
         */
-        require_once ROOT_DIR . '/include/upload_funcs.inc.php';
-
         $file_uploaded = false;
 
         if ( $_FILES['file_up']['error'] == UPLOAD_ERR_OK ) {

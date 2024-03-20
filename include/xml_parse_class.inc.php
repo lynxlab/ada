@@ -40,6 +40,8 @@
         unset($xp);
 */
 
+use function Lynxlab\ADA\Main\Upload\searchdir;
+
 class course_xml_file_process{
 
     // dichiarazione variabili
