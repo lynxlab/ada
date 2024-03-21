@@ -9,6 +9,8 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
 /**
@@ -78,7 +80,6 @@ BrowsingHelper::init($neededObjAr);
  * YOUR CODE HERE
  */
 include_once CORE_LIBRARY_PATH.'/includes.inc.php';
-include_once ROOT_DIR.'/include/bookmark_class.inc.php';
 
 if (!isset($hide_visits)) {
   $hide_visits = 1; // default: no visits countg

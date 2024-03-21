@@ -16,6 +16,7 @@ namespace Lynxlab\ADA\Main\Course;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Bookmark\Bookmark;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 
 use function Lynxlab\ADA\Main\Utilities\dt2tsFN;
@@ -28,6 +29,7 @@ class Student
     public $id;
     public $id_course_instance;
     public $student_list;
+    public $full;
 
 
     public function __construct($id_course_instance, $status = null)
@@ -869,7 +871,6 @@ class Student
                             $dati['chat'] = $chatlines_count_out;
 
                             //bookmarks..
-                            include_once 'bookmark_class.inc.php';
                             $bookmarks_count = count(Bookmark::get_bookmarks($id_student));
                             $dati_stude[$num_student]['bookmarks'] = $bookmarks_count;
                             $tot_bookmarks_count += $bookmarks_count;

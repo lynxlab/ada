@@ -88,7 +88,6 @@ include_once 'include/cache_manager.inc.php';
 
 
 include_once CORE_LIBRARY_PATH.'/includes.inc.php';
-include_once ROOT_DIR.'/include/bookmark_class.inc.php';
 
 if (isset ($courseInstanceObj) && $courseInstanceObj instanceof CourseInstance) {
     $self_instruction = $courseInstanceObj->getSelfInstruction();
