@@ -11,6 +11,10 @@
  * @copyright Copyright (c) 2011, Lynx s.r.l.
  * @license   http://opensource.org/licenses/gpl-2.0.php GNU Public License
  */
+
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\DataValidator;
+
 require_once ROOT_DIR . '/include/node_classes.inc.php';
 /**
  * This class is responsible for rendering the previous and next node link id,
@@ -165,7 +169,7 @@ class DFSNavigationBar
                 $this->_nextNode = $result;
                 return;
             }
-        }    
+        }
         $found = false;
         $id = $n->id;
         while(!$found) {

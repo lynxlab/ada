@@ -364,7 +364,6 @@ class Student
 
                 $ticIndex = null;
                 if (array_key_exists(REPORT_COLUMN_TIME_IN_COURSE, $columns)) {
-                    require_once ROOT_DIR . '/include/history_class.inc.php';
                     $tmp = array_search(REPORT_COLUMN_TIME_IN_COURSE, array_keys($columns), true);
                     if ($tmp !== false) {
                         // add two to take into account id ands tudent name columns

@@ -9,6 +9,9 @@
  * @link           service-complete
  * @version		   0.1
  */
+
+use Lynxlab\ADA\Main\History\History;
+
 require_once  MODULES_SERVICECOMPLETE_PATH . '/include/completeCondition.class.inc.php';
 
 /**
@@ -65,7 +68,6 @@ class CompleteConditionNodePercentage extends CompleteCondition
 	 * @access public
 	 */
     private function isSatisfied($id_course_instance=null, $id_student=null, &$summary=null) {
-		require_once ROOT_DIR. '/include/history_class.inc.php';
 		/** @var History $history */
 		$history = new History($id_course_instance, $id_student);
 		$id_course = $GLOBALS['dh']->get_course_id_for_course_instance($id_course_instance);

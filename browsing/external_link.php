@@ -14,6 +14,7 @@
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\UserModuleHtmlLib;
 use Lynxlab\ADA\Main\Translator;
@@ -79,10 +80,8 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
 BrowsingHelper::init($neededObjAr);
 
 $self =  whoami();
-require_once ROOT_DIR.'/include/HtmlLibrary/UserModuleHtmlLib.inc.php';
 
 $external_link_id = isset($_GET['id']) ? DataValidator::is_uinteger($_GET['id']) : false;
-
 $filename = isset($_GET['file']) ? DataValidator::validate_local_filename($_GET['file']) : false;
 
 function findInClientDir($filename) {

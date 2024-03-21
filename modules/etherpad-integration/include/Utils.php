@@ -10,7 +10,8 @@
 
 namespace Lynxlab\ADA\Module\EtherpadIntegration;
 
-use DataValidator;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\DataValidator;
 
 class Utils
 {
@@ -53,7 +54,7 @@ class Utils
                 $nodeId = $_SESSION['sess_id_node'];
             }
             if (array_key_exists('sess_selected_tester', $_SESSION) && array_key_exists('sess_id_course_instance', $_SESSION)) {
-                $etDH = AMAEtherpadDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+                $etDH = AMAEtherpadDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
                 if (EtherpadActions::canDo(EtherpadActions::ACCESS_PAD)) {
                     $hasPad = false;
                     // load getherpad group mapped to the session course instance

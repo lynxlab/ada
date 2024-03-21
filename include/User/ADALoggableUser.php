@@ -20,6 +20,7 @@ namespace Lynxlab\ADA\Main\User;
 use Error;
 use Exception;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;

@@ -24,9 +24,6 @@ use function Lynxlab\ADA\Main\Utilities\today_dateFN;
  */
 require_once ROOT_DIR.'/include/module_init_functions.inc.php';
 
-// provvisoriamente includiamo anche le vecchie classi di oggetti HTML:
-require_once ROOT_DIR . '/include/navigation_history.inc.php';
-
 /**
  * Imports $_GET and $_POST variables
  */

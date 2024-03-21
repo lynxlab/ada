@@ -5,6 +5,7 @@ namespace Lynxlab\ADA\Main\HtmlLibrary;
 use Lynxlab\ADA\Admin\AdminHelper;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Output\Layout;
 use Lynxlab\ADA\Main\Output\UILayout;
 use Lynxlab\ADA\Main\User\ADAGenericUser;

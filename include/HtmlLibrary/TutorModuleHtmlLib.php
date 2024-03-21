@@ -16,6 +16,7 @@ namespace Lynxlab\ADA\Main\HtmlLibrary;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
 class TutorModuleHtmlLib

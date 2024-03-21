@@ -10,6 +10,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 

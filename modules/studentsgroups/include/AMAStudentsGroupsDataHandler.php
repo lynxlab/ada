@@ -11,6 +11,7 @@
 namespace Lynxlab\ADA\Module\StudentsGroups;
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\User\ADAUser;
 use Subscription;
 
@@ -224,7 +225,7 @@ class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
 										'birthcity' => ''
 									)
 								);
-								if (\DataValidator::validate_password($userDataAr[3], $userDataAr[3])) {
+								if (DataValidator::validate_password($userDataAr[3], $userDataAr[3])) {
 									$subscriberObj->setPassword($userDataAr[3]);
 									if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
 										$subscriberObj->setEmail('');

@@ -1,6 +1,7 @@
 <?php
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
 use function Lynxlab\ADA\Main\Utilities\get_timezone_offset;

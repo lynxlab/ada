@@ -33,6 +33,7 @@
 namespace Lynxlab\ADA\Main\User;
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\DataValidator;
 use ReflectionClass;
 use ReflectionProperty;
 

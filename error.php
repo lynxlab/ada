@@ -16,6 +16,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\History\NavigationHistory;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
 use function Lynxlab\ADA\Main\Utilities\whoami;

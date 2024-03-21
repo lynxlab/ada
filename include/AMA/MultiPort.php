@@ -14,6 +14,7 @@
 
 namespace Lynxlab\ADA\Main\AMA;
 
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\User\ADAAdmin;
 use Lynxlab\ADA\Main\User\ADAAuthor;
 use Lynxlab\ADA\Main\User\ADAGenericUser;

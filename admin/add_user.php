@@ -19,6 +19,7 @@ use Lynxlab\ADA\Admin\AdminUtils;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADAAdmin;

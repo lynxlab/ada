@@ -13,6 +13,9 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\Forms\ChatRemovalForm;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 
 /**
@@ -117,7 +120,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $formData = array(
               'id_room' => $chatId
             );
-            $data = new chatRemovalForm();
+            $data = new ChatRemovalForm();
             $data->fillWithArrayData($formData);
         } else {
             $data = new CText(translateFN('Chatroom non trovata') . '(1)');

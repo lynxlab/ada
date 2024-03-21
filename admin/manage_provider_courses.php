@@ -17,6 +17,7 @@
 use Lynxlab\ADA\Admin\AdminHelper;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\DataValidator;
 
 use function Lynxlab\ADA\Main\Utilities\whoami;
 

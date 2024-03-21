@@ -9,6 +9,7 @@
  */
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Notifications\AMANotificationsDataHandler;
 use Lynxlab\ADA\Module\Notifications\NotificationException;
@@ -77,7 +78,7 @@ $needed = [
         'key' => 'nodeId',
         'sanitize' => function ($v) {
             $v = trim($v);
-            return \DataValidator::validate_node_id($v) ? $v : null;
+            return DataValidator::validate_node_id($v) ? $v : null;
         },
     ],
 ];

@@ -17,6 +17,8 @@
 use Detection\MobileDetect;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\History\NavigationHistory;
 use Lynxlab\ADA\Main\User\ADAAuthor;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 use Lynxlab\ADA\Main\User\ADAGuest;
@@ -71,11 +73,6 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
 //   	if (isset($GLOBALS['user_provider']) && $_COOKIE['ada_provider']!=$GLOBALS['ada_provider'])
 //   		setcookie('ada_provider',$GLOBALS['user_provider'],+time()+ 86400 *365 ,'/');
   } // end if !MULTIPROVIDER
-
-  /*
-   * Navigation history
-   */
-  require_once ROOT_DIR.'/include/navigation_history.inc.php';
 
   $debug_backtrace = debug_backtrace();
   $level = sizeof($debug_backtrace) - 1;

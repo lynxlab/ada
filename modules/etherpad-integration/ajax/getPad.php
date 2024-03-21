@@ -9,6 +9,7 @@
  */
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\EtherpadIntegration\AMAEtherpadDataHandler;
 use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadActions;
@@ -104,7 +105,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             $passedData['nodeId'] = Pads::instancePadId;
             $padName = Pads::instancePadName;
         } else {
-            if (false === \DataValidator::validate_node_id($passedData['nodeId'])) {
+            if (false === DataValidator::validate_node_id($passedData['nodeId'])) {
                 throw new EtherpadException(translateFN('ID nodo non valido'));
             } else {
                 // check that passed node exists

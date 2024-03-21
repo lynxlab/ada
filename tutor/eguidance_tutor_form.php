@@ -13,6 +13,7 @@
  */
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\TutorHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\TutorModuleHtmlLib;
 

@@ -13,6 +13,7 @@
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 
 use function Lynxlab\ADA\Main\Utilities\get_timezone_offset;

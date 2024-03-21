@@ -1,5 +1,6 @@
 <?php
 
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
 /**
