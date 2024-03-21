@@ -8,6 +8,8 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 
 /**
@@ -23,7 +25,6 @@ if (!defined('DATE_CONTROL')) {
   define('DATE_CONTROL', FALSE);
 }
 
-require_once ROOT_DIR . '/include/data_validation.inc.php';
 $request_body = file_get_contents('php://input');
 $data = [];
 if (strlen($request_body) > 0) {
@@ -35,7 +36,7 @@ if (isset($data['p']) && strlen($data['p']) && DataValidator::validate_testernam
 
   require_once ROOT_DIR . '/comunica/include/videoroom.classes.inc.php';
 
-  $GLOBALS['dh'] = new \AMA_DataHandler(\MultiPort::getDSN($data['p']));
+  $GLOBALS['dh'] = new AMA_DataHandler(MultiPort::getDSN($data['p']));
   $videoroomObj = videoroom::getVideoObj();
   $logData = [
     'event' => videoroom::EVENT_EXIT,

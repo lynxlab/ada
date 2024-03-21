@@ -13,6 +13,7 @@
 use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Main\User\ADAAuthor;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
@@ -573,8 +574,6 @@ switch ($op) {
                     $message_html .= nl2br($footer_text).$link_to_footer->getHtml();
 
                     if  ( $notification_interval == ADA_NOTIFICATION_REALTIME ){
-
-                    	require_once ROOT_DIR.'/include/data_validation.inc.php';
 
                     	/**
                     	 * Send the message an email message
