@@ -15,6 +15,7 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Forms\FileUploadForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\Token\TokenManager;
+use Lynxlab\ADA\Main\Upload\FileUploader;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -88,7 +89,6 @@ $self =  whoami();
 SwitcherHelper::init($neededObjAr);
 
 require_once 'include/Subscription.inc.php';
-require_once ROOT_DIR . '/include/FileUploader.inc.php';
 
 $label = translateFN('Carica utenti da file');
 

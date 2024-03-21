@@ -3,7 +3,7 @@
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 
-use function Lynxlab\ADA\Main\Upload\upload_file;
+use function Lynxlab\ADA\Main\Upload\Functions\upload_file;
 
 /**
  * @package test

@@ -8,6 +8,7 @@
  */
 
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Upload\FileUploader;
 use Lynxlab\ADA\Module\Badges\BadgesActions;
 
 /**
@@ -32,7 +33,6 @@ list($allowedUsersAr, $neededObjAr) = array_values(BadgesActions::getAllowedAndN
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 BrowsingHelper::init($neededObjAr);
-require_once ROOT_DIR . '/include/FileUploader.inc.php';
 
 $fileUploader = new FileUploader(ADA_UPLOAD_PATH.DIRECTORY_SEPARATOR.MODULES_BADGES_NAME.DIRECTORY_SEPARATOR, key($_FILES));
 $data = '';

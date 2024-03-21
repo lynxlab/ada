@@ -49,7 +49,6 @@ if (array_key_exists('id_course', $_GET) || array_key_exists('id_node', $_GET)) 
 */
 require_once ROOT_DIR.'/include/module_init.inc.php';
 BrowsingHelper::init($neededObjAr);
-require_once ROOT_DIR . '/include/FileUploader.inc.php';
 
 // MODULE's OWN IMPORTS
 require_once MODULES_IMPEXPORT_PATH.'/include/forms/formImport.inc.php';

@@ -16,6 +16,7 @@ use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Forms\FileUploadForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\Token\TokenManager;
+use Lynxlab\ADA\Main\Upload\FileUploader;
 use Lynxlab\ADA\Main\User\ADAUser;
 
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -90,7 +91,6 @@ SwitcherHelper::init($neededObjAr);
 
 require_once 'include/Subscription.inc.php';
 
-require_once ROOT_DIR . '/include/FileUploader.inc.php';
 /*
  * YOUR CODE HERE
  */

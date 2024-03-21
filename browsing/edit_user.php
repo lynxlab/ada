@@ -90,8 +90,6 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-require_once ROOT_DIR . '/include/FileUploader.inc.php';
-
 /*
  * YOUR CODE HERE
  */

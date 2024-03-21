@@ -16,7 +16,7 @@ use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\UserModuleHtmlLib;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
-use function Lynxlab\ADA\Main\Upload\upload_file;
+use function Lynxlab\ADA\Main\Upload\Functions\upload_file;
 use function Lynxlab\ADA\Main\Utilities\redirect;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 

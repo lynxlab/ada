@@ -11,6 +11,7 @@
 
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Upload\FileUploader;
 
 /**
  * Base config file
@@ -70,7 +71,6 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-require_once ROOT_DIR . '/include/FileUploader.inc.php';
 
 $error = true;
 $data = '';

@@ -10,6 +10,10 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\Forms\lib\classes\FForm;
+use Lynxlab\ADA\Main\Forms\lib\classes\FormControl;
+use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
+
 require_once(ROOT_DIR.'/include/Forms/lib/classes/FForm.inc.php');
 
 /**
