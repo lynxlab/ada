@@ -1,6 +1,6 @@
 <?php
 
-namespace Lynxlab\ADA\Main\Upload;
+namespace Lynxlab\ADA\Main\Upload\Functions;
 
 // Funzione di upload dei file
 function upload_file($file_up_ha, $source, $dest)
@@ -30,10 +30,10 @@ function upload_file($file_up_ha, $source, $dest)
             if ($dest != '') {
                 // echo " $dest <br>";
                 // pulizia del nome del file da spazi e apostrofi
-                $trans = array(
+                $trans = [
                         " " => "_",
-                        "\'" => "_"
-                );
+                        "\'" => "_",
+                ];
                 $dest = strtr($dest, $trans);
 
                 //echo " $dest<br>";
@@ -60,10 +60,10 @@ function upload_file($file_up_ha, $source, $dest)
 
 function upload_tipo_stop($tipo)
 {
-// read it from config
+    // read it from config
     $mimetypeHa = $GLOBALS['ADA_MIME_TYPE'];
     return $mimetypeHa[$tipo]['permission'];
-//return $mimetypeHa[$tipo];
+    //return $mimetypeHa[$tipo];
 }
 
 // funziona cerca i files in nella directory passata due variabili globali:
@@ -73,7 +73,7 @@ function searchdir($basedir, $addPath = false)
     // directory no esiste reurn false
     if (@is_dir($basedir)) {
         // inizializzazione variabili
-        $filelisting = array();
+        $filelisting = [];
 
         // apertura della directory e ricerca dei file presenti
         $handle = opendir($basedir);
