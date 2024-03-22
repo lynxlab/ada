@@ -10,6 +10,8 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Main\Node\Node;
+
 include_once ROOT_DIR.'/comunica/include/spools.inc.php';
 include_once ROOT_DIR.'/comunica/include/UserDataHandler.inc.php';
 /**

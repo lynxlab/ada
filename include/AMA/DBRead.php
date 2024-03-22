@@ -19,6 +19,7 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\Output\Layout;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 use Lynxlab\ADA\Main\User\ADAGuest;

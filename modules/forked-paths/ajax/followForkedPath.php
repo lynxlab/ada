@@ -3,6 +3,7 @@ use Lynxlab\ADA\Module\ForkedPaths\AMAForkedPathsDataHandler;
 use Dompdf\Exception;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsException;
 
@@ -48,7 +49,7 @@ $error = true;
 if (array_key_exists('fromId', $postParams) && array_key_exists('toId', $postParams)) {
 
     try {
-        if (!ForkedPathsNode::checkNode($fromNode = new \Node($postParams['fromId']))) {
+        if (!ForkedPathsNode::checkNode($fromNode = new Node($postParams['fromId']))) {
             throw new ForkedPathsException(translateFN('Nodo di partenza non è storia a bivi'));
         }
 
@@ -56,7 +57,7 @@ if (array_key_exists('fromId', $postParams) && array_key_exists('toId', $postPar
             throw new ForkedPathsException(translateFN('Nodo di destinazione non è figlio di quello di partenza'));
         }
 
-        if (!ForkedPathsNode::checkNode($toNode = new \Node($postParams['toId']))) {
+        if (!ForkedPathsNode::checkNode($toNode = new Node($postParams['toId']))) {
             throw new ForkedPathsException(translateFN('Nodo di destinazione non è storia a bivi'));
         }
 

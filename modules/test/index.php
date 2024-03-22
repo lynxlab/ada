@@ -16,6 +16,7 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Node\Node;
 
 use function Lynxlab\ADA\Main\Utilities\redirect;
 use function Lynxlab\ADA\Main\Utilities\whoami;

@@ -15,6 +15,7 @@ namespace Lynxlab\ADA\Main\Course;
 
 use Lynxlab\ADA\CORE\HmtlElements\IList;
 use Lynxlab\ADA\Main\Bookmark\Bookmark;
+use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\User\ADAUser;
 
 use function Lynxlab\ADA\Main\Utilities\masort;

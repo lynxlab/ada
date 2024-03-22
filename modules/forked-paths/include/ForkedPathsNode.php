@@ -9,7 +9,9 @@
 
 namespace Lynxlab\ADA\Module\ForkedPaths;
 
-require_once (ROOT_DIR . '/include/node_classes.inc.php');
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Node\Node;
 
 /**
  * ForkedPathsNode class
@@ -56,7 +58,7 @@ class ForkedPathsNode extends ForkedPathsBase {
 	 * @param \Node $node
 	 * @return bool
 	 */
-	public static function checkNode(\Node $node) {
+	public static function checkNode(Node $node) {
 		return self::checkNodeFromTitle($node->title);
 	}
 
@@ -68,7 +70,7 @@ class ForkedPathsNode extends ForkedPathsBase {
 	 * @param \Node $node
 	 * @return \Node
 	 */
-	public static function toForkedPathsNode(\Node $node) {
+	public static function toForkedPathsNode(Node $node) {
 		if (!self::checkNodeFromTitle($node->title)) {
 			$node->title = self::addMagicKeywordToTitle($node->title);
 			$node->isForkedPaths = true;
@@ -98,7 +100,7 @@ class ForkedPathsNode extends ForkedPathsBase {
 	 * @param \Node $node
 	 * @return void
 	 */
-	public function toADANode(\Node $node) {
+	public function toADANode(Node $node) {
 		$node = self::removeMagicWord($node);
 		$node->isForkedPaths = false;
 		return $node;
@@ -127,7 +129,7 @@ class ForkedPathsNode extends ForkedPathsBase {
 	 * @param \Node $node
 	 * @return \Node
 	 */
-	public static function removeMagicWord(\Node $node) {
+	public static function removeMagicWord(Node $node) {
 		if (self::checkNodeFromTitle($node->title)) {
 			$node->title = self::removeMagicWordFromTitle($node->title);
 		}
@@ -159,25 +161,25 @@ class ForkedPathsNode extends ForkedPathsBase {
 	 * @param \Node $node
 	 * @return \CBase (either \CText or \CDiv)
 	 */
-	public static function buildForkedPathsButtons(\Node $node) {
+	public static function buildForkedPathsButtons(Node $node) {
 		if (self::checkNode($node)) {
 			if (is_array($node->children)) {
-				$container = \CDOMElement::create('div','class:forkedpaths buttons container');
+				$container = CDOMElement::create('div','class:forkedpaths buttons container');
 				$children = self::filterChildren($node);
 				// must load all children to find out the ForkedPathsNode ones
 				while(count($children)>0) {
 					$rowCount = count($children) >= self::MAX_BUTTONS_PER_ROW ? self::MAX_BUTTONS_PER_ROW : count($children);
-					$row = \CDOMElement::create('div',"class:$rowCount fluid ui buttons");
+					$row = CDOMElement::create('div',"class:$rowCount fluid ui buttons");
 					while($rowCount-->0) {
 						$child = array_shift($children);
-						$button = \CDOMElement::create('button','type:button,class:ui button');
+						$button = CDOMElement::create('button','type:button,class:ui button');
 						$jsArgs = [
 							'baseUrl' => MODULES_FORKEDPATHS_HTTP,
 							'fromId'  => $node->id,
 							'toId' => $child->id,
 						];
 						$button->setAttribute('onclick','javascipt:followForkedPath('.htmlspecialchars(json_encode($jsArgs), ENT_QUOTES, ADA_CHARSET).',$j(this));');
-						$button->addChild(new \CText($child->name));
+						$button->addChild(new CText($child->name));
 						$row->addChild($button);
 					}
 					$container->addChild($row);
@@ -196,12 +198,12 @@ class ForkedPathsNode extends ForkedPathsBase {
 	 * @param boolean $sortOrder true to sort the children by order
 	 * @return array
 	 */
-	private static function filterChildren(\Node $node, $sortOrder = true) {
+	private static function filterChildren(Node $node, $sortOrder = true) {
 		$retArray = [];
 		$orders = [];
 		foreach ($node->children as $child) {
 			// load node without extended info
-			$childNode = new \Node($child, false);
+			$childNode = new Node($child, false);
 			if (self::checkNode($childNode)) {
 				array_push($retArray, $childNode);
 				$orders[$childNode->id] = $childNode->order;

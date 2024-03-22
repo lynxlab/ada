@@ -15,6 +15,8 @@
 
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\User\ADAGuest;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;

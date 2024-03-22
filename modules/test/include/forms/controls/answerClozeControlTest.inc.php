@@ -1,4 +1,10 @@
 <?php
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Forms\lib\classes\FormControl;
+use Lynxlab\ADA\Main\Node\Node;
+
 /**
  *
  * @package
@@ -76,7 +82,7 @@ class AnswerClozeControlTest extends FormControl {
 		else {
 			$input->setAttribute('readonly','');
 		}
-		
+
 		$this->item['value'] = CDOMElement::create('text','name:value[]');
 		$this->item['value']->setAttribute('class', 'value');
 		$this->item['value']->setAttribute('value', intval($this->_controlData['value']));
@@ -125,7 +131,7 @@ class AnswerClozeControlTest extends FormControl {
 		$html = '';
 		foreach ($this->item as $field=>$v) {
 			if (is_null($v)) continue;
-			
+
 			if ($this->clonable) {
 				$this->item[$field]->setAttribute('disabled','');
 			}

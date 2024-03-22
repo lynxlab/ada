@@ -1,4 +1,7 @@
 <?php
+
+use Lynxlab\ADA\Main\Forms\lib\classes\FForm;
+
 /**
  *
  * @package
@@ -9,15 +12,13 @@
  * @version		0.1
  */
 
-require_once(ROOT_DIR.'/include/Forms/lib/classes/FForm.inc.php');
-
 abstract class FormTest extends FForm {
-	
+
 	protected $data;
 
 	public function __construct($data=array()) {
 		parent::__construct();
-		
+
 		$this->data = $data;
 
 		$this->header();

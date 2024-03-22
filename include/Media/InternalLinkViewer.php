@@ -15,6 +15,8 @@
 
 namespace Lynxlab\ADA\Main\Media;
 
+use Lynxlab\ADA\Main\Node\Node;
+
 /**
  * class InternalLinkViewer, returns the correct representation for this internal link based on
  * InternalLinkViewingPreferences and on user level

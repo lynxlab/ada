@@ -1,4 +1,10 @@
 <?php
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Forms\lib\classes\FormControl;
+use Lynxlab\ADA\Main\Node\Node;
+
 /**
  *
  * @package
@@ -63,7 +69,7 @@ class AnswerControlTest extends FormControl {
 			$checkbox = CDOMElement::create('checkbox');
 			$checkbox->setAttribute('class', 'other_answer_checkbox');
 			$checkbox->setAttribute('onchange', 'change_other_answer(this);');
-			if ($this->_controlData['other_answer']) {				
+			if ($this->_controlData['other_answer']) {
 				$checkbox_value->setAttribute('value', 1);
 				$checkbox->setAttribute('checked','');
 			}
@@ -104,7 +110,7 @@ class AnswerControlTest extends FormControl {
 			$checkbox_value->setAttribute('class', 'case_sensitive');
 			$checkbox = CDOMElement::create('checkbox');
 			$checkbox->setAttribute('class', 'case_sensitive_checkbox');
-			$checkbox->setAttribute('onchange', 'change_case_sensitive(this);');			
+			$checkbox->setAttribute('onchange', 'change_case_sensitive(this);');
 			if ($this->_controlData['case_sensitive']) {
 				$checkbox_value->setAttribute('value',1);
 				$checkbox->setAttribute('checked','');
@@ -129,7 +135,7 @@ class AnswerControlTest extends FormControl {
 	 * Control rendering
 	 *
 	 * @return string
-	 * 
+	 *
 	 * @see constructComponents
 	 */
     public function render() {
@@ -138,7 +144,7 @@ class AnswerControlTest extends FormControl {
 		$html = '';
 		foreach ($this->item as $field=>$v) {
 			if (is_null($v)) continue;
-			
+
 			if ($this->clonable) {
 				$this->item[$field]->setAttribute('disabled','');
 			}
@@ -168,7 +174,7 @@ class AnswerControlTest extends FormControl {
 		$a->setAttribute('href','javascript:void(0);');
 		$a->setAttribute('onclick',"move(this,'down');");
 		$div->addChild($a);
-			
+
 		$a = CDOMElement::create('a');
 		$a->addChild(new CText(translateFN('Cancella')));
 		$a->setAttribute('href','javascript:void(0);');

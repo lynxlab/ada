@@ -1,5 +1,7 @@
 <?php
 
+use Lynxlab\ADA\Main\Node\Node;
+
 use function Lynxlab\ADA\Main\Utilities\redirect;
 
 /**

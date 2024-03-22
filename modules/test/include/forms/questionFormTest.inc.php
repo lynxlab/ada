@@ -1,4 +1,8 @@
 <?php
+
+use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
+use Lynxlab\ADA\Main\Node\Node;
+
 /**
  *
  * @package
@@ -10,7 +14,7 @@
  */
 
 class QuestionFormTest extends FormTest {
-	
+
 	protected $id_test;
 	protected $id_nodo_parent;
 	protected $isCloze;

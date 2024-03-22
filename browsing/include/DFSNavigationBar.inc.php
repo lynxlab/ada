@@ -14,8 +14,8 @@
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\Node\Node;
 
-require_once ROOT_DIR . '/include/node_classes.inc.php';
 /**
  * This class is responsible for rendering the previous and next node link id,
  * given a node.

@@ -14,6 +14,7 @@ namespace Lynxlab\ADA\Main\Helper;
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
 
@@ -299,7 +300,7 @@ class BrowsingHelper extends ViewBaseHelper
     {
         if (isset($_SESSION['sess_id_node']) && isset($_SESSION['sess_id_user']) && isset($_SESSION['sess_id_user_type'])) {
             $node = new Node($_SESSION['sess_id_node']);
-            if ($node instanceof \Node) {
+            if ($node instanceof Node) {
                 return (in_array($node->type, [ADA_NOTE_TYPE, ADA_PRIVATE_NOTE_TYPE])
                     && (
                         $_SESSION['sess_id_user_type'] == AMA_TYPE_TUTOR ||
