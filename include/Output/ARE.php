@@ -19,11 +19,13 @@
 namespace Lynxlab\ADA\Main\Output;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\Main\Menu;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\Impersonate\ImpersonateActions;
 use Lynxlab\ADA\Module\Impersonate\Utils;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_layout_from_DB;
+use function Lynxlab\ADA\Main\Utilities\today_dateFN;
 
 /**
  * ARE
@@ -314,7 +316,6 @@ class ARE
                  * make menu here
                  */
                 if (0 !== strcasecmp('install.php', basename($_SERVER['SCRIPT_FILENAME']))) {
-                    require_once ROOT_DIR . '/include/menu_class.inc.php';
                     // menu property created 'on-the-fly'
                     $layoutObj->menu = new Menu(
                         $layoutObj->module_dir,
