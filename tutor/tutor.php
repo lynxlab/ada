@@ -20,6 +20,7 @@ use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\TutorHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\Output\PdfClass;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 
@@ -435,8 +436,6 @@ switch ($op) {
 
     	if ($type==='pdf')
     	{
-    		require_once ROOT_DIR.'/include/PdfClass.inc.php';
-
     		$pdf = new PdfClass('landscape', strip_tags(html_entity_decode($courses_student['caption'])) );
 
     		$pdf->addHeader(strip_tags(html_entity_decode($caption)),

@@ -14,6 +14,7 @@
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\TutorHelper;
+use Lynxlab\ADA\Main\Output\PdfClass;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_course_from_DB;
@@ -362,8 +363,6 @@ switch ($op) {
 	    		if ($key!=='num') $PDFdata['table'][1]['cols'][$key] = translateFN($key);
 	    	$PDFdata['table'][1]['title'] =  translateFN("Nodi ordinati per numero di visite");
     	} else unset($PDFdata['table'][1]);
-
-    	require_once ROOT_DIR.'/include/PdfClass.inc.php';
 
 		$pdf = new PdfClass('',$PDFdata['title']);
 

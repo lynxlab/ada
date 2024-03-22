@@ -13,6 +13,7 @@
  */
 
 use Lynxlab\ADA\Main\Helper\TutorHelper;
+use Lynxlab\ADA\Main\Output\PdfClass;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_course_from_DB;
@@ -195,8 +196,6 @@ switch ($op) {
 		    		}
 	    		}
     		} else unset($PDFdata['table'][0]);
-
-    		require_once ROOT_DIR.'/include/PdfClass.inc.php';
 
     		$pdf = new PdfClass('',$PDFdata['title']);
 
