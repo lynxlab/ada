@@ -21,6 +21,7 @@
             "include/Output/functions.php",
             "include/Service/functions.php",
             "include/Upload/functions.php",
+            "include/ModuleInit.php",
             "include/Utilities.php"
         ]
     },
