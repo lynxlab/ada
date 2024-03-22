@@ -275,7 +275,7 @@ switch ($op) {
     case 'student_notes':   // nodi inseriti dallo studente
     case 'student_notes_export':
 
-        $student_dataHa = $dh->_get_user_info($id_student);
+        $student_dataHa = $dh->get_user_info($id_student);
         $studente_username = $student_dataHa['username'];
 //          if (isset($id_course)){    // un corso (e un'istanza...) alla volta ?
         $sub_course_dataHa = array();

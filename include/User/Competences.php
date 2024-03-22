@@ -14,6 +14,8 @@
 
 namespace Lynxlab\ADA\Main\User;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 class Competences extends UserExtraTables
 {
     public $idCompetence;

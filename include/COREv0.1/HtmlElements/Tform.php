@@ -14,8 +14,13 @@
 
 namespace Lynxlab\ADA\CORE\HmtlElements;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 class Tform extends Form
 {
+    public $name;
+    public $target;
+
     public function setForm($dataHa, $name = "")
     {
 

@@ -18,6 +18,8 @@ use Lynxlab\ADA\CORE\html4\CBase;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 class BaseHtmlLib
 {
     public static function link($href, $text)

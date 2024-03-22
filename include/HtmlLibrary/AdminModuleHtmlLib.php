@@ -10,9 +10,8 @@ use Lynxlab\ADA\Main\Output\Layout;
 use Lynxlab\ADA\Main\Output\UILayout;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\read_dir;
-
-require_once ROOT_DIR . '/include/Layout.inc.php';
 
 class AdminModuleHtmlLib
 {

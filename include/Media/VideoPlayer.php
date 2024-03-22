@@ -16,6 +16,9 @@
 namespace Lynxlab\ADA\Main\Media;
 
 use Lynxlab\ADA\Main\HtmlLibrary\MediaViewingHtmlLib;
+use Lynxlab\ADA\Main\Node\Media;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * class VideoPlayer, returns the correct player for this video file, based on VideoPlayingPreferences

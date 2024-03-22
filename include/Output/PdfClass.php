@@ -195,7 +195,7 @@ class PdfClass extends \Cezpdf
      *
      * @param string $filename the file name that will be asked at browser' save as dialog
      *
-     * @return this
+     * @return void
      * @access public
      */
     public function saveAs($filename)

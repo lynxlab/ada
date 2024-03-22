@@ -6,6 +6,7 @@ use Lynxlab\ADA\CORE\HmtlElements\Table;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 function _get_course_instance_info($id_course, $id_course_instance)
@@ -51,9 +52,8 @@ function _get_course_instance_info($id_course, $id_course_instance)
                             //  }
                         }
                     }
-                }
-                // vito, 27 may 2009
-                else {
+                } else {
+                    // vito, 27 may 2009
                     $tutor_info =  translateFN('Non assegnato');
                 }
 

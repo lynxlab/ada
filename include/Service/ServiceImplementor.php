@@ -17,6 +17,7 @@ namespace Lynxlab\ADA\Main\Service;
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Service\Functions\level2descriptionFN;
 
 class ServiceImplementor

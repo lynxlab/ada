@@ -103,7 +103,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' &&
    			$selectedPage = array_shift($selectedPages);
    			$node_data['text'] = str_replace('%filenamehere%', $selectedPage.'.jpg', $imgtemplate);
    			/**
-   			 * cursed _add_media method in ama.inc.php starts inserting resources from array index 1!!!
+   			 * cursed add_media method in ama.inc.php starts inserting resources from array index 1!!!
    			 */
    			$node_data['resources_ar'] = array( 1 =>
    				array_merge($resource_data, array(
@@ -160,7 +160,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' &&
 					$child_data['text'] = str_replace('%filenamehere%', $selectedPage.'.jpg', $imgtemplate);
 
 					/**
-					 * cursed _add_media method in ama.inc.php starts inserting resources from array index 1!!!
+					 * cursed add_media method in ama.inc.php starts inserting resources from array index 1!!!
 					 */
 					$child_data['resources_ar'] = array( 1 =>
 						array_merge($resource_data, array(

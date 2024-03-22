@@ -17,6 +17,8 @@ use Lynxlab\ADA\Main\Forms\lib\classes\FForm;
 use Lynxlab\ADA\Main\Forms\lib\classes\FormControl;
 use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  *
  */

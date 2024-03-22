@@ -19,6 +19,7 @@ use function Lynxlab\ADA\Main\AMA\DBRead\read_course;
 use function Lynxlab\ADA\Main\AMA\DBRead\read_course_instance_from_DB;
 use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
 use function Lynxlab\ADA\Main\AMA\DBRead\read_user;
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * View helper base class
@@ -157,7 +158,7 @@ abstract class ViewBaseHelper
      *
      * @param ADAGenericUser $userObj
      * @param boolean $log_enabled
-     * @return void
+     * @return array
      */
     protected static function getUserBrowsingData(ADAGenericUser $userObj, $log_enabled = false)
     {

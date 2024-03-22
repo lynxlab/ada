@@ -15,6 +15,8 @@ namespace Lynxlab\ADA\Main\Forms;
 
 use Lynxlab\ADA\Main\Forms\lib\classes\FForm;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Description of FileUploadForm
  *

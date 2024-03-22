@@ -14,6 +14,8 @@
 
 namespace Lynxlab\ADA\CORE\HmtlElements;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 class IList extends HTMLElement
 {
     /*
@@ -81,7 +83,7 @@ $var = $lObj->getList();
             $str = $this->start_tag;
             foreach ($data as $riga) {
                 if (is_array($riga)) {
-                    $lObj = new Ilist();
+                    $lObj = new IList();
                     $lObj->initList($this->ordered, $this->type, $this->startvalue);
                     $lObj->setList($riga);
                     $str .= $lObj->getList();

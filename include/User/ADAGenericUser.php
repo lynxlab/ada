@@ -20,6 +20,8 @@ namespace Lynxlab\ADA\Main\User;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 abstract class ADAGenericUser
 {
     /**

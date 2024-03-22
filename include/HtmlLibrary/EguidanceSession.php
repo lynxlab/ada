@@ -14,6 +14,8 @@
 
 namespace Lynxlab\ADA\Main\HtmlLibrary;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 class EguidanceSession
 {
     private static $labels = [

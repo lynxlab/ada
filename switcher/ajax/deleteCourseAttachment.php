@@ -45,7 +45,7 @@ if (array_key_exists('resourceID', $_POST) && intval($_POST['resourceID'])>0) {
 		$resourceID = intval($_POST['resourceID']);
 		$courseID = intval($_POST['courseID']);
 		$resInfo = $GLOBALS['dh']->get_risorsa_esterna_info($resourceID);
-		$res = $GLOBALS['dh']->_del_risorse_nodi($courseID, $resourceID);
+		$res = $GLOBALS['dh']->del_risorse_nodi($courseID, $resourceID);
 		if (!AMA_DB::isError($res)) {
 			$res = $GLOBALS['dh']->remove_risorsa_esterna($resourceID);
 			if (!AMA_DB::isError($res) && !AMA_DB::isError($resInfo) && array_key_exists('nome_file', $resInfo)) {

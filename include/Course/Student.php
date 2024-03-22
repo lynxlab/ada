@@ -19,6 +19,7 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Bookmark\Bookmark;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\dt2tsFN;
 use function Lynxlab\ADA\Main\Utilities\masort;
 use function Lynxlab\ADA\Main\Utilities\today_dateFN;

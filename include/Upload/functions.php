@@ -2,6 +2,8 @@
 
 namespace Lynxlab\ADA\Main\Upload\Functions;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 // Funzione di upload dei file
 function upload_file($file_up_ha, $source, $dest)
 {

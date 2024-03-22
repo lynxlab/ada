@@ -21,8 +21,9 @@ use Lynxlab\ADA\CORE\HmtlElements\Table;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
-use Lynxlab\ADA\Main\History;
+use Lynxlab\ADA\Main\History\History;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\aasort;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
@@ -140,7 +141,7 @@ abstract class ADAAbstractUser extends ADALoggableUser
     {
         $dh = $GLOBALS['dh'];
         // FIXME: _get_student_level was a private method, now it is public.
-        $user_level = $dh->_get_student_level($id_user, $id_course_instance);
+        $user_level = $dh->get_student_level($id_user, $id_course_instance);
         if (AMA_DataHandler::isError($user_level)) {
             $this->livello = 0;
         } else {

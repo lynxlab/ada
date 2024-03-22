@@ -26,6 +26,7 @@ use Lynxlab\ADA\CORE\HmtlElements\Form;
 use Lynxlab\ADA\CORE\HmtlElements\Table;
 use Lynxlab\ADA\Main\Course\Student;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 class Tag extends Bookmark
@@ -223,7 +224,7 @@ class Tag extends Bookmark
         $description = $dataHa['description'];
         $out_fields_ar = ['id_nodo', 'data', 'descrizione', 'id_utente_studente'];
         $clause = "descrizione = '$description'";
-        $dataHa = $dh->_find_bookmarks_list($out_fields_ar, $clause);
+        $dataHa = $dh->doFind_bookmarks_list($out_fields_ar, $clause);
         if (AMA_DataHandler::isError($dataHa)) {
             $msg = $dataHa->getMessage();
             return $msg;
@@ -352,7 +353,7 @@ class Tag extends Bookmark
                 $title = $node['name'];
                 $icon  = $node['icon'];
                 $description =   $bookmark[3];
-                $authorHa = $dh->_get_user_info($author_id);
+                $authorHa = $dh->get_user_info($author_id);
                 $author_uname = $authorHa['username'];
                 $k++;
                 $formatted_dataHa[$k]['autore'] = "<a href=\"tags.php?op=list_by_user&id_auth=$author_id\">$author_uname</a>";

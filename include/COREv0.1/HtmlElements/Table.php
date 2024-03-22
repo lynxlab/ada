@@ -14,6 +14,8 @@
 
 namespace Lynxlab\ADA\CORE\HmtlElements;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 class Table extends HTMLElement
 {
     /*
@@ -44,6 +46,10 @@ $t->printTable();
     public $col2;
     public $bcol2;
     public $id;
+    public $style;
+    public $labelcol;
+    public $labelrow;
+    public $rules;
 
 
     public function __construct()

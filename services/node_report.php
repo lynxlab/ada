@@ -87,7 +87,7 @@ $help = translateFN('Da qui ogni autore di un nodo  può vederne  in dettaglio l
 $out_fields_ar = array('data_visita','id_utente_studente','id_istanza_corso');
 $clause ="id_nodo = '$id_node'";
 
-$visits_ar = $dh->_find_nodes_history_list($out_fields_ar,$clause);
+$visits_ar = $dh->find_nodes_history_list($out_fields_ar,$clause);
 if (AMA_DataHandler::isError($visits_ar)) {
     $msg = $visits_ar->getMessage();
 }
@@ -95,7 +95,7 @@ $visits_dataHa = array();
 $count_visits = count($visits_ar);
 if ($count_visits) {
     foreach ($visits_ar as $visit) {
-        $student = $dh->_get_user_info($visit[2]);
+        $student = $dh->get_user_info($visit[2]);
         $studentname = $student['username'];
         $visits_dataHa[] = array(
                 translateFN('Data')=>ts2dFN($visit[1]),

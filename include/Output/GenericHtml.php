@@ -21,6 +21,8 @@ namespace Lynxlab\ADA\Main\Output;
 use Dompdf\Dompdf;
 use Lynxlab\ADA\CORE\HmtlElements\Table;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Classe generica di stampa su browser
  */

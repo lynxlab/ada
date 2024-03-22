@@ -24,6 +24,8 @@ use Lynxlab\ADA\Main\Output\Layout;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 use Lynxlab\ADA\Main\User\ADAGuest;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Reads a ADA node from database.
  *
@@ -306,7 +308,7 @@ function read_user_from_DB($id_user)
     //                         if ($id_profile==AMA_TYPE_STUDENT){
     //                              $level = 0;
     //                                    if (isset($sess_id_course_instance))
-    //                                         $level = $dh->_get_student_level($id_user,$sess_id_course_instance);
+    //                                         $level = $dh->get_student_level($id_user,$sess_id_course_instance);
     //                                // or else:
     //                                  //  $data_Ha = $dh->get_subscription($id_user, $sess_id_course_instance);
     //                                  //  $level =  $data_Ha["livello"];
@@ -353,7 +355,7 @@ function get_max_idFN($id_course = 1, $id_toc = '', $depth = 1)
 {
     // return the max id_node of the course
     $dh = $GLOBALS['dh'];
-    $id_node_max = $dh->_get_max_idFN($id_course, $id_toc, $depth);
+    $id_node_max = $dh->doGet_max_idFN($id_course, $id_toc, $depth);
     // vito, 15/07/2009
     if (AMA_DataHandler::isError($id_node_max)) {
         /*

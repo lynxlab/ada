@@ -14,6 +14,7 @@
 
 namespace Lynxlab\ADA\CORE\HmtlElements;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 class Form extends HTMLElement

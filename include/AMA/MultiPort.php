@@ -15,6 +15,7 @@
 namespace Lynxlab\ADA\Main\AMA;
 
 use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\Logger\ADALogger;
 use Lynxlab\ADA\Main\User\ADAAdmin;
 use Lynxlab\ADA\Main\User\ADAAuthor;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
@@ -25,6 +26,7 @@ use Lynxlab\ADA\Main\User\ADASwitcher;
 use Lynxlab\ADA\Main\User\ADAUser;
 use PDOException;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Service\Functions\subscriptionType2stringFN;
 use function Lynxlab\ADA\Main\Utilities\today_dateFN;
 use function Lynxlab\ADA\Main\Utilities\today_timeFN;
@@ -544,7 +546,7 @@ class MultiPort
 
         $testers_to_add = array_merge($testers_to_add, array_diff($new_testers, $testers));
 
-        $pwd = $common_dh->_get_user_pwd($user_id);
+        $pwd = $common_dh->get_user_pwd($user_id);
         if (AMA_DataHandler::isError($pwd)) {
             // if there is an error, we MUST insert a fake password in provider DB
             $pwd = sha1($user_id);
@@ -1335,7 +1337,7 @@ class MultiPort
                 $all_instance = $tester_dh->course_instance_find_list($field_ar, $clause);
                 foreach ($all_instance as $one_instance) {
                     $id_course_instance = $one_instance[0];
-                    $level = $tester_dh->_get_student_level($user_id, $id_course_instance);
+                    $level = $tester_dh->get_student_level($user_id, $id_course_instance);
                     if (!AMA_DataHandler::isError($level)) {
                         $max_level = $level_ha[$testerPointer['puntatore']]['max_level'];
                         $level_ha[$testerPointer['puntatore']]['max_level'] = max((int)$level, $max_level);
@@ -1769,7 +1771,6 @@ class MultiPort
      *
      * @param  $userObj
      * @param  $appointmentsIdsAr
-     * @return unknown_type
      */
     // MARK: NON MODIFICARE
     public static function markUserAppointmentsAsRead(ADALoggableUser $userObj, $appointmentsIdsAr = [])
@@ -1790,7 +1791,6 @@ class MultiPort
      *
      * @param  $userObj
      * @param  $appointmentsIdsAr
-     * @return unknown_type
      */
     // MARK: NON MODIFICARE
     public static function markUserAppointmentsAsUnread(ADALoggableUser $userObj, $appointmentsIdsAr = [])
@@ -1811,7 +1811,6 @@ class MultiPort
      *
      * @param  $userObj
      * @param  $messagesIdsAr
-     * @return unknown_type
      */
     // MARK: NON MODIFICARE
     public static function markUserMessagesAsRead(ADALoggableUser $userObj, $messagesIdsAr = [])
@@ -1823,7 +1822,6 @@ class MultiPort
      *
      * @param  $userObj
      * @param  $messagesIdsAr
-     * @return unknown_type
      */
     // MARK: NON MODIFICARE
     public static function markUserMessagesAsUnread(ADALoggableUser $userObj, $messagesIdsAr = [])
@@ -1835,7 +1833,6 @@ class MultiPort
      *
      * @param  $userObj
      * @param  $appointmentsIdsAr
-     * @return unknown_type
      */
     // MARK: NON MODIFICARE
     public static function removeUserAppointments(ADALoggableUser $userObj, $appointmentsIdsAr = [])

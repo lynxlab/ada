@@ -859,7 +859,7 @@ class importHelper
 					unset ($outArr['id']); // when a generated id will be used and comment below
 
 					// set array of resources to be saved together with the node
-					// for some unbelievable reason the _add_media method called by add_node
+					// for some unbelievable reason the add_media method called by add_node
 					// expects the resources array to start at index 1, so let's make it happy.
 					unset ($resourcesArr[0]);
 					$outArr['resources_ar'] =  $resourcesArr;

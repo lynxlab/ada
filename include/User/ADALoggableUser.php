@@ -26,6 +26,7 @@ use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
 use TypeError;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\redirect;
 
 abstract class ADALoggableUser extends ADAGenericUser
@@ -212,7 +213,7 @@ abstract class ADALoggableUser extends ADAGenericUser
         $limit = $now - $tolerance;
         $out_fields_ar = ['data_visita', 'id_utente_studente', 'session_id'];
         $clause = "data_visita > $limit and id_istanza_corso ='$id_course_instance'";
-        $dataHa = $dh->_find_nodes_history_list($out_fields_ar, $clause);
+        $dataHa = $dh->doFind_nodes_history_list($out_fields_ar, $clause);
         if (AMA_DataHandler::isError($dataHa) || empty($dataHa)) {
             if (gettype($dataHa) == "object") {
                 $msg = $dataHa->getMessage();
@@ -344,7 +345,7 @@ abstract class ADALoggableUser extends ADAGenericUser
         $limit = $now - $tolerance;
         $out_fields_ar = ['id_nodo', 'data_uscita', 'id_utente_studente'];
         $clause = "data_uscita > $limit and id_istanza_corso ='$id_course_instance'";
-        $dataHa = $dh->_find_nodes_history_list($out_fields_ar, $clause, true);
+        $dataHa = $dh->doFind_nodes_history_list($out_fields_ar, $clause, true);
         if (AMA_DataHandler::isError($dataHa) || empty($dataHa)) {
             if (gettype($dataHa) == "object") {
                 $msg = $dataHa->getMessage();
@@ -377,7 +378,7 @@ abstract class ADALoggableUser extends ADAGenericUser
         $limit = $now - $tolerance;
         $out_fields_ar = ['data_uscita', 'id_utente_studente'];
         $clause = "data_uscita > $limit and id_istanza_corso ='$id_course_instance' and id_nodo ='$id_node'";
-        $dataHa = $dh->_find_nodes_history_list($out_fields_ar, $clause);
+        $dataHa = $dh->doFind_nodes_history_list($out_fields_ar, $clause);
         if (AMA_DataHandler::isError($dataHa) || empty($dataHa)) {
             if (gettype($dataHa) == "object") {
                 $msg = $dataHa->getMessage();
@@ -554,7 +555,7 @@ abstract class ADALoggableUser extends ADAGenericUser
         //$search_fields_ar = array('id_nodo');
         //$history = $dh->find_nodes_list_by_key($out_fields_ar, $node_id, $search_fields_ar); ???
         $clause = "id_nodo = '$node_id'";
-        $history = $dh->_find_nodes_list($out_fields_ar, $clause);
+        $history = $dh->doFind_nodes_list($out_fields_ar, $clause);
         $visit_count = sizeof($history) - 1;
         return $visit_count;
     }

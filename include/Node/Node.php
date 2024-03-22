@@ -26,6 +26,7 @@ use Lynxlab\ADA\Main\Media\MediaViewer;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\read_dir;
 
 class Node
@@ -954,7 +955,7 @@ class Node
                 $clause = "nome = '$word' AND (tipo = $leaf_word OR  tipo = $group_word)";
                 $clause .= " AND id_nodo LIKE '%$id_course%'";
 
-                $wordsAR = $dh->_find_nodes_list($out_fields_ar, $clause);
+                $wordsAR = $dh->doFind_nodes_list($out_fields_ar, $clause);
 
                 if (!AMA_DB::isError($wordsAR) && $wordsAR != "" && count($wordsAR) > 0) {
                     $id_node_word = $wordsAR[0][0];

@@ -42,6 +42,7 @@
 
 namespace Lynxlab\ADA\CORE\xml;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Upload\Functions\searchdir;
 
 class course_xml_file_process

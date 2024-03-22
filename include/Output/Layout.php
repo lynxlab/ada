@@ -14,6 +14,7 @@
 
 namespace Lynxlab\ADA\Main\Output;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\mydebug;
 
 class Layout

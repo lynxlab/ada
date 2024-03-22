@@ -24,6 +24,8 @@ namespace Lynxlab\ADA\Main\Forms\lib\classes;
 
 use Lynxlab\ADA\CORE\html4\CBaseAttributesElement;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 abstract class FForm
 {
     public function __construct()
@@ -321,7 +323,7 @@ abstract class FForm
      * @param string $label
      * @param array $data value and label for each select option
      * @param string $checked the value of the option to be checked
-     * @return FormControl
+     * @return FormControl|void
      */
     final protected function addSelect($id, $label, $data, $checked)
     {

@@ -30,10 +30,10 @@ use Lynxlab\ADA\Main\User\ADAGuest;
 use function Lynxlab\ADA\Main\AMA\DBRead\read_course;
 use function Lynxlab\ADA\Main\AMA\DBRead\read_course_instance_from_DB;
 use function Lynxlab\ADA\Main\AMA\DBRead\read_user;
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  *
- * @return unknown_type
  */
 function session_controlFN($neededObjAr = [], $allowedUsersAr = [], $trackPageToNavigationHistory = true)
 {
@@ -694,7 +694,7 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
                     $UserType = $sess_userObj->getType();
                     switch ($sess_userObj->getType()) {
                         case AMA_TYPE_STUDENT:
-                            $studentLevel = $dh->_get_student_level($sess_id_user, $id_course_instance);
+                            $studentLevel = $dh->get_student_level($sess_id_user, $id_course_instance);
                             if (AMA_DataHandler::isError($studentLevel)) {
                                 if ($sess_courseObj->getAutoSubscription()) {
                                     $invalid_course_instance = false;
@@ -815,7 +815,7 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
 /**
  *
  * @param $data
- * @return unknown_type
+ * @return void
  */
 function clear_dataFN($variableToClearAr = [])
 {

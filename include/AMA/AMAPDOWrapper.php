@@ -19,6 +19,7 @@
 
 namespace Lynxlab\ADA\Main\AMA;
 
+use Lynxlab\ADA\Main\Logger\ADALogger;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use PDO;
 use PDOException;

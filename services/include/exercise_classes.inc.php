@@ -127,7 +127,7 @@ class ExerciseDAO {
                         $data['parent_id'] = $exercise->getParentId();
                         $data['order']     = $exercise->getOrder();
 
-                        $result = $dh->_edit_node($data);
+                        $result = $dh->doEdit_node($data);
                         if (AMA_DataHandler::isError($result)) {
                             return FALSE;
                         }
@@ -142,7 +142,7 @@ class ExerciseDAO {
                             $data['order']     = $exercise->getExerciseDataOrderForItem($updated_node);
                             $data['correctness'] = $exercise->getExerciseDataCorrectnessForItem($updated_node);
 
-                            $result = $dh->_edit_node($data);
+                            $result = $dh->doEdit_node($data);
                             if (AMA_DataHandler::isError($result)) {
                                 return FALSE;
                             }
@@ -165,7 +165,7 @@ class ExerciseDAO {
 //    			$data['parent_id'] = $exercise->getParentId();
 //    			$data['order']     = $exercise->getOrder();
 //
-//    			$result = $dh->_edit_node($data);
+//    			$result = $dh->doEdit_node($data);
 //                if (AMA_DataHandler::isError($result)) {
 //                  return FALSE;
 //                }
@@ -180,7 +180,7 @@ class ExerciseDAO {
 //    			  $data['order']     = $ex_data['ordine'];
 //    			  $data['correctness'] = $ex_data['correttezza'];
 //
-//                  $result = $dh->_edit_node($data);
+//                  $result = $dh->doEdit_node($data);
 //                  if (AMA_DataHandler::isError($result)) {
 //                    return FALSE;
 //                  }

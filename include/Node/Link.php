@@ -15,6 +15,8 @@
 
 namespace Lynxlab\ADA\Main\Node;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 class Link extends ADAResource
 {
     public $position;

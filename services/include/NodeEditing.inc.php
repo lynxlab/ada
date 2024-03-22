@@ -86,7 +86,7 @@ class NodeEditing {
                     // $external_resources[] = $dh->get_risorsa_esterna_id($media);
                         $external_resource = $dh->get_risorsa_esterna_id($media);
                         if (AMA_DataHandler::isError($external_resource)) return $external_resource;
-                        $result = $dh->_del_risorse_nodi($dh->sql_prepared($edited_node_id), $external_resource);
+                        $result = $dh->del_risorse_nodi($dh->sql_prepared($edited_node_id), $external_resource);
                         if (AMA_DataHandler::isError($result)) return $result;
                         break;
                 }
@@ -128,7 +128,7 @@ class NodeEditing {
                         if (AMA_DataHandler::isError($id_ext_res)) return $id_ext_res;
                         if ( $id_ext_res < 0) // il media e' gia' in risorsa_esterna
                         {
-                            $result_ext = $dh->_add_risorse_nodi("'$edited_node_id'", abs($id_ext_res));
+                            $result_ext = $dh->add_risorse_nodi("'$edited_node_id'", abs($id_ext_res));
                             if (AMA_DataHandler::isError($result_ext)) return $result_ext;
                         }
                         break;
@@ -143,7 +143,7 @@ class NodeEditing {
                         //                        if (AMA_DataHandler::isError($id_ext_res)) return $id_ext_res;
                         $external_resource = $dh->get_risorsa_esterna_id($media);
                         if (AMA_DataHandler::isError($external_resource)) return $external_resource;
-                        $result_ext = $dh->_add_risorse_nodi("'$edited_node_id'", $external_resource);
+                        $result_ext = $dh->add_risorse_nodi("'$edited_node_id'", $external_resource);
                         if (AMA_DataHandler::isError($result_ext)) return $result_ext;
                         break;
                 }
@@ -266,7 +266,7 @@ class NodeEditing {
             ], $node_data, [ 'isUpdate' => true ]);
         }
 
-        $result = $dh->_edit_node($node_data);
+        $result = $dh->doEdit_node($node_data);
 
         if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
             \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch([
@@ -648,7 +648,7 @@ class NodeEditingViewer {
      * @param  string $form_action
      * @return string
      */
-    public static function getPreviewForm( $action_return_to_edit_node, $action_save_edited_node ) {
+    public static function getPreviewForm( $action_return_todoEdit_node, $action_save_edited_node ) {
         $node_data = getNodeDataFromPost($_POST);
         $_SESSION['sess_node_editing']['node_data'] = serialize($node_data);
 
@@ -701,7 +701,7 @@ class NodeEditingViewer {
         /*
     $div_buttons = CDOMElement::create('div','id:buttons');
     $edit_button = CDOMElement::create('span','id:node_preview_edit_button');
-    $edit_link   = CDOMElement::create('a',"href:$action_return_to_edit_node");
+    $edit_link   = CDOMElement::create('a',"href:$action_return_todoEdit_node");
     $edit_link->addChild(new CText(translateFN('Modifica')));
     $edit_button->addChild($edit_link);
     $div_buttons->addChild($edit_button);

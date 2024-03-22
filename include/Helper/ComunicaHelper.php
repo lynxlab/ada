@@ -15,6 +15,8 @@ namespace Lynxlab\ADA\Main\Helper;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Comunica helper class
  */
@@ -110,7 +112,7 @@ class ComunicaHelper extends ViewBaseHelper
      *
      * @param ADAGenericUser $userObj
      * @param boolean $log_enabled
-     * @return void
+     * @return array|void
      */
     protected static function getUserBrowsingData(ADAGenericUser $userObj, $log_enabled = false)
     {

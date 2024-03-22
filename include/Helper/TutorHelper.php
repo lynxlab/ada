@@ -39,7 +39,6 @@ class TutorHelper extends ViewBaseHelper
                     'user_mail' => self::$helperData['userObj']->getEmail(),
                     'user_messages' => self::getUserMessages(self::$helperData['userObj']),
                     'user_agenda' => self::getUserAgenda(self::$helperData['userObj']),
-                    'user_agenda' => self::getUserAgenda(self::$helperData['userObj']),
                 ],
                 self::buildGlobals()
             );

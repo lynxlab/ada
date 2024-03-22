@@ -89,7 +89,7 @@ switch ($mode) {
         $out_fields_ar = array('data_visita','id_utente_studente','id_istanza_corso');
         $clause ="id_nodo = '$id_node'";
 
-        $visits_ar = $dh->_find_nodes_history_list($out_fields_ar,$clause);
+        $visits_ar = $dh->find_nodes_history_list($out_fields_ar,$clause);
         if (AMA_DataHandler::isError($visits_ar)) {
             $msg = $visits_ar->getMessage();
             print '$msg';
@@ -102,7 +102,7 @@ switch ($mode) {
             foreach ($visits_ar as $visit) {
                 $user_id = $visit[2];
                 if($user_id > 0) {
-                    $student = $dh->_get_user_info($visit[2]);
+                    $student = $dh->get_user_info($visit[2]);
                     //global $debug;$debug=1;mydebug(__LINE__,__FILE__,$student);$debug=0;
                     $studentname = $student['username'];
                 }
@@ -173,7 +173,7 @@ switch ($mode) {
             $clause = "id_nodo LIKE '{$course_id}\_%' AND ";
             $field_list_ar = array('nome','id_utente');
             $clause .= "id_utente='$sess_id_user'";
-            $dataHa = $dh->_find_nodes_list($field_list_ar, $clause);
+            $dataHa = $dh->doFind_nodes_list($field_list_ar, $clause);
             if (AMA_DataHandler::isError($dataHa)) {
                 $err_msg = $dataHa->getMessage();
                 //header('Location: $error?err_msg=$msg');
@@ -189,7 +189,7 @@ switch ($mode) {
 
                 // FIXME: verificare quale fra queste due usare
                 //         $visits = $dh->find_nodes_history_list($out_fields_ar,'', '', $node_id);
-                $visits = $dh->_find_nodes_history_list($out_fields_ar,$clause);
+                $visits = $dh->find_nodes_history_list($out_fields_ar,$clause);
 
                 if (AMA_DataHandler::isError($visits)) {
                     $msg = $visits->getMessage();

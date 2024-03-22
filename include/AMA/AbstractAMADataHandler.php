@@ -11,6 +11,7 @@
 
 namespace Lynxlab\ADA\Main\AMA;
 
+use Lynxlab\ADA\Main\Logger\ADALogger;
 use Lynxlab\ADA\Main\Stack\RBStack;
 use PDO;
 use PDOException;
@@ -416,7 +417,7 @@ abstract class Abstract_AMA_DataHandler
      * @access private
      *
      */
-    protected function _begin_transaction()
+    protected function begin_transaction()
     {
         // if the rollback stack is not empty, then set up a marker
         if (!$this->rbStack->isEmpty()) {
@@ -430,7 +431,7 @@ abstract class Abstract_AMA_DataHandler
      * @access private
      *
      */
-    protected function _rs_add()
+    protected function rs_add()
     {
 
         // nuber of arguments
@@ -471,7 +472,7 @@ abstract class Abstract_AMA_DataHandler
      * @return a string containing a message
      *
      */
-    protected function _rollback()
+    protected function rollback()
     {
         $err_msg = '';
 
@@ -539,7 +540,7 @@ abstract class Abstract_AMA_DataHandler
      * @access private
      *
      */
-    protected function _commit()
+    protected function commit()
     {
         // get last marker
         $marker = $this->rbStack->remove_marker();

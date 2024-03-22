@@ -16,6 +16,8 @@ namespace Lynxlab\ADA\Main\HtmlLibrary;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 class ServicesModuleHtmlLib
 {
     public static function getAddExerciseForm($form_dataAr = [], $errorsAr = [])

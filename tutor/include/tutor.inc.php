@@ -151,7 +151,7 @@ function get_student_dataFN($id_student, $id_instance) {
     $dh = $GLOBALS['dh'];
     $http_root_dir= $GLOBALS['http_root_dir'];
 
-    $student_info_ha = $dh->_get_user_info($id_student); // Get info of each student
+    $student_info_ha = $dh->get_user_info($id_student); // Get info of each student
     if  (AMA_DataHandler::isError($student_info_ha)) {
         $msg = $student_info_ha->getMessage();
         return $msg;

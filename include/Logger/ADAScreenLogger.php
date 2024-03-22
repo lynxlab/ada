@@ -23,7 +23,7 @@ class ADAScreenLogger extends ADASimpleLogger
     /**
      *
      * @param $text
-     * @return unknown_type
+     * @return void
      */
 
     // FIXME: Strict Standards

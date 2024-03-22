@@ -11,6 +11,8 @@
 
 namespace Lynxlab\ADA\Main\AMA;
 
+use Lynxlab\ADA\Main\Logger\ADALogger;
+
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
@@ -275,7 +277,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
     */
 
 
-    public function _get_user_pwd($id)
+    public function get_user_pwd($id)
     {
         $db = & $this->getConnection();
         if (AMA_DB::isError($db)) {
@@ -311,8 +313,8 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      *        res_ha['password']
      */
 
-    //private function _get_user_info($id) {
-    public function _get_user_info($id)
+    //private function get_user_info($id) {
+    public function get_user_info($id)
     {
         $db = & $this->getConnection();
         if (AMA_DB::isError($db)) {
@@ -338,15 +340,6 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
         return $res_ar;
     }
 
-    /**
-     *
-     * @param $id
-     * @return unknown_type
-     */
-    public function get_user_info($id)
-    {
-        return $this->_get_user_info($id);
-    }
     // FIXME: forse deve essere pubblico
     /**
      *
@@ -354,7 +347,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @param $id_course_instance
      * @return unknown_type
      */
-    private function _get_student_level($id_user, $id_course_instance)
+    private function get_student_level($id_user, $id_course_instance)
     {
         $db = & $this->getConnection();
         if (AMA_DB::isError($db)) {
@@ -454,7 +447,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
     public function get_author($id)
     {
         // get a row from table UTENTE
-        $get_user_result = $this->_get_user_info($id);
+        $get_user_result = $this->get_user_info($id);
         if (AMA_Common_DataHandler::isError($get_user_result)) {
             // $get_user_result is an AMA_Error object
             return $get_user_result;
@@ -503,7 +496,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
     public function get_student($id)
     {
         // get a row from table UTENTE
-        $get_user_result = $this->_get_user_info($id);
+        $get_user_result = $this->get_user_info($id);
         if (AMA_Common_DataHandler::isError($get_user_result)) {
             // $get_user_result is an AMA_Error object
             return $get_user_result;
@@ -543,7 +536,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
     {
 
         // get a row from table UTENTE
-        $get_user_result = $this->_get_user_info($id);
+        $get_user_result = $this->get_user_info($id);
         if (AMA_Common_DataHandler::isError($get_user_result)) {
             // $get_user_result is an AMA_Error object
             return $get_user_result;

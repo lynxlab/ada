@@ -339,7 +339,7 @@ array(
 	        // getting only user_id
 	        $id_chat_owner= $res_ar[0][0];
 	        // we get the info of the user
-	        $user_info = $dh->_get_user_info($id_chat_owner);
+	        $user_info = $dh->get_user_info($id_chat_owner);
 	        // we get the type of the user
 	        $owner_type = $user_info['tipo'];
 	        // we verify if the typed username from the user is a valid username

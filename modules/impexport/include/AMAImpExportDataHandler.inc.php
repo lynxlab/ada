@@ -58,19 +58,19 @@ class AMAImpExportDataHandler extends AMA_DataHandler {
 
 	/**
 	 * Need to promote this method to public
-	 * @see AMA_Tester_DataHandler::_get_id_position
+	 * @see AMA_Tester_DataHandler::doGet_id_position
 	 */
 	public function get_id_position ($pos_ar)
 	{
-		return parent::_get_id_position ($pos_ar);
+		return parent::doGet_id_position ($pos_ar);
 	}
 	/**
 	 * Need to promote this method to public
-	 * @see AMA_Tester_DataHandler::_add_position
+	 * @see AMA_Tester_DataHandler::doAdd_position
 	 */
 	public function add_position ($pos_ar)
 	{
-		return parent::_add_position ($pos_ar);
+		return parent::doAdd_position ($pos_ar);
 	}
 
 	/**

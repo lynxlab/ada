@@ -20,6 +20,8 @@
 
 namespace Lynxlab\ADA\Main\form;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 class PhpOpenFormGen
 {
     public static function makeForm($fields, $names, $edittypes, $necessary, $values, $options, $maxsize, $action, $which, $errors, $submit, $lang_submit = "", $lang_reset_opt = "")

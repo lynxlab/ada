@@ -265,7 +265,7 @@ if (isset($_GET['file'])){
                                           if (!isset($fid_node) OR ($fid_node == $id_node)) {
                                                 $out_fields_ar = array('nome');
                                                 $clause = "ID_NODO = '$id_node'";
-                                                $nodes = $dh->_find_nodes_list($out_fields_ar, $clause);
+                                                $nodes = $dh->doFind_nodes_list($out_fields_ar, $clause);
                                                 if(!AMA_DB::isError($nodes)) {
                                                     foreach ($nodes as $single_node) {
                                                         $id_node = $single_node[0];

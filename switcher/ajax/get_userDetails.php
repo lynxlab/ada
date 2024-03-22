@@ -344,7 +344,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                     $field_list_ar=array('tipo');
                     $clause='(tipo ='. ADA_LEAF_TYPE.' OR  tipo ='. ADA_GROUP_TYPE.' OR  tipo ='.ADA_PERSONAL_EXERCISE_TYPE.')';
                     $clause .= " AND id_nodo LIKE '%$id_course%'";
-                    $NodesAr=$dh->_find_nodes_list($field_list_ar,$clause);
+                    $NodesAr=$dh->doFind_nodes_list($field_list_ar,$clause);
                     if(!AMA_DB::isError($NodesAr)){
                         $countActivity=0;
                         if(!empty($NodesAr)){

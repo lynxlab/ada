@@ -15,6 +15,8 @@ namespace Lynxlab\ADA\Main\HtmlLibrary;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 class UserExtraModuleHtmlLib
 {
     /*

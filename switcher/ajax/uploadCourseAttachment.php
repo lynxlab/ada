@@ -99,7 +99,7 @@ if (isset($_FILES) && count($_FILES)>0) {
 		$res = $GLOBALS['dh']->add_risorsa_esterna($extRes, true);
 		if (!AMA_DB::isError($res)) {
 			if($fileUploader->upload() == false) {
-				$GLOBALS['dh']->_del_risorse_nodi($courseID, $extRes);
+				$GLOBALS['dh']->del_risorse_nodi($courseID, $extRes);
 				$GLOBALS['dh']->remove_risorsa_esterna($extRes);
 				$data = $fileUploader->getErrorMessage();
 			} else {

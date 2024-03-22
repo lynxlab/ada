@@ -16,6 +16,8 @@ namespace Lynxlab\ADA\Main\Forms;
 use Lynxlab\ADA\Main\Forms\lib\classes\FormControl;
 use Lynxlab\ADA\Main\Output\UILayout;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 class UserProfileForm extends UserRegistrationForm
 {
     /**
@@ -68,7 +70,7 @@ class UserProfileForm extends UserRegistrationForm
         $citta = FormControl::create(FormControl::INPUT_TEXT, 'citta', translateFN('Città'));
         $indirizzo = FormControl::create(FormControl::INPUT_TEXT, 'indirizzo', translateFN('Indirizzo'));
         $provincia = FormControl::create(FormControl::INPUT_TEXT, 'provincia', translateFN('Provincia'));
-        $countries = countriesList::getCountriesList($_SESSION['sess_user_language']);
+        $countries = CountriesList::getCountriesList($_SESSION['sess_user_language']);
         $nazione = FormControl::create(FormControl::SELECT, 'nazione', translateFN('Nazione'));
         $nazione->withData($countries);
         $this->addFieldset(translateFN('Dati residenza'), 'residenza')->withData([$indirizzo,$cap,$citta,$provincia,$nazione,$telefono]);

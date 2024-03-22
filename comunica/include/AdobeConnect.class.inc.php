@@ -192,7 +192,7 @@ class AdobeConnect extends videoroom implements IVideoRoom
     public function addUser($userObj)
     {
         $common_dh = $GLOBALS['common_dh'];
-        $userPwd = substr($common_dh->_get_user_pwd($userObj->getId()), 0, 31);
+        $userPwd = substr($common_dh->get_user_pwd($userObj->getId()), 0, 31);
 
         $principalData = array();
         $principalData['login'] = $userObj->getUserName();
@@ -218,7 +218,7 @@ class AdobeConnect extends videoroom implements IVideoRoom
     {
         $common_dh = $GLOBALS['common_dh'];
 
-        $userPwd = substr($common_dh->_get_user_pwd($sess_id_user), 0, 31);
+        $userPwd = substr($common_dh->get_user_pwd($sess_id_user), 0, 31);
         $userName = $userObj->getUserName();
 
         try {
@@ -363,7 +363,7 @@ class AdobeConnect extends videoroom implements IVideoRoom
 
             $common_dh = $GLOBALS['common_dh'];
             $userObj = $GLOBALS['userObj'];
-            $userPwd = substr($common_dh->_get_user_pwd($sess_id_user), 0, 31);
+            $userPwd = substr($common_dh->get_user_pwd($sess_id_user), 0, 31);
             $userName = $userObj->getUserName();
             $this->apiClientToEnter = $this->makeApiClient($userName, $userPwd);
 

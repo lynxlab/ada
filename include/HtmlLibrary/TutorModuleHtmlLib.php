@@ -19,6 +19,8 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 class TutorModuleHtmlLib
 {
     /*
@@ -30,15 +32,15 @@ class TutorModuleHtmlLib
     {
 
         // S.nome, S.descrizione, S.livello, S.durata_servizio, S.min_incontri, S.max_incontri, S.durata_max_incontro
-        $thead = [translateFN('Service data'),''];
+        $thead = [translateFN('Service data'), ''];
         $tbody = [
-        [translateFN('Name'), $service_dataAr[1]],
-        [translateFN('Description'), $service_dataAr[2]],
-        [translateFN('Level'), $service_dataAr[3]],
-        [translateFN('Duration'), $service_dataAr[4]],
-        [translateFN('Min incontri'), $service_dataAr[5]],
-        [translateFN('Max incontri'), $service_dataAr[6]],
-        [translateFN('Durata max incontro'), $service_dataAr[7]],
+            [translateFN('Name'), $service_dataAr[1]],
+            [translateFN('Description'), $service_dataAr[2]],
+            [translateFN('Level'), $service_dataAr[3]],
+            [translateFN('Duration'), $service_dataAr[4]],
+            [translateFN('Min incontri'), $service_dataAr[5]],
+            [translateFN('Max incontri'), $service_dataAr[6]],
+            [translateFN('Durata max incontro'), $service_dataAr[7]],
         ];
         return BaseHtmlLib::tableElement('', $thead, $tbody);
     }
@@ -49,12 +51,12 @@ class TutorModuleHtmlLib
         $form = CDOMElement::create('form', 'id:pe_subscribed, method:post, action:course_instance_subscribe.php');
 
         $thead = [
-          translateFN('studente'),
-          translateFN('iscritto'),
-          translateFN('sospeso'),
-          translateFN('in visita'),
-          translateFN('cancellato'),
-          translateFN('data iscrizione'),
+            translateFN('studente'),
+            translateFN('iscritto'),
+            translateFN('sospeso'),
+            translateFN('in visita'),
+            translateFN('cancellato'),
+            translateFN('data iscrizione'),
         ];
         $tbody = [];
         foreach ($user_dataAr as $user) {
@@ -79,12 +81,12 @@ class TutorModuleHtmlLib
 
 
             $tbody[] = [
-              $user['nome'] . ' ' . $user['cognome'],
-              $subscribed,
-              $suspended,
-              $visiting,
-              $removed,
-              '',
+                $user['nome'] . ' ' . $user['cognome'],
+                $subscribed,
+                $suspended,
+                $visiting,
+                $removed,
+                '',
             ];
         }
 
@@ -103,10 +105,10 @@ class TutorModuleHtmlLib
         $form = CDOMElement::create('form', 'id:pe_unsubscribed, method:post, action:course_instance_presubscribe.php');
 
         $thead = [
-          translateFN('studente'),
-          translateFN('iscrivi'),
-          translateFN('rimuovi richiesta'),
-          translateFN('data richiesta'),
+            translateFN('studente'),
+            translateFN('iscrivi'),
+            translateFN('rimuovi richiesta'),
+            translateFN('data richiesta'),
         ];
         $tbody = [];
         foreach ($user_dataAr as $user) {
@@ -116,10 +118,10 @@ class TutorModuleHtmlLib
             $subscribe->setAttribute('checked', 'true');
             $remove = CDOMElement::create('radio', "name:student[$user_id] value:" . ADA_STATUS_REMOVED);
             $tbody[] = [
-              $user['nome'] . ' ' . $user['cognome'],
-              $subscribe,
-              $remove,
-              '',
+                $user['nome'] . ' ' . $user['cognome'],
+                $subscribe,
+                $remove,
+                '',
             ];
         }
 
@@ -180,11 +182,11 @@ class TutorModuleHtmlLib
             $user_fiscal_code = translateFN("L'utente non ha fornito il codice fiscale");
         }
 
-        $thead = [translateFN("Dati utente"),''];
+        $thead = [translateFN("Dati utente"), ''];
         $tbody = [
-        [translateFN("Codice fiscale dell'utente"), $user_fiscal_code],
-        [translateFN("Nome e cognome dell'utente"), $tutoredUserObj->getFullName()],
-        [translateFN("Nazionalità dell'utente"), $tutoredUserObj->getCountry()],
+            [translateFN("Codice fiscale dell'utente"), $user_fiscal_code],
+            [translateFN("Nome e cognome dell'utente"), $tutoredUserObj->getFullName()],
+            [translateFN("Nazionalità dell'utente"), $tutoredUserObj->getCountry()],
         ];
         return BaseHtmlLib::tableElement('', $thead, $tbody);
     }
@@ -197,9 +199,9 @@ class TutorModuleHtmlLib
         $thead_service_info = [translateFN('Informazioni sul servizio'), ''];
         $field = 'sl_' . $eguidance_session_dataAr['tipo_eguidance'];
         $tbody_service_info = [
-        [translateFN('Servizio'), $service_infoAr[1]],
-        [translateFN('Livello'), $service_infoAr[3]],
-        [EguidanceSession::textLabelForField('toe_title'), EguidanceSession::textLabelForField($field)],
+            [translateFN('Servizio'), $service_infoAr[1]],
+            [translateFN('Livello'), $service_infoAr[3]],
+            [EguidanceSession::textLabelForField('toe_title'), EguidanceSession::textLabelForField($field)],
         ];
         $div->addChild(BaseHtmlLib::tableElement('', $thead_service_info, $tbody_service_info));
 
@@ -211,22 +213,22 @@ class TutorModuleHtmlLib
 
         $thead_ud = [EguidanceSession::textLabelForField('ud_title'), $pointsString];
         $tbody_ud = [
-        [EguidanceSession::textLabelForField('ud_1'), EguidanceSession::textForScore($eguidance_session_dataAr['ud_1'])],
-        [EguidanceSession::textLabelForField('ud_2'), EguidanceSession::textForScore($eguidance_session_dataAr['ud_2'])],
-        [EguidanceSession::textLabelForField('ud_3'), EguidanceSession::textForScore($eguidance_session_dataAr['ud_3'])],
+            [EguidanceSession::textLabelForField('ud_1'), EguidanceSession::textForScore($eguidance_session_dataAr['ud_1'])],
+            [EguidanceSession::textLabelForField('ud_2'), EguidanceSession::textForScore($eguidance_session_dataAr['ud_2'])],
+            [EguidanceSession::textLabelForField('ud_3'), EguidanceSession::textForScore($eguidance_session_dataAr['ud_3'])],
         ];
         $div->addChild(BaseHtmlLib::tableElement('', $thead_ud, $tbody_ud));
 
         $div->addChild(self::displayTutorCommentsForArea(EguidanceSession::textLabelForField('ud_comments'), $eguidance_session_dataAr['ud_comments']));
 
-        $thead_pc = [EguidanceSession::textLabelForField('pc_title'),$pointsString];
+        $thead_pc = [EguidanceSession::textLabelForField('pc_title'), $pointsString];
         $tbody_pc = [
-        [EguidanceSession::textLabelForField('pc_1'), EguidanceSession::textForScore($eguidance_session_dataAr['pc_1'])],
-        [EguidanceSession::textLabelForField('pc_2'), EguidanceSession::textForScore($eguidance_session_dataAr['pc_2'])],
-        [EguidanceSession::textLabelForField('pc_3'), EguidanceSession::textForScore($eguidance_session_dataAr['pc_3'])],
-        [EguidanceSession::textLabelForField('pc_4'), EguidanceSession::textForScore($eguidance_session_dataAr['pc_4'])],
-        [EguidanceSession::textLabelForField('pc_5'), EguidanceSession::textForScore($eguidance_session_dataAr['pc_5'])],
-        [EguidanceSession::textLabelForField('pc_6'), EguidanceSession::textForScore($eguidance_session_dataAr['pc_6'])],
+            [EguidanceSession::textLabelForField('pc_1'), EguidanceSession::textForScore($eguidance_session_dataAr['pc_1'])],
+            [EguidanceSession::textLabelForField('pc_2'), EguidanceSession::textForScore($eguidance_session_dataAr['pc_2'])],
+            [EguidanceSession::textLabelForField('pc_3'), EguidanceSession::textForScore($eguidance_session_dataAr['pc_3'])],
+            [EguidanceSession::textLabelForField('pc_4'), EguidanceSession::textForScore($eguidance_session_dataAr['pc_4'])],
+            [EguidanceSession::textLabelForField('pc_5'), EguidanceSession::textForScore($eguidance_session_dataAr['pc_5'])],
+            [EguidanceSession::textLabelForField('pc_6'), EguidanceSession::textForScore($eguidance_session_dataAr['pc_6'])],
         ];
         $div->addChild(BaseHtmlLib::tableElement('', $thead_pc, $tbody_pc));
 
@@ -234,56 +236,56 @@ class TutorModuleHtmlLib
 
         $div->addChild(new CText(EguidanceSession::textLabelForField('area_pp')));
 
-        $thead_ba = [EguidanceSession::textLabelForField('ba_title'),$pointsString];
+        $thead_ba = [EguidanceSession::textLabelForField('ba_title'), $pointsString];
         $tbody_ba = [
-        [EguidanceSession::textLabelForField('ba_1'), EguidanceSession::textForScore($eguidance_session_dataAr['ba_1'])],
-        [EguidanceSession::textLabelForField('ba_2'), EguidanceSession::textForScore($eguidance_session_dataAr['ba_2'])],
-        [EguidanceSession::textLabelForField('ba_3'), EguidanceSession::textForScore($eguidance_session_dataAr['ba_3'])],
-        [EguidanceSession::textLabelForField('ba_4'), EguidanceSession::textForScore($eguidance_session_dataAr['ba_4'])],
+            [EguidanceSession::textLabelForField('ba_1'), EguidanceSession::textForScore($eguidance_session_dataAr['ba_1'])],
+            [EguidanceSession::textLabelForField('ba_2'), EguidanceSession::textForScore($eguidance_session_dataAr['ba_2'])],
+            [EguidanceSession::textLabelForField('ba_3'), EguidanceSession::textForScore($eguidance_session_dataAr['ba_3'])],
+            [EguidanceSession::textLabelForField('ba_4'), EguidanceSession::textForScore($eguidance_session_dataAr['ba_4'])],
         ];
         $div->addChild(BaseHtmlLib::tableElement('', $thead_ba, $tbody_ba));
 
         $div->addChild(self::displayTutorCommentsForArea(EguidanceSession::textLabelForField('ba_comments'), $eguidance_session_dataAr['ba_comments']));
 
-        $thead_t = [EguidanceSession::textLabelForField('t_title'),$pointsString];
+        $thead_t = [EguidanceSession::textLabelForField('t_title'), $pointsString];
         $tbody_t = [
-        [EguidanceSession::textLabelForField('t_1'), EguidanceSession::textForScore($eguidance_session_dataAr['t_1'])],
-        [EguidanceSession::textLabelForField('t_2'), EguidanceSession::textForScore($eguidance_session_dataAr['t_2'])],
-        [EguidanceSession::textLabelForField('t_3'), EguidanceSession::textForScore($eguidance_session_dataAr['t_3'])],
-        [EguidanceSession::textLabelForField('t_4'), EguidanceSession::textForScore($eguidance_session_dataAr['t_4'])],
+            [EguidanceSession::textLabelForField('t_1'), EguidanceSession::textForScore($eguidance_session_dataAr['t_1'])],
+            [EguidanceSession::textLabelForField('t_2'), EguidanceSession::textForScore($eguidance_session_dataAr['t_2'])],
+            [EguidanceSession::textLabelForField('t_3'), EguidanceSession::textForScore($eguidance_session_dataAr['t_3'])],
+            [EguidanceSession::textLabelForField('t_4'), EguidanceSession::textForScore($eguidance_session_dataAr['t_4'])],
         ];
         $div->addChild(BaseHtmlLib::tableElement('', $thead_t, $tbody_t));
 
         $div->addChild(self::displayTutorCommentsForArea(EguidanceSession::textLabelForField('t_comments'), $eguidance_session_dataAr['t_comments']));
 
-        $thead_pe = [EguidanceSession::textLabelForField('pe_title'),$pointsString];
+        $thead_pe = [EguidanceSession::textLabelForField('pe_title'), $pointsString];
         $tbody_pe = [
-        [EguidanceSession::textLabelForField('pe_1'), EguidanceSession::textForScore($eguidance_session_dataAr['pe_1'])],
-        [EguidanceSession::textLabelForField('pe_2'), EguidanceSession::textForScore($eguidance_session_dataAr['pe_2'])],
-        [EguidanceSession::textLabelForField('pe_3'), EguidanceSession::textForScore($eguidance_session_dataAr['pe_3'])],
+            [EguidanceSession::textLabelForField('pe_1'), EguidanceSession::textForScore($eguidance_session_dataAr['pe_1'])],
+            [EguidanceSession::textLabelForField('pe_2'), EguidanceSession::textForScore($eguidance_session_dataAr['pe_2'])],
+            [EguidanceSession::textLabelForField('pe_3'), EguidanceSession::textForScore($eguidance_session_dataAr['pe_3'])],
         ];
         $div->addChild(BaseHtmlLib::tableElement('', $thead_pe, $tbody_pe));
 
         $div->addChild(self::displayTutorCommentsForArea(EguidanceSession::textLabelForField('pe_comments'), $eguidance_session_dataAr['pe_comments']));
 
 
-        $thead_ci = [EguidanceSession::textLabelForField('ci_title'),$pointsString];
+        $thead_ci = [EguidanceSession::textLabelForField('ci_title'), $pointsString];
         $tbody_ci = [
-        [EguidanceSession::textLabelForField('ci_1'), EguidanceSession::textForScore($eguidance_session_dataAr['ci_1'])],
-        [EguidanceSession::textLabelForField('ci_2'), EguidanceSession::textForScore($eguidance_session_dataAr['ci_2'])],
-        [EguidanceSession::textLabelForField('ci_3'), EguidanceSession::textForScore($eguidance_session_dataAr['ci_3'])],
-        [EguidanceSession::textLabelForField('ci_4'), EguidanceSession::textForScore($eguidance_session_dataAr['ci_4'])],
-      //  array(EguidanceSession::textLabelForField('ci_comments') , $eguidance_session_dataAr['ci_comments']),
+            [EguidanceSession::textLabelForField('ci_1'), EguidanceSession::textForScore($eguidance_session_dataAr['ci_1'])],
+            [EguidanceSession::textLabelForField('ci_2'), EguidanceSession::textForScore($eguidance_session_dataAr['ci_2'])],
+            [EguidanceSession::textLabelForField('ci_3'), EguidanceSession::textForScore($eguidance_session_dataAr['ci_3'])],
+            [EguidanceSession::textLabelForField('ci_4'), EguidanceSession::textForScore($eguidance_session_dataAr['ci_4'])],
+            //  array(EguidanceSession::textLabelForField('ci_comments') , $eguidance_session_dataAr['ci_comments']),
         ];
         $div->addChild(BaseHtmlLib::tableElement('', $thead_ci, $tbody_ci));
 
         $div->addChild(self::displayTutorCommentsForArea(EguidanceSession::textLabelForField('ci_comments'), $eguidance_session_dataAr['ci_comments']));
 
-        $thead_m = [EguidanceSession::textLabelForField('m_title'),$pointsString];
+        $thead_m = [EguidanceSession::textLabelForField('m_title'), $pointsString];
         $tbody_m = [
-        [EguidanceSession::textLabelForField('m_1'), EguidanceSession::textForScore($eguidance_session_dataAr['m_1'])],
-        [EguidanceSession::textLabelForField('m_2'), EguidanceSession::textForScore($eguidance_session_dataAr['m_2'])],
-      //  array(EguidanceSession::textLabelForField('m_comments') , $eguidance_session_dataAr['m_comments']),
+            [EguidanceSession::textLabelForField('m_1'), EguidanceSession::textForScore($eguidance_session_dataAr['m_1'])],
+            [EguidanceSession::textLabelForField('m_2'), EguidanceSession::textForScore($eguidance_session_dataAr['m_2'])],
+            //  array(EguidanceSession::textLabelForField('m_comments') , $eguidance_session_dataAr['m_comments']),
         ];
         $div->addChild(BaseHtmlLib::tableElement('', $thead_m, $tbody_m));
 
@@ -434,19 +436,19 @@ class TutorModuleHtmlLib
         }
         if ($service_level == 2) {
             $typeAr = [
-            1 => EguidanceSession::textLabelForField('sl_1'),
-            2 => EguidanceSession::textLabelForField('sl_2'),
+                1 => EguidanceSession::textLabelForField('sl_1'),
+                2 => EguidanceSession::textLabelForField('sl_2'),
             ];
         } elseif ($service_level == 3) {
             $typeAr =  [
-            3 => EguidanceSession::textLabelForField('sl_3'),
-            4 => EguidanceSession::textLabelForField('sl_4'),
+                3 => EguidanceSession::textLabelForField('sl_3'),
+                4 => EguidanceSession::textLabelForField('sl_4'),
             ];
         } elseif ($service_level == 4) {
             $typeAr =  [
-            5 => EguidanceSession::textLabelForField('sl_5'),
-            6 => EguidanceSession::textLabelForField('sl_6'),
-            7 => EguidanceSession::textLabelForField('sl_7'),
+                5 => EguidanceSession::textLabelForField('sl_5'),
+                6 => EguidanceSession::textLabelForField('sl_6'),
+                7 => EguidanceSession::textLabelForField('sl_7'),
             ];
         } else {
             $typeAr = [];
@@ -456,7 +458,7 @@ class TutorModuleHtmlLib
         //FIXME: qui passo $form_dataAr['tipo_eguidance'], ma dovrei passare $form_dataAr['type_of_guidance']
         $toe_thead = [EguidanceSession::textLabelForField('toe_title')];
         $toe_tbody = [
-        [BaseHtmlLib::selectElement2('id:type_of_guidance, name:type_of_guidance', $typeAr, $form_dataAr['tipo_eguidance'])],
+            [BaseHtmlLib::selectElement2('id:type_of_guidance, name:type_of_guidance', $typeAr, $form_dataAr['tipo_eguidance'])],
         ];
         $toe_table = BaseHtmlLib::tableElement('', $toe_thead, $toe_tbody);
         $form->addChild($toe_table);
@@ -477,13 +479,13 @@ class TutorModuleHtmlLib
         $ud_5_select = BaseHtmlLib::selectElement2('id:ud_5, name:ud_5', $scoresAr, $form_dataAr['ud_5']);
 
 
-        $csa_thead = [EguidanceSession::textLabelForField('ud_title'),''/*translateFN('Select a score')*/];
+        $csa_thead = [EguidanceSession::textLabelForField('ud_title'), ''/*translateFN('Select a score')*/];
         $csa_tbody = [
-        [EguidanceSession::textLabelForField('ud_1'), $ud_1_select], //$user_birthdate),
-        [EguidanceSession::textLabelForField('ud_4'), $ud_4_select], //$user_birthcity),
-        [EguidanceSession::textLabelForField('ud_5'), $ud_5_select], //$user_birthprovince),
-        [EguidanceSession::textLabelForField('ud_2'), $ud_2_select], //$user_gender),
-        [EguidanceSession::textLabelForField('ud_3'), $ud_3_select], //$user_foreign_culture),
+            [EguidanceSession::textLabelForField('ud_1'), $ud_1_select], //$user_birthdate),
+            [EguidanceSession::textLabelForField('ud_4'), $ud_4_select], //$user_birthcity),
+            [EguidanceSession::textLabelForField('ud_5'), $ud_5_select], //$user_birthprovince),
+            [EguidanceSession::textLabelForField('ud_2'), $ud_2_select], //$user_gender),
+            [EguidanceSession::textLabelForField('ud_3'), $ud_3_select], //$user_foreign_culture),
         ];
         $csa_table = BaseHtmlLib::tableElement('', $csa_thead, $csa_tbody);
         $form->addChild($csa_table);
@@ -499,14 +501,14 @@ class TutorModuleHtmlLib
         $pcitems_5_select = BaseHtmlLib::selectElement2('id:pc_5, name:pc_5', $scoresAr, $form_dataAr['pc_5']);
         $pcitems_6_select = BaseHtmlLib::selectElement2('id:pc_6, name:pc_6', $scoresAr, $form_dataAr['pc_6']);
 
-        $pcitems_thead = [EguidanceSession::textLabelForField('pc_title'),translateFN('Select a score')];
+        $pcitems_thead = [EguidanceSession::textLabelForField('pc_title'), translateFN('Select a score')];
         $pcitems_tbody = [
-        [EguidanceSession::textLabelForField('pc_1'), $pcitems_1_select],
-        [EguidanceSession::textLabelForField('pc_2'), $pcitems_2_select],
-        [EguidanceSession::textLabelForField('pc_3'), $pcitems_3_select],
-        [EguidanceSession::textLabelForField('pc_4'), $pcitems_4_select],
-        [EguidanceSession::textLabelForField('pc_5'), $pcitems_5_select],
-        [EguidanceSession::textLabelForField('pc_6'), $pcitems_6_select],
+            [EguidanceSession::textLabelForField('pc_1'), $pcitems_1_select],
+            [EguidanceSession::textLabelForField('pc_2'), $pcitems_2_select],
+            [EguidanceSession::textLabelForField('pc_3'), $pcitems_3_select],
+            [EguidanceSession::textLabelForField('pc_4'), $pcitems_4_select],
+            [EguidanceSession::textLabelForField('pc_5'), $pcitems_5_select],
+            [EguidanceSession::textLabelForField('pc_6'), $pcitems_6_select],
         ];
         $pcitems_table = BaseHtmlLib::tableElement('', $pcitems_thead, $pcitems_tbody);
         $form->addChild($pcitems_table);
@@ -527,12 +529,12 @@ class TutorModuleHtmlLib
         $ba_3_select = BaseHtmlLib::selectElement2('id:ba_3, name:ba_3', $scoresAr, $form_dataAr['ba_3']);
         $ba_4_select = BaseHtmlLib::selectElement2('id:ba_4, name:ba_4', $scoresAr, $form_dataAr['ba_4']);
 
-        $ba_thead = [EguidanceSession::textLabelForField('ba_title'),translateFN('Select a score')];
+        $ba_thead = [EguidanceSession::textLabelForField('ba_title'), translateFN('Select a score')];
         $ba_tbody = [
-        [EguidanceSession::textLabelForField('ba_1'),$ba_1_select],
-        [EguidanceSession::textLabelForField('ba_2'),$ba_2_select],
-        [EguidanceSession::textLabelForField('ba_3'),$ba_3_select],
-        [EguidanceSession::textLabelForField('ba_4'),$ba_4_select],
+            [EguidanceSession::textLabelForField('ba_1'), $ba_1_select],
+            [EguidanceSession::textLabelForField('ba_2'), $ba_2_select],
+            [EguidanceSession::textLabelForField('ba_3'), $ba_3_select],
+            [EguidanceSession::textLabelForField('ba_4'), $ba_4_select],
         ];
         $ba_table = BaseHtmlLib::tableElement('', $ba_thead, $ba_tbody);
         $form->addChild($ba_table);
@@ -548,12 +550,12 @@ class TutorModuleHtmlLib
         $t_3_select = BaseHtmlLib::selectElement2('id:t_3, name:t_3', $scoresAr, $form_dataAr['t_3']);
         $t_4_select = BaseHtmlLib::selectElement2('id:t_4, name:t_4', $scoresAr, $form_dataAr['t_4']);
 
-        $t_thead = [EguidanceSession::textLabelForField('t_title'),translateFN('Select a score')];
+        $t_thead = [EguidanceSession::textLabelForField('t_title'), translateFN('Select a score')];
         $t_tbody = [
-        [EguidanceSession::textLabelForField('t_1'),$t_1_select],
-        [EguidanceSession::textLabelForField('t_2'),$t_2_select],
-        [EguidanceSession::textLabelForField('t_3'),$t_3_select],
-        [EguidanceSession::textLabelForField('t_4'),$t_4_select],
+            [EguidanceSession::textLabelForField('t_1'), $t_1_select],
+            [EguidanceSession::textLabelForField('t_2'), $t_2_select],
+            [EguidanceSession::textLabelForField('t_3'), $t_3_select],
+            [EguidanceSession::textLabelForField('t_4'), $t_4_select],
         ];
         $t_table = BaseHtmlLib::tableElement('', $t_thead, $t_tbody);
         $form->addChild($t_table);
@@ -568,11 +570,11 @@ class TutorModuleHtmlLib
         $pe_2_select = BaseHtmlLib::selectElement2('id:pe_2, name:pe_2', $scoresAr, $form_dataAr['pe_2']);
         $pe_3_select = BaseHtmlLib::selectElement2('id:pe_3, name:pe_3', $scoresAr, $form_dataAr['pe_3']);
 
-        $pe_thead = [EguidanceSession::textLabelForField('pe_title'),translateFN('Select a score')];
+        $pe_thead = [EguidanceSession::textLabelForField('pe_title'), translateFN('Select a score')];
         $pe_tbody = [
-        [EguidanceSession::textLabelForField('pe_1'),$pe_1_select],
-        [EguidanceSession::textLabelForField('pe_2'),$pe_2_select],
-        [EguidanceSession::textLabelForField('pe_3'),$pe_3_select],
+            [EguidanceSession::textLabelForField('pe_1'), $pe_1_select],
+            [EguidanceSession::textLabelForField('pe_2'), $pe_2_select],
+            [EguidanceSession::textLabelForField('pe_3'), $pe_3_select],
         ];
         $pe_table = BaseHtmlLib::tableElement('', $pe_thead, $pe_tbody);
         $form->addChild($pe_table);
@@ -588,12 +590,12 @@ class TutorModuleHtmlLib
         $ci_3_select = BaseHtmlLib::selectElement2('id:ci_3, name:ci_3', $scoresAr, $form_dataAr['ci_3']);
         $ci_4_select = BaseHtmlLib::selectElement2('id:ci_4, name:ci_4', $scoresAr, $form_dataAr['ci_4']);
 
-        $ci_thead = [EguidanceSession::textLabelForField('ci_title'),translateFN('Select a score')];
+        $ci_thead = [EguidanceSession::textLabelForField('ci_title'), translateFN('Select a score')];
         $ci_tbody = [
-        [EguidanceSession::textLabelForField('ci_1'),$ci_1_select],
-        [EguidanceSession::textLabelForField('ci_2'),$ci_2_select],
-        [EguidanceSession::textLabelForField('ci_3'),$ci_3_select],
-        [EguidanceSession::textLabelForField('ci_4'),$ci_4_select],
+            [EguidanceSession::textLabelForField('ci_1'), $ci_1_select],
+            [EguidanceSession::textLabelForField('ci_2'), $ci_2_select],
+            [EguidanceSession::textLabelForField('ci_3'), $ci_3_select],
+            [EguidanceSession::textLabelForField('ci_4'), $ci_4_select],
         ];
         $ci_table = BaseHtmlLib::tableElement('', $ci_thead, $ci_tbody);
         $form->addChild($ci_table);
@@ -607,10 +609,10 @@ class TutorModuleHtmlLib
         $m_1_select = BaseHtmlLib::selectElement2('id:m_1, name:m_1', $scoresAr, $form_dataAr['m_1']);
         $m_2_select = BaseHtmlLib::selectElement2('id:m_2, name:m_2', $scoresAr, $form_dataAr['m_2']);
 
-        $m_thead = [EguidanceSession::textLabelForField('m_title'),translateFN('Select a score')];
+        $m_thead = [EguidanceSession::textLabelForField('m_title'), translateFN('Select a score')];
         $m_tbody = [
-        [EguidanceSession::textLabelForField('m_1'),$m_1_select],
-        [EguidanceSession::textLabelForField('m_2'),$m_2_select],
+            [EguidanceSession::textLabelForField('m_1'), $m_1_select],
+            [EguidanceSession::textLabelForField('m_2'), $m_2_select],
         ];
         $m_table = BaseHtmlLib::tableElement('', $m_thead, $m_tbody);
         $form->addChild($m_table);

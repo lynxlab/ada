@@ -99,7 +99,7 @@ if($userId === false) {
 }
 else {
 
-    $user_info = $dh->_get_user_info($userId);
+    $user_info = $dh->get_user_info($userId);
     if(AMA_DataHandler::isError($userId)) {
         $data = new CText('Utente non trovato');
     } else {

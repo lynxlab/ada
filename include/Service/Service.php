@@ -18,6 +18,8 @@ namespace Lynxlab\ADA\Main\Service;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\HtmlLibrary\GuestHtmlLib;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 class Service
 {
     private $implementors = [];

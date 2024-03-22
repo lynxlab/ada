@@ -237,7 +237,7 @@ else {
             }
             $select->setAttribute('onchange', 'saveStatus(this)');
 
-            $livello = $dh->_get_student_level($user->getSubscriberId(),$instanceId);
+            $livello = $dh->get_student_level($user->getSubscriberId(),$instanceId);
 
             if(is_int($user->getSubscriptionDate())) //if getSubscriptionDate() return an int, means that it is setted in Subscription costructor to time()
             {

@@ -26,6 +26,7 @@ use Lynxlab\ADA\CORE\HmtlElements\Form;
 use Lynxlab\ADA\CORE\HmtlElements\IList;
 use Lynxlab\ADA\CORE\HmtlElements\Table;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 /**************************

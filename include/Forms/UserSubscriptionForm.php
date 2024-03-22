@@ -15,6 +15,8 @@ namespace Lynxlab\ADA\Main\Forms;
 
 use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 class UserSubscriptionForm extends UserRegistrationForm
 {
     public function __construct()

@@ -18,9 +18,7 @@ use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
 
-require_once 'CourseViewer.inc.php';
-require_once ROOT_DIR . '/comunica/include/MessageHandler.inc.php';
-require_once ROOT_DIR . '/comunica/include/UserDataHandler.inc.php';
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * Browsing helper class
@@ -38,6 +36,9 @@ class BrowsingHelper extends ViewBaseHelper
      */
     public static function init(array $neededObjAr = [])
     {
+        require_once ROOT_DIR . '/comunica/include/MessageHandler.inc.php';
+        require_once ROOT_DIR . '/comunica/include/UserDataHandler.inc.php';
+
         if (count(self::$helperData) === 0) {
             self::$helperData = parent::init($neededObjAr);
             self::setSessionMode();

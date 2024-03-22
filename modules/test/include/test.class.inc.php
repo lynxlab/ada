@@ -79,7 +79,7 @@ class TestTest extends RootTest
 			if ($this->barrier) {
 				$level_gained = null;
 				if (!is_null($r['min_barrier_points']) && $r['points'] >= $r['min_barrier_points']) {
-					$level = $dh->_get_student_level($_SESSION['sess_id_user'], $this->id_istanza);
+					$level = $dh->get_student_level($_SESSION['sess_id_user'], $this->id_istanza);
 					if ($level < $this->livello) {
 						$level = $this->livello;
 					}

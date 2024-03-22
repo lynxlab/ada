@@ -84,7 +84,7 @@ switch ($mode) {
     case 'zoom':
         $out_fields_ar = array('data_visita','id_utente_studente','punteggio');
         $clause ="id_nodo = '".$id_node."'";
-        $visits_ar = $dh->_find_ex_history_list($out_fields_ar,$clause);
+        $visits_ar = $dh->doFind_ex_history_list($out_fields_ar,$clause);
         if (AMA_DataHandler::isError($visits)) {
             $msg = $visits_ar->getMessage();
             print "$msg";
@@ -108,7 +108,7 @@ switch ($mode) {
             $course_id = $sess_id_course;
             $added_notes = $dh->find_course_nodes_list($out_fields_ar, $clause,$course_id);
             $user_interaction   = count($added_notes);
-            $user = $dh->_get_user_info($student_id);
+            $user = $dh->get_user_info($student_id);
             $username = $user['username'];
             $exercise_dataHa[] = array(
                     translateFN('Data')=>AMA_DataHandler::ts_to_date($visit[1]),
@@ -134,7 +134,7 @@ switch ($mode) {
     case 'summary':
         $field_list_ar = array('id_nodo','data_visita');
         $clause = "";
-        $dataHa = $dh->_find_ex_history_list($field_list_ar, $clause);
+        $dataHa = $dh->doFind_ex_history_list($field_list_ar, $clause);
 
         if (AMA_DataHandler::isError($dataHa)) {
             $msg = $dataHa->getMessage();

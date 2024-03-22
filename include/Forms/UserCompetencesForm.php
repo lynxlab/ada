@@ -16,6 +16,8 @@ namespace Lynxlab\ADA\Main\Forms;
 use Lynxlab\ADA\Main\Forms\lib\classes\FForm;
 use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Description of UserMoreUserFieldsForm
  *
@@ -26,12 +28,15 @@ use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
  */
 class UserCompetencesForm extends FForm
 {
+    private const OBJNS = 'Lynxlab\ADA\Main\User';
+
     public function __construct($action = null)
     {
         parent::__construct();
 
         $formName = 'competences';
-        $classObj = new $formName();
+        $classFQN = self::OBJNS . "\\" . ucfirst($formName);
+        $classObj = new $classFQN();
         $fieldList = $formName::getFields();
 
         if ($action != null) {

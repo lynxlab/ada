@@ -91,7 +91,7 @@ $help = translateFN('Da qui lo studente pu&ograve; inviare un file da allegare a
  * vito, modifica all'upload dei file per l'upload dei file dall'editor dei nodi
  */
 
-//if ( defined('DEV_EDIT_NODE') )
+//if ( defined('DEVdoEdit_node') )
 if ( isset($_GET['caller']) && $_GET['caller'] == 'editor' )
 {
     $dh = $GLOBALS['dh'];

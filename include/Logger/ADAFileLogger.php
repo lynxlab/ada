@@ -23,7 +23,6 @@ class ADAFileLogger extends ADASimpleLogger
     /**
      *
      * @param $text
-     * @return unknown_type
      */
     public static function log($text, $filename = ADA_FILE_LOGGER_OUTPUT_FILE)
     {

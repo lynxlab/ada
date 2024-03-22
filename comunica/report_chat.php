@@ -204,7 +204,7 @@ switch ($op){
                     $tbody_data = array();
                     foreach ($chat_data as $chat_msgAr){
                         if (is_numeric($chat_msgAr[0])) {
-                            $sender_dataHa = $dh->_get_user_info($chat_msgAr[0]);
+                            $sender_dataHa = $dh->get_user_info($chat_msgAr[0]);
 
                             $user = $sender_dataHa['nome'] . ' ' . $sender_dataHa['cognome'];
                             $message = $chat_msgAr[1];
@@ -296,7 +296,7 @@ case 'exportTable': // XLS-like
                     $export_log = translateFN('Data e ora') . ';'. translateFN('Utente') .';'. translateFN('Messaggio') . PHP_EOL;
                     foreach ($chat_data as $chat_msgAr){
                         if (is_numeric($chat_msgAr[0])) {
-                            $sender_dataHa = $dh->_get_user_info($chat_msgAr[0]);
+                            $sender_dataHa = $dh->get_user_info($chat_msgAr[0]);
 
                             $user = $sender_dataHa['nome'] . ' ' . $sender_dataHa['cognome'];
                             $message = $chat_msgAr[1];

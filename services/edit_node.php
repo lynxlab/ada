@@ -246,7 +246,7 @@ switch ($op) {
             switch ($type) {
                 case ADA_PRIVATE_NOTE_TYPE : //  private notes  to forum notes
                     $node_ha['type'] = ADA_NOTE_TYPE;
-                    $res = $dh->_edit_node($node_ha);
+                    $res = $dh->doEdit_node($node_ha);
                     $message = urlencode(translateFN("Nota pubblicata nel forum"));
                     header("Location: " . $http_root_dir . "/browsing/view.php?cachemode=updatecache&id_node=$id_node&msg=$message");
                     exit();
@@ -278,7 +278,7 @@ switch ($op) {
                     $node_ha['type'] = ADA_LEAF_TYPE;
                     $node_ha['id_instance'] = "";
 
-                    $res = $dh->_edit_node($node_ha);
+                    $res = $dh->doEdit_node($node_ha);
                     //$GLOBALS['debug']=1; mydebug(__LINE__,__FILE__,$res); $GLOBALS['debug']=0;
                     if (!AMA_datahandler::isError($res)) {
                         $message = urlencode(translateFN("Nota pubblicata nel corso"));
