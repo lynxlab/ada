@@ -461,11 +461,9 @@ $link   = $_SESSION['page_to_load_on_cancel_editing'];
 $text   = addslashes(translateFN('Vuoi annullare l\'inserimento del nodo?'));
 $cancel = "confirmCriticalOperationBeforeRedirect('$text','$link')";
 
-$banner = include ROOT_DIR.'/include/banner.inc.php';
 
 $content_dataAr = array(
   'head'         => isset($head_form) ? $head_form : '',
-  'banner'       => $banner,
   'menu'         => $menu,
   'help'         => $help,
   'form'         => $form->getHtml(),

@@ -173,7 +173,6 @@ $help = translateFN('Da qui il provider admin può iscrivere uno studente già r
  * OUTPUT
  */
 $content_dataAr = array(
-    'banner' => isset($banner) ? $banner : '',
     'path' => isset($path) ? $path : '',
     'label' => isset($label) ? $label : '',
     'status' => isset($status) ? $status : '',

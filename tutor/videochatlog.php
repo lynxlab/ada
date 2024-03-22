@@ -48,7 +48,6 @@ TutorHelper::init($neededObjAr);
  * YOUR CODE HERE
  */
 
-$banner = include ROOT_DIR . '/include/banner.inc.php';
 
 $online_users_listing_mode = 2;
 $id_course_instance = $courseInstanceObj->getId();
@@ -56,7 +55,6 @@ $online_users = ADALoggableUser::get_online_usersFN($id_course_instance, $online
 
 $content_dataAr = array(
     'course_title' => ucwords(translateFN('Log videochat')) . ' &gt; ' .$courseObj->getTitle() . ' &gt; ' . $courseInstanceObj->getTitle(),
-    'banner' => $banner,
     'user_name' => $user_name,
     'user_type' => $user_type,
     'edit_profile' => $userObj->getEditProfilePage(),

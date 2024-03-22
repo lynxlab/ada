@@ -364,7 +364,6 @@ $help .= translateFN('Il file deve avere estensione txt e deve contenere in ogni
  */
 $optionsAr = array('onload_func' => "PAGER.showPage('subscribed');");
 $content_dataAr = array(
-    'banner'=> isset($banner) ? $banner : '',
     'path' => isset($path) ? $path : '',
     'label' => isset($label) ? $label : '',
     'status'=> isset($status) ? $status : '',

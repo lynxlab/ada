@@ -242,7 +242,6 @@ else {
 // preparazione output HTML e print dell' output
 $content_dataAr = array(
     'menu'      => $menu,
-    'banner'    => $banner,
     'dati'      => $dati,
     'help'      => $help,
     'status'    => $status,

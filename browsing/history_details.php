@@ -204,7 +204,6 @@ if (is_object($userObj)){
 
 // CHAT, BANNER etc
 
-$banner = include ("$root_dir/include/banner.inc.php");
 // $chat_link = "<a href=\"$http_root_dir/chat/chat/index.php3?L=italian&Ver=H&U=" . $user_name . "&PWD_Hash=d41d8cd98f00b204e9800998ecf8427e&R='$course_title'&T=2&D=5&N=20&Reload=NNResize&frameset=fol\" target=_blank>".translateFN("chat")."</a>";
 
 // Costruzione del link per la chat.
@@ -244,7 +243,6 @@ $node_data = array(
 
 
                    'chat_link'=>$chat_link,
-                   'banner'=> $banner,
                    'course_title'=>'<a href="main_index.php">'.$course_title.'</a>',
                    'menu'=>$menu,
                    'user_name'=>$user_name,

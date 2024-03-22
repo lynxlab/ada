@@ -65,11 +65,9 @@ if (!AMATestDataHandler::isError($question) && !empty($question)) {
 }
 
 // per la visualizzazione del contenuto della pagina
-$banner = include ($root_dir.'/include/banner.inc.php');
 
 $content_dataAr = array(
         'head'=>$head_form,
-        'banner'=>$banner,
         'path'=>$form_return['path'],
         'form'=>$form_return['html'],
         'status'=>$form_return['status'],

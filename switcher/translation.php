@@ -112,7 +112,6 @@ $dataEdtTslFr=$EditTranslFr->getHtml();
 $status = translateFN('translation mode');
 
 $content_dataAr = array(
-  'banner' => isset($banner) ? $banner : '',
   'eportal' => isset($eportal) ? $eportal : '',
   'course_title' => translateFN('Modulo di traduzione'),
   'user_name' => $user_name,

@@ -113,7 +113,6 @@ else {
 }
 // CHAT, BANNER etc
 
-$banner = include ROOT_DIR.'/include/banner.inc.php';
 
 // Has the form been posted?
 
@@ -256,7 +255,6 @@ if(isset($_SESSION['sess_id_course_instance'])){
 }
 
 $content_dataAr = array(
-  'banner'       => $banner,
   'course_title' => $course_title,
   'user_name'    => $user_name,
   'user_type'    => $user_type,

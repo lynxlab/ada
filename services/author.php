@@ -190,7 +190,6 @@ $data = array (
 $lObj->setList($data);
 $menu_ha = $lObj->getList();
 
-//$banner = include ("$root_dir/include/banner.inc.php");
 
 $title = translateFN('Home Autore');
 
@@ -198,12 +197,10 @@ $title = translateFN('Home Autore');
 //  $user_messages = translateFN('Non ci sono nuovi messaggi');
 //}
 // SERVICE:  BANNER
-$banner = include ROOT_DIR.'/include/banner.inc.php';
 
 $content_dataAr = array(
   //        'form'=>$menu_ha,
   'course_title' => translateFN('Lista dei servizi'),
-  'banner'       => $banner,
   'menu'         => $menu_ha,
   'status'       => $msg,
   'user_name'    => $user_name,

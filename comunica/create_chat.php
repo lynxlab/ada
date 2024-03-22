@@ -739,13 +739,12 @@ array(
 
 	  } // end if POST
 
-        $banner = include ROOT_DIR . '/include/banner.inc.php';
 
 	  // ******************************************************
 	  //  END OF FORM CONSTRUCTION
 	  // ******************************************************
 	  // array with data to be createed to the browser
-	  $data =  array( 'banner'=> $banner,
+	  $data =  array(
                 'status'=> $status,
                 'user_name'=> $user_name,
                 'user_type'=> $user_type,

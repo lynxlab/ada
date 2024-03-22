@@ -351,7 +351,6 @@ if ($last_access == '' || is_null($last_access)) {
 }
 
 $content_dataAr = array(
-    'banner' => isset($banner) ? $banner : null,
     'today' => isset($ymdhms) ? $ymdhms : null,
     'user_name' => $user_name,
     'user_level' => translateFN("Nd"),

@@ -767,7 +767,6 @@ $text   = addslashes(translateFN('Vuoi annullare le modifiche apportate al nodo?
 $cancel = "confirmCriticalOperationBeforeRedirect('$text','$link')";
 
 $content_dataAr = array(
-        'banner'     => isset($banner) ? $banner : '',
         'status'     => $status,
         'user_name'  => $user_name,
         'user_type'  => $user_type,
@@ -790,7 +789,6 @@ if (is_array($preview_additional_data)) {
     $content_dataAr = array_merge($content_dataAr, $preview_additional_data);
 }
 
-$banner = include ROOT_DIR.'/include/banner.inc.php';
 /*
  * vito, 1 ottobre 2008: passiamo il parametro onload_func=switchToFCKeditor() per
  * mostrare l'editor. Questo risolve i problemi che si avevano con IE e event.observe di prototype

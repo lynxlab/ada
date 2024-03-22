@@ -421,7 +421,6 @@ switch ($op) {
 } //end switch op
 
 
-$banner = include ("$root_dir/include/banner.inc.php");
 $home = "<a href=\"tutor.php\">".translateFN("home")."</a>";
 $bookmark = "<a href=\"../browsing/bookmarks.php\">".translateFN("bookmarks")."</a>";
 $chat_link = "<a href=\"$http_root_dir/comunica/ada_chat.php\" target=_blank>".translateFN("chat")."</a>";
@@ -434,7 +433,6 @@ $content_dataAr = array(
         'user_name'=>$user_name,
         'user_type' => $user_type,
         'status' => $status,
-        'banner'=> $banner,
         'home'=>$home,
         'bookmark'=>$bookmark,
         'last_visit'=>'',

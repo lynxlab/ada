@@ -533,10 +533,8 @@ switch ($id_profile) {
 
 
 
-$banner = include ROOT_DIR . '/include/banner.inc.php';
 
 $content_dataAr = array(
-  'banner' => $banner,
   'user_name' => $user_name,
   'user_type' => $user_type,
 //  'messages'     => $messages->getHtml(),

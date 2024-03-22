@@ -120,7 +120,6 @@ $ymdhms = today_dateFN();
 
 $help = translateFN("Da qui lo studente può scaricare i file allegati ai nodi");
 
-$banner = include ("$root_dir/include/banner.inc.php");
 
 // ******************************************************
 // get course object
@@ -352,7 +351,6 @@ if (isset($_GET['file'])){
 
 $node_data = array(
                //               'data'=>$lista,
-               'banner'=>$banner,
                'data'=>$html,
                'status'=>$status,
                'user_name'=>$user_name_name,

@@ -341,7 +341,6 @@ $buttondownloadCertificates->addChild (new CText(translateFN('Download certifica
 $optionsAr = array('onload_func' => "initDoc();");
 
 $content_dataAr = array(
-'banner'=> isset($banner) ? $banner : '',
 'path' => isset($path) ? $path : '',
 'label' => isset($label) ? $label : '',
 'course_title'=>translateFN('Gestione classe - ').$courseObj->getTitle().' ['.$courseId.'] - '.$courseInstanceObj->getTitle().' ['.$instanceId.']',

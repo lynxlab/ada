@@ -123,7 +123,6 @@ if (is_object($chatroomObj) && !AMA_DataHandler::isError($chatroomObj)) {
 if (empty($media_path))
 	$media_path = MEDIA_PATH_DEFAULT;
 
-$banner = include ("$root_dir/include/banner.inc.php");
 
 if (isset($id_chatroom)) $menuOptions['id_room']=$id_chatroom;
 if (isset($id_course)) $menuOptions['id_course']=$id_course;
@@ -356,7 +355,6 @@ $help = translateFN("Questa &egrave; il report della chat di classe");
 $chatrooms_link = '<a href="'.HTTP_ROOT_DIR . '/comunica/list_chatrooms.php">'. translateFN('Lista chatrooms');
 
   $content_dataAr = array(
-                 'banner'=> $banner,
                  'course_title'=>  translateFN('Report della chat'). ' - ' . translateFN('Corso') .': '.$course_title,
                  'home'=> isset($homepage) ? "<a href=\"$homepage\">home</a>" : '',
                  'user_name'=>$user_name,

@@ -82,7 +82,6 @@ $content_dataAr = array(
   'help'=> isset($credits_data) ? $credits_data : '',
   'menu'=> isset ($menu) ? $menu : '',
   'course_title' => translateFN("Credits"),
-  //'banner'=>$banner,
   'message'=> isset($message) ? $message : '',
   'agenda_link'=> isset($agenda_link) ? $agenda_link : '',
   'msg_link'=> isset($msg_link) ? $msg_link : ''

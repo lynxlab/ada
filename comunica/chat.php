@@ -211,7 +211,6 @@ else {
   $chat = CommunicationModuleHtmlLib::getChat(json_encode($request_arguments), $userObj, $event_token);
   $optionsAr = array('onload_func' => 'startChat();');
 }
-$banner = include ROOT_DIR.'/include/banner.inc.php';
 /*
  * Create here the close link.
  */

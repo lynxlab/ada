@@ -117,7 +117,6 @@ $title = translateFN("ADA - practitioner's profile");
 
 $content_dataAr = array(
   'menu'      => $menu,
-  'banner'    => $banner,
   'iscrivi'   => $dati->getHtml(),
   'help'      => $help,
   'status'    => $status,

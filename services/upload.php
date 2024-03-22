@@ -555,7 +555,6 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
 
   $content_dataAr = array(
     //'head'         => $head_form,
-    //'banner'       => $banner,
     'form'         => isset($form) ? $form : '',
     'status'       => $status,
     'user_name'    => $user_name,

@@ -81,7 +81,6 @@ $error_div = '<div class="unrecoverable">'
 
 $content_dataAr = array(
     'home_link' => $homepage,
-    'banner' => isset($banner) ? $banner : '',
     'today' => $ymdhms,
     'user_name' => $user_name,
     'user_type' => $user_type,

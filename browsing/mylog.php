@@ -296,7 +296,6 @@ $menu.= $last_node_visited;
 $help = translateFN("Nel Diario si possono inserire i propri commenti privati, oppure esportarli per conservarli.");
 // CHAT, BANNER etc
 
-$banner = include ("$root_dir/include/banner.inc.php");
 
 //
 /*
@@ -344,7 +343,6 @@ HTML page building
 	     } else $layout_dataAR = array();
 
 $node_data = array(
-                   'banner'=>$banner,
                    'course_title'=>'<a href="main_index.php">'.$course_title.'</a>',
                    'today'=>$ymdhms,
                    'path'=>isset($node_path) ? $node_path : '',

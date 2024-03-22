@@ -233,7 +233,6 @@ switch ($op) {
 }
 // CHAT, BANNER etc
 
-$banner = include ("$root_dir/include/banner.inc.php");
 
 // Costruzione del link per la chat.
 // per la creazione della stanza prende solo la prima parola del corso (se piu' breve di 24 caratteri)
@@ -265,7 +264,6 @@ if (!ADA_Error::isError($nodeObj) AND isset($courseObj->id)) {
 	$node_path = $nodeObj->findPathFN();
 }
 $content_dataAr = array(
-    'banner'=>$banner,
     'course_title'=>translateFN('Modulo tutor').' > <a href="'.HTTP_ROOT_DIR.'/browsing/main_index.php">'.$course_title.'</a>',
     'path'=>isset($node_path) ? $node_path : '',
     'class'=>(isset($class) && isset($start_date)) ? $class . ' ' . translateFN('iniziata il') . ' ' . $start_date : '',

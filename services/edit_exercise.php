@@ -272,7 +272,6 @@ switch($op) {
 //$dataHa['go_back'].= "<BR><a href=\"$http_root_dir/browsing/exercise.php?id_node=$id_next_exercise\">".translateFN("Prossimo esercizio")."</a>";
 
 $content_dataAr = array(
-        'banner'=> isset($banner) ? $banner : '',
         'status'=>$status,
         'course_title'=>isset($course_title) ? $course_title : '',
         'user_name'=>$user_name,

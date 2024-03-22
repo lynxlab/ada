@@ -270,7 +270,6 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 $optionsAr = array('onload_func' => "PAGER.showPage('subscribed');");
 
 $content_dataAr = array(
-    'banner' => isset($banner) ? $banner : '',
     'path' => isset($path) ? $path : '',
     'label' => isset($label) ? $label : '',
     'status' => isset($status) ? $status : '',

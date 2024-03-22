@@ -361,12 +361,10 @@ else if( isset($verify) ) {
 }
 
 // per la visualizzazione del contenuto della pagina
-$banner = include ("$root_dir/include/banner.inc.php");
 
 
 $content_dataAr = array(
         'head'=>isset($head_form) ? $head_form : '',
-        'banner'=>$banner,
         'form'=>isset($form) ? $form : '',
         'status'=>$status,
         'user_name'=>$user_name,

@@ -354,7 +354,6 @@ $online_users_listing_mode = 2;
 $online_users = ADALoggableUser::get_online_usersFN($sess_id_course_instance,$online_users_listing_mode);
 
 // CHAT, BANNER etc
-$banner = include (ROOT_DIR."/include/banner.inc.php");
 $SimpleSearchlabel = translateFN('Ricerca semplice');
 $AdvanceSearchlabel = translateFN('Ricerca avanzata');
 $Simple_searchLink="<a class='simple-search' href='#'onClick=simpleSearch()>$SimpleSearchlabel</a>";
@@ -403,7 +402,6 @@ $content_dataAr = array(
   'simpleSearchLink'=>$Simple_searchLink,
   'advanced_searchLink'=>$advanced_searchLink,
   'menu'=>$menu,
-  'banner'=> $banner,
   'course_title'=>translateFN(' Ricerca '),
   'user_name'=>$user_name,
   'user_type'=>$user_type,

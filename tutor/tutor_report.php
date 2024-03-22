@@ -164,13 +164,11 @@ switch ($mode) {
         $tabled_exercise_dataHa= preg_replace('/class="/', 'class="'.ADA_SEMANTICUI_TABLECLASS.' ', $tabled_exercise_dataHa, 1); // replace first occurence of class
 }
 
-$banner = include ROOT_DIR.'/include/banner.inc.php';
 $help = translateFN('Da qui il Tutor può visualizzare il report.');
 $status = translateFN('Visualizzazione del report');
 
 $title = translateFN('ADA - Report del tutor');
 $content_dataAr = array(
-    'banner' => $banner,
     'data' => $tabled_exercise_dataHa,
     'help' => $help,
     'status' => $status,

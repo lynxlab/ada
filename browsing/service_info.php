@@ -267,7 +267,6 @@ $content_dataAr = array(
   'menu'=>$menu,
   'text'=>$infomsg,
  // 'help'=>$hlpmsg,
-  'banner'=>$banner,
   'message'=>$message,
   'agenda_link'=>$agenda_link,
   'msg_link'=>$msg_link,

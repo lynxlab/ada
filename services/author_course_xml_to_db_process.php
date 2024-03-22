@@ -165,7 +165,6 @@ unset($xp);
 $menu = '<a href="'. HTTP_ROOT_DIR .'/courses/author.php">'.translateFN('home').'</a>';
 $menu .= '<br><a href="'.HTTP_ROOT_DIR.'/admin/author_add_course.php">'.translateFN('nuovo corso').'</a>';
 
-$banner = include ROOT_DIR.'/include/banner.inc.php';
 
 $help = translateFN("Da qui l'Autore del corso pu&ograve; inserire un corso in formato XML nel database ADA.");
 $status = translateFN('Inserimento corso');
@@ -174,7 +173,6 @@ $status = translateFN('Inserimento corso');
 $title = translateFN('ADA - Inserimento del corso nel database');
 $content_dataAr = array(
     'menu'=>$menu,
-    'banner'=>$banner,
     'dati'=>$dati,
 // 'course_title'=>$course_title,
 // 'course_istance'=>$course_date,

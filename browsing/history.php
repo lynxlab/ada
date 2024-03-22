@@ -207,9 +207,7 @@ if($last_access=='' || is_null($last_access)){
     $last_access='-';
 }
 
-$banner = include ROOT_DIR . '/include/banner.inc.php';
 $content_dataAr = array(
-    'banner' => $banner,
     'course_title' => '<a href="main_index.php">' . $course_title . '</a>',
     'user_name' => $user_name,
     'user_type' => $user_type,

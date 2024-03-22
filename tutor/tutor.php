@@ -499,7 +499,6 @@ switch ($op) {
         break;
 }
 
-$banner = include ROOT_DIR . '/include/banner.inc.php';
 
 $online_users_listing_mode = 2;
 //$online_users = ADAGenericUser::get_online_usersFN($id_course_instance, $online_users_listing_mode);
@@ -535,7 +534,6 @@ if (isset($courseObj) && $courseObj instanceof Course && strlen($courseObj->getT
 $content_dataAr = array(
     'course_title'=>translateFN('Modulo tutor').(isset($course_title) ? (' '.$course_title): null),
     'path'=>isset($node_path) ? $node_path : '',
-    'banner' => $banner,
     'user_name' => $user_name,
     'user_type' => $user_type,
     'edit_profile'=>$userObj->getEditProfilePage(),

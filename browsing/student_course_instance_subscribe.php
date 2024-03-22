@@ -192,7 +192,6 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
     $content_dataAr = array(
     // 'home'=>$home,
     'menu'=>isset($menu) ? $menu : null,
-    'banner'=>isset($banner) ? $banner : null,
      'data'=>$data,
      'data_bonifico'=>  $dataTransfer,
      'help'=>isset($help) ? $help : null,

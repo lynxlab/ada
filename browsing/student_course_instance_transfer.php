@@ -215,7 +215,6 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
 
     $field_data = array(
      'menu'=>"", //$menu,
-     'banner'=>$banner,
      'path'=>$path,
      //'data'=>$dati,
      'data'=>$info_div->getHtml(),
@@ -234,7 +233,6 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
     $dati = translateFN('Impossibile proseguire, Provider non trovato');
     $field_data = array(
      'menu'=>"", //$menu,
-     'banner'=>$banner,
      'data'=>$dati,
      'help'=>'', // $help,
      'user_name'=>$user_name,

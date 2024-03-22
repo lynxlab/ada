@@ -147,7 +147,7 @@ $content_dataAr = array(
  *
  */
 
-$content_dataAr =  array( 'banner'=> $banner,
+$content_dataAr =  array(
                 'status'=> $status,
                 'user_name'=> $user_name,
                 'user_type'=> $user_type,

@@ -130,7 +130,6 @@ switch ($op) {
 }
 // CHAT, BANNER etc
 
-$banner = include ("$root_dir/include/banner.inc.php");
 
 // Costruzione del link per la chat.
 // per la creazione della stanza prende solo la prima parola del corso (se piu' breve di 24 caratteri)
@@ -177,7 +176,6 @@ if($last_access=='' || is_null($last_access)){
 
 
 $content_dataAr = array(
-    'banner'=>$banner,
     'course_title'=>translateFN('Storico Esercizi').' > <a href="main_index.php">'.$course_title.'</a>',
     'path'=>$node_path,
     // 'class'=>$class . ' ' . translateFN('iniziata il') . ' ' . $start_date,

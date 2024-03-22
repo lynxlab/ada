@@ -244,11 +244,9 @@ switch ($mode) {
 }
 
 // SERVICE:  BANNER
-$banner = include ROOT_DIR.'/include/banner.inc.php';
 
 $content_dataAr = array(
         'course_title' => translateFN('Report del corso'),
-        'banner'       => $banner,
         'menu'         => $menu,
         'user_name'    => $user_name,
         'user_type'    => $user_type,

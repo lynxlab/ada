@@ -72,11 +72,9 @@ switch($_GET['mode']) {
 $form_return = $management->run();
 
 // per la visualizzazione del contenuto della pagina
-$banner = include ($root_dir.'/include/banner.inc.php');
 
 $content_dataAr = array(
         'head'=>isset($head_form) ? $head_form : '',
-        'banner'=>$banner,
 		'path'=>$form_return['path'],
         'form'=>$form_return['html'],
         'status'=>$form_return['status'],

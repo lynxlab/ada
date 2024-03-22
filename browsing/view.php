@@ -340,8 +340,6 @@ if (isset($node_author)) {
 $eportal = PORTAL_NAME;
 
 // banner
-// $banner = include_once("../include/banner.inc.php"); TO BE COMPLETED
-$banner = "";
 
 if ($id_profile == AMA_TYPE_AUTHOR && $mod_enabled) {
 
@@ -444,7 +442,6 @@ $linked_node_keywords = implode(',',$linksAr);
  * @var array
  */
 $content_dataAr = array(
-	'banner' => $banner,
 	'eportal' => $eportal,
 	'course_title' => "<a href='main_index.php'>" . $course_title . "</a>",
 	'main_index' => "<a href='main_index.php?op=glossary'>" . translateFN('Indice delle parole') . "</a>",

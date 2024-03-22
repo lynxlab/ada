@@ -461,7 +461,6 @@ $user_agenda = "";
 
 $online_users_listing_mode = 2;
 $online_users = ADALoggableUser::get_online_usersFN($id_course_instance,$online_users_listing_mode);
-$banner = include (ROOT_DIR."/include/banner.inc.php");
 /* 8.
 costruzione della pagina HTML
 */
@@ -472,7 +471,6 @@ $content_dataAr = array(
   'results'=>$search_results,
   'simpleSearch'=>$Simple_searchLink,
   'menu'=>$menu,
-  'banner'=> $banner,
   'course_title'=>'<a href="main_index.php">'.$course_title.'</a>',
   'user_name'=>$user_name,
   'user_type'=>$user_type,

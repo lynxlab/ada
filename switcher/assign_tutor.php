@@ -226,12 +226,10 @@ $title = translateFN('Assegnazione di un tutor alla classe');
 $help = translateFN('Da qui il Provider Admin può assegnare un tutor ad una classe');
 $status = translateFN('Assegnazione tutor');
 
-$banner = include ROOT_DIR . '/include/banner.inc.php';
 
 $content_dataAr = array(
     'data' => $data->getHtml() . $tooltips,
     'menu' => isset($menu) ? $menu : '',
-    'banner' => $banner,
     'help' => $help,
     'status' => $status,
     'user_name' => $user_name,

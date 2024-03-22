@@ -173,8 +173,6 @@ if (isset($node_author) && isset($node_author_id)) {
 $eportal = PORTAL_NAME;
 
 // banner
-// $banner = include_once("../include/banner.inc.php"); TO BE COMPLETED
-$banner = "";
 
 		//show course istance name if isn't empty - valerio
 		if (!empty($courseInstanceObj->title)) {
@@ -186,7 +184,6 @@ $banner = "";
  * @var array
  */
 $content_dataAr = array(
-	'banner' => $banner,
 	'eportal' => $eportal,
 	'course_title' => "<a href='main_index.php'>" . $course_title . "</a>",
 	'user_name' => $user_name,

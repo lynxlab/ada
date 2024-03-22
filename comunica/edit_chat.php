@@ -156,7 +156,6 @@ if($chatroom_started){
      // indicates which fields are compulsory
  $star= translateFN("I campi contrassegnati con * sono obbligatori, non possono essere lasciati vuoti!");
      // including the banner
- $banner = include ("$root_dir/include/banner.inc.php");
 
 
 // Has the form been posted?
@@ -299,7 +298,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 
 $course_title = $chat_title;
 // array with data to be sended to the browser
-$data =  array( 'banner'=> $banner,
+$data =  array(
                 'status'=> $status,
                 'user_name'=> $user_name,
                 'user_type'=> $user_type,

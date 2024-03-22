@@ -102,7 +102,6 @@ $online_users = ADALoggableUser::get_online_usersFN($sess_id_course_instance,$on
 
 // CHAT, BANNER etc
 
-$banner = include ROOT_DIR.'/include/banner.inc.php';
 
 // default status:
 if ((empty($status)) or (!isset($status))) {
@@ -242,7 +241,6 @@ if(isset($_SESSION['sess_id_course_instance'])){
 }
 
 $content_dataAr = array(
-  'banner'       => $banner,
   'course_title' => $course_title,
   'go_back'      => isset($go_back) ? $go_back : '',
   'user_name'    => $user_name,

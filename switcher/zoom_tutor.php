@@ -105,7 +105,6 @@ unset($tutor_ha['codice_fiscale']);
 
 $data = BaseHtmlLib::plainListElement('',$tutor_ha);
 
-$banner = include ROOT_DIR.'/include/banner.inc.php';
 
 $status = translateFN('Caratteristiche del practitioner');
 
@@ -114,7 +113,6 @@ $title = translateFN('ADA - dati epractitioner');
 
 $content_dataAr = array(
   'menu'      => $menu,
-  'banner'    => $banner,
   'dati'      => $data->getHtml(),
   'help'      => $help,
   'status'    => $status,

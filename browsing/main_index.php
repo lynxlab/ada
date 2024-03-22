@@ -567,7 +567,6 @@ $fObj = new Form();
 $fObj->setForm($search_data);
 $search_form = $fObj->getForm();
 
-$banner = include ROOT_DIR.'/include/banner.inc.php';
 
 //show course istance name if isn't empty - valerio
 if (!empty($courseInstanceObj->title)) {
@@ -604,7 +603,6 @@ if (isset($index_link)) $title .= $index_link;
 if (isset($index_no_visits_link)) $title .= $index_no_visits_link;
 
 $content_dataAr = array(
-  'banner'       => $banner,
   'course_title' => "<a href='main_index.php'>".$course_title."</a>",
   'user_name'    => $user_name,
   'user_type'    => $user_type,

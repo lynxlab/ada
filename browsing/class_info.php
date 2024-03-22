@@ -156,7 +156,6 @@ if($last_access=='' || is_null($last_access)){
  * Output
  */
 $content_dataAr = array(
-    'banner' => $banner,
     'today' => $ymdhms,
     'user_name' => $user_name,
     'user_type' => $user_type,

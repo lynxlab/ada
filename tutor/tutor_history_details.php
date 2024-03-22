@@ -298,13 +298,11 @@ switch ($op) {
 
 	$history = $prehistory.$history;
 
-$banner = include ROOT_DIR . '/include/banner.inc.php';
 
 $content_dataAr = array(
     'course_title' => $course_title,
     'user_name' => $user_name,
     'student' => $student_name,
-    'banner' => $banner,
     'level' => $user_level,
     'data' => menu_detailsFN($id_student, $id_course_instance, $id_course)
            . $history,

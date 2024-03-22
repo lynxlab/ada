@@ -119,9 +119,7 @@ if ($count_visits) {
     $tabled_visits_dataHa = translateFN('Nessun dato disponibile');
 }
 
-$banner = include ROOT_DIR.'/include/banner.inc.php';
 $content_dataAr = array(
-        'banner' => $banner,
         'menu' => $menu,
         'user_name' => $user_name,
         'user_type' => $user_type,

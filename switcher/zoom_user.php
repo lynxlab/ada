@@ -108,7 +108,6 @@ else {
   $data = new CText(translateFN("Id dell'utente non valido"));
 }
 
-$banner = include ROOT_DIR.'/include/banner.inc.php';
 
 $status = translateFN("Caratteristiche dell'utente");
 
@@ -117,7 +116,6 @@ $title = translateFN('ADA - dati epractitioner');
 
 $content_dataAr = array(
   'menu'      => $menu,
-  'banner'    => $banner,
   'dati'      => $data->getHtml(),
   'help'      => $help,
   'status'    => $status,

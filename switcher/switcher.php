@@ -85,7 +85,6 @@ $data = new CText('');
 /*
  * Output
  */
-$banner = include ROOT_DIR.'/include/banner.inc.php';
 
 $help = translateFN('');
 
@@ -100,7 +99,6 @@ $content_dataAr = array(
   'messages'  => $user_messages->getHtml(),
   'agenda'    => $user_agenda->getHtml(),
   'status'    => $status,
-  'banner'    => $banner,
   'help'      => $help,
   'data'      => $data->getHtml(),
 );
