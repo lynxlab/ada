@@ -11,6 +11,7 @@
 namespace Lynxlab\ADA\Module\Notifications;
 
 use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
+use Lynxlab\ADA\Main\Logger\ADAFileLogger;
 
 class QueueManager extends NotificationBase
 {
@@ -204,7 +205,7 @@ class QueueManager extends NotificationBase
         if ($this->debug) {
             // the file must exists, otherwise logger won't log
             if (!is_file($this->logFile)) touch($this->logFile);
-            \ADAFileLogger::log($text, $this->logFile);
+            ADAFileLogger::log($text, $this->logFile);
         }
     }
 

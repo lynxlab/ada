@@ -1,6 +1,7 @@
 <?php
 namespace Lynxlab\ADA\ADAPHPMailer;
 
+use Lynxlab\ADA\Main\Logger\ADAFileLogger;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 
@@ -27,7 +28,7 @@ class ADAPHPMailer extends PHPMailer {
                 $this->Debugoutput = function($str, $level) {
                     $logFile = ROOT_DIR . '/log/smtp-debug.log';
                     if (!is_file($logFile)) touch ($logFile);
-                    \ADAFileLogger::log("$level: message: $str", $logFile);
+                    ADAFileLogger::log("$level: message: $str", $logFile);
                 };
             }
         } else {

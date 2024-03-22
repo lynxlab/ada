@@ -10,6 +10,8 @@
  * @version		   0.1
  */
 
+use Lynxlab\ADA\Main\Logger\ADAFileLogger;
+
 /**
  * given an array of conditions an params coming
  * from the form POST, will build an array ready to be passed
@@ -120,8 +122,6 @@ function extractParam ($stringCond)
 }
 
 function logToFile($logLines = array()) {
-    require_once ROOT_DIR .'/include/logger_class.inc.php';
-
 	if (!is_dir(MODULES_SERVICECOMPLETE_LOGDIR)) {
 		$oldmask = umask(0);
 		mkdir (MODULES_SERVICECOMPLETE_LOGDIR, 0775, true);

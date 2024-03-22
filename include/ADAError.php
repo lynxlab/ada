@@ -14,6 +14,9 @@
 
 namespace Lynxlab\ADA\Main;
 
+use Lynxlab\ADA\Main\Logger\ADAFileLogger;
+use Lynxlab\ADA\Main\Logger\ADALogger;
+use Lynxlab\ADA\Main\Logger\ADAScreenLogger;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
 class ADA_Error

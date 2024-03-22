@@ -10,6 +10,8 @@
  * @version		   0.1
  */
 
+use Lynxlab\ADA\Main\Logger\ADAFileLogger;
+
 /**
  * abstract class for describing a complete condition.
  * All complete condition classes must extend this one

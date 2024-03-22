@@ -12,6 +12,7 @@
 use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+use Lynxlab\ADA\Main\Logger\ADAFileLogger;
 use Lynxlab\ADA\Main\User\ADAUser;
 use PHPMailer\PHPMailer\Exception;
 

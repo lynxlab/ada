@@ -1,6 +1,7 @@
 <?php
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Logger\ADAFileLogger;
 
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 

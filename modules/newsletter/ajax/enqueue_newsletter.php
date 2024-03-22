@@ -12,6 +12,7 @@
 
 use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Logger\ADAFileLogger;
 
 ini_set('display_errors', '0'); error_reporting(E_ALL);
 /**
@@ -40,8 +41,6 @@ $neededObjAr = array(
 */
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 BrowsingHelper::init($neededObjAr);
-
-require_once ROOT_DIR.'/include/logger_class.inc.php';
 
 // MODULE's OWN IMPORTS
 require_once MODULES_NEWSLETTER_PATH.'/include/AMANewsletterDataHandler.inc.php';
