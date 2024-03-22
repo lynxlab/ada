@@ -1,45 +1,6 @@
 <?php
-/**
- * PHPjavascript.php: used to import PHP defines from ada_config.php
- * as javascript variables.
- *
- * e.g. a PHP define, such as define('HTTP_ROOT_DIR', 'http://localhost');
- * is 'imported' in javascript as var HTTP_ROOT_DIR = 'http://localhost';
- */
 
-/**
- * function extractJavascriptVariablesFromFile: parses the given file in search of PHP define
- * and builds a list of javascript variables
- *
- * @param  string $php_config_file - the full path to a PHP script to parse.
- * @return string $javascript_content
- */
-function extractJavascriptVariablesFromFile($php_config_file) {
-
-  if (file_exists($php_config_file)) {
-    $contents = @file_get_contents($php_config_file);
-
-    /*
-     * import all the defines followed by this comment // *js_import*
-     */
-    $ereg_define = "/define\('([a-zA-Z_]+)',(?: )*(.*)\);(?: )*\/\/(?: )*\*js_import\*/";
-    $matches     = array();
-    $defines     = preg_match_all($ereg_define, $contents, $matches );
-
-    $var_names  = $matches[1];
-    $var_values = $matches[2];
-
-    /*
-     * build a string containing javascript variables for the imported PHP defines
-     */
-    foreach($var_names as $key => $variable_name) {
-      if ($variable_name) {
-        $javascript_content .= "var $variable_name = {$var_values[$key]};\n";
-      }
-    }
-    return $javascript_content;
-  }
-}
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
 header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");          // always modified
@@ -50,30 +11,17 @@ header("Content-type: application/x-javascript");
 //header("Content-Disposition: attachment; filename=javascript_conf.js");
 
 require_once '../config_path.inc.php';
-$allowedUsersAr = array(AMA_TYPE_VISITOR, AMA_TYPE_STUDENT, AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR, AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER);
+$allowedUsersAr = [AMA_TYPE_VISITOR, AMA_TYPE_STUDENT, AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR, AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER];
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
 
-/*
-$php_config_file_dir = ROOT_DIR.'/config';
-$php_config_files    = array_diff(scandir($php_config_file_dir), array('.','..'));
-
-$javascript_content  = '';
-
-foreach ($php_config_files as $php_config_file) {
-	$path_to_php_config_file = "$php_config_file_dir/$php_config_file";
-	if (is_file($path_to_php_config_file)) {
-		$javascript_content .= extractJavascriptVariablesFromFile($path_to_php_config_file);
-	}
-}
-*/
-$JS_i18n = array(
-	'confirmDelete' => translateFN('Stai per cancellare l\'elemento in modo definitivo. Confermi?'),
-	'confirm' => translateFN('Conferma'),
-	'cancel' => translateFN('Annulla'),
-	'confirmTabChange' => translateFN('Ci sono dati non salvati in questa scheda. Continuare senza salvarli?'),
-	'confirmLeavePage' => translateFN('Ci sono dati non salvati in questa scheda.')
-);
+$JS_i18n = [
+    'confirmDelete' => translateFN('Stai per cancellare l\'elemento in modo definitivo. Confermi?'),
+    'confirm' => translateFN('Conferma'),
+    'cancel' => translateFN('Annulla'),
+    'confirmTabChange' => translateFN('Ci sono dati non salvati in questa scheda. Continuare senza salvarli?'),
+    'confirmLeavePage' => translateFN('Ci sono dati non salvati in questa scheda.'),
+];
 
 /**
  * GIORGIO, this is not needed and exposes a security hole.
@@ -86,29 +34,29 @@ $JS_i18n = array(
 var HTTP_ROOT_DIR='<?php echo HTTP_ROOT_DIR;?>';
 var HTTP_UPLOAD_PATH='<?php echo HTTP_UPLOAD_PATH;?>';
 var ADA_DEFAULT_AVATAR='<?php echo ADA_DEFAULT_AVATAR; ?>';
-<?php if (!empty($_SESSION['sess_template_family'])): ?>
+<?php if (!empty($_SESSION['sess_template_family'])) : ?>
 var ADA_TEMPLATE_FAMILY = '<?php echo $_SESSION['sess_template_family'];?>';
-<?php else: ?>
+<?php else : ?>
 var ADA_TEMPLATE_FAMILY = '<?php echo ADA_TEMPLATE_FAMILY;?>';
 <?php endif; ?>
-<?php if(!empty($_SESSION['sess_user_language'])): ?>
+<?php if (!empty($_SESSION['sess_user_language'])) : ?>
 var USER_LANGUAGE = '<?php echo $_SESSION['sess_user_language'];?>';
-<?php else: ?>
+<?php else : ?>
 var USER_LANGUAGE = null;
 <?php endif; ?>
-<?php if(defined('GCAL_HOLIDAYS_FEED')): ?>
+<?php if (defined('GCAL_HOLIDAYS_FEED')) : ?>
 var GCAL_HOLIDAYS_FEED = '<?php echo GCAL_HOLIDAYS_FEED; ?>';
 <?php else :?>
 var GCAL_HOLIDAYS_FEED = '';
 <?php endif; ?>
-<?php if(!empty($_SESSION['sess_id_user'])): ?>
+<?php if (!empty($_SESSION['sess_id_user'])) : ?>
 var USER_ID = <?php echo $_SESSION['sess_id_user'];?>;
-<?php else: ?>
+<?php else : ?>
 var USER_ID = null;
 <?php endif; ?>
-<?php if(isset($_SESSION['IE-version']) && $_SESSION['IE-version']!==false): ?>
+<?php if (isset($_SESSION['IE-version']) && $_SESSION['IE-version'] !== false) : ?>
 var IE_version = <?php echo $_SESSION['IE-version']; ?>;
-<?php else: ?>
+<?php else : ?>
 var IE_version = false;
 <?php endif; ?>
 
@@ -159,10 +107,10 @@ const load_js = function(data, callback) {
 //translations
 <?php
 if (!empty($JS_i18n)) {
-	echo "var i18n = Array();\n";
-	foreach($JS_i18n as $k=>$v) {
-		echo "i18n['".$k."'] = '".str_replace("'","\'",$v)."';\n";
-	}
+    echo "var i18n = Array();\n";
+    foreach ($JS_i18n as $k => $v) {
+        echo "i18n['" . $k . "'] = '" . str_replace("'", "\'", $v) . "';\n";
+    }
 }
 
 //return $javascript_content;

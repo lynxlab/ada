@@ -10,9 +10,9 @@ require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
 header('Content-type: text/css');
 echo '@CHARSET "UTF-8";'.PHP_EOL;
 echo <<<CSS
-/**
- * OWN CSS RULES HERE
- */
+    /**
+     * OWN CSS RULES HERE
+     */
 
 
-CSS;
+    CSS;
