@@ -17,12 +17,9 @@
  * @version		0.1
  */
 
+use function Lynxlab\ADA\Main\ModuleInit\clear_dataFN;
+use function Lynxlab\ADA\Main\ModuleInit\session_controlFN;
 use function Lynxlab\ADA\Main\Utilities\today_dateFN;
-
-/**
- * Functions used in this module
- */
-require_once ROOT_DIR.'/include/module_init_functions.inc.php';
 
 /**
  * Imports $_GET and $_POST variables

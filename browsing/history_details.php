@@ -32,6 +32,7 @@ use Lynxlab\ADA\Main\User\ADAUser;
 use function Lynxlab\ADA\Main\AMA\DBRead\read_course_from_DB;
 use function Lynxlab\ADA\Main\AMA\DBRead\read_layout_from_DB;
 use function Lynxlab\ADA\Main\AMA\DBRead\read_user_from_DB;
+use function Lynxlab\ADA\Main\ModuleInit\session_controlFN;
 
 $ada_config_path = realpath(dirname(__FILE__).'/..');
 

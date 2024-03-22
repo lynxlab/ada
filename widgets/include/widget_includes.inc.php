@@ -22,11 +22,6 @@
  *
  */
 
-/**
- * Functions used  to check session objects
- */
-require_once ROOT_DIR.'/include/module_init_functions.inc.php';
-
 /* widgets */
 include_once ROOT_DIR.'/widgets/include/ajax_remote_class.inc.php';
 include_once ROOT_DIR.'/widgets/include/widgets_inc.php';
