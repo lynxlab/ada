@@ -702,7 +702,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
         $student_ha = [];
         $student_ha['stato'] = $status;
         $usertype = $this->get_user_type($userid);
-        if ((is_numeric($status)) and ($user_type == AMA_TYPE_STUDENT)) {
+        if ((is_numeric($status)) and ($usertype == AMA_TYPE_STUDENT)) {
             $result =  $this->set_student($userid, $student_ha);
             if ($this->isError($result)) {
                 return $result;
@@ -1237,7 +1237,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
             foreach ($orderByAr as $field) {
                 $orderByFields .= "$field, ";
             }
-            $orderByFields = substr($orderByFields, 0, count($orderByField) - 2);
+            $orderByFields = substr($orderByFields, 0, strlen($orderByFields) - 2);
         }
         if ($clause == null) {
             $clause = ' AND s.livello > 1 ';

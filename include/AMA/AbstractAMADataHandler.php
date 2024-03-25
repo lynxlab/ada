@@ -405,6 +405,8 @@ abstract class Abstract_AMA_DataHandler
         if (AMA_DataHandler::isError($error)) {
             return $error->errorMessage();
         }
+
+        return '';
     }
 
     /**

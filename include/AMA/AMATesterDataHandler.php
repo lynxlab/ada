@@ -12,6 +12,7 @@
 namespace Lynxlab\ADA\Main\AMA;
 
 use Lynxlab\ADA\Main\Logger\ADALogger;
+use Lynxlab\ADA\Main\Menu;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CourseEvent;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
@@ -688,7 +689,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler
      *
      * @param $clause
      *
-     * @return on success, a bi-dimensional array containing these fields:
+     * @return array on success, a bi-dimensional array containing these fields:
      *
      *     array(array(ID1, 'field_1_1', 'field_1_2'),
      *           array(ID2, 'field_2_1', 'field_2_2'),
@@ -913,14 +914,14 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler
 
         // get ordering for first record
         $res_ha = $this->get_bookmark_info($id1);
-        if (AMA_DataHandler::isError($res_ha_)) {
+        if (AMA_DataHandler::isError($res_ha)) {
             return new AMA_Error(AMA_ERR_NOT_FOUND);
         }
         $ordering1 = $res_ha['ordering'];
 
         // get ordering for second record
         $res_ha = $this->get_bookmark_info($id2);
-        if (AMA_DataHandler::isError($res_ha_)) {
+        if (AMA_DataHandler::isError($res_ha)) {
             return new AMA_Error(AMA_ERR_NOT_FOUND);
         }
         $ordering2 = $res_ha['ordering'];
@@ -5065,7 +5066,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler
         if ($node_ha['type'] == ADA_LEAF_WORD_TYPE or $node_ha['type'] == ADA_GROUP_WORD_TYPE) {
             $res = $this->_edit_extension_node($node_ha);
             if (AMA_DB::isError($res)) {
-                $err = $this->errorMessage(AMA_ERR_ADD) . "while in doEdit_node($node_id)" .
+                $err = $this->errorMessage(AMA_ERR_ADD) . "while in doEdit_node($id_node)" .
                     AMA_SEP . $res->getMessage();
                 ADALogger::log_db($err);
                 return new AMA_Error($err);
@@ -5295,7 +5296,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler
         // add row to table "nodo"
         $res = $this->doAdd_node($node_ha);
         if (AMA_DB::isError($res)) {
-            $err = $this->errorMessage(AMA_ERR_ADD) . "while in add_node($node_id)" .
+            $err = $this->errorMessage(AMA_ERR_ADD) . "while in add_node(".$node_ha['id'].")" .
                 AMA_SEP . $res->getMessage();
 
             ADALogger::log_db("$err detected");
@@ -7700,7 +7701,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler
      */
     public function &get_students_ids()
     {
-        return $this->get_students_list();
+        return $this->get_students_list([]);
     }
 
     public function get_user($id)
@@ -7943,7 +7944,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler
      */
     public function &get_tutors_ids()
     {
-        return $this->get_tutors_list();
+        return $this->get_tutors_list([]);
     }
 
     /**
@@ -9497,7 +9498,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler
         // do the query
         $sql_query = "select id_utente$more_fields from utente where  tipo=" . AMA_TYPE_ADMIN . " $clause";
         $admins_ar =  $db->getAll($sql_query);
-        if (AMA_DB::isError($tutors_ar)) {
+        if (AMA_DB::isError($admins_ar)) {
             return new AMA_Error(AMA_ERR_GET);
         }
         //

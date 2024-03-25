@@ -151,6 +151,7 @@ class Translator
         }
 
         $errObj = new ADA_Error(null, 'Language code not found.', 'Translator');
+        return '';
     }
 
 

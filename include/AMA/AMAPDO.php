@@ -89,7 +89,8 @@ class AMAPDO extends PDO
      */
     public function free()
     {
-        return self::__destruct();
+        $this->__destruct();
+        return true;
     }
 
     /**
@@ -102,6 +103,5 @@ class AMAPDO extends PDO
     public function __destruct()
     {
         $this->dsn = null;
-        return true;
     }
 }

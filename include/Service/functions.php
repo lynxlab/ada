@@ -9,7 +9,7 @@ use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
-function _get_course_instance_info($id_course, $id_course_instance)
+function get_course_instance_info($id_course, $id_course_instance)
 {
 
     $common_dh = $GLOBALS['common_dh'];
@@ -69,7 +69,7 @@ function _get_course_instance_info($id_course, $id_course_instance)
                     $errObj = new ADA_Error($msgs_ha, translateFN('Errore in lettura appuntamenti'));
                 }
                 $testers_dataAr = MultiPort::getTestersPointersAndIds();
-                $meeting_List   = CommunicationModuleHtmlLib::getAgendaAsForm($dataAr, $testers_dataAr);
+                $meeting_list   = CommunicationModuleHtmlLib::getAgendaAsForm($dataAr, $testers_dataAr);
 
 
                 //  $label_provider = translateFN('Fornitore');

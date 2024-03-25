@@ -20,7 +20,7 @@ use Lynxlab\ADA\Main\Service\Service;
 use Lynxlab\ADA\Main\Service\ServiceImplementor;
 use Lynxlab\ADA\Main\User\ADAGuest;
 
-use function Lynxlab\ADA\Main\Service\Functions\_get_course_instance_info;
+use function Lynxlab\ADA\Main\Service\Functions\get_course_instance_info;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /* Questa versione è diversa dalla versione ADA;
@@ -209,7 +209,7 @@ if (
       	if (
       	(isset($_REQUEST['id_course_instance'])) AND (isset($_REQUEST['id_course']))
       	){
-      	   $requested_service_data = _get_course_instance_info($_REQUEST['id_course'],$_REQUEST['id_course_instance']); // from services_functions
+      	   $requested_service_data = get_course_instance_info($_REQUEST['id_course'],$_REQUEST['id_course_instance']); // from services_functions
       	 } // id_course_instance
 
 	} // end if id_course

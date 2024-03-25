@@ -283,7 +283,7 @@ abstract class ADALoggableUser extends ADAGenericUser
 
                         return ($online_usersAr ?? null);
                     } else {
-                        return  translate("Nessuno");
+                        return  translateFN("Nessuno");
                     }
                     break;
                 case 1: // username, mail and timestemp // @FIXME
