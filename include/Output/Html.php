@@ -35,8 +35,6 @@ class Html extends GenericHtml
     public $replace_microtemplate_field_code;
     public $module_dir;
     public $family;
-    public $static_filename;
-    public $full_static_filename;
     //functions:
 
     public function __construct($template, $CSS_filename, $user_name, $course_title, $node_title = "", $meta_keywords = "", $author = "", $meta_refresh_time = "", $meta_refresh_url = "", $onload_func = "", $layoutObj = null)
@@ -67,7 +65,6 @@ class Html extends GenericHtml
         $widget_filename = (!is_null($layoutObj)) ? basename($layoutObj->WIDGET_filename) : '';
         $family_name = $this->family;
         $module_dir =  $this->module_dir;
-        $static_filename = $this->static_filename;
         $this->htmlheader = "
 <!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">
 <html>
@@ -104,7 +101,6 @@ class Html extends GenericHtml
         <meta name=\"outputClasses\" content=\"NEW\">
         <meta name=\"description\" content=\"$description\">
         <meta name=\"keywords\" content=\"$keywords,$meta_keywords\">
-        <meta name=\"cachefile\" content=\"$static_filename\">
         <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
         <!-- Stile -->
         <!-- Javascript -->\n";

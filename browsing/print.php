@@ -82,21 +82,6 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-include_once 'include/cache_manager.inc.php';
-
-/* Static mode */
-
-// $cacheObj = New CacheManager($id_profile);
-// $cacheObj->checkCache($id_profile);
-// if ($cacheObj->getCachedData()){
-// 	exit();
-// }
-
-
-/** DYNAMIC mode
- *
- */
-
 if ($userObj instanceof ADAGuest) {
     $self = 'guest_view';
 } else {
@@ -265,12 +250,3 @@ $PRINT_optionsAr = array(
 $layout_dataAR = array();
 
 ARE::render($layout_dataAR,$content_dataAr, ARE_PRINT_RENDER, $PRINT_optionsAr);
-
-/**
- * preparing for static mode
- *
- * now managed by the class Cache Manager
- *
- */
-
-// $cacheObj->writeCachedData($id_profile,$layout_dataAR,$content_dataAr);

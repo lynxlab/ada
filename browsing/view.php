@@ -58,8 +58,6 @@ $neededObjAr = array(
  */
 require_once ROOT_DIR . '/include/module_init.inc.php';
 
-include_once 'include/cache_manager.inc.php';
-
 /**
  * This will at least import in the current symbol table the following vars.
  * For a complete list, please var_dump the array returned by the init method.
@@ -91,18 +89,6 @@ include_once 'include/cache_manager.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-/* Static mode */
-
-// $cacheObj = New CacheManager($id_profile);
-// $cacheObj->checkCache($id_profile);
-// if ($cacheObj->getCachedData()){
-// 	exit();
-// }
-
-
-/** DYNAMIC mode
- *
- */
 if (isset($courseInstanceObj) && $courseInstanceObj instanceof CourseInstance) {
     $self_instruction = $courseInstanceObj->getSelfInstruction();
 } else $self_instruction = null;
@@ -702,13 +688,3 @@ switch ($op){
 		ARE::render($layout_dataAR,$content_dataAr, null,$optionsAr,$menuOptions);
 
 }
-
-
-/**
- * preparing for static mode
- *
- * now managed by the class Cache Manager
- *
- */
-
-// $cacheObj->writeCachedData($id_profile,$layout_dataAR,$content_dataAr);

@@ -189,7 +189,6 @@ class ARE
                 );
 
                 $html_renderer->full_static_filename = $cached_file;
-                $html_renderer->static_filename = $static_filename;
                 $html_renderer->fillin_templateFN($content_dataAr);
 
                 $imgpath = (dirname($layout_template));

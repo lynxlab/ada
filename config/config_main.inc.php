@@ -341,15 +341,6 @@ define('DB_START',	4); //logging only the beginning of db operations
 
 define('ADA_SECONDS_IN_A_DAY', 86400);
 
-/**
- * Caching mode
- */
-define('ADA_NO_CACHE',   		0);		//always dynamically read from DB
-define('ADA_READONLY_CACHE',	1); 	//read only: the file is always loaded but never rewritten
-define('ADA_UPDATE_CACHE',  	2); 	//static rw: the node content is read from file only if lifetime is > $ic_lifetime
-										// otherwise it is read from DB and then written back to file
-define('ADA_FORCE_UPDATE_CACHE',3); 	//static rw: the node content  is read from DB and then written back to file
-
 define('JQUERY',				  ROOT_DIR.'/js/include/jquery/jquery-1.11.1.min.js');
 define('JQUERY_UI',				  ROOT_DIR.'/js/include/jquery/ui/jquery-ui-1.11.1.custom.min.js');
 define('JQUERY_UI_CSS',			  ROOT_DIR.'/js/include/jquery/ui/jquery-ui-1.11.1.custom.min.css');

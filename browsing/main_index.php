@@ -84,9 +84,6 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-include_once 'include/cache_manager.inc.php';
-
-
 include_once CORE_LIBRARY_PATH.'/includes.inc.php';
 
 if (isset ($courseInstanceObj) && $courseInstanceObj instanceof CourseInstance) {
@@ -146,13 +143,6 @@ if (is_object($userObj) && (!AMA_DataHandler::isError($userObj))) {
 //    }
 
 
-
-      /* Static mode */
-//      $cacheObj = New CacheManager($id_profile);
-//      $cacheObj->checkCache($id_profile);
-//      if ($cacheObj->getCachedData()){
-//          exit();
-//      }
 
     // dynamic mode:
     // ******************************************************
@@ -625,19 +615,3 @@ $content_dataAr = array(
 );
 
 ARE::render($layout_dataAr, $content_dataAr);
-
-/**
- * preparing for static mode
- *
-
-  if (($static_mode > ADA_READONLY_CACHE) OR ($cache_mode == 'cache') OR ($cache_mode == 'updatecache')){ // we have to (re)write the cache file
-   if($id_profile == AMA_TYPE_VISITOR) {
-      $static_optionsAr = array('static_dir' => $static_dir);
-      ARE::render($layout_dataAR,$content_dataAr,ARE_FILE_RENDER,$static_optionsAr);
-   }
-}
- *
- * now managed by the class Cache Manager
- * */
-
-// $cacheObj->writeCachedData($id_profile,$layout_dataAr,$content_dataAr);

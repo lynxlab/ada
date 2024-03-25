@@ -40,7 +40,6 @@ class GenericHtml extends Output
     public $errorCode;
     public $replace_field_code;
     public $full_static_filename;
-    public $static_filename;
     public $external_module = false;
     public $replace_microtemplate_field_code;
     public $module_dir;
@@ -69,7 +68,6 @@ class GenericHtml extends Output
         <meta name=\"class\" content=\"generic HTML\">
         <meta name=\"description\" content=\"$description\">
         <meta name=\"keywords\" content=\"$keywords, $meta_keywords\">
-        <meta name=\"cachefile\" content=\"$this->static_filename\">
         <!-- Stile -->\n";
         $this->htmlheader .= "<title>\n$title\n</title>\n";
         $this->htmlheader .= "</head>\n";

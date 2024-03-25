@@ -148,7 +148,7 @@ switch ($op) {
                 $new_nodeObj = read_node_from_DB($new_id_node);
                 if (is_object($new_nodeObj)) {
                     $message = urlencode(translateFN("Nodo copiato"));
-                    header("Location: " . $http_root_dir . "/browsing/view.php?cachemode=updatecache&id_node=$new_id_node&msg=$message");
+                    header("Location: " . $http_root_dir . "/browsing/view.php?id_node=$new_id_node&msg=$message");
                 }
             }
         }
@@ -248,7 +248,7 @@ switch ($op) {
                     $node_ha['type'] = ADA_NOTE_TYPE;
                     $res = $dh->doEdit_node($node_ha);
                     $message = urlencode(translateFN("Nota pubblicata nel forum"));
-                    header("Location: " . $http_root_dir . "/browsing/view.php?cachemode=updatecache&id_node=$id_node&msg=$message");
+                    header("Location: " . $http_root_dir . "/browsing/view.php?id_node=$id_node&msg=$message");
                     exit();
                     break;
 
@@ -282,7 +282,7 @@ switch ($op) {
                     //$GLOBALS['debug']=1; mydebug(__LINE__,__FILE__,$res); $GLOBALS['debug']=0;
                     if (!AMA_datahandler::isError($res)) {
                         $message = urlencode(translateFN("Nota pubblicata nel corso"));
-                        header("Location: " . $http_root_dir . "/browsing/view.php?cachemode=updatecache&id_node=$id_node&msg=$message");
+                        header("Location: " . $http_root_dir . "/browsing/view.php?id_node=$id_node&msg=$message");
                     }
                     else {
                         $authoObj = new ADAAuthor($course_author_id);
@@ -635,7 +635,7 @@ switch ($op) {
 
 
         // end notification
-        header("Location: $http_root_dir/browsing/view.php?cachemode=updatecache&id_node={$content_dataAr['id']}");
+        header("Location: $http_root_dir/browsing/view.php?id_node={$content_dataAr['id']}");
         exit();
         //    $data['form'] = translateFN("Le modifiche al nodo sono state salvate correttamente.");
         //    $self="edit_node";

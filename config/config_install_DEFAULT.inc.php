@@ -175,12 +175,6 @@ define('ADA_ALL_STATIC',  3);
  */
 define('ADA_EXT_STATIC',  4);
 
-/**
- * Caching mode NEW CONSTANTS USED BY VIEW
- * default behaviour for Guest Users
- */
-
-define('ADA_CACHEMODE',ADA_UPDATE_CACHE); // defined in config_main.inc.php
 /*
  * Maximum number of students in a course instance
  */
@@ -391,9 +385,6 @@ define('ADA_SYSTEM_MESSAGES_SHOW_SEARCH_RESULT_NUM', 10);
 /**
  * Global variables (for retrocompatibility)
  */
-
-// time to refresh cached pages
-$ic_lifetime = IC_LIFE_TIME;
 
 // characteristic times for the cleaning mechanism (in seconds)
 $SimpleSpool_ntc = NTC_TIME;
