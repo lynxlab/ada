@@ -2,12 +2,15 @@
 
 use Lynxlab\ADA\Browsing\ImageDevice;
 
+use function Lynxlab\ADA\Browsing\GraphMap\compute_maxFN;
+use function Lynxlab\ADA\Browsing\GraphMap\copy_imageFN;
+use function Lynxlab\ADA\Browsing\GraphMap\make_linkFN;
+use function Lynxlab\ADA\Browsing\GraphMap\show_image_FN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 $debug=0;
 $ada_config_path = realpath(dirname(__FILE__).'/..');
 include_once("$ada_config_path/config_path.inc.php");
-include_once("include/graph_map.inc.php");
 //vito 2 feb 2009
 //$encode_children = $_GET['ec'];
 
