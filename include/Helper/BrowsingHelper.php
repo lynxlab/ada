@@ -93,7 +93,7 @@ class BrowsingHelper extends ViewBaseHelper
      * Builds the reg_enabled, log_enabled, mod_enabled and com_enabled keys
      * for the browsing directory scripts
      *
-     * @param ADAGenericUser $userObj
+     * @param \Lynxlab\ADA\Main\User\ADAAbstractUser $userObj
      * @param Course $courseObj
      *
      * @return array

@@ -156,7 +156,7 @@ abstract class ViewBaseHelper
     /**
      * Builds user_level, user_score, user_history, user_status...
      *
-     * @param ADAGenericUser $userObj
+     * @param \Lynxlab\ADA\Main\User\ADAAbstractUser $userObj
      * @param boolean $log_enabled
      * @return array
      */
@@ -220,7 +220,7 @@ abstract class ViewBaseHelper
     /**
      * Builds the array keys as requested by the neededObjAr
      *
-     * @param ADAGenericUser $userObj
+     * @param \Lynxlab\ADA\Main\User\ADAAbstractUser $userObj
      * @param array $neededObjAr
      * @param string $user_status
      *
@@ -510,7 +510,6 @@ abstract class ViewBaseHelper
      */
     protected static function getUserMessages(ADAGenericUser $userObj)
     {
-        require_once ROOT_DIR . '/include/HtmlLibrary/CommunicationModuleHtmlLib.inc.php';
         return CommunicationModuleHtmlLib::getMessagesAsTable(MultiPort::getUserMessages($userObj), self::getTestersDataAr());
     }
 
@@ -524,7 +523,6 @@ abstract class ViewBaseHelper
      */
     protected static function getUserAgenda(ADAGenericUser $userObj)
     {
-        require_once ROOT_DIR . '/include/HtmlLibrary/CommunicationModuleHtmlLib.inc.php';
         return CommunicationModuleHtmlLib::getAgendaAsTable(MultiPort::getUserAgenda($userObj), self::getTestersDataAr());
     }
 
@@ -538,7 +536,6 @@ abstract class ViewBaseHelper
      */
     protected static function getUserEvents(ADAGenericUser $userObj)
     {
-        require_once ROOT_DIR . '/include/HtmlLibrary/CommunicationModuleHtmlLib.inc.php';
         return CommunicationModuleHtmlLib::getEventsAsTable($userObj, MultiPort::getUserEventsNotRead($userObj), self::getTestersDataAr());
     }
 

@@ -206,6 +206,8 @@ function read_course_instance_from_DB($id_course_instance)
 
 /**
  * Wrapper function for read_user_from_DB.
+ *
+ * @return \Lynxlab\ADA\Main\User\ADAGenericUser
  * @see read_user_from_DB
  */
 function read_user($id_user = null)
@@ -251,7 +253,7 @@ function read_user($id_user = null)
 /**
  * Reads a ADA user from database.
  * @param  int $id_user - a valid ADA user identifier
- * @return a ADAGenericUser object on success, on failure raises a ADA_Error
+ * @return \Lynxlab\ADA\Main\User\ADAGenericUser object on success, on failure raises a ADA_Error
  */
 function read_user_from_DB($id_user)
 {
