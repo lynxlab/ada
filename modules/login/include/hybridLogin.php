@@ -15,6 +15,7 @@ use Hybridauth\Hybridauth;
 use Hybridauth\HttpClient;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Browsing\ImageDevice;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
@@ -103,8 +104,7 @@ class hybridLogin extends abstractLogin
 				/**
 				 * resize the image if needed
 				*/
-				require_once ROOT_DIR .'/browsing/include/class_image.inc.php';
-				$id_img = new \ImageDevice();
+				$id_img = new ImageDevice();
 				$new_img = $id_img->resize_image($destFile, AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
 				if(stristr($destFile, 'png')) {
 					imagepng($new_img,$destFile);

@@ -1,11 +1,12 @@
 <?php
 
+use Lynxlab\ADA\Main\Browsing\ImageDevice;
+
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 $debug=0;
 $ada_config_path = realpath(dirname(__FILE__).'/..');
 include_once("$ada_config_path/config_path.inc.php");
-include_once("include/class_image.inc.php");
 include_once("include/graph_map.inc.php");
 //vito 2 feb 2009
 //$encode_children = $_GET['ec'];

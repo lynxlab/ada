@@ -81,7 +81,6 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
 BrowsingHelper::init($neededObjAr);
 
 require_once 'include/map_functions.inc.php';
-require_once 'include/class_image.inc.php';
 require_once ROOT_DIR.'/services/include/NodeEditing.inc.php';
 
 if ($userObj instanceof ADAGuest) {

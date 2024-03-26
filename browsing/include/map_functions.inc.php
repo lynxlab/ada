@@ -1,5 +1,8 @@
 <?php
 // return node type
+
+use Lynxlab\ADA\Main\Browsing\ImageDevice;
+
 function returnAdaNodeType($t)
 {
 	if($t == ADA_LEAF_TYPE) return "nodo";

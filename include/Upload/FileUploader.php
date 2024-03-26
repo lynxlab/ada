@@ -20,6 +20,8 @@
 
 namespace Lynxlab\ADA\Main\Upload;
 
+use Lynxlab\ADA\Main\Browsing\ImageDevice;
+
 class FileUploader
 {
     public function __construct($pathToUploadFolder, $fieldUploadName = 'uploaded_file')
@@ -177,7 +179,6 @@ class FileUploader
      */
     public function reduceImage()
     {
-        require_once ROOT_DIR . '/browsing/include/class_image.inc.php';
         $id_img = new ImageDevice();
         $new_img = $id_img->resize_image($this->tmpName, AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
         if (stristr($this->type, 'png')) {

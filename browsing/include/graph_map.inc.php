@@ -1,6 +1,8 @@
 <?php
 /* FUNCTIONS */
 
+use Lynxlab\ADA\Main\Browsing\ImageDevice;
+
 use function Lynxlab\ADA\Main\Utilities\mydebug;
 
 function make_image_mapFN($children_ha,$user_level,$id_profile) {
@@ -196,7 +198,7 @@ $template_img_dir = 'layout/standard/img';
 
         if (!empty($icon_child)) {
             $id = new ImageDevice();
-            if (empty($id->error) AND (file_exists($icon_child))) {
+            if (empty($id->error()) AND (file_exists($icon_child))) {
                 // Get image dimensions
                 $size_src = $id->GetImageSizeX($icon_child);
                 // mydebug(__LINE__,__FILE__,$size_src);
@@ -215,7 +217,7 @@ $template_img_dir = 'layout/standard/img';
                 // $extension = $id->type;
 
                 $im_src = $id->imagecreateFromX($icon_child);
-                mydebug(__LINE__,__FILE__,$id->error);
+                mydebug(__LINE__,__FILE__,$id->error());
 // Versione immagini ridimensionate.
 //                      $im_result =  ImageCopyResized ($im_dest, $im_src, $dest_x, $dest_y, $src_x, $src_y, $width_dest, $height_dest, $width_src, $height_src);
 // Versione che non ridimensiona
