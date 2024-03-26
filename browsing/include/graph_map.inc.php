@@ -1,11 +1,15 @@
 <?php
+
 /* FUNCTIONS */
+
+namespace Lynxlab\ADA\Browsing\GraphMap;
 
 use Lynxlab\ADA\Browsing\ImageDevice;
 
 use function Lynxlab\ADA\Main\Utilities\mydebug;
 
-function make_image_mapFN($children_ha,$user_level,$id_profile) {
+function make_image_mapFN($children_ha, $user_level, $id_profile)
+{
     $sess_id_node = $_SESSION['sess_id_node'];
     $media_path = $GLOBALS['media_path'];
     $root_dir = $GLOBALS['root_dir'];
@@ -13,9 +17,6 @@ function make_image_mapFN($children_ha,$user_level,$id_profile) {
     $duplicate_dir_structure = $GLOBALS['duplicate_dir_structure'];
     $family = $GLOBALS['family'];
     $debug = $GLOBALS['debug'];
-
-
-
     /*
                 $templates_dir = "browsing/templates";
                 $temp = split('[/\]',$layout_template);
@@ -24,14 +25,16 @@ function make_image_mapFN($children_ha,$user_level,$id_profile) {
     */
     $function_group = "browsing"; //
     // $duplicate_dir_structure =  $GLOBALS['duplicate_dir_structure'];
-    if (!isset($duplicate_dir_structure))
-        $duplicate_dir_structure=0; //default
-    if (!$family)
+    if (!isset($duplicate_dir_structure)) {
+        $duplicate_dir_structure = 0; //default
+    }
+    if (!$family) {
         $family = ADA_TEMPLATE_FAMILY; //default
+    }
 
     if (!$duplicate_dir_structure) { //0
-        $templates_dir = "$function_group/templates/".$family;
-    }        else {
+        $templates_dir = "$function_group/templates/" . $family;
+    } else {
         $templates_dir = "layout/$family";
     }
     $template_img_dir = "$templates_dir/img";
@@ -48,11 +51,11 @@ function make_image_mapFN($children_ha,$user_level,$id_profile) {
         $name = $child['name_child'];
 
         $tmp_icon_child = $child['icon_child'];
-        if (stristr($tmp_icon_child,'/')) {
+        if (stristr($tmp_icon_child, '/')) {
             if (file_exists($tmp_icon_child)) {
                 $icon_child = $tmp_icon_child; // icon has an absolute path attached
-            } elseif (file_exists($root_dir.$tmp_icon_child)) {
-                $icon_child = $root_dir.$tmp_icon_child; // icon has a relative path attached
+            } elseif (file_exists($root_dir . $tmp_icon_child)) {
+                $icon_child = $root_dir . $tmp_icon_child; // icon has a relative path attached
             } else {
                 $icon_child = "$root_dir/$template_img_dir/$tmp_icon_child";
             }
@@ -62,9 +65,9 @@ function make_image_mapFN($children_ha,$user_level,$id_profile) {
         //mydebug(__LINE__,__FILE__,$icon_child);
         // $icon_child = $template_img_dir . $child['icon_child'];
         // Get image dimensions
-        $size_src = GetImageSize ($icon_child);
-        $height_src=$size_src[1];
-        $width_src=$size_src[0];
+        $size_src = GetImageSize($icon_child);
+        $height_src = $size_src[1];
+        $width_src = $size_src[0];
         $x1 = $position_child[0];
         $y1 = $position_child[1];
         // $x2 = $position_child[2];
@@ -78,7 +81,7 @@ function make_image_mapFN($children_ha,$user_level,$id_profile) {
             $program = "view.php";
         }
         if (isset($program)) {
-            if ($user_level<$node_level) {
+            if ($user_level < $node_level) {
                 $image_map .= "<area shape=\"rect\" coords=\"$x1,$y1,$x2,$y2\" alt=\"$name\">\n";
             } else {
                 $image_map .= "<area shape=\"rect\" coords=\"$x1,$y1,$x2,$y2\" href=\"" . $program . "?id_node=$id_child\" alt=\"$name\">\n";
@@ -91,12 +94,13 @@ function make_image_mapFN($children_ha,$user_level,$id_profile) {
 
 /*-------------------------------------------------------------------------*/
 /* calcola le coordinate massime per la generazione dell'immagine di fondo */
-function compute_maxFN($children_ha) {
+function compute_maxFN($children_ha)
+{
     $max_X = 0;
     $max_Y = 0;
     foreach ($children_ha as $val) {
         $coordinate_ar = $val['position_child'];
-//                mydebug(__LINE__,__FILE__,$coordinate_ar);
+        //                mydebug(__LINE__,__FILE__,$coordinate_ar);
 
         $icon_child = $val['icon_child'];
         // Get image dimensions
@@ -114,14 +118,15 @@ function compute_maxFN($children_ha) {
             }
         }
     }
-    $max_coordinate_ar = array($max_X,$max_Y);
+    $max_coordinate_ar = [$max_X, $max_Y];
     return $max_coordinate_ar;
 }
 
 /*-------------------------------------------------------------------------*/
 /* Incolla le icone dei nodi all'interno dell'immagine generale            */
 /*-------------------------------------------------------------------------*/
-function copy_imageFN($children_ha, $im_dest, $max_X, $max_Y,$user_level) {
+function copy_imageFN($children_ha, $im_dest, $max_X, $max_Y, $user_level)
+{
     $background_R = $GLOBALS['background_R'];
     $background_G = $GLOBALS['background_G'];
     $background_B = $GLOBALS['background_B'];
@@ -137,32 +142,34 @@ function copy_imageFN($children_ha, $im_dest, $max_X, $max_Y,$user_level) {
     $src_x = 0;
     $src_y = 0;
 
-    $position_node = array();
+    $position_node = [];
     $function_group = "browsing"; //
-// $duplicate_dir_structure =  $GLOBALS['duplicate_dir_structure'];
-    if (!isset($duplicate_dir_structure))
-        $duplicate_dir_structure=0; //default
-    if (!$family)
+    // $duplicate_dir_structure =  $GLOBALS['duplicate_dir_structure'];
+    if (!isset($duplicate_dir_structure)) {
+        $duplicate_dir_structure = 0; //default
+    }
+    if (!$family) {
         $family = ADA_TEMPLATE_FAMILY; //default
+    }
 
     if (!$duplicate_dir_structure) { //0
-        $templates_dir = "$function_group/templates/".$family;
-    }	else {
-        $templates_dir = "templates/$function_group/".$family;
+        $templates_dir = "$function_group/templates/" . $family;
+    } else {
+        $templates_dir = "templates/$function_group/" . $family;
     }
-// $templates_dir = "browsing/templates";
-//echo $templates_dir;
-//$temp = split('[/\]',$layout_template);
-//$template_family = $temp[1];
-//$template_img_dir = "$templates_dir/$template_family/img";
+    // $templates_dir = "browsing/templates";
+    //echo $templates_dir;
+    //$temp = split('[/\]',$layout_template);
+    //$template_family = $temp[1];
+    //$template_img_dir = "$templates_dir/$template_family/img";
     $template_img_dir = "$templates_dir/img";
-$template_img_dir = 'layout/standard/img';
-# $background_color = ImageColorAllocate ($im, 0, 0, 0);
-# $text_color = ImageColorAllocate ($im_dest, 233, 14, 91);
-// $text_color = ImageColorAllocate ($im_dest, 255, 255, 255);
-    $text_color = ImageColorAllocate ($im_dest, $foreground_R, $foreground_G, $foreground_B);
+    $template_img_dir = 'layout/standard/img';
+    # $background_color = ImageColorAllocate ($im, 0, 0, 0);
+    # $text_color = ImageColorAllocate ($im_dest, 233, 14, 91);
+    // $text_color = ImageColorAllocate ($im_dest, 255, 255, 255);
+    $text_color = ImageColorAllocate($im_dest, $foreground_R, $foreground_G, $foreground_B);
 
-//mydebug(__LINE__,__FILE__,$im_dest);
+    //mydebug(__LINE__,__FILE__,$im_dest);
 
     foreach ($children_ha as $child) {
         //mydebug(__LINE__,__FILE__,$child);
@@ -172,19 +179,19 @@ $template_img_dir = 'layout/standard/img';
         $node_level = $child['level_child'];
         $id_child = $child['id_child'];
         $tmp_icon_child = $child['icon_child'];
-//	mydebug(__LINE__,__FILE__,$tmp_icon_child);
+        //  mydebug(__LINE__,__FILE__,$tmp_icon_child);
 
 
-        if ($user_level<$node_level) {
+        if ($user_level < $node_level) {
             $icon_child = "$root_dir/$template_img_dir/_nododis.png";
         } elseif ($node_type == ADA_NOTE_TYPE) { // notes aren't shown in maps !
             $icon_child = "$root_dir/$template_img_dir/_nota.png";
         } else {
-            if (stristr($tmp_icon_child,'/')) {
+            if (stristr($tmp_icon_child, '/')) {
                 if (file_exists($tmp_icon_child)) {
                     $icon_child = $tmp_icon_child; // icon has an absolute path attached
-                } elseif (file_exists($root_dir.$tmp_icon_child)) {
-                    $icon_child = $root_dir.$tmp_icon_child; // icon has a relative path attached
+                } elseif (file_exists($root_dir . $tmp_icon_child)) {
+                    $icon_child = $root_dir . $tmp_icon_child; // icon has a relative path attached
                 } else {
                     $icon_child = "$root_dir/$template_img_dir/$tmp_icon_child";
                 }
@@ -198,38 +205,37 @@ $template_img_dir = 'layout/standard/img';
 
         if (!empty($icon_child)) {
             $id = new ImageDevice();
-            if (empty($id->error()) AND (file_exists($icon_child))) {
+            if (empty($id->error()) and (file_exists($icon_child))) {
                 // Get image dimensions
                 $size_src = $id->GetImageSizeX($icon_child);
                 // mydebug(__LINE__,__FILE__,$size_src);
 
-                $height_src=$size_src[1];
-                $width_src=$size_src[0];
+                $height_src = $size_src[1];
+                $width_src = $size_src[0];
                 $dest_x = $position_child_ar[0];
                 $dest_y = $position_child_ar[1];
 
                 // Necessari per ridimensionamento immagine
-                $height_dest=$position_child_ar[3] - $position_child_ar[1];
-                $width_dest=$position_child_ar[2] - $position_child_ar[0];
+                $height_dest = $position_child_ar[3] - $position_child_ar[1];
+                $width_dest = $position_child_ar[2] - $position_child_ar[0];
                 // mydebug(__LINE__,__FILE__,$position_child_ar);
                 //
 
                 // $extension = $id->type;
 
                 $im_src = $id->imagecreateFromX($icon_child);
-                mydebug(__LINE__,__FILE__,$id->error());
-// Versione immagini ridimensionate.
-//                      $im_result =  ImageCopyResized ($im_dest, $im_src, $dest_x, $dest_y, $src_x, $src_y, $width_dest, $height_dest, $width_src, $height_src);
-// Versione che non ridimensiona
-                $im_result =  ImageCopy ($im_dest, $im_src, $dest_x, $dest_y, $src_x, $src_y, $width_src, $height_src);
+                mydebug(__LINE__, __FILE__, $id->error());
+                // Versione immagini ridimensionate.
+                //                      $im_result =  ImageCopyResized ($im_dest, $im_src, $dest_x, $dest_y, $src_x, $src_y, $width_dest, $height_dest, $width_src, $height_src);
+                // Versione che non ridimensiona
+                $im_result =  ImageCopy($im_dest, $im_src, $dest_x, $dest_y, $src_x, $src_y, $width_src, $height_src);
                 ImageDestroy($im_src);
-
             }
             $bounds = $dest_x . "," . $dest_y . "," . ($dest_x + $width_src) . "," . ($dest_y + $height_src + 10);
-            $bounds_ar = explode(",",$bounds);
-            $control = array_push($position_node, array ('id_node'=>$id_child, 'bounds'=>$bounds));
+            $bounds_ar = explode(",", $bounds);
+            $control = array_push($position_node, ['id_node' => $id_child, 'bounds' => $bounds]);
 
-            ImageString ($im_dest, 1, $dest_x, ($dest_y + $height_src + 10),  $name_child, $text_color);
+            ImageString($im_dest, 1, $dest_x, ($dest_y + $height_src + 10), $name_child, $text_color);
         }
     }
     // mydebug(__LINE__,__FILE__,$position_node);
@@ -238,7 +244,8 @@ $template_img_dir = 'layout/standard/img';
 
 /*----------------------------------------------------*/
 /* Genera le linee indicanti i collegamenti tra i nodi*/
-function make_linkFN($children_ha, $im_dest, $position_node) {
+function make_linkFN($children_ha, $im_dest, $position_node)
+{
     $background_R = $GLOBALS['background_R'];
     $background_G = $GLOBALS['background_G'];
     $background_B = $GLOBALS['background_B'];
@@ -253,7 +260,7 @@ function make_linkFN($children_ha, $im_dest, $position_node) {
 
     $src_x = 0;
     $src_y = 0;
-    $text_color = ImageColorAllocate ($im_dest, $foreground_R, $foreground_G, $foreground_B);
+    $text_color = ImageColorAllocate($im_dest, $foreground_R, $foreground_G, $foreground_B);
     $node_from_found = 0;
     $node_to_found = 0;
 
@@ -262,14 +269,13 @@ function make_linkFN($children_ha, $im_dest, $position_node) {
         $linked = $child['linked'];
         if (!empty($linked)) {
             foreach ($linked as $link) {
-
                 $id_node_to = $link['id_node_to'];
-                mydebug(__LINE__,__FILE__,array('id_node_to'=>$id_node_to,'id_node_from'=>$id_node_from));
+                mydebug(__LINE__, __FILE__, ['id_node_to' => $id_node_to, 'id_node_from' => $id_node_from]);
                 foreach ($position_node as $pos) {
                     $id_node = $pos['id_node'];
-                    mydebug(__LINE__,__FILE__,array('id_node_from'=>$id_node_from,'id_node_to'=>$id_node_to,'id_node'=>$id_node,'trovato'=>$node_from_found));
+                    mydebug(__LINE__, __FILE__, ['id_node_from' => $id_node_from, 'id_node_to' => $id_node_to, 'id_node' => $id_node, 'trovato' => $node_from_found]);
                     if (($id_node == $id_node_from) and (!$node_from_found)) { // get position of node from
-                        mydebug(__LINE__,__FILE__,$id_node);
+                        mydebug(__LINE__, __FILE__, $id_node);
                         $bounds = $pos['bounds'];
                         $bounds = explode(",", $bounds);
                         $xa1 = $bounds[0];
@@ -310,17 +316,17 @@ function make_linkFN($children_ha, $im_dest, $position_node) {
                     // Calcola la distanza tra i punti
                     $min_dist = 10000;
                     $min_array = 0;
-                    $distanza_ar = array ();
-                    $coordinate_ar = array ();
+                    $distanza_ar = [];
+                    $coordinate_ar = [];
 
 
                     for ($i = 1; $i <= 4; $i++) {
-                        $XA = "xa".$i;
-                        $YA = "ya".$i;
+                        $XA = "xa" . $i;
+                        $YA = "ya" . $i;
                         for ($o = 1; $o <= 4; $o++) {
-                            $XB = "xb".$o;
-                            $YB = "yb".$o;
-                            $distanza_ar[] = round(sqrt(abs(pow(($$XA - $$XB),2) + pow(($$YA - $$YB),2))));
+                            $XB = "xb" . $o;
+                            $YB = "yb" . $o;
+                            $distanza_ar[] = round(sqrt(abs(pow(($$XA - $$XB), 2) + pow(($$YA - $$YB), 2))));
                             $coordinate_ar[] = $$XA . "," . $$YA . "," . $$XB . "," . $$YB;
                         }
                     }
@@ -333,14 +339,14 @@ function make_linkFN($children_ha, $im_dest, $position_node) {
                         }
                     }
                     $coordinate = $coordinate_ar[$min_array];
-                    $coord_final = explode("," , $coordinate);
+                    $coord_final = explode(",", $coordinate);
                     # echo "$coordinate<BR><BR>";
                     $x_from = $coord_final[0];
                     $y_from = $coord_final[1];
 
                     $x_to = $coord_final[2];
                     $y_to = $coord_final[3];
-                    imagedashedline ($im_dest, $x_from, $y_from, $x_to, $y_to, $text_color);
+                    imagedashedline($im_dest, $x_from, $y_from, $x_to, $y_to, $text_color);
                 }
             }
         }
@@ -350,10 +356,10 @@ function make_linkFN($children_ha, $im_dest, $position_node) {
 
 /*----------------------------------------------*/
 /* Mostra l'immagine della mappa */
-function show_image_FN($im_dest) {
+function show_image_FN($im_dest)
+{
     $id_img = new ImageDevice();
-    if (empty($id_img->error)) {
+    if (empty($id_img->error())) {
         $id_img->ImageX($im_dest);
     }
 }
-?>
