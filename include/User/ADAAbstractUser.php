@@ -47,10 +47,10 @@ use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 
 abstract class ADAAbstractUser extends ADALoggableUser
 {
-    protected $history;
+    public $history;
     protected $whatsnew;
 
-    private $user_ex_historyAr;
+    public $user_ex_historyAr;
 
     public function __construct($user_dataAr = [])
     {
@@ -120,6 +120,12 @@ abstract class ADAAbstractUser extends ADALoggableUser
         $this->history = $historyObj;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param int $id_course_instance
+     * @return \Lynxlab\ADA\Main\History\History
+     */
     public function getHistoryInCourseInstance($id_course_instance)
     {
         if (($this->history == null) || ($this->history->id_course_instance != $id_course_instance)) {
