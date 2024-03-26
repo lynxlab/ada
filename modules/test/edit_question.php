@@ -18,7 +18,6 @@ use Lynxlab\ADA\Main\User\ADAGenericUser;
  * Base config file
  */
 require_once(realpath(dirname(__FILE__)) . '/../../config_path.inc.php');
-require_once(CORE_LIBRARY_PATH .'/includes.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION

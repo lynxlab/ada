@@ -81,8 +81,6 @@ BrowsingHelper::init($neededObjAr);
 /**
  * YOUR CODE HERE
  */
-include_once CORE_LIBRARY_PATH . '/includes.inc.php';
-
 if (!isset($hide_visits)) {
     $hide_visits = 1; // default: no visits countg
 }

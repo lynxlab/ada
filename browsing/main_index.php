@@ -85,8 +85,6 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-include_once CORE_LIBRARY_PATH.'/includes.inc.php';
-
 if (isset ($courseInstanceObj) && $courseInstanceObj instanceof CourseInstance) {
     $self_instruction = $courseInstanceObj->getSelfInstruction();
 }

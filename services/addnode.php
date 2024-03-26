@@ -78,7 +78,6 @@ ServiceHelper::init($neededObjAr);
 /*
  * YOUR CODE HERE
  */
-require_once CORE_LIBRARY_PATH.'/includes.inc.php';
 require_once 'include/editnode_funcs.inc.php';
 require_once 'include/NodeEditing.inc.php';
 

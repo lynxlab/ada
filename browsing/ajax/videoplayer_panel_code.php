@@ -79,9 +79,8 @@ BrowsingHelper::init($neededObjAr);
 /**
  * YOUR CODE HERE
  */
-include_once CORE_LIBRARY_PATH . '/includes.inc.php';
 
-/**
+ /**
  * extract the author id from the passed media_url
  */
 $regExp = preg_quote(HTTP_ROOT_DIR . MEDIA_PATH_DEFAULT, '/') . '(\d+)\/.*';

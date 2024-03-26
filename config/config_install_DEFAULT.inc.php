@@ -351,11 +351,6 @@ define('ADA_SEMANTICUI_TABLECLASS', 'ui padded table');   // *js_import*
 // default templates path
 define('ADA_TEMPLATE_PATH', ROOT_DIR.'/templates/main');
 
-/*
- * CORE LIBRARY PATH
- */
-define('CORE_LIBRARY_PATH',ROOT_DIR.'/include/COREv0.1');
-
 // default date format
 define('ADA_DATE_FORMAT', '%d/%m/%Y');
 

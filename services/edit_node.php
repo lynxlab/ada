@@ -81,12 +81,6 @@ ServiceHelper::init($neededObjAr);
 /*
  * YOUR CODE HERE
 */
-require_once CORE_LIBRARY_PATH.'/includes.inc.php';
-require_once ROOT_DIR.'/include/form/phpOpenFormGen.inc.php';
-require_once ROOT_DIR.'/admin/include/htmladmoutput.inc.php';
-require_once 'include/editnode_funcs.inc.php';
-require_once 'include/NodeEditing.inc.php';
-
 if ($id_profile == 0 || ($id_profile != AMA_TYPE_TUTOR && $id_profile != AMA_TYPE_AUTHOR && $id_profile != AMA_TYPE_STUDENT)) {
     $errObj = new ADA_Error(NULL, translateFN('Utente non autorizzato, impossibile proseguire.'));
 } else if ($id_profile==AMA_TYPE_STUDENT && isset($id_course_instance) && intval($id_course_instance)>0 &&
