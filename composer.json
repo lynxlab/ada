@@ -23,7 +23,8 @@
             "include/Service/functions.php",
             "include/Upload/functions.php",
             "include/ModuleInit.php",
-            "include/Utilities.php"
+            "include/Utilities.php",
+            "browsing/include/graph_map.inc.php"
         ]
     },
     "authors": [
