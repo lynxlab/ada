@@ -24,7 +24,8 @@
             "include/Upload/functions.php",
             "include/ModuleInit.php",
             "include/Utilities.php",
-            "browsing/include/graph_map.inc.php"
+            "browsing/include/graph_map.inc.php",
+            "browsing/include/map_functions.inc.php"
         ]
     },
     "authors": [
