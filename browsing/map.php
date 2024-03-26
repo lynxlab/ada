@@ -19,6 +19,11 @@ use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\User\ADAGuest;
 
+use function Lynxlab\ADA\Browsing\Map\returnAdaNodeIcon;
+use function Lynxlab\ADA\Browsing\Map\returnAdaNodeLink;
+use function Lynxlab\ADA\Browsing\Map\returnAdaNodePos;
+use function Lynxlab\ADA\Browsing\Map\returnAdaNodeType;
+use function Lynxlab\ADA\Browsing\Map\returnMapType;
 use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -80,7 +85,6 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-require_once 'include/map_functions.inc.php';
 require_once ROOT_DIR.'/services/include/NodeEditing.inc.php';
 
 if ($userObj instanceof ADAGuest) {
