@@ -4,6 +4,13 @@ namespace Lynxlab\ADA\CORE\html4;
 
 class CDOMElement
 {
+    /**
+     * Undocumented function
+     *
+     * @param string $element_name
+     * @param string $a_list_of_attribute_values_pairs
+     * @return \Lynxlab\ADA\CORE\html4\CElement
+     */
     public static function create($element_name, $a_list_of_attribute_values_pairs = null)
     {
         $element_name = strtolower($element_name);

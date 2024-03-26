@@ -13,6 +13,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Browsing\DFSNavigationBar;
 use Lynxlab\ADA\CORE\HmtlElements\Form;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
@@ -78,11 +79,11 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  * @var array $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -140,7 +141,6 @@ else {
 
 if ($nodeObj->type != ADA_NOTE_TYPE && $nodeObj->type != ADA_PRIVATE_NOTE_TYPE)
 {
-	require_once 'include/DFSNavigationBar.inc.php';
 	$navBar = new DFSNavigationBar($nodeObj, array(
 			'prevId' => isset($_GET['prevId']) ? $_GET['prevId'] : null,
 			'nextId' => isset($_GET['nextId']) ? $_GET['nextId'] : null,
