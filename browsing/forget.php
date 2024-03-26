@@ -87,8 +87,6 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-include_once ROOT_DIR.'/browsing/include/forget_functions.inc.php';
-
 $common_dh= $GLOBALS['common_dh'];
 
 //$self =  "guest";
