@@ -15,7 +15,7 @@ use Hybridauth\Hybridauth;
 use Hybridauth\HttpClient;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
-use Lynxlab\ADA\Main\Browsing\ImageDevice;
+use Lynxlab\ADA\Browsing\ImageDevice;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\User\ADALoggableUser;

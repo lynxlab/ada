@@ -1,7 +1,7 @@
 <?php
 // return node type
 
-use Lynxlab\ADA\Main\Browsing\ImageDevice;
+use Lynxlab\ADA\Browsing\ImageDevice;
 
 function returnAdaNodeType($t)
 {

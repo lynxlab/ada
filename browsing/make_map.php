@@ -1,6 +1,6 @@
 <?php
 
-use Lynxlab\ADA\Main\Browsing\ImageDevice;
+use Lynxlab\ADA\Browsing\ImageDevice;
 
 use function Lynxlab\ADA\Main\Utilities\whoami;
 

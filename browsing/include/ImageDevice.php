@@ -14,7 +14,7 @@
  */
 // classe  di astrazione per GD
 
-namespace Lynxlab\ADA\Main\Browsing;
+namespace Lynxlab\ADA\Browsing;
 
 use GdImage;
 

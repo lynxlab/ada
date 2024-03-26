@@ -20,7 +20,7 @@
 
 namespace Lynxlab\ADA\Main\Upload;
 
-use Lynxlab\ADA\Main\Browsing\ImageDevice;
+use Lynxlab\ADA\Browsing\ImageDevice;
 
 class FileUploader
 {
