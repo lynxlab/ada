@@ -180,7 +180,7 @@ class FileUploader
     public function reduceImage()
     {
         $id_img = new ImageDevice();
-        $new_img = $id_img->resize_image($this->tmpName, AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
+        $new_img = $id_img->resizeImage($this->tmpName, AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
         if (stristr($this->type, 'png')) {
             imagepng($new_img, $this->tmpName);
         }

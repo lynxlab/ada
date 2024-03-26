@@ -105,7 +105,7 @@ class hybridLogin extends abstractLogin
 				 * resize the image if needed
 				*/
 				$id_img = new ImageDevice();
-				$new_img = $id_img->resize_image($destFile, AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
+				$new_img = $id_img->resizeImage($destFile, AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
 				if(stristr($destFile, 'png')) {
 					imagepng($new_img,$destFile);
 				} else if(stristr($destFile, 'jpeg')!==false || stristr($destFile, 'jpg')!==false) {

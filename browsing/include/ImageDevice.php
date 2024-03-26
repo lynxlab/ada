@@ -123,7 +123,7 @@ class ImageDevice
      * @return $im_thumb the pointer (id) to the image
      */
 
-    public function resize_image($img_src, $max_width = MAX_WIDTH, $max_height = MAX_HEIGHT)
+    public function resizeImage($img_src, $max_width = MAX_WIDTH, $max_height = MAX_HEIGHT)
     {
         if (file_exists($img_src)) {
             // Get image dimensions

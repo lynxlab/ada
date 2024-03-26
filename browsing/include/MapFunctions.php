@@ -47,7 +47,7 @@ function returnAdaNodeIcon($icon, $type)
     }
 
     $id_img = new ImageDevice();
-    $new_icon = $id_img->resize_image($icon);
+    $new_icon = $id_img->resizeImage($icon);
     if (!is_null($new_icon)) {
         imagejpeg($new_icon, $icon_thumb);
     }
