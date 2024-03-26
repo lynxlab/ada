@@ -11,6 +11,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Browsing\CourseViewer;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -76,7 +77,6 @@ $self =  whoami();
 $id_node = $nodeObj->id;
 
 include_once 'include/exercise_classes.inc.php';
-include_once ROOT_DIR.'/browsing/include/CourseViewer.inc.php';
 
 if (!isset($op)) {
     $op = 'do';

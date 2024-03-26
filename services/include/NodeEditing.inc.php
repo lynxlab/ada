@@ -10,6 +10,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Browsing\CourseViewer;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Translator;
@@ -766,7 +767,7 @@ class NodeEditingViewer {
      *
      * @param int   $flags     - a bitmap used to store preferences based on user type, node type, operation on node.
      * @param array $node_data - an associative array containing node data
-     * @return string
+     * @return \Lynxlab\ADA\CORE\html4\CBase
      */
     public static function getNodeDataDiv( $flags, $node_data=array(), $id_course ) {
         $php_file_uploader = 'upload.php?caller=editor';
@@ -1090,7 +1091,7 @@ class NodeEditingViewer {
      * function getButtons, based on $flags bitmask, shows additional elements on the editing form.
      *
      * @param int $flags
-     * @return string
+     * @return \Lynxlab\ADA\CORE\html4\CBase
      */
     public static function getButtons( $flags ) {
         $div_buttons = CDOMElement::create('div','id:jsbuttons');
@@ -1144,7 +1145,7 @@ class NodeEditingViewer {
      * @param int    $id_user
      * @param string $id_node
      * @param string $fckeditor_instance
-     * @return string
+     * @return \Lynxlab\ADA\CORE\html4\CBase
      */
     public static function getAddOns( $flags, $id_course, $id_course_instance, $id_user, $id_node) {
         $php_file_uploader = 'upload.php?caller=editor';
@@ -1270,7 +1271,7 @@ class NodeEditingViewer {
      *
      * @param  int    $id_course
      * @param  string $fckeditorInstance
-     * @return string
+     * @return \Lynxlab\ADA\CORE\html4\CBase
      */
     public static function getInternalLinkSelector( $id_course, $id_node, $container_div, $action ) {
         // vito, 22 apr 2009, added $id_node and 'id_edited_node'
@@ -1284,7 +1285,7 @@ class NodeEditingViewer {
      * @param string $media_type
      * @param string $select_name
      * @param array  $node_data
-     * @return string
+     * @return \Lynxlab\ADA\CORE\html4\CBase
      */
     public static function getAuthorMediaOnlySelector($id_course, $media_type=NULL, $select_name, $node_data) {
         if ($media_type == NULL) {
@@ -1322,7 +1323,7 @@ class NodeEditingViewer {
      *
      * @param int    $id_course
      * @param string $fckeditorInstance
-     * @return string
+     * @return \Lynxlab\ADA\CORE\html4\CBase
      */
     public static function getAuthorMediaSelector($id_course, $media_type=NULL) {
         if ($media_type == NULL) {
@@ -1373,7 +1374,7 @@ class NodeEditingViewer {
      *
      * @param int    $id_course
      * @param string $fckeditorInstance
-     * @return string
+     * @return \Lynxlab\ADA\CORE\html4\CBase
      */
     public static function getAuthorMediaManager() {
         $form = CDOMElement::create('form','id:properties_media, class:editor_form');
@@ -1510,7 +1511,7 @@ class NodeEditingViewer {
      * function getAuthorExternalLinkSelector, used to display a list of external links already added by author
      *
      * @param int $id_course
-     * @return string
+     * @return \Lynxlab\ADA\CORE\html4\CBase
      */
     public static function getAuthorExternalLinkSelector($id_course) {
 

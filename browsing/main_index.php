@@ -10,6 +10,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Browsing\CourseViewer;
 use Lynxlab\ADA\CORE\HmtlElements\Form;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;

@@ -64,7 +64,7 @@ class CourseViewer
      * @param  string  $order
      * @param  integer $id_course_instance
      * @param  string  $container_div_name
-     * @return string  -
+     * @return \Lynxlab\ADA\CORE\html4\CBase  -
      */
     public static function displayMainIndex($userObj, $id_course, $expand_index, $order, $id_course_instance = null, $container_div_name = null, $dhToUse = null)
     {
@@ -174,9 +174,9 @@ class CourseViewer
      * @param  string  $order
      * @param  integer $id_course_instance
      * @param  string  $container_div_name
-     * @return string  -
+     * @return \Lynxlab\ADA\CORE\html4\CBase  -
      */
-    public function displayGlossaryIndex($userObj, $id_course, $expand_index, $order, $id_course_instance = null, $container_div_name = null)
+    public static function displayGlossaryIndex($userObj, $id_course, $expand_index, $order, $id_course_instance = null, $container_div_name = null)
     {
         $dh = $GLOBALS['dh'];
 
@@ -256,7 +256,7 @@ class CourseViewer
      * @param  string  $order
      * @param  integer $id_course_instance
      * @param  string  $container_div_name
-     * @return string  -
+     * @return \Lynxlab\ADA\CORE\html4\CBase  -
      */
     public static function displayForumIndex($userObj, $id_course, $expand_index, $order, $id_course_instance, $with_icons = null, $container_div_name = null)
     {

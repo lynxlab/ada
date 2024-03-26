@@ -12,9 +12,11 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Browsing\CourseViewer;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
+use function Lynxlab\ADA\Main\Utilities\redirect;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -79,7 +81,6 @@ ServiceHelper::init($neededObjAr);
 require_once CORE_LIBRARY_PATH.'/includes.inc.php';
 require_once 'include/editnode_funcs.inc.php';
 require_once 'include/NodeEditing.inc.php';
-require_once '../browsing/include/CourseViewer.inc.php';
 
 if (isset($err_msg)) {
   $status = $err_msg;

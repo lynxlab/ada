@@ -9,6 +9,10 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  */
 
+use Lynxlab\ADA\Browsing\CourseViewer;
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
 use function Lynxlab\ADA\Main\Utilities\whoami;

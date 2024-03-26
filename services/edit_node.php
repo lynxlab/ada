@@ -11,6 +11,7 @@
  */
 
 use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
+use Lynxlab\ADA\Browsing\CourseViewer;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\DataValidator;
@@ -85,7 +86,6 @@ require_once ROOT_DIR.'/include/form/phpOpenFormGen.inc.php';
 require_once ROOT_DIR.'/admin/include/htmladmoutput.inc.php';
 require_once 'include/editnode_funcs.inc.php';
 require_once 'include/NodeEditing.inc.php';
-require_once '../browsing/include/CourseViewer.inc.php';
 
 if ($id_profile == 0 || ($id_profile != AMA_TYPE_TUTOR && $id_profile != AMA_TYPE_AUTHOR && $id_profile != AMA_TYPE_STUDENT)) {
     $errObj = new ADA_Error(NULL, translateFN('Utente non autorizzato, impossibile proseguire.'));
