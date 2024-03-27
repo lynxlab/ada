@@ -25,7 +25,8 @@
             "include/ModuleInit.php",
             "include/Utilities.php",
             "browsing/include/GraphMap.php",
-            "browsing/include/MapFunctions.php"
+            "browsing/include/MapFunctions.php",
+            "browsing/include/functions.php"
         ]
     },
     "authors": [
