@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e8f3a674c64cf3f5bb484f8c3bc33295",
+    "content-hash": "7a07ee329f4d937040fc87c81394ff92",
     "packages": [
         {
             "name": "dompdf/dompdf",
@@ -436,6 +436,55 @@
                 }
             ],
             "time": "2023-11-25T22:23:28+00:00"
+        },
+        {
+            "name": "platforg/adobe-connect",
+            "version": "v0.2.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/platforg/adobe-connect.git",
+                "reference": "40172e0f39e2f752cdc708b87702a368557a5745"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/platforg/adobe-connect/zipball/40172e0f39e2f752cdc708b87702a368557a5745",
+                "reference": "40172e0f39e2f752cdc708b87702a368557a5745",
+                "shasum": ""
+            },
+            "require": {
+                "ext-simplexml": "*",
+                "lib-curl": "*",
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "AdobeConnect\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache2"
+            ],
+            "authors": [
+                {
+                    "name": "Gustavo Burgi",
+                    "email": "gustavoburgi@gmail.com"
+                }
+            ],
+            "description": "Provides a PHP Client to interact with the Adobe Connect's API",
+            "keywords": [
+                "AdobeConnect",
+                "adobe",
+                "api",
+                "connect",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/platforg/adobe-connect/issues",
+                "source": "https://github.com/platforg/adobe-connect/tree/v0.2.4"
+            },
+            "time": "2020-09-08T15:13:21+00:00"
         },
         {
             "name": "psr/simple-cache",
