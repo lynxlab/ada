@@ -253,7 +253,7 @@ function read_user($id_user = null)
 /**
  * Reads a ADA user from database.
  * @param  int $id_user - a valid ADA user identifier
- * @return \Lynxlab\ADA\Main\User\ADAGenericUser object on success, on failure raises a ADA_Error
+ * @return \Lynxlab\ADA\Main\User\ADAAbstractUser object on success, on failure raises a ADA_Error
  */
 function read_user_from_DB($id_user)
 {
