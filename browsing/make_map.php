@@ -8,8 +8,8 @@ use function Lynxlab\ADA\Browsing\GraphMap\make_linkFN;
 use function Lynxlab\ADA\Browsing\GraphMap\show_image_FN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
-$debug=0;
-$ada_config_path = realpath(dirname(__FILE__).'/..');
+$debug = 0;
+$ada_config_path = realpath(dirname(__FILE__) . '/..');
 include_once("$ada_config_path/config_path.inc.php");
 //vito 2 feb 2009
 //$encode_children = $_GET['ec'];
@@ -18,12 +18,12 @@ $self = whoami();
 $ID = new ImageDevice();
 $type = $ID->imageDevice();
 
-if (!is_array($type)){
-  print $type;
+if (!is_array($type)) {
+    print $type;
 } else {
- //print_r( $type);
- // vito, 27 apr 2009, commentare riga seguente in debug
- header ("Content-type: image/".$type[0]); // type element 1 contain gif or png.
+    //print_r( $type);
+    // vito, 27 apr 2009, commentare riga seguente in debug
+    header("Content-type: image/" . $type[0]); // type element 1 contain gif or png.
 }
 
 session_start();
@@ -42,7 +42,7 @@ $children_ha = $sess_node_map;
 //$children= urldecode($encode_children);
 //$children_ha = unserialize($children);
 
-$layout_template= $sess_template;
+$layout_template = $sess_template;
 
 // Color definition. they will be read from DB
 $background_R = 255;
@@ -60,8 +60,8 @@ $max_Y = $max_coordinate_ar[1];
 
 //--------------------------------------------------------------------
 // genera l'immagine che fa da sfondo all'immagine mappa
-$im_dest = ImageCreate ($max_X, $max_Y)  or die ("Cannot Initialize new GD image stream");
-$background_control = ImageColorAllocate ($im_dest, $background_R,$background_G,$background_B);
+$im_dest = ImageCreate($max_X, $max_Y)  or die("Cannot Initialize new GD image stream");
+$background_control = ImageColorAllocate($im_dest, $background_R, $background_G, $background_B);
 
 
 //--------------------------------------------------------------------
@@ -70,7 +70,7 @@ $background_control = ImageColorAllocate ($im_dest, $background_R,$background_G,
 // la chiave e' costituita dal id del nodo.
 
 
-$position_node = copy_imageFN($children_ha, $im_dest, $max_X, $max_Y,$sess_user_level);
+$position_node = copy_imageFN($children_ha, $im_dest, $max_X, $max_Y, $sess_user_level);
 
 // vito, 27 apr 2009
 //print_r($children_ha);
@@ -87,11 +87,11 @@ $position_node = copy_imageFN($children_ha, $im_dest, $max_X, $max_Y,$sess_user_
 // Genera le frecce che indicano i link
 $result = make_linkFN($children_ha, $im_dest, $position_node);
 
-if ($result)
-	show_image_FN($im_dest);
-else
-	print "GD Error!";
+if ($result) {
+    show_image_FN($im_dest);
+} else {
+    print "GD Error!";
+}
 
 //session_unregister('node_map');
 //session_unregister('sess_layout_template');
-?>

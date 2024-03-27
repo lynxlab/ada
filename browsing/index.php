@@ -11,24 +11,26 @@
 
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
-require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
+require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
  */
 
 
-$variableToClearAR = array('node','layout', 'user', 'course');
+$variableToClearAR = ['node','layout', 'user', 'course'];
 
 /**
  * Get needed objects
  */
-$neededObjAr = array('layout','user');
+$neededObjAr = ['layout','user'];
 
 /**
  * Performs basic controls before entering this module
  */
-require_once ROOT_DIR.'/include/module_init.inc.php';
+require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = 'index';
 
 
@@ -49,15 +51,15 @@ $self = 'index';
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
- * @var array $user_events
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_messages
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_agenda
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -67,17 +69,16 @@ BrowsingHelper::init($neededObjAr);
 /**
  * Redirecting on user type basis
  */
-if (is_object($userObj)){
-  $homepage = $userObj->getHomepage();
-  $msg =   translateFN("Ridirezionamento automatico");
-  header("Location: $homepage?err_msg=$msg");
-  exit;
-}  else {
-     $homepage = $http_root_dir."/index.php";
-     $msg =  urlencode($errObj->msg);
-     header("Location: $homepage?err_msg=$msg");
-     exit;
-
+if (is_object($userObj)) {
+    $homepage = $userObj->getHomepage();
+    $msg =   translateFN("Ridirezionamento automatico");
+    header("Location: $homepage?err_msg=$msg");
+    exit;
+} else {
+    $homepage = $http_root_dir . "/index.php";
+    $msg =  urlencode($errObj->msg);
+    header("Location: $homepage?err_msg=$msg");
+    exit;
 }
 
 // old version
@@ -125,4 +126,3 @@ if (is_object($userObj)){
 
 }
 */
-?>

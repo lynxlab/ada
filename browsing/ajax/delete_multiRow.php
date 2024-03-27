@@ -16,6 +16,7 @@ use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Translator;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -61,15 +62,15 @@ $self = whoami();
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
- * @var array $user_events
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_messages
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_agenda
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -100,9 +101,7 @@ if (!isset($_POST['extraTableName'])) {
     $extraTableClass = trim($_POST['extraTableName']);
     $extraTableFormClass = "User" . ucfirst($extraTableClass) . "Form";
 
-    if (is_file(ROOT_DIR . '/include/Forms/' . $extraTableFormClass . '.inc.php')) {
-        require_once ROOT_DIR . '/include/Forms/' . $extraTableFormClass . '.inc.php';
-    } else {
+    if (!class_exists('Lynxlab\ADA\Main\Forms\\' . $extraTableFormClass)) {
         die("Form class not found, don't know how to save");
     }
 }

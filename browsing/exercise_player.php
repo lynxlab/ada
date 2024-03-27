@@ -1,50 +1,53 @@
 <?php
+
 /**
  * Exercise
  *
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2009-2010, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @author      Stefano Penge <steve@lynxlab.com>
+ * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
+ * @author      Vito Modena <vito@lynxlab.com>
+ * @copyright   Copyright (c) 2009-2010, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  */
 
 use Lynxlab\ADA\Browsing\CourseViewer;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
+require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
  */
 
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_VISITOR, AMA_TYPE_STUDENT,AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR);
+$allowedUsersAr = [AMA_TYPE_VISITOR, AMA_TYPE_STUDENT,AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR];
 
 /**
  * Get needed objects
  */
-$neededObjAr = array(
-        AMA_TYPE_VISITOR      => array('node','layout','course'),
-        AMA_TYPE_STUDENT         => array('node','layout','tutor','course','course_instance'),
-        AMA_TYPE_TUTOR => array('node','layout','course','course_instance'),
-        AMA_TYPE_AUTHOR       => array('node','layout','course')
-);
+$neededObjAr = [
+        AMA_TYPE_VISITOR      => ['node','layout','course'],
+        AMA_TYPE_STUDENT         => ['node','layout','tutor','course','course_instance'],
+        AMA_TYPE_TUTOR => ['node','layout','course','course_instance'],
+        AMA_TYPE_AUTHOR       => ['node','layout','course'],
+];
 
 /**
  * Performs basic controls before entering this module
  */
-require_once ROOT_DIR.'/include/module_init.inc.php';
+require_once ROOT_DIR . '/include/module_init.inc.php';
 
 $self = whoami();
 
@@ -64,15 +67,15 @@ $self = whoami();
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
- * @var array $user_events
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_messages
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_agenda
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -87,11 +90,11 @@ include_once ROOT_DIR . '/services/include/exercise_classes.inc.php';
 $id_node = $nodeObj->id;
 
 //redirect to test module if necessary
-if (MODULES_TEST && ADA_REDIRECT_TO_TEST && strpos($nodeObj->type,(string) constant('ADA_PERSONAL_EXERCISE_TYPE')) === 0) {
-		NodeTest::checkAndRedirect($nodeObj);
+if (MODULES_TEST && ADA_REDIRECT_TO_TEST && strpos($nodeObj->type, (string) constant('ADA_PERSONAL_EXERCISE_TYPE')) === 0) {
+    NodeTest::checkAndRedirect($nodeObj);
 }
 
-switch($op) {
+switch ($op) {
     case 'answer':
         if (isset($useranswer)) {
             $exercise   = ExerciseDAO::getExercise($id_node);
@@ -99,94 +102,93 @@ switch($op) {
             $correttore = ExerciseCorrectionFactory::create($exercise->getExerciseFamily());
             $correttore->rateStudentAnswer($exercise, $useranswer, $sess_id_user, $sess_id_course_instance);
 
-           /*
-            * salviamo l'esercizio svolto solo se l'utente che lo ha svolto
-            * e' uno studente, altrimenti si tratta di un autore o di un tutor che ha
-            * testato l'esercizio.
-            */
+            /*
+             * salviamo l'esercizio svolto solo se l'utente che lo ha svolto
+             * e' uno studente, altrimenti si tratta di un autore o di un tutor che ha
+             * testato l'esercizio.
+             */
             if ($id_profile == AMA_TYPE_STUDENT) {
-				if (!ExerciseDAO::save($exercise)) {
-					$errObj = new ADA_Error(NULL, translateFN('Errore nel salvataggio della risposta utente'));
-				}
+                if (!ExerciseDAO::save($exercise)) {
+                    $errObj = new ADA_Error(null, translateFN('Errore nel salvataggio della risposta utente'));
+                }
 
-				// se l'esercizio appena corretto è un esercizio di sbarramento e lo studente lo ha superato,
-				// aumenta di uno il livello dello studente
-				if ($correttore->raiseUserLevel($exercise)) {
-					$result = $dh->raise_student_level($sess_id_user, $sess_id_course_instance, 1);
-					if (AMA_DataHandler::isError($result)) {
-						$errObj = new ADA_Error($result, translateFN("Errore nell'aggiornamento dati utente"));
-					}
-					//$new_user_level = $user_level + 1;
-					$new_user_level = $userObj->get_student_level($sess_id_user, $sess_id_course_instance);
-					//$max_level = ADA_MAX_USER_LEVEL; // da config_install.inc.php
-					$max_level = $dh->get_course_max_level($sess_id_course);
-					if ($new_user_level >= $max_level) {
-						// se è l'ultimo esercizio (ovvero se il livello dello studente è il massimo possibile)
-						// e l'esercizio è di tipo sbarramento?
-						// genera il messaggio da inviare allo switcher
-						$tester = $userObj->getDefaultTester();
-						$tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
-						$tester_info_Ar = $dh->get_tester_info_from_pointer($tester); // common?
-						$tester_name = $tester_info_Ar[1];
-						$switchers_Ar = $tester_dh->get_users_by_type(array(AMA_TYPE_SWITCHER));
-						if (AMA_DataHandler::isError($switchers_Ar) || !is_array($switchers_Ar)) {
-							// ??
-						}
-						else {
-							$switcher_id = $switchers_Ar[0];
-							//
-							/* FIXME:
-							 * only the firset switcher per provider !
-							 */
-							if ($switcher_id) {
-								$switcher = $dh->get_switcher($switcher_id);
-								if (!AMA_DataHandler::isError($switcher)) {
-									// prepare message to send
-									$message_ha['destinatari'] = $switcher['username'];
-									$message_ha['titolo'] = translateFN("Completamento corso") . "<br>";
+                // se l'esercizio appena corretto è un esercizio di sbarramento e lo studente lo ha superato,
+                // aumenta di uno il livello dello studente
+                if ($correttore->raiseUserLevel($exercise)) {
+                    $result = $dh->raise_student_level($sess_id_user, $sess_id_course_instance, 1);
+                    if (AMA_DataHandler::isError($result)) {
+                        $errObj = new ADA_Error($result, translateFN("Errore nell'aggiornamento dati utente"));
+                    }
+                    //$new_user_level = $user_level + 1;
+                    $new_user_level = $userObj->get_student_level($sess_id_user, $sess_id_course_instance);
+                    //$max_level = ADA_MAX_USER_LEVEL; // da config_install.inc.php
+                    $max_level = $dh->get_course_max_level($sess_id_course);
+                    if ($new_user_level >= $max_level) {
+                        // se è l'ultimo esercizio (ovvero se il livello dello studente è il massimo possibile)
+                        // e l'esercizio è di tipo sbarramento?
+                        // genera il messaggio da inviare allo switcher
+                        $tester = $userObj->getDefaultTester();
+                        $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
+                        $tester_info_Ar = $dh->get_tester_info_from_pointer($tester); // common?
+                        $tester_name = $tester_info_Ar[1];
+                        $switchers_Ar = $tester_dh->get_users_by_type([AMA_TYPE_SWITCHER]);
+                        if (AMA_DataHandler::isError($switchers_Ar) || !is_array($switchers_Ar)) {
+                            // ??
+                        } else {
+                            $switcher_id = $switchers_Ar[0];
+                            //
+                            /* FIXME:
+                             * only the firset switcher per provider !
+                             */
+                            if ($switcher_id) {
+                                $switcher = $dh->get_switcher($switcher_id);
+                                if (!AMA_DataHandler::isError($switcher)) {
+                                    // prepare message to send
+                                    $message_ha['destinatari'] = $switcher['username'];
+                                    $message_ha['titolo'] = translateFN("Completamento corso") . "<br>";
 
-									//$message_ha['testo'] = $correttore->getMessageForTutor($user_name, $exercise);
-									/* FIXME
-									 * should be a function of ExerciseCorrectionFactory??
-									 */
-									$message_ha['testo'] = translateFN("Il corsista") . " $user_name " . translateFN("ha terminato il corso con id") . " " . $sess_id_course . "/" . $sess_id_course_instance;
-									$message_ha['data_ora'] = "now";
-									$message_ha['tipo'] = ADA_MSG_SIMPLE;
-									$message_ha['priorita'] = 1;
-									$message_ha['mittente'] = $user_name;
-									$mh = new MessageHandler();
-									$mh->send_message($message_ha);
-								}
-							}
-						}
+                                    //$message_ha['testo'] = $correttore->getMessageForTutor($user_name, $exercise);
+                                    /* FIXME
+                                     * should be a function of ExerciseCorrectionFactory??
+                                     */
+                                    $message_ha['testo'] = translateFN("Il corsista") . " $user_name " . translateFN("ha terminato il corso con id") . " " . $sess_id_course . "/" . $sess_id_course_instance;
+                                    $message_ha['data_ora'] = "now";
+                                    $message_ha['tipo'] = ADA_MSG_SIMPLE;
+                                    $message_ha['priorita'] = 1;
+                                    $message_ha['mittente'] = $user_name;
+                                    $mh = new MessageHandler();
+                                    $mh->send_message($message_ha);
+                                }
+                            }
+                        }
 
-						// genera il messaggio da inviare al tutor
-						// codice precedente
-						$tutor_id = $dh->course_instance_tutor_get($sess_id_course_instance);
-						if (AMA_DataHandler::isError($tutor_id)) {
-							//?
-						}
-						// only one tutor per class
-						if ($tutor_id) {
-							$tutor = $dh->get_tutor($tutor_id);
-							if (!AMA_DataHandler::isError($tutor)) {
-								// prepare message to send
-								$message_ha['destinatari'] = $tutor['username'];
-								$message_ha['titolo'] = translateFN("Esercizio svolto da ") . $user_name . "<br>";
+                        // genera il messaggio da inviare al tutor
+                        // codice precedente
+                        $tutor_id = $dh->course_instance_tutor_get($sess_id_course_instance);
+                        if (AMA_DataHandler::isError($tutor_id)) {
+                            //?
+                        }
+                        // only one tutor per class
+                        if ($tutor_id) {
+                            $tutor = $dh->get_tutor($tutor_id);
+                            if (!AMA_DataHandler::isError($tutor)) {
+                                // prepare message to send
+                                $message_ha['destinatari'] = $tutor['username'];
+                                $message_ha['titolo'] = translateFN("Esercizio svolto da ") . $user_name . "<br>";
 
-								$message_ha['testo'] = $correttore->getMessageForTutor($user_name, $exercise);
+                                $message_ha['testo'] = $correttore->getMessageForTutor($user_name, $exercise);
 
-								$message_ha['data_ora'] = "now";
-								$message_ha['tipo'] = ADA_MSG_SIMPLE;
-								$message_ha['priorita'] = 1;
-								$message_ha['mittente'] = $user_name;
-								$mh = new MessageHandler();
-								$mh->send_message($message_ha);
-							}
-						}
-					} // max level attained
-				}
-			}
+                                $message_ha['data_ora'] = "now";
+                                $message_ha['tipo'] = ADA_MSG_SIMPLE;
+                                $message_ha['priorita'] = 1;
+                                $message_ha['mittente'] = $user_name;
+                                $mh = new MessageHandler();
+                                $mh->send_message($message_ha);
+                            }
+                        }
+                    } // max level attained
+                }
+            }
             // genera il messaggio per lo studente
             // $dataHa['exercise'] = $correttore->getMessageForStudent($user_name, $exercise);
             $message = $correttore->getMessageForStudent($user_name, $exercise);
@@ -198,10 +200,9 @@ switch($op) {
             $next_exercise_id = ExerciseDAO::getNextExerciseId($exercise, $sess_id_user);
             if (AMA_DataHandler::isError($next_exercise_id)) {
                 $errObj = new ADA_Error($next_exercise_id, translateFN('Errore nel caricamento del prossimo esercizio'));
-            }
-            else if ($next_exercise_id) {
+            } elseif ($next_exercise_id) {
                 $dataHa['exercise'] .= "<a href=\"$http_root_dir/browsing/exercise.php?id_node=$next_exercise_id\">";
-                $dataHa['exercise'] .= translateFN('Prossimo esercizio').'</a>';
+                $dataHa['exercise'] .= translateFN('Prossimo esercizio') . '</a>';
             }
         }
         break;
@@ -216,7 +217,7 @@ switch($op) {
             $form = $viewer->getViewingForm($userObj, $exercise, $sess_id_course_instance, $action);
 
             // vito 26 gennaio 2009
-            if (($id = ExerciseDAO::getNextExerciseId($exercise, $sess_id_user)) != NULL) {
+            if (($id = ExerciseDAO::getNextExerciseId($exercise, $sess_id_user)) != null) {
                 $next_exercise_menu_link = CDOMElement::create('a');
                 $next_exercise_menu_link->setAttribute('href', "$http_root_dir/browsing/exercise.php?id_node=$id");
                 $next_exercise_menu_link->addCHild(new CText(translateFN('Prossimo esercizio')));
@@ -232,53 +233,51 @@ switch($op) {
 /*
  * Actions menu
 */
-if($id_profile == AMA_TYPE_AUTHOR) {
+if ($id_profile == AMA_TYPE_AUTHOR) {
     /*
      * build the link for the Delete operation, that when confirmed.
     */
 
-    $link   = HTTP_ROOT_DIR. '/services/edit_exercise.php?op=delete';
+    $link   = HTTP_ROOT_DIR . '/services/edit_exercise.php?op=delete';
     $text   = addslashes(translateFN('Confermi cancellazione esercizio?'));
-    $delete = "<a href=\"#\" onclick=\"confirmCriticalOperationBeforeRedirect('$text','$link')\">".
-            translateFN('Elimina esercizio').'</a>';
+    $delete = "<a href=\"#\" onclick=\"confirmCriticalOperationBeforeRedirect('$text','$link')\">" .
+            translateFN('Elimina esercizio') . '</a>';
 
     $edit_exercise = CDOMElement::create('ul');
     $li_edit = CDOMElement::create('li');
     $href = HTTP_ROOT_DIR . '/services/edit_exercise.php';
-    $edit_link = CDOMElement::create('a',"href:$href?op=edit");
+    $edit_link = CDOMElement::create('a', "href:$href?op=edit");
     $edit_link->addChild(new CText(translateFN('Modifica esercizio')));
     $li_edit->addChild($edit_link);
     $li_delete = CDOMElement::create('li');
-//    $delete_link = CDOMElement::create('a', "href:$href?op=delete");
-//    $delete_link->addChild(new CText(translateFN('Elimina esercizio')));
-//    $li_delete->addChild($delete_link);
+    //    $delete_link = CDOMElement::create('a', "href:$href?op=delete");
+    //    $delete_link->addChild(new CText(translateFN('Elimina esercizio')));
+    //    $li_delete->addChild($delete_link);
     $li_delete->addChild(new CText($delete));
     $edit_exercise->addChild($li_edit);
     $edit_exercise->addChild($li_delete);
-}
-else {
+} else {
     $edit_exercise = new CText('');
 }
 /*
  * Last access link
  */
 
-if(isset($_SESSION['sess_id_course_instance'])){
-    $last_access=$userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']),"UT",null);
-    $last_access=AMA_DataHandler::ts_to_date($last_access);
-  }
-  else {
-    $last_access=$userObj->get_last_accessFN(null,"UT",null);
-    $last_access=AMA_DataHandler::ts_to_date($last_access);
-  }
-if($last_access=='' || is_null($last_access)){
-    $last_access='-';
+if (isset($_SESSION['sess_id_course_instance'])) {
+    $last_access = $userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']), "UT", null);
+    $last_access = AMA_DataHandler::ts_to_date($last_access);
+} else {
+    $last_access = $userObj->get_last_accessFN(null, "UT", null);
+    $last_access = AMA_DataHandler::ts_to_date($last_access);
+}
+if ($last_access == '' || is_null($last_access)) {
+    $last_access = '-';
 }
 
 /*
  * Output
 */
-$content_dataAr = array(
+$content_dataAr = [
         'path' => $nodeObj->findPathFN(),
         'user_name' => $user_uname,
         'user_type' => $user_type,
@@ -291,11 +290,11 @@ $content_dataAr = array(
         'author' => $nodeObj->author['username'],
         'node_level' => 'livello nodo',
         'messages' => $user_messages->getHtml(),
-        'edit_profile'=> $userObj->getEditProfilePage(),
+        'edit_profile' => $userObj->getEditProfilePage(),
         'last_visit' => $last_access,
         'agenda' => $user_agenda->getHtml(),
         //'course_title' => '',
         //'media' => 'media',
-);
+];
 
 ARE::render($layout_dataAr, $content_dataAr);

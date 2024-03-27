@@ -4,13 +4,13 @@
  * STUDENT EXERCISE HISTORY
  *
  * @package
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Valerio Riva <valerio.riva@gmail.com>
- * @copyright	        Copyright (c) 2009-2011, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @author      Stefano Penge <steve@lynxlab.com>
+ * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
+ * @author      Valerio Riva <valerio.riva@gmail.com>
+ * @copyright           Copyright (c) 2009-2011, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link
- * @version		0.1
+ * @version     0.1
  */
 
 use Lynxlab\ADA\Main\Course\Course;
@@ -18,31 +18,32 @@ use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
+require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_STUDENT);
+$allowedUsersAr = [AMA_TYPE_STUDENT];
 
 /**
  * Get needed objects
  */
-$neededObjAr = array(
-    AMA_TYPE_STUDENT => array('node', 'layout', 'tutor', 'course', 'course_instance'),
-);
+$neededObjAr = [
+    AMA_TYPE_STUDENT => ['node', 'layout', 'tutor', 'course', 'course_instance'],
+];
 
-require_once ROOT_DIR.'/include/module_init.inc.php';
+require_once ROOT_DIR . '/include/module_init.inc.php';
 $self =  whoami();
 
 /**
@@ -61,15 +62,15 @@ $self =  whoami();
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
- * @var array $user_events
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_messages
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_agenda
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -83,14 +84,14 @@ include_once ROOT_DIR . '/services/include/exercise_classes.inc.php';
 
 $history = '';
 
-if (!isset($op))
+if (!isset($op)) {
     $op = 'default';
+}
 
 switch ($op) {
     case 'exe':
-
         $user_answer = $dh->get_ex_history_info($id_exe);
-        if ( AMA_DataHandler::isError($user_answer) ) {
+        if (AMA_DataHandler::isError($user_answer)) {
             //print("errore");
             $errObj = new ADA_Error($user_answer, translateFN("Errore nell'ottenimento della risposta utente"));
         }
@@ -105,7 +106,7 @@ switch ($op) {
 
         $_SESSION['exercise_object'] = serialize($exercise);
 
-        if ( AMA_DataHandler::isError($exercise) ) {
+        if (AMA_DataHandler::isError($exercise)) {
             //print("errore");
             $errObj = new ADA_Error($exercise, translateFN("Errore nella lettura dell'esercizio"));
         }
@@ -115,18 +116,18 @@ switch ($op) {
         break;
     case 'list':
     case 'default':
-    // lettura dei dati dal database
-    // Seleziona gli esercizi dello studente selezionato nel corso selezionato
+        // lettura dei dati dal database
+        // Seleziona gli esercizi dello studente selezionato nel corso selezionato
 
         $userObj->get_exercise_dataFN($id_course_instance, $userObj->getId()) ;
 
         // Esercizi svolti e relativi punteggi
         $history .= '<p>';
-        $history .= $userObj->history_ex_done_FN($userObj->id_user,AMA_TYPE_STUDENT,$id_course_instance) ;
+        $history .= $userObj->history_ex_done_FN($userObj->id_user, AMA_TYPE_STUDENT, $id_course_instance) ;
         $history .= '</p>';
         $status = translateFN('Esercizi dello studente');
 
-	break;
+        break;
 }
 // CHAT, BANNER etc
 
@@ -145,16 +146,15 @@ $courseObj = new Course($courseInstanceObj->id_corso);
 $course_title = $courseObj->titolo;
 //show course istance name if isn't empty - valerio
 if (!empty($courseInstanceObj->title)) {
-	$course_title .= ' - '.$courseInstanceObj->title;
+    $course_title .= ' - ' . $courseInstanceObj->title;
 }
 
 if (!is_object($nodeObj)) {
-	$nodeObj = read_node_from_DB($node);
+    $nodeObj = read_node_from_DB($node);
 }
-if (!ADA_Error::isError($nodeObj) AND isset($courseObj->id)) {
-
-	$_SESSION['sess_id_course'] = $courseObj->id;
-	$node_path = $nodeObj->findPathFN();
+if (!ADA_Error::isError($nodeObj) and isset($courseObj->id)) {
+    $_SESSION['sess_id_course'] = $courseObj->id;
+    $node_path = $nodeObj->findPathFN();
 }
 
 
@@ -162,35 +162,34 @@ if (!ADA_Error::isError($nodeObj) AND isset($courseObj->id)) {
  * Last access link
  */
 
-if(isset($_SESSION['sess_id_course_instance'])){
-    $last_access=$userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']),"UT",null);
-    $last_access=AMA_DataHandler::ts_to_date($last_access);
-  }
-else {
-    $last_access=$userObj->get_last_accessFN(null,"UT",null);
-    $last_access=AMA_DataHandler::ts_to_date($last_access);
-  }
-if($last_access=='' || is_null($last_access)){
-   $last_access='-';
+if (isset($_SESSION['sess_id_course_instance'])) {
+    $last_access = $userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']), "UT", null);
+    $last_access = AMA_DataHandler::ts_to_date($last_access);
+} else {
+    $last_access = $userObj->get_last_accessFN(null, "UT", null);
+    $last_access = AMA_DataHandler::ts_to_date($last_access);
+}
+if ($last_access == '' || is_null($last_access)) {
+    $last_access = '-';
 }
 
 
-$content_dataAr = array(
-    'course_title'=>translateFN('Storico Esercizi').' > <a href="main_index.php">'.$course_title.'</a>',
-    'path'=>$node_path,
+$content_dataAr = [
+    'course_title' => translateFN('Storico Esercizi') . ' > <a href="main_index.php">' . $course_title . '</a>',
+    'path' => $node_path,
     // 'class'=>$class . ' ' . translateFN('iniziata il') . ' ' . $start_date,
-    'user_name'=>$user_name,
-    'user_type'=>$user_type,
-    'student'=>$userObj->getFullName(),
-    'level'=>$userObj->livello,
-    'edit_profile'=> $userObj->getEditProfilePage(),
-    'data'=>$history,
-    'user_level'=>$user_level,
+    'user_name' => $user_name,
+    'user_type' => $user_type,
+    'student' => $userObj->getFullName(),
+    'level' => $userObj->livello,
+    'edit_profile' => $userObj->getEditProfilePage(),
+    'data' => $history,
+    'user_level' => $user_level,
     'last_visit' => $last_access,
-    'help'=>$help,
-    'status'=>$status,
-    'messages'=>$user_messages->getHtml(),
-    'agenda'=>$user_agenda->getHtml()
-);
+    'help' => $help,
+    'status' => $status,
+    'messages' => $user_messages->getHtml(),
+    'agenda' => $user_agenda->getHtml(),
+];
 
 ARE::render($layout_dataAr, $content_dataAr);

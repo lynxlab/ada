@@ -3,14 +3,14 @@
 /**
  * USER.
  *
- * @package		user
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2009, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link		user
- * @version		0.1
+ * @package     user
+ * @author      Stefano Penge <steve@lynxlab.com>
+ * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
+ * @author      Vito Modena <vito@lynxlab.com>
+ * @copyright   Copyright (c) 2009, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @link        user
+ * @version     0.1
  */
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
@@ -19,6 +19,7 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -30,17 +31,17 @@ require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'course_instance');
+$variableToClearAR = ['node', 'layout', 'course', 'course_instance'];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_STUDENT);
+$allowedUsersAr = [AMA_TYPE_STUDENT];
 /**
  * Performs basic controls before entering this module
  */
-$neededObjAr = array(
-    AMA_TYPE_STUDENT => array('layout', 'default_tester')
-);
+$neededObjAr = [
+    AMA_TYPE_STUDENT => ['layout', 'default_tester'],
+];
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami();
 
@@ -60,22 +61,22 @@ $self = whoami();
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
- * @var array $user_events
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_messages
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_agenda
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
  */
 BrowsingHelper::init($neededObjAr);
 
-$courseInstances = array();
+$courseInstances = [];
 $serviceProviders = $userObj->getTesters();
 $displayWhatsNew = false;
 $displayTable = false;
@@ -91,7 +92,9 @@ if (count($serviceProviders) == 1) {
     foreach ($serviceProviders as $Provider) {
         $provider_dh = AMA_DataHandler::instance(MultiPort::getDSN($Provider));
         $courseInstances_provider = $provider_dh->get_course_instances_for_this_student($userObj->getId(), true);
-        if (!is_array($courseInstances_provider)) $courseInstances_provider = array();
+        if (!is_array($courseInstances_provider)) {
+            $courseInstances_provider = [];
+        }
         $courseInstances = array_merge($courseInstances, $courseInstances_provider);
     }
 }
@@ -104,16 +107,20 @@ if (!AMA_DataHandler::isError($courseInstances)) {
      *  - nonzero value in isPublic, so that all instances of public courses will not be shown here
      *  - zero value in IsPublic and the service level in the $GLOBALS['userHiddenServiceTypes'] array, to hide autosubscription instances
      */
-    if (!is_array($courseInstances)) $courseInstances = array();
+    if (!is_array($courseInstances)) {
+        $courseInstances = [];
+    }
     $courseInstances = array_filter($courseInstances, function ($courseInstance) {
-        if (is_null($courseInstance['tipo_servizio'])) $courseInstance['tipo_servizio'] = DEFAULT_SERVICE_TYPE;
+        if (is_null($courseInstance['tipo_servizio'])) {
+            $courseInstance['tipo_servizio'] = DEFAULT_SERVICE_TYPE;
+        }
         $actualServiceType = !is_null($courseInstance['istanza_tipo_servizio']) ? $courseInstance['istanza_tipo_servizio'] : $courseInstance['tipo_servizio'];
         if (intval($_SESSION['service_level_info'][$actualServiceType]['isPublic']) !== 0) {
             $filter = false;
-        } else if (in_array($actualServiceType, $GLOBALS['userHiddenServiceTypes'])) {
+        } elseif (in_array($actualServiceType, $GLOBALS['userHiddenServiceTypes'])) {
             $filter = false;
         }
-        return (isset($filter) ? $filter : true);
+        return ($filter ?? true);
     });
 
     /**
@@ -139,28 +146,29 @@ if (!AMA_DataHandler::isError($courseInstances)) {
     $found = count($courseInstances);
     $displayTable = $found > 1;
 
-    $thead_dataAr = array(
+    $thead_dataAr = [
         translateFN('Titolo'),
         translateFN('Iniziato'),
         translateFN('Data inizio'),
         translateFN('Durata'),
         translateFN('Data fine'),
-        translateFN('Azioni')
-    );
-    $tbody_dataAr = array();
+        translateFN('Azioni'),
+    ];
+    $tbody_dataAr = [];
 
     foreach ($courseInstances as $c) {
-
         $courseId = $c['id_corso'];
         $nodeId = $courseId . '_0';
         $courseInstanceId = $c['id_istanza_corso'];
         $subscription_status = $c['status'];
         $started = ($c['data_inizio'] > 0 && $c['data_inizio'] < time()) ? translateFN('Si') : translateFN('No');
         $start_date = ($c['data_inizio'] > 0) ? $c['data_inizio'] : $c['data_inizio_previsto'];
-        if (isset($c['data_iscrizione']) && intval($c['data_iscrizione']) > 0) $start_date = intval($c['data_iscrizione']);
+        if (isset($c['data_iscrizione']) && intval($c['data_iscrizione']) > 0) {
+            $start_date = intval($c['data_iscrizione']);
+        }
         $isEnded = ($c['data_fine'] > 0 && $c['data_fine'] < time()) ? true : false;
         $isStarted = ($c['data_inizio'] > 0 && $c['data_inizio'] <= time()) ? true : false;
-        $self_instruction = isset($c['self_instruction']) ? $c['self_instruction'] : 0;
+        $self_instruction = $c['self_instruction'] ?? 0;
 
         if (!$isEnded && isset($c['duration_subscription']) && intval($c['duration_subscription']) > 0) {
             $duration = $c['duration_subscription'];
@@ -208,7 +216,7 @@ if (!AMA_DataHandler::isError($courseInstances)) {
             translateFN('Attendi apertura corso')
         );
 
-        if (!in_array($subscription_status, array(ADA_STATUS_SUBSCRIBED, ADA_STATUS_VISITOR, ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, ADA_STATUS_TERMINATED))) {
+        if (!in_array($subscription_status, [ADA_STATUS_SUBSCRIBED, ADA_STATUS_VISITOR, ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, ADA_STATUS_TERMINATED])) {
             $access_link = BaseHtmlLib::link("#", translateFN('Abilitazione in corso...'));
         } elseif ($isStarted) {
             /**
@@ -217,7 +225,7 @@ if (!AMA_DataHandler::isError($courseInstances)) {
              * if user is subscribed or completed and the subscription date + subscription_duration
              * falls after 'now', must set the subscription status to terminated
              */
-            if (in_array($subscription_status, array(ADA_STATUS_SUBSCRIBED, ADA_STATUS_COMPLETED))) {
+            if (in_array($subscription_status, [ADA_STATUS_SUBSCRIBED, ADA_STATUS_COMPLETED])) {
                 if (!isset($c['data_iscrizione']) || is_null($c['data_iscrizione']) || intval($c['data_iscrizione']) === 0) {
                     $c['data_iscrizione'] = time();
                 }
@@ -246,7 +254,7 @@ if (!AMA_DataHandler::isError($courseInstances)) {
                 $navigationHistoryObj = $_SESSION['sess_navigation_history'];
                 if (
                     ADA_USER_AUTOMATIC_ENTER && $navigationHistoryObj->userComesFromLoginPage() && $isStarted && !$isEnded
-                    && !in_array($subscription_status, array(ADA_STATUS_SUBSCRIBED, ADA_STATUS_VISITOR, ADA_STATUS_TERMINATED))
+                    && !in_array($subscription_status, [ADA_STATUS_SUBSCRIBED, ADA_STATUS_VISITOR, ADA_STATUS_TERMINATED])
                 ) {
                     header("Location: view.php?id_node=$nodeId&id_course=$courseId&id_course_instance=$courseInstanceId");
                     exit();
@@ -270,7 +278,7 @@ if (!AMA_DataHandler::isError($courseInstances)) {
                     $link = CDOMElement::create('a', 'href:view.php?id_node=' . $nodeId . '&id_course=' . $courseId . '&id_course_instance=' . $courseInstanceId);
                     if ($isEnded || $subscription_status == ADA_STATUS_TERMINATED || $subscription_status == ADA_STATUS_COMPLETED) {
                         $link->addChild(new CText(translateFN('Rivedi il corso')));
-                    } else if ($isStarted && !$isEnded) {
+                    } elseif ($isStarted && !$isEnded) {
                         $link->addChild(new CText(translateFN('Accedi')));
                     }
                     $access_link->addChild($link);
@@ -281,15 +289,15 @@ if (!AMA_DataHandler::isError($courseInstances)) {
                  */
                 $access_link = CDOMElement::create('div');
                 $link = CDOMElement::create('a');
-                $linkParams = array(
+                $linkParams = [
                     'id_course' => $courseId,
-                    'id_course_instance' => $courseInstanceId
-                );
-                if ($isEnded || in_array($subscription_status, array(ADA_STATUS_TERMINATED, ADA_STATUS_COMPLETED))) {
+                    'id_course_instance' => $courseInstanceId,
+                ];
+                if ($isEnded || in_array($subscription_status, [ADA_STATUS_TERMINATED, ADA_STATUS_COMPLETED])) {
                     $link->addChild(new CText(translateFN('Rivedi il corso')));
                     $linkScript = 'view.php';
                     $linkParams['id_node'] = $nodeId;
-                } else if ($isStarted && !$isEnded) {
+                } elseif ($isStarted && !$isEnded) {
                     $linkScript = 'user.php';
                     $link->addChild(new CText(translateFN('Accedi')));
                 }
@@ -310,14 +318,14 @@ if (!AMA_DataHandler::isError($courseInstances)) {
                     $access_link->addChild($link);
                 }
 
-                $tbody_dataAr[] = array(
+                $tbody_dataAr[] = [
                     $c['titolo'],
                     $started,
                     ts2dFN($start_date),
                     sprintf(translateFN('%d giorni'), $duration),
                     ts2dFN($end_date),
-                    $access_link
-                );
+                    $access_link,
+                ];
             }
         }
     }
@@ -350,15 +358,15 @@ if ($last_access == '' || is_null($last_access)) {
     $last_access = '-';
 }
 
-$content_dataAr = array(
-    'today' => isset($ymdhms) ? $ymdhms : null,
+$content_dataAr = [
+    'today' => $ymdhms ?? null,
     'user_name' => $user_name,
     'user_level' => translateFN("Nd"),
     'status' => $status,
     'user_type' => $user_type,
     'last_visit' => $last_access,
-    'message' => isset($message) ? $message : null,
-    'help' => isset($help) ? $help : '',
+    'message' => $message ?? null,
+    'help' => $help ?? '',
     //    'iscritto' => $sub_course_data,
     //    'iscrivibili' => $to_sub_course_data,
     'course_title' => translateFN("Home dell'utente"),
@@ -370,8 +378,8 @@ $content_dataAr = array(
     'agenda' => $user_agenda->getHtml(),
     'events' => $user_events->getHtml(),
     'status' => $status,
-    'firstcol_title' => translateFN('Informazioni')
-);
+    'firstcol_title' => translateFN('Informazioni'),
+];
 
 /*
  * Output
@@ -470,10 +478,10 @@ if ($displayTable) {
     // @author giorgio 24/apr/2013 gostart, goindex, goforum and gocontinue link
     // va sostituita con una select in AMA
 
-    //	    Graphical disposition:
+    //      Graphical disposition:
 
     $gostart_link = translateFN('Il corso non è ancora iniziato');
-    if (!in_array($subscription_status, array(ADA_STATUS_SUBSCRIBED, ADA_STATUS_VISITOR, ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, ADA_STATUS_TERMINATED))) {
+    if (!in_array($subscription_status, [ADA_STATUS_SUBSCRIBED, ADA_STATUS_VISITOR, ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, ADA_STATUS_TERMINATED])) {
         $gostart = BaseHtmlLib::link(
             "#",
             translateFN('Abilitazione in corso...')
@@ -490,10 +498,9 @@ if ($displayTable) {
         $gohistory = CDOMElement::create('span', 'class:disabled');
         $gohistory->addChild(new CText(translateFN('Cronologia')));
     } elseif ($isStarted && !$isEnded) {
-
         if ($isEnded || $subscription_status == ADA_STATUS_TERMINATED || $subscription_status == ADA_STATUS_COMPLETED) {
             $startLabel = translateFN('Rivedi il corso');
-        } else if ($isStarted && !$isEnded) {
+        } elseif ($isStarted && !$isEnded) {
             $startLabel = translateFN('Inizia');
         }
 
@@ -515,7 +522,7 @@ if ($displayTable) {
      * @author giorgio 22/feb/2016
      * get course description
      */
-    $cd_res = $GLOBALS['dh']->find_courses_list(array('descrizione'), 'id_corso=' . $courseId);
+    $cd_res = $GLOBALS['dh']->find_courses_list(['descrizione'], 'id_corso=' . $courseId);
     if (!AMA_DB::isError($cd_res) && is_array($cd_res) && count($cd_res) > 0) {
         $cd_el = reset($cd_res);
         $course_description = $cd_el['descrizione'];
@@ -525,22 +532,22 @@ if ($displayTable) {
     $gochat_link = "";
     $content_dataAr['gostart'] = $gostart_link;
     $content_dataAr['gocontinue'] = $last_node_visited_link;
-    $content_dataAr['goindex'] = isset($goindex_link) ? $goindex_link : null;
+    $content_dataAr['goindex'] = $goindex_link ?? null;
     if ($new_nodes_html !== '') {
         $content_dataAr['course_description'] = $new_nodes_html;
         $content_dataAr['firstcol_title'] = translateFN("Cosa c'&egrave; di nuovo?");
     } else {
-        $content_dataAr['course_description'] = isset($course_description) ? $course_description : null;
+        $content_dataAr['course_description'] = $course_description ?? null;
     }
     // msg forum sono le note in realta'
     $content_dataAr['msg_forum'] = $msg_forum_count;
     $content_dataAr['msg_agenda'] =  $msg_agenda_count;
     $content_dataAr['msg'] = $msg_simple_count;
     $content_dataAr['goclasse'] = $students_link;
-    $content_dataAr['goforum'] = isset($goforum_link) ? $goforum_link : null;
-    $content_dataAr['gochat'] = isset($gochat_link) ? $gochat_link : null;
+    $content_dataAr['goforum'] = $goforum_link ?? null;
+    $content_dataAr['gochat'] = $gochat_link ?? null;
     $content_dataAr['course_title'] = $c['titolo'] . ' - ' . $c['title'];
-    $content_dataAr['enddate'] = isset($enddateForTemplate) ? $enddateForTemplate : '-';
+    $content_dataAr['enddate'] = $enddateForTemplate ?? '-';
     $content_dataAr['gohistory'] = isset($gohistory) ? $gohistory->getHtml() : null;
     $content_dataAr['subscription_status'] = Subscription::subscriptionStatusArray()[$subscription_status];
 
@@ -555,7 +562,7 @@ if ($displayTable) {
         if ($conditionSet instanceof CompleteConditionSet) {
             $_SESSION['sess_selected_tester'] = $provider['puntatore'];
             // evaluate the conditionset for this instance ID and course ID
-            $summary = $conditionSet->buildSummary(array($courseInstanceId, $userObj->getId()));
+            $summary = $conditionSet->buildSummary([$courseInstanceId, $userObj->getId()]);
             unset($_SESSION['sess_selected_tester']);
             if (is_array($summary) && count($summary) > 0) {
                 $content_dataAr['completeSummary'] = '';
@@ -575,7 +582,7 @@ if ($displayTable) {
             $badgesLink = CDOMElement::create('div', 'class:item');
             $badgesLink->addChild(CDOMElement::create('i', 'class:certificate icon'));
             $badgesLink->setAttribute('data-dataurl', MODULES_BADGES_HTTP . '/ajax/getUserBadges.php?courseInstanceId=' . $courseInstanceId);
-            $badgesLink->setAttribute('data-jsurl',  MODULES_BADGES_HTTP . '/js/badgesToHTML.js');
+            $badgesLink->setAttribute('data-jsurl', MODULES_BADGES_HTTP . '/js/badgesToHTML.js');
             $popupLink = CDOMElement::create('a', 'id:bagesPopupLink,href:javascript:void(0);');
             $popupLink->addChild(new CText(translateFN('Badges')));
             $badgesLink->addChild($popupLink);
@@ -594,12 +601,12 @@ if ($displayTable) {
     $GLOBALS['dh']->disconnect();
 }
 
-$layout_dataAr['CSS_filename'] = array(
+$layout_dataAr['CSS_filename'] = [
     JQUERY_UI_CSS,
     SEMANTICUI_DATATABLE_CSS,
-    'user.css' // this file may use different templates, force user.css inclusion here
-);
-$layout_dataAr['JS_filename'] = array(
+    'user.css', // this file may use different templates, force user.css inclusion here
+];
+$layout_dataAr['JS_filename'] = [
     JQUERY,
     JQUERY_UI,
     JQUERY_DATATABLE,
@@ -607,9 +614,9 @@ $layout_dataAr['JS_filename'] = array(
     JQUERY_DATATABLE_DATE,
     ROOT_DIR . '/js/include/jquery/dataTables/formattedNumberSortPlugin.js',
     JQUERY_NO_CONFLICT,
-    'user.js' // this file may use different templates, force user.js inclusion here
-);
+    'user.js', // this file may use different templates, force user.js inclusion here
+];
 
 $layout_dataAr['widgets']['studentsOfInstance'] = compact(['courseId', 'courseInstanceId']);
 
-ARE::render($layout_dataAr, $content_dataAr, NULL, array('onload_func' => 'initDoc();'));
+ARE::render($layout_dataAr, $content_dataAr, null, ['onload_func' => 'initDoc();']);

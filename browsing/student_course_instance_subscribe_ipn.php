@@ -2,14 +2,14 @@
 
 /**
  *
- * @package		Subscription IPN from Paypal
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
+ * @package     Subscription IPN from Paypal
+ * @author      Stefano Penge <steve@lynxlab.com>
+ * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
+ * @author      Vito Modena <vito@lynxlab.com>
  * @copyright   Copyright (c) 2009-2012, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link		info
- * @version		0.2
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @link        info
+ * @version     0.2
  */
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
@@ -18,6 +18,7 @@ use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_user;
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\today_dateFN;
 
 /**
@@ -28,21 +29,21 @@ require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('layout', 'course', 'course_instance');
+$variableToClearAR = ['layout', 'course', 'course_instance'];
 /**
  * Performs basic controls before entering this module
  */
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_VISITOR,);
+$allowedUsersAr = [AMA_TYPE_VISITOR,];
 
 /**
  * Get needed objects
  */
-$neededObjAr = array(
-    AMA_TYPE_VISITOR => array('layout',)
-);
+$neededObjAr = [
+    AMA_TYPE_VISITOR => ['layout',],
+];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 
@@ -62,15 +63,15 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
- * @var array $user_events
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_messages
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_agenda
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -82,7 +83,7 @@ BrowsingHelper::init($neededObjAr);
  */
 if (file_exists(ROOT_DIR . '/browsing/paypal/paypal_conf.inc.php')) {
     require_once ROOT_DIR . '/browsing/paypal/paypal_conf.inc.php';
-    $paypal_allowed = TRUE;
+    $paypal_allowed = true;
 }
 
 /*
@@ -91,7 +92,7 @@ if (file_exists(ROOT_DIR . '/browsing/paypal/paypal_conf.inc.php')) {
 $logStr = "";
 if (!is_dir(ROOT_DIR . '/log/paypal/')) {
     $oldmask = umask(0);
-    mkdir(ROOT_DIR . '/log/paypal/', 0775, true);
+    mkdir(ROOT_DIR . '/log/paypal/', 0o775, true);
     umask($oldmask);
 }
 $log_file = ROOT_DIR . '/log/paypal/' . PAYPAL_IPN_LOG;
@@ -110,11 +111,14 @@ if ($debug == 1) {
 $lockfile = ADA_UPLOAD_PATH . $_POST['ipn_track_id'] . '.lock';
 
 if (!is_file($lockfile)) {
-
     if (touch($lockfile)) {
-        if ($debug == 1) fwrite($fpx, "Lockfile $lockfile creato\n");
+        if ($debug == 1) {
+            fwrite($fpx, "Lockfile $lockfile creato\n");
+        }
     } else {
-        if ($debug == 1) fwrite($fpx, "Lockfile $lockfile NON creato!!!!\n");
+        if ($debug == 1) {
+            fwrite($fpx, "Lockfile $lockfile NON creato!!!!\n");
+        }
     }
 
     // buffer the output, close the connection with the browser and run a "background" task
@@ -128,7 +132,9 @@ if (!is_file($lockfile)) {
     ob_end_flush();
     flush();
     @ob_end_clean();
-    if (function_exists('fastcgi_finish_request')) fastcgi_finish_request();
+    if (function_exists('fastcgi_finish_request')) {
+        fastcgi_finish_request();
+    }
 
     error_reporting(E_ALL);
     ini_set("log_errors", 1);
@@ -181,24 +187,24 @@ if (!is_file($lockfile)) {
             if ($debug == 1) {
                 fwrite($fpx, sprintf("sending to Paypal...\n%s\n", print_r($req, true)));
             }
-            curl_setopt_array($request, array(
+            curl_setopt_array($request, [
                 CURLOPT_URL => 'https://' . PAYPAL_IPN_URL . '/cgi-bin/webscr',
-                CURLOPT_POST => TRUE,
+                CURLOPT_POST => true,
                 CURLOPT_POSTFIELDS => http_build_query($req),
-                CURLOPT_RETURNTRANSFER => TRUE,
-                CURLOPT_HEADER => FALSE,
-                CURLOPT_SSL_VERIFYPEER => TRUE,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_HEADER => false,
+                CURLOPT_SSL_VERIFYPEER => true,
                 CURLOPT_ENCODING => 'gzip',
-                CURLOPT_FORBID_REUSE => TRUE,
-                CURLOPT_FRESH_CONNECT => TRUE,
+                CURLOPT_FORBID_REUSE => true,
+                CURLOPT_FRESH_CONNECT => true,
                 CURLOPT_CONNECTTIMEOUT => 30,
                 CURLOPT_TIMEOUT => 60,
-                CURLINFO_HEADER_OUT => TRUE,
+                CURLINFO_HEADER_OUT => true,
                 CURLOPT_HTTPHEADER => [
                     'Connection: close',
                     'Expect: ',
                 ],
-            ));
+            ]);
 
             // Execute request and get response and status code
             $response = curl_exec($request);
@@ -255,7 +261,7 @@ if (!is_file($lockfile)) {
                         $body_mail .= translateFN('Questo addebito verrà visualizzato sull\'estratto conto della carta di credito o prepagata come pagamento a PAYPAL') . ' ' . PAYPAL_NAME_ACCOUNT;
                         $message_ha["titolo"] = PORTAL_NAME . " - " . translateFN('Conferma di pagamento') . ' - ' . translateFN("Iscrizione al corso:") . " " . $course_name;
                         $sender_email = ADA_ADMIN_MAIL_ADDRESS;
-                        $recipients_emails_ar = array($payer_email);
+                        $recipients_emails_ar = [$payer_email];
                         if (!in_array($buyerObj->getEmail(), $recipients_emails_ar)) {
                             $recipients_emails_ar[] = $buyerObj->getEmail();
                         }
@@ -272,12 +278,12 @@ if (!is_file($lockfile)) {
                             $message_ha["testo"] .= "\n\r\n\r" . translateFN('Per maggiori informazioni scrivi una mail a:') . " " . ADA_ADMIN_MAIL_ADDRESS;
                             $message_ha["testo"] .= "\n\r" . translateFN("Buono studio.");
                             $sender_email = ADA_ADMIN_MAIL_ADDRESS;
-                            $recipients_emails_ar = array($payer_email, $buyerObj->getEmail());
+                            $recipients_emails_ar = [$payer_email, $buyerObj->getEmail()];
                         } else {
                             //                  header("Location: $back_url?id_studente=$id_studente");
                             // Send mail to the user with his/her data.
-                            $switcherTypeAr = array(AMA_TYPE_SWITCHER);
-                            $extended_data = TRUE;
+                            $switcherTypeAr = [AMA_TYPE_SWITCHER];
+                            $extended_data = true;
                             $switcherList = $dh->get_users_by_type($switcherTypeAr, $extended_data);
                             if (!AMA_DataHandler::isError($switcherList)) {
                                 $switcher_email = $switcherList[0]['e_mail'];
@@ -322,7 +328,7 @@ if (!is_file($lockfile)) {
                             fwrite($fpx, "Purchase does not match product details\n");
                         }
                     }
-                } else if (strcmp('INVALID', $response) === 0) {
+                } elseif (strcmp('INVALID', $response) === 0) {
                     /*
                         $message = translateFN('Gentile') . " " . $firstname .", <BR />";
                         $message .= translateFN('Non è possibile verificare il tuo acquisto')."<BR />";

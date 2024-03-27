@@ -2,14 +2,14 @@
 
 /**
  *
- * @package		Subscription Confirm from Paypal
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
+ * @package     Subscription Confirm from Paypal
+ * @author      Stefano Penge <steve@lynxlab.com>
+ * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
+ * @author      Vito Modena <vito@lynxlab.com>
  * @copyright   Copyright (c) 2009-2012, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link		info
- * @version		0.2
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @link        info
+ * @version     0.2
  */
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
@@ -21,6 +21,7 @@ use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\User\ADAGuest;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\today_dateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -32,21 +33,21 @@ require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'course_instance');
+$variableToClearAR = ['node', 'layout', 'course', 'course_instance'];
 /**
  * Performs basic controls before entering this module
  */
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_STUDENT);
+$allowedUsersAr = [AMA_TYPE_STUDENT];
 
 /**
  * Get needed objects
  */
-$neededObjAr = array(
-    AMA_TYPE_STUDENT => array('layout', 'course', 'course_instance')
-);
+$neededObjAr = [
+    AMA_TYPE_STUDENT => ['layout', 'course', 'course_instance'],
+];
 
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
@@ -67,15 +68,15 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
- * @var array $user_events
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_messages
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_agenda
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -88,7 +89,7 @@ $self = whoami(); // to select the right template
  */
 if (file_exists(ROOT_DIR . '/browsing/paypal/paypal_conf.inc.php')) {
     require_once ROOT_DIR . '/browsing/paypal/paypal_conf.inc.php';
-    $paypal_allowed = TRUE;
+    $paypal_allowed = true;
 }
 
 $today_date = today_dateFN();
@@ -112,7 +113,7 @@ if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
     $logStr = "";
     if (!is_dir(ROOT_DIR . '/log/paypal/')) {
         $oldmask = umask(0);
-        mkdir(ROOT_DIR . '/log/paypal/', 0775, true);
+        mkdir(ROOT_DIR . '/log/paypal/', 0o775, true);
         umask($oldmask);
     }
     $log_file = ROOT_DIR . '/log/paypal/' . PAYPAL_PDT_LOG;
@@ -173,22 +174,22 @@ if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
     // Init cURL
     $request = curl_init();
     // Set request options
-    $req = array(
+    $req = [
         'cmd' => '_notify-synch',
         'tx' => trim($_GET['tx']),
         'at' => IDENTITY_CHECK,
-    );
+    ];
     if ($debug == 1) {
         fwrite($fpx, sprintf("sending to Paypal...\n%s\n", print_r($req, true)));
     }
-    curl_setopt_array($request, array(
+    curl_setopt_array($request, [
         CURLOPT_URL => 'https://' . PAYPAL_IPN_URL . '/cgi-bin/webscr',
-        CURLOPT_POST => TRUE,
+        CURLOPT_POST => true,
         CURLOPT_POSTFIELDS => http_build_query($req),
-        CURLOPT_RETURNTRANSFER => TRUE,
-        CURLOPT_HEADER => FALSE,
-        CURLOPT_SSL_VERIFYPEER => TRUE,
-    ));
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HEADER => false,
+        CURLOPT_SSL_VERIFYPEER => true,
+    ]);
 
     // Execute request and get response and status code
     $response = curl_exec($request);
@@ -205,12 +206,12 @@ if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
         }
     } else {
         $lines = explode("\n", $response);
-        $keyarray = array();
+        $keyarray = [];
         if (in_array('SUCCESS', $lines)) {
             //        print_r($lines);
             array_shift($lines); // remove 'SUCCESS' line
-            foreach($lines as $line) {
-                list($key, $val) = explode("=", $line, 2);
+            foreach ($lines as $line) {
+                [$key, $val] = explode("=", $line, 2);
                 $keyarray[urldecode($key)] = urldecode($val);
             }
             // check the payment_status is Completed
@@ -289,7 +290,7 @@ if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
                     fwrite($fpx, "Purchase does not match product details\n");
                 }
             }
-        } else if (in_array('FAIL', $lines)) {
+        } elseif (in_array('FAIL', $lines)) {
             $ipn_log .= "Error connecting to Paypal\n";
             $message = translateFN("Errore di comunicazione con Paypal. Impossibile proseguire.");
             $message .= "<br />" . translateFN("Se non riceverei una mail di comunicazione, scrivi a ") . ADA_ADMIN_MAIL_ADDRESS . "<br />";
@@ -351,7 +352,7 @@ if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
     $path = translateFN('modulo di iscrizione');
     $dati = $link_torna_home;
 
-    $field_data = array(
+    $field_data = [
         'menu' => "", //$menu,
         'path' => $path,
         //'data'=>$dati,
@@ -362,12 +363,12 @@ if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
         'messages' => $user_messages->getHtml(),
         'agenda' => $user_agenda->getHtml(),
         'titolo_corso' => $course_name,
-        'annulla_iscrizione' => isset($link_annulla_iscrizione) ? $link_annulla_iscrizione : '',
-        'price' => $price
-    );
+        'annulla_iscrizione' => $link_annulla_iscrizione ?? '',
+        'price' => $price,
+    ];
 } else {
     $dati = translateFN('Impossibile proseguire, Provider non trovato');
-    $field_data = array(
+    $field_data = [
         'menu' => "", //$menu,
         'data' => $dati,
         'help' => '', // $help,
@@ -377,8 +378,8 @@ if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
         'agenda' => $user_agenda->getHtml(),
         'titolo_corso' => $course_name,
         'annulla_iscrizione' => $link_annulla_iscrizione,
-        'price' => $price
-    );
+        'price' => $price,
+    ];
 }
 
 /**

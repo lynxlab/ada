@@ -1,4 +1,5 @@
 <?php
+
 /**
 * SEARCH.
 *
@@ -17,40 +18,39 @@ use Lynxlab\ADA\CORE\HmtlElements\Table;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
 * Base config file
 */
-require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
+require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 
 /**
 * Clear node and layout variable in $_SESSION
 */
 
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 
 /**
 * Users (types) allowed to access this module.
 */
-$allowedUsersAr = array(AMA_TYPE_VISITOR, AMA_TYPE_STUDENT,AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR);
+$allowedUsersAr = [AMA_TYPE_VISITOR, AMA_TYPE_STUDENT,AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR];
 
 /**
 * Get needed objects
 */
-$neededObjAr = array(
-  AMA_TYPE_VISITOR => array('layout'),
-  AMA_TYPE_STUDENT => array('layout'),
-  AMA_TYPE_TUTOR => array('layout'),
-  AMA_TYPE_AUTHOR => array('layout')
-);
+$neededObjAr = [
+  AMA_TYPE_VISITOR => ['layout'],
+  AMA_TYPE_STUDENT => ['layout'],
+  AMA_TYPE_TUTOR => ['layout'],
+  AMA_TYPE_AUTHOR => ['layout'],
+];
 
 /**
 * Performs basic controls before entering this module
 */
-require_once ROOT_DIR.'/include/module_init.inc.php';
-
-include_once 'include/browsing_functions.inc.php';
+require_once ROOT_DIR . '/include/module_init.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -68,15 +68,15 @@ include_once 'include/browsing_functions.inc.php';
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
- * @var array $user_events
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_messages
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_agenda
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -88,63 +88,60 @@ $self = 'guest_view'; FIXME: we have to create a guest_search template
 }
 else { */
 // $self = whoami();
-  $self = search;
+$self = 'search';
 /*} */
 
-  $id_course=$_SESSION['sess_id_course'];
+$id_course = $_SESSION['sess_id_course'];
 
 if (isset($submit)) { //&& (!empty($s_node_text))) {
-
-    $out_fields_ar = array('nome','titolo','testo','tipo');
-    $clause='';
+    $out_fields_ar = ['nome','titolo','testo','tipo'];
+    $clause = '';
     $or = ' OR ';
     $and = ' AND ';
-/*
- * Versione campo unico
- *
- *
- */
+    /*
+     * Versione campo unico
+     *
+     *
+     */
     if (!empty($s_node_text)) {
         $clause = "(";
         $clause = $clause . "nome LIKE '%$s_node_text%'";
-        $clause = $clause . $or. "titolo LIKE '%$s_node_text%'";
-        $clause = $clause . $or. "testo LIKE '%$s_node_text%'";
+        $clause = $clause . $or . "titolo LIKE '%$s_node_text%'";
+        $clause = $clause . $or . "testo LIKE '%$s_node_text%'";
         $clause = $clause . ")";
-    }
-    else {
+    } else {
         $s_node_text = "";
     }
 
 
-/*
- * Versione campo diversi
- *
- *
- */
+    /*
+     * Versione campo diversi
+     *
+     *
+     */
 
-    $out_fields_ar = array('nome','titolo','testo','tipo','id_utente');
-    $clause='';
+    $out_fields_ar = ['nome','titolo','testo','tipo','id_utente'];
+    $clause = '';
     $or = '';
     $and = '';
 
-  if (!empty($s_node_name)) {
+    if (!empty($s_node_name)) {
         $clause = "nome LIKE '%$s_node_name%'";
     }
-    if (!empty($s_node_title)){ //keywors
+    if (!empty($s_node_title)) { //keywors
         if ($clause) {
             //$and = " AND ";
-            $operator=$s_node_search_mode;
+            $operator = $s_node_search_mode;
         }
-        $clause = $clause . $operator. "titolo LIKE '%$s_node_title%'";
+        $clause = $clause . $operator . "titolo LIKE '%$s_node_title%'";
     }
-    if (!empty($s_node_text)){
+    if (!empty($s_node_text)) {
         if ($clause) {
             //$and = " AND ";
-            $operator=$s_node_search_mode;
+            $operator = $s_node_search_mode;
         }
-        $clause = $clause . $operator. "testo LIKE '%$s_node_text%'";
-    }
-    else {
+        $clause = $clause . $operator . "testo LIKE '%$s_node_text%'";
+    } else {
         $s_node_text = "";
     }
     // authors
@@ -175,153 +172,151 @@ $operator=$s_node_search_mode;
 $clause = $clause . $operator. "id_utente LIKE '$id_author'";
 }*/
     // node types
-    if (isset($l_search)){
-        switch ($l_search){
-        case 'standard_node': // group OR nodes NOT notes
-            if ($clause) {
-                $and = " AND ";
-            }
-            $clause = '( '.$clause.')' . $and. " (tipo = ".ADA_GROUP_TYPE." OR tipo = ".ADA_LEAF_TYPE.")";
-            $checked_standard = "checked";
-        break;
-        case 'group':
-        case ADA_GROUP_TYPE:
-            $type = ADA_GROUP_TYPE;
-            if ($clause) {
-                $and = " AND ";
-            }
-            $clause = $clause . $and. "tipo = '$type'";
-            $checked_group = "checked";
-        break;
-        case 'node':
-        //case ADA_LEAF_TYPE:
-            $type = ADA_LEAF_TYPE;
-            if ($clause) {
-                $and = " AND ";
-            }
-            $clause = $clause . $and. "tipo = '$type'";
-            $checked_node = "checked";
-        break;
-        case 'note':
-        case ADA_NOTE_TYPE: //ricerca nel forum
-            $type = ADA_NOTE_TYPE;
-            if ($clause) {
-                $and = " AND ";
-            }
-            $clause = '('.$clause.')' . $and. "tipo = '$type'";
-            $checked_note = "checked";
-        break;
-        case 'private_note':
-        case ADA_PRIVATE_NOTE_TYPE:
-            $type = ADA_PRIVATE_NOTE_TYPE;
-            if ($clause) {
-                $and = " AND ";
-            }
-        /* vito, 16 giugno 2009, vogliamo che l'utente veda tra i risultati della
-ricerca eventualmente solo le SUE note personali e non quelle di
-altri utenti.
-$clause = $clause . $and. "tipo = '$type'";*/
-            $clause = $clause . $and . "(tipo = '$type' and id_utente='$sess_id_user')";
-            $checked_note = "checked";
-        break;
-        case '':
-        default:
-        case 'all': // group OR nodes OR notes
-            $checked_all = "checked";
-        /* vito, 16 giugno 2009, vogliamo che l'utente veda tra i risultati della
-ricerca eventualmente solo le SUE note personali e non quelle di
-altri utenti.*/
-            if ($clause) {
-                $and = " AND ";
-            }
-            $clause = '('.$clause.')'.$and.' ((tipo <> '.ADA_PRIVATE_NOTE_TYPE.') OR (tipo ='.ADA_PRIVATE_NOTE_TYPE.' AND id_utente = '.$sess_id_user.'))';
-        break;
-
+    if (isset($l_search)) {
+        switch ($l_search) {
+            case 'standard_node': // group OR nodes NOT notes
+                if ($clause) {
+                    $and = " AND ";
+                }
+                $clause = '( ' . $clause . ')' . $and . " (tipo = " . ADA_GROUP_TYPE . " OR tipo = " . ADA_LEAF_TYPE . ")";
+                $checked_standard = "checked";
+                break;
+            case 'group':
+            case ADA_GROUP_TYPE:
+                $type = ADA_GROUP_TYPE;
+                if ($clause) {
+                    $and = " AND ";
+                }
+                $clause = $clause . $and . "tipo = '$type'";
+                $checked_group = "checked";
+                break;
+            case 'node':
+                //case ADA_LEAF_TYPE:
+                $type = ADA_LEAF_TYPE;
+                if ($clause) {
+                    $and = " AND ";
+                }
+                $clause = $clause . $and . "tipo = '$type'";
+                $checked_node = "checked";
+                break;
+            case 'note':
+            case ADA_NOTE_TYPE: //ricerca nel forum
+                $type = ADA_NOTE_TYPE;
+                if ($clause) {
+                    $and = " AND ";
+                }
+                $clause = '(' . $clause . ')' . $and . "tipo = '$type'";
+                $checked_note = "checked";
+                break;
+            case 'private_note':
+            case ADA_PRIVATE_NOTE_TYPE:
+                $type = ADA_PRIVATE_NOTE_TYPE;
+                if ($clause) {
+                    $and = " AND ";
+                }
+                /* vito, 16 giugno 2009, vogliamo che l'utente veda tra i risultati della
+    ricerca eventualmente solo le SUE note personali e non quelle di
+    altri utenti.
+    $clause = $clause . $and. "tipo = '$type'";*/
+                $clause = $clause . $and . "(tipo = '$type' and id_utente='$sess_id_user')";
+                $checked_note = "checked";
+                break;
+            case '':
+            default:
+            case 'all': // group OR nodes OR notes
+                $checked_all = "checked";
+                /* vito, 16 giugno 2009, vogliamo che l'utente veda tra i risultati della
+    ricerca eventualmente solo le SUE note personali e non quelle di
+    altri utenti.*/
+                if ($clause) {
+                    $and = " AND ";
+                }
+                $clause = '(' . $clause . ')' . $and . ' ((tipo <> ' . ADA_PRIVATE_NOTE_TYPE . ') OR (tipo =' . ADA_PRIVATE_NOTE_TYPE . ' AND id_utente = ' . $sess_id_user . '))';
+                break;
         }
     }
 
-  /* ricerca su tutti i corsi pubblici
+    /* ricerca su tutti i corsi pubblici
 * if (il tester è quello pubblico){
 * $resHa = $dh->find_public_course_nodes_list($out_fields_ar, $clause,$sess_id_course);
 * }
 */
 
-  // $resHa = $dh->find_course_nodes_list($out_fields_ar, $clause,$sess_id_course);
-   $resHa = $dh->find_course_nodes_list($out_fields_ar, $clause,$id_course);
+    // $resHa = $dh->find_course_nodes_list($out_fields_ar, $clause,$sess_id_course);
+    $resHa = $dh->find_course_nodes_list($out_fields_ar, $clause, $id_course);
 
     if (!AMA_DataHandler::isError($resHa) and is_array($resHa) and !empty($resHa)) {
-    $total_results = array();
-    $group_count=0;
-    $node_count=0;
-    $note_count=0;
-    $exer_count=0;
+        $total_results = [];
+        $group_count = 0;
+        $node_count = 0;
+        $note_count = 0;
+        $exer_count = 0;
 
-    foreach ($resHa as $row){
-        $res_id_node = $row[0];
-        $res_name = $row[1];
-        $res_course_title = $row[2];
-        $res_text = $row[3];
-        $res_type = $row[4];
+        foreach ($resHa as $row) {
+            $res_id_node = $row[0];
+            $res_name = $row[1];
+            $res_course_title = $row[2];
+            $res_text = $row[3];
+            $res_type = $row[4];
 
-        switch ($res_type){
-        case ADA_GROUP_TYPE:
-            //$icon = "<img src=\"img/group_ico.png\" border=0>";
-            $class_name = 'ADA_GROUP_TYPE';
-            $group_count++;
-        break;
-        case ADA_LEAF_TYPE:
-            //$icon = "<img src=\"img/node_ico.png\" border=0>";
-            $class_name = 'ADA_LEAF_TYPE';
-            $node_count++;
-        break;
-        case ADA_NOTE_TYPE:
-            //$icon = "<img src=\"img/note_ico.png\" border=0>";
-            $class_name = 'ADA_NOTE_TYPE';
-            $note_count++;
-        break;
-        case ADA_PRIVATE_NOTE_TYPE:
-            //$icon = "<img src=\"img/_nota_pers.png\" border=0>";
-            $class_name = 'ADA_PRIVATE_NOTE_TYPE';
-            $note_count++;
-        break;
-        case ADA_STANDARD_EXERCISE_TYPE:
-        default:
-            $class_name = 'ADA_STANDARD_EXERCISE_TYPE';
-            //$icon = "<img src=\"img/exer_ico.png\" border=0>";
-            $exer_count++;
+            switch ($res_type) {
+                case ADA_GROUP_TYPE:
+                    //$icon = "<img src=\"img/group_ico.png\" border=0>";
+                    $class_name = 'ADA_GROUP_TYPE';
+                    $group_count++;
+                    break;
+                case ADA_LEAF_TYPE:
+                    //$icon = "<img src=\"img/node_ico.png\" border=0>";
+                    $class_name = 'ADA_LEAF_TYPE';
+                    $node_count++;
+                    break;
+                case ADA_NOTE_TYPE:
+                    //$icon = "<img src=\"img/note_ico.png\" border=0>";
+                    $class_name = 'ADA_NOTE_TYPE';
+                    $note_count++;
+                    break;
+                case ADA_PRIVATE_NOTE_TYPE:
+                    //$icon = "<img src=\"img/_nota_pers.png\" border=0>";
+                    $class_name = 'ADA_PRIVATE_NOTE_TYPE';
+                    $note_count++;
+                    break;
+                case ADA_STANDARD_EXERCISE_TYPE:
+                default:
+                    $class_name = 'ADA_STANDARD_EXERCISE_TYPE';
+                    //$icon = "<img src=\"img/exer_ico.png\" border=0>";
+                    $exer_count++;
+            }
+            //$temp_results = array(translateFN("Titolo")=>"<a href=view.php?id_node=$res_id_node&querystring=$s_node_text>$icon $res_name</a>");
+
+            if ($res_type == ADA_GROUP_TYPE || $res_type == ADA_LEAF_TYPE || $res_type == ADA_NOTE_TYPE || $res_type == ADA_PRIVATE_NOTE_TYPE) {
+                $html_for_result = "<span class=\"$class_name\"><a href=\"view.php?id_node=$res_id_node&querystring=$s_node_text\">$res_name</a></span>";
+            }
+            /*else {
+            $html_for_result = "<span class=\"$class_name\"><a href=\"exercise.php?id_node=$res_id_node\">$res_name</a></span>";
+            }*/
+            $temp_results = [translateFN('Titolo') => $html_for_result];
+            //$temp_results = array(translateFN("Titolo")=>$title,translateFN("Testo")=>$res_text);
+            array_push($total_results, $temp_results);
         }
-      //$temp_results = array(translateFN("Titolo")=>"<a href=view.php?id_node=$res_id_node&querystring=$s_node_text>$icon $res_name</a>");
 
-      if( $res_type == ADA_GROUP_TYPE || $res_type == ADA_LEAF_TYPE || $res_type == ADA_NOTE_TYPE || $res_type == ADA_PRIVATE_NOTE_TYPE) {
-          $html_for_result = "<span class=\"$class_name\"><a href=\"view.php?id_node=$res_id_node&querystring=$s_node_text\">$res_name</a></span>";
-}
-/*else {
-$html_for_result = "<span class=\"$class_name\"><a href=\"exercise.php?id_node=$res_id_node\">$res_name</a></span>";
-}*/
-$temp_results = array(translateFN('Titolo') => $html_for_result);
-//$temp_results = array(translateFN("Titolo")=>$title,translateFN("Testo")=>$res_text);
-array_push ($total_results,$temp_results);
-}
-
-$tObj = new Table();
-$tObj->initTable('0','center','2','1','100%','black','white','black','white');
-$summary = translateFN("Elenco dei nodi che soddisfano la ricerca al ") . $ymdhms;
-// $caption = translateFN("Sono stati trovati")." $group_count ".translateFN("gruppi").", $node_count ".translateFN("nodi").", $exer_count ".translateFN("esercizi").", $note_count ".translateFN("note.");
-$caption = translateFN("Sono stati trovati")." $group_count ".translateFN("gruppi").", $node_count ".translateFN("nodi");
-$tObj->setTable($total_results,$caption,$summary);
-$search_results = $tObj->getTable();
-$search_results= preg_replace('/class="/', 'class="'.ADA_SEMANTICUI_TABLECLASS.' ', $search_results, 1); // replace first occurence of class
-// diretto:
-//header("Location: view.php?id_node=$res_id_node");
-}
-else {
-$search_results = translateFN("Non &egrave; stato trovato nessun nodo.");
-}
+        $tObj = new Table();
+        $tObj->initTable('0', 'center', '2', '1', '100%', 'black', 'white', 'black', 'white');
+        $summary = translateFN("Elenco dei nodi che soddisfano la ricerca al ") . $ymdhms;
+        // $caption = translateFN("Sono stati trovati")." $group_count ".translateFN("gruppi").", $node_count ".translateFN("nodi").", $exer_count ".translateFN("esercizi").", $note_count ".translateFN("note.");
+        $caption = translateFN("Sono stati trovati") . " $group_count " . translateFN("gruppi") . ", $node_count " . translateFN("nodi");
+        $tObj->setTable($total_results, $caption, $summary);
+        $search_results = $tObj->getTable();
+        $search_results = preg_replace('/class="/', 'class="' . ADA_SEMANTICUI_TABLECLASS . ' ', $search_results, 1); // replace first occurence of class
+        // diretto:
+        //header("Location: view.php?id_node=$res_id_node");
+    } else {
+        $search_results = translateFN("Non &egrave; stato trovato nessun nodo.");
+    }
 }
 
-$menu = "<p>".translateFN("Scrivi la o le parole che vuoi cercare, scegli quali oggetti cercare, e poi clicca su Cerca.");
-$menu .= "<br>".translateFN("ADA restituir&agrave; una lista con i nodi che contengono TUTTE le parole inserite.");
-$menu .= "<br>".translateFN("Le parole vengono trovate anche all'interno di altre parole, e senza distinzioni tra maiuscole e minuscole.")."</p>";
+$menu = "<p>" . translateFN("Scrivi la o le parole che vuoi cercare, scegli quali oggetti cercare, e poi clicca su Cerca.");
+$menu .= "<br>" . translateFN("ADA restituir&agrave; una lista con i nodi che contengono TUTTE le parole inserite.");
+$menu .= "<br>" . translateFN("Le parole vengono trovate anche all'interno di altre parole, e senza distinzioni tra maiuscole e minuscole.") . "</p>";
 // $menu .= "<br>".translateFN("Se vuoi cercare tra i media collegati (immagini, suoni, siti) usa la ")."<a href=search_media.php>".translateFN("Ricerca sui Media")."</a></p>";
 // $menu .= "<br>".translateFN("Se non sai esattamente cosa cercare, prova a consultare il ")."<a href=lemming.php>".translateFN("Lessico")."</a></p>";
 
@@ -335,101 +330,101 @@ search form
 // versione con campo UNICO
 
 $l_search = 'standard_node';
-$form_dataHa = array(
+$form_dataHa = [
 // SEARCH FIELDS
-array(
-'label'=>translateFN('Parola')."<br>",
-'type'=>'text',
-'name'=>'s_node_text',
-'size'=>'20',
-'maxlength'=>'40',
-'value'=>$s_node_text
-),
-array(
-'label'=>'',
-'type'=>'hidden',
-'name'=>'l_search',
-'value'=>$l_search
-),
-array(
-'label'=>'',
-'type'=>'submit',
-'name'=>'submit',
-'value'=>translateFN('Cerca')
-)
-);
+[
+'label' => translateFN('Parola') . "<br>",
+'type' => 'text',
+'name' => 's_node_text',
+'size' => '20',
+'maxlength' => '40',
+'value' => $s_node_text,
+],
+[
+'label' => '',
+'type' => 'hidden',
+'name' => 'l_search',
+'value' => $l_search,
+],
+[
+'label' => '',
+'type' => 'submit',
+'name' => 'submit',
+'value' => translateFN('Cerca'),
+],
+];
 
 
 // versione con ricerca sui campi specifici:
 if (!isset($s_node_name)) {
-$s_node_name = "";
+    $s_node_name = "";
 }
 if (!isset($s_node_title)) {
-$s_node_title = "";
+    $s_node_title = "";
 }
 if (!isset($s_node_author)) {
-$s_node_author = "";
+    $s_node_author = "";
 }
 // if (!isset($s_node_media))
 // $s_node_media = "";
 if (!isset($s_node_text)) {
-$s_node_text = "";
+    $s_node_text = "";
 }
 if (!isset($checked_standard)) {
-$checked_standard = "";
+    $checked_standard = "";
 }
 if (!isset($checked_note)) {
-$checked_note = "";
+    $checked_note = "";
 }
 if (!isset($checked_all)) {
-$checked_all = "";
+    $checked_all = "";
 }
 
 // vito, 10 june 2009
 
 if ($checked_standard == "" && $checked_note == "" && $checked_all == "") {
-$checked_all = 'checked';
+    $checked_all = 'checked';
 }
 
-$form_dataHa = array(
+$form_dataHa = [
 // SEARCH FIELDS
-array(
-'label'=>translateFN('Nome')."<br>",
-'type'=>'text',
-'name'=>'s_node_name',
-'size'=>'20',
-'maxlength'=>'40',
-'value'=>$s_node_name
-),
-array(
-'label'=>translateFN('Keywords')."<br>",
-'type'=>'text',
-'name'=>'s_node_title',
-'size'=>'20',
-'maxlength'=>'40',
-'value'=>$s_node_title
-),
-array(
-'label'=>translateFN('Testo')."<br>",
-'type'=>'textarea',
-'name'=>'s_node_text',
-'size'=>'40',
-'maxlength'=>'80',
-'value'=>$s_node_text
-),
-array(
-'label'=>'',
-'type'=>'submit',
-'name'=>'submit',
-'value'=>translateFN('Cerca')
-));
+[
+'label' => translateFN('Nome') . "<br>",
+'type' => 'text',
+'name' => 's_node_name',
+'size' => '20',
+'maxlength' => '40',
+'value' => $s_node_name,
+],
+[
+'label' => translateFN('Keywords') . "<br>",
+'type' => 'text',
+'name' => 's_node_title',
+'size' => '20',
+'maxlength' => '40',
+'value' => $s_node_title,
+],
+[
+'label' => translateFN('Testo') . "<br>",
+'type' => 'textarea',
+'name' => 's_node_text',
+'size' => '40',
+'maxlength' => '80',
+'value' => $s_node_text,
+],
+[
+'label' => '',
+'type' => 'submit',
+'name' => 'submit',
+'value' => translateFN('Cerca'),
+]];
 $fObj = new Form();
-$action=whoami().".php";
+$action = whoami() . ".php";
 /*set get method to prevent the confirmation data on back button's browser*/
 $fObj->initForm($action, 'GET');
 $fObj->setForm($form_dataHa);
 $search_form = $fObj->getForm();
-$Simple_searchLink="<a href='search.php'>Ricerca semplice</a>";
+$Simple_searchLink = "<a href='search.php'>Ricerca semplice</a>";
 
 /* 6.
 recupero informazioni aggiornate relative all'utente
@@ -460,37 +455,33 @@ $user_agenda = "";
 // $online_users_listing_mode = 2 : username and email of users
 
 $online_users_listing_mode = 2;
-$online_users = ADALoggableUser::get_online_usersFN($id_course_instance,$online_users_listing_mode);
+$online_users = ADALoggableUser::get_online_usersFN($id_course_instance, $online_users_listing_mode);
 /* 8.
 costruzione della pagina HTML
 */
-$Simple_searchLink="<a href='#'onClick=simpleSearch()>Ricerca semplice</a>";
+$Simple_searchLink = "<a href='#'onClick=simpleSearch()>Ricerca semplice</a>";
 
-$content_dataAr = array(
-  'form'=>$search_form,
-  'results'=>$search_results,
-  'simpleSearch'=>$Simple_searchLink,
-  'menu'=>$menu,
-  'course_title'=>'<a href="main_index.php">'.$course_title.'</a>',
-  'user_name'=>$user_name,
-  'user_type'=>$user_type,
-  'level'=>$user_level,
-  'index'=>$node_index,
-  'title'=>$node_title,
-  'author'=>$node_author,
-  'text'=>$data['text'],
-  'link'=>$data['link'],
-  'messages'=>$user_messages->getHtml(),
-  'agenda'=>$user_agenda->getHtml(),
-  'events'=>$user_events->getHtml(),
-  'chat_users'=>$online_users
-);
+$content_dataAr = [
+  'form' => $search_form,
+  'results' => $search_results,
+  'simpleSearch' => $Simple_searchLink,
+  'menu' => $menu,
+  'course_title' => '<a href="main_index.php">' . $course_title . '</a>',
+  'user_name' => $user_name,
+  'user_type' => $user_type,
+  'level' => $user_level,
+  'index' => $node_index,
+  'title' => $node_title,
+  'author' => $node_author,
+  'text' => $data['text'],
+  'link' => $data['link'],
+  'messages' => $user_messages->getHtml(),
+  'agenda' => $user_agenda->getHtml(),
+  'events' => $user_events->getHtml(),
+  'chat_users' => $online_users,
+];
 
 /**
 * Sends data to the rendering engine
 */
-ARE::render($layout_dataAr,$content_dataAr);
-
-
-?>
-
+ARE::render($layout_dataAr, $content_dataAr);

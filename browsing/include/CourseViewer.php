@@ -7,6 +7,7 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Bookmark\Bookmark;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\substr_gentle;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 use function Lynxlab\ADA\Main\Utilities\ts2tmFN;

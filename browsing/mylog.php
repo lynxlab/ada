@@ -1,16 +1,17 @@
 <?php
+
 /**
  * mylog - this module provides management of a personal diary
  *
  *
  * @package
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright		Copyright (c) 2009-2011, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @author      Stefano Penge <steve@lynxlab.com>
+ * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
+ * @author      Vito Modena <vito@lynxlab.com>
+ * @copyright       Copyright (c) 2009-2011, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link
- * @version		0.2
+ * @version     0.2
  */
 
 use Lynxlab\ADA\CORE\HmtlElements\Form;
@@ -21,6 +22,7 @@ use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_user_from_DB;
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\today_dateFN;
 use function Lynxlab\ADA\Main\Utilities\today_timeFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -33,20 +35,20 @@ require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('layout', 'course', 'course_instance');
+$variableToClearAR = ['layout', 'course', 'course_instance'];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_STUDENT,AMA_TYPE_AUTHOR, AMA_TYPE_TUTOR);
+$allowedUsersAr = [AMA_TYPE_STUDENT,AMA_TYPE_AUTHOR, AMA_TYPE_TUTOR];
 
 /**
  * Get needed objects
  */
-$neededObjAr = array(
-    AMA_TYPE_STUDENT => array('node', 'layout', 'tutor', 'course', 'course_instance'),
-    AMA_TYPE_TUTOR => array('node', 'layout', 'course', 'course_instance'),
-    AMA_TYPE_AUTHOR => array('node', 'layout', 'course')
-);
+$neededObjAr = [
+    AMA_TYPE_STUDENT => ['node', 'layout', 'tutor', 'course', 'course_instance'],
+    AMA_TYPE_TUTOR => ['node', 'layout', 'course', 'course_instance'],
+    AMA_TYPE_AUTHOR => ['node', 'layout', 'course'],
+];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 //$self = whoami();
@@ -67,15 +69,15 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
- * @var array $user_events
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_messages
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_agenda
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -85,15 +87,11 @@ BrowsingHelper::init($neededObjAr);
 if (isset($courseInstanceObj) && $courseInstanceObj instanceof CourseInstance) {
     $self_instruction = $courseInstanceObj->getSelfInstruction();
 }
-if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
-{
-   $self='defaultSelfInstruction';
-}
-else if ($userObj->tipo==AMA_TYPE_AUTHOR) {
-	$self = whoami().'Author';
-}
-else
-{
+if ($userObj->tipo == AMA_TYPE_STUDENT && ($self_instruction)) {
+    $self = 'defaultSelfInstruction';
+} elseif ($userObj->tipo == AMA_TYPE_AUTHOR) {
+    $self = whoami() . 'Author';
+} else {
     $self = whoami();
 }
 
@@ -113,32 +111,32 @@ $ymdhms = today_dateFN();
 //import_request_variables("gP","");
 
 // ******************************************************
-$reg_enabled = TRUE; // link to edit bookmarks
-$log_enabled = TRUE; // link to history
-$mod_enabled = TRUE; // link to modify nod/tes
-$com_enabled = TRUE;  // link to comunicate among users
+$reg_enabled = true; // link to edit bookmarks
+$log_enabled = true; // link to history
+$mod_enabled = true; // link to modify nod/tes
+$com_enabled = true;  // link to comunicate among users
 // Get user object
 $userObj = read_user_from_DB($sess_id_user);
 //print_r($userObj);
 if ((is_object($userObj)) && (!AMA_dataHandler::isError($userObj))) {
-     $id_profile = $userObj->tipo;
-       switch ($id_profile){
+    $id_profile = $userObj->tipo;
+    switch ($id_profile) {
         case AMA_TYPE_TUTOR:
         case AMA_TYPE_STUDENT:
         case AMA_TYPE_AUTHOR:
-           break;
+            break;
         case AMA_TYPE_ADMIN:
             $homepage = $http_root_dir . "/browsing/student.php";
             $msg =   urlencode(translateFN("Ridirezionamento automatico"));
             header("Location: $homepage?err_msg=$msg");
             exit;
             break;
-        }
-        $user_type = $userObj->convertUserTypeFN($id_profile);
-        $user_name =  $userObj->username;
-        $user_family = $userObj->template_family;
+    }
+    $user_type = $userObj->convertUserTypeFN($id_profile);
+    $user_name =  $userObj->username;
+    $user_family = $userObj->template_family;
 } else {
-$errObj = new ADA_error(translateFN("Utente non trovato"),translateFN("Impossibile proseguire."));
+    $errObj = new ADA_error(translateFN("Utente non trovato"), translateFN("Impossibile proseguire."));
 }
 
 // set the  title:
@@ -150,58 +148,53 @@ $public_dir = "/services/media/";
 // a public access directory where log files can be written
 // building file name
 
-if (isset($sess_id_course) and  (!($sess_id_course==""))) {
-// finding course's author
-	$course_ha = $dh->get_course($sess_id_course);
-	if (AMA_DataHandler::isError($course_ha)){ // not enrolled yet?
-        	$msg = $course_ha->getMessage();
-        	header("Location: " . $http_root_dir . "/browsing/student.php?status=$msg");
-	}
-	// look for the author, starting from author's id
-	$author_id = $course_ha['id_autore'];
-	if ($mylog_mode == 1){
-		// a log file for every instance of course in which user is enrolled in:
-		// id_course_instance + user_id
-		$name_tmp = 'log_'.$sess_id_course_instance . "_" . $sess_id_user . $log_extension;
-	} else { // default
-		// only 1 log file for user:
-		$name_tmp = 'log_'.$sess_id_user.$log_extension;
-	}
+if (isset($sess_id_course) and  (!($sess_id_course == ""))) {
+    // finding course's author
+    $course_ha = $dh->get_course($sess_id_course);
+    if (AMA_DataHandler::isError($course_ha)) { // not enrolled yet?
+        $msg = $course_ha->getMessage();
+        header("Location: " . $http_root_dir . "/browsing/student.php?status=$msg");
+    }
+    // look for the author, starting from author's id
+    $author_id = $course_ha['id_autore'];
+    if ($mylog_mode == 1) {
+        // a log file for every instance of course in which user is enrolled in:
+        // id_course_instance + user_id
+        $name_tmp = 'log_' . $sess_id_course_instance . "_" . $sess_id_user . $log_extension;
+    } else { // default
+        // only 1 log file for user:
+        $name_tmp = 'log_' . $sess_id_user . $log_extension;
+    }
 
-	$logfile = $root_dir . "/services/media/" . $author_id . "/" . $name_tmp;
+    $logfile = $root_dir . "/services/media/" . $author_id . "/" . $name_tmp;
 } else {
-	$logfile = $root_dir . $public_dir . "log".$sess_id_user.$log_extension;
+    $logfile = $root_dir . $public_dir . "log" . $sess_id_user . $log_extension;
 }
 
-if (!file_exists($logfile))
-	$fp = fopen($logfile,'w');
+if (!file_exists($logfile)) {
+    $fp = fopen($logfile, 'w');
+}
 
 //set the  body:
 
-if (isset($_POST['Submit']))
-{
-
-    if (isset($_POST['log_today']))
-    {
-       $log = $_POST['log_text']."<br/>".$_POST['log_today'];
-       $i = fopen($logfile,'w');
-       if (get_magic_quotes_gpc()) {
-	       $res = fwrite($i,stripslashes($log));
-	}else{
-	       $res = fwrite($i,$log);
-	}
-       $res = fclose($i);
-   }
+if (isset($_POST['Submit'])) {
+    if (isset($_POST['log_today'])) {
+        $log = $_POST['log_text'] . "<br/>" . $_POST['log_today'];
+        $i = fopen($logfile, 'w');
+        $res = fwrite($i, $log);
+        $res = fclose($i);
+    }
     $msg = translateFN("Le informazioni sono state registrate.");
 }
 // } else {
 
-if ($fp = fopen($logfile,'r'))
-	$log_text = fread ($fp,16000);
-else
-	$log_text = "";
+if ($fp = fopen($logfile, 'r')) {
+    $log_text = fread($fp, 16000);
+} else {
+    $log_text = "";
+}
 fclose($fp);
-if (isset($op) && ($op=="export")){
+if (isset($op) && ($op == "export")) {
     header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
     // always modified
@@ -217,37 +210,37 @@ if (isset($op) && ($op=="export")){
 } else {
     $date = today_dateFN() . " " . today_timeFN() . "\n";
     $log_form = new Form();
-    $log_data= array(
-    array(
-        'label'=>"",
-        'type'=>'textarea',
-        'name'=>'log_today',
-        'rows'=>'10',
-        'cols'=>'80',
-        'wrap'=>'virtual',
-	'value'=>$date
-        ),
-    array(
-        'label'=>"",
-        'type'=>'hidden',
-        'name'=>'log_text',
-        'value'=>$log_text
-        ),
-    array(
-        'label'=>'',
-        'type'=>'submit',
-        'name'=>'Submit',
-        'value'=>'Salva'
-        )
-    );
+    $log_data = [
+    [
+        'label' => "",
+        'type' => 'textarea',
+        'name' => 'log_today',
+        'rows' => '10',
+        'cols' => '80',
+        'wrap' => 'virtual',
+    'value' => $date,
+        ],
+    [
+        'label' => "",
+        'type' => 'hidden',
+        'name' => 'log_text',
+        'value' => $log_text,
+        ],
+    [
+        'label' => '',
+        'type' => 'submit',
+        'name' => 'Submit',
+        'value' => 'Salva',
+        ],
+    ];
 
-   $log_form->initForm("$http_root_dir/browsing/mylog.php","POST","multipart/form-data");
-   $log_form->setForm($log_data);
-   $log_data = $log_form->getForm();
-   $log_data.= $log_text;
+    $log_form->initForm("$http_root_dir/browsing/mylog.php", "POST", "multipart/form-data");
+    $log_form->setForm($log_data);
+    $log_data = $log_form->getForm();
+    $log_data .= $log_text;
 }
 
-$export_log_link = "<a href=$http_root_dir/browsing/mylog.php?op=export>".translateFN("Esporta")."</a><br/>";
+$export_log_link = "<a href=$http_root_dir/browsing/mylog.php?op=export>" . translateFN("Esporta") . "</a><br/>";
 
 // Who's online
 // $online_users_listing_mode = 0 (default) : only total numer of users online
@@ -255,7 +248,7 @@ $export_log_link = "<a href=$http_root_dir/browsing/mylog.php?op=export>".transl
 // $online_users_listing_mode = 2  : username and email of users
 
 $online_users_listing_mode = 2;
-$online_users = ADALoggableUser::get_online_usersFN($sess_id_course_instance,$online_users_listing_mode);
+$online_users = ADALoggableUser::get_online_usersFN($sess_id_course_instance, $online_users_listing_mode);
 
 
 /*
@@ -273,24 +266,23 @@ else {
 
 $menu = $export_log_link;
 // vito 19 gennaio 2009
-if(isset($sess_id_course_instance) && !empty($sess_id_course_instance)) {
-  $last_visited_node_id = $userObj->get_last_accessFN($sess_id_course_instance,"N");
-  $node_path = $nodeObj->findPathFN();
-}
-else {
-  $last_visited_node_id = '';
+if (isset($sess_id_course_instance) && !empty($sess_id_course_instance)) {
+    $last_visited_node_id = $userObj->get_last_accessFN($sess_id_course_instance, "N");
+    $node_path = $nodeObj->findPathFN();
+} else {
+    $last_visited_node_id = '';
 }
 $last_node_visited = "";
-if  (!empty($last_visited_node_id)){
-           $last_node = $dh->get_node_info($last_visited_node_id);
-           if (!AMA_DB::isError($last_node)) {
-	           $last_visited_node_name = $last_node['name'];
-	           $last_node_visited = "<a href=view.php?id_node=$last_visited_node_id>".translateFN("torna")."</a><br>";
-           }
+if (!empty($last_visited_node_id)) {
+    $last_node = $dh->get_node_info($last_visited_node_id);
+    if (!AMA_DB::isError($last_node)) {
+        $last_visited_node_name = $last_node['name'];
+        $last_node_visited = "<a href=view.php?id_node=$last_visited_node_id>" . translateFN("torna") . "</a><br>";
+    }
 }
 
 
-$menu.= $last_node_visited;
+$menu .= $last_node_visited;
 
 
 $help = translateFN("Nel Diario si possono inserire i propri commenti privati, oppure esportarli per conservarli.");
@@ -302,16 +294,15 @@ $help = translateFN("Nel Diario si possono inserire i propri commenti privati, o
  * Last access link
  */
 
-if(isset($_SESSION['sess_id_course_instance'])){
-    $last_access=$userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']),"UT",null);
-    $last_access=AMA_DataHandler::ts_to_date($last_access);
-  }
-  else {
-    $last_access=$userObj->get_last_accessFN(null,"UT",null);
-    $last_access=AMA_DataHandler::ts_to_date($last_access);
-  }
- if($last_access=='' || is_null($last_access)){
-    $last_access='-';
+if (isset($_SESSION['sess_id_course_instance'])) {
+    $last_access = $userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']), "UT", null);
+    $last_access = AMA_DataHandler::ts_to_date($last_access);
+} else {
+    $last_access = $userObj->get_last_accessFN(null, "UT", null);
+    $last_access = AMA_DataHandler::ts_to_date($last_access);
+}
+if ($last_access == '' || is_null($last_access)) {
+    $last_access = '-';
 }
 
 /* 3.
@@ -334,52 +325,55 @@ HTML page building
 
 */
 
-         $body_onload = "includeFCKeditor('log_today');";
-         $options = array('onload_func' => $body_onload);
+$body_onload = "includeFCKeditor('log_today');";
+$options = ['onload_func' => $body_onload];
 
-         if ($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))  {
-         	$layout_dataAR['JS_filename'] = array(
-	        ROOT_DIR.'/js/browsing/mylog.js');   //for defaultSelfInstruction.tpl
-	     } else $layout_dataAR = array();
-
-$node_data = array(
-                   'course_title'=>'<a href="main_index.php">'.$course_title.'</a>',
-                   'today'=>$ymdhms,
-                   'path'=>isset($node_path) ? $node_path : '',
-                   'user_name'=>$userObj->nome,
-                   'user_type'=>$user_type,
-                   'user_level'=>$user_level,
-                   'last_visit'=>$last_access,
-                   'data'=>$log_data,
-		   'menu'=>$menu,
-		   'help'=>$help,
-                   'bookmarks'=>isset($user_bookmarks) ? $user_bookmarks : '',
-                   'status'=>$status,
-                   'profilo'=>isset($profilo) ? $profilo : '',
-                   'myforum'=>isset($my_forum) ? $my_forum : '',
-                   'title'=>isset($node_title) ? $node_title : '',
-                   'edit_profile'=> $userObj->getEditProfilePage()
-                  );
-
-                   if ($com_enabled){
-                       $node_data['messages']=$user_messages->getHtml();
-                       $node_data['agenda']=$user_agenda->getHtml();
-                       $node_data['events']=$user_events->getHtml();
-                       $node_data['chat_users']=$online_users;
-                   } else {
-                       $node_data['messages'] = translateFN("messaggeria non abilitata");
-                       $node_data['agenda']=translateFN("agenda non abilitata");
-                       $node_data['chat_users']="";
-                   }
- if(isset($msg))
-{
-    $help=CDOMElement::create('label');
-    $help->addChild(new CText(translateFN(ltrim($msg))));
-    $node_data['help']=$help->getHtml();
+if ($userObj->tipo == AMA_TYPE_STUDENT && ($self_instruction)) {
+    $layout_dataAR['JS_filename'] = [
+    ROOT_DIR . '/js/browsing/mylog.js'];   //for defaultSelfInstruction.tpl
+} else {
+    $layout_dataAR = [];
 }
 
-if(isset($self_instruction)) $menuOptions['self_instruction'] = $self_instruction;
-ARE::render($layout_dataAR,$node_data, NULL, $options,isset($menuOptions) ? $menuOptions : null);
+$node_data = [
+                   'course_title' => '<a href="main_index.php">' . $course_title . '</a>',
+                   'today' => $ymdhms,
+                   'path' => $node_path ?? '',
+                   'user_name' => $userObj->nome,
+                   'user_type' => $user_type,
+                   'user_level' => $user_level,
+                   'last_visit' => $last_access,
+                   'data' => $log_data,
+           'menu' => $menu,
+           'help' => $help,
+                   'bookmarks' => $user_bookmarks ?? '',
+                   'status' => $status,
+                   'profilo' => $profilo ?? '',
+                   'myforum' => $my_forum ?? '',
+                   'title' => $node_title ?? '',
+                   'edit_profile' => $userObj->getEditProfilePage(),
+                  ];
+
+if ($com_enabled) {
+    $node_data['messages'] = $user_messages->getHtml();
+    $node_data['agenda'] = $user_agenda->getHtml();
+    $node_data['events'] = $user_events->getHtml();
+    $node_data['chat_users'] = $online_users;
+} else {
+    $node_data['messages'] = translateFN("messaggeria non abilitata");
+    $node_data['agenda'] = translateFN("agenda non abilitata");
+    $node_data['chat_users'] = "";
+}
+if (isset($msg)) {
+    $help = CDOMElement::create('label');
+    $help->addChild(new CText(translateFN(ltrim($msg))));
+    $node_data['help'] = $help->getHtml();
+}
+
+if (isset($self_instruction)) {
+    $menuOptions['self_instruction'] = $self_instruction;
+}
+ARE::render($layout_dataAR, $node_data, null, $options, $menuOptions ?? null);
 
 /* Versione XML:
 
@@ -388,5 +382,3 @@ ARE::render($layout_dataAR,$node_data, NULL, $options,isset($menuOptions) ? $men
  $xmlObj->outputFN('page','XML');
 
 */
-
-?>

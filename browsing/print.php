@@ -3,20 +3,21 @@
 /**
  * VIEW.
  *
- * @package		view
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @author 		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2009, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link		view
- * @version		0.1
+ * @package     view
+ * @author      Stefano Penge <steve@lynxlab.com>
+ * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
+ * @author      Vito Modena <vito@lynxlab.com>
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2009, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @link        view
+ * @version     0.1
  */
 
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\User\ADAGuest;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -27,21 +28,21 @@ require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_VISITOR, AMA_TYPE_STUDENT, AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR);
+$allowedUsersAr = [AMA_TYPE_VISITOR, AMA_TYPE_STUDENT, AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR];
 
 /**
  * Get needed objects
  */
-$neededObjAr = array(
-    AMA_TYPE_VISITOR => array('node', 'layout', 'course'),
-    AMA_TYPE_STUDENT => array('node', 'layout', 'tutor', 'course', 'course_instance'),
-    AMA_TYPE_TUTOR => array('node', 'layout', 'course', 'course_instance'),
-    AMA_TYPE_AUTHOR => array('node', 'layout', 'course')
-);
+$neededObjAr = [
+    AMA_TYPE_VISITOR => ['node', 'layout', 'course'],
+    AMA_TYPE_STUDENT => ['node', 'layout', 'tutor', 'course', 'course_instance'],
+    AMA_TYPE_TUTOR => ['node', 'layout', 'course', 'course_instance'],
+    AMA_TYPE_AUTHOR => ['node', 'layout', 'course'],
+];
 
 //FIXME: course_instance is needed by videochat BUT not for guest user
 
@@ -67,15 +68,15 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
- * @var array $user_events
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_messages
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_agenda
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -117,40 +118,44 @@ if ($userObj instanceof ADAGuest) {
  */
 
 // node
-	$id_node = $nodeObj->id;
-	$node_type = $nodeObj->type;
-	$node_title = $nodeObj->name;
-	$node_keywords = ltrim($nodeObj->title);
-	$node_level = $nodeObj->level;
-	$node_date = $nodeObj->creation_date;
-	$node_icon = $nodeObj->icon;
-	$node_version = $nodeObj->version;
-	if (is_array($nodeObj->author)) {
-		$authorHa = $nodeObj->author;
-		$node_author_id = $authorHa['id'];
-		$node_author = $authorHa['nome'] . " " . $authorHa['cognome'];
-		$author_uname = $authorHa['username'];
-	} else {
-		$node_author = "";
-		$author_uname = "";
-	}
-	$node_parent = $nodeObj->parent_id;
-	$node_path = $nodeObj->findPathFN();
-	$node_index = $nodeObj->indexFN('', 1, $user_level, $user_history, $id_profile);
-	$node_family = $nodeObj->template_family;
-	$next_node_id = $nodeObj->next_id;
-	$sess_id_node = $id_node;
-	$data = $nodeObj->filter_nodeFN($user_level, $user_history, $id_profile, '');
+$id_node = $nodeObj->id;
+$node_type = $nodeObj->type;
+$node_title = $nodeObj->name;
+$node_keywords = ltrim($nodeObj->title);
+$node_level = $nodeObj->level;
+$node_date = $nodeObj->creation_date;
+$node_icon = $nodeObj->icon;
+$node_version = $nodeObj->version;
+if (is_array($nodeObj->author)) {
+    $authorHa = $nodeObj->author;
+    $node_author_id = $authorHa['id'];
+    $node_author = $authorHa['nome'] . " " . $authorHa['cognome'];
+    $author_uname = $authorHa['username'];
+} else {
+    $node_author = "";
+    $author_uname = "";
+}
+$node_parent = $nodeObj->parent_id;
+$node_path = $nodeObj->findPathFN();
+$node_index = $nodeObj->indexFN('', 1, $user_level, $user_history, $id_profile);
+$node_family = $nodeObj->template_family;
+$next_node_id = $nodeObj->next_id;
+$sess_id_node = $id_node;
+$data = $nodeObj->filter_nodeFN($user_level, $user_history, $id_profile, '');
 
 
 // info on author and tutor
 if (isset($tutor_uname) && isset($tutor_id)) {
-	$tutor_info_link = "<a href=\"$http_root_dir/admin/zoom_user.php?id=$tutor_id\">$tutor_uname</a>";
-} else $tutor_info_link = '';
+    $tutor_info_link = "<a href=\"$http_root_dir/admin/zoom_user.php?id=$tutor_id\">$tutor_uname</a>";
+} else {
+    $tutor_info_link = '';
+}
 
 if (isset($node_author) && isset($node_author_id)) {
-	$author_info_link = "<a href=\"$http_root_dir/admin/zoom_user.php?id=$node_author_id\">$node_author</a>";
-} else $author_info_link = '';
+    $author_info_link = "<a href=\"$http_root_dir/admin/zoom_user.php?id=$node_author_id\">$node_author</a>";
+} else {
+    $author_info_link = '';
+}
 
 
 
@@ -159,36 +164,36 @@ $eportal = PORTAL_NAME;
 
 // banner
 
-		//show course istance name if isn't empty - valerio
-		if (!empty($courseInstanceObj->title)) {
-			$course_title .= ' - '.$courseInstanceObj->title;
-		}
+//show course istance name if isn't empty - valerio
+if (!empty($courseInstanceObj->title)) {
+    $course_title .= ' - ' . $courseInstanceObj->title;
+}
 
 /**
  * content_data
  * @var array
  */
-$content_dataAr = array(
-	'eportal' => $eportal,
-	'course_title' => "<a href='main_index.php'>" . $course_title . "</a>",
-	'user_name' => $user_name,
-	'user_type' => $user_type,
-	'user_level' => $user_level,
-	'user_score' => $user_score,
-	'status' => $status,
-	'node_level' => $node_level,
-	'visited' => isset($visited) ? $visited : '',
-	'path' => $node_path,
-	'title' => $node_title,
-	'version' => $node_version,
-	'date' => $node_date,
-	// FIXME: non esiste ancora...??
-	//	 'icon' => CourseViewer::getClassNameForNodeType($node_type),
-	'icon' => $node_icon,
-	'keywords' => "<a href=\"search.php?s_node_title=$node_keywords&submit=cerca&l_search=all\">$node_keywords</a>",
-	'author' => $author_info_link, //'author'=>$node_author,
-	'tutor' => $tutor_info_link //'tutor'=>$tutor_uname,
-);
+$content_dataAr = [
+    'eportal' => $eportal,
+    'course_title' => "<a href='main_index.php'>" . $course_title . "</a>",
+    'user_name' => $user_name,
+    'user_type' => $user_type,
+    'user_level' => $user_level,
+    'user_score' => $user_score,
+    'status' => $status,
+    'node_level' => $node_level,
+    'visited' => $visited ?? '',
+    'path' => $node_path,
+    'title' => $node_title,
+    'version' => $node_version,
+    'date' => $node_date,
+    // FIXME: non esiste ancora...??
+    //   'icon' => CourseViewer::getClassNameForNodeType($node_type),
+    'icon' => $node_icon,
+    'keywords' => "<a href=\"search.php?s_node_title=$node_keywords&submit=cerca&l_search=all\">$node_keywords</a>",
+    'author' => $author_info_link, //'author'=>$node_author,
+    'tutor' => $tutor_info_link, //'tutor'=>$tutor_uname,
+];
 
 //dynamic data from $nodeObj->filter_nodeFN
 
@@ -197,56 +202,56 @@ $content_dataAr['text'] = $data['text'];
  * $data should NOT contain a translated string for null values but just NULL
  */
 
-    if ($data['link']!= translateFN("Nessuno")) {
-            $content_dataAr['link'] = $data['link'];
-	} else {
-            $content_dataAr['link'] = "";
-	}
+if ($data['link'] != translateFN("Nessuno")) {
+    $content_dataAr['link'] = $data['link'];
+} else {
+    $content_dataAr['link'] = "";
+}
 $content_dataAr['media'] = $data['media'];
 $content_dataAr['user_media'] = $data['user_media'];
-    if ($data['exercises']!= translateFN("Nessuno<p>"))  {
-            $content_dataAr['exercises'] = $data['exercises'];
-	} else {
-            $content_dataAr['exercises'] = "";
-	}
-	if ($node_index!= translateFN("Nessuno<p>"))  {
-	    $content_dataAr['index'] = $node_index;
-	} else {
-	    $content_dataAr['index'] = "";
-        }
+if ($data['exercises'] != translateFN("Nessuno<p>")) {
+    $content_dataAr['exercises'] = $data['exercises'];
+} else {
+    $content_dataAr['exercises'] = "";
+}
+if ($node_index != translateFN("Nessuno<p>")) {
+    $content_dataAr['index'] = $node_index;
+} else {
+    $content_dataAr['index'] = "";
+}
 $content_dataAr['notes'] = $data['notes'];
 $content_dataAr['personal'] = $data['private_notes'];
-if ($node_type == ADA_GROUP_WORD_TYPE OR $node_type == ADA_LEAF_WORD_TYPE) {
-	$content_dataAr['text'] .= $data['extended_node'];
-	/*
-	 * generate dattilo images DISABLED IN ADA
+if ($node_type == ADA_GROUP_WORD_TYPE or $node_type == ADA_LEAF_WORD_TYPE) {
+    $content_dataAr['text'] .= $data['extended_node'];
+    /*
+     * generate dattilo images DISABLED IN ADA
 
-	$img_dir = $root_dir.'/browsing/dattilo/img';
-	$url_dir = $http_root_dir.'/browsing/dattilo/img';
-	if (file_exists($img_dir.'/a.jpg')) {
-		$dattilo = converti_dattiloFN($node_title,$url_dir);
-		$content_dataAr['dattilo'] = $dattilo;
-	}
-	* */
+    $img_dir = $root_dir.'/browsing/dattilo/img';
+    $url_dir = $http_root_dir.'/browsing/dattilo/img';
+    if (file_exists($img_dir.'/a.jpg')) {
+        $dattilo = converti_dattiloFN($node_title,$url_dir);
+        $content_dataAr['dattilo'] = $dattilo;
+    }
+    * */
 }
 
-$PRINT_optionsAr = array(
-		'id'=>$id_node,
-		/**
-		 * @author giorgio 10/dic/2014
-		 *
-		 * maybe someone meant the full current document url with the following?
-		 *
-		 * 'url'=>$_SERVER['URI'],
-		 *
-		 * find below correct code:
-		 */
-		'url'=> HTTP_ROOT_DIR . '/' . $_SERVER['REQUEST_URI'],
-		'course_title' => strip_tags($content_dataAr['course_title']),
-		'portal' => $eportal,
-		'onload_func' => 'window.print();'
-);
+$PRINT_optionsAr = [
+        'id' => $id_node,
+        /**
+         * @author giorgio 10/dic/2014
+         *
+         * maybe someone meant the full current document url with the following?
+         *
+         * 'url'=>$_SERVER['URI'],
+         *
+         * find below correct code:
+         */
+        'url' => HTTP_ROOT_DIR . '/' . $_SERVER['REQUEST_URI'],
+        'course_title' => strip_tags($content_dataAr['course_title']),
+        'portal' => $eportal,
+        'onload_func' => 'window.print();',
+];
 
-$layout_dataAR = array();
+$layout_dataAR = [];
 
-ARE::render($layout_dataAR,$content_dataAr, ARE_PRINT_RENDER, $PRINT_optionsAr);
+ARE::render($layout_dataAR, $content_dataAr, ARE_PRINT_RENDER, $PRINT_optionsAr);

@@ -1,15 +1,16 @@
 <?php
+
 /**
  * Practitioner's profile
  *
  * @package
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2009-2010, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @author      Stefano Penge <steve@lynxlab.com>
+ * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
+ * @author      Vito Modena <vito@lynxlab.com>
+ * @copyright   Copyright (c) 2009-2010, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link
- * @version		0.1
+ * @version     0.1
  */
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
@@ -19,29 +20,30 @@ use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
+require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'course_instance');
+$variableToClearAR = ['node', 'layout', 'course', 'course_instance'];
 
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_STUDENT);
+$allowedUsersAr = [AMA_TYPE_STUDENT];
 /**
  * Performs basic controls before entering this module
  */
-$neededObjAr = array(
-  AMA_TYPE_STUDENT => array('layout')
-);
+$neededObjAr = [
+  AMA_TYPE_STUDENT => ['layout'],
+];
 
-require_once ROOT_DIR.'/include/module_init.inc.php';
+require_once ROOT_DIR . '/include/module_init.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -59,15 +61,15 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
- * @var array $user_events
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_messages
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_agenda
+ * @var \Lynxlab\ADA\CORE\html4\CElement $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -76,30 +78,28 @@ BrowsingHelper::init($neededObjAr);
 
 $self =  whoami();
 
-if(isset($_GET['id']) && DataValidator::is_uinteger($_GET['id'])) {
-  $tutorObj = MultiPort::findUser($_GET['id']);
-  if ($tutorObj instanceof ADAPractitioner) {
-    $dati = CDOMElement::create('div');
-    $fullname = CDOMElement::create('div');
-    $fullname->addChild(new CText(translateFN('User: ') . ' ' . $tutorObj->getFullName()));
-    $username = CDOMElement::create('div');
-    $username->addChild(new CText(translateFN('Username: ') . ' ' . $tutorObj->getUserName()));
-    $tutorProfile = $tutorObj->getProfile();
-    if($tutorProfile == 'NULL') {
-      $tutorProfile = '';
+if (isset($_GET['id']) && DataValidator::is_uinteger($_GET['id'])) {
+    $tutorObj = MultiPort::findUser($_GET['id']);
+    if ($tutorObj instanceof ADAPractitioner) {
+        $dati = CDOMElement::create('div');
+        $fullname = CDOMElement::create('div');
+        $fullname->addChild(new CText(translateFN('User: ') . ' ' . $tutorObj->getFullName()));
+        $username = CDOMElement::create('div');
+        $username->addChild(new CText(translateFN('Username: ') . ' ' . $tutorObj->getUserName()));
+        $tutorProfile = $tutorObj->getProfile();
+        if ($tutorProfile == 'NULL') {
+            $tutorProfile = '';
+        }
+        $profile = CDOMElement::create('div');
+        $profile->addChild(new CText(translateFN('Profile: ') . ' ' . $tutorProfile));
+        $dati->addChild($fullname);
+        $dati->addChild($username);
+        $dati->addChild($profile);
+    } else {
+        header('Location: ' . $userObj->getHomePage());
     }
-    $profile = CDOMElement::create('div');
-    $profile->addChild(new CText(translateFN('Profile: ') . ' ' . $tutorProfile));
-    $dati->addChild($fullname);
-    $dati->addChild($username);
-    $dati->addChild($profile);
-  }
-  else {
+} else {
     header('Location: ' . $userObj->getHomePage());
-  }
-}
-else {
-  header('Location: ' . $userObj->getHomePage());
 }
 
 $help   = '';
@@ -109,25 +109,24 @@ $menu = '';
 
 $label = translateFN("practitioner's profile");
 
-$home_link = CDOMElement::create('a','href:user.php');
+$home_link = CDOMElement::create('a', 'href:user.php');
 $home_link->addChild(new CText(translateFN("Home dell'Utente")));
 $module = $home_link->getHtml() . ' > ' . $label;
 
 $title = translateFN("ADA - practitioner's profile");
 
-$content_dataAr = array(
+$content_dataAr = [
   'menu'      => $menu,
   'iscrivi'   => $dati->getHtml(),
   'help'      => $help,
   'status'    => $status,
-  'label'	  => $label,
+  'label'     => $label,
   'course_title' => $module,
   'user_name' => $user_name,
   'user_type' => $user_type,
   'messages'  => $user_messages->getHtml(),
   'agenda'    => $user_agenda->getHtml(),
   'events'    => $user_events->getHtml(),
-);
+];
 
 ARE::render($layout_dataAr, $content_dataAr);
-?>
