@@ -4,47 +4,49 @@
  * videoroom abstract class
  *
  * @package             videochat
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		giorgio consorti <g.conorti@lynxlab.com>
+ * @author      Stefano Penge <steve@lynxlab.com>
+ * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
+ * @author      giorgio consorti <g.conorti@lynxlab.com>
  * @copyright           Copyright (c) 2015, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link
- * @version		0.1
+ * @version     0.1
  */
 
-abstract class videoroom
+namespace Lynxlab\ADA\Comunica\VideoRoom;
+
+abstract class VideoRoom
 {
-    var $id;
-    var $id_room;
-    var $id_istanza_corso;
-    var $id_tutor;
-    var $tipo_videochat;
-    var $descrizione_videochat;
-    var $tempo_avvio;
-    var $tempo_fine;
-    var $full;
+    public $id;
+    public $id_room;
+    public $id_istanza_corso;
+    public $id_tutor;
+    public $tipo_videochat;
+    public $descrizione_videochat;
+    public $tempo_avvio;
+    public $tempo_fine;
+    public $full;
 
-    var $client_user;
-    var $session_id;
-    var $login;
-    var $error_videochat;
+    public $client_user;
+    public $session_id;
+    public $login;
+    public $error_videochat;
 
-    var $client_room;
-    var $roomTypes;
-    var $rooms; // elenco stanze disponibili sul server
-    var $link_to_room;
-    var $room_properties;
-    var $list_room; // elenco stanze disponibili sul server
+    public $client_room;
+    public $roomTypes;
+    public $rooms; // elenco stanze disponibili sul server
+    public $link_to_room;
+    public $room_properties;
+    public $list_room; // elenco stanze disponibili sul server
 
-    const EVENT_ENTER = 1;
-    const EVENT_EXIT = 2;
+    public const EVENT_ENTER = 1;
+    public const EVENT_EXIT = 2;
 
     public function __construct($id_course_instance = "")
     {
         $dh            =   $GLOBALS['dh'];
         $error         =   $GLOBALS['error'];
-        $debug         =   isset($GLOBALS['debug']) ? $GLOBALS['debug'] : null;
+        $debug         =   $GLOBALS['debug'] ?? null;
         $root_dir      =   $GLOBALS['root_dir'];
         $http_root_dir =   $GLOBALS['http_root_dir'];
     }
@@ -63,11 +65,11 @@ abstract class videoroom
     /*
      * retrieve infos about room memorized in local DB
      */
-    public function videoroom_info($id_course_instance, $tempo_avvio = NULL, $interval = NULL, $more_query = NULL)
+    public function videoroom_info($id_course_instance, $tempo_avvio = null, $interval = null, $more_query = null)
     {
         $dh            =   $GLOBALS['dh'];
         $error         =   $GLOBALS['error'];
-        $debug         =   isset($GLOBALS['debug']) ? $GLOBALS['debug'] : null;
+        $debug         =   $GLOBALS['debug'] ?? null;
         $root_dir      =   $GLOBALS['root_dir'];
         $http_root_dir =   $GLOBALS['http_root_dir'];
         $video_roomAr = $dh->get_videoroom_info($id_course_instance, $tempo_avvio, $more_query);
@@ -89,20 +91,23 @@ abstract class videoroom
 
     public static function xml_attribute($object, $attribute)
     {
-        if (isset($object[$attribute]))
+        if (isset($object[$attribute])) {
             return (string) $object[$attribute];
+        }
     }
 
-    public function logEnter($eventData = null) {
+    public function logEnter($eventData = null)
+    {
         return $this->logEvent(self::EVENT_ENTER, $eventData);
-
     }
 
-    public function logExit($eventData = null) {
+    public function logExit($eventData = null)
+    {
         return $this->logEvent(self::EVENT_EXIT, $eventData);
     }
 
-    protected function logEvent ($event, $eventData = null) {
+    protected function logEvent($event, $eventData = null)
+    {
         if (is_null($eventData)) {
             $eventData = [
                 'event' => $event,
@@ -115,34 +120,29 @@ abstract class videoroom
         return $GLOBALS['dh']->log_videoroom($eventData);
     }
 
-    public static function getInstanceLog($id_course_instance, $id_room = null, $id_user = null) {
+    public static function getInstanceLog($id_course_instance, $id_room = null, $id_user = null)
+    {
         return $GLOBALS['dh']->get_log_videoroom($id_course_instance, $id_room, $id_user);
     }
 
-    public function getLogoutUrlParams() {
-        return '?p='.$_SESSION['sess_selected_tester'].
-        '&id_user='.$_SESSION['sess_userObj']->getId().
-        '&id_room='.$this->id_room.
-        '&id_istanza_corso='.$this->id_istanza_corso.
-        '&ist='.intval($_SESSION['sess_userObj']->getId() == $this->id_tutor);
+    public function getLogoutUrlParams()
+    {
+        return '?p=' . $_SESSION['sess_selected_tester'] .
+        '&id_user=' . $_SESSION['sess_userObj']->getId() .
+        '&id_room=' . $this->id_room .
+        '&id_istanza_corso=' . $this->id_istanza_corso .
+        '&ist=' . intval($_SESSION['sess_userObj']->getId() == $this->id_tutor);
     }
 
-    public static function initialToDescr($initial) {
+    public static function initialToDescr($initial)
+    {
         if ($initial === 'J') {
             return 'Jitsi Meet';
-        } else if ($initial === 'Z') {
+        } elseif ($initial === 'Z') {
             return 'Zoom';
-        } else if ($initial === 'B') {
+        } elseif ($initial === 'B') {
             return 'BigBlueButton';
         }
         return translateFN('Sconosciuto');
     }
-}
-
-interface iVideoRoom
-{
-    public function addRoom($name = 'service', $sess_id_course_instance, $sess_id_user, $comment = 'Inserimento automatico via ADA', $num_user = 25, $course_title = 'service', $selected_provider=ADA_PUBLIC_TESTER);
-    public function serverLogin();
-    public function roomAccess($username, $nome, $cognome, $user_email, $sess_id_user, $id_profile, $selected_provider);
-    public function getRoom($id_room);
 }
