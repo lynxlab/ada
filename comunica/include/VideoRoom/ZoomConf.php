@@ -1,8 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\ZoomIntegration\ZoomAPIWrapper;
-use Lynxlab\ADA\Module\ZoomIntegration\ZoomIntegrationException;
-
 /**
  * Zoom Conference specific class
  *
@@ -11,16 +8,21 @@ use Lynxlab\ADA\Module\ZoomIntegration\ZoomIntegrationException;
  * @author    Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
  * @author    giorgio consorti <g.conorti@lynxlab.com>
  * @copyright Copyright (c) 2020, Lynx s.r.l.
- * @license	  http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link
- * @version	  0.1
+ * @version   0.1
  */
 
-class ZoomConf extends videoroom implements iVideoRoom
-{
+namespace Lynxlab\ADA\Comunica\VideoRoom;
 
-    const iframeAttr = ' class=\'ada-videochat-embed zoom\' allowfullscreen allow=\'camera; microphone;\' sandbox=\'allow-forms allow-scripts allow-same-origin\'';
-    const videochattype = 'Z';
+use Lynxlab\ADA\Module\ZoomIntegration\ADAZoomApi;
+use Lynxlab\ADA\Module\ZoomIntegration\ZoomAPIWrapper;
+use Lynxlab\ADA\Module\ZoomIntegration\ZoomIntegrationException;
+
+class ZoomConf extends VideoRoom implements IVideoRoom
+{
+    public const IFRAMEATTR = ' class=\'ada-videochat-embed zoom\' allowfullscreen allow=\'camera; microphone;\' sandbox=\'allow-forms allow-scripts allow-same-origin\'';
+    public const VIDEOCHATTYPE = 'Z';
 
     private $zoomAPI = null;
     private $meetingID = null;
@@ -29,23 +31,26 @@ class ZoomConf extends videoroom implements iVideoRoom
     public function __construct($id_course_instance = "")
     {
         parent::__construct($id_course_instance);
-        $this->zoomAPI = new Lynxlab\ADA\Module\ZoomIntegration\ADAZoomApi();
+        $this->zoomAPI = new ADAZoomApi();
     }
 
     /*
      * Creazione videochat
      */
-    public function addRoom($name = 'service', $sess_id_course_instance, $sess_id_user, $comment = 'Inserimento automatico via ADA', $num_user = 25, $course_title = 'service', $selected_provider = ADA_PUBLIC_TESTER)
+    public function addRoom($name = 'service', $sess_id_course_instance = null, $sess_id_user = null, $comment = 'Inserimento automatico via ADA', $num_user = 25, $course_title = 'service', $selected_provider = ADA_PUBLIC_TESTER)
     {
         try {
-            $videoroom_dataAr = array();
+            if (is_null($sess_id_course_instance) || is_null($sess_id_user)) {
+                throw new ZoomIntegrationException("ID course instance and ID user must not be null");
+            }
+            $videoroom_dataAr = [];
             $videoroom_dataAr['id_room'] = 0; // will be set to the id by the datahandler
             $videoroom_dataAr['id_istanza_corso'] = $sess_id_course_instance;
             $videoroom_dataAr['id_tutor'] = $sess_id_user;
-            $videoroom_dataAr['tipo_videochat'] = self::videochattype;
+            $videoroom_dataAr['tipo_videochat'] = self::VIDEOCHATTYPE;
             $videoroom_dataAr['descrizione_videochat'] = $name;
             $videoroom_dataAr['tempo_avvio'] = time();
-            $videoroom_dataAr['tempo_fine'] = strtotime('tomorrow midnight')-1;
+            $videoroom_dataAr['tempo_fine'] = strtotime('tomorrow midnight') - 1;
             $videoroom_dataAr['room_name'] = $course_title;
             $videoroom_dataAr['zoomUser'] = defined('ZOOMCONF_ZOOMUSER') ? ZOOMCONF_ZOOMUSER : 'me';
             $videoroom_data = $this->zoomAPI->create($videoroom_dataAr);
@@ -59,15 +64,17 @@ class ZoomConf extends videoroom implements iVideoRoom
         }
     }
 
-    public function videoroom_info($id_course_instance, $tempo_avvio = NULL, $interval = NULL, $more_query = NULL)
+    public function videoroom_info($id_course_instance, $tempo_avvio = null, $interval = null, $more_query = null)
     {
         // load parent info
-        if (is_null($more_query)) $more_query = 'AND `tipo_videochat`="'.self::videochattype.'" ORDER BY `tempo_avvio` DESC';
-        parent::videoroom_info($id_course_instance,$tempo_avvio, $interval, $more_query);
+        if (is_null($more_query)) {
+            $more_query = 'AND `tipo_videochat`="' . self::VIDEOCHATTYPE . '" ORDER BY `tempo_avvio` DESC';
+        }
+        parent::videoroom_info($id_course_instance, $tempo_avvio, $interval, $more_query);
         // load Zoom own info and check that meeting does exists
         $video_roomAr = $this->zoomAPI->getInfo($this->id);
         $this->setMeetingID(null)->setMeetingPWD(null);
-        if (is_array($video_roomAr) && count($video_roomAr)>0) {
+        if (is_array($video_roomAr) && count($video_roomAr) > 0) {
             if (isset($video_roomAr['meetingID'])) {
                 $this->setMeetingID($video_roomAr['meetingID']);
             }
@@ -89,7 +96,7 @@ class ZoomConf extends videoroom implements iVideoRoom
         $this->link_to_room = MODULES_ZOOMCONF_HTTP . '/ada-zoom-bridge.php';
     }
 
-    public function generateSignature($role = 0, $apiKey = ZOOMCONF_APIKEY, $apiSecret=ZOOMCONF_APISECRET)
+    public function generateSignature($role = 0, $apiKey = ZOOMCONF_APIKEY, $apiSecret = ZOOMCONF_APISECRET)
     {
         // issued at...
         $iat = time() - 30;
@@ -121,7 +128,7 @@ class ZoomConf extends videoroom implements iVideoRoom
 
     public function getLogoutUrl()
     {
-        return $this->zoomAPI->getLogoutUrl().$this->getLogoutUrlParams();
+        return $this->zoomAPI->getLogoutUrl() . $this->getLogoutUrlParams();
     }
 
     public function getRoom($id_room)

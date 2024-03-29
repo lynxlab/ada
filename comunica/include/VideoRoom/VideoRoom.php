@@ -15,6 +15,8 @@
 
 namespace Lynxlab\ADA\Comunica\VideoRoom;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 abstract class VideoRoom
 {
     public $id;

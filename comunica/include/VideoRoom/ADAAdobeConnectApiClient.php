@@ -4,8 +4,8 @@ namespace Lynxlab\ADA\Comunica\VideoRoom;
 
 use AdobeConnect\ApiClient;
 
-class ADAAdobeConnectApiClient extends ApiClient {
-
+class ADAAdobeConnectApiClient extends ApiClient
+{
     /**
      * Get logged in.
      *
@@ -16,11 +16,18 @@ class ADAAdobeConnectApiClient extends ApiClient {
         return $this->getConnection()->getLoggedIn();
     }
 
-    public function unsetCookie() {
+    public function unsetCookie()
+    {
         return $this->getConnection()->unsetCookie();
     }
 
-    public function getConnection() {
+    /**
+     * Undocumented function
+     *
+     * @return \Lynxlab\ADA\Comunica\VideoRoom\ADAAdobeConnectConnection
+     */
+    public function getConnection()
+    {
         return $this->connection;
     }
 }

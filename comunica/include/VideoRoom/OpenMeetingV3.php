@@ -4,199 +4,218 @@
  * Openmeetings V3.X specific class
  *
  * @package     videochat
- * @author	Stefano Penge <steve@lynxlab.com>
- * @author	Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author	giorgio consorti <g.conorti@lynxlab.com>
+ * @author  Stefano Penge <steve@lynxlab.com>
+ * @author  Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
+ * @author  giorgio consorti <g.conorti@lynxlab.com>
  * @copyright   Copyright (c) 2017, Lynx s.r.l.
- * @license	http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @license http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link
- * @version	0.1
+ * @version 0.1
  */
 
-class OpenMeetingV3 extends videoroom implements iVideoRoom {
+namespace Lynxlab\ADA\Comunica\VideoRoom;
 
-	public function __construct($id_course_instance = "") {
-		parent::__construct ($id_course_instance);
-	}
+use SoapClient;
 
-	/*
-	 * Creazione videochat in openmeetings v3 e registrazione dei dati nel DB locale
-	 */
-	 public function addRoom($name = "service", $sess_id_course_instance, $sess_id_user, $comment = "Inserimento automatico via ADA", $num_user = 25, $course_title = 'service', $selected_provider=ADA_PUBLIC_TESTER) {
+class OpenMeetingV3 extends VideoRoom implements IVideoRoom
+{
+    public $resultAddRoom;
+    public $error_openmeetings;
+    public $secureHash;
 
-		$dh = $GLOBALS['dh'];
-		$host = OPENMEETINGS_HOST;
-		$port = OPENMEETINGS_PORT;
-		$dir = OPENMEETINGS_DIR;
+    public function __construct($id_course_instance = "")
+    {
+        parent::__construct($id_course_instance);
+    }
 
-		$room_type = intval (OM_ROOM_TYPE);
-		$isPublic = ROOM_IS_PUBLIC === 'true' ? true : false;
+    /*
+     * Creazione videochat in openmeetings v3 e registrazione dei dati nel DB locale
+     */
+    public function addRoom($name = "service", $sess_id_course_instance = null, $sess_id_user = null, $comment = "Inserimento automatico via ADA", $num_user = 25, $course_title = 'service', $selected_provider = ADA_PUBLIC_TESTER)
+    {
 
-		// Create the SoapClient object
-		$this->client_room = new SoapClient ( "http://" . $host . $port . "/" . $dir . "/services/RoomService?wsdl" );
+        if (is_null($sess_id_course_instance) || is_null($sess_id_user)) {
+            return false;
+        }
 
-		$addRoomWithModerationParams = array (
-				'name' => $name,
-				'type' => 'conference',
-				'comment' => $comment,
-				'numberOfPartizipants' => intval ($num_user),
-				'isPublic' => $isPublic,
-				'appointment' => FALSE,
-				'demo' => FALSE,
-				'closed' => FALSE,
-				'moderated' => TRUE,
-				'allowUserQuestions' => TRUE,
-				'allowRecording' => TRUE,
-				'waitForRecording' => FALSE,
-				'audioOnly' => FALSE
-		);
+        $dh = $GLOBALS['dh'];
+        $host = OPENMEETINGS_HOST;
+        $port = OPENMEETINGS_PORT;
+        $dir = OPENMEETINGS_DIR;
 
-		$this->resultAddRoom = $this->client_room->add (array(
-				'sid' => $this->session_id,
-				'room' => $addRoomWithModerationParams
-		));
+        $room_type = intval(OM_ROOM_TYPE);
+        $isPublic = ROOM_IS_PUBLIC === 'true' ? true : false;
 
-		$this->id_room = $this->resultAddRoom->return->id;
+        // Create the SoapClient object
+        $this->client_room = new SoapClient("http://" . $host . $port . "/" . $dir . "/services/RoomService?wsdl");
 
-		$interval = 60 * 60;
-		$videoroom_dataAr= array();
-		$videoroom_dataAr['id_room'] = $this->id_room;
-		$videoroom_dataAr['id_istanza_corso'] = $sess_id_course_instance;
-		$videoroom_dataAr['id_tutor'] = $sess_id_user;
-		$videoroom_dataAr['tipo_videochat'] = $room_type;
-		$videoroom_dataAr['descrizione_videochat'] = $name;
-		$videoroom_dataAr['tempo_avvio'] = time();
-		$videoroom_dataAr['tempo_fine'] = time() + $interval;
+        $addRoomWithModerationParams =  [
+            'name' => $name,
+            'type' => 'conference',
+            'comment' => $comment,
+            'numberOfPartizipants' => intval($num_user),
+            'isPublic' => $isPublic,
+            'appointment' => false,
+            'demo' => false,
+            'closed' => false,
+            'moderated' => true,
+            'allowUserQuestions' => true,
+            'allowRecording' => true,
+            'waitForRecording' => false,
+            'audioOnly' => false,
+        ];
 
-		$videoroom_data = $dh->add_videoroom ($videoroom_dataAr);
+        $this->resultAddRoom = $this->client_room->add([
+            'sid' => $this->session_id,
+            'room' => $addRoomWithModerationParams,
+        ]);
 
-		if (AMA_DB::isError ($videoroom_data)) {
-			return false;
-		}
+        $this->id_room = $this->resultAddRoom->return->id;
 
-		return $this->id_room;
-	}
+        $interval = 60 * 60;
+        $videoroom_dataAr = [];
+        $videoroom_dataAr['id_room'] = $this->id_room;
+        $videoroom_dataAr['id_istanza_corso'] = $sess_id_course_instance;
+        $videoroom_dataAr['id_tutor'] = $sess_id_user;
+        $videoroom_dataAr['tipo_videochat'] = $room_type;
+        $videoroom_dataAr['descrizione_videochat'] = $name;
+        $videoroom_dataAr['tempo_avvio'] = time();
+        $videoroom_dataAr['tempo_fine'] = time() + $interval;
 
-	public function list_rooms() {
-	}
+        $videoroom_data = $dh->add_videoroom($videoroom_dataAr);
 
-	public function getRoom($id_room) {
+        if (AMA_DB::isError($videoroom_data)) {
+            return false;
+        }
 
-		$host = OPENMEETINGS_HOST;
-		$port = OPENMEETINGS_PORT;
-		$dir = OPENMEETINGS_DIR;
+        return $this->id_room;
+    }
 
-		// Create the SoapClient object
-		$this->client_room = new SoapClient ( "http://" . $host . $port . "/" . $dir . "/services/RoomService?wsdl" );
+    public function list_rooms()
+    {
+    }
 
-		$rooms_params = array (
-				'sid' => $this->session_id,
-				'id' => $id_room
-		);
-		$this->room_properties = $this->client_room->getRoomById ($rooms_params);
-	}
+    public function getRoom($id_room)
+    {
 
-	public function serverLogin() {
+        $host = OPENMEETINGS_HOST;
+        $port = OPENMEETINGS_PORT;
+        $dir = OPENMEETINGS_DIR;
 
-		$host = OPENMEETINGS_HOST;
-		$port = OPENMEETINGS_PORT;
-		$dir = OPENMEETINGS_DIR;
+        // Create the SoapClient object
+        $this->client_room = new SoapClient("http://" . $host . $port . "/" . $dir . "/services/RoomService?wsdl");
 
-		$this->client_user = new SoapClient ( "http://" . $host . $port . "/" . $dir . "/services/UserService?wsdl" );
+        $rooms_params =  [
+            'sid' => $this->session_id,
+            'id' => $id_room,
+        ];
+        $this->room_properties = $this->client_room->getRoomById($rooms_params);
+    }
 
-		$login_params = array (
-				'user' => OPENMEETINGS_ADMIN,
-				'pass' => OPENMEETINGS_PASSWD
-		);
+    public function serverLogin()
+    {
 
-		$loginResult = $this->client_user->login ( $login_params );
-		$this->login = $loginResult->return;
+        $host = OPENMEETINGS_HOST;
+        $port = OPENMEETINGS_PORT;
+        $dir = OPENMEETINGS_DIR;
 
-		if ($this->login->code <= 0) {
-			$this->error_openmeetings = true;
-		} else {
-			// get new session_id for accessing and creating rooms
-			$this->session_id = $this->login->message;
-		}
-	}
+        $this->client_user = new SoapClient("http://" . $host . $port . "/" . $dir . "/services/UserService?wsdl");
 
-	public function roomAccess($username, $nome, $cognome, $user_email, $sess_id_user, $id_profile, $selected_provider) {
+        $login_params =  [
+            'user' => OPENMEETINGS_ADMIN,
+            'pass' => OPENMEETINGS_PASSWD,
+        ];
 
-		$host = OPENMEETINGS_HOST;
-		$port = OPENMEETINGS_PORT;
-		$dir = OPENMEETINGS_DIR;
+        $loginResult = $this->client_user->login($login_params);
+        $this->login = $loginResult->return;
 
-		$becomeModerator = FALSE;
-		$allowRecording = FALSE;
+        if ($this->login->code <= 0) {
+            $this->error_openmeetings = true;
+        } else {
+            // get new session_id for accessing and creating rooms
+            $this->session_id = $this->login->message;
+        }
+    }
 
-		if ($id_profile == AMA_TYPE_TUTOR) {
-			$becomeModerator = TRUE;
-			$allowRecording = TRUE;
-		}
+    public function roomAccess($username, $nome, $cognome, $user_email, $sess_id_user, $id_profile, $selected_provider)
+    {
 
-		$room_id = $this->id_room;
-		$externalUserId = $sess_id_user;
-		$externalUserType = "ADA"; // potrebbe essere preso da $userObj->type?
-		$showAudioVideoTest = FALSE; // 0 = no audio/video test
-		if (OPENMEETINGS_VERSION > 0) {
-			$user_params = array (
-					'login' => $username,
-					'firstname' => $nome,
-					'lastname' => $cognome,
-					'profilePictureUrl' => "",
-					'email' => $user_email,
-					'externalId' => $externalUserId,
-					'externalType' => $externalUserType
-			);
-			$room_params = array (
-					'roomId' => $room_id,
-					'moderator' => $becomeModerator,
-					'showAudioVideoTest' => $showAudioVideoTest,
-					'allowRecording' => $allowRecording,
-					'allowSameURLMultipleTimes' => TRUE
-			);
+        $host = OPENMEETINGS_HOST;
+        $port = OPENMEETINGS_PORT;
+        $dir = OPENMEETINGS_DIR;
 
-			$this->secureHash = $this->client_user->getRoomHash (array (
-					'sid' => $this->session_id,
-					'user' => $user_params,
-					'options' => $room_params
-			));
-			$secureHash = $this->secureHash->return->message;
-		}
+        $becomeModerator = false;
+        $allowRecording = false;
 
-		/*
-		 * LINK A STANZA
-		 */
-		$language = ROOM_DEFAULT_LANGUAGE;
-		$sess_lang = $_SESSION ['sess_user_language'];
-		$videochat_lang = "VIDEOCHAT_LANGUAGE_" . strtoupper ( $sess_lang );
-		if (defined ( $videochat_lang )) {
-			$language = constant ( $videochat_lang );
-		}
+        if ($id_profile == AMA_TYPE_TUTOR) {
+            $becomeModerator = true;
+            $allowRecording = true;
+        }
 
-		if (OPENMEETINGS_VERSION > 0) {
-			$this->link_to_room = "http://" . $host . $port . "/" . $dir . "/hash?secure=" . $secureHash . "&language=" . $language;
-		}
-	}
+        $room_id = $this->id_room;
+        $externalUserId = $sess_id_user;
+        $externalUserType = "ADA"; // potrebbe essere preso da $userObj->type?
+        $showAudioVideoTest = false; // 0 = no audio/video test
+        if (OPENMEETINGS_VERSION > 0) {
+            $user_params =  [
+                'login' => $username,
+                'firstname' => $nome,
+                'lastname' => $cognome,
+                'profilePictureUrl' => "",
+                'email' => $user_email,
+                'externalId' => $externalUserId,
+                'externalType' => $externalUserType,
+            ];
+            $room_params =  [
+                'roomId' => $room_id,
+                'moderator' => $becomeModerator,
+                'showAudioVideoTest' => $showAudioVideoTest,
+                'allowRecording' => $allowRecording,
+                'allowSameURLMultipleTimes' => true,
+            ];
 
-	public function delete_room($id_room) {
+            $this->secureHash = $this->client_user->getRoomHash([
+                'sid' => $this->session_id,
+                'user' => $user_params,
+                'options' => $room_params,
+            ]);
+            $secureHash = $this->secureHash->return->message;
+        }
 
-		$dh = $GLOBALS ['dh'];
-		$host = OPENMEETINGS_HOST;
-		$port = OPENMEETINGS_PORT;
-		$dir = OPENMEETINGS_DIR;
+        /*
+         * LINK A STANZA
+         */
+        $language = ROOM_DEFAULT_LANGUAGE;
+        $sess_lang = $_SESSION['sess_user_language'];
+        $videochat_lang = "VIDEOCHAT_LANGUAGE_" . strtoupper($sess_lang);
+        if (defined($videochat_lang)) {
+            $language = constant($videochat_lang);
+        }
 
-		// Create the SoapClient object
-		$this->client_room = new SoapClient ( "http://" . $host . $port . "/" . $dir . "/services/RoomService?wsdl" );
+        if (OPENMEETINGS_VERSION > 0) {
+            $this->link_to_room = "http://" . $host . $port . "/" . $dir . "/hash?secure=" . $secureHash . "&language=" . $language;
+        }
+    }
 
-		$params = array (
-				'sid' => $this->session_id,
-				'id' => $id_room
-		);
+    public function delete_room($id_room)
+    {
 
-		$result_openmeetings = $this->client_room->delete ( $params );
-		if ($result_openmeetings->return->code == $id_room) { // if deleted ok in openmeetings delete in DB too
-			$result = $dh->delete_videoroom ($id_room);
-		}
-	}
+        $dh = $GLOBALS['dh'];
+        $host = OPENMEETINGS_HOST;
+        $port = OPENMEETINGS_PORT;
+        $dir = OPENMEETINGS_DIR;
+
+        // Create the SoapClient object
+        $this->client_room = new SoapClient("http://" . $host . $port . "/" . $dir . "/services/RoomService?wsdl");
+
+        $params =  [
+            'sid' => $this->session_id,
+            'id' => $id_room,
+        ];
+
+        $result_openmeetings = $this->client_room->delete($params);
+        if ($result_openmeetings->return->code == $id_room) { // if deleted ok in openmeetings delete in DB too
+            $result = $dh->delete_videoroom($id_room);
+        }
+    }
 }
