@@ -10,6 +10,8 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Comunica\Event\ADAEvent;
+use Lynxlab\ADA\Comunica\Event\ADAEventProposal;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 
@@ -78,7 +80,6 @@ $self = whoami();
  */
 ComunicaHelper::init($neededObjAr);
 
-include_once 'include/ADAEvent.inc.php';
 /*
  * YOUR CODE HERE
  */

@@ -14,6 +14,7 @@
 
 namespace Lynxlab\ADA\Main\AMA;
 
+use Lynxlab\ADA\Comunica\Event\ADAEventProposal;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Logger\ADALogger;
 use Lynxlab\ADA\Main\User\ADAAdmin;

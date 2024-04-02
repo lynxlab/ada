@@ -85,7 +85,6 @@ ComunicaHelper::init($neededObjAr);
  * YOUR CODE HERE
  */
 include_once 'include/StringValidation.inc.php';
-include_once 'include/address_book.inc.php';
 
 $success    = HTTP_ROOT_DIR.'/comunica/list_messages.php';
 $error_page = HTTP_ROOT_DIR.'/comunica/send_message.php';

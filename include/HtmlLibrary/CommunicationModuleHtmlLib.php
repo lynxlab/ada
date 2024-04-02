@@ -14,6 +14,7 @@
 
 namespace Lynxlab\ADA\Main\HtmlLibrary;
 
+use Lynxlab\ADA\Comunica\Event\ADAEventProposal;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;

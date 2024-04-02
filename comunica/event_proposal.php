@@ -10,6 +10,8 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Comunica\Event\ADAEvent;
+use Lynxlab\ADA\Comunica\Event\ADAEventProposal;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 
@@ -78,13 +80,9 @@ $self = whoami();
  */
 ComunicaHelper::init($neededObjAr);
 
-include_once 'include/ADAEvent.inc.php';
-
 /*
  * YOUR CODE HERE
  */
-include_once ROOT_DIR.'/include/HtmlLibrary/CommunicationModuleHtmlLib.inc.php';
-
 $error_page = HTTP_ROOT_DIR .'/comunica/event_proposal.php';
 
 $newline = "\r\n";

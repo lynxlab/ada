@@ -10,8 +10,11 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Comunica\Event\ADAEventProposal;
+use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
 
 use function Lynxlab\ADA\Main\Utilities\whoami;
 

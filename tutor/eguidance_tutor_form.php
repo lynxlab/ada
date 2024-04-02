@@ -12,6 +12,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Comunica\Event\ADAEventProposal;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\TutorHelper;
@@ -93,8 +94,6 @@ include_once 'include/eguidance_tutor_form_functions.inc.php';
 /*
  * YOUR CODE HERE
  */
-
-include_once ROOT_DIR.'/comunica/include/ADAEventProposal.inc.php';
 
 if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
   // Genera CSV a partire da contenuto $_POST

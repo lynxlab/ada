@@ -11,6 +11,7 @@
  */
 
 use Lynxlab\ADA\Comunica\AddressBook\EventsAddressBook;
+use Lynxlab\ADA\Comunica\Event\ADAEventProposal;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
@@ -99,7 +100,6 @@ if(MultiPort::isUserBrowsingThePublicTester()) {
  * YOUR CODE HERE
  */
 include_once 'include/StringValidation.inc.php';
-include_once 'include/address_book.inc.php';
 
 if (!isset($op)) {
   $op = 'default';
