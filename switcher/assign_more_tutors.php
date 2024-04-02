@@ -77,9 +77,7 @@ $self = whoami();
  */
 SwitcherHelper::init($neededObjAr);
 
-
 require_once ROOT_DIR .'/comunica/include/ChatRoom.inc.php';
-require_once ROOT_DIR .'/comunica/include/ChatDataHandler.inc.php';
 
 /*
  * YOUR CODE HERE

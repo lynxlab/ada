@@ -12,6 +12,7 @@
  * @version		0.2
  */
 
+use Lynxlab\ADA\Comunica\DataHandler\UserDataHandler;
 use Lynxlab\ADA\CORE\HmtlElements\Tform;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 
@@ -83,7 +84,6 @@ $self = 'list_chatrooms'; // x template
 ComunicaHelper::init($neededObjAr);
 
 require_once 'include/ChatRoom.inc.php';
-require_once 'include/ChatDataHandler.inc.php';
 
 $status = translateFN('lista delle chatrooms');
 

@@ -42,19 +42,7 @@ $ada_config_path = realpath(dirname(__FILE__) . '/..');
 $history = "" ;
 $self = "history";
 
-/*****************************************************************
-// Include moduli di comunicazione
-*/
-// include UserDataHandler
-include_once("$root_dir/comunica/include/UserDataHandler.inc.php");
-// include Message Handler
-include_once("$root_dir/comunica/include/MessageHandler.inc.php");
-/*****************************************************************/
-
-
-
 session_controlFN();
-
 
 // ******************************************************
 // Clear node and layout variable

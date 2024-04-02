@@ -13,6 +13,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -75,8 +76,6 @@ $self = whoami();
  */
 ComunicaHelper::init($neededObjAr);
 
-//include_once 'include/MessageHandler.inc.php';
-include_once 'include/ChatDataHandler.inc.php';
 include_once 'include/ChatRoom.inc.php';
 include_once 'include/adaChatUtilities.inc.php';
 

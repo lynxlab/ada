@@ -14,6 +14,8 @@
 
 namespace Lynxlab\ADA\Main\AMA;
 
+use Lynxlab\ADA\Comunica\DataHandler\ChatDataHandler;
+use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\Comunica\Event\ADAEventProposal;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Logger\ADALogger;

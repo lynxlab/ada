@@ -330,7 +330,6 @@ abstract class ViewBaseHelper
             }
 
             require_once ROOT_DIR . '/comunica/include/ChatRoom.inc.php';
-            require_once ROOT_DIR . '/comunica/include/ChatDataHandler.inc.php';
             /*
              * Check if the user has an appointment
              */

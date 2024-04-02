@@ -10,11 +10,14 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\Comunica\Event\ADAEvent;
 use Lynxlab\ADA\Comunica\Event\ADAEventProposal;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\get_timezone_offset;
 use function Lynxlab\ADA\Main\Utilities\sumDateTimeFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -276,7 +279,6 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
            //'welcome_msg'        => $welcome_msg,  //usiamo messaggio di benvenuto di default
           //'max_users'          => $max_users     // di default 2 utenti
         );
-        require_once 'include/ChatDataHandler.inc.php';
         require_once 'include/ChatRoom.inc.php';
 
         $id_chatroom = ChatRoom::add_chatroomFN($chatroom_ha, $tester_dsn);

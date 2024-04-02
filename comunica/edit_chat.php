@@ -15,8 +15,10 @@
  * Base config file
  */
 
+use Lynxlab\ADA\Main\Forms\ChatManagementForm;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\sumDateTimeFN;
 
 require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
@@ -82,9 +84,6 @@ $self = 'list_chatrooms'; // x template
 ComunicaHelper::init($neededObjAr);
 
 require_once 'include/ChatRoom.inc.php';
-require_once 'include/ChatDataHandler.inc.php';
-
-require_once ROOT_DIR . '/include/Forms/chatManagementForm.inc.php';
 
 //print_r($GLOBALS);
 $common_dh = $GLOBALS['common_dh'];

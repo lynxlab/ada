@@ -17,6 +17,7 @@ use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_course;
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -84,7 +85,6 @@ $self = whoami();
 ComunicaHelper::init($neededObjAr);
 
 require_once 'include/ChatRoom.inc.php';
-require_once 'include/ChatDataHandler.inc.php';
 
 $help = translateFN("Da qui l'utente puo' vedere la lista di tutte le chatrooms a cui puo' accedere.");
 $status = ''; //translateFN('lista delle chatrooms');

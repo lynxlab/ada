@@ -1,4 +1,7 @@
 <?php
+
+use Lynxlab\ADA\Comunica\DataHandler\ChatDataHandler;
+
 /**
  * ChatRoom.inc.php
  *
@@ -10,7 +13,6 @@
  * @link
  * @version   0.1
  */
-require_once 'ChatDataHandler.inc.php';
 
 class ChatRoom {
     /*******************************************************************************

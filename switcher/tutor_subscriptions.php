@@ -10,6 +10,7 @@
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  */
 
+use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Forms\FileUploadForm;

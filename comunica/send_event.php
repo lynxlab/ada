@@ -11,6 +11,7 @@
  */
 
 use Lynxlab\ADA\Comunica\AddressBook\EventsAddressBook;
+use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\Comunica\Event\ADAEventProposal;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;

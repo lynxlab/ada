@@ -17,6 +17,7 @@ Initializating variables and including modules
  * Base config file
  */
 
+use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\CORE\HmtlElements\Table;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 
@@ -84,7 +85,6 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
 ComunicaHelper::init($neededObjAr);
 
 require_once 'include/ChatRoom.inc.php';
-require_once 'include/ChatDataHandler.inc.php';
 
 $self =  "list_chatrooms"; //whoami();
 $log_type = "db";

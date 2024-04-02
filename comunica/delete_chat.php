@@ -18,6 +18,9 @@ use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Forms\ChatRemovalForm;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+use function Lynxlab\ADA\Main\Utilities\whoami;
+
 /**
  * Base config file
  */
@@ -73,9 +76,7 @@ $self = 'list_chatrooms'; // x template
  */
 ComunicaHelper::init($neededObjAr);
 
-require_once ROOT_DIR . '/include/Forms/ChatRemovalForm.inc.php';
 require_once 'include/ChatRoom.inc.php';
-require_once 'include/ChatDataHandler.inc.php';
 
 /*
  * YOUR CODE HERE

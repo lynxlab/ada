@@ -10,7 +10,11 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+
 use function Lynxlab\ADA\Main\AMA\DBRead\read_user_from_DB;
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * Base config file
@@ -84,7 +88,6 @@ switch($_GET['mode']) {
 					'testo' => $testo,
 					'priorita' => 2
 				);
-				require_once(ROOT_DIR.'/comunica/include/MessageHandler.inc.php');
 				$mh = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
 				$result = $mh->send_message($message_ha);
 			}

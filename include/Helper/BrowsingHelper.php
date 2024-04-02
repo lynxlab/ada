@@ -12,6 +12,7 @@
 
 namespace Lynxlab\ADA\Main\Helper;
 
+use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Node\Node;
@@ -36,9 +37,6 @@ class BrowsingHelper extends ViewBaseHelper
      */
     public static function init(array $neededObjAr = [])
     {
-        require_once ROOT_DIR . '/comunica/include/MessageHandler.inc.php';
-        require_once ROOT_DIR . '/comunica/include/UserDataHandler.inc.php';
-
         if (count(self::$helperData) === 0) {
             self::$helperData = parent::init($neededObjAr);
             self::setSessionMode();
