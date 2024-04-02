@@ -11,6 +11,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Comunica\ChatRoom;
 use Lynxlab\ADA\CORE\HmtlElements\Table;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
@@ -84,8 +85,6 @@ $self = whoami();
  */
 ComunicaHelper::init($neededObjAr);
 
-require_once 'include/ChatRoom.inc.php';
-
 $help = translateFN("Da qui l'utente puo' vedere la lista di tutte le chatrooms a cui puo' accedere.");
 $status = ''; //translateFN('lista delle chatrooms');
 $modulo = translateFN('lista delle chatrooms');
@@ -104,7 +103,7 @@ switch ($id_profile) {
     case AMA_TYPE_ADMIN:
     case AMA_TYPE_SWITCHER:
         // gets an array with all the chatrooms
-        $all_chatrooms_ar = Chatroom::get_all_chatroomsFN();
+        $all_chatrooms_ar = ChatRoom::get_all_chatroomsFN();
         if (!AMA_DB::isError($all_chatrooms_ar)) {
             //initialize an array
             $list_chatrooms = array();

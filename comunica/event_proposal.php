@@ -10,6 +10,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Comunica\ChatRoom;
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\Comunica\Event\ADAEvent;
 use Lynxlab\ADA\Comunica\Event\ADAEventProposal;
@@ -279,8 +280,6 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
            //'welcome_msg'        => $welcome_msg,  //usiamo messaggio di benvenuto di default
           //'max_users'          => $max_users     // di default 2 utenti
         );
-        require_once 'include/ChatRoom.inc.php';
-
         $id_chatroom = ChatRoom::add_chatroomFN($chatroom_ha, $tester_dsn);
         if(AMA_DataHandler::isError($id_chatroom)) {
           $errObj = new ADA_Error($id_chatroom,

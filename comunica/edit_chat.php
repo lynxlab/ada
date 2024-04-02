@@ -15,6 +15,7 @@
  * Base config file
  */
 
+use Lynxlab\ADA\Comunica\ChatRoom;
 use Lynxlab\ADA\Main\Forms\ChatManagementForm;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 
@@ -82,8 +83,6 @@ $self = 'list_chatrooms'; // x template
  * e.g.: node_classes.inc.php:990
  */
 ComunicaHelper::init($neededObjAr);
-
-require_once 'include/ChatRoom.inc.php';
 
 //print_r($GLOBALS);
 $common_dh = $GLOBALS['common_dh'];

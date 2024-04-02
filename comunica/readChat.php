@@ -13,6 +13,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Comunica\ChatRoom;
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 
 use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
@@ -45,7 +46,6 @@ $neededObjAr = array();
 require_once ROOT_DIR.'/include/module_init.inc.php';
 $self = whoami();
 
-include_once 'include/ChatRoom.inc.php';
 include_once 'include/adaChatUtilities.inc.php';
 /*
  * YOUR CODE HERE

@@ -13,6 +13,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Comunica\ChatRoom;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Forms\ChatRemovalForm;
@@ -75,8 +76,6 @@ $self = 'list_chatrooms'; // x template
  * e.g.: node_classes.inc.php:990
  */
 ComunicaHelper::init($neededObjAr);
-
-require_once 'include/ChatRoom.inc.php';
 
 /*
  * YOUR CODE HERE

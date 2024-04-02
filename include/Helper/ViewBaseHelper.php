@@ -10,6 +10,7 @@
 
 namespace Lynxlab\ADA\Main\Helper;
 
+use Lynxlab\ADA\Comunica\ChatRoom;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
@@ -328,8 +329,6 @@ abstract class ViewBaseHelper
             if (isset($id_room) && intval($id_room) > 0) {
                 $id_chatroom = $id_room;
             }
-
-            require_once ROOT_DIR . '/comunica/include/ChatRoom.inc.php';
             /*
              * Check if the user has an appointment
              */

@@ -11,6 +11,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Comunica\ChatRoom;
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
@@ -77,7 +78,6 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
  */
 TutorHelper::init($neededObjAr);
 
-require_once ROOT_DIR . '/comunica/include/ChatRoom.inc.php';
 $retArray=array();
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&

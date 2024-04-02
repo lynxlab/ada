@@ -12,6 +12,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Comunica\ChatRoom;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Course\Course;
@@ -77,8 +78,6 @@ $self = whoami();
  * e.g.: node_classes.inc.php:990
  */
 SwitcherHelper::init($neededObjAr);
-
-require_once ROOT_DIR .'/comunica/include/ChatRoom.inc.php';
 
 /*
  * YOUR CODE HERE

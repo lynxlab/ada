@@ -16,6 +16,7 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Comunica\ChatRoom;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Course\Course;
@@ -79,14 +80,9 @@ $self = whoami();
  * e.g.: node_classes.inc.php:990
  */
 
-require_once ROOT_DIR . '/comunica/include/ChatRoom.inc.php';
-
 /*
  * YOUR CODE HERE
  */
-
-require_once ROOT_DIR . '/include/Forms/CourseInstanceForm.inc.php';
-
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $form = new CourseInstanceForm();
     $form->fillWithPostData();
@@ -131,7 +127,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $chatroom_ha['id_course_instance']= $id_istanza_corso;
 
             // add chatroom_ha to the database
-            $chatroom = Chatroom::add_chatroomFN($chatroom_ha);
+            $chatroom = ChatRoom::add_chatroomFN($chatroom_ha);
 
             header('Location: list_instances.php?id_course='.$_POST['id_course']);
             exit();
