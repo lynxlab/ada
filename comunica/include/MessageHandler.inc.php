@@ -10,9 +10,13 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Comunica\Spools\AgendaSpool;
+use Lynxlab\ADA\Comunica\Spools\ChatSpool;
+use Lynxlab\ADA\Comunica\Spools\Mailer;
+use Lynxlab\ADA\Comunica\Spools\SimpleSpool;
+use Lynxlab\ADA\Comunica\Spools\Spool;
 use Lynxlab\ADA\Main\Node\Node;
 
-include_once ROOT_DIR.'/comunica/include/spools.inc.php';
 include_once ROOT_DIR.'/comunica/include/UserDataHandler.inc.php';
 /**
  * MessageHandler implements the API which a script developer can use to
@@ -531,7 +535,7 @@ class MessageHandler
     $message_ha['destinatari'] = $recipients_usernames;
 
     // set message as read
-    $res = $spool->_set_message($msg_id, "read", 'R');
+    $res = $spool->set_message($msg_id, "read", 'R');
     if (AMA_DataHandler::isError($res)) {
     	$retval = new AMA_Error(AMA_ERR_UPDATE);
     	return $retval;

@@ -109,8 +109,8 @@ if (is_null($videoroomObj->link_to_room)) {
 } else if (is_string($videoroomObj->link_to_room) && strlen($videoroomObj->link_to_room) > 0) {
   $className = get_class($videoroomObj);
   $iframe = "<iframe src='$videoroomObj->link_to_room' width='$width' height = '$height'";
-  if (defined($className . '::iframeAttr')) {
-    $iframe .= constant($className . '::iframeAttr');
+  if (defined($className . '::IFRAMEATTR')) {
+    $iframe .= constant($className . '::IFRAMEATTR');
   }
   $iframe .= " data-logout='".urlencode($videoroomObj->getLogoutUrlParams())."'";
   $iframe .= "></iframe>";

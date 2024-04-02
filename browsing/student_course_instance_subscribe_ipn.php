@@ -12,6 +12,7 @@
  * @version     0.2
  */
 
+use Lynxlab\ADA\Comunica\Spools\Mailer;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\DataValidator;

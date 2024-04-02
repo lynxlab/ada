@@ -109,9 +109,9 @@ if (is_null($videoroomObj->link_to_room)) {
   die($errdiv->getHtml());
 } else if ($videoroomObj->link_to_room instanceof CBase) {
   $className = get_class($videoroomObj);
-  if (defined($className.'::onload_js')) {
+  if (defined($className.'::ONLOAD_JS')) {
     $videoroomObj->logEnter();
-    die ("<script>". constant($className.'::onload_js') ."</script>");
+    die ("<script>". constant($className.'::ONLOAD_JS') ."</script>");
   }
 } else {
   header(' ', true, 500);

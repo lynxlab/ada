@@ -114,15 +114,15 @@ $logEnter = false;
 if ($videoroomObj->link_to_room instanceof CBase) {
     $iframe = $videoroomObj->link_to_room->getHtml();
     $className = get_class($videoroomObj);
-    if (defined($className.'::onload_js')) {
-      $options_Ar = array('onload_func' => constant($className.'::onload_js'));
+    if (defined($className.'::ONLOAD_JS')) {
+      $options_Ar = array('onload_func' => constant($className.'::ONLOAD_JS'));
     }
     $logEnter = true;
 } else if (is_string($videoroomObj->link_to_room) && strlen($videoroomObj->link_to_room)>0) {
     $className = get_class($videoroomObj);
     $iframe = "<iframe src='$videoroomObj->link_to_room' width='$width' height = '$height'";
-    if (defined($className.'::iframeAttr')) {
-      $iframe .= constant($className.'::iframeAttr');
+    if (defined($className.'::IFRAMEATTR')) {
+      $iframe .= constant($className.'::IFRAMEATTR');
     }
     $iframe .= " data-logout='".urlencode($videoroomObj->getLogoutUrlParams())."'";
     $iframe .= "></iframe>";
