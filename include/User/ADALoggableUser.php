@@ -747,4 +747,9 @@ abstract class ADALoggableUser extends ADAGenericUser
 
         return false;
     }
+
+    public function isSuper()
+    {
+        return false;
+    }
 }
