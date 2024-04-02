@@ -3,6 +3,7 @@
 namespace Lynxlab\ADA\Comunica\Spools;
 
 use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

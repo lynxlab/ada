@@ -140,7 +140,7 @@ class ADAEventProposal
             for ($i = 0; $i < $howManyDates; $i++) {
                 $datetimesAr[] = [
                     'date' => $dates[$i],
-                    'time' => $times[$i]
+                    'time' => $times[$i],
                 ];
             }
 

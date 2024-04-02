@@ -60,8 +60,7 @@ abstract class VideoRoom
         } else {
             require_once ROOT_DIR . '/comunica/include/' . CONFERENCE_TO_INCLUDE . '.config.inc.php';
         }
-        require_once $GLOBALS['root_dir'] . '/comunica/include/' . CONFERENCE_TO_INCLUDE . '.class.inc.php';
-        $videoObjToInstantiate = CONFERENCE_TO_INCLUDE;
+        $videoObjToInstantiate = __NAMESPACE__ . '\\' . CONFERENCE_TO_INCLUDE;
         return new $videoObjToInstantiate();
     }
     /*

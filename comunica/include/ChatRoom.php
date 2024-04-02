@@ -4,6 +4,8 @@ namespace Lynxlab\ADA\Comunica;
 
 use Lynxlab\ADA\Comunica\DataHandler\ChatDataHandler;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * ChatRoom.inc.php
  *
@@ -91,7 +93,7 @@ class ChatRoom
 
                 //check the type of the chatroom
                 switch ($chatroom_ha['tipo_chat']) {
-                        //class chatroom
+                    //class chatroom
                     case CLASS_CHAT:
                         //verify that this chatroom is the correct one for his classroom
                         if (!empty($sess_id_course_instance)) {
@@ -342,7 +344,7 @@ class ChatRoom
         //if no error were found
 
         switch ($this->error) {
-                // no errors were found
+            // no errors were found
             case 0:
             case 2:
                 if ($this->error == 2) {
@@ -550,7 +552,7 @@ class ChatRoom
     //users will be removed automatically from the table utente_chatroom
     //messages also will be removed automatically from the table messaggi
     //*******************************************************************************/
-    public function remove_chatroomFN($id_chatroom)
+    public static function remove_chatroomFN($id_chatroom)
     {
         if (!self::isInStaticContext()) {
             self::$id_chatroom = $id_chatroom;
@@ -741,7 +743,7 @@ class ChatRoom
         $time = time();
 
         switch ($action) {
-                /*
+            /*
              * vito, 26 settembre 2008
              */
             case ACTION_SET_OPERATOR:

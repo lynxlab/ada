@@ -1,16 +1,17 @@
 <?php
+
 /**
  * control chat
  *
- * @package		comunica
+ * @package     comunica
  * stamos
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2009, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
+ * @author      Stefano Penge <steve@lynxlab.com>
+ * @author      Vito Modena <vito@lynxlab.com>
+ * @copyright   Copyright (c) 2009, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link
- * @version		0.1
+ * @version     0.1
  */
 
 use Lynxlab\ADA\Comunica\ChatRoom;
@@ -24,28 +25,28 @@ use function Lynxlab\ADA\Main\Utilities\whoami;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
+require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
  */
 
-$variableToClearAR = array('layout','user','course','course_instance');
+$variableToClearAR = ['layout','user','course','course_instance'];
 
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_STUDENT, AMA_TYPE_TUTOR);
+$allowedUsersAr = [AMA_TYPE_STUDENT, AMA_TYPE_TUTOR];
 
 /**
  * Get needed objects
  */
-$neededObjAr = array();
+$neededObjAr = [];
 
 /**
  * Performs basic controls before entering this module
  */
-require_once ROOT_DIR.'/include/module_init.inc.php';
+require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami();
 
 /**
@@ -99,8 +100,7 @@ ComunicaHelper::init($neededObjAr);
  * Check that this script was called with the right arguments.
  * If not, stop script execution and report an error to the caller.
  */
-if ( !isset($_POST['chatroom'])/*!isset($_GET['chatroom'])*/ )
-{
+if (!isset($_POST['chatroom'])/*!isset($_GET['chatroom'])*/) {
     exitWith_JSON_Error(translateFN("Errore: parametri passati allo script PHP non corretti"));
 }
 
@@ -122,8 +122,7 @@ $json_data = [];
 //$mh = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
 $mh = MessageHandler::instance($_SESSION['sess_selected_tester_dsn']);
 
-if (AMA_DataHandler::isError($mh))
-{
+if (AMA_DataHandler::isError($mh)) {
     exitWith_JSON_Error(translateFN("Errore nella creazione dell'oggetto MessageHandler"));
 }
 
@@ -131,14 +130,12 @@ if (AMA_DataHandler::isError($mh))
  * Get chatroom data
  */
 $chatroomObj = new ChatRoom($id_chatroom, $_SESSION['sess_selected_tester_dsn']);
-if (AMA_DataHandler::isError($chatroomObj))
-{
+if (AMA_DataHandler::isError($chatroomObj)) {
     exitWith_JSON_Error(translateFN("Errore nella creazione della chatroom"));
 }
 
 $chatroom_ha = $chatroomObj->get_info_chatroomFN($id_chatroom);
-if (AMA_DataHandler::isError($chatroom_ha))
-{
+if (AMA_DataHandler::isError($chatroom_ha)) {
     exitWith_JSON_Error(translateFN("Errore nell'ottenimento dei dati sulla chatroom"));
 }
 
@@ -156,74 +153,65 @@ $userslist_ar = $chatroomObj->list_users_chatroomFN($id_chatroom);
 
 $invited_userslist_ar = $chatroomObj->list_users_invited_to_chatroomFN($id_chatroom);
 
-if (AMA_DataHandler::isError($userslist_ar))
-{
+if (AMA_DataHandler::isError($userslist_ar)) {
     exitWith_JSON_Error(translateFN("Errore nell'ottenimento dei dati relativi agli utenti presenti nella chatroom"));
 }
 
-if (AMA_DataHandler::isError($invited_userslist_ar))
-{
+if (AMA_DataHandler::isError($invited_userslist_ar)) {
     exitWith_JSON_Error(translateFN("Errore nell'ottenimento dei dati relativi agli utenti invitati alla chatroom"));
 }
 
 /*
  *
  */
-if ($expiration_time !=0)
-{
-	 // calculate the time that remains before the chatroom expires
-	 if (($expiration_time - $actual_time)<= TIME_BEFORE_EXPIRATION)
-	 {
-	    // count the users present into the chatroom
-	    $how_many_users = count($userslist_ar);
-	    if(($chat_type == CLASS_CHAT) and ($how_many_users >= USERS_REQUESTED_TO_EXTEND))
-	    {
-    	    // get and set chatroom details
-		    $chatroom_new['end_time']= $expiration_time + TIME_TO_EXTEND;
-		    $title = $chatroom_ha['titolo_chat'];
-		    $chatroom_new['chat_title']= addslashes($title);
-    	    $topic = $chatroom_ha['argomento_chat'];
-		    $chatroom_new['chat_topic']= addslashes($topic);
-		    $welcome_msg = $chatroom_ha['msg_benvenuto'];
-		    $chatroom_new['welcome_msg']= addslashes($welcome_msg);
+if ($expiration_time != 0) {
+    // calculate the time that remains before the chatroom expires
+    if (($expiration_time - $actual_time) <= TIME_BEFORE_EXPIRATION) {
+        // count the users present into the chatroom
+        $how_many_users = count($userslist_ar);
+        if (($chat_type == CLASS_CHAT) and ($how_many_users >= USERS_REQUESTED_TO_EXTEND)) {
+            // get and set chatroom details
+            $chatroom_new['end_time'] = $expiration_time + TIME_TO_EXTEND;
+            $title = $chatroom_ha['titolo_chat'];
+            $chatroom_new['chat_title'] = addslashes($title);
+            $topic = $chatroom_ha['argomento_chat'];
+            $chatroom_new['chat_topic'] = addslashes($topic);
+            $welcome_msg = $chatroom_ha['msg_benvenuto'];
+            $chatroom_new['welcome_msg'] = addslashes($welcome_msg);
 
-		    //extend the time of this chat session
-		    $result = $chatroomObj->set_chatroomFN($id_chatroom,$chatroom_new);
-            if (AMA_DataHandler::isError($result))
-            {
+            //extend the time of this chat session
+            $result = $chatroomObj->set_chatroomFN($id_chatroom, $chatroom_new);
+            if (AMA_DataHandler::isError($result)) {
                 exitWith_JSON_Error(translateFN("Errore nel tentativo di estendere la durata della chatroom"));
             }
         }
-     }
+    }
 }
 
 /*
  *
  */
 $still_running = $chatroomObj->is_chatroom_not_expiredFN($id_chatroom);
-if (AMA_DataHandler::isError($still_running))
-{
+if (AMA_DataHandler::isError($still_running)) {
     exitWith_JSON_Error(translateFN("Errore nella verifica della validit&agrave; della chatroom"));
 }
 
 // verify if the closing chatroom time has arrived
-if(!$still_running)
-{
+if (!$still_running) {
     // close_chat template will loaded
-	$self = 'close_chat';
-	// motivate the exit of the user
-	$exit_reason = EXIT_REASON_EXPIRED;
-	// open close_chat.php
-//	$onload_func =  "top.location.href='close_chat.php?exit_reason=$exit_reason&id_chatroom=$id_chatroom&id_user=$sess_id_user'";
-	$data = array ('chat_text'=>$chat_text);
+    $self = 'close_chat';
+    // motivate the exit of the user
+    $exit_reason = EXIT_REASON_EXPIRED;
+    // open close_chat.php
+    //  $onload_func =  "top.location.href='close_chat.php?exit_reason=$exit_reason&id_chatroom=$id_chatroom&id_user=$sess_id_user'";
+    $data =  ['chat_text' => $chat_text];
 }
 
 /*
  *
  */
-$user_status= $chatroomObj->get_user_statusFN($sess_id_user,$id_chatroom);
-if (AMA_DataHandler::isError($user_status))
-{
+$user_status = $chatroomObj->get_user_statusFN($sess_id_user, $id_chatroom);
+if (AMA_DataHandler::isError($user_status)) {
     exitWith_JSON_Error(translateFN("Errore nell'ottenimento dello stato dell'utente all'interno della chatroom"));
 }
 
@@ -232,8 +220,7 @@ if (AMA_DataHandler::isError($user_status))
 // ******************************************************
 
 // we convert in text the status of the user in order to print it on the screen
-switch($user_status)
-{
+switch ($user_status) {
     case STATUS_OPERATOR:
         $json_data['user_status'] = translateFN("Moderatore");
         break;
@@ -279,12 +266,11 @@ switch($user_status)
 //}
 //$json_options_data .= ']';
 
-	 // $userslist_ar has been retrieved at the start of the script
+// $userslist_ar has been retrieved at the start of the script
 
 
-	 // proceed only if list it is not empty, get the list of the users into the chatroom
-if (is_array($userslist_ar))
-{
+// proceed only if list it is not empty, get the list of the users into the chatroom
+if (is_array($userslist_ar)) {
     /*
      * Create the json for the users list
      */
@@ -294,14 +280,13 @@ if (is_array($userslist_ar))
                 'id' => $user_data['id_utente'],
                 'username' => $user_data['username'],
                 'nome' => $user_data['nome'],
-                'cognome' => $user_data['cognome']
+                'cognome' => $user_data['cognome'],
             ];
         },
         $userslist_ar
     );
 }// end of users list
-else
-{
+else {
     $json_data['users_list'] = [];
     // Errors on $userslist_ar should have been catched on line 138.
     //  $errObj = new ADA_error(translateFN("Errore durante la lettura del DataBase"),translateFN("Impossibile proseguire."));
@@ -349,14 +334,14 @@ else
 //        exitWith_JSON_Error(translateFN("Errore nell'ottenimento della lista degli utenti bannati"));
 //    }
 //
-//	// we will tranform ids in usernames only in the case that the array it is not empty
-//	$json_banned_users_list = '[';
+//  // we will tranform ids in usernames only in the case that the array it is not empty
+//  $json_banned_users_list = '[';
 //    if (is_array($bannedusers_ar))
-//	{
-//	    $users_names_ha = array();
+//  {
+//      $users_names_ha = array();
 //
-//	    /*
-//     	 * Create the json for the banned users list
+//      /*
+//       * Create the json for the banned users list
 //         */
 //        while (count($bannedusers_ar) > 1 )
 //        {
@@ -368,14 +353,13 @@ else
 //            $user_data               = array_shift($bannedusers_ar);
 //            $json_banned_users_list .= '{"username":"'.$user_data['username'].'"}';
 //        }
-//	}//end of if($bannedusers_ar)
+//  }//end of if($bannedusers_ar)
 //    $json_banned_users_list .= ']';
 //}// end of banned list
 
 // write the time of the event into the utente_chatroom table
-$last_event= $chatroomObj->set_last_event_timeFN($sess_id_user,$id_chatroom);
-if (isset($bannedusers_ar) && AMA_DataHandler::isError($bannedusers_ar))
-{
+$last_event = $chatroomObj->set_last_event_timeFN($sess_id_user, $id_chatroom);
+if (isset($bannedusers_ar) && AMA_DataHandler::isError($bannedusers_ar)) {
     exitWith_JSON_Error(translateFN("Errore nell'aggiornamento del tempo relativo all'utlimo evento"));
 }
 
@@ -390,7 +374,7 @@ $error  = 0;
 $json_data['users_count'] = is_array($json_data['users_list']) ? count($json_data['users_list']) : 0;
 $json_data['user_status_label'] = translateFN("Stato Utente");
 $json_data['options_list_label'] = translateFN("Opzioni Utente");
-$json_data['users_list_label'] = $json_data['users_count'] . ' '. translateFN(sprintf("utent%s nella Chatroom", $json_data['users_count'] == 1 ? 'e' : 'i' ));
+$json_data['users_list_label'] = $json_data['users_count'] . ' ' . translateFN(sprintf("utent%s nella Chatroom", $json_data['users_count'] == 1 ? 'e' : 'i'));
 
 /*
  * Li passiamo vuoit perche' in ADA non dovrebbe servire questo tipo di

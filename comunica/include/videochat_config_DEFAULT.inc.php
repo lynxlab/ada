@@ -32,5 +32,5 @@ if (!defined('CONFERENCE_TO_INCLUDE')) {
  * Has to control if appoint is defined
  */
 if (!defined('DATE_CONTROL')) {
-    define('DATE_CONTROL', FALSE);
+    define('DATE_CONTROL', false);
 }
