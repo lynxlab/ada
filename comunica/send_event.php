@@ -96,11 +96,9 @@ if(MultiPort::isUserBrowsingThePublicTester()) {
     $sess_selected_tester = $_SESSION['sess_selected_tester'];
 }
 
-
 /*
  * YOUR CODE HERE
  */
-include_once 'include/StringValidation.inc.php';
 
 if (!isset($op)) {
   $op = 'default';
