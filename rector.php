@@ -33,6 +33,7 @@ return static function (RectorConfig $rectorConfig): void {
         // __DIR__ . '/include/dompdf',
         __DIR__ . '/include/graph',
         __DIR__ . '/browsing/include/graph',
+        __DIR__ . '/services/media',
         // __DIR__ . '/include/phpMailer',
         // __DIR__ . '/include/MobileDetect',
         // __DIR__ . '/include/getid3',

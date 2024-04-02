@@ -5,6 +5,7 @@ $finder = (new PhpCsFixer\Finder())
     ->exclude([
         'vendor',
         'browsing/include/graph',
+        'services/media',
     ])
 ;
 
