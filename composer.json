@@ -28,7 +28,8 @@
             "include/Utilities.php",
             "browsing/include/GraphMap.php",
             "browsing/include/MapFunctions.php",
-            "browsing/include/functions.php"
+            "browsing/include/functions.php",
+            "comunica/include/functions.php"
         ]
     },
     "authors": [
