@@ -101,7 +101,7 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
     }
     public function setDSN($dsn = null)
     {
-        $this->dsn = $dsn;
+        self::$tester_dsn = $dsn;
     }
     /**
      * Methods accessing database
