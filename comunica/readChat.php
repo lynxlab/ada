@@ -16,6 +16,8 @@
 use Lynxlab\ADA\Comunica\ChatRoom;
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 
+use function Lynxlab\ADA\Comunica\Functions\exitWith_JSON_Error;
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -46,7 +48,6 @@ $neededObjAr = array();
 require_once ROOT_DIR.'/include/module_init.inc.php';
 $self = whoami();
 
-include_once 'include/adaChatUtilities.inc.php';
 /*
  * YOUR CODE HERE
  */

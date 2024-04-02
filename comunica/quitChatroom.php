@@ -17,6 +17,8 @@ use Lynxlab\ADA\Comunica\ChatRoom;
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 
+use function Lynxlab\ADA\Comunica\Functions\exitWith_JSON_Error;
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -76,8 +78,6 @@ $self = whoami();
  * e.g.: node_classes.inc.php:990
  */
 ComunicaHelper::init($neededObjAr);
-
-include_once 'include/adaChatUtilities.inc.php';
 
 /*
  * Questo script esegue le operazioni di ada_chat.php, tranne l'inclusione dei vari script che compongono la chat.

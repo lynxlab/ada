@@ -18,6 +18,7 @@ use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\Comunica\DataHandler\UserDataHandler;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 
+use function Lynxlab\ADA\Comunica\Functions\exitWith_JSON_Error;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -81,7 +82,6 @@ $self = whoami();
  */
 ComunicaHelper::init($neededObjAr);
 
-include_once 'include/adaChatUtilities.inc.php';
 /*
  * YOUR CODE HERE
  */

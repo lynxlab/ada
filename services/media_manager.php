@@ -13,6 +13,8 @@
  * @version		0.1
  */
 
+use function Lynxlab\ADA\Comunica\Functions\exitWith_JSON_Error;
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -40,7 +42,6 @@ $neededObjAr = array();
  * Performs basic controls before entering this module
  */
 require_once ROOT_DIR.'/include/module_init.inc.php';
-require_once ROOT_DIR.'/comunica/include/adaChatUtilities.inc.php';
 $self = whoami();
 
 /*
