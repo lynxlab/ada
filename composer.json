@@ -17,7 +17,8 @@
             "Lynxlab\\ADA\\Main\\": "include/",
             "Lynxlab\\ADA\\CORE\\": "include/COREv0.1/",
             "Lynxlab\\ADA\\Browsing\\" : "browsing/include/",
-            "Lynxlab\\ADA\\Comunica\\" : "comunica/include/"
+            "Lynxlab\\ADA\\Comunica\\" : "comunica/include/",
+            "Lynxlab\\ADA\\Services\\" : "services/include/"
         },
         "files": [
             "include/AMA/DBRead.php",
