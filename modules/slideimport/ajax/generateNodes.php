@@ -12,6 +12,7 @@
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Services\NodeEditing\NodeEditing;
 
 ini_set('display_errors', '0'); error_reporting(E_ALL);
 /**
@@ -43,7 +44,6 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
 BrowsingHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS
-include_once ROOT_DIR . '/services/include/NodeEditing.inc.php';
 require_once MODULES_SLIDEIMPORT_PATH . '/include/functions.inc.php';
 require_once MODULES_SLIDEIMPORT_PATH . '/include/AMASlideimportDataHandler.inc.php';
 

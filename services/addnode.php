@@ -14,8 +14,14 @@
 
 use Lynxlab\ADA\Browsing\CourseViewer;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Services\NodeEditing\NodeEditing;
+use Lynxlab\ADA\Services\NodeEditing\NodeEditingViewer;
+use Lynxlab\ADA\Services\NodeEditing\PreferenceSelector;
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\redirect;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -79,7 +85,6 @@ ServiceHelper::init($neededObjAr);
  * YOUR CODE HERE
  */
 require_once 'include/editnode_funcs.inc.php';
-require_once 'include/NodeEditing.inc.php';
 
 if (isset($err_msg)) {
   $status = $err_msg;
@@ -443,7 +448,7 @@ else if ( $op == 'save' )
   header("Location: $http_root_dir/browsing/view.php?id_node={$node_data['id']}");
 
   if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
-    \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch([
+    ADAEventDispatcher::buildEventAndDispatch([
       'eventClass' => 'NodeEvent',
       'eventName' => 'POSTADDREDIRECT',
     ], $node_data);

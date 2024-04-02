@@ -80,8 +80,6 @@ $self = whoami();  // = admin!
  */
 SwitcherHelper::init($neededObjAr);
 
-include_once ROOT_DIR . '/services/include/NodeEditing.inc.php';
-
 /*
  * YOUR CODE HERE
  */

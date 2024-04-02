@@ -19,6 +19,7 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Forms\CourseModelForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\Translator;
+use Lynxlab\ADA\Services\NodeEditing\NodeEditing;
 
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -77,8 +78,6 @@ $self = whoami();  // = admin!
  * e.g.: node_classes.inc.php:990
  */
 SwitcherHelper::init($neededObjAr);
-
-include_once ROOT_DIR . '/services/include/NodeEditing.inc.php';
 
 /*
  * YOUR CODE HERE
