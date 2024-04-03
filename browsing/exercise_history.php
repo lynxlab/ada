@@ -80,8 +80,6 @@ BrowsingHelper::init($neededObjAr);
 /*
  * YOUR CODE HERE
  */
-include_once ROOT_DIR . '/services/include/exercise_classes.inc.php';
-
 $history = '';
 
 if (!isset($op)) {

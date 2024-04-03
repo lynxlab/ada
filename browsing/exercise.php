@@ -83,11 +83,6 @@ $self = whoami();
  */
 BrowsingHelper::init($neededObjAr);
 
-/*
- *
-*/
-include_once ROOT_DIR . '/services/include/exercise_classes.inc.php';
-
 $id_node = $nodeObj->id;
 
 //redirect to test module if necessary

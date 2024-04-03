@@ -76,8 +76,6 @@ $self =  whoami();
 */
 $id_node = $nodeObj->id;
 
-include_once 'include/exercise_classes.inc.php';
-
 if (!isset($op)) {
     $op = 'do';
 }

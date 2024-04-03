@@ -19,6 +19,7 @@ use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\TutorHelper;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
+use Lynxlab\ADA\Services\Exercise\ADAEsercizio;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
 use function Lynxlab\ADA\Main\AMA\DBRead\read_user_from_DB;
@@ -85,8 +86,6 @@ include_once 'include/tutor.inc.php';
  */
 TutorHelper::init($neededObjAr);
 
-include_once ROOT_DIR . '/services/include/exercise_classes.inc.php';
-
 $history = '';
 
 $studentObj = read_user_from_DB($id_student);
@@ -120,7 +119,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $exercise = unserialize($_SESSION['exercise_object']);
 
-    if ( ! ($exercise instanceof ADA_Esercizio) ) {
+    if ( ! ($exercise instanceof ADAEsercizio) ) {
         $errObj = new ADA_Error(NULL, translateFN("L'oggetto in sessione non è un esercizio ADA"));
     }
 

@@ -103,7 +103,6 @@ $break_error = ''; // system var, indica eventuali errori
  * Generazione dei form per l'inserimento dell'esercizio.
  *
 */
-include_once 'include/exercise_classes.inc.php';
 
 if ( isset($step) && !isset($verify)) {
     /**
