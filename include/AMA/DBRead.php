@@ -30,7 +30,7 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
  * Reads a ADA node from database.
  *
  * @param  string $id_node - a valid ADA node identifier. e.g. '1_0'
- * @return a Node object on success, on failure raises a ADA_Error.
+ * @return \Lynxlab\ADA\Main\Node\Node a Node object on success, on failure raises a ADA_Error.
  */
 function read_node_from_DB($id_node)
 {

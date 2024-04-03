@@ -18,6 +18,8 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Translator;
 
+use function Lynxlab\ADA\Services\Functions\getNodeDataFromPost;
+
 /**
  * class NodeEditingViewer, provides all the methods used to generate
  * node editing views such as node editing, preview,...

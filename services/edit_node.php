@@ -25,7 +25,11 @@ use Lynxlab\ADA\Services\NodeEditing\PreferenceSelector;
 use Lynxlab\ADA\Services\NodeEditing\Utilities;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\redirect;
+use function Lynxlab\ADA\Services\Functions\copy_nodeFN;
+use function Lynxlab\ADA\Services\Functions\delete_nodeFN;
+use function Lynxlab\ADA\Services\Functions\getNodeData;
 
 /**
  * Base config file
