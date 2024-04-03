@@ -47,6 +47,11 @@ use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 
 abstract class ADAAbstractUser extends ADALoggableUser
 {
+    /**
+     * Undocumented variable
+     *
+     * @var \Lynxlab\ADA\Main\History\History
+     */
     public $history;
     protected $whatsnew;
 
