@@ -73,14 +73,6 @@
                     </div>
                 </div>
 
-                <div class="helpcont ada-column">
-                    <div class="portlet">
-                        <div class="portlet-header"><i18n>facebook</i18n></div>
-                        <div class="portlet-content">
-                            <template_field class="template_field" name="fbRSS">fbRSS</template_field>
-                        </div>
-                    </div>
-                </div>
 		<div class="helpcont ada-column">
                   <div class="TwitterTimeLine portlet">
                     <div class="portlet-header">Twitter</div>
