@@ -6,6 +6,7 @@ $finder = (new PhpCsFixer\Finder())
         'vendor',
         'browsing/include/graph',
         'services/media',
+        'upload_file',
     ])
 ;
 

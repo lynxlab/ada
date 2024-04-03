@@ -16,6 +16,7 @@
     <exclude-pattern>*/MobileDetect/*</exclude-pattern> -->
     <exclude-pattern>browsing/include/graph/*</exclude-pattern>
     <exclude-pattern>services/media/*</exclude-pattern>
+    <exclude-pattern>upload_file/*</exclude-pattern>
     <exclude-pattern>*/**/*.css</exclude-pattern>
     <exclude-pattern>*/**/*.js</exclude-pattern>
 
