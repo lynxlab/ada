@@ -13,6 +13,8 @@
 
 namespace Lynxlab\ADA\Services\NodeEditing;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 class Utilities
 {
     public static function getAdaNodeTypeFromString($type)

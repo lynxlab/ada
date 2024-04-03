@@ -18,6 +18,7 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Translator;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Services\Functions\getNodeDataFromPost;
 
 /**
@@ -302,7 +303,7 @@ class NodeEditingViewer
      * function getPreviewForm, used to display a preview of current node's text content
      *
      * @param  string $form_action
-     * @return string
+     * @return \Lynxlab\ADA\CORE\html4\CBase
      */
     public static function getPreviewForm($action_return_todoEdit_node, $action_save_edited_node)
     {

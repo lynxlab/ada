@@ -15,6 +15,8 @@ namespace Lynxlab\ADA\Services\NodeEditing;
 
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * class NodeEditing, provides utility methods needed by
  * node editing activity.
@@ -126,7 +128,7 @@ class NodeEditing
                             'stile'          => null,
                             'significato'    => '',
                             'azione'         => null,
-                            'posizione'      => [100, 100, 200, 200]
+                            'posizione'      => [100, 100, 200, 200],
                         ];
 
                         $result = $dh->add_link($link_ha);
@@ -138,7 +140,7 @@ class NodeEditing
                             'tipo'      => $type,
                             'copyright' => null,
                             'id_nodo'   => $edited_node_id,
-                            'id_utente' => $user_id
+                            'id_utente' => $user_id,
                         ];
                         $id_ext_res = $dh->add_risorsa_esterna($res_ha);
                         if (AMA_DataHandler::isError($id_ext_res)) {
@@ -157,7 +159,7 @@ class NodeEditing
                             'tipo'      => $type,
                             'copyright' => null,
                             'id_nodo'   => $edited_node_id,
-                            'id_utente' => $user_id
+                            'id_utente' => $user_id,
                         ];
                         //                        $id_ext_res = $dh->add_risorsa_esterna($res_ha);
                         //                        if (AMA_DataHandler::isError($id_ext_res)) return $id_ext_res;

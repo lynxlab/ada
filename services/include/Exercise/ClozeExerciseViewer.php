@@ -29,7 +29,7 @@ class ClozeExerciseViewer extends ExerciseViewer
                     'id_nodo'     => $answer['id_nodo'],
                     'posizione'   => $answer['ordine'],
                     'parola'      => $answer['nome'],
-                    'correttezza' => $answer['correttezza']
+                    'correttezza' => $answer['correttezza'],
                 ];
             } else {
                 $lista['altre'][] = $answer['nome'];
