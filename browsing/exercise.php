@@ -16,6 +16,9 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Services\Exercise\ExerciseCorrectionFactory;
+use Lynxlab\ADA\Services\Exercise\ExerciseDAO;
+use Lynxlab\ADA\Services\Exercise\ExerciseViewerFactory;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;

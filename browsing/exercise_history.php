@@ -16,6 +16,8 @@
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Services\Exercise\ExerciseDAO;
+use Lynxlab\ADA\Services\Exercise\ExerciseViewerFactory;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

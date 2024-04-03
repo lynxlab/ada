@@ -16,6 +16,9 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Services\Exercise\ExerciseCorrectionFactory;
+use Lynxlab\ADA\Services\Exercise\ExerciseDAO;
+use Lynxlab\ADA\Services\Exercise\ExerciseViewerFactory;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -33,16 +36,16 @@ $variableToClearAR = ['node', 'layout', 'course', 'user'];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = [AMA_TYPE_VISITOR, AMA_TYPE_STUDENT,AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR];
+$allowedUsersAr = [AMA_TYPE_VISITOR, AMA_TYPE_STUDENT, AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR];
 
 /**
  * Get needed objects
  */
 $neededObjAr = [
-        AMA_TYPE_VISITOR      => ['node','layout','course'],
-        AMA_TYPE_STUDENT         => ['node','layout','tutor','course','course_instance'],
-        AMA_TYPE_TUTOR => ['node','layout','course','course_instance'],
-        AMA_TYPE_AUTHOR       => ['node','layout','course'],
+    AMA_TYPE_VISITOR      => ['node', 'layout', 'course'],
+    AMA_TYPE_STUDENT         => ['node', 'layout', 'tutor', 'course', 'course_instance'],
+    AMA_TYPE_TUTOR => ['node', 'layout', 'course', 'course_instance'],
+    AMA_TYPE_AUTHOR       => ['node', 'layout', 'course'],
 ];
 
 /**
@@ -237,7 +240,7 @@ if ($id_profile == AMA_TYPE_AUTHOR) {
     $link   = HTTP_ROOT_DIR . '/services/edit_exercise.php?op=delete';
     $text   = addslashes(translateFN('Confermi cancellazione esercizio?'));
     $delete = "<a href=\"#\" onclick=\"confirmCriticalOperationBeforeRedirect('$text','$link')\">" .
-            translateFN('Elimina esercizio') . '</a>';
+        translateFN('Elimina esercizio') . '</a>';
 
     $edit_exercise = CDOMElement::create('ul');
     $li_edit = CDOMElement::create('li');
@@ -274,23 +277,23 @@ if ($last_access == '' || is_null($last_access)) {
  * Output
 */
 $content_dataAr = [
-        'path' => $nodeObj->findPathFN(),
-        'user_name' => $user_uname,
-        'user_type' => $user_type,
-        'user_level' => $user_level,
-        'visited' => '-',
-        'icon' => $icon,
-        'text' => $dataHa['exercise'],
-        'edit_exercise' => $edit_exercise->getHtml(),
-        'title' => $nodeObj->name,
-        'author' => $nodeObj->author['username'],
-        'node_level' => 'livello nodo',
-        'messages' => $user_messages->getHtml(),
-        'edit_profile' => $userObj->getEditProfilePage(),
-        'last_visit' => $last_access,
-        'agenda' => $user_agenda->getHtml(),
-        //'course_title' => '',
-        //'media' => 'media',
+    'path' => $nodeObj->findPathFN(),
+    'user_name' => $user_uname,
+    'user_type' => $user_type,
+    'user_level' => $user_level,
+    'visited' => '-',
+    'icon' => $icon,
+    'text' => $dataHa['exercise'],
+    'edit_exercise' => $edit_exercise->getHtml(),
+    'title' => $nodeObj->name,
+    'author' => $nodeObj->author['username'],
+    'node_level' => 'livello nodo',
+    'messages' => $user_messages->getHtml(),
+    'edit_profile' => $userObj->getEditProfilePage(),
+    'last_visit' => $last_access,
+    'agenda' => $user_agenda->getHtml(),
+    //'course_title' => '',
+    //'media' => 'media',
 ];
 
 ARE::render($layout_dataAr, $content_dataAr);
