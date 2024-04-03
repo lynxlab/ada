@@ -21,6 +21,7 @@ namespace Lynxlab\ADA\Main\Output;
 use Exception;
 use Lynxlab\ADA\Main\ArrayToXML\ArrayToXML;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
+use Lynxlab\ADA\Widgets\Widget;
 
 class Html extends GenericHtml
 {
@@ -138,7 +139,6 @@ class Html extends GenericHtml
     public function fillin_widgetsFN($widgetsConfFilename = '', $optionsArray = [])
     {
 
-        require_once ROOT_DIR . '/widgets/include/widget_includes.inc.php';
         if (is_file($widgetsConfFilename)) {
             try {
                 $widgetAr = ArrayToXML::toArray(file_get_contents($widgetsConfFilename));
