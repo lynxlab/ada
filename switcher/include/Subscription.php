@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Subscription.inc.php file
+ * Subscription class
  *
  * PHP version 5
  *
@@ -9,6 +10,7 @@
  * @copyright Copyright (c) 2010, Lynx s.r.l.
  * @license   http://opensource.org/licenses/gpl-2.0.php GNU Public License
  */
+
 /**
  * Description of Subscription
  *
@@ -17,6 +19,11 @@
  * @copyright Copyright (c) 2010, Lynx s.r.l.
  * @license   http://opensource.org/licenses/gpl-2.0.php GNU Public License
  */
+
+namespace Lynxlab\ADA\Switcher;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 class Subscription
 {
     /*
@@ -30,23 +37,23 @@ class Subscription
      * @param integer $classRoomId
      * @return array an array of Subscription objects
      */
-    static public function findPresubscriptionsToClassRoom($classRoomId) {
+    public static function findPresubscriptionsToClassRoom($classRoomId)
+    {
         $dh = $GLOBALS['dh'];
         $result = $dh->get_presubscribed_students_for_course_instance($classRoomId);
 
-        if(AMA_DataHandler::isError($result)) {
-            return array();
+        if (AMA_DataHandler::isError($result)) {
+            return [];
         } else {
-            $subscriptionsAr = array();
+            $subscriptionsAr = [];
 
-            foreach($result as $r) {
-                $subscription = new Subscription($r['id_utente'], $classRoomId,$r['data_iscrizione']);
+            foreach ($result as $r) {
+                $subscription = new Subscription($r['id_utente'], $classRoomId, $r['data_iscrizione']);
                 $subscription->setSubscriberFullname($r['nome'] . ' ' . $r['cognome']);
                 $subscription->setSubscriptionStatus($r['status']);
                 $subscription->setLastStatusUpdate($r['laststatusupdate']);
-                $subscription->_loadedStatus = $subscription->getSubscriptionStatus();
-                if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
-                {
+                $subscription->loadedStatus = $subscription->getSubscriptionStatus();
+                if (defined('MODULES_CODEMAN') && (MODULES_CODEMAN)) {
                     $subscription->setSubscriptionCode($r['codice']);
                 }
                 $subscriptionsAr[] = $subscription;
@@ -63,26 +70,26 @@ class Subscription
      * @param integer $classRoomId
      * @return array an array of Subscriptions
      */
-    static public function findSubscriptionsToClassRoom($classRoomId, $all=false) {
+    public static function findSubscriptionsToClassRoom($classRoomId, $all = false)
+    {
         $dh = $GLOBALS['dh'];
         $result = $dh->get_students_for_course_instance($classRoomId, $all);
 
-        if(AMA_DataHandler::isError($result)) {
-            return array();
+        if (AMA_DataHandler::isError($result)) {
+            return [];
         } else {
-            $subscriptionsAr = array();
+            $subscriptionsAr = [];
 
-            foreach($result as $r) {
-                $subscription = new Subscription($r['id_utente'], $classRoomId,$r['data_iscrizione']);
+            foreach ($result as $r) {
+                $subscription = new Subscription($r['id_utente'], $classRoomId, $r['data_iscrizione']);
                 $subscription->setSubscriberFullname($r['nome'] . ' ' . $r['cognome']);
                 $subscription->setSubscriberFirstname($r['nome']);
                 $subscription->setSubscriberLastname($r['cognome']);
                 $subscription->setSubscriberEmail($r['e_mail']);
                 $subscription->setSubscriptionStatus($r['status']);
                 $subscription->setLastStatusUpdate($r['laststatusupdate']);
-                $subscription->_loadedStatus = $subscription->getSubscriptionStatus();
-                if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
-                {
+                $subscription->loadedStatus = $subscription->getSubscriptionStatus();
+                if (defined('MODULES_CODEMAN') && (MODULES_CODEMAN)) {
                     $subscription->setSubscriptionCode($r['codice']);
                 }
                 $subscriptionsAr[] = $subscription;
@@ -90,66 +97,66 @@ class Subscription
 
             return $subscriptionsAr;
         }
-
     }
 
-    static public function addSubscription(Subscription $s) {
+    public static function addSubscription(Subscription $s)
+    {
         $dh = $GLOBALS['dh'];
-        if($s->getSubscriptionStatus() == ADA_STATUS_SUBSCRIBED) {
-
+        if ($s->getSubscriptionStatus() == ADA_STATUS_SUBSCRIBED) {
             $result = $dh->course_instance_student_presubscribe_add(
-                    $s->getClassRoomId(),
-                    $s->getSubscriberId(),
-                    $s->getStartStudentLevel()
+                $s->getClassRoomId(),
+                $s->getSubscriberId(),
+                $s->getStartStudentLevel()
             );
 
-            if(!AMA_DataHandler::isError($result)) {
+            if (!AMA_DataHandler::isError($result)) {
                 $result = $dh->course_instance_student_subscribe(
-                        $s->getClassRoomId(),
-                        $s->getSubscriberId(),
-                        ADA_STATUS_SUBSCRIBED,
-                        $s->getStartStudentLevel(),
-                		$s->getLastStatusUpdate()
+                    $s->getClassRoomId(),
+                    $s->getSubscriberId(),
+                    ADA_STATUS_SUBSCRIBED,
+                    $s->getStartStudentLevel(),
+                    $s->getLastStatusUpdate()
                 );
             }
 
-            if(AMA_DataHandler::isError($result)) {
-               //print_r($result);
+            if (AMA_DataHandler::isError($result)) {
+                //print_r($result);
             }
         } else {
             //echo 'sono qui';
         }
-
     }
-    static public function updateSubscription(Subscription $s) {
+    public static function updateSubscription(Subscription $s)
+    {
         $dh = $GLOBALS['dh'];
-        if($s->getSubscriptionStatus() == ADA_STATUS_REMOVED) {
+        if ($s->getSubscriptionStatus() == ADA_STATUS_REMOVED) {
             $result = $dh->course_instance_student_presubscribe_remove(
-                    $s->getClassRoomId(),
-                    $s->getSubscriberId()
+                $s->getClassRoomId(),
+                $s->getSubscriberId()
             );
-        }
-        else {
+        } else {
             $result = $dh->course_instance_student_subscribe(
-                    $s->getClassRoomId(),
-                    $s->getSubscriberId(),
-                    $s->getSubscriptionStatus(),
-            		$s->getStartStudentLevel(),
-            		$s->getLastStatusUpdate()
+                $s->getClassRoomId(),
+                $s->getSubscriberId(),
+                $s->getSubscriptionStatus(),
+                $s->getStartStudentLevel(),
+                $s->getLastStatusUpdate()
             );
         }
-        if(AMA_DataHandler::isError($result)) {
-
+        if (AMA_DataHandler::isError($result)) {
         }
 
         return $result;
     }
-    static public function deleteSubscription(Subscription $s) {}
+    public static function deleteSubscription(Subscription $s)
+    {
+    }
 
-    static public function deleteAllSubscriptionsToClassRoom($classRoomId) {
+    public static function deleteAllSubscriptionsToClassRoom($classRoomId)
+    {
         $dh = $GLOBALS['dh'];
         $result = $dh->course_instance_students_subscriptions_remove_all($classRoomId);
-        if(AMA_DataHandler::isError($result)) {
+        if (AMA_DataHandler::isError($result)) {
             return false;
         }
         return true;
@@ -161,151 +168,177 @@ class Subscription
      * @param integer $classRoomId the id of the classroom
      * @param integer $subscriptionDate the timestamp of the subscription
      */
-    public function __construct($userId, $classRoomId,$subscriptionDate=0, $startStudentLevel=1) {
-        $this->_subscriberId = $userId;
-        $this->_classRoomId = $classRoomId;
-        $this->_startStudentLevel = $startStudentLevel;
+    public function __construct($userId, $classRoomId, $subscriptionDate = 0, $startStudentLevel = 1)
+    {
+        $this->subscriberId = $userId;
+        $this->classRoomId = $classRoomId;
+        $this->startStudentLevel = $startStudentLevel;
 
-        if($subscriptionDate == 0) {
-            $this->_subscriptionDate = time();
+        if ($subscriptionDate == 0) {
+            $this->subscriptionDate = time();
         } else {
-            $this->_subscriptionDate = $subscriptionDate;
+            $this->subscriptionDate = $subscriptionDate;
         }
 
-        $this->_subscriberFullname = '';
-        $this->_subscriberUsername = '';
-        $this->_subscriptionStatus = ADA_STATUS_PRESUBSCRIBED;
+        $this->subscriberFullname = '';
+        $this->subscriberUsername = '';
+        $this->subscriptionStatus = ADA_STATUS_PRESUBSCRIBED;
     }
     /**
      *
      * @return integer the StartStudentLevel of the subscriber
      */
-    public function getStartStudentLevel() {
-        return $this->_startStudentLevel;
+    public function getStartStudentLevel()
+    {
+        return $this->startStudentLevel;
     }
 
     /**
      *
      * @return integer the id of the subscriber
      */
-    public function getSubscriberId() {
-        return $this->_subscriberId;
+    public function getSubscriberId()
+    {
+        return $this->subscriberId;
     }
     /**
      *
      * @return integer the id of the classroom
      */
-    public function getClassRoomId() {
-        return $this->_classRoomId;
+    public function getClassRoomId()
+    {
+        return $this->classRoomId;
     }
     /**
      *
      * @return string the fullname of the subscriber
      */
-    public function getSubscriberFullname() {
-        return $this->_subscriberFullname;
+    public function getSubscriberFullname()
+    {
+        return $this->subscriberFullname;
     }
     /**
      *
      * @return string the firstname of the subscriber
      */
-    public function getSubscriberFirstname() {
-        return $this->_subscriberFirstname;
+    public function getSubscriberFirstname()
+    {
+        return $this->subscriberFirstname;
     }
     /**
      *
      * @return string the lastname of the subscriber
      */
-    public function getSubscriberLastname() {
-        return $this->_subscriberLastname;
+    public function getSubscriberLastname()
+    {
+        return $this->subscriberLastname;
     }
     /**
      *
      * @return string the email of the subscriber
      */
-    public function getSubscriberEmail() {
-        return $this->_subscriberEmail;
+    public function getSubscriberEmail()
+    {
+        return $this->subscriberEmail;
     }
     /**
      *
      * @return string a string representation of the subscription date
      */
-    public function getSubscriptionDate() {
-        return $this->_subscriptionDate;
+    public function getSubscriptionDate()
+    {
+        return $this->subscriptionDate;
     }
     /**
      *
      * @return string the subscription status as string
      */
-    public function getSubscriptionStatus() {
-        return $this->_subscriptionStatus;
+    public function getSubscriptionStatus()
+    {
+        return $this->subscriptionStatus;
     }
     /**
      *
      * @return string the subscription code as string
      */
-    public function getSubscriptionCode() {
-        return $this->_subscriptionCode;
+    public function getSubscriptionCode()
+    {
+        return $this->subscriptionCode;
     }
 
     /**
      * @return number last status update timestamp
      */
-    public function getLastStatusUpdate() {
-    	return $this->_lastStatusUpdate;
+    public function getLastStatusUpdate()
+    {
+        return $this->lastStatusUpdate;
     }
 
-    public function setSubscriberFullname($fullname) {
-        $this->_subscriberFullname = $fullname;
+    public function setSubscriberFullname($fullname)
+    {
+        $this->subscriberFullname = $fullname;
     }
-    public function setSubscriberFirstname($firstname) {
-        $this->_subscriberFirstname = $firstname;
+    public function setSubscriberFirstname($firstname)
+    {
+        $this->subscriberFirstname = $firstname;
     }
-    public function setSubscriberLastname($lastname) {
-        $this->_subscriberLastname = $lastname;
+    public function setSubscriberLastname($lastname)
+    {
+        $this->subscriberLastname = $lastname;
     }
-    public function setSubscriberEmail($email) {
-        $this->_subscriberEmail = $email;
+    public function setSubscriberEmail($email)
+    {
+        $this->subscriberEmail = $email;
     }
-    public function setSubscriptionStatus($status) {
-        $this->_subscriptionStatus = $status;
-        if ($this->_loadedStatus != $status) $this->setLastStatusUpdate(time());
+    public function setSubscriptionStatus($status)
+    {
+        $this->subscriptionStatus = $status;
+        if ($this->loadedStatus != $status) {
+            $this->setLastStatusUpdate(time());
+        }
     }
-    public function setStartStudentLevel($startStudentLevel) {
-    	$this->_startStudentLevel = $startStudentLevel;
+    public function setStartStudentLevel($startStudentLevel)
+    {
+        $this->startStudentLevel = $startStudentLevel;
     }
-    public function setSubscriptionCode($code) {
-    	$this->_subscriptionCode = $code;
+    public function setSubscriptionCode($code)
+    {
+        $this->subscriptionCode = $code;
     }
-    public function setLastStatusUpdate($timestamp) {
-    	$this->_lastStatusUpdate = $timestamp;
+    public function setLastStatusUpdate($timestamp)
+    {
+        $this->lastStatusUpdate = $timestamp;
     }
 
-    public function subscriptionStatusAsString() {
-    	return self::subscriptionStatusArray()[$this->_subscriptionStatus];
+    public function subscriptionStatusAsString()
+    {
+        return self::subscriptionStatusArray()[$this->subscriptionStatus];
     }
 
-    public static function subscriptionStatusArray() {
-        return array(
+    public static function subscriptionStatusArray()
+    {
+        return [
             ADA_STATUS_REGISTERED => translateFN('Registrato'),
             ADA_STATUS_PRESUBSCRIBED => translateFN('Preiscritto'),
             ADA_STATUS_SUBSCRIBED => translateFN('Iscritto'),
             ADA_STATUS_REMOVED => translateFN('Rimosso'),
             ADA_STATUS_VISITOR => translateFN('In visita'),
-        	ADA_STATUS_COMPLETED => translateFN('Completato'),
-        	ADA_STATUS_TERMINATED => translateFN('Terminato')
-        );
+            ADA_STATUS_COMPLETED => translateFN('Completato'),
+            ADA_STATUS_TERMINATED => translateFN('Terminato'),
+        ];
     }
 
-    private $_subscriberId;
-    private $_subscriberFullname;
-    private $_subscriberFirstname;
-    private $_subscriberLastname;
-    private $_subscriberEmail;
-    private $_classRoomId;
-    private $_subscriptionDate;
-    private $_subscriptionStatus;
-    private $_subscriptionCode;
-    private $_lastStatusUpdate;
-    private $_loadedStatus;
+    private $subscriberId;
+    private $subscriberFullname;
+    private $subscriberFirstname;
+    private $subscriberLastname;
+    private $subscriberEmail;
+    private $classRoomId;
+    private $subscriptionDate;
+    private $subscriptionStatus;
+    private $subscriptionCode;
+    private $lastStatusUpdate;
+    private $loadedStatus;
+    private $startStudentLevel;
+    private $subscriberUsername;
 }
