@@ -7,6 +7,7 @@ $finder = (new PhpCsFixer\Finder())
         'browsing/include/graph',
         'services/media',
         'upload_file',
+        'widgets/cache',
     ])
 ;
 
