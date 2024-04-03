@@ -30,7 +30,8 @@
             "browsing/include/GraphMap.php",
             "browsing/include/MapFunctions.php",
             "browsing/include/functions.php",
-            "comunica/include/functions.php"
+            "comunica/include/functions.php",
+            "services/include/functions.php"
         ]
     },
     "authors": [
