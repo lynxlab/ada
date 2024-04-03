@@ -16,6 +16,7 @@ use Lynxlab\ADA\Main\Menu;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CourseEvent;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
+use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\today_dateFN;
@@ -3104,7 +3105,6 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler
      */
     private function _update_students_subscription_after_course_instance_set($instance_id, $duration_subscription)
     {
-        require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
         $subscriptions = Subscription::findSubscriptionsToClassRoom($instance_id);
         if (!AMA_DB::isError($subscriptions) && is_array($subscriptions) && count($subscriptions) > 0) {
             foreach ($subscriptions as $subscription) {

@@ -16,7 +16,9 @@ use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\User\ADAUser;
+use Lynxlab\ADA\Switcher\Subscription;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -87,9 +89,6 @@ $self =  whoami();  // = tutor!
  * e.g.: node_classes.inc.php:990
  */
 SwitcherHelper::init($neededObjAr);
-
-require_once 'include/Subscription.inc.php';
-require_once ROOT_DIR . '/include/Forms/CourseInstanceSubscriptionsForm.inc.php';
 
 /*
  * YOUR CODE HERE

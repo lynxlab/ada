@@ -34,6 +34,7 @@ namespace Lynxlab\ADA\Main\User;
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Switcher\Subscription;
 use ReflectionClass;
 use ReflectionProperty;
 
@@ -462,7 +463,6 @@ class ADAUser extends ADAAbstractUser
     public function setTerminatedStatusForInstance($courseId, $courseInstanceId)
     {
         $common_dh = $GLOBALS['common_dh'];
-        require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
         $s = new Subscription($this->getId(), $courseInstanceId);
         $s->setSubscriptionStatus(ADA_STATUS_TERMINATED);
         $s->setStartStudentLevel(null); // null means no level update

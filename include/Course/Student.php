@@ -18,7 +18,9 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Bookmark\Bookmark;
+use Lynxlab\ADA\Main\History\History;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
+use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\dt2tsFN;
@@ -63,7 +65,6 @@ class Student
 
     public function get_class_report_from_dbFN($id_course, $id_course_instance)
     {
-        require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
         // last data from db tble
         $dh = $GLOBALS['dh'];
         $info_course = $dh->get_course($id_course); // Get title course
@@ -388,10 +389,6 @@ class Student
                     if (isset($columns[REPORT_COLUMN_EXERCISES_SURVEY])) {
                         unset($columns[REPORT_COLUMN_EXERCISES_SURVEY]);
                     }
-                }
-
-                if (array_key_exists(REPORT_COLUMN_STATUS, $columns)) {
-                    require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
                 }
 
                 $stausIsButton = false;
@@ -898,7 +895,6 @@ class Student
                             $dati['index'] = $index;
 
                             // status
-                            require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
                             $dati['status'] = $status_student;
                             $dati_stude[$num_student]['status'] = sprintf("<!-- %d -->%s", $status_student, Subscription::subscriptionStatusArray()[$status_student]);
 

@@ -14,7 +14,10 @@ use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\Logger\ADAFileLogger;
 use Lynxlab\ADA\Main\User\ADAUser;
+use Lynxlab\ADA\Switcher\Subscription;
 use PHPMailer\PHPMailer\Exception;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * Base config file
@@ -42,7 +45,6 @@ $neededObjAr = array(
 */
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
-require_once '../include/Subscription.inc.php';
 SwitcherHelper::init($neededObjAr);
 
 $doDownload = false;

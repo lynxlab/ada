@@ -18,6 +18,7 @@ use Lynxlab\ADA\CORE\html4\CBase;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Module\Login\abstractLogin;
+use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -506,7 +507,6 @@ class UserModuleHtmlLib
         if (defined('MODULES_COLLABORAACL') &&  MODULES_COLLABORAACL && array_key_exists('userObj', $GLOBALS)) {
             // use the userObj global
             if ($GLOBALS['userObj']->getType() == AMA_TYPE_TUTOR) {
-                require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
                 $users = array_map(function ($s) {
                     return [
                     'id' => $s->getSubscriberId(),

@@ -19,6 +19,7 @@ use Lynxlab\ADA\Main\Token\TokenManager;
 use Lynxlab\ADA\Main\Upload\FileUploader;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -88,8 +89,6 @@ $self =  whoami();
  * e.g.: node_classes.inc.php:990
  */
 SwitcherHelper::init($neededObjAr);
-
-require_once 'include/Subscription.inc.php';
 
 $label = translateFN('Carica utenti da file');
 

@@ -13,7 +13,7 @@ namespace Lynxlab\ADA\Module\StudentsGroups;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\User\ADAUser;
-use Subscription;
+use Lynxlab\ADA\Switcher\Subscription;
 
 class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
 {
@@ -294,7 +294,6 @@ class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
 			// check instance existence
 			$iArr = $GLOBALS['dh']->course_instance_get($saveData['instanceId']);
 			if (!\AMA_DB::isError($iArr) && is_array($iArr) && isset($iArr['id_corso']) && $iArr['id_corso'] == $saveData['courseId']) {
-				require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
 				$counters = [
 					'alreadySubscribed' => 0,
 					'subscribed' => 0,
@@ -303,7 +302,7 @@ class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
 				$courseProviderAr = $GLOBALS['common_dh']->get_tester_info_from_id_course($saveData['courseId']);
 				$subscribedIds = array_map(function($s) {
 						return $s->getSubscriberId();
-					}, \Subscription::findSubscriptionsToClassRoom($saveData['instanceId'], true)
+					}, Subscription::findSubscriptionsToClassRoom($saveData['instanceId'], true)
 				);
 				foreach ($group->getMembers() as $student) {
 					if (!in_array($student->getId(), $subscribedIds)) {
@@ -314,10 +313,10 @@ class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
 							$isUserInProvider = true;
 						}
 						if ($isUserInProvider) {
-							$s = new \Subscription($student->getId(), $saveData['instanceId']);
+							$s = new Subscription($student->getId(), $saveData['instanceId']);
 							$s->setSubscriptionStatus(ADA_STATUS_SUBSCRIBED);
 							$s->setStartStudentLevel($iArr['start_level_student']);
-							\Subscription::addSubscription($s);
+							Subscription::addSubscription($s);
 							++$counters['subscribed'];
 						}
 					} else {

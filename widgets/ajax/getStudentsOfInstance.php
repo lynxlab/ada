@@ -30,6 +30,9 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Switcher\Subscription;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * Common initializations and include files
@@ -128,7 +131,6 @@ try {
 		$GLOBALS['dh'] = $tester_dh;
 	} else throw new \Exception(translateFN('Spiacente, non so a che fornitore di servizi sei collegato'));
 
-	require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
 	$output = '';
 
 	$subscriptions = Subscription::findSubscriptionsToClassRoom($courseInstanceId, true);

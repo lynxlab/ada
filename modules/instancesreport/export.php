@@ -8,13 +8,16 @@
  */
 
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+use Lynxlab\ADA\Main\History\History;
 use Lynxlab\ADA\Module\InstancesReport\AMAInstancesReportDataHandler;
 use Lynxlab\ADA\Module\InstancesReport\InstancesReportActions;
+use Lynxlab\ADA\Switcher\Subscription;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\dt2tsFN;
 
 /**
@@ -40,8 +43,6 @@ list($allowedUsersAr, $neededObjAr) = array_values(InstancesReportActions::getAl
 require_once ROOT_DIR . '/include/module_init.inc.php';
 // neededObjArr grants access to switcher only
 SwitcherHelper::init($neededObjAr);
-
-require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
 
 // globals set by SwitcherHelper::init
 /** @var \Course $courseObj */
@@ -72,11 +73,11 @@ if (is_array($instancesAr) && count($instancesAr)>0) {
         $htmlFromHistory = false;
         $subscriptions = Subscription::findSubscriptionsToClassRoom($instance['id_istanza_corso'], $allSubscriptions);
         if (is_array($subscriptions) && count($subscriptions)>0) {
-            /** @var \Subscription $subscription */
+            /** @var \Lynxlab\ADA\Switcher\Subscription $subscription */
             foreach($subscriptions as $subscription) {
 
-                /** @var \History $historyObj */
-                $historyObj = new \History($instance['id_istanza_corso'], $subscription->getSubscriberId());
+                /** @var \Lynxlab\ADA\Main\History\History $historyObj */
+                $historyObj = new History($instance['id_istanza_corso'], $subscription->getSubscriberId());
                 $visits = $historyObj->get_total_visited_nodes();
                 $time = $historyObj->history_nodes_time_FN();
                 $last = $historyObj->history_last_nodes_FN(1, $htmlFromHistory);

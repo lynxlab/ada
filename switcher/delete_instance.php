@@ -22,7 +22,9 @@ use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Forms\CourseInstanceRemovalForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+use Lynxlab\ADA\Switcher\Subscription;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -79,8 +81,6 @@ $self = whoami();
  */
 SwitcherHelper::init($neededObjAr);
 
-require_once 'include/Subscription.inc.php';
-require_once ROOT_DIR . '/include/Forms/CourseInstanceRemovalForm.inc.php';
 /*
  * YOUR CODE HERE
  */

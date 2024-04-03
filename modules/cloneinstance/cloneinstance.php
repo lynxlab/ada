@@ -14,6 +14,7 @@ use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Module\CloneInstance\AMACloneInstanceDataHandler;
 use Lynxlab\ADA\Module\CloneInstance\CloneInstanceActions;
 use Lynxlab\ADA\Module\CloneInstance\CloneInstanceForm;
+use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -40,8 +41,6 @@ list($allowedUsersAr, $neededObjAr) = array_values(CloneInstanceActions::getAllo
 require_once ROOT_DIR . '/include/module_init.inc.php';
 // neededObjArr grants access to switcher only
 SwitcherHelper::init($neededObjAr);
-
-require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
 
 // globals set by SwitcherHelper::init
 /** @var \Course $courseObj */

@@ -19,7 +19,9 @@ use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\Token\TokenManager;
 use Lynxlab\ADA\Main\Upload\FileUploader;
 use Lynxlab\ADA\Main\User\ADAUser;
+use Lynxlab\ADA\Switcher\Subscription;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -89,8 +91,6 @@ $self =  whoami();
  * e.g.: node_classes.inc.php:990
  */
 SwitcherHelper::init($neededObjAr);
-
-require_once 'include/Subscription.inc.php';
 
 /*
  * YOUR CODE HERE

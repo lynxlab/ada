@@ -15,6 +15,7 @@ use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLActions;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLException;
 use Lynxlab\ADA\Module\CollaboraACL\FileACL;
 use Lynxlab\ADA\Module\CollaboraACL\GrantAccessForm;
+use Lynxlab\ADA\Switcher\Subscription;
 
 /**
  * Base config file
@@ -124,7 +125,6 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 } else if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
     // load data needed by the form
-    require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
     $allUsers = Subscription::findSubscriptionsToClassRoom($passedData['instanceId']);
     $acl = $GLOBALS['dh']->findBy('FileACL', ['id' => $passedData['fileAclId']]);
     if (is_array($acl) && count($acl) == 1) {

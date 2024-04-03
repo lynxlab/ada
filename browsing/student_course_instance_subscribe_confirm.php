@@ -20,6 +20,7 @@ use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\User\ADAGuest;
+use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\today_dateFN;
@@ -260,7 +261,6 @@ if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
                 $message .= "<br />--------<br />";
 
                 // subscribe student
-                require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
                 $isSubscribed = count(array_filter(
                     Subscription::findSubscriptionsToClassRoom($instanceObj->getId()),
                     function ($s) use ($userObj) {

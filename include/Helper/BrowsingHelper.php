@@ -18,6 +18,7 @@ use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
+use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -172,7 +173,6 @@ class BrowsingHelper extends ViewBaseHelper
 
                     // if course is complete, save this information to the db
                     if ($is_course_instance_complete) {
-                        require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
                         $s = new Subscription($userObj->getId(), $courseInstanceId);
                         $s->setSubscriptionStatus(ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED);
                         if (isset($userObj->livello) && intval($userObj->livello) > 0) {

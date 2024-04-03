@@ -18,6 +18,7 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
@@ -528,7 +529,6 @@ if ($displayTable) {
         $course_description = $cd_el['descrizione'];
     }
 
-    require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
     $gochat_link = "";
     $content_dataAr['gostart'] = $gostart_link;
     $content_dataAr['gocontinue'] = $last_node_visited_link;

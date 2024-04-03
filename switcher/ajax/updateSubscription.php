@@ -9,6 +9,11 @@
  * @link
  * @version		0.1
  */
+
+use Lynxlab\ADA\Switcher\Subscription;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Base config file
  */
@@ -33,7 +38,6 @@ $neededObjAr = array(
 
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
-include_once '../include/Subscription.inc.php';
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
