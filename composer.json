@@ -38,7 +38,8 @@
             "comunica/include/functions.php",
             "services/include/functions.php",
             "switcher/include/functions.php",
-            "tutor/include/functions.php"
+            "tutor/include/functions.php",
+            "widgets/include/functions.php"
         ]
     },
     "authors": [
