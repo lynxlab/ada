@@ -8,13 +8,13 @@
  *
  *
  * @package
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2010, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @author      Stefano Penge <steve@lynxlab.com>
+ * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
+ * @author      Vito Modena <vito@lynxlab.com>
+ * @copyright   Copyright (c) 2010, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link
- * @version		0.1
+ * @version     0.1
  */
 
 use Lynxlab\ADA\CORE\html4\CText;
@@ -24,6 +24,7 @@ use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Translator;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -34,18 +35,18 @@ require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'course_instance');
+$variableToClearAR = ['node', 'layout', 'course', 'course_instance'];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+$allowedUsersAr = [AMA_TYPE_SWITCHER];
 
 /**
  * Performs basic controls before entering this module
  */
-$neededObjAr = array(
-    AMA_TYPE_SWITCHER => array('layout','course')
-);
+$neededObjAr = [
+    AMA_TYPE_SWITCHER => ['layout', 'course'],
+];
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami();
 
@@ -89,7 +90,7 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
     $authorObj = MultiPort::findUser($courseObj->getAuthorId());
     $language_info = Translator::getLanguageInfoForLanguageId($courseObj->getLanguageId());
 
-    $formData = array(
+    $formData = [
         'id corso' => $courseObj->getId(),
         'autore' => $authorObj->getFullName(),
         'lingua' => $language_info['nome_lingua'],
@@ -103,8 +104,8 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
         //'static mode' => $courseObj->getStaticMode(),
         'data di creazione' => $courseObj->getCreationDate(),
         'data di pubblicazione' => $courseObj->getPublicationDate(),
-        'crediti' => $courseObj->getCredits()
-    );
+        'crediti' => $courseObj->getCredits(),
+    ];
 
     if (defined('MODULES_SERVICECOMPLETE') && MODULES_SERVICECOMPLETE) {
         require_once MODULES_SERVICECOMPLETE_PATH . '/include/AMACompleteDataHandler.inc.php';
@@ -115,15 +116,16 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
 
     if (defined('MODULES_BADGES') && MODULES_BADGES) {
         $bdh = \Lynxlab\ADA\Module\Badges\AMABadgesDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
-        $badges = $bdh->findBy('CourseBadge', [ 'id_corso' => $courseObj->getId() ]);
-        if (!\AMA_DB::isError($badges) && is_array($badges) && count($badges)>0) {
-            $formData['badges'] = implode(', ', array_map(function($el) use ($bdh) {
-                $b = $bdh->findBy('Badge', [ 'uuid' => $el->getBadge_uuid() ]);
-                if (is_array($b) && count($b)===1) {
+        $badges = $bdh->findBy('CourseBadge', ['id_corso' => $courseObj->getId()]);
+        if (!\AMA_DB::isError($badges) && is_array($badges) && count($badges) > 0) {
+            $formData['badges'] = implode(', ', array_map(function ($el) use ($bdh) {
+                $b = $bdh->findBy('Badge', ['uuid' => $el->getBadge_uuid()]);
+                if (is_array($b) && count($b) === 1) {
                     $b = reset($b);
                     return $b->getName();
+                } else {
+                    return '';
                 }
-                else return '';
             }, $badges));
         }
     }
@@ -134,21 +136,21 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
 $label = translateFN('Visualizzazione dei dati del corso');
 $help = translateFN('Da qui il provider admin può visualizzare i dati di un corso esistente');
 
-$content_dataAr = array(
+$content_dataAr = [
     'user_name' => $user_name,
     'user_type' => $user_type,
     'status' => $status,
     'label' => $label,
-    'edit_profile'=>$userObj->getEditProfilePage(),
+    'edit_profile' => $userObj->getEditProfilePage(),
     'help' => $help,
     'data' => $data->getHtml(),
-    'module' => isset($module) ? $module : '',
-    'messages' => $user_messages->getHtml()
-);
+    'module' => $module ?? '',
+    'messages' => $user_messages->getHtml(),
+];
 
-$layout_dataAr['JS_filename'] = array(
-		ROOT_DIR .'/js/switcher/edit_content.js'
-);
-$optionsAr['onload_func'] = 'buildCourseAttachmentsTable('.$courseObj->getId().', false, $j(\'ul.view_info\'));';
+$layout_dataAr['JS_filename'] = [
+    ROOT_DIR . '/js/switcher/edit_content.js',
+];
+$optionsAr['onload_func'] = 'buildCourseAttachmentsTable(' . $courseObj->getId() . ', false, $j(\'ul.view_info\'));';
 
 ARE::render($layout_dataAr, $content_dataAr, null, $optionsAr);

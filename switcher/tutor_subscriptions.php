@@ -25,13 +25,13 @@ use function Lynxlab\ADA\Main\Utilities\whoami;
 /**
  *
  * @package     Switcher
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2020, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @author      Stefano Penge <steve@lynxlab.com>
+ * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
+ * @author      Vito Modena <vito@lynxlab.com>
+ * @copyright   Copyright (c) 2020, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link
- * @version		0.1
+ * @version     0.1
  */
 
 /**
@@ -42,19 +42,19 @@ require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('layout', 'user', 'course', 'course_instance');
+$variableToClearAR = ['layout', 'user', 'course', 'course_instance'];
 
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+$allowedUsersAr = [AMA_TYPE_SWITCHER];
 
 /**
  * Get needed objects
  */
-$neededObjAr = array(
-    AMA_TYPE_SWITCHER => array('layout', 'user')
-);
+$neededObjAr = [
+    AMA_TYPE_SWITCHER => ['layout', 'user'],
+];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self =  whoami();
@@ -93,21 +93,20 @@ SwitcherHelper::init($neededObjAr);
 $label = translateFN('Carica utenti da file');
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
-
     $fileUploader = new FileUploader(ADA_UPLOAD_PATH . $userObj->getId() . '/');
 
     if ($fileUploader->upload() == false) {
         $data = new CText($fileUploader->getErrorMessage());
     } else {
-
         $FlagFileWellFormat = true;
         if (is_readable($fileUploader->getPathToUploadedFile())) {
             $usersToSubscribe = file($fileUploader->getPathToUploadedFile());
 
             /*remove blank line from array*/
             foreach ($usersToSubscribe as $key => $value) {
-                if (!trim($value))
+                if (!trim($value)) {
                     unset($usersToSubscribe[$key]);
+                }
             }
 
 
@@ -138,7 +137,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 $notTutors = 0;
                 $subscribers = count($usersToSubscribe);
 
-                $admtypeAr = array(AMA_TYPE_ADMIN);
+                $admtypeAr = [AMA_TYPE_ADMIN];
                 $admList = $common_dh->get_users_by_type($admtypeAr);
                 if (!AMA_DataHandler::isError($admList)) {
                     $adm_uname = $admList[0]['username'];
@@ -151,17 +150,17 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                     $userDataAr = array_map('trim', explode(',', $subscriber));
 
                     $subscriberObj = MultiPort::findUserByUsername(trim($userDataAr[2]));
-                    if ($subscriberObj == NULL) { // user doesn't exist yet
+                    if ($subscriberObj == null) { // user doesn't exist yet
                         $subscriberObj = new ADAPractitioner(
-                            array(
+                            [
                                 'nome' => trim($userDataAr[0]),
                                 'cognome' => trim($userDataAr[1]),
                                 'email' => trim($userDataAr[2]),
                                 'tipo' => AMA_TYPE_TUTOR,
                                 'username' => trim($userDataAr[2]), //  trim($userDataAr[1]). trim($userDataAr[2]) ???
                                 'stato' => ADA_STATUS_PRESUBSCRIBED,
-                                'birthcity' => ''
-                            )
+                                'birthcity' => '',
+                            ]
                         );
                         $subscriberObj->setPassword(time());
 
@@ -173,7 +172,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                          * provider only.
                          *
                          */
-                        $provider_to_subscribeAr = array($sess_selected_tester);
+                        $provider_to_subscribeAr = [$sess_selected_tester];
                         $result = MultiPort::addUser($subscriberObj, $provider_to_subscribeAr);
                         if ($result > 0) { // addUser returns -1 on error!!!
                             $subscribed++;
@@ -199,14 +198,14 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                                 . PHP_EOL
                                 . ' ' . HTTP_ROOT_DIR . "/browsing/confirm.php?uid=$id_user&tok=$token";
 
-                            $message_ha = array(
+                            $message_ha = [
                                 'titolo' => $title,
                                 'testo' => $text,
-                                'destinatari' => array($subscriberObj->getUserName()),
+                                'destinatari' => [$subscriberObj->getUserName()],
                                 'data_ora' => 'now',
                                 'tipo' => ADA_MSG_MAIL,
-                                'mittente' => $adm_uname
-                            );
+                                'mittente' => $adm_uname,
+                            ];
 
                             $mh = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
 
@@ -250,12 +249,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 } else {
-
     $data = new FileUploadForm();
-    $formData = array(
+    $formData = [
         'id_course' => '',
-        'id_course_instance' => ''
-    );
+        'id_course_instance' => '',
+    ];
     $data->fillWithArrayData($formData);
 
     $help = translateFN('Da qui il provider admin può iscrivere una lista di docenti.');
@@ -267,19 +265,19 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 /*
  * OUTPUT
  */
-$optionsAr = array('onload_func' => "PAGER.showPage('subscribed');");
+$optionsAr = ['onload_func' => "PAGER.showPage('subscribed');"];
 
-$content_dataAr = array(
-    'path' => isset($path) ? $path : '',
-    'label' => isset($label) ? $label : '',
-    'status' => isset($status) ? $status : '',
-    'user_name' => isset($user_name) ? $user_name : '',
-    'user_type' => isset($user_type) ? $user_type : '',
-    'menu' => isset($menu) ? $menu : '',
-    'help' => isset($help) ? $help : '',
+$content_dataAr = [
+    'path' => $path ?? '',
+    'label' => $label ?? '',
+    'status' => $status ?? '',
+    'user_name' => $user_name ?? '',
+    'user_type' => $user_type ?? '',
+    'menu' => $menu ?? '',
+    'help' => $help ?? '',
     'data' => $data->getHtml(),
     'messages' => $user_messages->getHtml(),
-    'agenda ' => $user_agenda->getHtml()
-);
+    'agenda ' => $user_agenda->getHtml(),
+];
 
 ARE::render($layout_dataAr, $content_dataAr, null, $optionsAr);

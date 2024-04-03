@@ -1,16 +1,17 @@
 <?php
+
 /**
  * Add user - this module provides add user functionality
  *
  *
  * @package
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2009, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @author      Stefano Penge <steve@lynxlab.com>
+ * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
+ * @author      Vito Modena <vito@lynxlab.com>
+ * @copyright   Copyright (c) 2009, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link
- * @version		0.1
+ * @version     0.1
  */
 
 use Lynxlab\ADA\Admin\AdminUtils;
@@ -24,6 +25,7 @@ use Lynxlab\ADA\Main\User\ADAPractitioner;
 use Lynxlab\ADA\Main\User\ADASwitcher;
 use Lynxlab\ADA\Main\User\ADAUser;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -34,18 +36,18 @@ require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'course_instance');
+$variableToClearAR = ['node', 'layout', 'course', 'course_instance'];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+$allowedUsersAr = [AMA_TYPE_SWITCHER];
 
 /**
  * Performs basic controls before entering this module
  */
-$neededObjAr = array(
-    AMA_TYPE_SWITCHER => array('layout')
-);
+$neededObjAr = [
+    AMA_TYPE_SWITCHER => ['layout'],
+];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami();  // = admin!
@@ -84,15 +86,13 @@ SwitcherHelper::init($neededObjAr);
 /*
  * YOUR CODE HERE
  */
-require_once ROOT_DIR . '/include/Forms/UserSubscriptionForm.inc.php';
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
-
     $form = new UserSubscriptionForm();
     $form->fillWithPostData();
 
     if ($form->isValid()) {
-        if(isset($_POST['layout']) && $_POST['layout'] != 'none') {
+        if (isset($_POST['layout']) && $_POST['layout'] != 'none') {
             $user_layout = $_POST['layout'];
         } else {
             $user_layout = '';
@@ -124,30 +124,31 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 break;
         }
         $userObj->setPassword($_POST['password']);
-        $result = MultiPort::addUser($userObj, array($sess_selected_tester));
-        if($result > 0) {
-          if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
-                if (array_key_exists('secretquestion', $_POST) &&
+        $result = MultiPort::addUser($userObj, [$sess_selected_tester]);
+        if ($result > 0) {
+            if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+                if (
+                    array_key_exists('secretquestion', $_POST) &&
                     array_key_exists('secretanswer', $_POST) &&
-                    strlen($_POST['secretquestion'])>0 && strlen($_POST['secretanswer'])>0) {
-                        /**
-                         * Save secret question and answer and set the registration as successful
-                         */
-                        $sqdh = \AMASecretQuestionDataHandler::instance();
-                        $sqdh->saveUserQandA($userObj->getId(), $_POST['secretquestion'], $_POST['secretanswer']);
-                    }
-          }
-          if($userObj instanceof ADAAuthor) {
-              AdminUtils::performCreateAuthorAdditionalSteps($userObj->getId());
-          }
+                    strlen($_POST['secretquestion']) > 0 && strlen($_POST['secretanswer']) > 0
+                ) {
+                    /**
+                     * Save secret question and answer and set the registration as successful
+                     */
+                    $sqdh = \AMASecretQuestionDataHandler::instance();
+                    $sqdh->saveUserQandA($userObj->getId(), $_POST['secretquestion'], $_POST['secretanswer']);
+                }
+            }
+            if ($userObj instanceof ADAAuthor) {
+                AdminUtils::performCreateAuthorAdditionalSteps($userObj->getId());
+            }
 
-          $message = translateFN('Utente aggiunto con successo');
-          header('Location: ' . $userObj->getHomePage($message));
-          exit();
+            $message = translateFN('Utente aggiunto con successo');
+            header('Location: ' . $userObj->getHomePage($message));
+            exit();
         } else {
             $form = new CText(translateFN('Si sono verificati dei problemi durante la creazione del nuovo utente'));
         }
-
     } else {
         $form = new CText(translateFN('I dati inseriti nel form non sono validi'));
     }
@@ -158,24 +159,24 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 $label = translateFN('Aggiunta utente');
 $help = translateFN('Da qui il provider admin può creare un nuovo utente');
 
-$layout_dataAr['JS_filename'] = array(
-		JQUERY,
-		JQUERY_MASKEDINPUT,
-        JQUERY_NO_CONFLICT,
-        ROOT_DIR . '/js/browsing/registration.js'
-);
+$layout_dataAr['JS_filename'] = [
+    JQUERY,
+    JQUERY_MASKEDINPUT,
+    JQUERY_NO_CONFLICT,
+    ROOT_DIR . '/js/browsing/registration.js',
+];
 
 $optionsAr['onload_func'] = 'initDateField();  initRegistration();';
 
-$content_dataAr = array(
+$content_dataAr = [
     'user_name' => $user_name,
     'user_type' => $user_type,
     'status' => $status,
     'label' => $label,
     'help' => $help,
     'data' => $form->getHtml(),
-    'module' => isset($module) ? $module : '',
-    'messages' => $user_messages->getHtml()
-);
+    'module' => $module ?? '',
+    'messages' => $user_messages->getHtml(),
+];
 
-ARE::render($layout_dataAr, $content_dataAr,null,$optionsAr);
+ARE::render($layout_dataAr, $content_dataAr, null, $optionsAr);

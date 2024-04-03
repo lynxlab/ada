@@ -1,16 +1,17 @@
 <?php
+
 /**
  * Edit switcher - this module provides edit switcher functionality
  *
  *
  * @package
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2009, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @author      Stefano Penge <steve@lynxlab.com>
+ * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
+ * @author      Vito Modena <vito@lynxlab.com>
+ * @copyright   Copyright (c) 2009, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link
- * @version		0.1
+ * @version     0.1
  */
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
@@ -20,6 +21,7 @@ use Lynxlab\ADA\Main\Forms\UserProfileForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\Translator;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -30,18 +32,18 @@ require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'course_instance');
+$variableToClearAR = ['node', 'layout', 'course', 'course_instance'];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+$allowedUsersAr = [AMA_TYPE_SWITCHER];
 
 /**
  * Performs basic controls before entering this module
  */
-$neededObjAr = array(
-    AMA_TYPE_SWITCHER => array('layout')
-);
+$neededObjAr = [
+    AMA_TYPE_SWITCHER => ['layout'],
+];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami();
@@ -88,29 +90,31 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $form->fillWithPostData();
     $password = trim($_POST['password']);
     $passwordcheck = trim($_POST['passwordcheck']);
-    if(DataValidator::validate_password_modified($password, $passwordcheck) === FALSE) {
-	    $message = translateFN('Le password digitate non corrispondono o contengono caratteri non validi.');
-	    header("Location: edit_switcher.php?message=$message");
-	    exit();
-  	}
+    if (DataValidator::validate_password_modified($password, $passwordcheck) === false) {
+        $message = translateFN('Le password digitate non corrispondono o contengono caratteri non validi.');
+        header("Location: edit_switcher.php?message=$message");
+        exit();
+    }
 
     if ($form->isValid()) {
         $userObj->fillWithArrayData($_POST);
-		if($password != '') {
-			$userObj->setPassword($password);
-		}
+        if ($password != '') {
+            $userObj->setPassword($password);
+        }
         if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
-			if (array_key_exists('secretquestion', $_POST) &&
-				array_key_exists('secretanswer', $_POST) &&
-				strlen($_POST['secretquestion'])>0 && strlen($_POST['secretanswer'])>0) {
-					/**
-					 * Save secret question and answer and set the registration as successful
-					 */
-					$sqdh = \AMASecretQuestionDataHandler::instance();
-					$sqdh->saveUserQandA($userObj->getId(), $_POST['secretquestion'], $_POST['secretanswer']);
-				}
-		}
-        MultiPort::setUser($userObj, array(), true);
+            if (
+                array_key_exists('secretquestion', $_POST) &&
+                array_key_exists('secretanswer', $_POST) &&
+                strlen($_POST['secretquestion']) > 0 && strlen($_POST['secretanswer']) > 0
+            ) {
+                /**
+                 * Save secret question and answer and set the registration as successful
+                 */
+                $sqdh = \AMASecretQuestionDataHandler::instance();
+                $sqdh->saveUserQandA($userObj->getId(), $_POST['secretquestion'], $_POST['secretanswer']);
+            }
+        }
+        MultiPort::setUser($userObj, [], true);
 
         /* unset $_SESSION['service_level'] to reload it with the correct  user language translation */
         unset($_SESSION['service_level']);
@@ -134,47 +138,45 @@ $label = translateFN('Modifica dati utente');
 
 $help = translateFN('Modifica dati utente');
 
-$layout_dataAr['JS_filename'] = array(
-		JQUERY,
-		JQUERY_UI,
-		JQUERY_MASKEDINPUT,
-		JQUERY_NO_CONFLICT,
-		ROOT_DIR.'/js/include/jquery/pekeUpload/pekeUpload.js'
-);
+$layout_dataAr['JS_filename'] = [
+    JQUERY,
+    JQUERY_UI,
+    JQUERY_MASKEDINPUT,
+    JQUERY_NO_CONFLICT,
+    ROOT_DIR . '/js/include/jquery/pekeUpload/pekeUpload.js',
+];
 
-$layout_dataAr['CSS_filename'] = array(
-		JQUERY_UI_CSS,
-		ROOT_DIR.'/js/include/jquery/pekeUpload/pekeUpload.css'
-);
+$layout_dataAr['CSS_filename'] = [
+    JQUERY_UI_CSS,
+    ROOT_DIR . '/js/include/jquery/pekeUpload/pekeUpload.css',
+];
 
-$maxFileSize = (int) (ADA_FILE_UPLOAD_MAX_FILESIZE / (1024*1024));
+$maxFileSize = (int) (ADA_FILE_UPLOAD_MAX_FILESIZE / (1024 * 1024));
 
-$optionsAr['onload_func'] = 'initDoc('.$maxFileSize.','. $userObj->getId().');';
+$optionsAr['onload_func'] = 'initDoc(' . $maxFileSize . ',' . $userObj->getId() . ');';
 
 $imgAvatar = $userObj->getAvatar();
-$avatar = CDOMElement::create('img','src:'.$imgAvatar);
+$avatar = CDOMElement::create('img', 'src:' . $imgAvatar);
 $avatar->setAttribute('class', 'img_user_avatar');
 
 /*
  * Display error message  if the password is incorrect
  */
-if(isset($_GET['message']))
-{
-	$help= $_GET['message'];
-
+if (isset($_GET['message'])) {
+    $help = $_GET['message'];
 }
 
-$content_dataAr = array(
+$content_dataAr = [
     'user_name' => $user_name,
     'user_type' => $user_type,
     'messages' => $user_messages->getHtml(),
     'agenda' => $user_agenda->getHtml(),
     'status' => $status,
-    'label'=>$label,
+    'label' => $label,
     'title' => translateFN('Modifica dati utente'),
     'data' => $form->getHtml(),
     'help' => $help,
-    'user_avatar'=>$avatar->getHtml()
- );
+    'user_avatar' => $avatar->getHtml(),
+];
 
-ARE::render($layout_dataAr, $content_dataAr,NULL,$optionsAr);
+ARE::render($layout_dataAr, $content_dataAr, null, $optionsAr);

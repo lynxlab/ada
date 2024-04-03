@@ -3,6 +3,7 @@
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 header('Location: list_courses.php');
@@ -11,38 +12,38 @@ exit();
  * SWITCHER.
  *
  * @package
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2009, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @author      Stefano Penge <steve@lynxlab.com>
+ * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
+ * @author      Vito Modena <vito@lynxlab.com>
+ * @copyright   Copyright (c) 2009, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link
- * @version		0.1
+ * @version     0.1
  */
 
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
+require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'course_instance');
+$variableToClearAR = ['node', 'layout', 'course', 'course_instance'];
 
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+$allowedUsersAr = [AMA_TYPE_SWITCHER];
 
 /**
  * Performs basic controls before entering this module
  */
-$neededObjAr = array(
-  AMA_TYPE_SWITCHER => array('layout')
-);
+$neededObjAr = [
+  AMA_TYPE_SWITCHER => ['layout'],
+];
 
-require_once ROOT_DIR.'/include/module_init.inc.php';
+require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami();
 
 /**
@@ -88,11 +89,11 @@ $data = new CText('');
 
 $help = translateFN('');
 
-if(!isset($status)) {
-  $status = 'Navigazione';
+if (!isset($status)) {
+    $status = 'Navigazione';
 }
 
-$content_dataAr = array(
+$content_dataAr = [
   'title'     => translateFN('Home'),
   'user_name' => $user_name,
   'user_type' => $user_type,
@@ -101,9 +102,9 @@ $content_dataAr = array(
   'status'    => $status,
   'help'      => $help,
   'data'      => $data->getHtml(),
-);
+];
 
 /**
  * Sends data to the rendering engine
  */
-ARE::render($layout_dataAr,$content_dataAr);
+ARE::render($layout_dataAr, $content_dataAr);
