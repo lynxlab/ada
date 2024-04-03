@@ -22,6 +22,7 @@ use Lynxlab\ADA\Main\Helper\TutorHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\HtmlLibrary\EguidanceSession;
 use Lynxlab\ADA\Main\HtmlLibrary\TutorModuleHtmlLib;
+use Lynxlab\ADA\Tutor\Eguidance\Utils;
 
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
@@ -92,7 +93,7 @@ if(isset($_GET['op']) && $_GET['op'] == 'csv') {
     $eguidance_session_dataAr['user_country']  = $tutoredUserObj->getCountry();
     $eguidance_session_dataAr['service_duration'] = '';
 
-    createCSVFileToDownload($eguidance_session_dataAr);
+    Utils::createCSVFileToDownload($eguidance_session_dataAr);
     /*
      * exits here.
      */

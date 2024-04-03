@@ -18,6 +18,7 @@ use Lynxlab\ADA\Main\User\ADAPractitioner;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_course_from_DB;
 use function Lynxlab\ADA\Main\AMA\DBRead\read_user_from_DB;
+use function Lynxlab\ADA\Tutor\Functions\menu_detailsFN;
 
 /**
  * Base config file

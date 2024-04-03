@@ -149,7 +149,6 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         /*
          * I problemi potrebbero verificarsi qui.
          */
-        //$res = spedisci_messaggioFN($comment,$subject,$studentObj->username, $user_name);
         $message_ha = array(
             'destinatari' => $studentObj->getUserName(),
             'data_ora' => 'now',

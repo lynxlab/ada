@@ -28,6 +28,9 @@ use Lynxlab\ADA\Main\User\ADAPractitioner;
 use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
+use function Lynxlab\ADA\Tutor\Functions\get_courses_tutorFN;
+use function Lynxlab\ADA\Tutor\Functions\get_student_coursesFN;
+use function Lynxlab\ADA\Tutor\Functions\get_student_dataFN;
 
 /**
  * Base config file
@@ -178,12 +181,6 @@ switch ($op) {
         */
         if (!isset($order)) $order=null;
         $courses_student = get_student_coursesFN($id_instance,$id_course,$order, "HTML", $speed_mode);
-        /*
-            } else {
-            // load
-            $courses_student = get_student_courses_from_dbFN($id_course, $id_instance);
-        }
-        */
 
         if (!is_null($courses_student)) {
         	if (isset($courses_student['report_generation_date']) && !is_null($courses_student['report_generation_date'])) {
@@ -390,7 +387,6 @@ switch ($op) {
 
         $data = get_student_dataFN($id_student, $id_instance);
         $data = preg_replace('/class="/', 'class="'.ADA_SEMANTICUI_TABLECLASS.' ', $data, 1); // replace first occurence of class
-//        $student_activity_index = get_student_indexattFN($id_instance,$id_course,$id_student);
 
         $status = translateFN('caratteristiche dello studente');
 
