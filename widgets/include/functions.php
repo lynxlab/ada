@@ -140,3 +140,24 @@ function truncateHtml($text, $length = 100, $ending = '...', $exact = false, $co
     }
     return $truncate;
 }
+
+function cleanFileName($complete_file_name)
+{
+    $filename = $complete_file_name;
+    $filenameAr = explode('_', $complete_file_name);
+    $stop = count($filenameAr) - 1;
+    // $course_instance = isset($filenameAr[0]) ? $filenameAr[0] : null;
+    $id_sender  = $filenameAr[1] ?? null;
+    // $id_course = isset($filenameAr[2]) ? $filenameAr[2] : null;
+    if (is_numeric($id_sender)) {
+        // $id_node =  $filenameAr[2]."_".$filenameAr[3];
+        $filename = '';
+        for ($k = 5; $k <= $stop; $k++) {
+            $filename .=  $filenameAr[$k];
+            if ($k < $stop) {
+                $filename .= "_";
+            }
+        }
+    }
+    return $filename;
+}
