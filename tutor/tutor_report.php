@@ -1,44 +1,46 @@
 <?php
+
 /**
  * This module displays a report on the exercises done by the students.
  *
  * @package     Default
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2009, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @author      Stefano Penge <steve@lynxlab.com>
+ * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
+ * @author      Vito Modena <vito@lynxlab.com>
+ * @copyright   Copyright (c) 2009, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link
- * @version		0.1
+ * @version     0.1
  */
 
 use Lynxlab\ADA\CORE\HmtlElements\Table;
 use Lynxlab\ADA\Main\Helper\TutorHelper;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
+require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('layout', 'user');
+$variableToClearAR = ['layout', 'user'];
 
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_TUTOR);
+$allowedUsersAr = [AMA_TYPE_TUTOR];
 
 /**
  * Get needed objects
  */
-$neededObjAr = array(
-  AMA_TYPE_TUTOR => array('layout')
-);
-require_once ROOT_DIR.'/include/module_init.inc.php';
+$neededObjAr = [
+  AMA_TYPE_TUTOR => ['layout'],
+];
+require_once ROOT_DIR . '/include/module_init.inc.php';
 $self =  whoami();
 
 /**
@@ -77,14 +79,14 @@ TutorHelper::init($neededObjAr);
  */
 
 if (empty($id_node)) {
-    $mode='summary';
+    $mode = 'summary';
 }
 
 switch ($mode) {
     case 'zoom':
-        $out_fields_ar = array('data_visita','id_utente_studente','punteggio');
-        $clause ="id_nodo = '".$id_node."'";
-        $visits_ar = $dh->doFind_ex_history_list($out_fields_ar,$clause);
+        $out_fields_ar = ['data_visita','id_utente_studente','punteggio'];
+        $clause = "id_nodo = '" . $id_node . "'";
+        $visits_ar = $dh->doFind_ex_history_list($out_fields_ar, $clause);
         if (AMA_DataHandler::isError($visits)) {
             $msg = $visits_ar->getMessage();
             print "$msg";
@@ -93,7 +95,7 @@ switch ($mode) {
         }
 
 
-        $exercise_dataHa = array();
+        $exercise_dataHa = [];
         $count_visits = count($visits_ar);
         foreach ($visits_ar as $visit) {
             $student_id = $visit[2];
@@ -103,36 +105,36 @@ switch ($mode) {
                   $user_messages = $mh->get_messages($student_id, ADA_MSG_SIMPLE,array('id_mittente'));
                   $user_interaction =  count($user_messages);
             */
-            $out_fields_ar = array('autore');
+            $out_fields_ar = ['autore'];
             $clause = "autore = $student_id";
             $course_id = $sess_id_course;
-            $added_notes = $dh->find_course_nodes_list($out_fields_ar, $clause,$course_id);
+            $added_notes = $dh->find_course_nodes_list($out_fields_ar, $clause, $course_id);
             $user_interaction   = count($added_notes);
             $user = $dh->get_user_info($student_id);
             $username = $user['username'];
-            $exercise_dataHa[] = array(
-                    translateFN('Data')=>AMA_DataHandler::ts_to_date($visit[1]),
-                    translateFN('Studente')=>$username,
-                    translateFN('Punteggio')=>$visit[3],
-                    translateFN('Interazione')=>$user_interaction
+            $exercise_dataHa[] = [
+                    translateFN('Data') => AMA_DataHandler::ts_to_date($visit[1]),
+                    translateFN('Studente') => $username,
+                    translateFN('Punteggio') => $visit[3],
+                    translateFN('Interazione') => $user_interaction,
                     // etc etc
-            );
+            ];
         }
 
 
         $tObj = new Table();
-        $tObj->initTable('0','right','1','0','90%','','','','','1','0');
+        $tObj->initTable('0', 'right', '1', '0', '90%', '', '', '', '', '1', '0');
         // Syntax: $border,$align,$cellspacing,$cellpadding,$width,$col1, $bcol1,$col2, $bcol2
         $caption = translateFN("Dettaglio");
-        $summary = translateFN("Dettaglio dell'esercizio").$id_node;
-        $tObj->setTable($exercise_dataHa,$caption,$summary);
+        $summary = translateFN("Dettaglio dell'esercizio") . $id_node;
+        $tObj->setTable($exercise_dataHa, $caption, $summary);
         $tabled_exercise_dataHa = $tObj->getTable();
-        $tabled_exercise_dataHa= preg_replace('/class="/', 'class="'.ADA_SEMANTICUI_TABLECLASS.' ', $tabled_exercise_dataHa, 1); // replace first occurence of class
+        $tabled_exercise_dataHa = preg_replace('/class="/', 'class="' . ADA_SEMANTICUI_TABLECLASS . ' ', $tabled_exercise_dataHa, 1); // replace first occurence of class
 
         break;
 
     case 'summary':
-        $field_list_ar = array('id_nodo','data_visita');
+        $field_list_ar = ['id_nodo','data_visita'];
         $clause = "";
         $dataHa = $dh->doFind_ex_history_list($field_list_ar, $clause);
 
@@ -144,38 +146,38 @@ switch ($mode) {
         }
 
         $total_visits = 0;
-        $exercise_dataHa = array();
+        $exercise_dataHa = [];
         foreach ($dataHa as $exercise) {
             $id_node = $exercise[1];
             $data =  $exercise[2];
-            $row = array(
-                    translateFN('Nodo')=>"<a href=\"tutor_report.php?mode=zoom&id_node=$id_node\">$id_node : $nome </a>",
-                    translateFN('Data')=>AMA_DataHandler::ts_to_date($data)
-            );
-            array_push($exercise_dataHa,$row);
+            $row = [
+                    translateFN('Nodo') => "<a href=\"tutor_report.php?mode=zoom&id_node=$id_node\">$id_node : $nome </a>",
+                    translateFN('Data') => AMA_DataHandler::ts_to_date($data),
+            ];
+            array_push($exercise_dataHa, $row);
         }
         $tObj = new Table();
-        $tObj->initTable('0','right','1','0','90%','','','','','1','0');
+        $tObj->initTable('0', 'right', '1', '0', '90%', '', '', '', '', '1', '0');
         // Syntax: $border,$align,$cellspacing,$cellpadding,$width,$col1, $bcol1,$col2, $bcol2
-        $caption = sprintf(translateFN("Esercizi eseguiti fino al %s"),  $ymdhms);
+        $caption = sprintf(translateFN("Esercizi eseguiti fino al %s"), $ymdhms);
         $summary = translateFN("Elenco degli esercizi eseguiti");
-        $tObj->setTable($exercise_dataHa,$caption,$summary);
+        $tObj->setTable($exercise_dataHa, $caption, $summary);
         $tabled_exercise_dataHa = $tObj->getTable();
-        $tabled_exercise_dataHa= preg_replace('/class="/', 'class="'.ADA_SEMANTICUI_TABLECLASS.' ', $tabled_exercise_dataHa, 1); // replace first occurence of class
+        $tabled_exercise_dataHa = preg_replace('/class="/', 'class="' . ADA_SEMANTICUI_TABLECLASS . ' ', $tabled_exercise_dataHa, 1); // replace first occurence of class
 }
 
 $help = translateFN('Da qui il Tutor può visualizzare il report.');
 $status = translateFN('Visualizzazione del report');
 
 $title = translateFN('ADA - Report del tutor');
-$content_dataAr = array(
+$content_dataAr = [
     'data' => $tabled_exercise_dataHa,
     'help' => $help,
     'status' => $status,
     'user_name' => $user_name,
     'user_type' => $user_type,
     'messages' => $user_messages->getHtml(),
-    'agenda' => $user_agenda->getHtml()
-);
+    'agenda' => $user_agenda->getHtml(),
+];
 
 ARE::render($layout_dataAr, $content_dataAr);
