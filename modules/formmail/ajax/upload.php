@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SLIDEIMPORT MODULE.
  *
@@ -7,65 +8,67 @@
  * @copyright      Copyright (c) 2016, Lynx s.r.l.
  * @license        http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link           slideimport
- * @version		   0.1
+ * @version        0.1
  */
 
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Upload\FileUploader;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Base config file
 */
-require_once (realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
+require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
 */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 /**
  * Users (types) allowed to access this module.
 */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR, AMA_TYPE_STUDENT, AMA_TYPE_SUPERTUTOR);
+$allowedUsersAr = [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR, AMA_TYPE_STUDENT, AMA_TYPE_SUPERTUTOR];
 
 /**
  * Get needed objects
 */
-$neededObjAr = array(
-		AMA_TYPE_SWITCHER => array('layout'),
-		AMA_TYPE_TUTOR => array('layout'),
-		AMA_TYPE_AUTHOR => array('layout'),
-		AMA_TYPE_STUDENT => array('layout'),
-		AMA_TYPE_SUPERTUTOR => array('layout')
-);
+$neededObjAr = [
+        AMA_TYPE_SWITCHER => ['layout'],
+        AMA_TYPE_TUTOR => ['layout'],
+        AMA_TYPE_AUTHOR => ['layout'],
+        AMA_TYPE_STUDENT => ['layout'],
+        AMA_TYPE_SUPERTUTOR => ['layout'],
+];
 
 
 /**
  * Performs basic controls before entering this module
 */
 $trackPageToNavigationHistory = false;
-require_once ROOT_DIR.'/include/module_init.inc.php';
+require_once ROOT_DIR . '/include/module_init.inc.php';
 BrowsingHelper::init($neededObjAr);
-require_once MODULES_SLIDEIMPORT_PATH . '/include/functions.inc.php';
 
-$fileUploader = new FileUploader(ADA_UPLOAD_PATH.$userId.'/');
+$fileUploader = new FileUploader(ADA_UPLOAD_PATH . $userId . '/');
 $data = '';
 $error = true;
 $isPdf = false;
 
-if($fileUploader->upload() == false) {
-	$data = $fileUploader->getErrorMessage();
+if ($fileUploader->upload() == false) {
+    $data = $fileUploader->getErrorMessage();
 } else {
-	$error = false;
+    $error = false;
 }
 
 if (!$error) {
-	$data = json_encode(array ('attachedfile' => basename($fileUploader->getPathToUploadedFile())));
-	header('Content-Type: application/json');
+    $data = json_encode(['attachedfile' => basename($fileUploader->getPathToUploadedFile())]);
+    header('Content-Type: application/json');
 } else {
-	header(' ', true, 400);
-	unlink($fileUploader->getPathToUploadedFile());
-	if (strlen($data)<=0) $data = translateFN('Errore sconosciuto');
+    header(' ', true, 400);
+    unlink($fileUploader->getPathToUploadedFile());
+    if (strlen($data) <= 0) {
+        $data = translateFN('Errore sconosciuto');
+    }
 }
 
 echo $data;
-?>
