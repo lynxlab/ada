@@ -21,6 +21,7 @@ namespace Lynxlab\ADA\Main\AMA;
 
 use Lynxlab\ADA\Main\Logger\ADALogger;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -211,7 +212,7 @@ class AMAPDOWrapper
             if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
                 $event = ADAEventDispatcher::buildEventAndDispatch(
                     [
-                        'eventClass' => 'CoreEvent',
+                        'eventClass' => CoreEvent::class,
                         'eventName' => 'AMAPDOPREGETALL',
                         'eventPrefix' => GetCallingMethodName(),
                     ],
@@ -242,7 +243,7 @@ class AMAPDOWrapper
         if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
             $event = ADAEventDispatcher::buildEventAndDispatch(
                 [
-                    'eventClass' => 'CoreEvent',
+                    'eventClass' => CoreEvent::class,
                     'eventName' => 'AMAPDOPOSTGETALL',
                     'eventPrefix' => GetCallingMethodName(),
                 ],

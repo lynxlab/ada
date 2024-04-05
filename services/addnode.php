@@ -16,6 +16,7 @@
 use Lynxlab\ADA\Browsing\CourseViewer;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\EventDispatcher\Events\NodeEvent;
 use Lynxlab\ADA\Services\NodeEditing\NodeEditing;
 use Lynxlab\ADA\Services\NodeEditing\NodeEditingViewer;
 use Lynxlab\ADA\Services\NodeEditing\PreferenceSelector;
@@ -451,7 +452,7 @@ elseif ($op == 'save') {
 
     if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
         ADAEventDispatcher::buildEventAndDispatch([
-        'eventClass' => 'NodeEvent',
+        'eventClass' => NodeEvent::class,
         'eventName' => 'POSTADDREDIRECT',
         ], $node_data);
     }

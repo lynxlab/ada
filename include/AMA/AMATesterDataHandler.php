@@ -3974,7 +3974,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler
             return new AMA_Error(AMA_ERR_GET);
         }
         if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
-            $event = \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch(
+            $event = ADAEventDispatcher::buildEventAndDispatch(
                 [
                     'eventClass' => CourseEvent::class,
                     'eventName' => CourseEvent::POSTSAVE,
@@ -4534,7 +4534,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler
             return new AMA_Error(AMA_ERR_UPDATE);
         }
         if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
-            $event = \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch(
+            $event = ADAEventDispatcher::buildEventAndDispatch(
                 [
                     'eventClass' => CourseEvent::class,
                     'eventName' => CourseEvent::POSTSAVE,

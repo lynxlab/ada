@@ -19,6 +19,7 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\ActionsEvent;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -158,7 +159,7 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
             }
 
             if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
-                $event = \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch(
+                $event = ADAEventDispatcher::buildEventAndDispatch(
                     [
                         'eventClass' => ActionsEvent::class,
                         'eventName' => ActionsEvent::LIST_INSTANCES,

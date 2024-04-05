@@ -6,6 +6,8 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Bookmark\Bookmark;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\EventDispatcher\Events\ForumEvent;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\substr_gentle;
@@ -939,9 +941,9 @@ class CourseViewer
 
         $actionsContainer = CDOMElement::create('div', 'class:noteActions');
         if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
-            \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch(
+            ADAEventDispatcher::buildEventAndDispatch(
                 [
-                    'eventClass' => 'ForumEvent',
+                    'eventClass' => ForumEvent::class,
                     'eventName' => 'INDEXACTIONINIT',
                 ],
                 $actionsContainer,
@@ -964,9 +966,9 @@ class CourseViewer
             $actionsContainer->addChild($link_zoom);
         }
         if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
-            \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch(
+            ADAEventDispatcher::buildEventAndDispatch(
                 [
-                    'eventClass' => 'ForumEvent',
+                    'eventClass' => ForumEvent::class,
                     'eventName' => 'INDEXACTIONDONE',
                 ],
                 $actionsContainer,

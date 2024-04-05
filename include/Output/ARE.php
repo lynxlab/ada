@@ -21,6 +21,8 @@ namespace Lynxlab\ADA\Main\Output;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\Main\Menu;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
+use Lynxlab\ADA\Module\EventDispatcher\Events\MenuEvent;
 use Lynxlab\ADA\Module\Impersonate\ImpersonateActions;
 use Lynxlab\ADA\Module\Impersonate\Utils;
 
@@ -53,7 +55,7 @@ class ARE
         if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
             $event = ADAEventDispatcher::buildEventAndDispatch(
                 [
-                    'eventClass' => 'CoreEvent',
+                    'eventClass' => CoreEvent::class,
                     'eventName' => 'PAGEPRERENDER',
                     'eventPrefix' => basename($_SERVER['SCRIPT_FILENAME']),
                 ],
@@ -389,7 +391,7 @@ class ARE
                     if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
                         ADAEventDispatcher::buildEventAndDispatch(
                             [
-                                'eventClass' => 'MenuEvent',
+                                'eventClass' => MenuEvent::class,
                                 'eventName' => 'PRERENDER',
                             ],
                             $layoutObj->menu,
@@ -402,7 +404,7 @@ class ARE
                     if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
                         ADAEventDispatcher::buildEventAndDispatch(
                             [
-                                'eventClass' => 'MenuEvent',
+                                'eventClass' => MenuEvent::class,
                                 'eventName' => 'POSTRENDER',
                             ],
                             $layoutObj->menu,

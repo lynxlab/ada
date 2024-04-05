@@ -14,6 +14,7 @@
 namespace Lynxlab\ADA\Services\NodeEditing;
 
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\EventDispatcher\Events\NodeEvent;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -293,7 +294,7 @@ class NodeEditing
 
         if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
             ADAEventDispatcher::buildEventAndDispatch([
-                'eventClass' => 'NodeEvent',
+                'eventClass' => NodeEvent::class,
                 'eventName' => 'PRESAVE',
             ], $node_data, ['isUpdate' => true]);
         }
@@ -302,7 +303,7 @@ class NodeEditing
 
         if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
             ADAEventDispatcher::buildEventAndDispatch([
-                'eventClass' => 'NodeEvent',
+                'eventClass' => NodeEvent::class,
                 'eventName' => 'POSTSAVE',
             ], $node_data, ['isUpdate' => true, 'saveResult' => $result]);
         }
@@ -366,7 +367,7 @@ class NodeEditing
         $node_data['creation_date'] = "now";
         if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
             ADAEventDispatcher::buildEventAndDispatch([
-                'eventClass' => 'NodeEvent',
+                'eventClass' => NodeEvent::class,
                 'eventName' => 'PRESAVE',
             ], $node_data, ['isUpdate' => false]);
         }
@@ -375,7 +376,7 @@ class NodeEditing
 
         if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
             ADAEventDispatcher::buildEventAndDispatch([
-                'eventClass' => 'NodeEvent',
+                'eventClass' => NodeEvent::class,
                 'eventName' => 'POSTSAVE',
             ], $node_data, ['isUpdate' => false, 'saveResult' => $result]);
         }
