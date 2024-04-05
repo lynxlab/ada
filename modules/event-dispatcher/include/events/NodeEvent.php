@@ -18,45 +18,45 @@ use Symfony\Component\EventDispatcher\GenericEvent;
  */
 final class NodeEvent extends GenericEvent
 {
-  use ADAEventTrait;
+    use ADAEventTrait;
 
-  /**
-   * event own namespace
-   */
-  const namespace = 'node';
+    /**
+     * event own namespace
+     */
+    public const NAMESPACE = 'node';
 
-  /**
-   * The PRESAVE event occurs before the node is created (i.e. saved)
-   *
-   * This event allows you to add, remove or replace data
-   *
-   * @GenericEvent
-   *
-   * @var string
-   */
-  const PRESAVE = self::namespace . '.presave';
+    /**
+     * The PRESAVE event occurs before the node is created (i.e. saved)
+     *
+     * This event allows you to add, remove or replace data
+     *
+     * @GenericEvent
+     *
+     * @var string
+     */
+    public const PRESAVE = self::NAMESPACE . '.presave';
 
-  /**
-   * The POSTSAVE event occurs after the node is created (i.e. saved)
-   *
-   * This event allows you to add actions after the node has been saved.
-   *
-   * @GenericEvent
-   *
-   * @var string
-   */
-  const POSTSAVE = self::namespace . '.postsave';
+    /**
+     * The POSTSAVE event occurs after the node is created (i.e. saved)
+     *
+     * This event allows you to add actions after the node has been saved.
+     *
+     * @GenericEvent
+     *
+     * @var string
+     */
+    public const POSTSAVE = self::NAMESPACE . '.postsave';
 
-  /**
-   * The POSTADDREDIRECT event occurs after the node is created (i.e. saved)
-   * and the redirect header has been sent
-   *
-   * This event allows you to add actions after the node has been created,
-   * you may close the connection with the browser and do some "background" task
-   *
-   * @GenericEvent
-   *
-   * @var string
-   */
-  const POSTADDREDIRECT = self::namespace . 'add.postredirect';
+    /**
+     * The POSTADDREDIRECT event occurs after the node is created (i.e. saved)
+     * and the redirect header has been sent
+     *
+     * This event allows you to add actions after the node has been created,
+     * you may close the connection with the browser and do some "background" task
+     *
+     * @GenericEvent
+     *
+     * @var string
+     */
+    public const POSTADDREDIRECT = self::NAMESPACE . 'add.postredirect';
 }

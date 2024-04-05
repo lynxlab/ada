@@ -10,15 +10,17 @@
 
 namespace Lynxlab\ADA\Module\EventDispatcher;
 
+use Exception;
+
 /**
  * ADAEventException class to handle custom exceptions
  */
-class ADAEventException extends \Exception
+class ADAEventException extends Exception
 {
-    const NOEVENTCLASS = 1;
-    const EVENTCLASSNOTFOUND = 2;
-    const NOEVENTNAME = 3;
-    const EVENTNAMENOTFOUND = 4;
+    public const NOEVENTCLASS = 1;
+    public const EVENTCLASSNOTFOUND = 2;
+    public const NOEVENTNAME = 3;
+    public const EVENTNAMENOTFOUND = 4;
 
     // custom string representation of object
     public function __toString()
