@@ -1,13 +1,16 @@
 <?php
+
 /**
- * @package 	badges module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2019, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     badges module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2019, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
 
 namespace Lynxlab\ADA\Module\Badges;
+
+use Ramsey\Uuid\Uuid;
 
 /**
  * Badge class
@@ -16,15 +19,14 @@ namespace Lynxlab\ADA\Module\Badges;
  *
  */
 
- if (!defined('BadgeClassTable')) define ('BadgeClassTable', AMABadgesDataHandler::PREFIX . 'badges');
-
-class Badge extends BadgesBase {
-	/**
-	 * table name for this class
-	 *
-	 * @var string
-	 */
-    const table =  BadgeClassTable;
+class Badge extends BadgesBase
+{
+    /**
+     * table name for this class
+     *
+     * @var string
+     */
+    public const TABLE =  AMABadgesDataHandler::PREFIX . 'badges';
 
     protected $name;
     protected $description;
@@ -76,7 +78,7 @@ class Badge extends BadgesBase {
      */
     public function getImageUrl()
     {
-        return HTTP_ROOT_DIR .str_replace(ROOT_DIR, '', MODULES_BADGES_MEDIAPATH).strtoupper($this->getUuid()).'.png';
+        return HTTP_ROOT_DIR . str_replace(ROOT_DIR, '', MODULES_BADGES_MEDIAPATH) . strtoupper($this->getUuid()) . '.png';
     }
 
     /**
@@ -108,7 +110,7 @@ class Badge extends BadgesBase {
      */
     public function setUuid_bin($uuid)
     {
-        $tmpuuid = \Ramsey\Uuid\Uuid::fromBytes($uuid);
+        $tmpuuid = Uuid::fromBytes($uuid);
         return $this->setUuid($tmpuuid->toString());
     }
 

@@ -1,13 +1,21 @@
 <?php
+
 /**
- * @package 	badges module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2019, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     badges module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2019, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
 
 namespace  Lynxlab\ADA\Module\Badges;
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Ramsey\Uuid\Uuid;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * RewardedBadge class
@@ -16,15 +24,14 @@ namespace  Lynxlab\ADA\Module\Badges;
  *
  */
 
- if (!defined('RewardedBadgeTable')) define('RewardedBadgeTable', AMABadgesDataHandler::PREFIX . 'rewarded_badges');
-
-class RewardedBadge extends BadgesBase {
-	/**
-	 * table name for this class
-	 *
-	 * @var string
-	 */
-    const table =  RewardedBadgeTable;
+class RewardedBadge extends BadgesBase
+{
+    /**
+     * table name for this class
+     *
+     * @var string
+     */
+    public const TABLE =  AMABadgesDataHandler::PREFIX . 'rewarded_badges';
 
     protected $uuid;
     protected $badge_uuid;
@@ -38,12 +45,13 @@ class RewardedBadge extends BadgesBase {
     private static $instanceRewards = [];
 
     /**
-	 * Tells which properties are to be loaded using a kind-of-join
-	 *
-	 * @return array
-	 */
-	public static function doNotLoad() {
-		return array('instanceRewards');
+     * Tells which properties are to be loaded using a kind-of-join
+     *
+     * @return array
+     */
+    public static function doNotLoad()
+    {
+        return ['instanceRewards'];
     }
 
     /**
@@ -75,7 +83,7 @@ class RewardedBadge extends BadgesBase {
      */
     public function setUuid_bin($uuid)
     {
-        $tmpuuid = \Ramsey\Uuid\Uuid::fromBytes($uuid);
+        $tmpuuid = Uuid::fromBytes($uuid);
         return $this->setUuid($tmpuuid->toString());
     }
 
@@ -108,7 +116,7 @@ class RewardedBadge extends BadgesBase {
      */
     public function setBadge_uuid_bin($uuid)
     {
-        $tmpuuid = \Ramsey\Uuid\Uuid::fromBytes($uuid);
+        $tmpuuid = Uuid::fromBytes($uuid);
         return $this->setBadge_uuid($tmpuuid->toString());
     }
 
@@ -237,7 +245,8 @@ class RewardedBadge extends BadgesBase {
      *
      * @return boolean
      */
-    public function isApproved() {
+    public function isApproved()
+    {
         return (bool) $this->getApproved();
     }
 
@@ -246,25 +255,28 @@ class RewardedBadge extends BadgesBase {
      *
      * @return boolean
      */
-    public function isNotified() {
+    public function isNotified()
+    {
         return (bool) $this->getNotified();
     }
 
-    public static function buildStudentRewardHTML ($courseId, $instanceId, $studentId) {
+    public static function buildStudentRewardHTML($courseId, $instanceId, $studentId)
+    {
         $studentsRewards = self::getInstanceRewards()['studentsRewards'];
         $awbadges = array_key_exists($studentId, $studentsRewards) ? $studentsRewards[$studentId] : 0;
-        $baseStr = $awbadges.' '.translateFN('su').' '.self::getInstanceRewards()['total'];
-        if ($awbadges>0) {
-            $retObj = \CDOMElement::create('a','class:dontwrap,href:'.MODULES_BADGES_HTTP.'/user-badges.php?id_instance='.$instanceId.'&id_course='.$courseId.'&id_student='.$studentId);
+        $baseStr = $awbadges . ' ' . translateFN('su') . ' ' . self::getInstanceRewards()['total'];
+        if ($awbadges > 0) {
+            $retObj = CDOMElement::create('a', 'class:dontwrap,href:' . MODULES_BADGES_HTTP . '/user-badges.php?id_instance=' . $instanceId . '&id_course=' . $courseId . '&id_student=' . $studentId);
         } else {
-            $retObj = \CDOMElement::create('span');
+            $retObj = CDOMElement::create('span');
         }
-        $retObj->addChild(new \CText($baseStr));
+        $retObj->addChild(new CText($baseStr));
         return $retObj;
     }
 
-    public static function loadInstanceRewards($courseId, $instanceId) {
-        $bdh = AMABadgesDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+    public static function loadInstanceRewards($courseId, $instanceId)
+    {
+        $bdh = AMABadgesDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
         $totalBadges = $bdh->getBadgesCountForCourse($courseId);
         $studentBadges = $bdh->getRewardedBadgesCount(['id_corso' => $courseId, 'id_istanza_corso' => $instanceId]);
         self::setInstanceRewards(['total' => $totalBadges, 'studentsRewards' => $studentBadges]);
@@ -281,8 +293,6 @@ class RewardedBadge extends BadgesBase {
 
     /**
      * Set the value of instanceRewards
-     *
-     * @return  self
      */
     private static function setInstanceRewards($instanceRewards)
     {

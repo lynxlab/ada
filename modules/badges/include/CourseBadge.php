@@ -1,10 +1,11 @@
 <?php
+
 /**
- * @package 	badges module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2019, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     badges module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2019, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
 
 namespace Lynxlab\ADA\Module\Badges;
@@ -16,16 +17,14 @@ namespace Lynxlab\ADA\Module\Badges;
  *
  */
 
- if (!defined('CourseBadgeTable')) define('CourseBadgeTable', AMABadgesDataHandler::PREFIX . 'course_badges');
-
-class CourseBadge extends BadgesBase {
-
-	/**
-	 * table name for this class
-	 *
-	 * @var string
-	 */
-    const table =  CourseBadgeTable;
+class CourseBadge extends BadgesBase
+{
+    /**
+     * table name for this class
+     *
+     * @var string
+     */
+    public const TABLE =  AMABadgesDataHandler::PREFIX . 'course_badges';
 
     protected $badge_uuid;
     protected $id_corso;

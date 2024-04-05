@@ -1,17 +1,19 @@
 <?php
 
+/**
+ * @package     badges module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2019, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
+ */
+
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Badges\BadgesActions;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
 
-/**
- * @package 	badges module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2019, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
- */
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * Base config file
@@ -23,12 +25,12 @@ require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 
 /**
  * Get Users (types) allowed to access this module and needed objects
  */
-list($allowedUsersAr, $neededObjAr) = array_values(BadgesActions::getAllowedAndNeededAr());
+[$allowedUsersAr, $neededObjAr] = array_values(BadgesActions::getAllowedAndNeededAr());
 
 /**
  * Performs basic controls before entering this module
@@ -44,25 +46,25 @@ BrowsingHelper::init($neededObjAr);
 $GLOBALS['dh'] = AMABadgesDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 
-$retArray = array('status'=>'ERROR');
+$retArray = ['status' => 'ERROR'];
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
-	/**
-	 * it's a POST, save the passed badge data
-	 */
+    /**
+     * it's a POST, save the passed badge data
+     */
     // try to save it
     $postParams = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-	$res = $GLOBALS['dh']->saveBadge($postParams);
+    $res = $GLOBALS['dh']->saveBadge($postParams);
 
-	if (AMA_DB::isError($res) || $res instanceof \Exception) {
-		// if it's an error display the error message
-		$retArray['status'] = "ERROR";
-		$retArray['msg'] = $res->getMessage();
-	} else {
-		// redirect to badges page
-		$retArray['status'] = "OK";
-		$retArray['msg'] = translateFN('Badge salvato');
-	}
+    if (AMA_DB::isError($res) || $res instanceof \Exception) {
+        // if it's an error display the error message
+        $retArray['status'] = "ERROR";
+        $retArray['msg'] = $res->getMessage();
+    } else {
+        // redirect to badges page
+        $retArray['status'] = "OK";
+        $retArray['msg'] = translateFN('Badge salvato');
+    }
 }
 
 header('Content-Type: application/json');
