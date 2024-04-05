@@ -20,6 +20,9 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Module\Impersonate\AMAImpersonateDataHandler;
+use Lynxlab\ADA\Module\Impersonate\ImpersonateException;
+use Lynxlab\ADA\Module\Impersonate\Utils;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -123,13 +126,13 @@ switch ($usersType) {
 
 if (defined('MODULES_IMPERSONATE') && MODULES_IMPERSONATE) {
     // get the list of users linked to the current listed type
-    $impDH = \Lynxlab\ADA\Module\Impersonate\AMAImpersonateDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+    $impDH = AMAImpersonateDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
     try {
         $linkedUsers = $impDH->findBy('LinkedUsers', [
             'source_type' => $amaUserType,
             'is_active' => true,
         ]);
-    } catch (\Lynxlab\ADA\Module\Impersonate\ImpersonateException $ie) {
+    } catch (ImpersonateException $ie) {
         $linkedUsers = [];
     }
 }
@@ -212,7 +215,7 @@ if (is_array($usersAr) && count($usersAr) > 0) {
         }
 
         if (defined('MODULES_IMPERSONATE') && MODULES_IMPERSONATE && $user[5] == ADA_STATUS_REGISTERED) {
-            $impActions = \Lynxlab\ADA\Module\Impersonate\Utils::buildActionsLinks($userId, $user[4], $linkedUsers);
+            $impActions = Utils::buildActionsLinks($userId, $user[4], $linkedUsers);
             if (is_array($impActions) && count($impActions) > 0) {
                 $actionsArr =  array_merge($actionsArr, $impActions);
             }
