@@ -1,33 +1,36 @@
 <?php
 
 /**
- * @package 	cloneinstance module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2022, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     cloneinstance module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2022, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
 
 namespace Lynxlab\ADA\Module\CloneInstance;
 
 use ClosedGeneratorException;
+use ReflectionClass;
+use ReflectionProperty;
 
-class AMACloneInstanceDataHandler extends \AMA_DataHandler
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
+class AMACloneInstanceDataHandler extends AMA_DataHandler
 {
-
     /**
      * module's own data tables prefix
      *
      * @var string
      */
-    const PREFIX = 'module_cloneinstance_';
+    public const PREFIX = 'module_cloneinstance_';
 
     /**
      * module's own model class namespace (can be the same of the datahandler's tablespace)
      *
      * @var string
      */
-    const MODELNAMESPACE = 'Lynxlab\\ADA\\Module\\CloneInstance\\';
+    public const MODELNAMESPACE = 'Lynxlab\\ADA\\Module\\CloneInstance\\';
 
 
     public function cloneInstance(int $sourceInstanceID, array $destCoursesID)
@@ -38,21 +41,21 @@ class AMACloneInstanceDataHandler extends \AMA_DataHandler
                 $userId = $_SESSION['sess_userObj']->getID();
                 // ok to clone, load instance data
                 $instanceArr = $this->course_instance_get($sourceInstanceID);
-                if (!\AMA_DB::isError($instanceArr)) {
+                if (!AMA_DB::isError($instanceArr)) {
                     // get subscritions list from its table
                     $subscriptionArr =  $this->getAllPrepared(
                         "SELECT * FROM `iscrizioni` WHERE `id_istanza_corso`=?",
                         [$sourceInstanceID],
                         AMA_FETCH_ASSOC
                     );
-                    if (!\AMA_DB::isError($subscriptionArr)) {
+                    if (!AMA_DB::isError($subscriptionArr)) {
                         // get tutors list from its table
                         $tutorsList = $this->getAllPrepared(
                             "SELECT * FROM `tutor_studenti` WHERE `id_istanza_corso`=?",
                             [$sourceInstanceID],
                             AMA_FETCH_ASSOC
                         );
-                        if (!\AMA_DB::isError($tutorsList)) {
+                        if (!AMA_DB::isError($tutorsList)) {
                             // so far, so good. clone it!
                             $errMsg = null;
                             $this->beginTransaction();
@@ -64,7 +67,7 @@ class AMACloneInstanceDataHandler extends \AMA_DataHandler
                                     $saveSubsArr = array_map(function ($el) use ($instanceID) {
                                         return (array_merge($el, ['id_istanza_corso' => $instanceID]));
                                     }, $subscriptionArr);
-                                    if (count($saveSubsArr)>0) {
+                                    if (count($saveSubsArr) > 0) {
                                         $result = $this->queryPrepared(
                                             $this->insertMultiRow(
                                                 $saveSubsArr,
@@ -75,13 +78,13 @@ class AMACloneInstanceDataHandler extends \AMA_DataHandler
                                     } else {
                                         $result = true;
                                     }
-                                    if (!\AMA_DB::isError($result)) {
+                                    if (!AMA_DB::isError($result)) {
                                         // add tutors
                                         // this will be modified by inserMultiRow
                                         $saveTutorsArr = array_map(function ($el) use ($instanceID) {
                                             return (array_merge($el, ['id_istanza_corso' => $instanceID]));
                                         }, $tutorsList);
-                                        if (count($saveTutorsArr)>0) {
+                                        if (count($saveTutorsArr) > 0) {
                                             $result = $this->queryPrepared(
                                                 $this->insertMultiRow(
                                                     $saveTutorsArr,
@@ -92,7 +95,7 @@ class AMACloneInstanceDataHandler extends \AMA_DataHandler
                                         } else {
                                             $result = true;
                                         }
-                                        if (!\AMA_DB::isError($result)) {
+                                        if (!AMA_DB::isError($result)) {
                                             // done!
                                             $cloneRecap[] = [
                                                 'instanceId' => (int) $sourceInstanceID,
@@ -123,11 +126,11 @@ class AMACloneInstanceDataHandler extends \AMA_DataHandler
                                 $result = $this->queryPrepared(
                                     $this->insertMultiRow(
                                         $saveRecap,
-                                        self::PREFIX . 'history',
+                                        self::PREFIX . 'history'
                                     ),
                                     array_values($saveRecap)
                                 );
-                                if (\AMA_DB::isError($result)) {
+                                if (AMA_DB::isError($result)) {
                                     $errMsg = $result->getMessage();
                                 }
                             }
@@ -140,7 +143,6 @@ class AMACloneInstanceDataHandler extends \AMA_DataHandler
                                 $this->commit();
                                 return $cloneRecap;
                             }
-
                         } else {
                             throw new ClosedGeneratorException(translateFN("Errore nella lettura dei tutor dell'istanza"));
                         }
@@ -166,11 +168,11 @@ class AMACloneInstanceDataHandler extends \AMA_DataHandler
      * @param string $className to use a class from your namespace, this string must start with "\"
      * @param array $whereArr
      * @param array $orderByArr
-     * @param \Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
+     * @param Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
      * @throws CloneInstanceException
      * @return array
      */
-    public function findBy($className, array $whereArr = null, array $orderByArr = null, \Abstract_AMA_DataHandler $dbToUse = null)
+    public function findBy($className, array $whereArr = null, array $orderByArr = null, Abstract_AMA_DataHandler $dbToUse = null)
     {
         if (
             stripos($className, '\\') !== 0 &&
@@ -178,12 +180,12 @@ class AMACloneInstanceDataHandler extends \AMA_DataHandler
         ) {
             $className = self::MODELNAMESPACE . $className;
         }
-        $reflection = new \ReflectionClass($className);
+        $reflection = new ReflectionClass($className);
         $properties =  array_map(
             function ($el) {
                 return $el->getName();
             },
-            $reflection->getProperties(\ReflectionProperty::IS_PRIVATE | \ReflectionProperty::IS_PROTECTED | \ReflectionProperty::IS_PUBLIC)
+            $reflection->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PUBLIC)
         );
 
         // get object properties to be loaded as a kind of join
@@ -198,10 +200,12 @@ class AMACloneInstanceDataHandler extends \AMA_DataHandler
         }, $properties)), $className::table)
             . $this->buildWhereClause($whereArr, $properties) . $this->buildOrderBy($orderByArr, $properties);
 
-        if (is_null($dbToUse)) $dbToUse = $this;
+        if (is_null($dbToUse)) {
+            $dbToUse = $this;
+        }
 
-        $result = $dbToUse->getAllPrepared($sql, (!is_null($whereArr) && count($whereArr) > 0) ? array_values($whereArr) : array(), AMA_FETCH_ASSOC);
-        if (\AMA_DB::isError($result)) {
+        $result = $dbToUse->getAllPrepared($sql, (!is_null($whereArr) && count($whereArr) > 0) ? array_values($whereArr) : [], AMA_FETCH_ASSOC);
+        if (AMA_DB::isError($result)) {
             throw new CloneInstanceException($result->getMessage(), (int) $result->getCode());
         } else {
             $retArr = array_map(function ($el) use ($className, $dbToUse) {
@@ -216,11 +220,11 @@ class AMACloneInstanceDataHandler extends \AMA_DataHandler
                             $retObj->{$retObj::GETTERPREFIX . ucfirst($joinData['idproperty'])}(),
                             $dbToUse
                         );
-                    } else if (array_key_exists('reltable', $joinData)) {
+                    } elseif (array_key_exists('reltable', $joinData)) {
                         if (!is_array($joinData['key'])) {
                             $joinData['key'] = [
                                 'name' => $joinData['key'],
-                                'getter' => $retObj::GETTERPREFIX . ucfirst($joinData['key'])
+                                'getter' => $retObj::GETTERPREFIX . ucfirst($joinData['key']),
                             ];
                         }
                         // this is a 1:n relation, load the linked objects querying the relation table
@@ -243,10 +247,10 @@ class AMACloneInstanceDataHandler extends \AMA_DataHandler
      *
      * @param string $className
      * @param array $orderBy
-     * @param \Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
+     * @param Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
      * @return array
      */
-    public function findAll($className, array $orderBy = null, \Abstract_AMA_DataHandler $dbToUse = null)
+    public function findAll($className, array $orderBy = null, Abstract_AMA_DataHandler $dbToUse = null)
     {
         return $this->findBy($className, null, $orderBy, $dbToUse);
     }
@@ -331,15 +335,17 @@ class AMACloneInstanceDataHandler extends \AMA_DataHandler
                         if (is_array($whereArr[$el])) {
                             $retStr = '';
                             if (array_key_exists('op', $whereArr[$el]) && array_key_exists('value', $whereArr[$el])) {
-                                $whereArr[$el] = array($whereArr[$el]);
+                                $whereArr[$el] = [$whereArr[$el]];
                             }
                             foreach ($whereArr[$el] as $opArr) {
-                                if (strlen($retStr) > 0) $retStr = $retStr . ' AND ';
+                                if (strlen($retStr) > 0) {
+                                    $retStr = $retStr . ' AND ';
+                                }
                                 $retStr .= "`$el` " . $opArr['op'] . ' ' . $opArr['value'];
                             }
                             unset($whereArr[$el]);
                             return '(' . $retStr . ')';
-                        } else if (is_numeric($whereArr[$el])) {
+                        } elseif (is_numeric($whereArr[$el])) {
                             $op = '=';
                         } else {
                             $op = ' LIKE ';
@@ -372,7 +378,7 @@ class AMACloneInstanceDataHandler extends \AMA_DataHandler
             } else {
                 $sql .= ' ORDER BY ';
                 $sql .= implode(', ', array_map(function ($el) use ($orderByArr) {
-                    if (in_array($orderByArr[$el], array('ASC', 'DESC'))) {
+                    if (in_array($orderByArr[$el], ['ASC', 'DESC'])) {
                         return "`$el` " . $orderByArr[$el];
                     } else {
                         throw new CloneInstanceException(sprintf(translateFN("ORDER BY non valido %s per %s"), $orderByArr[$el], $el));
@@ -413,31 +419,34 @@ class AMACloneInstanceDataHandler extends \AMA_DataHandler
         return $this->getConnection()->connectionObject()->commit();
     }
 
-    private function insertMultiRow(&$valuesArray = array(), $tableName = null, $subPrefix = '')
+    private function insertMultiRow(&$valuesArray = [], $tableName = null, $subPrefix = '')
     {
 
         if (is_array($valuesArray) && count($valuesArray) > 0 && !is_null($tableName)) {
-
             // 0. init the query
-            if (strlen($subPrefix) > 0) $tableName = $subPrefix . '_' . $tableName;
+            if (strlen($subPrefix) > 0) {
+                $tableName = $subPrefix . '_' . $tableName;
+            }
 
             $sql = 'INSERT INTO `' . $tableName . '` ';
             // 1. get the keys of the passed array
             $fields = array_keys(reset($valuesArray));
             // 2. build the placeholders string
             $flCount = count($fields);
-            $lCount = ($flCount  ? $flCount - 1 : 0);
+            $lCount = ($flCount ? $flCount - 1 : 0);
             $questionMarks = sprintf("?%s", str_repeat(",?", $lCount));
 
             $arCount = count($valuesArray);
-            $rCount = ($arCount  ? $arCount - 1 : 0);
+            $rCount = ($arCount ? $arCount - 1 : 0);
             $criteria = sprintf("(" . $questionMarks . ")%s", str_repeat(",(" . $questionMarks . ")", $rCount));
             // 3. build the fields list in sql
             $sql .= '(`' . implode('`,`', $fields) . '`)';
             // 4. append the placeholders
             $sql .= ' VALUES ' . $criteria;
-            $toSave = array();
-            foreach ($valuesArray as $v) $toSave = array_merge($toSave, array_values($v));
+            $toSave = [];
+            foreach ($valuesArray as $v) {
+                $toSave = array_merge($toSave, array_values($v));
+            }
             $valuesArray = $toSave;
             return $sql;
         }

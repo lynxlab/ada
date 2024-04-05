@@ -1,11 +1,11 @@
 <?php
 
 /**
- * @package 	cloneinstance module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2022, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     cloneinstance module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2022, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
 
 namespace Lynxlab\ADA\Module\CloneInstance;
@@ -17,13 +17,12 @@ namespace Lynxlab\ADA\Module\CloneInstance;
  */
 class CloneInstanceActions
 {
-
     /**
      * global actions, not performed on the single request
      *
      * @var integer
      */
-    const CLONE_INSTANCE = 1;
+    public const CLONE_INSTANCE = 1;
 
     /**
      * array that defines who can do what
@@ -39,11 +38,11 @@ class CloneInstanceActions
      */
     protected static function getCanDoArr()
     {
-        return array(
+        return [
             self::CLONE_INSTANCE => function ($object = null, $userType = null) {
                 return in_array($userType, [AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER]);
             },
-        );
+        ];
     }
 
     /**
@@ -69,18 +68,26 @@ class CloneInstanceActions
      */
     public static function canDo($actionID, $object = null, $userType = null)
     {
-        if (is_null(self::$CANDOARR)) self::$CANDOARR = self::getCanDoArr();
-        if (is_null($userType) && array_key_exists('sess_userObj', $_SESSION)) $userType = $_SESSION['sess_userObj']->getType();
-        if (is_null($userType) || intval($userType) <= 0) return false;
+        if (is_null(self::$CANDOARR)) {
+            self::$CANDOARR = self::getCanDoArr();
+        }
+        if (is_null($userType) && array_key_exists('sess_userObj', $_SESSION)) {
+            $userType = $_SESSION['sess_userObj']->getType();
+        }
+        if (is_null($userType) || intval($userType) <= 0) {
+            return false;
+        }
         if (is_array($actionID)) {
             foreach ($actionID as $anAction) {
-                if (self::canDo($anAction, $object, $userType)) return true;
+                if (self::canDo($anAction, $object, $userType)) {
+                    return true;
+                }
             }
             return false;
         } else {
             if (array_key_exists($actionID, self::$CANDOARR)) {
                 if (is_callable(self::$CANDOARR[$actionID])) {
-                    return call_user_func_array(self::$CANDOARR[$actionID], array($object, $userType));
+                    return call_user_func_array(self::$CANDOARR[$actionID], [$object, $userType]);
                 } else {
                     return in_array(intval($userType), self::$CANDOARR[$actionID]);
                 }
@@ -98,45 +105,49 @@ class CloneInstanceActions
      */
     public static function getAllowedAndNeededAr($fileName = null)
     {
-        $retArr = array(
-            'allowedUsers' => array(),
-            'neededObjects' => array()
-        );
-        if (is_null($fileName)) $fileName = realpath($_SERVER['SCRIPT_FILENAME']);
+        $retArr = [
+            'allowedUsers' => [],
+            'neededObjects' => [],
+        ];
+        if (is_null($fileName)) {
+            $fileName = realpath($_SERVER['SCRIPT_FILENAME']);
+        }
         $fileName = trim(str_replace(MODULES_CLONEINSTANCE_PATH, '', $fileName), '/');
         if (strlen($fileName) > 0) {
             // admin, coordinator, author and editor have access to everything by default
-            $retArr['neededObjects'] = array(
-                AMA_TYPE_ADMIN => array('layout'),
-                AMA_TYPE_SWITCHER => array('layout'),
-                AMA_TYPE_TUTOR => array('layout'),
-                AMA_TYPE_SUPERTUTOR => array('layout'),
-                AMA_TYPE_AUTHOR => array('layout'),
-                AMA_TYPE_STUDENT => array('layout')
-            );
+            $retArr['neededObjects'] = [
+                AMA_TYPE_ADMIN => ['layout'],
+                AMA_TYPE_SWITCHER => ['layout'],
+                AMA_TYPE_TUTOR => ['layout'],
+                AMA_TYPE_SUPERTUTOR => ['layout'],
+                AMA_TYPE_AUTHOR => ['layout'],
+                AMA_TYPE_STUDENT => ['layout'],
+            ];
             switch ($fileName) {
                 // separate index.php from default, prevents too many redirect error
                 case 'cloneinstance.php':
-                    $retArr['neededObjects'] = array(
-                        AMA_TYPE_SWITCHER => array('layout', 'user', 'course_instance', 'course',),
-                    );
+                    $retArr['neededObjects'] = [
+                        AMA_TYPE_SWITCHER => ['layout', 'user', 'course_instance', 'course',],
+                    ];
                     break;
                 case 'ajax/cloneinstance.php':
-                    $retArr['neededObjects'] = array(
-                        AMA_TYPE_SWITCHER => array('layout', 'user',),
-                    );
+                    $retArr['neededObjects'] = [
+                        AMA_TYPE_SWITCHER => ['layout', 'user',],
+                    ];
                     break;
                 case 'index.php':
                 default:
-                    $retArr['neededObjects'] = array(
-                        AMA_TYPE_ADMIN => array('layout',),
-                        AMA_TYPE_SWITCHER => array('layout',)
-                    );
+                    $retArr['neededObjects'] = [
+                        AMA_TYPE_ADMIN => ['layout',],
+                        AMA_TYPE_SWITCHER => ['layout',],
+                    ];
                     break;
             }
         }
         // if no allowedUsers specified, use the neededObjects keys
-        if (count($retArr['allowedUsers']) <= 0) $retArr['allowedUsers'] = array_keys($retArr['neededObjects']);
+        if (count($retArr['allowedUsers']) <= 0) {
+            $retArr['allowedUsers'] = array_keys($retArr['neededObjects']);
+        }
         return $retArr;
     }
 }

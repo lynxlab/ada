@@ -1,18 +1,19 @@
 <?php
 
 /**
- * @package 	cloneinstance module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2022, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     cloneinstance module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2022, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Module\CloneInstance\AMACloneInstanceDataHandler;
 use Lynxlab\ADA\Module\CloneInstance\CloneInstanceActions;
-use Lynxlab\ADA\Module\CloneInstance\CloneInstanceException;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * Base config file
@@ -24,12 +25,12 @@ require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 
 /**
  * Get Users (types) allowed to access this module and needed objects
  */
-list($allowedUsersAr, $neededObjAr) = array_values(CloneInstanceActions::getAllowedAndNeededAr());
+[$allowedUsersAr, $neededObjAr] = array_values(CloneInstanceActions::getAllowedAndNeededAr());
 
 /**
  * Performs basic controls before entering this module

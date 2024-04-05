@@ -1,18 +1,22 @@
 <?php
 
 /**
- * @package 	cloneinstance module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2022, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     cloneinstance module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2022, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
 
 namespace Lynxlab\ADA\Module\CloneInstance;
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Module\EventDispatcher\Events\ActionsEvent;
 use Lynxlab\ADA\Module\EventDispatcher\Events\MenuEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * EventSubscriber Class, defines node events names and handlers for this module
@@ -29,9 +33,9 @@ class EventSubscriber implements EventSubscriberInterface
 
     public function addListInstancesActions(ActionsEvent $e)
     {
-        list($courseId, $instanceId) = array_values($e->getSubject());
-        $cloneInstance_img = \CDOMElement::create('img', 'class:cloneinstance-icon,src:img/gruppo.png,alt:' . translateFN('Clona istanza'));
-        $cloneInstance_link = \BaseHtmlLib::link(MODULES_CLONEINSTANCE_HTTP . "/cloneinstance.php?id_course=$courseId&id_course_instance=$instanceId", $cloneInstance_img);
+        [$courseId, $instanceId] = array_values($e->getSubject());
+        $cloneInstance_img = CDOMElement::create('img', 'class:cloneinstance-icon,src:img/gruppo.png,alt:' . translateFN('Clona istanza'));
+        $cloneInstance_link = BaseHtmlLib::link(MODULES_CLONEINSTANCE_HTTP . "/cloneinstance.php?id_course=$courseId&id_course_instance=$instanceId", $cloneInstance_img);
         $cloneInstance_link->setAttribute('class', 'cloneinstance');
         $cloneInstance_link->setAttribute('data-courseid', $courseId);
         $cloneInstance_link->setAttribute('data-instanceid', $instanceId);
@@ -66,7 +70,7 @@ class EventSubscriber implements EventSubscriberInterface
                 'order' => '0',
                 'enabledON' => '%ALWAYS%',
                 'menuExtraClass' => '',
-                'children' => null
+                'children' => null,
             ];
             // Insert item at 2nd position, i.e. after Home
             array_splice($left, 1, 0, [$item]);
