@@ -18,6 +18,7 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
 use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -191,7 +192,7 @@ if (!AMA_DataHandler::isError($courseInstances)) {
             if (isset($GLOBALS['dh'])) {
                 $oldDH = $GLOBALS['dh'];
             }
-            $GLOBALS['dh'] = \AMA_DataHandler::instance(MultiPort::getDSN($provider['puntatore']));
+            $GLOBALS['dh'] = AMA_DataHandler::instance(MultiPort::getDSN($provider['puntatore']));
             $_SESSION['sess_selected_tester'] = $provider['puntatore'];
             if ($subscription_status != ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED) {
                 if ($new_status = BrowsingHelper::checkServiceComplete($userObj, $courseId, $courseInstanceId) > 0) {
@@ -575,7 +576,7 @@ if ($displayTable) {
 
     if (defined('MODULES_BADGES') && MODULES_BADGES) {
         // need the badges module data handler
-        $bdh = \Lynxlab\ADA\Module\Badges\AMABadgesDataHandler::instance(MultiPort::getDSN($provider['puntatore']));
+        $bdh = AMABadgesDataHandler::instance(MultiPort::getDSN($provider['puntatore']));
         // load all the badges for this course
         $courseBadges = $bdh->findBy('CourseBadge', ['id_corso' => $courseId]);
         if (!AMA_DB::isError($courseBadges) && is_array($courseBadges) && count($courseBadges) > 0) {

@@ -20,6 +20,7 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Bookmark\Bookmark;
 use Lynxlab\ADA\Main\History\History;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
+use Lynxlab\ADA\Module\Badges\RewardedBadge;
 use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -130,7 +131,7 @@ class Student
             }
 
             if (MODULES_BADGES) {
-                Lynxlab\ADA\Module\Badges\RewardedBadge::loadInstanceRewards($id_course, $id_course_instance);
+                RewardedBadge::loadInstanceRewards($id_course, $id_course_instance);
             }
 
             foreach ($report_dataHa as $currentReportRow) {
@@ -163,7 +164,7 @@ class Student
                 $returnArray[$row]['index'] = $currentReportRow['indice_att'];
                 $returnArray[$row]['status'] = sprintf("<!-- %d -->%s", $currentReportRow['status'], Subscription::subscriptionStatusArray()[$currentReportRow['status']]);
                 if (MODULES_BADGES) {
-                    $returnArray[$row]['badges'] = Lynxlab\ADA\Module\Badges\RewardedBadge::buildStudentRewardHTML($id_course, $id_course_instance, $currentReportRow['id_stud'])->getHtml();
+                    $returnArray[$row]['badges'] = RewardedBadge::buildStudentRewardHTML($id_course, $id_course_instance, $currentReportRow['id_stud'])->getHtml();
                 }
                 $returnArray[$row]['level'] = '<span id="studentLevel_' . $currentReportRow['id_stud'] . '">' . $currentReportRow['level'] . '</span>';
                 $forceUpdate = false;
@@ -216,7 +217,7 @@ class Student
             $returnArray[$row]['index'] = round($totalIndex / $total, 2);
             $returnArray[$row]['status'] = '-';
             if (MODULES_BADGES) {
-                $rew = Lynxlab\ADA\Module\Badges\RewardedBadge::getInstanceRewards();
+                $rew = RewardedBadge::getInstanceRewards();
                 $returnArray[$row]['badges'] = round(array_sum($rew['studentsRewards']) / $total, 2) . ' ' . translateFN('su') . ' ' . $rew['total'];
             }
             $returnArray[$row]['level'] = '<span id="averageLevel">' . round($totalLevel / $total, 2) . '</span>';
@@ -376,7 +377,7 @@ class Student
 
                 if (array_key_exists(REPORT_COLUMN_BADGES, $columns)) {
                     if (MODULES_BADGES) {
-                        \Lynxlab\ADA\Module\Badges\RewardedBadge::loadInstanceRewards($id_course, $id_instance);
+                        RewardedBadge::loadInstanceRewards($id_course, $id_instance);
                     } else {
                         unset($columns[REPORT_COLUMN_BADGES]);
                     }
@@ -454,7 +455,7 @@ class Student
                     }
 
                     if (array_key_exists(REPORT_COLUMN_BADGES, $columns) && MODULES_BADGES) {
-                        $dati_stude[$key]['badges'] = Lynxlab\ADA\Module\Badges\RewardedBadge::buildStudentRewardHTML($id_course, $id_instance, $id_student)->getHtml();
+                        $dati_stude[$key]['badges'] = RewardedBadge::buildStudentRewardHTML($id_course, $id_instance, $id_student)->getHtml();
                     }
 
                     [$firstanme, $lastname] = explode('::', $dati_stude[$key]["student"]);
@@ -609,7 +610,7 @@ class Student
                 }
                 if (array_key_exists(REPORT_COLUMN_BADGES, $columns) && MODULES_BADGES) {
                     $tableHeader['badges'] = translateFN("Badges");
-                    $rew = Lynxlab\ADA\Module\Badges\RewardedBadge::getInstanceRewards();
+                    $rew = RewardedBadge::getInstanceRewards();
                     $dati_stude[$av_student]['badges'] = round(array_sum($rew['studentsRewards']) / $tot_students, 2) . ' ' . translateFN('su') . ' ' . $rew['total'];
                 }
                 if (array_key_exists(REPORT_COLUMN_LEVEL_PLUS, $columns)) {
@@ -629,7 +630,7 @@ class Student
                     $test_score = $test_db->getStudentsScores($id_course, $id_instance);
                 }
                 if (MODULES_BADGES) {
-                    \Lynxlab\ADA\Module\Badges\RewardedBadge::loadInstanceRewards($id_course, $id_instance);
+                    RewardedBadge::loadInstanceRewards($id_course, $id_instance);
                 }
                 foreach ($student_list_ar as $one_student) {
                     $id_student = $one_student['id_utente_studente'];
@@ -899,7 +900,7 @@ class Student
                             $dati_stude[$num_student]['status'] = sprintf("<!-- %d -->%s", $status_student, Subscription::subscriptionStatusArray()[$status_student]);
 
                             if (MODULES_BADGES) {
-                                $dati_stude[$num_student]['badges'] = Lynxlab\ADA\Module\Badges\RewardedBadge::buildStudentRewardHTML($id_course, $id_instance, $id_student)->getHtml();
+                                $dati_stude[$num_student]['badges'] = RewardedBadge::buildStudentRewardHTML($id_course, $id_instance, $id_student)->getHtml();
                             }
 
                             // level
@@ -961,7 +962,7 @@ class Student
                 $dati_stude[$av_student]['index'] = round($av_index, 2);
                 $dati_stude[$av_student]['status'] = "-";
                 if (MODULES_BADGES) {
-                    $rew = Lynxlab\ADA\Module\Badges\RewardedBadge::getInstanceRewards();
+                    $rew = RewardedBadge::getInstanceRewards();
                     $dati_stude[$av_student]['badges'] = round(array_sum($rew['studentsRewards']) / $tot_students, 2) . ' ' . translateFN('su') . ' ' . $rew['total'];
                 }
                 $dati_stude[$av_student]['level'] = '<span id="averageLevel">' . round($av_level, 2) . '</span>';

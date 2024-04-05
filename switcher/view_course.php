@@ -23,6 +23,7 @@ use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Translator;
+use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -115,7 +116,7 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
     }
 
     if (defined('MODULES_BADGES') && MODULES_BADGES) {
-        $bdh = \Lynxlab\ADA\Module\Badges\AMABadgesDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+        $bdh = AMABadgesDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
         $badges = $bdh->findBy('CourseBadge', ['id_corso' => $courseObj->getId()]);
         if (!\AMA_DB::isError($badges) && is_array($badges) && count($badges) > 0) {
             $formData['badges'] = implode(', ', array_map(function ($el) use ($bdh) {

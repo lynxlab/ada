@@ -18,6 +18,7 @@ use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
+use Lynxlab\ADA\Module\Badges\Badge;
 use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -223,7 +224,7 @@ class BrowsingHelper extends ViewBaseHelper
                         if (is_array($badge) && count($badge) == 1) {
                             $badge = reset($badge);
                             $cs = $cdh->getCompleteConditionSet($cb->getId_conditionset());
-                            if ($badge instanceof \Lynxlab\ADA\Module\Badges\Badge && $cs instanceof \CompleteConditionSet) {
+                            if ($badge instanceof Badge && $cs instanceof \CompleteConditionSet) {
                                 if ($cs->evaluateSet([$courseInstanceId, $userObj->getId()])) {
                                     // student is rewarded with the badge
                                     $bdh->saveRewardedBadge([

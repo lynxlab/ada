@@ -23,6 +23,7 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
 use Lynxlab\ADA\Module\Badges\RewardedBadge;
 use Lynxlab\ADA\Module\Badges\Badge;
 use Lynxlab\ADA\Widgets\Widget;
@@ -94,7 +95,7 @@ try {
     }
 
     if ($userObj->getType() == AMA_TYPE_STUDENT && defined('MODULES_BADGES') && MODULES_BADGES) {
-        $bdh = \Lynxlab\ADA\Module\Badges\AMABadgesDataHandler::instance(MultiPort::getDSN($testerName));
+        $bdh = AMABadgesDataHandler::instance(MultiPort::getDSN($testerName));
         $findByArr['id_utente'] = $userObj->getId();
         $findByArr['notified'] = 0;
         $findByArr['approved'] = 1;

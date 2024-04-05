@@ -17,6 +17,7 @@ use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\User\ADAUser;
+use Lynxlab\ADA\Module\Badges\RewardedBadge;
 use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -152,7 +153,7 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
         if (MODULES_BADGES) {
             $badgesKey = translateFN("Badges");
             array_push($thead_data, $badgesKey);
-            Lynxlab\ADA\Module\Badges\RewardedBadge::loadInstanceRewards($courseId, $instanceId);
+            RewardedBadge::loadInstanceRewards($courseId, $instanceId);
         }
         if (!$isTutorCommunity && defined('MODULES_CODEMAN') && (MODULES_CODEMAN)) {
             array_push($thead_data, translateFN('Codice iscrizione'));
@@ -263,7 +264,7 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
             ];
 
             if (MODULES_BADGES) {
-                $userArray[$badgesKey] = Lynxlab\ADA\Module\Badges\RewardedBadge::buildStudentRewardHTML($courseId, $instanceId, $user->getSubscriberId())->getHtml();
+                $userArray[$badgesKey] = RewardedBadge::buildStudentRewardHTML($courseId, $instanceId, $user->getSubscriberId())->getHtml();
             }
             if (!$isTutorCommunity && defined('MODULES_CODEMAN') && (MODULES_CODEMAN)) {
                 $code = $user->getSubscriptionCode();
