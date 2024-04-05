@@ -1,53 +1,51 @@
 <?php
+
 use Lynxlab\ADA\Module\ForkedPaths\AMAForkedPathsDataHandler;
-use Dompdf\Exception;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsException;
 
-/**
- * Base config file
- */
-require_once (realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
+require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_STUDENT, AMA_TYPE_TUTOR);
+$allowedUsersAr = [AMA_TYPE_STUDENT, AMA_TYPE_TUTOR];
 
 /**
  * Get needed objects
  */
-$neededObjAr = array(
-    AMA_TYPE_STUDENT => array('node', 'layout', 'tutor', 'course', 'course_instance'),
-    AMA_TYPE_TUTOR => array('node', 'layout', 'course', 'course_instance'),
-);
+$neededObjAr = [
+    AMA_TYPE_STUDENT => ['node', 'layout', 'tutor', 'course', 'course_instance'],
+    AMA_TYPE_TUTOR => ['node', 'layout', 'course', 'course_instance'],
+];
 
 /**
  * Performs basic controls before entering this module
  */
 $trackPageToNavigationHistory = false;
-require_once ROOT_DIR.'/include/module_init.inc.php';
+require_once ROOT_DIR . '/include/module_init.inc.php';
 BrowsingHelper::init($neededObjAr);
 
 $GLOBALS['dh'] = AMAForkedPathsDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 $postParams = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
 $data = new stdClass();
-$data->title = '<i class="basic error icon"></i>'.translateFN('Errore percorso a bivi');
+$data->title = '<i class="basic error icon"></i>' . translateFN('Errore percorso a bivi');
 $data->status = 'ERROR';
 $data->message = translateFN('Errore sconosciuto');
 
 $error = true;
 
 if (array_key_exists('fromId', $postParams) && array_key_exists('toId', $postParams)) {
-
     try {
         if (!ForkedPathsNode::checkNode($fromNode = new Node($postParams['fromId']))) {
             throw new ForkedPathsException(translateFN('Nodo di partenza non è storia a bivi'));
@@ -63,11 +61,11 @@ if (array_key_exists('fromId', $postParams) && array_key_exists('toId', $postPar
 
         $userLevel = (int) $userObj->get_student_level($userObj->getId(), $courseInstanceObj->getId());
 
-        if ((int) $toNode->level == $userLevel+1) {
+        if ((int) $toNode->level == $userLevel + 1) {
             if (AMA_DataHandler::isError($GLOBALS['dh']->set_student_level($courseInstanceObj->getId(), [$userObj->getId()], $toNode->level))) {
                 throw new ForkedPathsException(translateFN("Errore nell'aggiornamento del livello utente"));
             }
-        } else if ((int) $toNode->level > $userLevel+1) {
+        } elseif ((int) $toNode->level > $userLevel + 1) {
             throw new ForkedPathsException(translateFN("Non hai accesso al contenuto selezionato"));
         }
 
@@ -77,9 +75,8 @@ if (array_key_exists('fromId', $postParams) && array_key_exists('toId', $postPar
             'userLevelFrom' => $userLevel,
             'userLevelTo' => max($toNode->level, $userLevel),
             'userId' => $userObj->getId(),
-            'courseInstanceId' => $courseInstanceObj->getId()
+            'courseInstanceId' => $courseInstanceObj->getId(),
         ]);
-
     } catch (\Exception $e) {
         $result = $e;
     }
@@ -90,10 +87,10 @@ $error = AMA_DB::isError($result) || $result instanceof \Exception;
 if ($error === true) {
     header(' ', true, 400);
     if ($result instanceof \Exception) {
-            /* @var \Exception $result */
-            $data->title .= ' ('.$result->getCode().')';
-            $data->message = $result->getMessage();
-            $data->errorTrace = $result->getTraceAsString();
+        /* @var \Exception $result */
+        $data->title .= ' (' . $result->getCode() . ')';
+        $data->message = $result->getMessage();
+        $data->errorTrace = $result->getTraceAsString();
     }
 } else {
     $data = new stdClass();
@@ -102,4 +99,4 @@ if ($error === true) {
 }
 
 header('Content-Type: application/json');
-die (json_encode($data));
+die(json_encode($data));
