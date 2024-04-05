@@ -12,22 +12,34 @@ namespace Lynxlab\ADA\Module\Impersonate;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
-use Lynxlab\ADA\Main\User\ADALoggableUser as UserADALoggableUser;
+use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Main\User\ADAUser;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 class Utils
 {
     /**
+     * session key to store the source user id
+     */
+    public const MODULES_IMPERSONATE_SESSBACKDATA = 'impersonate-back-data';
+
+    /**
+     * session key to store the LinkedUser object
+     */
+    public const MODULES_IMPERSONATE_SESSLINKEDOBJ = 'sess_LinkedUserObj';
+
+    /**
      * generate the buttons element to be used to activate the impersonate function in the UI
      *
-     * @return \CDOMElement
+     * @return \Lynxlab\ADA\CORE\html4\CDOMElement
      */
     public static function generateMenu()
     {
         $div = CDOMElement::create('div', 'class:impersonate-link-container');
-        if (isset($_SESSION[MODULES_IMPERSONATE_SESSBACKDATA])) {
+        if (isset($_SESSION[self::MODULES_IMPERSONATE_SESSBACKDATA])) {
             $link = CDOMElement::create('a', 'class:ui tiny button impersonatelink, href:' . MODULES_IMPERSONATE_HTTP . '/impersonate.php');
-            $link->addChild(new CText(sprintf(translateFN('Torna %s'), $_SESSION[MODULES_IMPERSONATE_SESSBACKDATA]->getTypeAsString())));
+            $link->addChild(new CText(sprintf(translateFN('Torna %s'), $_SESSION[self::MODULES_IMPERSONATE_SESSBACKDATA]->getTypeAsString())));
             $div->addChild($link);
         } else {
             try {
@@ -40,7 +52,7 @@ class Utils
                     $link = CDOMElement::create('a', 'class:ui tiny button impersonatelink, href:' . MODULES_IMPERSONATE_HTTP . '/impersonate.php?t=' . $iObj->getLinked_type());
                     // create a user object to have getTypeAsString
                     $tmpUser = new ADAUser();
-                    $tmpUser->isSuper = false;
+                    // $tmpUser->isSuper = false;
                     $tmpUser->setType($iObj->getLinked_type());
                     $link->addChild(new CText(sprintf(translateFN('Diventa %s'), $tmpUser->getTypeAsString())));
                     $div->addChild($link);
@@ -55,8 +67,9 @@ class Utils
      *
      * @return boolean
      */
-    public static function isImpersonating() {
-        return (array_key_exists(MODULES_IMPERSONATE_SESSBACKDATA, $_SESSION) && $_SESSION[MODULES_IMPERSONATE_SESSBACKDATA] instanceof UserADALoggableUser);
+    public static function isImpersonating()
+    {
+        return (array_key_exists(self::MODULES_IMPERSONATE_SESSBACKDATA, $_SESSION) && $_SESSION[self::MODULES_IMPERSONATE_SESSBACKDATA] instanceof ADALoggableUser);
     }
 
     /**
@@ -76,7 +89,7 @@ class Utils
             $tmpUser = new ADAUser();
             $tmpUser->setType($linkedType);
             if ($tmpUser->getType() == AMA_TYPE_TUTOR) {
-                $tmpUser->isSuper = false;
+                // $tmpUser->isSuper = false;
             }
 
             // filter the passed array to get only needed values
@@ -86,12 +99,12 @@ class Utils
 
             $addLink = false;
             $img = CDOMElement::create('img');
-            $link = CDOMElement::create('a','class:tooltip,href:javascript:void(0);');
+            $link = CDOMElement::create('a', 'class:tooltip,href:javascript:void(0);');
             if (count($filteredUsers) > 0) {
                 if (ImpersonateActions::canDo(ImpersonateActions::DELETE_LINKEDUSER)) {
                     // unlink
                     $img->setAttribute('src', MODULES_IMPERSONATE_HTTP . '/layout/img/unlink-' . $linkedType . '.png');
-                    $link->setAttribute('onclick','javascript:deleteLinkedUser($j(this));');
+                    $link->setAttribute('onclick', 'javascript:deleteLinkedUser($j(this));');
                     $title = translateFN('Scollega %s');
                     $addLink = true;
                 }
@@ -99,7 +112,7 @@ class Utils
                 if (ImpersonateActions::canDo(ImpersonateActions::NEW_LINKEDUSER)) {
                     // link
                     $img->setAttribute('src', MODULES_IMPERSONATE_HTTP . '/layout/img/link-' . $linkedType . '.png');
-                    $link->setAttribute('onclick','javascript:newLinkedUser($j(this));');
+                    $link->setAttribute('onclick', 'javascript:newLinkedUser($j(this));');
                     $title = translateFN('Collega %s');
                     $addLink = true;
                 }

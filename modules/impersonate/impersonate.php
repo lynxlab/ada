@@ -16,6 +16,7 @@ use Lynxlab\ADA\Module\Impersonate\AMAImpersonateDataHandler;
 use Lynxlab\ADA\Module\Impersonate\ImpersonateActions;
 use Lynxlab\ADA\Module\Impersonate\ImpersonateException;
 use Lynxlab\ADA\Module\Impersonate\LinkedUsers;
+use Lynxlab\ADA\Module\Impersonate\Utils;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_user;
 
@@ -29,12 +30,12 @@ require_once(realpath(dirname(__FILE__)) . '/../../config_path.inc.php');
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 
 /**
  * Get Users (types) allowed to access this module and needed objects
  */
-list($allowedUsersAr, $neededObjAr) = array_values(ImpersonateActions::getAllowedAndNeededAr());
+[$allowedUsersAr, $neededObjAr] = array_values(ImpersonateActions::getAllowedAndNeededAr());
 
 /**
  * Performs basic controls before entering this module
@@ -45,9 +46,9 @@ BrowsingHelper::init($neededObjAr);
 
 $impersonateId = -1;
 
-if (isset($_SESSION[MODULES_IMPERSONATE_SESSBACKDATA])) {
-    $impersonateObj = $_SESSION[MODULES_IMPERSONATE_SESSBACKDATA];
-    unset($_SESSION[MODULES_IMPERSONATE_SESSBACKDATA]);
+if (isset($_SESSION[Utils::MODULES_IMPERSONATE_SESSBACKDATA])) {
+    $impersonateObj = $_SESSION[Utils::MODULES_IMPERSONATE_SESSBACKDATA];
+    unset($_SESSION[Utils::MODULES_IMPERSONATE_SESSBACKDATA]);
 } else {
     /**
      * @var AMAImpersonateDataHandler $impDH
@@ -64,14 +65,14 @@ if (isset($_SESSION[MODULES_IMPERSONATE_SESSBACKDATA])) {
             }
             $impObj = reset($impObj);
             $impersonateId = $impObj->getLinked_id();
-            $_SESSION[MODULES_IMPERSONATE_SESSBACKDATA] = $_SESSION['sess_userObj'];
+            $_SESSION[Utils::MODULES_IMPERSONATE_SESSBACKDATA] = $_SESSION['sess_userObj'];
         } else {
             throw new ImpersonateException('Error loading LinkedUsers object');
         }
     } catch (ImpersonateException $e) {
         $impersonateId = -1;
-        if (isset($_SESSION[MODULES_IMPERSONATE_SESSBACKDATA])) {
-            unset($_SESSION[MODULES_IMPERSONATE_SESSBACKDATA]);
+        if (isset($_SESSION[Utils::MODULES_IMPERSONATE_SESSBACKDATA])) {
+            unset($_SESSION[Utils::MODULES_IMPERSONATE_SESSBACKDATA]);
         }
     }
 }
@@ -81,7 +82,7 @@ if (!isset($impersonateObj)) {
 }
 
 if ($impersonateObj instanceof ADALoggableUser) {
-    if (isset($_SESSION[MODULES_IMPERSONATE_SESSBACKDATA])) {
+    if (isset($_SESSION[Utils::MODULES_IMPERSONATE_SESSBACKDATA])) {
         $impersonateObj->setStatus(ADA_STATUS_REGISTERED);
     }
     ADAUser::setSessionAndRedirect(
@@ -89,6 +90,6 @@ if ($impersonateObj instanceof ADALoggableUser) {
         false,
         $impersonateObj->getLanguage(),
         null,
-        isset($_SERVER['HTTP_REFERER']) && strlen($_SERVER['HTTP_REFERER'])>0 ? $_SERVER['HTTP_REFERER'] : $impersonateObj->getHomePage()
+        isset($_SERVER['HTTP_REFERER']) && strlen($_SERVER['HTTP_REFERER']) > 0 ? $_SERVER['HTTP_REFERER'] : $impersonateObj->getHomePage()
     );
 }

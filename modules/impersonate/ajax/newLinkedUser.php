@@ -20,6 +20,7 @@ use Lynxlab\ADA\Module\Impersonate\ImpersonateException;
 use Lynxlab\ADA\Module\Impersonate\LinkedUsers;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_user;
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * Base config file
@@ -31,12 +32,12 @@ require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 
 /**
  * Get Users (types) allowed to access this module and needed objects
  */
-list($allowedUsersAr, $neededObjAr) = array_values(ImpersonateActions::getAllowedAndNeededAr());
+[$allowedUsersAr, $neededObjAr] = array_values(ImpersonateActions::getAllowedAndNeededAr());
 
 /**
  * Performs basic controls before entering this module
@@ -50,7 +51,7 @@ BrowsingHelper::init($neededObjAr);
  */
 $impDH = AMAImpersonateDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
-$retArray = array('status' => 'ERROR');
+$retArray = ['status' => 'ERROR'];
 session_write_close();
 
 // sanitizie data
@@ -99,17 +100,17 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             } else {
                 // create a new user
                 $targetArr = $sourceUser->toArray();
-                $targetArr['username'] = LinkedUsers::getNewUserPrefix()[$passedData['linkedType']].$targetArr['username'];
+                $targetArr['username'] = LinkedUsers::getNewUserPrefix()[$passedData['linkedType']] . $targetArr['username'];
                 // fix a weirdness in object constructor
                 $targetArr['email'] = $targetArr['e_mail'];
-                $targetArr = array_map(function($el) {
-                    return strlen(trim($el))>0 ? trim($el) : null;
+                $targetArr = array_map(function ($el) {
+                    return strlen(trim($el)) > 0 ? trim($el) : null;
                 }, $targetArr);
                 if ($passedData['linkedType'] == AMA_TYPE_SWITCHER) {
                     $targetUser = new ADASwitcher($targetArr);
-                } else if ($passedData['linkedType'] == AMA_TYPE_AUTHOR) {
+                } elseif ($passedData['linkedType'] == AMA_TYPE_AUTHOR) {
                     $targetUser = new ADAAuthor($targetArr);
-                } else if ($passedData['linkedType'] == AMA_TYPE_TUTOR) {
+                } elseif ($passedData['linkedType'] == AMA_TYPE_TUTOR) {
                     $targetUser = new ADAPractitioner($targetArr);
                 }
                 // set a random password, 24 char length
@@ -120,19 +121,19 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 // fix the type that was copied from the sourceUser
                 $targetUser->setType($passedData['linkedType']);
                 // save the new user
-                $result = MultiPort::addUser($targetUser, array($_SESSION['sess_selected_tester']));
+                $result = MultiPort::addUser($targetUser, [$_SESSION['sess_selected_tester']]);
                 if ($result > 0) {
                     $targetUser->setUserId($result);
                     if ($targetUser instanceof ADAAuthor) {
-                        require_once ROOT_DIR . '/admin/include/AdminUtils.inc.php';
                         AdminUtils::performCreateAuthorAdditionalSteps($targetUser->getId());
-                    } else if ($targetUser instanceof ADASwitcher || $targetUser instanceof ADAPractitioner) {
-                        require_once ROOT_DIR . '/admin/include/AdminUtils.inc.php';
+                    } elseif ($targetUser instanceof ADASwitcher || $targetUser instanceof ADAPractitioner) {
                         AdminUtils::createUploadDirForUser($targetUser->getId());
                     }
-                } else $res = new ImpersonateException(translateFN("Impossibile creare l'utente collegato"));
+                } else {
+                    $res = new ImpersonateException(translateFN("Impossibile creare l'utente collegato"));
+                }
 
-                if ($sourceUser->getId()>0 && $targetUser->getId()>0) {
+                if ($sourceUser->getId() > 0 && $targetUser->getId() > 0) {
                     $linkedObj = new LinkedUsers();
                     $linkUpdate = false;
                     $linkedObj->setSource_id($sourceUser->getId())->setLinked_id($targetUser->getId())
@@ -143,7 +144,6 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             if (isset($linkedObj) && $linkedObj instanceof LinkedUsers) {
                 $res = $impDH->saveLinkedUsers($linkedObj->toArray(), $linkUpdate);
             }
-
         } else {
             $res = new ImpersonateException(translateFN('Passare il tipo di utente da collegare'));
         }
