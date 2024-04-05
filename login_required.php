@@ -24,6 +24,7 @@ use Lynxlab\ADA\Main\HtmlLibrary\UserModuleHtmlLib;
 use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Module\GDPR\GdprAcceptPoliciesForm;
+use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
 use Lynxlab\ADA\Module\Login\abstractLogin;
 
@@ -72,10 +73,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     /**
      * Perform login
      */
-	if (isset($gdprAccepted) && intval($gdprAccepted)===1 &&  array_key_exists(GdprPolicy::sessionKey, $_SESSION) && array_key_exists('post', $_SESSION[GdprPolicy::sessionKey])) {
-		extract($_SESSION[GdprPolicy::sessionKey]['post']);
+	if (isset($gdprAccepted) && intval($gdprAccepted)===1 &&  array_key_exists(GdprPolicy::SESSIONKEY, $_SESSION) && array_key_exists('post', $_SESSION[GdprPolicy::SESSIONKEY])) {
+		extract($_SESSION[GdprPolicy::SESSIONKEY]['post']);
 	}
-	unset($_SESSION[GdprPolicy::sessionKey]);
+	unset($_SESSION[GdprPolicy::SESSIONKEY]);
     if(isset($p_login) || (isset($selectedLoginProvider) && strlen($selectedLoginProvider)>0)) {
 
     	if (isset($p_login)) {
@@ -176,7 +177,7 @@ if (defined('MODULES_LOGIN') && MODULES_LOGIN) {
 $optionsAr['onload_func'] = 'initDateField();';
 
 if (defined('MODULES_GDPR') && MODULES_GDPR === true && isset($registration_data)) {
-    $gdprApi = new \Lynxlab\ADA\Module\GDPR\GdprAPI();
+    $gdprApi = new GdprAPI();
     GdprAcceptPoliciesForm::addPolicies($registration_data, array(
     	'policies' => $gdprApi->getPublishedPolicies(),
     	'extraclass' => 'ui form',

@@ -9,6 +9,7 @@ use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Output\Layout;
 use Lynxlab\ADA\Main\Output\UILayout;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
+use Lynxlab\ADA\Module\GDPR\GdprAPI;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\read_dir;
@@ -104,8 +105,7 @@ class AdminModuleHtmlLib
         }
 
         if (defined('MODULES_GDPR') && true === MODULES_GDPR && $user_dataAr['user_type'] == AMA_TYPE_SWITCHER) {
-            require_once MODULES_GDPR_PATH . '/include/GdprAPI.php';
-            $gdprAPI = new \Lynxlab\ADA\Module\GDPR\GdprAPI($user_dataAr['user_tester']);
+            $gdprAPI = new GdprAPI($user_dataAr['user_tester']);
             // get all gdpr user types
             $gdprUserTypes = $gdprAPI->getGdprUserTypes();
             $gdprUserTypesArr = array_reduce($gdprUserTypes, function ($carry, $item) {
@@ -342,7 +342,7 @@ class AdminModuleHtmlLib
                 require_once MODULES_GDPR_PATH . '/include/GdprAPI.php';
                 if (!isset($gdprApi)) {
                     $tester_info = $GLOBALS['common_dh']->get_tester_info_from_id($id_tester);
-                    $gdprAPI = new \Lynxlab\ADA\Module\GDPR\GdprAPI($tester_info[10]);
+                    $gdprAPI = new GdprAPI($tester_info[10]);
                     $gdprNoneTypes = $gdprAPI->getGdprNoneUserTypes();
                 }
                 $gdprUser = $gdprAPI->getGdprUserByID($user_dataAr['id_utente']);

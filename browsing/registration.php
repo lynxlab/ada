@@ -27,6 +27,7 @@ use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Main\User\ADAUser;
 use Lynxlab\ADA\Module\GDPR\GdprAcceptPoliciesForm;
+use Lynxlab\ADA\Module\GDPR\GdprAPI;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -154,7 +155,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 $postParams = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
                 if (array_key_exists('acceptPolicy', $postParams) && is_array($postParams['acceptPolicy']) && count($postParams['acceptPolicy']) > 0) {
                     $postParams['userId'] = $userObj->getId();
-                    (new Lynxlab\ADA\Module\GDPR\GdprAPI())->saveUserPolicies($postParams);
+                    (new GdprAPI())->saveUserPolicies($postParams);
                 }
             }
         } catch (Exception $e) {
@@ -350,7 +351,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $form = new UserRegistrationForm();
 
     if (defined('MODULES_GDPR') && MODULES_GDPR === true) {
-        $gdprApi = new \Lynxlab\ADA\Module\GDPR\GdprAPI();
+        $gdprApi = new GdprAPI();
         GdprAcceptPoliciesForm::addPolicies($form, [
             'policies' => $gdprApi->getPublishedPolicies(),
             'extraclass' => 'ui form',

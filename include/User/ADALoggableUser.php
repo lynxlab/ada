@@ -683,18 +683,18 @@ abstract class ADALoggableUser extends ADAGenericUser
                 // check if user has accepted the mandatory privacy policies
                 $gdprApi = new GdprAPI();
                 if (!$gdprApi->checkMandatoryPoliciesForUser($userObj)) {
-                    $_SESSION[GdprPolicy::sessionKey]['post'] = $_POST;
+                    $_SESSION[GdprPolicy::SESSIONKEY]['post'] = $_POST;
                     if (!is_null($loginProviderObj)) {
-                        $_SESSION[GdprPolicy::sessionKey]['post']['selectedLoginProvider'] = basename(str_replace('\\', '/', get_class($loginProviderObj)));
-                        $_SESSION[GdprPolicy::sessionKey]['post']['selectedLoginProviderID'] = $loginProviderObj->getID();
+                        $_SESSION[GdprPolicy::SESSIONKEY]['post']['selectedLoginProvider'] = basename(str_replace('\\', '/', get_class($loginProviderObj)));
+                        $_SESSION[GdprPolicy::SESSIONKEY]['post']['selectedLoginProviderID'] = $loginProviderObj->getID();
                     }
                     if (!is_null($redirectURL)) {
                         $_SESSION['subscription_page'] = $redirectURL;
                     }
-                    $_SESSION[GdprPolicy::sessionKey]['redirectURL'] = !is_null($redirectURL) ? $redirectURL : $userObj->getHomePage();
-                    $_SESSION[GdprPolicy::sessionKey]['userId'] = $userObj->getId();
-                    $_SESSION[GdprPolicy::sessionKey]['loginRepeaterSubmit'] = is_null($loginProviderObj) ? basename($_SERVER['SCRIPT_NAME']) : 'index.php';
-                    redirect(MODULES_GDPR_HTTP . '/' . GdprPolicy::acceptPoliciesPage);
+                    $_SESSION[GdprPolicy::SESSIONKEY]['redirectURL'] = !is_null($redirectURL) ? $redirectURL : $userObj->getHomePage();
+                    $_SESSION[GdprPolicy::SESSIONKEY]['userId'] = $userObj->getId();
+                    $_SESSION[GdprPolicy::SESSIONKEY]['loginRepeaterSubmit'] = is_null($loginProviderObj) ? basename($_SERVER['SCRIPT_NAME']) : 'index.php';
+                    redirect(MODULES_GDPR_HTTP . '/' . GdprPolicy::ACCEPTPOLICIESPAGE);
                 }
             }
 

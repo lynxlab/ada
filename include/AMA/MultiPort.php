@@ -27,6 +27,7 @@ use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 use Lynxlab\ADA\Main\User\ADASwitcher;
 use Lynxlab\ADA\Main\User\ADAUser;
+use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use PDOException;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -520,15 +521,14 @@ class MultiPort
 
                 if (defined('MODULES_GDPR') && true === MODULES_GDPR && $userObj->getType() == AMA_TYPE_SWITCHER && array_key_exists('user_gdpr', $_POST)) {
                     try {
-                        require_once MODULES_GDPR_PATH . '/include/GdprAPI.php';
-                        $gdprAPI = new \Lynxlab\ADA\Module\GDPR\GdprAPI($tester);
+                        $gdprAPI = new GdprAPI($tester);
                         $gdprUser = $gdprAPI->getGdprUserByID($userObj);
                         if (false !== $gdprUser) {
                             foreach ($gdprUser->getType() as $gdprType) {
                                 $gdprUser->removeType($gdprType);
                             }
                         } else {
-                            $gdprUser = \Lynxlab\ADA\Module\GDPR\GdprAPI::createGdprUserFromADALoggable($userObj);
+                            $gdprUser = GdprAPI::createGdprUserFromADALoggable($userObj);
                         }
                         if (!is_array($_POST['user_gdpr'])) {
                             $_POST['user_gdpr'] = [$_POST['user_gdpr']];
