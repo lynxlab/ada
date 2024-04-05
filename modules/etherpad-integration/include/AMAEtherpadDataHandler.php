@@ -10,22 +10,23 @@
 
 namespace Lynxlab\ADA\Module\EtherpadIntegration;
 
-class AMAEtherpadDataHandler extends \AMA_DataHandler
-{
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
+class AMAEtherpadDataHandler extends AMA_DataHandler
+{
     /**
      * module's own data tables prefix
      *
      * @var string
      */
-    const PREFIX = 'module_etherpad_';
+    public const PREFIX = 'module_etherpad_';
 
     /**
      * module's own model class namespace (can be the same of the datahandler's tablespace)
      *
      * @var string
      */
-    const MODELNAMESPACE = 'Lynxlab\\ADA\\Module\\EtherpadIntegration\\';
+    public const MODELNAMESPACE = 'Lynxlab\\ADA\\Module\\EtherpadIntegration\\';
 
     /**
      * saves an etherpad session in the local db
@@ -82,18 +83,18 @@ class AMAEtherpadDataHandler extends \AMA_DataHandler
         $this->beginTransaction();
         if (array_key_exists('isActive', $saveData) && (bool)$saveData['isActive'] === true) {
             // ensure that inserted key is the only one with isActive true
-            $this->queryPrepared('UPDATE `'.self::PREFIX.HashKey::table.'`SET `isActive`=?', [0]);
+            $this->queryPrepared('UPDATE `' . self::PREFIX . HashKey::TABLE . '`SET `isActive`=?', [0]);
         }
 
         $result = $this->executeCriticalPrepared(
             $this->sqlInsert(
-                \Lynxlab\ADA\Module\EtherpadIntegration\HashKey::table,
+                \Lynxlab\ADA\Module\EtherpadIntegration\HashKey::TABLE,
                 $saveData
             ),
             array_values($saveData)
         );
 
-        if (!\AMA_DB::isError($result)) {
+        if (!AMA_DB::isError($result)) {
             $this->commit();
             return true;
         } else {
@@ -109,11 +110,11 @@ class AMAEtherpadDataHandler extends \AMA_DataHandler
      * @param string $className to use a class from your namespace, this string must start with "\"
      * @param array $whereArr
      * @param array $orderByArr
-     * @param \Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
+     * @param Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
      * @throws EtherpadException
      * @return array
      */
-    public function findBy($className, array $whereArr = null, array $orderByArr = null, \Abstract_AMA_DataHandler $dbToUse = null)
+    public function findBy($className, array $whereArr = null, array $orderByArr = null, Abstract_AMA_DataHandler $dbToUse = null)
     {
         if (
             stripos($className, '\\') !== 0 &&
@@ -141,10 +142,12 @@ class AMAEtherpadDataHandler extends \AMA_DataHandler
         }, $properties)), $className::table)
             . $this->buildWhereClause($whereArr, $properties) . $this->buildOrderBy($orderByArr, $properties);
 
-        if (is_null($dbToUse)) $dbToUse = $this;
+        if (is_null($dbToUse)) {
+            $dbToUse = $this;
+        }
 
-        $result = $dbToUse->getAllPrepared($sql, (!is_null($whereArr) && count($whereArr) > 0) ? array_values($whereArr) : array(), AMA_FETCH_ASSOC);
-        if (\AMA_DB::isError($result)) {
+        $result = $dbToUse->getAllPrepared($sql, (!is_null($whereArr) && count($whereArr) > 0) ? array_values($whereArr) : [], AMA_FETCH_ASSOC);
+        if (AMA_DB::isError($result)) {
             throw new EtherpadException($result->getMessage(), (int) $result->getCode());
         } else {
             $retArr = array_map(function ($el) use ($className, $dbToUse) {
@@ -159,11 +162,11 @@ class AMAEtherpadDataHandler extends \AMA_DataHandler
                             $retObj->{$retObj::GETTERPREFIX . ucfirst($joinData['idproperty'])}(),
                             $dbToUse
                         );
-                    } else if (array_key_exists('reltable', $joinData)) {
+                    } elseif (array_key_exists('reltable', $joinData)) {
                         if (!is_array($joinData['key'])) {
                             $joinData['key'] = [
                                 'name' => $joinData['key'],
-                                'getter' => $retObj::GETTERPREFIX . ucfirst($joinData['key'])
+                                'getter' => $retObj::GETTERPREFIX . ucfirst($joinData['key']),
                             ];
                         }
                         $joinSelFields = '';
@@ -176,7 +179,7 @@ class AMAEtherpadDataHandler extends \AMA_DataHandler
                         if (array_key_exists('callback', $joinData)) {
                             if (is_callable($joinData['callback'])) {
                                 $joinRes = $joinData['callback']($joinRes);
-                            } else if (method_exists($retObj, $joinData['callback'])) {
+                            } elseif (method_exists($retObj, $joinData['callback'])) {
                                 $joinRes = $retObj->{$joinData['callback']}($joinRes);
                             }
                         }
@@ -194,17 +197,18 @@ class AMAEtherpadDataHandler extends \AMA_DataHandler
      *
      * @param string $className
      * @param array $orderBy
-     * @param \Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
+     * @param Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
      * @return array
      */
-    public function findAll($className, array $orderBy = null, \Abstract_AMA_DataHandler $dbToUse = null)
+    public function findAll($className, array $orderBy = null, Abstract_AMA_DataHandler $dbToUse = null)
     {
         return $this->findBy($className, null, $orderBy, $dbToUse);
     }
 
-    public function findOneBy($className, array $whereArr = null, array $orderByArr = null, \Abstract_AMA_DataHandler $dbToUse = null) {
-        $retval = $this->findBy($className,$whereArr, $orderByArr, $dbToUse);
-        if (is_array($retval) && count($retval)>0) {
+    public function findOneBy($className, array $whereArr = null, array $orderByArr = null, Abstract_AMA_DataHandler $dbToUse = null)
+    {
+        $retval = $this->findBy($className, $whereArr, $orderByArr, $dbToUse);
+        if (is_array($retval) && count($retval) > 0) {
             $retval = reset($retval);
         } else {
             $retval = null;
@@ -231,7 +235,6 @@ class AMAEtherpadDataHandler extends \AMA_DataHandler
                 }, $fields)),
                 $this->buildWhereClause($whereField, array_keys($whereField))
             );
-
         } else {
             return sprintf(
                 "UPDATE `%s` SET %s WHERE `%s`=?;",
@@ -265,31 +268,34 @@ class AMAEtherpadDataHandler extends \AMA_DataHandler
         );
     }
 
-    private function insertMultiRow(&$valuesArray = array(), $tableName = null, $subPrefix = '')
+    private function insertMultiRow(&$valuesArray = [], $tableName = null, $subPrefix = '')
     {
 
         if (is_array($valuesArray) && count($valuesArray) > 0 && !is_null($tableName)) {
-
             // 0. init the query
-            if (strlen($subPrefix) > 0) $tableName = $subPrefix . '_' . $tableName;
+            if (strlen($subPrefix) > 0) {
+                $tableName = $subPrefix . '_' . $tableName;
+            }
 
             $sql = 'INSERT INTO `' . $tableName . '` ';
             // 1. get the keys of the passed array
             $fields = array_keys(reset($valuesArray));
             // 2. build the placeholders string
             $flCount = count($fields);
-            $lCount = ($flCount  ? $flCount - 1 : 0);
+            $lCount = ($flCount ? $flCount - 1 : 0);
             $questionMarks = sprintf("?%s", str_repeat(",?", $lCount));
 
             $arCount = count($valuesArray);
-            $rCount = ($arCount  ? $arCount - 1 : 0);
+            $rCount = ($arCount ? $arCount - 1 : 0);
             $criteria = sprintf("(" . $questionMarks . ")%s", str_repeat(",(" . $questionMarks . ")", $rCount));
             // 3. build the fields list in sql
             $sql .= '(`' . implode('`,`', $fields) . '`)';
             // 4. append the placeholders
             $sql .= ' VALUES ' . $criteria;
-            $toSave = array();
-            foreach ($valuesArray as $v) $toSave = array_merge($toSave, array_values($v));
+            $toSave = [];
+            foreach ($valuesArray as $v) {
+                $toSave = array_merge($toSave, array_values($v));
+            }
             $valuesArray = $toSave;
             return $sql;
         }
@@ -335,15 +341,17 @@ class AMAEtherpadDataHandler extends \AMA_DataHandler
                         if (is_array($whereArr[$el])) {
                             $retStr = '';
                             if (array_key_exists('op', $whereArr[$el]) && array_key_exists('value', $whereArr[$el])) {
-                                $whereArr[$el] = array($whereArr[$el]);
+                                $whereArr[$el] = [$whereArr[$el]];
                             }
                             foreach ($whereArr[$el] as $opArr) {
-                                if (strlen($retStr) > 0) $retStr = $retStr . ' AND ';
+                                if (strlen($retStr) > 0) {
+                                    $retStr = $retStr . ' AND ';
+                                }
                                 $retStr .= "`$el` " . $opArr['op'] . ' ' . $opArr['value'];
                             }
                             unset($whereArr[$el]);
                             return '(' . $retStr . ')';
-                        } else if (is_numeric($whereArr[$el])) {
+                        } elseif (is_numeric($whereArr[$el])) {
                             $op = '=';
                         } else {
                             $op = ' LIKE ';
@@ -376,7 +384,7 @@ class AMAEtherpadDataHandler extends \AMA_DataHandler
             } else {
                 $sql .= ' ORDER BY ';
                 $sql .= implode(', ', array_map(function ($el) use ($orderByArr) {
-                    if (in_array($orderByArr[$el], array('ASC', 'DESC'))) {
+                    if (in_array($orderByArr[$el], ['ASC', 'DESC'])) {
                         return "`$el` " . $orderByArr[$el];
                     } else {
                         throw new EtherpadException(sprintf(translateFN("ORDER BY non valido %s per %s"), $orderByArr[$el], $el));
@@ -394,10 +402,11 @@ class AMAEtherpadDataHandler extends \AMA_DataHandler
      * @param string $className
      * @return bool|EtherpadException
      */
-    private function insertIntoTable($saveData, $className) {
+    private function insertIntoTable($saveData, $className)
+    {
         $this->beginTransaction();
         if (false === stripos($className, self::MODELNAMESPACE)) {
-            $className = self::MODELNAMESPACE.$className;
+            $className = self::MODELNAMESPACE . $className;
         }
 
         if (property_exists($className, 'creationDate') && !array_key_exists('creationDate', $saveData)) {
@@ -406,13 +415,13 @@ class AMAEtherpadDataHandler extends \AMA_DataHandler
 
         $result = $this->executeCriticalPrepared(
             $this->sqlInsert(
-                constant($className.'::table'),
+                constant($className . '::TABLE'),
                 $saveData
             ),
             array_values($saveData)
         );
 
-        if (!\AMA_DB::isError($result)) {
+        if (!AMA_DB::isError($result)) {
             $this->commit();
             return true;
         } else {

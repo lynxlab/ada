@@ -17,6 +17,7 @@ namespace Lynxlab\ADA\Main\HtmlLibrary;
 use Lynxlab\ADA\CORE\html4\CBase;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Module\CollaboraACL\GrantAccessForm;
 use Lynxlab\ADA\Module\Login\abstractLogin;
 use Lynxlab\ADA\Switcher\Subscription;
 
@@ -526,7 +527,7 @@ class UserModuleHtmlLib
                 return strcasecmp($a['cognome'], $b['cognome']);
             });
             // build the grantaccess form
-            $grantAccess = new \Lynxlab\ADA\Module\CollaboraACL\GrantAccessForm('grantaccess', null, [
+            $grantAccess = new GrantAccessForm('grantaccess', null, [
             'allUsers' => $users,
             'isTutor' => $GLOBALS['userObj']->getType() == AMA_TYPE_TUTOR,
             ]);

@@ -10,8 +10,6 @@
 
 namespace Lynxlab\ADA\Module\EtherpadIntegration;
 
-if (!defined('MODULES_ETHERPAD_AUTHORSTABLE')) define('MODULES_ETHERPAD_AUTHORSTABLE', AMAEtherpadDataHandler::PREFIX . 'authors');
-
 /**
  * Maps Etherpad authors to ADA users, regardless of AMA_TYPE
  */
@@ -22,14 +20,14 @@ class Authors extends EtherpadBase
      *
      * @var string
      */
-    public const table = MODULES_ETHERPAD_AUTHORSTABLE;
+    public const TABLE = AMAEtherpadDataHandler::PREFIX . 'authors';
 
     protected $authorId;
     protected $userId;
     protected $isActive;
     protected $creationDate;
 
-    public function __construct($data = array())
+    public function __construct($data = [])
     {
         parent::__construct($data);
     }

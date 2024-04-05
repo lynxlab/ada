@@ -21,7 +21,7 @@ namespace Lynxlab\ADA\Module\EtherpadIntegration;
  */
 class EtherpadClient extends \EtherpadLite\Client
 {
-    const separator = '#';
+    public const SEPARATOR = '#';
     private static $hashKey = null;
 
     public function __construct($apiKey, $baseUrl = null)
@@ -35,7 +35,7 @@ class EtherpadClient extends \EtherpadLite\Client
     private function getHashed($val)
     {
         if (self::$hashKey instanceof HashKey) {
-            $val = self::$hashKey->getUuid() . self::separator . $val;
+            $val = self::$hashKey->getUuid() . self::SEPARATOR . $val;
         }
         return $val;
     }

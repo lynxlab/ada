@@ -1,13 +1,14 @@
 <?php
 
 /**
- * @package 	etherpad module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2020, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     etherpad module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2020, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
@@ -17,6 +18,7 @@ use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadException;
 use Lynxlab\ADA\Module\EtherpadIntegration\Pads;
 use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -29,12 +31,12 @@ require_once(realpath(dirname(__FILE__)) . '/../../config_path.inc.php');
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 
 /**
  * Get Users (types) allowed to access this module and needed objects
  */
-list($allowedUsersAr, $neededObjAr) = array_values(EtherpadActions::getAllowedAndNeededAr());
+[$allowedUsersAr, $neededObjAr] = array_values(EtherpadActions::getAllowedAndNeededAr());
 
 /**
  * Performs basic controls before entering this module
@@ -49,25 +51,25 @@ try {
     /**
      * @var AMAEtherpadDataHandler $etDH
      */
-    $etDH = AMAEtherpadDataHandler::instance(\Lynxlab\ADA\Main\AMA\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+    $etDH = AMAEtherpadDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
     if (!array_key_exists('id_node', $_REQUEST)) {
         throw new EtherpadException('Specificare un nodo');
     } else {
         $nodeId = trim($_REQUEST['id_node']);
         $data = '';
-        if ($nodeId !== Pads::instancePadId && false === \DataValidator::validate_node_id($nodeId)) {
+        if ($nodeId !== Pads::INSTANCEPADID && false === DataValidator::validate_node_id($nodeId)) {
             throw new EtherpadException('ID nodo non valido');
         } else {
-            if ($nodeId !== Pads::instancePadId) {
+            if ($nodeId !== Pads::INSTANCEPADID) {
                 // check that passed node exists
                 $nodeData = $etDH->get_node_info($nodeId);
                 if (AMA_DB::isError($nodeData)) {
                     throw new EtherpadException('ID nodo non valido');
                 }
-                $padName = sprintf(translateFN(Pads::nodePadName), $nodeData['name']);
+                $padName = sprintf(translateFN(Pads::NODEPADNAME), $nodeData['name']);
             } else {
-                $padName = translateFN(Pads::instancePadName);
+                $padName = translateFN(Pads::INSTANCEPADNAME);
             }
             // passed nodeId looks good, pass data to the js
             $jsArgs = [
@@ -77,7 +79,7 @@ try {
                 'baseUrl' => MODULES_ETHERPAD_HTTP,
                 'etherpadUrl' => Utils::getEtherpadURL(false),
             ];
-            $optionsAr['onload_func'] = 'initEtherpad('.htmlspecialchars(json_encode($jsArgs), ENT_QUOTES, ADA_CHARSET).', \'#contentcontent > .first\');';
+            $optionsAr['onload_func'] = 'initEtherpad(' . htmlspecialchars(json_encode($jsArgs), ENT_QUOTES, ADA_CHARSET) . ', \'#contentcontent > .first\');';
         }
     }
 } catch (EtherpadException $e) {
@@ -85,7 +87,9 @@ try {
         'header' => translateFN('Errore'),
         'message' => translateFN($e->getMessage()),
     ];
-    if (!isset($data)) $data = '';
+    if (!isset($data)) {
+        $data = '';
+    }
     $data .= '<div class="ui icon error message"><i class="ban circle icon"></i><div class="content">';
     if (array_key_exists('header', $text) && strlen($text['header']) > 0) {
         $data .= '<div class="header">' . $text['header'] . '</div>';
@@ -100,24 +104,24 @@ $online_users_listing_mode = 2;
 $id_course_instance = $courseInstanceObj->getId();
 $online_users = ADALoggableUser::get_online_usersFN($id_course_instance, $online_users_listing_mode);
 
-$content_dataAr = array(
-    'course_title' => $courseObj->getTitle() . ' &gt; ' . $courseInstanceObj->getTitle(). (strlen($padName)>0 ? ' &gt; '.ucwords(translateFN($padName)) : ''),
+$content_dataAr = [
+    'course_title' => $courseObj->getTitle() . ' &gt; ' . $courseInstanceObj->getTitle() . (strlen($padName) > 0 ? ' &gt; ' . ucwords(translateFN($padName)) : ''),
     'user_name' => $user_name,
     'user_type' => $user_type,
     'edit_profile' => $userObj->getEditProfilePage(),
     'messages' => $user_messages->getHtml(),
     'agenda' => $user_agenda->getHtml(),
-    'help'  => isset($help) ? $help : null,
+    'help'  => $help ?? null,
     'status' => $status,
     'chat_users' => $online_users,
-    'chat_link' => isset($chat_link) ? $chat_link : '',
+    'chat_link' => $chat_link ?? '',
     'data' => $data,
-);
+];
 
 $backNode = false;
 if (array_key_exists('sess_id_node', $_SESSION)) {
     $backNode = DataValidator::validate_node_id($_SESSION['sess_id_node']);
 }
-$content_dataAr['go_back'] = $backNode === false ? 'javascript:history.go(-1);' : HTTP_ROOT_DIR . '/browsing/view.php?id_node='.$backNode;
+$content_dataAr['go_back'] = $backNode === false ? 'javascript:history.go(-1);' : HTTP_ROOT_DIR . '/browsing/view.php?id_node=' . $backNode;
 
 ARE::render($layout_dataAr, $content_dataAr, null, $optionsAr);

@@ -17,6 +17,8 @@ use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadException;
 use Lynxlab\ADA\Module\EtherpadIntegration\Groups;
 use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Base config file
  */
@@ -27,12 +29,12 @@ require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 
 /**
  * Get Users (types) allowed to access this module and needed objects
  */
-list($allowedUsersAr, $neededObjAr) = array_values(EtherpadActions::getAllowedAndNeededAr());
+[$allowedUsersAr, $neededObjAr] = array_values(EtherpadActions::getAllowedAndNeededAr());
 
 /**
  * Performs basic controls before entering this module
@@ -47,7 +49,7 @@ BrowsingHelper::init($neededObjAr);
  */
 $etDH = AMAEtherpadDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
-$retArray = array('status' => 'ERROR');
+$retArray = ['status' => 'ERROR'];
 session_write_close();
 
 // sanitizie data
@@ -71,7 +73,7 @@ foreach ($needed as $n) {
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' && !is_null($passedData['instanceId'])) {
     try {
-        $res = $etDH->findOneBy('Groups',[
+        $res = $etDH->findOneBy('Groups', [
             'instanceId' => $passedData['instanceId'],
             'isActive' => true,
         ]);
@@ -87,11 +89,13 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' && 
                     $ethClient = new EtherpadClient(MODULES_ETHERPAD_APIKEY, Utils::getEtherpadURL());
                     $rawGroup = $ethClient->createGroupIfNotExistsFor($passedData['instanceId']);
                     if (property_exists($rawGroup, 'groupID')) {
-                        if ($etDH->saveGroupMapping([
+                        if (
+                            $etDH->saveGroupMapping([
                             'groupId' => $rawGroup->groupID,
                             'instanceId' => $passedData['instanceId'],
                             'isActive' => true,
-                        ])) {
+                            ])
+                        ) {
                             $groupId = $rawGroup->groupID;
                         }
                     } else {

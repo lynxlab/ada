@@ -48,8 +48,8 @@ class Utils
              * it should be safe to assume that $params is [ 'nodeId' => id_node|Pads::instancePadId ]
              */
             if (array_key_exists('nodeId', $params)) {
-                $nodeId = ($params['nodeId'] === Pads::instancePadId)  ? Pads::instancePadId : DataValidator::validate_node_id($params['nodeId']);
-            } else if (array_key_exists('sess_id_node', $_SESSION)) {
+                $nodeId = ($params['nodeId'] === Pads::INSTANCEPADID) ? Pads::INSTANCEPADID : DataValidator::validate_node_id($params['nodeId']);
+            } elseif (array_key_exists('sess_id_node', $_SESSION)) {
                 // if no $params['nodeId'] then use session node
                 $nodeId = $_SESSION['sess_id_node'];
             }
@@ -73,7 +73,7 @@ class Utils
                 }
             }
             if ($hasPad || (!$hasPad && EtherpadActions::canDo(EtherpadActions::CREATE_PAD))) {
-                $enabled = $nodeId === Pads::instancePadId ? MODULES_ETHERPAD_INSTANCEPAD : MODULES_ETHERPAD_NODEPAD;
+                $enabled = $nodeId === Pads::INSTANCEPADID ? MODULES_ETHERPAD_INSTANCEPAD : MODULES_ETHERPAD_NODEPAD;
             }
             return $enabled;
         } catch (\Exception $e) {

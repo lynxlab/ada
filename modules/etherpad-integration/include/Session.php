@@ -10,8 +10,6 @@
 
 namespace Lynxlab\ADA\Module\EtherpadIntegration;
 
-if (!defined('MODULES_ETHERPAD_SESSIONSTABLE')) define('MODULES_ETHERPAD_SESSIONSTABLE', AMAEtherpadDataHandler::PREFIX . 'sessions');
-
 /**
  * Etherpad session
  */
@@ -22,8 +20,8 @@ class Session extends EtherpadBase
      *
      * @var string
      */
-    public const table = MODULES_ETHERPAD_SESSIONSTABLE;
-    public const sessionDuration = 1 * 24 * 3600; // in seconds
+    public const TABLE = AMAEtherpadDataHandler::PREFIX . 'sessions';
+    public const SESSIONDURATION = 1 * 24 * 3600; // in seconds
 
     protected $authorId;
     protected $groupId;
@@ -31,7 +29,7 @@ class Session extends EtherpadBase
     protected $validUntil;
     protected $creationDate;
 
-    public function __construct($data = array())
+    public function __construct($data = [])
     {
         parent::__construct($data);
     }

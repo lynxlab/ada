@@ -17,6 +17,8 @@ use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadClient;
 use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadException;
 use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Base config file
  */
@@ -27,12 +29,12 @@ require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 
 /**
  * Get Users (types) allowed to access this module and needed objects
  */
-list($allowedUsersAr, $neededObjAr) = array_values(EtherpadActions::getAllowedAndNeededAr());
+[$allowedUsersAr, $neededObjAr] = array_values(EtherpadActions::getAllowedAndNeededAr());
 
 /**
  * Performs basic controls before entering this module
@@ -46,7 +48,7 @@ BrowsingHelper::init($neededObjAr);
  */
 $etDH = AMAEtherpadDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
-$retArray = array('status' => 'ERROR');
+$retArray = ['status' => 'ERROR'];
 session_write_close();
 
 // sanitizie data
@@ -74,15 +76,15 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             $tmpUser = $userObj;
         } else {
             // check user, findUser will redirect if not found :(
-            if (\AMA_DB::isError($GLOBALS['common_dh']->get_user_type($passedData['userId']))) {
+            if (AMA_DB::isError($GLOBALS['common_dh']->get_user_type($passedData['userId']))) {
                 throw new EtherpadException(translateFN('Utente sconosciuto'));
             }
-            $tmpUser = \MultiPort::findUser($passedData['userId']);
+            $tmpUser = MultiPort::findUser($passedData['userId']);
         }
 
         $userId = $tmpUser->getId();
         $userFullName = $tmpUser->getFullName();
-        $res = $etDH->findOneBy('Authors',[
+        $res = $etDH->findOneBy('Authors', [
             'userId' => $userId,
             'isActive' => true,
         ]);
@@ -95,11 +97,13 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                 $ethClient = new EtherpadClient(MODULES_ETHERPAD_APIKEY, Utils::getEtherpadURL());
                 $rawAuthor = $ethClient->createAuthorIfNotExistsFor($userId, $userFullName);
                 if (property_exists($rawAuthor, 'authorID')) {
-                    if ($etDH->saveAuthorMapping([
+                    if (
+                        $etDH->saveAuthorMapping([
                         'authorId' => $rawAuthor->authorID,
                         'userId' => $userId,
                         'isActive' => true,
-                    ])) {
+                        ])
+                    ) {
                         $authorId = $rawAuthor->authorID;
                     }
                 } else {
@@ -109,11 +113,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                 throw new EtherpadException(translateFN('Utente non abilitato a creare autori'));
             }
         }
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         $res = $e;
     }
 
-    if (AMA_DB::isError($res) || $res instanceof \Exception) {
+    if (AMA_DB::isError($res) || $res instanceof Exception) {
         // if it's an error display the error message
         $retArray['status'] = "ERROR";
         $retArray['msg'] = $res->getMessage();

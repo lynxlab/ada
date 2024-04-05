@@ -17,6 +17,8 @@ use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadException;
 use Lynxlab\ADA\Module\EtherpadIntegration\Session;
 use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Base config file
  */
@@ -27,12 +29,12 @@ require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 
 /**
  * Get Users (types) allowed to access this module and needed objects
  */
-list($allowedUsersAr, $neededObjAr) = array_values(EtherpadActions::getAllowedAndNeededAr());
+[$allowedUsersAr, $neededObjAr] = array_values(EtherpadActions::getAllowedAndNeededAr());
 
 /**
  * Performs basic controls before entering this module
@@ -47,7 +49,7 @@ BrowsingHelper::init($neededObjAr);
  */
 $etDH = AMAEtherpadDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
-$retArray = array('status' => 'ERROR');
+$retArray = ['status' => 'ERROR'];
 session_write_close();
 
 // sanitizie data
@@ -56,13 +58,13 @@ $needed = [
     [
         'key' => 'groupId',
         'sanitize' => function ($v) {
-            return strlen(trim($v))>0 ? trim($v) : null;
+            return strlen(trim($v)) > 0 ? trim($v) : null;
         },
     ],
     [
         'key' => 'authorId',
         'sanitize' => function ($v) {
-            return strlen(trim($v))>0 ? trim($v) : null;
+            return strlen(trim($v)) > 0 ? trim($v) : null;
         },
     ],
 ];
@@ -85,7 +87,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             throw new EtherpadException(translateFN('Passare un id gruppo'));
         } else {
             // check that passed group exists
-            $groupObj = $etDH->findOneBy('Groups',[
+            $groupObj = $etDH->findOneBy('Groups', [
                 'groupId' => $passedData['groupId'],
                 'isActive' => true,
             ]);
@@ -97,7 +99,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             throw new EtherpadException(translateFN('Passare un id autore'));
         } else {
             // check that passed group exists
-            $authorObj = $etDH->findOneBy('Authors',[
+            $authorObj = $etDH->findOneBy('Authors', [
                 'authorId' => $passedData['authorId'],
                 'isActive' => true,
             ]);
@@ -115,7 +117,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             ],
         ];
 
-        $res = $etDH->findOneBy('Session',$whereArr);
+        $res = $etDH->findOneBy('Session', $whereArr);
         $sessionId = null;
         if ($res instanceof Session) {
             $sessionId = $res->getSessionId();
@@ -123,14 +125,16 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             if (EtherpadActions::canDo(EtherpadActions::CREATE_SESSION)) {
                 // create an etherpad group and save its id locally
                 $ethClient = new EtherpadClient(MODULES_ETHERPAD_APIKEY, Utils::getEtherpadURL());
-                $rawSession = $ethClient->createSession($groupObj->getGroupId(), $authorObj->getAuthorId(), time() + Session::sessionDuration);
-                if (property_exists($rawSession, 'sessionID') && strlen($rawSession->sessionID)>0) {
-                    if ($etDH->saveSession([
+                $rawSession = $ethClient->createSession($groupObj->getGroupId(), $authorObj->getAuthorId(), time() + Session::SESSIONDURATION);
+                if (property_exists($rawSession, 'sessionID') && strlen($rawSession->sessionID) > 0) {
+                    if (
+                        $etDH->saveSession([
                         'groupId' => $groupObj->getGroupId(),
                         'authorId' => $authorObj->getAuthorId(),
                         'sessionId' => $rawSession->sessionID,
-                        'validUntil' => time() + Session::sessionDuration,
-                    ])) {
+                        'validUntil' => time() + Session::SESSIONDURATION,
+                        ])
+                    ) {
                         $sessionId = $rawSession->sessionID;
                     } else {
                         // delete the remote session if something went wrong while saving locally

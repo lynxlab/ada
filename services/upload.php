@@ -13,8 +13,11 @@
  * @version     0.1
  */
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\UserModuleHtmlLib;
+use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
+use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLException;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -421,10 +424,10 @@ elseif ($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
                         'filename' => basename($destination),
                         'grantedUsers' => array_map('intval', $_POST['grantedUsers']),
                         ];
-                        $GLOBALS['dh'] = \Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+                        $GLOBALS['dh'] = AMACollaboraACLDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
                         $res = $GLOBALS['dh']->saveGrantedUsers($saveData);
 
-                        if (AMA_DB::isError($res) || $res instanceof \Lynxlab\ADA\Module\CollaboraACL\CollaboraACLException) {
+                        if (AMA_DB::isError($res) || $res instanceof CollaboraACLException) {
                             // handle ACL error here
                         } else {
                             // handle ACL saved OK here

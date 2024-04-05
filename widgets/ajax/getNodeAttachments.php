@@ -25,6 +25,7 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLActions;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLException;
 use Lynxlab\ADA\Module\CollaboraACL\FileACL;
@@ -107,7 +108,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
         }
 
         if (defined('MODULES_COLLABORAACL') && MODULES_COLLABORAACL) {
-            $aclDH = \Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler::instance(MultiPort::getDSN($testerName));
+            $aclDH = AMACollaboraACLDataHandler::instance(MultiPort::getDSN($testerName));
 
             if (!isset($courseObj)) {
                 $courseObj = new Course($courseId);

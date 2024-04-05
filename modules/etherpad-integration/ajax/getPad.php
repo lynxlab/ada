@@ -18,6 +18,8 @@ use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadException;
 use Lynxlab\ADA\Module\EtherpadIntegration\Pads;
 use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Base config file
  */
@@ -28,12 +30,12 @@ require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 
 /**
  * Get Users (types) allowed to access this module and needed objects
  */
-list($allowedUsersAr, $neededObjAr) = array_values(EtherpadActions::getAllowedAndNeededAr());
+[$allowedUsersAr, $neededObjAr] = array_values(EtherpadActions::getAllowedAndNeededAr());
 
 /**
  * Performs basic controls before entering this module
@@ -47,7 +49,7 @@ BrowsingHelper::init($neededObjAr);
  */
 $etDH = AMAEtherpadDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
-$retArray = array('status' => 'ERROR');
+$retArray = ['status' => 'ERROR'];
 session_write_close();
 
 // sanitizie data
@@ -91,7 +93,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             throw new EtherpadException(translateFN('Passare un id gruppo'));
         } else {
             // check that passed group exists
-            $groupObj = $etDH->findOneBy('Groups',[
+            $groupObj = $etDH->findOneBy('Groups', [
                 'groupId' => $passedData['groupId'],
                 'isActive' => true,
             ]);
@@ -101,22 +103,22 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
         }
 
         $nodeData = [];
-        if (is_null($passedData['nodeId']) || $passedData['nodeId'] === Pads::instancePadId) {
-            $passedData['nodeId'] = Pads::instancePadId;
-            $padName = Pads::instancePadName;
+        if (is_null($passedData['nodeId']) || $passedData['nodeId'] === Pads::INSTANCEPADID) {
+            $passedData['nodeId'] = Pads::INSTANCEPADID;
+            $padName = Pads::INSTANCEPADNAME;
         } else {
             if (false === DataValidator::validate_node_id($passedData['nodeId'])) {
                 throw new EtherpadException(translateFN('ID nodo non valido'));
             } else {
                 // check that passed node exists
                 $nodeData = $etDH->get_node_info($passedData['nodeId']);
-                if (\AMA_DB::isError($nodeData)) {
+                if (AMA_DB::isError($nodeData)) {
                     throw new EtherpadException(sprintf(translateFN('Il nodo %s non esiste'), $passedData['nodeId']));
                 }
-                if (is_array($nodeData) && count($nodeData)>0) {
+                if (is_array($nodeData) && count($nodeData) > 0) {
                     $nodeData['node_id'] = $passedData['nodeId'];
                 }
-                $padName = sprintf(Pads::nodePadName, $passedData['nodeId']);
+                $padName = sprintf(Pads::NODEPADNAME, $passedData['nodeId']);
             }
         }
         $whereArr = [
@@ -127,7 +129,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
         if (!is_null($passedData['padId'])) {
             $whereArr['padId'] = $passedData['padId'];
         }
-        $res = $etDH->findOneBy('Pads',$whereArr, [ 'creationDate' => 'DESC' ]);
+        $res = $etDH->findOneBy('Pads', $whereArr, [ 'creationDate' => 'DESC' ]);
         $realPadName = null;
         if ($res instanceof Pads) {
             $realPadName = $res->getRealPadName();
@@ -136,14 +138,16 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                 // create an etherpad group and save its id locally
                 $ethClient = new EtherpadClient(MODULES_ETHERPAD_APIKEY, Utils::getEtherpadURL());
                 $rawPad = $ethClient->createGroupPad($groupObj->getGroupId(), $padName, Pads::getEmptyPadText($nodeData));
-                if (property_exists($rawPad, 'padID') && strlen($rawPad->padID)>0) {
-                    if ($etDH->savePad([
+                if (property_exists($rawPad, 'padID') && strlen($rawPad->padID) > 0) {
+                    if (
+                        $etDH->savePad([
                         'groupId' => $groupObj->getGroupId(),
                         'nodeId' => $passedData['nodeId'],
                         'padName' => $padName,
                         'realPadName' => $rawPad->padID,
                         'isActive' => true,
-                    ])) {
+                        ])
+                    ) {
                         $realPadName = $rawPad->padID;
                     } else {
                         // delete the remote pad if something went wrong while saving locally
