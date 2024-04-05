@@ -1,4 +1,5 @@
 <?php
+
 /**
  * APPS MODULE.
  *
@@ -7,11 +8,14 @@
  * @copyright      Copyright (c) 2014, Lynx s.r.l.
  * @license        http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link           oauth2
- * @version		   0.1
+ * @version        0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -31,28 +35,28 @@ use function Lynxlab\ADA\Main\Utilities\whoami;
 /**
  * Base config file
 */
-require_once (realpath(dirname(__FILE__)) . '/../../config_path.inc.php');
+require_once(realpath(dirname(__FILE__)) . '/../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
 */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 /**
  * Users (types) allowed to access this module.
 */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+$allowedUsersAr = [AMA_TYPE_SWITCHER];
 
 /**
  * Get needed objects
 */
-$neededObjAr = array(
-		AMA_TYPE_SWITCHER => array('layout')
-);
+$neededObjAr = [
+        AMA_TYPE_SWITCHER => ['layout'],
+];
 
 /**
  * Performs basic controls before entering this module
 */
-require_once(ROOT_DIR.'/include/module_init.inc.php');
+require_once(ROOT_DIR . '/include/module_init.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS
@@ -63,16 +67,16 @@ $self = whoami();
  * TODO: Add your own code here
  */
 
-$container = CDOMElement::create('div','id:gettokenpage');
+$container = CDOMElement::create('div', 'id:gettokenpage');
 
-	$getButton = CDOMElement::create('button','id:getButton');
-	$getButton->setAttribute('onclick', 'javascript:getAppSecretAndID('.$userObj->getId().');');
-	$getButton->addChild (new CText(translateFN('Generate API App ID and Secret NOW!')));
+$getButton = CDOMElement::create('button', 'id:getButton');
+$getButton->setAttribute('onclick', 'javascript:getAppSecretAndID(' . $userObj->getId() . ');');
+$getButton->addChild(new CText(translateFN('Generate API App ID and Secret NOW!')));
 
-	$output = CDOMElement::create('div','id:outputtoken');
-	$output->setAttribute('style', 'display:none');
+$output = CDOMElement::create('div', 'id:outputtoken');
+$output->setAttribute('style', 'display:none');
 
-$container->addChild ($getButton);
+$container->addChild($getButton);
 $container->addChild($output);
 
 $data = $container->getHtml();
@@ -81,36 +85,32 @@ $data = $container->getHtml();
  * include proper jquery ui css file depending on wheter there's one
  * in the template_family css path or the default one
 */
-if (!is_dir(MODULES_APPS_PATH.'/layout/'.$userObj->template_family.'/css/jquery-ui'))
-{
-	$layout_dataAr['CSS_filename'] = array(
-			JQUERY_UI_CSS
-	);
-}
-else
-{
-	$layout_dataAr['CSS_filename'] = array(
-			MODULES_APPS_PATH.'/layout/'.$userObj->template_family.'/css/jquery-ui/jquery-ui-1.10.3.custom.min.css'
-	);
+if (!is_dir(MODULES_APPS_PATH . '/layout/' . $userObj->template_family . '/css/jquery-ui')) {
+    $layout_dataAr['CSS_filename'] = [
+            JQUERY_UI_CSS,
+    ];
+} else {
+    $layout_dataAr['CSS_filename'] = [
+            MODULES_APPS_PATH . '/layout/' . $userObj->template_family . '/css/jquery-ui/jquery-ui-1.10.3.custom.min.css',
+    ];
 }
 
-$content_dataAr = array(
-		'user_name' => $user_name,
-		'user_type' => $user_type,
-		'messages' => $user_messages->getHtml(),
-		'agenda' => $user_agenda->getHtml(),
-		'status' => $status,
-		'title' => translateFN('oauth2'),
-		'data' => $data,
-);
+$content_dataAr = [
+        'user_name' => $user_name,
+        'user_type' => $user_type,
+        'messages' => $user_messages->getHtml(),
+        'agenda' => $user_agenda->getHtml(),
+        'status' => $status,
+        'title' => translateFN('oauth2'),
+        'data' => $data,
+];
 
-$layout_dataAr['JS_filename'] = array(
-		JQUERY,
-		JQUERY_UI,
-		JQUERY_NO_CONFLICT
-);
+$layout_dataAr['JS_filename'] = [
+        JQUERY,
+        JQUERY_UI,
+        JQUERY_NO_CONFLICT,
+];
 
 $optionsAr['onload_func'] = 'initDoc();';
 
-ARE::render($layout_dataAr, $content_dataAr, NULL, $optionsAr);
-?>
+ARE::render($layout_dataAr, $content_dataAr, null, $optionsAr);

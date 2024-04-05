@@ -1,4 +1,5 @@
 <?php
+
 /**
  * generateClient.php
  *
@@ -7,8 +8,15 @@
  * @copyright      Copyright (c) 2014, Lynx s.r.l.
  * @license        http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link           generateClient
- * @version		   0.1
+ * @version        0.1
  */
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Module\Apps\AMAAppsDataHandler;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+use function Lynxlab\ADA\Module\Apps\Functions\generateConsumerIdAndSecret;
 
 /**
  * This is called via ajax by the module's index page when the user
@@ -20,29 +28,29 @@
 
 /**
  * Base config file
-*/
-require_once (realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
+ */
+require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
-*/
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+ */
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 /**
  * Users (types) allowed to access this module.
-*/
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+ */
+$allowedUsersAr = [AMA_TYPE_SWITCHER];
 
 /**
  * Get needed objects
-*/
-$neededObjAr = array(
-		AMA_TYPE_SWITCHER => array('layout')
-);
+ */
+$neededObjAr = [
+    AMA_TYPE_SWITCHER => ['layout'],
+];
 
 /**
  * Performs basic controls before entering this module
-*/
-require_once(ROOT_DIR.'/include/module_init.inc.php');
+ */
+require_once(ROOT_DIR . '/include/module_init.inc.php');
 
 // MODULE's OWN IMPORTS
 
@@ -57,32 +65,30 @@ $dh = AMAAppsDataHandler::instance();
  */
 $userArr = $dh->get_user_info(intval($userID));
 
-if (!AMA_DB::isError($userArr) && $userArr['tipo']==AMA_TYPE_SWITCHER)
-{
-	$clientArray = $dh->saveClientIDAndSecret(generateConsumerIdAndSecret(),intval($userArr['id']));
+if (!AMA_DB::isError($userArr) && $userArr['tipo'] == AMA_TYPE_SWITCHER) {
+    $clientArray = $dh->saveClientIDAndSecret(generateConsumerIdAndSecret(), intval($userArr['id']));
 
-	if (!AMA_DB::isError($clientArray)) {
-		$output = CDOMElement::create('div','class:appsecret');
-			$span = CDOMElement::create('span','class:clientIDLabel');
-			$span->addChild (new CText('clientID: '));
-		$output->addChild ($span);
-			$span = CDOMElement::create('span','class:clientID');
-			$span->addChild (new CText($clientArray['client_id']));
-		$output->addChild ($span);
-		$output->addChild (new CText(' - '));
-			$span = CDOMElement::create('span','class:clientSecretLabel');
-			$span->addChild (new CText('clientSecret: '));
-		$output->addChild ($span);
-			$span = CDOMElement::create('span','class:clientSecret');
-			$span->addChild (new CText($clientArray['client_secret']));
-		$output->addChild ($span);
-		echo $output->getHtml();
-	}
-	else print_r($clientArray);
-
+    if (!AMA_DB::isError($clientArray)) {
+        $output = CDOMElement::create('div', 'class:appsecret');
+        $span = CDOMElement::create('span', 'class:clientIDLabel');
+        $span->addChild(new CText('clientID: '));
+        $output->addChild($span);
+        $span = CDOMElement::create('span', 'class:clientID');
+        $span->addChild(new CText($clientArray['client_id']));
+        $output->addChild($span);
+        $output->addChild(new CText(' - '));
+        $span = CDOMElement::create('span', 'class:clientSecretLabel');
+        $span->addChild(new CText('clientSecret: '));
+        $output->addChild($span);
+        $span = CDOMElement::create('span', 'class:clientSecret');
+        $span->addChild(new CText($clientArray['client_secret']));
+        $output->addChild($span);
+        echo $output->getHtml();
+    } else {
+        print_r($clientArray);
+    }
 } else {
-	$output = CDOMElement::create('div','class:appsecreterror');
-	$output->addChild (new CText(translateFN('Passed user does not look like a valid Swithcer')));
-	echo $output->getHtml();
+    $output = CDOMElement::create('div', 'class:appsecreterror');
+    $output->addChild(new CText(translateFN('Passed user does not look like a valid Swithcer')));
+    echo $output->getHtml();
 }
-?>
