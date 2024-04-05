@@ -17,6 +17,8 @@ use Lynxlab\ADA\Module\CollaboraACL\FileACL;
 use Lynxlab\ADA\Module\CollaboraACL\GrantAccessForm;
 use Lynxlab\ADA\Switcher\Subscription;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Base config file
  */
@@ -27,12 +29,12 @@ require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 
 /**
  * Get Users (types) allowed to access this module and needed objects
  */
-list($allowedUsersAr, $neededObjAr) = array_values(CollaboraACLActions::getAllowedAndNeededAr());
+[$allowedUsersAr, $neededObjAr] = array_values(CollaboraACLActions::getAllowedAndNeededAr());
 
 /**
  * Performs basic controls before entering this module
@@ -46,7 +48,7 @@ BrowsingHelper::init($neededObjAr);
  */
 $GLOBALS['dh'] = AMACollaboraACLDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
-$retArray = array('status' => 'ERROR');
+$retArray = ['status' => 'ERROR'];
 session_write_close();
 
 // sanitizie data
@@ -90,13 +92,13 @@ $needed = [
     ],
     [
         'key' => 'grantedUsers',
-        'sanitize' => function($v) {
-            if (is_array($v) && count($v)>0) {
+        'sanitize' => function ($v) {
+            if (is_array($v) && count($v) > 0) {
                 return array_map('intval', $v);
             } else {
                 return [];
             }
-        }
+        },
     ],
 ];
 
@@ -123,7 +125,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $retArray['msg'] = translateFN('Preferenze salvate');
         $retArray['fileAclId'] = $res['fileAclId'];
     }
-} else if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
+} elseif (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
     // load data needed by the form
     $allUsers = Subscription::findSubscriptionsToClassRoom($passedData['instanceId']);
     $acl = $GLOBALS['dh']->findBy('FileACL', ['id' => $passedData['fileAclId']]);

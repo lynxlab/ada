@@ -10,9 +10,6 @@
 
 namespace Lynxlab\ADA\Module\CollaboraACL;
 
-if (!defined('FilesTable')) define('FilesTable', AMACollaboraACLDataHandler::PREFIX . 'files');
-if (!defined('FilesUtenteRel')) define('FilesUtenteRel', AMACollaboraACLDataHandler::PREFIX . 'files_utente');
-
 class FileACL extends CollaboraACLBase
 {
     /**
@@ -20,12 +17,12 @@ class FileACL extends CollaboraACLBase
      *
      * @var string
      */
-    const table = FilesTable;
+    public const TABLE = AMACollaboraACLDataHandler::PREFIX . 'files';
 
     /**
      * table name for groups/utente relation
      */
-    const utenteRelTable = FilesUtenteRel;
+    public const UTENTERELTABLE = AMACollaboraACLDataHandler::PREFIX . 'files_utente';
 
     protected $id;
     protected $filepath;
@@ -41,7 +38,7 @@ class FileACL extends CollaboraACLBase
      */
     protected $allowedUsers = [];
 
-    public function __construct($data = array())
+    public function __construct($data = [])
     {
         parent::__construct($data);
     }
@@ -50,10 +47,10 @@ class FileACL extends CollaboraACLBase
     {
         return [
             'allowedUsers' => [
-                'reltable' => self::utenteRelTable,
+                'reltable' => self::UTENTERELTABLE,
                 'key' => [
                     'name' => 'file_id',
-                    'getter' => self::GETTERPREFIX . 'Id'
+                    'getter' => self::GETTERPREFIX . 'Id',
                 ],
                 'extkey' => 'utente_id',
                 'relproperties' => [ 'permissions' ],
@@ -61,12 +58,13 @@ class FileACL extends CollaboraACLBase
         ];
     }
 
-    public static function isAllowed(array $filesACL = [], $userId = null, $filepath = null, $permissions = CollaboraACLActions::READ_FILE) {
-        if (!is_null($userId) && !is_null($filepath) && count($filesACL)>0) {
+    public static function isAllowed(array $filesACL = [], $userId = null, $filepath = null, $permissions = CollaboraACLActions::READ_FILE)
+    {
+        if (!is_null($userId) && !is_null($filepath) && count($filesACL) > 0) {
             $aclCount = count($filesACL);
             $found = false;
-            for ($i=0; !$found && $i<$aclCount; $i++) {
-              $found = ($filesACL[$i]->getFilepath() == $filepath);
+            for ($i = 0; !$found && $i < $aclCount; $i++) {
+                $found = ($filesACL[$i]->getFilepath() == $filepath);
             }
             // if $filepath is not in the passed file access list, then it's a public file and everyone is allowed
             if (!$found) {
@@ -77,7 +75,7 @@ class FileACL extends CollaboraACLBase
                 if ($filesACL[$i]->getId_owner() == $userId) {
                     return true;
                 }
-                foreach($filesACL[$i]->getAllowedUsers() as $allowedAr) {
+                foreach ($filesACL[$i]->getAllowedUsers() as $allowedAr) {
                     if ($allowedAr['utente_id'] == $userId) {
                         return ($allowedAr['permissions'] & $permissions);
                     }
@@ -88,12 +86,13 @@ class FileACL extends CollaboraACLBase
         return true; // is a public file
     }
 
-    public static function getObjectById(array $filesACL, $id) {
-        $retval = array_filter($filesACL, function($acl) use ($id){
+    public static function getObjectById(array $filesACL, $id)
+    {
+        $retval = array_filter($filesACL, function ($acl) use ($id) {
             return $acl->getId() == $id;
         });
 
-        if (is_array($retval) && count($retval)==1) {
+        if (is_array($retval) && count($retval) == 1) {
             $retval = reset($retval);
         } else {
             $retval = null;
@@ -101,12 +100,13 @@ class FileACL extends CollaboraACLBase
         return $retval;
     }
 
-    public static function getIdFromFileName(array $filesACL = [], $filepath = '') {
-        $fileACL = array_filter($filesACL, function($el) use ($filepath) {
-            $elPath = str_replace(ROOT_DIR. DIRECTORY_SEPARATOR, '', $filepath);
+    public static function getIdFromFileName(array $filesACL = [], $filepath = '')
+    {
+        $fileACL = array_filter($filesACL, function ($el) use ($filepath) {
+            $elPath = str_replace(ROOT_DIR . DIRECTORY_SEPARATOR, '', $filepath);
             return $el->getFilepath() == $elPath;
         });
-        if (is_array($fileACL) && count($fileACL)==1) {
+        if (is_array($fileACL) && count($fileACL) == 1) {
             $fileACL = reset($fileACL);
             if ($fileACL instanceof self) {
                 return $fileACL->getId();
