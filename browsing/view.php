@@ -23,6 +23,7 @@ use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\User\ADAGuest;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -427,7 +428,7 @@ $linksAr  = [];
 $keyAr = explode(',', $node_keywords); // or space?
 $keyAr = array_map('trim', $keyAr);
 foreach ($keyAr as $keyword) {
-    if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS && $keyword == \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode::MAGIC_KEYWORD) {
+    if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS && $keyword == ForkedPathsNode::MAGIC_KEYWORD) {
         // just skip the ForkedPathsNode::MAGIC_KEYWORD
         continue;
     }
@@ -660,7 +661,7 @@ switch ($op) {
                     $self = '/../../../../modules/' . basename(MODULES_FORKEDPATHS_PATH) . '/layout/' . $userObj->template_family . '/templates/browsing/' . $newself;
                     array_push($layout_dataAR['CSS_filename'], ROOT_DIR . '/layout/' . $userObj->template_family . '/css/browsing/view.css');
                     array_push($layout_dataAR['CSS_filename'], MODULES_FORKEDPATHS_PATH . '/layout/' . $userObj->template_family . '/css/browsing/' . $newself . '.css');
-                    $content_dataAr['forkedPathsButtons'] = \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode::buildForkedPathsButtons($nodeObj)->getHtml();
+                    $content_dataAr['forkedPathsButtons'] = ForkedPathsNode::buildForkedPathsButtons($nodeObj)->getHtml();
                 }
             }
         } else {

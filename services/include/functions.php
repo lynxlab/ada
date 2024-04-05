@@ -3,6 +3,7 @@
 namespace Lynxlab\ADA\Services\Functions;
 
 use Lynxlab\ADA\Main\form\PhpOpenFormGen;
+use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -687,7 +688,7 @@ function getNodeData($id_node)
         return $nodeObj;
     }
     if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS) {
-        $nodeObj = \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode::removeMagicWord($nodeObj);
+        $nodeObj = ForkedPathsNode::removeMagicWord($nodeObj);
     }
 
     $node_data = [

@@ -8,6 +8,7 @@ use Lynxlab\ADA\Main\Bookmark\Bookmark;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\ForumEvent;
+use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\substr_gentle;
@@ -121,7 +122,7 @@ class CourseViewer
                 $callback    = 'studentCallback';
                 $course_data = $dh->get_course_data($id_course, 3, $order_by_name, $id_course_instance, $userObj->id_user, $userObj->livello); //sarebbe meglio $userObj->getId()
                 if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS) {
-                    $course_data = \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode::removeForkedPathsChildrenFromIndex($course_data);
+                    $course_data = ForkedPathsNode::removeForkedPathsChildrenFromIndex($course_data);
                 }
 
                 $callback_params['id_course_instance'] = $id_course_instance;

@@ -21,6 +21,7 @@ use Lynxlab\ADA\Main\Forms\AdvancedSearchForm;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -197,7 +198,7 @@ if (!is_null($submit)) {
             $res_name = $row[1];
             $res_course_title = $row[2];
             if (DEFINED('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS) {
-                $res_course_title = \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode::removeMagicWordFromTitle($res_course_title);
+                $res_course_title = ForkedPathsNode::removeMagicWordFromTitle($res_course_title);
             }
             $res_text = $row[3];
             $res_type =  $row[4];

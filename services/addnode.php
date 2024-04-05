@@ -17,6 +17,7 @@ use Lynxlab\ADA\Browsing\CourseViewer;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\NodeEvent;
+use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 use Lynxlab\ADA\Services\NodeEditing\NodeEditing;
 use Lynxlab\ADA\Services\NodeEditing\NodeEditingViewer;
 use Lynxlab\ADA\Services\NodeEditing\PreferenceSelector;
@@ -206,7 +207,7 @@ if ($op == 'add_node') {
                 'is_forkedpaths' => $nodeObj->isForkedPaths,
                 ];
         if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS && $nodeObj->isForkedPaths) {
-            $node_to_edit['title'] = \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode::removeMagicWordFromTitle($node_to_edit['title']);
+            $node_to_edit['title'] = ForkedPathsNode::removeMagicWordFromTitle($node_to_edit['title']);
         }
         $head_form = NodeEditingViewer::getHeadForm($sess_id_user, $user_level, $user_type, $nodeObj, $new_node, $node_type);
     }
@@ -249,7 +250,7 @@ if ($op == 'add_node') {
                 'is_forkedpaths' => $nodeObj->isForkedPaths,
                 ];
         if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS && $nodeObj->isForkedPaths) {
-            $node_to_edit['title'] = \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode::removeMagicWordFromTitle($node_to_edit['title']);
+            $node_to_edit['title'] = ForkedPathsNode::removeMagicWordFromTitle($node_to_edit['title']);
         }
         $head_form = NodeEditingViewer::getHeadForm($sess_id_user, $user_level, $user_type, $nodeObj, $new_node, $node_type);
     }

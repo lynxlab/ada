@@ -25,7 +25,7 @@ class AMABBBIntegrationDataHandler extends AMA_DataHandler
      * Save a row in the meeting table
      *
      * @param array $saveData
-     * @return \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsHistory
+     * @return bool
      */
     public function saveMeeting($saveData)
     {

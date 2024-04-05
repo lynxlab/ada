@@ -69,7 +69,7 @@ abstract class CollaboraACLBase
      * NOTE: array keys must match object properties names
      *
      * @param array $data
-     * @return \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsBase
+     * @return \Lynxlab\ADA\Module\CollaboraACL\CollaboraACLBase
      */
     public function fromArray($data = [])
     {
