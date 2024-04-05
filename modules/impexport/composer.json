@@ -1,0 +1,16 @@
+{
+    "name": "lynxlab/ada-module-impexport",
+    "description": "This is the ada module to import and export courses.",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Giorgio Consorti",
+            "email": "g.consorti@lynxlab.com"
+        }
+    ],
+    "autoload" : {
+        "psr-4" : {
+            "Lynxlab\\ADA\\Module\\Impexport\\" : ["include/", "include/form"]
+	    }
+    }
+}
