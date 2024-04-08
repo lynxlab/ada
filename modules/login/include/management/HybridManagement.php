@@ -12,23 +12,26 @@
 
 namespace Lynxlab\ADA\Module\Login;
 
-use CDOMElement;
-use CText;
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
 
-class hybridManagement
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
+class HybridManagement
 {
-	public $option_id;
-	public $key;
-	public $newkey;
-	public $value;
+    public $option_id;
+    public $key;
+    public $newkey;
+    public $value;
 
-	/**
+    /**
      * name constructor
      */
-    public function __construct($data=array()) {
-    	if (is_array($data) && count($data)>0) {
-    		$this->_fillFromArray($data);
-    	}
+    public function __construct($data = [])
+    {
+        if (is_array($data) && count($data) > 0) {
+            $this->fillFromArray($data);
+        }
     }
 
     /**
@@ -38,57 +41,62 @@ class hybridManagement
      *
      * @access public
      */
-    public function run($action=null) {
-    	/* @var $html	string holds html code to be retuned */
-    	$htmlObj = null;
-    	/* @var $path	string  path var to render in the help message */
-    	$help = translateFN('Da qui puoi inserire o modifcare le opzioni per il login provider');
-    	/* @var $status	string status var to render in the breadcrumbs */
-    	$title= translateFN('Opzioni login');
+    public function run($action = null)
+    {
+        /* @var $html   string holds html code to be retuned */
+        $htmlObj = null;
+        /* @var $path   string  path var to render in the help message */
+        $help = translateFN('Da qui puoi inserire o modifcare le opzioni per il login provider');
+        /* @var $status string status var to render in the breadcrumbs */
+        $title = translateFN('Opzioni login');
 
-    	switch ($action) {
-    		case MODULES_LOGIN_EDIT_OPTIONSET:
-    			/**
-    			 * edit action, display the form with passed data
-    			 */
-    			$htmlObj = CDOMElement::create('span');
-    			$htmlObj->addChild(new CText('Le opzioni di questo provider non si configurano con un form'));
-    		default:
-    			/**
-    			 * return an empty page as default action
-    			 */
-    			break;
-    	}
+        switch ($action) {
+            case Constants::MODULES_LOGIN_EDIT_OPTIONSET:
+                /**
+                 * edit action, display the form with passed data
+                 */
+                $htmlObj = CDOMElement::create('span');
+                $htmlObj->addChild(new CText('Le opzioni di questo provider non si configurano con un form'));
+                // no break
+            default:
+                /**
+                 * return an empty page as default action
+                 */
+                break;
+        }
 
-    	return array(
-    			'htmlObj'   => $htmlObj,
-    			'help'      => $help,
-    			'title'     => $title,
-    	);
+        return [
+                'htmlObj'   => $htmlObj,
+                'help'      => $help,
+                'title'     => $title,
+        ];
     }
 
-	/**
-	 * fills object properties from an array
-	 *
-	 * @param array $data assoc array to get values from
-	 *
-	 * @access private
-	 */
-	protected function _fillFromArray($data) {
-		foreach ($data as $key=>$val) {
-			if (property_exists($this, $key)) $this->{$key} = trim($val);
-		}
-	}
+    /**
+     * fills object properties from an array
+     *
+     * @param array $data assoc array to get values from
+     *
+     * @access private
+     */
+    protected function fillFromArray($data)
+    {
+        foreach ($data as $key => $val) {
+            if (property_exists($this, $key)) {
+                $this->{$key} = trim($val);
+            }
+        }
+    }
 
-	/**
-	 * returns object properties as an array
-	 *
-	 * @return array
-	 *
-	 * @access public
-	 */
-	public function toArray() {
-		return (array) $this;
-	}
-
-} // class ends here
+    /**
+     * returns object properties as an array
+     *
+     * @return array
+     *
+     * @access public
+     */
+    public function toArray()
+    {
+        return (array) $this;
+    }
+}

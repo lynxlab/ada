@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LOGIN MODULE
  *
@@ -11,90 +12,96 @@
 
 use AMA_DB;
 use Lynxlab\ADA\Module\Login\AMALoginDataHandler;
-use Lynxlab\ADA\Module\Login\loginProviderManagement;
+use Lynxlab\ADA\Module\Login\Constants;
+use Lynxlab\ADA\Module\Login\LoginProviderManagement;
 
-ini_set('display_errors', '0'); error_reporting(E_ALL);
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
+ini_set('display_errors', '0');
+error_reporting(E_ALL);
 /**
  * Base config file
 */
-require_once (realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
+require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
 */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 /**
  * Users (types) allowed to access this module.
 */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+$allowedUsersAr = [AMA_TYPE_SWITCHER];
 
 /**
  * Get needed objects
 */
-$neededObjAr = array(
-		AMA_TYPE_SWITCHER => array('layout')
-);
+$neededObjAr = [
+        AMA_TYPE_SWITCHER => ['layout'],
+];
 
 /**
  * Performs basic controls before entering this module
 */
-require_once(ROOT_DIR.'/include/module_init.inc.php');
+require_once(ROOT_DIR . '/include/module_init.inc.php');
 
 // MODULE's OWN IMPORTS
 
 $GLOBALS['dh'] = AMALoginDataHandler::instance();
 
-$retArray = array('status'=>'ERROR');
+$retArray = ['status' => 'ERROR'];
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
-	/**
-	 * it's a POST, save the passed options config data
-	 */
-	// build an optionManager with passed POST data
-	$loginProviderManager = new loginProviderManagement($_POST);
-	$res = $GLOBALS['dh']->saveLoginProvider($loginProviderManager->toArray());
+    /**
+     * it's a POST, save the passed options config data
+     */
+    // build an optionManager with passed POST data
+    $loginProviderManager = new LoginProviderManagement($_POST);
+    $res = $GLOBALS['dh']->saveLoginProvider($loginProviderManager->toArray());
 
-	if (AMA_DB::isError($res)) {
-		// if it's an error display the error message
-		$retArray['status'] = "ERROR";
-		$retArray['msg'] = $res->getMessage();
-	} else {
-		// redirect to config page
-		$retArray['status'] = "OK";
-		$retArray['msg'] = translateFN('Login Provider salvato');
-	}
-} else if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
-			isset($_GET['provider_id']) && intval(trim($_GET['provider_id']))>0) {
-	/**
-	 * it's a GET with an provider_id, load it and display
-	 */
-	$provider_id = intval(trim($_GET['provider_id']));
-	// try to load it
-	$res = $GLOBALS['dh']->getLoginProvider($provider_id);
+    if (AMA_DB::isError($res)) {
+        // if it's an error display the error message
+        $retArray['status'] = "ERROR";
+        $retArray['msg'] = $res->getMessage();
+    } else {
+        // redirect to config page
+        $retArray['status'] = "OK";
+        $retArray['msg'] = translateFN('Login Provider salvato');
+    }
+} elseif (
+    isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
+            isset($_GET['provider_id']) && intval(trim($_GET['provider_id'])) > 0
+) {
+    /**
+     * it's a GET with an provider_id, load it and display
+     */
+    $provider_id = intval(trim($_GET['provider_id']));
+    // try to load it
+    $res = $GLOBALS['dh']->getLoginProvider($provider_id);
 
-	if (AMA_DB::isError($res)) {
-		// if it's an error display the error message without the form
-		$retArray['status'] = "ERROR";
-		$retArray['msg'] = $res->getMessage();
-	} else {
-		// display the form with loaded data
-		$optionsManager = new loginProviderManagement($res);
-		$data = $optionsManager->run(MODULES_LOGIN_EDIT_LOGINPROVIDER);
+    if (AMA_DB::isError($res)) {
+        // if it's an error display the error message without the form
+        $retArray['status'] = "ERROR";
+        $retArray['msg'] = $res->getMessage();
+    } else {
+        // display the form with loaded data
+        $optionsManager = new LoginProviderManagement($res);
+        $data = $optionsManager->run(Constants::MODULES_LOGIN_EDIT_LOGINPROVIDER);
 
-		$retArray['status'] = "OK";
-		$retArray['html'] = $data['htmlObj']->getHtml();
-		$retArray['dialogTitle'] = translateFN('Modifica Login Provider');
-	}
+        $retArray['status'] = "OK";
+        $retArray['html'] = $data['htmlObj']->getHtml();
+        $retArray['dialogTitle'] = translateFN('Modifica Login Provider');
+    }
 } else {
-	/**
-	 * it's a get without a provider_id, display the empty form
-	 */
-	$optionsManager = new loginProviderManagement();
-	$data = $optionsManager->run(MODULES_LOGIN_EDIT_LOGINPROVIDER);
+    /**
+     * it's a get without a provider_id, display the empty form
+     */
+    $optionsManager = new LoginProviderManagement();
+    $data = $optionsManager->run(Constants::MODULES_LOGIN_EDIT_LOGINPROVIDER);
 
-	$retArray['status'] = "OK";
-	$retArray['html'] = $data['htmlObj']->getHtml();
-	$retArray['dialogTitle'] = translateFN('Nuovo Login Provider');
+    $retArray['status'] = "OK";
+    $retArray['html'] = $data['htmlObj']->getHtml();
+    $retArray['dialogTitle'] = translateFN('Nuovo Login Provider');
 }
 
 echo json_encode($retArray);

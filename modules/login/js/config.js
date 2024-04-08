@@ -1,6 +1,6 @@
 /**
  * LOGIN MODULE - config page for login provider
- * 
+ *
  * @package 	login module
  * @author		giorgio <g.consorti@lynxlab.com>
  * @copyright	Copyright (c) 2015, Lynx s.r.l.
@@ -40,8 +40,8 @@ function initDataTables() {
 	                   { "bSearchable": false, "bSortable": false, "sClass":"actions", "sWidth": "8%"}
 	                   ];
 	var sortable = true;
-	
-	if (configProvider=='ldapLogin') {
+
+	if (configProvider.toUpperCase()=='LDAPLOGIN') {
 		var columnsConf = [
 		                   { "sWidth": "37%"},
 		                   { "sWidth": "37%"},
@@ -50,8 +50,8 @@ function initDataTables() {
 		                   ];
 		var sortable = false;
 	}
-	
-	if ($j('#complete'+configProvider.toUpperCase()+'List').length>0)		
+
+	if ($j('#complete'+configProvider.toUpperCase()+'List').length>0)
 		return $j('#complete'+configProvider.toUpperCase()+'List').dataTable( {
 	                "bFilter": true,
 	                "bInfo": true,
@@ -75,7 +75,7 @@ function initDataTables() {
 
 function initEditable(jqueryObj) {
 	var type='', name='';
-	
+
 	if (jqueryObj.hasClass('key')) {
 		type = 'text';
 		name = 'newkey';
@@ -83,7 +83,7 @@ function initEditable(jqueryObj) {
 		type = 'textarea';
 		name = 'value';
 	}
-	
+
 	var optionID = configDataTable.data('optionid');
 
 	jqueryObj.editable(
@@ -99,7 +99,7 @@ function initEditable(jqueryObj) {
 			submitdata: function(value, settings) {
 				if (jqueryObj.hasClass('key')) {
 					/**
-					 * when editing a key, following values will be POSTed: 
+					 * when editing a key, following values will be POSTed:
 					 * 1. 'newkey' => value of user edited key
 					 * 2. 'key' => value of old key
 					 * 3. 'option_id' => option_id to update
@@ -128,13 +128,13 @@ function initEditable(jqueryObj) {
 	            	if ('undefined' != typeof JSONObj.status) {
 	            		if (JSONObj.msg) showHideDiv('', JSONObj.msg, JSONObj.status=='OK');
 	            		sValue = ('undefined' != typeof JSONObj.displayValue) ? JSONObj.displayValue : this.revert;
-	            	}	            	
+	            	}
 	            } catch (e) {}
-	            
+
 	            var cellPos = configDataTable.fnGetPosition( this );
 	            configDataTable.fnUpdate( sValue, cellPos[0], cellPos[1], false );
 	            configDataTable.fnStandingRedraw();
-	            
+
 	            if (jqueryObj.hasClass('key')) {
 	            	if ($j(this).parents('tr').children('td.actions').length>0) {
 	            		// update action button according to the new key
@@ -150,9 +150,9 @@ function initEditable(jqueryObj) {
 	            		}
 	            	}
 	            }
-	            
+
 	            initToolTips();
-	            
+
 			} // callback
 		}
 	);
@@ -178,7 +178,7 @@ function editOptionSet(option_id) {
 		type	:	'GET',
 		url		:	'ajax/edit_optionset.php',
 		data	:	{ option_id: option_id, providerClassName: configProvider },
-		dataType:	'json'		
+		dataType:	'json'
 	})
 	.done(function (JSONObj){
 		if (JSONObj.status=='OK') {
@@ -192,20 +192,20 @@ function editOptionSet(option_id) {
 					width: '80%',
 					show: {
 						effect: "fade",
-						easing: "easeInSine", 
+						easing: "easeInSine",
 						duration: 250
 			        },
 			        hide: {
 						effect: "fade",
-						easing: "easeOutSine", 
+						easing: "easeOutSine",
 						duration: 250
 			        }
 				});
-				
+
 				// get and hide the submit button
 				var submitButton = theDialog.find('input[type="submit"]');
 				submitButton.hide();
-				
+
 				// dialog buttons array
 				var dialogButtons = {};
 
@@ -223,21 +223,21 @@ function editOptionSet(option_id) {
 						theDialog.dialog('close');
 					}
 				};
-				
+
 				// cancel dialog button
 				dialogButtons[i18n['cancel']] = function() {
 					theDialog.dialog('close');
 				};
-				
+
 				// set the defined buttons
 				theDialog.dialog( "option", "buttons", dialogButtons );
-				
+
 				// on dialog close, destroy it
 				theDialog.on('dialogclose', function( event, ui){
 					if ($j('.tooltip').length>0) $j('.tooltip').blur();
 					$j(this).dialog('destroy').remove();
 				});
-				
+
 				// on dialog enter keypress, call the confirm click
 				theDialog.keypress(function(e) {
 					if(e.which == 13) {
@@ -245,7 +245,7 @@ function editOptionSet(option_id) {
 						theDialog.dialog("option","buttons")[i18n['confirm']]();
 					}
 				});
-				
+
 				// eventually open the dialog
 				theDialog.dialog('open');
 			}
@@ -275,7 +275,7 @@ function ajaxSubmitOptionSetForm(data) {
 }
 
 function deleteOptionSet(jqueryObj, option_id, message) {
-	
+
 	jqueryObj.blur();
 	/**
 	 * if the jqueryObj has a delkey data set, then it is a
@@ -286,7 +286,7 @@ function deleteOptionSet(jqueryObj, option_id, message) {
 		if (jqueryObj.data('delkey').length>0) key=jqueryObj.data('delkey');
 		else {
 			jqueryObj.tooltip('destroy');
-			// just delete the clicked empty row, don't ask confirm 
+			// just delete the clicked empty row, don't ask confirm
 			configDataTable.fnDeleteRow(configDataTable.fnGetPosition(jqueryObj.parents('tr')[0]));
 			return;
 		}
@@ -340,11 +340,11 @@ function setEnabledOptionSet(jqueryObj, option_id, newstatus) {
 			// get the cell where the statustext is, by the ENABLEDCELLCLASS
 			var position = configDataTable.fnGetPosition( jqueryObj.parents('tr').children('.'+ENABLEDCELLCLASS)[0] );
 			var row = configDataTable.fnGetNodes(position[0]);
-			
+
 			if (JSONObj.status=='OK') {
 				// update data with the statusText and no redraw yet
 				configDataTable.fnUpdate (JSONObj.statusText, position[0], position[2], false);
-				
+
 				// get the cell where the buttons are: it contains the clicked button
 				position = configDataTable.fnGetPosition( jqueryObj.parents('td')[0] );
 				// get the contents
@@ -383,7 +383,7 @@ function setEnabledOptionSet(jqueryObj, option_id, newstatus) {
 
 function moveOptionSet(jqueryObj, option_id, delta) {
 	if ($j('.tooltip').length>0) $j('.tooltip').blur();
-	
+
 	$j.ajax({
 		type	:	'POST',
 		url		:	'ajax/move_row.php',
@@ -402,7 +402,7 @@ function moveOptionSet(jqueryObj, option_id, delta) {
 		if (JSONObj) {
 			if (JSONObj.status=='OK') {
 			    var index = jqueryObj.parents('tr').index();
-	
+
 			    // moves the row up or down by updating the
 				// data array of the table an then redraw it
 			    if ('undefined' != typeof index && configDataTable!=null) {

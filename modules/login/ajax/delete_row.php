@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LOGIN MODULE
  *
@@ -13,74 +14,76 @@ use AMA_DB;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Login\AMALoginDataHandler;
 
-ini_set('display_errors', '0'); error_reporting(E_ALL);
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
+ini_set('display_errors', '0');
+error_reporting(E_ALL);
 /**
  * Base config file
 */
-require_once (realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
+require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
 */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 /**
  * Users (types) allowed to access this module.
 */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+$allowedUsersAr = [AMA_TYPE_SWITCHER];
 
 /**
  * Get needed objects
 */
-$neededObjAr = array(
-		AMA_TYPE_SWITCHER => array('layout')
-);
+$neededObjAr = [
+        AMA_TYPE_SWITCHER => ['layout'],
+];
 
 /**
  * Performs basic controls before entering this module
 */
 $trackPageToNavigationHistory = false;
-require_once(ROOT_DIR.'/include/module_init.inc.php');
+require_once(ROOT_DIR . '/include/module_init.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS
 
 $GLOBALS['dh'] = AMALoginDataHandler::instance();
 
-$retArray = array();
+$retArray = [];
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!isset($_POST['option_id']) && !isset($_POST['provider_id'])) {
+        $retArray = ["status" => "ERROR", "msg" => translateFN("Non so cosa cancellare")];
+    } else {
+        if (isset($_POST['option_id'])) {
+            if (isset($key) && strlen($key) > 0) {
+                $result = $GLOBALS['dh']->deleteOptionByKey(intval($_POST['option_id']), trim($key));
+                $deletedElement = 'Chiave'; // translateFN delayed when building msg
+                $vowel = 'a';
+            } else {
+                $result = $GLOBALS['dh']->deleteOptionSet(intval($_POST['option_id']));
+                $deletedElement = 'Fonte';  // translateFN delayed when building msg
+                $vowel = 'a';
+            }
+        } elseif (isset($_POST['provider_id'])) {
+            $result = $GLOBALS['dh']->deleteLoginProvider(intval($_POST['provider_id']));
+            $deletedElement = 'Login Provider'; // translateFN delayed when building msg
+            $vowel = 'o';
+        }
 
-	if (!isset($_POST['option_id']) && !isset($_POST['provider_id'])) $retArray = array("status"=>"ERROR", "msg"=>translateFN("Non so cosa cancellare"));
-	else
-	{
-		if (isset($_POST['option_id'])) {
-			if (isset($key) && strlen($key)>0) {
-				$result = $GLOBALS['dh']->deleteOptionByKey (intval($_POST['option_id']), trim($key));
-				$deletedElement = 'Chiave'; // translateFN delayed when building msg
-				$vowel = 'a';
-			} else {
-				$result = $GLOBALS['dh']->deleteOptionSet (intval($_POST['option_id']));
-				$deletedElement = 'Fonte';  // translateFN delayed when building msg
-				$vowel = 'a';
-			}
-		} else if (isset($_POST['provider_id'])) {
-			$result = $GLOBALS['dh']->deleteLoginProvider (intval($_POST['provider_id']));
-			$deletedElement = 'Login Provider'; // translateFN delayed when building msg
-			$vowel = 'o';
-		}
-
-		if (!AMA_DB::isError($result))
-		{
-			$retArray = array ("status"=>"OK", "msg"=>translateFN($deletedElement." cancellat".$vowel));
-		}
-		else
-			$retArray = array ("status"=>"ERROR", "msg"=>translateFN("Errore di cancellazione") );
-	}
-}
-else {
-	$retArray = array ("status"=>"ERROR", "msg"=>translateFN("Errore nella trasmissione dei dati"));
+        if (!AMA_DB::isError($result)) {
+            $retArray =  ["status" => "OK", "msg" => translateFN($deletedElement . " cancellat" . $vowel)];
+        } else {
+            $retArray =  ["status" => "ERROR", "msg" => translateFN("Errore di cancellazione") ];
+        }
+    }
+} else {
+    $retArray =  ["status" => "ERROR", "msg" => translateFN("Errore nella trasmissione dei dati")];
 }
 
-if (empty($retArray)) $retArray = array("status"=>"ERROR", "msg"=>translateFN("Errore sconosciuto"));
+if (empty($retArray)) {
+    $retArray = ["status" => "ERROR", "msg" => translateFN("Errore sconosciuto")];
+}
 
 echo json_encode($retArray);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LOGIN MODULE
  *
@@ -17,21 +18,21 @@ use Lynxlab\ADA\Main\User\ADALoggableUser;
 /**
  * ADA login provider implementation
  */
-class adaLogin extends abstractLogin
+class AdaLogin extends AbstractLogin
 {
-	/**
-	 * performs user login using the ADA db
-	 *
-	 * (non-PHPdoc)
-	 * @see iLogin::doLogin()
-	 */
-	public function doLogin($name, $pass, $remindMe, $language)
-	{
-		$user = MultiPort::loginUser($name, $pass);
-		if (is_object($user) && $user instanceof ADALoggableUser) {
-			// WARNING! For this login provider, no set of options is supported
-			$this->setSuccessfulOptionsID(0);
-		}
-		return $user;
-	}
+    /**
+     * performs user login using the ADA db
+     *
+     * (non-PHPdoc)
+     * @see iLogin::doLogin()
+     */
+    public function doLogin($name, $pass, $remindMe, $language)
+    {
+        $user = MultiPort::loginUser($name, $pass);
+        if (is_object($user) && $user instanceof ADALoggableUser) {
+            // WARNING! For this login provider, no set of options is supported
+            $this->setSuccessfulOptionsID(0);
+        }
+        return $user;
+    }
 }
