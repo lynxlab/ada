@@ -12,11 +12,11 @@
  */
 
 try {
-    if (!@include_once(MODULES_LOGIN_PATH . '/vendor/autoload.php')) {
+    if (!@include_once(MODULES_NEWSLETTER_PATH . '/vendor/autoload.php')) {
         // @ - to suppress warnings,
         throw new Exception(
             json_encode([
-                'header' => 'Login module will not work because autoload file cannot be found!',
+                'header' => 'Newsletter module will not work because autoload file cannot be found!',
                 'message' => 'Please run <code>composer install</code> in the module subdir',
             ])
         );
