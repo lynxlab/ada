@@ -39,7 +39,7 @@ return static function (RectorConfig $rectorConfig): void {
         // __DIR__ . '/include/phpMailer',
         // __DIR__ . '/include/MobileDetect',
         // __DIR__ . '/include/getid3',
-        __DIR__ . '/vendor',
+        '*/vendor/*',
     ]);
 
     $rectorConfig->skip([

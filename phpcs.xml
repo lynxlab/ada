@@ -42,4 +42,8 @@
         <severity>0</severity>
     </rule>
 
+    <rule ref="PHPCompatibility.Operators.NewOperators.t_coalesce_equalFound">
+        <severity>0</severity>
+    </rule>
+
 </ruleset>
