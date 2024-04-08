@@ -1,23 +1,27 @@
 <?php
+
 /**
- * @package 	ADA Jitsi Integration
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2020, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     ADA Jitsi Integration
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2020, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
 
 namespace Lynxlab\ADA\Module\JitsiIntegration;
+
+use Exception;
 
 /**
  * JitsiIntegrationException class to handle custom exceptions
  *
  * @author giorgio
  */
-class JitsiIntegrationException extends \Exception
+class JitsiIntegrationException extends Exception
 {
-	// custom string representation of object
-	public function __toString() {
-		return __CLASS__ . ": [{$this->code}]: {$this->message}\n";
-	}
+    // custom string representation of object
+    public function __toString()
+    {
+        return __CLASS__ . ": [{$this->code}]: {$this->message}\n";
+    }
 }
