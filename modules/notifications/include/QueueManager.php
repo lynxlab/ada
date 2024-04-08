@@ -1,25 +1,42 @@
 <?php
 
 /**
- * @package 	notifications module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2021, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     notifications module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2021, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
 
 namespace Lynxlab\ADA\Module\Notifications;
 
 use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
+use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Logger\ADAFileLogger;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 class QueueManager extends NotificationBase
 {
     private $logFile;
+
+    /**
+     * Undocumented variable
+     *
+     * @var string
+     */
     private $lockFile;
+
     private $debug;
     private $queue;
+
+    /**
+     * Undocumented variable
+     *
+     * @var string
+     */
     private $itemsClassName;
+
     private $lastGetTS = 0;
     /**
      * Set to true when run from a php cli script
@@ -30,7 +47,7 @@ class QueueManager extends NotificationBase
     /** @var AMANotificationsDataHandler $dh */
     private $dh;
 
-    const logdir = ROOT_DIR . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . 'queuemanager' . DIRECTORY_SEPARATOR;
+    public const LOGDIR = ROOT_DIR . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . 'queuemanager' . DIRECTORY_SEPARATOR;
 
     public function __construct($itemsClassName, $dh = null)
     {
@@ -50,7 +67,7 @@ class QueueManager extends NotificationBase
         if (!is_null($dh)) {
             $this->dh = $dh;
         } else {
-            $this->dh = AMANotificationsDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+            $this->dh = AMANotificationsDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
         }
     }
 
@@ -65,7 +82,7 @@ class QueueManager extends NotificationBase
         $classNameParts = explode("\\", $this->itemsClassName);
         $this->setLogFileName(str_replace("\\", "_", end($classNameParts) . '-' . $useDate . ".log"));
         if ($this->tryLock()) {
-            register_shutdown_function(array($this, 'unlinkLockFile'));
+            register_shutdown_function([$this, 'unlinkLockFile']);
             $this->logMessage("\nI've got a lockfile and I'm running as PID:" . getmypid());
             switch ($this->itemsClassName) {
                 case EmailQueueItem::fqcn():
@@ -121,7 +138,8 @@ class QueueManager extends NotificationBase
                     }
 
                     $this->logMessage(
-                        sprintf("EMAILS_PER_HOUR is %d, going to sleep for %d microseconds...", constant($this->itemsClassName . '::EMAILS_PER_HOUR'), $sleepTime));
+                        sprintf("EMAILS_PER_HOUR is %d, going to sleep for %d microseconds...", constant($this->itemsClassName . '::EMAILS_PER_HOUR'), $sleepTime)
+                    );
                     usleep($sleepTime);
                     $this->logMessage('...got woken up');
                 }
@@ -168,7 +186,9 @@ class QueueManager extends NotificationBase
      */
     private function tryLock()
     {
-        if (@symlink("/proc/" . getmypid(), $this->lockFile) !== FALSE) return true;
+        if (@symlink("/proc/" . getmypid(), $this->lockFile) !== false) {
+            return true;
+        }
 
         // link already exists, check if it's stale
         if (is_link($this->lockFile) && !is_dir($this->lockFile)) {
@@ -185,8 +205,11 @@ class QueueManager extends NotificationBase
      */
     public function unlinkLockFile()
     {
-        if (unlink($this->lockFile)) $this->logMessage("Lockfile removed\n");
-        else $this->logMessage("Lockfile " . $this->lockFile . " *NOT* removed\n");
+        if (unlink($this->lockFile)) {
+            $this->logMessage("Lockfile removed\n");
+        } else {
+            $this->logMessage("Lockfile " . $this->lockFile . " *NOT* removed\n");
+        }
     }
 
     /**
@@ -204,7 +227,9 @@ class QueueManager extends NotificationBase
     {
         if ($this->debug) {
             // the file must exists, otherwise logger won't log
-            if (!is_file($this->logFile)) touch($this->logFile);
+            if (!is_file($this->logFile)) {
+                touch($this->logFile);
+            }
             ADAFileLogger::log($text, $this->logFile);
         }
     }
@@ -217,13 +242,13 @@ class QueueManager extends NotificationBase
     private function setLogFileName($filename)
     {
         // make the module's own log dir if it's needed
-        if (!is_dir(self::logdir)) {
+        if (!is_dir(self::LOGDIR)) {
             $oldmask = umask(0);
-            mkdir(self::logdir, 0775, true);
+            mkdir(self::LOGDIR, 0o775, true);
             umask($oldmask);
         }
         // set the log file name
-        $this->logFile = self::logdir . (self::$isCLI ? 'CLI' : '') . $filename;
+        $this->logFile = self::LOGDIR . (self::$isCLI ? 'CLI' : '') . $filename;
     }
 
     /**

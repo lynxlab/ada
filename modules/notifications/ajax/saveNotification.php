@@ -1,19 +1,22 @@
 <?php
 
 /**
- * @package 	notifications module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2021, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     notifications module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2021, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Notifications\AMANotificationsDataHandler;
+use Lynxlab\ADA\Module\Notifications\Notification;
 use Lynxlab\ADA\Module\Notifications\NotificationException;
 use Lynxlab\ADA\Module\Notifications\NotificationActions;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * Base config file
@@ -25,12 +28,12 @@ require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 
 /**
  * Get Users (types) allowed to access this module and needed objects
  */
-list($allowedUsersAr, $neededObjAr) = array_values(NotificationActions::getAllowedAndNeededAr());
+[$allowedUsersAr, $neededObjAr] = array_values(NotificationActions::getAllowedAndNeededAr());
 
 /**
  * Performs basic controls before entering this module
@@ -44,7 +47,7 @@ BrowsingHelper::init($neededObjAr);
  */
 $ntDH = AMANotificationsDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
-$retArray = array('status' => 'ERROR');
+$retArray = ['status' => 'ERROR'];
 session_write_close();
 
 // sanitizie data
@@ -53,7 +56,7 @@ $needed = [
     [
         'key' => 'notificationType',
         'sanitize' => function ($v) {
-            return (in_array($v, \Lynxlab\ADA\Module\Notifications\Notification::types) ? $v : 0);
+            return (in_array($v, Notification::TYPES) ? $v : 0);
         },
     ],
     [
@@ -65,13 +68,13 @@ $needed = [
     [
         'key' => 'instanceId',
         'sanitize' => function ($v) {
-            return intval($v)>0 ? intval($v) : null;
+            return intval($v) > 0 ? intval($v) : null;
         },
     ],
     [
         'key' => 'notificationId',
         'sanitize' => function ($v) {
-            return intval($v)>0 ? intval($v) : null;
+            return intval($v) > 0 ? intval($v) : null;
         },
     ],
     [
@@ -98,7 +101,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
      * it's a POST, save the passed data
      */
     if (array_key_exists('sess_userObj', $_SESSION)) {
-        if ($passedData['notificationType']>0) {
+        if ($passedData['notificationType'] > 0) {
             $res = $ntDH->saveNotification($passedData);
         } else {
             $res = new NotificationException(translateFN('Tipo di notifica non valido'));

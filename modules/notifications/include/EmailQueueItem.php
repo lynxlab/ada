@@ -1,16 +1,14 @@
 <?php
 
 /**
- * @package 	notifications module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2021, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     notifications module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2021, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
 
 namespace Lynxlab\ADA\Module\Notifications;
-
-if (!defined('emailqueueTable')) define('emailqueueTable', AMANotificationsDataHandler::PREFIX . 'emailqueue');
 
 class EmailQueueItem extends NotificationBase
 {
@@ -19,17 +17,17 @@ class EmailQueueItem extends NotificationBase
      *
      * @var string
      */
-    const table = emailqueueTable;
+    public const TABLE = AMANotificationsDataHandler::PREFIX . 'emailqueue';
 
-    const STATUS_ENQUEUED = 1;
-    const STATUS_PROCESSED_OK = 2;
-    const STATUS_PROCESSED_ERROR = 4;
+    public const STATUS_ENQUEUED = 1;
+    public const STATUS_PROCESSED_OK = 2;
+    public const STATUS_PROCESSED_ERROR = 4;
 
-    const EMAILS_PER_HOUR = MODULES_NOTIFICATIONS_EMAILPERHOUR;
+    public const EMAILS_PER_HOUR = MODULES_NOTIFICATIONS_EMAILPERHOUR;
 
-    const NEWFORUMNOTE = 'new/forumnote';
+    public const NEWFORUMNOTE = 'new/forumnote';
 
-    const emailConfigs = [
+    public const EMAILCONFIGS = [
         self::NEWFORUMNOTE => [
             'template' => 'newforumnote.tpl',
             'subject' => 'Nuovo post nel forum del corso:',
@@ -48,7 +46,7 @@ class EmailQueueItem extends NotificationBase
     protected $enqueueTS;
     protected $processTS;
 
-    public function __construct($data = array())
+    public function __construct($data = [])
     {
         parent::__construct($data);
     }
@@ -60,8 +58,9 @@ class EmailQueueItem extends NotificationBase
      *
      * @return void
      */
-    public static function getEmailConfigFromType($type) {
-        return(array_key_exists($type, self::emailConfigs) ? self::emailConfigs[$type] : null);
+    public static function getEmailConfigFromType($type)
+    {
+        return(array_key_exists($type, self::EMAILCONFIGS) ? self::EMAILCONFIGS[$type] : null);
     }
 
     /**
