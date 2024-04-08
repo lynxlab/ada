@@ -20,11 +20,13 @@ try {
             ])
         );
     } else {
+        // phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
         define('XML_EXPORT_FILENAME', 'ada_export.xml');
         define('MODULES_IMPEXPORT_LOGDIR', ROOT_DIR . '/log/impexport/');
 
         define('MODULES_IMPEXPORT_REPOBASEDIR', Course::MEDIA_PATH_DEFAULT);
         define('MODULES_IMPEXPORT_REPODIR', 'exported');
+        //phpcs:enable
         return true;
     }
 } catch (Exception $e) {
