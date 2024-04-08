@@ -26,7 +26,7 @@ use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Module\GDPR\GdprAcceptPoliciesForm;
 use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
-use Lynxlab\ADA\Module\Login\abstractLogin;
+use Lynxlab\ADA\Module\Login\AbstractLogin;
 
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -101,7 +101,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     		}
     	} else if (defined('MODULES_LOGIN') && MODULES_LOGIN &&
     			isset($selectedLoginProvider) && strlen($selectedLoginProvider)>0) {
-    				$className = abstractLogin::getNamespaceName()."\\".$selectedLoginProvider;
+    				$className = AbstractLogin::getNamespaceName()."\\".$selectedLoginProvider;
     				if (class_exists($className)) {
     					$loginProviderID = isset($selectedLoginProviderID) ? $selectedLoginProviderID : null;
     					$loginObj = new $className($selectedLoginProviderID);

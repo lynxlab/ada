@@ -28,7 +28,7 @@ use Lynxlab\ADA\Main\HtmlLibrary\UserModuleHtmlLib;
 use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
-use Lynxlab\ADA\Module\Login\abstractLogin;
+use Lynxlab\ADA\Module\Login\AbstractLogin;
 
 use function Lynxlab\ADA\Main\Utilities\getUserIpAddr;
 use function Lynxlab\ADA\Main\Utilities\redirect;
@@ -177,7 +177,7 @@ if(isset($p_login) || (isset($selectedLoginProvider) && strlen($selectedLoginPro
   		}
   	} else if (defined('MODULES_LOGIN') && MODULES_LOGIN &&
   			   isset($selectedLoginProvider) && strlen($selectedLoginProvider)>0) {
-		$className = abstractLogin::getNamespaceName()."\\".$selectedLoginProvider;
+		$className = AbstractLogin::getNamespaceName()."\\".$selectedLoginProvider;
   		if (class_exists($className)) {
   			$loginProviderID = isset($selectedLoginProviderID) ? $selectedLoginProviderID : null;
   			$loginObj = new $className($selectedLoginProviderID);

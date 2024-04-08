@@ -18,7 +18,7 @@ use Lynxlab\ADA\CORE\html4\CBase;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Module\CollaboraACL\GrantAccessForm;
-use Lynxlab\ADA\Module\Login\abstractLogin;
+use Lynxlab\ADA\Module\Login\AbstractLogin;
 use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -84,7 +84,7 @@ class UserModuleHtmlLib
         $div_submit = CDOMElement::create('div', 'id:login_button');
         if (defined('MODULES_LOGIN') && MODULES_LOGIN) {
             // load login providers
-            $loginProviders = abstractLogin::getLoginProviders();
+            $loginProviders = AbstractLogin::getLoginProviders();
         } else {
             $loginProviders = null;
         }
@@ -95,7 +95,7 @@ class UserModuleHtmlLib
             $form->addChild(CDOMElement::create('hidden', 'id:selectedLoginProviderID, name:selectedLoginProviderID'));
             // add a DOM element (or html) foreach loginProvider
             foreach ($loginProviders as $providerID => $loginProvider) {
-                $className = abstractLogin::getNamespaceName() . "\\" . $loginProvider;
+                $className = AbstractLogin::getNamespaceName() . "\\" . $loginProvider;
                 if (class_exists($className)) {
                     $loginObject = new $className($providerID);
                     $CDOMElement = $loginObject->getCDOMElement();

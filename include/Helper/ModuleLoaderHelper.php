@@ -88,7 +88,7 @@ class ModuleLoaderHelper
                 break;
             case 'login':
                 return
-                    file_exists(MODULES_DIR . DIRECTORY_SEPARATOR . $moduledir . '/include/abstractLogin.php');
+                    file_exists(MODULES_DIR . DIRECTORY_SEPARATOR . $moduledir . '/include/AbstractLogin.php');
                 break;
             case 'apps':
             case 'classbudget':
