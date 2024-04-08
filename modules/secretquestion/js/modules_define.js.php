@@ -2,7 +2,7 @@
 /**
  * Base config file
  */
-require_once (realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
+require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
 
 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
 header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");          // always modified
@@ -15,5 +15,5 @@ header("Content-type: application/x-javascript");
  */
 
 if (defined('MODULES_SECRETQUESTION_HTTP')) {
-	echo 'var MODULES_SECRETQUESTION_HTTP=\''.MODULES_SECRETQUESTION_HTTP.'\';'.PHP_EOL;
+    echo 'var MODULES_SECRETQUESTION_HTTP=\''.MODULES_SECRETQUESTION_HTTP.'\';'.PHP_EOL;
 }

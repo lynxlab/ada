@@ -1,0 +1,16 @@
+{
+    "name": "lynxlab/ada-module-secretquestion",
+    "description": "This is the ada module for managing user password using a secret question/answer.",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Giorgio Consorti",
+            "email": "g.consorti@lynxlab.com"
+        }
+    ],
+    "autoload" : {
+        "psr-4" : {
+            "Lynxlab\\ADA\\Module\\Secretquestion\\" : ["include/", "include/form"]
+	    }
+    }
+}
