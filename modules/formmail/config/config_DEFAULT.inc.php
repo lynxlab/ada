@@ -21,6 +21,7 @@ try {
             ])
         );
     } else {
+        // phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
         if (!function_exists('menuEnableFormMail')) {
             /**
              * callback function used to check if formmail menu item is to be enabled
@@ -41,6 +42,7 @@ try {
                 return defined('MODULES_FORMMAIL') && MODULES_FORMMAIL && isset($_SESSION['sess_userObj']) && in_array($_SESSION['sess_userObj']->getType(), $allowedTypes);
             }
         }
+        // phpcs:enable
         return true;
     }
 } catch (Exception $e) {

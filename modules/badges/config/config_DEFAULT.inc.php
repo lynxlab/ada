@@ -26,7 +26,9 @@ try {
         );
     } else {
         // MODULE'S OWN DEFINES HERE
+        // phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
         define('MODULES_BADGES_MEDIAPATH', ROOT_DIR . MEDIA_PATH_DEFAULT . MODULES_BADGES_NAME . DIRECTORY_SEPARATOR);
+        //phpcs:enable
         return true;
     }
 } catch (Exception $e) {

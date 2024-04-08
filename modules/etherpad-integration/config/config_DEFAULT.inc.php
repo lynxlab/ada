@@ -24,6 +24,7 @@ try {
          * In a non multiprovider environment,
          * each provider must define its own somewhere in its config files
          */
+        // phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
         if (MULTIPROVIDER || (!MULTIPROVIDER && !defined('MODULES_ETHERPAD_HOST'))) {
             define('MODULES_ETHERPAD_HOST', getenv('ETHERPAD_HOST') ?: 'http://localhost');
         }
@@ -43,6 +44,7 @@ try {
         if (MULTIPROVIDER || (!MULTIPROVIDER && !defined('MODULES_ETHERPAD_NODEPAD'))) {
             define('MODULES_ETHERPAD_NODEPAD', getenv('ETHERPAD_NODEPAD') ?: false);
         }
+        // phpcs:enable
         return true;
     }
 } catch (Exception $e) {
