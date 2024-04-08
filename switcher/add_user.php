@@ -24,6 +24,7 @@ use Lynxlab\ADA\Main\User\ADAAuthor;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 use Lynxlab\ADA\Main\User\ADASwitcher;
 use Lynxlab\ADA\Main\User\ADAUser;
+use Lynxlab\ADA\Module\Secretquestion\AMASecretQuestionDataHandler;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -135,7 +136,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                     /**
                      * Save secret question and answer and set the registration as successful
                      */
-                    $sqdh = \AMASecretQuestionDataHandler::instance();
+                    $sqdh = AMASecretQuestionDataHandler::instance();
                     $sqdh->saveUserQandA($userObj->getId(), $_POST['secretquestion'], $_POST['secretanswer']);
                 }
             }

@@ -19,6 +19,7 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Forms\UserProfileForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+use Lynxlab\ADA\Module\Secretquestion\AMASecretQuestionDataHandler;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -129,7 +130,7 @@ if (!$isEditingAStudent) {
                         /**
                          * Save secret question and answer and set the registration as successful
                          */
-                        $sqdh = \AMASecretQuestionDataHandler::instance();
+                        $sqdh = AMASecretQuestionDataHandler::instance();
                         $sqdh->saveUserQandA($editedUserObj->getId(), $_POST['secretquestion'], $_POST['secretanswer']);
                     }
                 }
