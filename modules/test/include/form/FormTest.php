@@ -1,42 +1,47 @@
 <?php
 
-use Lynxlab\ADA\Main\Forms\lib\classes\FForm;
-
 /**
  *
  * @package
- * @author		Valerio Riva <valerio@lynxlab.com>
- * @copyright	Copyright (c) 2012, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @author      Valerio Riva <valerio@lynxlab.com>
+ * @copyright   Copyright (c) 2012, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link
- * @version		0.1
+ * @version     0.1
  */
 
-abstract class FormTest extends FForm {
+namespace Lynxlab\ADA\Module\Test;
 
-	protected $data;
+use Lynxlab\ADA\Main\Forms\lib\classes\FForm;
 
-	public function __construct($data=array()) {
-		parent::__construct();
+abstract class FormTest extends FForm
+{
+    protected $data;
 
-		$this->data = $data;
+    public function __construct($data = [])
+    {
+        parent::__construct();
 
-		$this->header();
-		$this->content();
-		$this->footer();
-	}
+        $this->data = $data;
 
-	abstract protected function content();
+        $this->header();
+        $this->content();
+        $this->footer();
+    }
 
-	/**
-	 * use it to specify a header for every child form
-	 */
-	protected function header() {
-	}
+    abstract protected function content();
 
-	/**
-	 * use it to specify a footer for every child form
-	 */
-	protected function footer() {
-	}
+    /**
+     * use it to specify a header for every child form
+     */
+    protected function header()
+    {
+    }
+
+    /**
+     * use it to specify a footer for every child form
+     */
+    protected function footer()
+    {
+    }
 }

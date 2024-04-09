@@ -1,0 +1,14 @@
+{
+    "name" : "lynxlab/ada-module-test",
+    "description" : "This is the ada test (aka quiz) module.",
+    "license" : "GPL",
+    "authors" : [{
+        "name" : "Giorgio Consorti",
+        "email" : "g.consorti@lynxlab.com"
+    }],
+    "autoload" : {
+        "psr-4" : {
+            "Lynxlab\\ADA\\Module\\Test\\" : ["include/", "include/form", "include/management"]
+	    }
+    }
+}
