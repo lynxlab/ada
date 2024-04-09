@@ -115,7 +115,7 @@ abstract class CollaboraACLAbstractForm extends FForm
      * Set isReadOnly
      * @param boolean $isReadOnly
      *
-     * @return StudentsGroupsAbstractForm
+     * @return \Lynxlab\ADA\Module\CollaboraACL\CollaboraACLAbstractForm
      */
     protected function setIsReadOnly($isReadOnly)
     {
