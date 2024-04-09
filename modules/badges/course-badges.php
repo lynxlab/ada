@@ -16,6 +16,7 @@ use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Module\Badges\BadgesActions;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
 use Lynxlab\ADA\Module\Badges\CourseBadgeForm;
+use Lynxlab\ADA\Module\Servicecomplete\AMACompleteDataHandler;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -40,7 +41,6 @@ $variableToClearAR = ['node', 'layout', 'course', 'user'];
  * Performs basic controls before entering this module
  */
 require_once(ROOT_DIR . '/include/module_init.inc.php');
-require_once MODULES_SERVICECOMPLETE_PATH . '/include/init.inc.php';
 BrowsingHelper::init($neededObjAr);
 
 $self = 'course-badges';

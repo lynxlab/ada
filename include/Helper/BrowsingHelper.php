@@ -19,6 +19,8 @@ use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
 use Lynxlab\ADA\Module\Badges\Badge;
+use Lynxlab\ADA\Module\Servicecomplete\AMACompleteDataHandler;
+use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
 use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -158,8 +160,6 @@ class BrowsingHelper extends ViewBaseHelper
             if (intval($courseInstanceId) > 0 && intval($courseId) > 0 && isset($userObj) && is_object($userObj)) {
                 $user_status = self::getUserBrowsingData($userObj)['user_status'];
                 if ($user_status != ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED) {
-                    // need the service-complete module data handler
-                    require_once MODULES_SERVICECOMPLETE_PATH . '/include/init.inc.php';
                     $mydh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
                     // load the conditionset for this course
                     $conditionSet = $mydh->get_linked_conditionset_for_course($courseId);
@@ -210,12 +210,10 @@ class BrowsingHelper extends ViewBaseHelper
             ) {
                 // need the badges module data handler
                 $bdh = AMABadgesDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
-                // need the service-complete module data handler
-                require_once MODULES_SERVICECOMPLETE_PATH . '/include/init.inc.php';
                 $cdh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
                 // load the badges linked to this course
                 $badgesList = $bdh->findBy('CourseBadge', ['id_corso' => $courseId]);
-                if (!\AMA_DB::isError($badgesList) && is_array($badgesList) && count($badgesList) > 0) {
+                if (!AMA_DB::isError($badgesList) && is_array($badgesList) && count($badgesList) > 0) {
                     /**
                      * @var \Lynxlab\ADA\Module\Badges\CourseBadges $cb
                      */
@@ -224,7 +222,7 @@ class BrowsingHelper extends ViewBaseHelper
                         if (is_array($badge) && count($badge) == 1) {
                             $badge = reset($badge);
                             $cs = $cdh->getCompleteConditionSet($cb->getId_conditionset());
-                            if ($badge instanceof Badge && $cs instanceof \CompleteConditionSet) {
+                            if ($badge instanceof Badge && $cs instanceof CompleteConditionSet) {
                                 if ($cs->evaluateSet([$courseInstanceId, $userObj->getId()])) {
                                     // student is rewarded with the badge
                                     $bdh->saveRewardedBadge([

@@ -13,6 +13,9 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Badges\BadgesActions;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
+use Lynxlab\ADA\Module\Badges\Badge;
+use Lynxlab\ADA\Module\Servicecomplete\AMACompleteDataHandler;
+use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -119,7 +122,6 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             } // if (!AMA_DB::isError($badgesList))
             $data = [ 'data' => $badgesData ];
         } elseif ($params['object'] == 'CourseBadge') {
-            require_once MODULES_SERVICECOMPLETE_PATH . '/include/init.inc.php';
             $cdh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
             $badgesData = [];
@@ -139,7 +141,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                         $badge = reset($badge);
                     }
 
-                    if ($badge instanceof \Lynxlab\ADA\Module\Badges\Badge && $cs instanceof \CompleteConditionSet) {
+                    if ($badge instanceof Badge && $cs instanceof CompleteConditionSet) {
                         for ($j = 0; $j < 1; $j++) {
                             switch ($j) {
                                 case 0:

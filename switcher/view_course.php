@@ -24,6 +24,8 @@ use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
+use Lynxlab\ADA\Module\Servicecomplete\AMACompleteDataHandler;
+use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -109,7 +111,6 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
     ];
 
     if (defined('MODULES_SERVICECOMPLETE') && MODULES_SERVICECOMPLETE) {
-        require_once MODULES_SERVICECOMPLETE_PATH . '/include/AMACompleteDataHandler.inc.php';
         $cdh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
         $conditionset = $cdh->get_linked_conditionset_for_course($courseObj->getId());
         $formData['condizione di completamento'] = ($conditionset instanceof CompleteConditionSet) ? $conditionset->description : translateFN('Nessuna');

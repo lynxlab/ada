@@ -21,6 +21,8 @@ use Lynxlab\ADA\Main\Bookmark\Bookmark;
 use Lynxlab\ADA\Main\History\History;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 use Lynxlab\ADA\Module\Badges\RewardedBadge;
+use Lynxlab\ADA\Module\Servicecomplete\AMACompleteDataHandler;
+use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
 use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -395,11 +397,10 @@ class Student
                 $stausIsButton = false;
                 if (defined('MODULES_SERVICECOMPLETE') && MODULES_SERVICECOMPLETE) {
                     // need the service-complete module data handler
-                    require_once MODULES_SERVICECOMPLETE_PATH . '/include/init.inc.php';
                     $mydh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
                     // load the conditionset for this course
                     $conditionSet = $mydh->get_linked_conditionset_for_course($id_course);
-                    $stausIsButton = $conditionSet instanceof \CompleteConditionSet;
+                    $stausIsButton = $conditionSet instanceof CompleteConditionSet;
                     $mydh->disconnect();
                 }
 

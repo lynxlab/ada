@@ -19,6 +19,8 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
+use Lynxlab\ADA\Module\Servicecomplete\AMACompleteDataHandler;
+use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
 use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -554,7 +556,6 @@ if ($displayTable) {
 
     if (defined('MODULES_SERVICECOMPLETE') && MODULES_SERVICECOMPLETE) {
         // need the service-complete module data handler
-        require_once MODULES_SERVICECOMPLETE_PATH . '/include/init.inc.php';
         $mydh = AMACompleteDataHandler::instance(MultiPort::getDSN($provider['puntatore']));
         // load the conditionset for this course
         $conditionSet = $mydh->get_linked_conditionset_for_course($courseId);

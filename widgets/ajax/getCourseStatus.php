@@ -23,9 +23,12 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Module\Servicecomplete\AMACompleteDataHandler;
+use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
 use Lynxlab\ADA\Widgets\Widget;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+use function Lynxlab\ADA\Module\Servicecomplete\Functions\extractParam;
 use function Lynxlab\ADA\Widgets\Functions\prettyPrintHourMin;
 
 /**
@@ -128,9 +131,6 @@ try {
     if ($userObj->getType() == AMA_TYPE_STUDENT && defined('MODULES_SERVICECOMPLETE') && MODULES_SERVICECOMPLETE) {
         $goalTime = 0;
         $completeTimeClassName = 'completeConditionTime';
-        // need the service-complete module data handler
-        require_once MODULES_SERVICECOMPLETE_PATH . '/include/init.inc.php';
-        require_once MODULES_SERVICECOMPLETE_PATH . '/include/functions.inc.php';
         $mydh = AMACompleteDataHandler::instance(MultiPort::getDSN($testerName));
         // load the conditionset for this course
         $conditionSet = $mydh->get_linked_conditionset_for_course($courseId);
