@@ -1,0 +1,19 @@
+{
+    "name": "lynxlab/ada-module-servicecomplete",
+    "description": "This is the ada module for managing course completion.",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Giorgio Consorti",
+            "email": "g.consorti@lynxlab.com"
+        }
+    ],
+    "autoload" : {
+        "psr-4" : {
+            "Lynxlab\\ADA\\Module\\Servicecomplete\\" : ["include/", "include/form", "include/management"]
+	    },
+        "files": [
+            "include/functions.php"
+        ]
+    }
+}
