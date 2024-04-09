@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Base config file
  */
@@ -15,5 +16,5 @@ header("Content-type: application/x-javascript");
  */
 
 if (defined('MODULES_SECRETQUESTION_HTTP')) {
-    echo 'var MODULES_SECRETQUESTION_HTTP=\''.MODULES_SECRETQUESTION_HTTP.'\';'.PHP_EOL;
+    echo 'var MODULES_SECRETQUESTION_HTTP=\'' . MODULES_SECRETQUESTION_HTTP . '\';' . PHP_EOL;
 }

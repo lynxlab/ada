@@ -1,51 +1,44 @@
 /**
  * Thanks to http://www.phpjunkyard.com/tools/html-to-text.php
  */
-function html_to_text( html )
-{
-        if (html)
-        {
-                html = html.replace(/<!doctype.*>/i,"");
-                html = html.replace(/<head>[\w\W]*?<\/head>/i,"");
-                html = html.replace(/<style.*>[\w\W]*?<\/style>/gi,"");
-                html = html.replace(/<script.*>[\w\W]*?<\/script>/gi,"");
-                html = html.replace(/\n|\r/g," ");
-                html = html.replace(/\<\/p\>/gi,"\n");
-                html = html.replace(/\<\/li\>/gi," ");
-                html = html.replace(/\<br\s*?\/?\>/gi,"\n");
-                html = strip_tags(html);
-                html = html_entity_decode(html,'HTML_ENTITIES');
-                html = html.replace(/([ \t])+/g," ");
-                html = html.replace(/\n /g,"\n");
+function html_to_text(html) {
+    if (html) {
+        html = html.replace(/<!doctype.*>/i, "");
+        html = html.replace(/<head>[\w\W]*?<\/head>/i, "");
+        html = html.replace(/<style.*>[\w\W]*?<\/style>/gi, "");
+        html = html.replace(/<script.*>[\w\W]*?<\/script>/gi, "");
+        html = html.replace(/\n|\r/g, " ");
+        html = html.replace(/\<\/p\>/gi, "\n");
+        html = html.replace(/\<\/li\>/gi, " ");
+        html = html.replace(/\<br\s*?\/?\>/gi, "\n");
+        html = strip_tags(html);
+        html = html_entity_decode(html, 'HTML_ENTITIES');
+        html = html.replace(/([ \t])+/g, " ");
+        html = html.replace(/\n /g, "\n");
 
-                if (html.charAt(0) == ' ')
-                {
-                 html = html.substr(1);
-                }
+        if (html.charAt(0) == ' ') {
+            html = html.substr(1);
         }
-        else
-        {
-                html = '';
-        }
-        return html;
+    }
+    else {
+        html = '';
+    }
+    return html;
 }
 
-function text_to_html(plain)
-{
-        if (plain)
-        {
-                plain = htmlentities(plain,'HTML_ENTITIES');
-                plain = plain.replace(/(\n|\r|\r\n)/gi,"<br />\n");
-                plain = plain.replace(/  /gi,"&nbsp;&nbsp;");                
-        }
-        else
-        {
-                plain = '';
-        }
-        return plain;
+function text_to_html(plain) {
+    if (plain) {
+        plain = htmlentities(plain, 'HTML_ENTITIES');
+        plain = plain.replace(/(\n|\r|\r\n)/gi, "<br />\n");
+        plain = plain.replace(/  /gi, "&nbsp;&nbsp;");
+    }
+    else {
+        plain = '';
+    }
+    return plain;
 }
 
-function strip_tags (input, allowed) {
+function strip_tags(input, allowed) {
     // http://kevin.vanzonneveld.net
     // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
     // +   improved by: Luke Godfrey
@@ -86,7 +79,7 @@ function strip_tags (input, allowed) {
     });
 }
 
-function html_entity_decode (string, quote_style) {
+function html_entity_decode(string, quote_style) {
     // http://kevin.vanzonneveld.net
     // +   original by: john (http://www.jd-tech.net)
     // +      input by: ger
@@ -116,7 +109,7 @@ function html_entity_decode (string, quote_style) {
 
     // fix &amp; problem
     // http://phpjs.org/functions/get_html_translation_table:416#comment_97660
-    delete(hash_map['&']);
+    delete (hash_map['&']);
     hash_map['&'] = '&amp;';
 
     for (symbol in hash_map) {
@@ -128,7 +121,7 @@ function html_entity_decode (string, quote_style) {
     return tmp_str;
 }
 
-function htmlentities (string, quote_style, charset, double_encode) {
+function htmlentities(string, quote_style, charset, double_encode) {
     // http://kevin.vanzonneveld.net
     // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
     // +    revised by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
@@ -180,7 +173,7 @@ function htmlentities (string, quote_style, charset, double_encode) {
     return string;
 }
 
-function get_html_translation_table (table, quote_style) {
+function get_html_translation_table(table, quote_style) {
     // http://kevin.vanzonneveld.net
     // +   original by: Philip Peterson
     // +    revised by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
