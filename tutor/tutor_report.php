@@ -13,7 +13,7 @@
  * @version     0.1
  */
 
-use Lynxlab\ADA\CORE\HmtlElements\Table;
+use Lynxlab\ADA\CORE\HtmlElements\Table;
 use Lynxlab\ADA\Main\Helper\TutorHelper;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

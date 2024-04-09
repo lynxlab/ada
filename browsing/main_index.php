@@ -12,7 +12,7 @@
  */
 
 use Lynxlab\ADA\Browsing\CourseViewer;
-use Lynxlab\ADA\CORE\HmtlElements\Form;
+use Lynxlab\ADA\CORE\HtmlElements\Form;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Course\CourseInstance;

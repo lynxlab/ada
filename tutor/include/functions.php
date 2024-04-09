@@ -2,7 +2,7 @@
 
 namespace Lynxlab\ADA\Tutor\Functions;
 
-use Lynxlab\ADA\CORE\HmtlElements\Table;
+use Lynxlab\ADA\CORE\HtmlElements\Table;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\Main\Course\Student;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;

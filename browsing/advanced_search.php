@@ -13,8 +13,8 @@
 * @version 0.1
 */
 
-use Lynxlab\ADA\CORE\HmtlElements\Form;
-use Lynxlab\ADA\CORE\HmtlElements\Table;
+use Lynxlab\ADA\CORE\HtmlElements\Form;
+use Lynxlab\ADA\CORE\HtmlElements\Table;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 

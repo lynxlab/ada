@@ -22,9 +22,9 @@
 
 namespace Lynxlab\ADA\Main\Bookmark;
 
-use Lynxlab\ADA\CORE\HmtlElements\Form;
-use Lynxlab\ADA\CORE\HmtlElements\IList;
-use Lynxlab\ADA\CORE\HmtlElements\Table;
+use Lynxlab\ADA\CORE\HtmlElements\Form;
+use Lynxlab\ADA\CORE\HtmlElements\IList;
+use Lynxlab\ADA\CORE\HtmlElements\Table;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;

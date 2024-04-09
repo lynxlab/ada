@@ -15,7 +15,7 @@
 
 namespace Lynxlab\ADA\Main\History;
 
-use Lynxlab\ADA\CORE\HmtlElements\Table;
+use Lynxlab\ADA\CORE\HtmlElements\Table;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;

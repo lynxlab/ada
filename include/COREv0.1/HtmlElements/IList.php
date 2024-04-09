@@ -12,7 +12,7 @@
  * @version     0.1
  */
 
-namespace Lynxlab\ADA\CORE\HmtlElements;
+namespace Lynxlab\ADA\CORE\HtmlElements;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

@@ -12,6 +12,8 @@
 
 namespace Lynxlab\ADA\Module\Login;
 
+use Lynxlab\ADA\Main\AMA\AMA_DataHandler;
+
 class AMALoginDataHandler extends AMA_DataHandler
 {
     public static $MODULES_LOGIN_HISTORY_LIMIT = 10;

@@ -13,7 +13,7 @@
 
 namespace Lynxlab\ADA\Main\Course;
 
-use Lynxlab\ADA\CORE\HmtlElements\IList;
+use Lynxlab\ADA\CORE\HtmlElements\IList;
 use Lynxlab\ADA\Main\Bookmark\Bookmark;
 use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\User\ADAUser;

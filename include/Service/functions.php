@@ -2,7 +2,7 @@
 
 namespace Lynxlab\ADA\Main\Service\Functions;
 
-use Lynxlab\ADA\CORE\HmtlElements\Table;
+use Lynxlab\ADA\CORE\HtmlElements\Table;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
 

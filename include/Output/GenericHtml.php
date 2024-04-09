@@ -19,7 +19,7 @@
 namespace Lynxlab\ADA\Main\Output;
 
 use Dompdf\Dompdf;
-use Lynxlab\ADA\CORE\HmtlElements\Table;
+use Lynxlab\ADA\CORE\HtmlElements\Table;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

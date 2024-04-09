@@ -9665,7 +9665,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler
      *
      * @return an array
      */
-    public function &find_banner_list($out_fields_ar, $clause = '')
+    private function &do_find_banner_list($out_fields_ar, $clause = '')
     {
         $db = &$this->getConnection();
         if (AMA_DB::isError($db)) {
@@ -9727,7 +9727,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler
             $clause .= "client =" . $this->sql_prepared($client);
         }
         // invokes the private method to get all the records
-        return $this->find_banner_list($out_fields_ar, $clause);
+        return $this->do_find_banner_list($out_fields_ar, $clause);
     }
 
     /**

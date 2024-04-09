@@ -13,7 +13,7 @@
  * @version     0.1
  */
 
-use Lynxlab\ADA\CORE\HmtlElements\IList;
+use Lynxlab\ADA\CORE\HtmlElements\IList;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 

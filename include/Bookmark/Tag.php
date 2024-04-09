@@ -22,8 +22,8 @@
 
 namespace Lynxlab\ADA\Main\Bookmark;
 
-use Lynxlab\ADA\CORE\HmtlElements\Form;
-use Lynxlab\ADA\CORE\HmtlElements\Table;
+use Lynxlab\ADA\CORE\HtmlElements\Form;
+use Lynxlab\ADA\CORE\HtmlElements\Table;
 use Lynxlab\ADA\Main\Course\Student;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
