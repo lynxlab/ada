@@ -16,6 +16,7 @@ use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Impexport\AMAImpExportDataHandler;
 use Lynxlab\ADA\Module\Impexport\AMARepositoryDataHandler;
 use Lynxlab\ADA\Module\Impexport\ExportHelper;
+use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

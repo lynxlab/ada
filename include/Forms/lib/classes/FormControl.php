@@ -262,7 +262,7 @@ abstract class FormControl
     protected $controlType;
     /**
      *
-     * @var string
+     * @var array
      */
     protected $controlData;
     /**

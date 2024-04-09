@@ -20,6 +20,8 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Node\Node;
+use Lynxlab\ADA\Module\Test\AMATestDataHandler;
+use Lynxlab\ADA\Module\Test\NodeTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

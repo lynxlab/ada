@@ -15,6 +15,7 @@ namespace Lynxlab\ADA\Module\Servicecomplete;
 
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Module\Servicecomplete\Functions\logToFile;

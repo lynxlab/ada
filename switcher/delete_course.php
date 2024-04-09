@@ -22,6 +22,7 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Forms\CourseRemovalForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -102,7 +103,6 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                                 $data = new CText(translateFN('Si sono verificati degli errori durante la cancellazione del corso.') . '(1)');
                             } else {
                                 if (defined('MODULES_TEST') && MODULES_TEST) {
-                                    require_once MODULES_TEST_PATH . '/include/AMATestDataHandler.inc.php';
                                     $test_db = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
                                     if (AMA_DB::isError($test_db->test_removeCourseNodes($courseId))) {
                                         // handle error here if needed
