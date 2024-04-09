@@ -1,4 +1,5 @@
 <?php
+
 /**
  * error.php
  *
@@ -6,19 +7,20 @@
  *
  * PHP version >= 5.0
  *
- * @package		view
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
+ * @package     view
+ * @author      Stefano Penge <steve@lynxlab.com>
+ * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
+ * @author      Vito Modena <vito@lynxlab.com>
  * @copyright           Copyright (c) 2009-2011, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link		index
- * @version		0.1
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @link        index
+ * @version     0.1
  */
 
 use Lynxlab\ADA\Main\History\NavigationHistory;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -26,23 +28,21 @@ use function Lynxlab\ADA\Main\Utilities\whoami;
  */
 require_once realpath(dirname(__FILE__)) . '/config_path.inc.php';
 
-$allowedUsersAr = array(AMA_TYPE_VISITOR, AMA_TYPE_STUDENT, AMA_TYPE_TUTOR,
-                        AMA_TYPE_AUTHOR, AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER);
-$neededObjAr = array(
-    AMA_TYPE_VISITOR => array('layout'),
-    AMA_TYPE_STUDENT => array('layout'),
-    AMA_TYPE_TUTOR => array('layout'),
-    AMA_TYPE_AUTHOR => array('layout'),
-    AMA_TYPE_ADMIN => array('layout'),
-	AMA_TYPE_SWITCHER => array('layout')
-);
+$allowedUsersAr = [AMA_TYPE_VISITOR, AMA_TYPE_STUDENT, AMA_TYPE_TUTOR,
+                        AMA_TYPE_AUTHOR, AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER];
+$neededObjAr = [
+    AMA_TYPE_VISITOR => ['layout'],
+    AMA_TYPE_STUDENT => ['layout'],
+    AMA_TYPE_TUTOR => ['layout'],
+    AMA_TYPE_AUTHOR => ['layout'],
+    AMA_TYPE_ADMIN => ['layout'],
+    AMA_TYPE_SWITCHER => ['layout'],
+];
 /**
  * Performs basic controls before entering this module
  */
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami();
-include_once 'include/index_functions.inc.php';
-
 
 /*
  * By default, on a fatal error, we redirect the user to the login page.
@@ -58,11 +58,11 @@ $homepage = HTTP_ROOT_DIR;
 if (isset($_SESSION['sess_userObj'])) {
     $userObj = $_SESSION['sess_userObj'];
     if ($userObj instanceof ADALoggableUser) {
-       $user_name = $userObj->getFirstName();
-       $user_type = $userObj->getTypeAsString();
-       $userHomePage = $userObj->getHomePage();
+        $user_name = $userObj->getFirstName();
+        $user_type = $userObj->getTypeAsString();
+        $userHomePage = $userObj->getHomePage();
 
-       if (isset($_SESSION['sess_navigation_history'])) {
+        if (isset($_SESSION['sess_navigation_history'])) {
             $navigationHistory = $_SESSION['sess_navigation_history'];
             if ($navigationHistory instanceof NavigationHistory) {
                 if ($navigationHistory->lastModule() != $userHomePage) {
@@ -79,15 +79,15 @@ $error_div = '<div class="unrecoverable">'
            . $error_message
            . '</div>';
 
-$content_dataAr = array(
+$content_dataAr = [
     'home_link' => $homepage,
     'today' => $ymdhms,
     'user_name' => $user_name,
     'user_type' => $user_type,
     'course_title' => translateFN('Notifica errore'),
     'data' => $error_div,
-    'status' => translateFN('Notifica di errore')
-);
+    'status' => translateFN('Notifica di errore'),
+];
 /**
  * Sends data to the rendering engine
  */

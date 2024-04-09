@@ -1,4 +1,5 @@
 <?php
+
 /**
  * index.
  *
@@ -6,14 +7,14 @@
  *
  * PHP version >= 5.0
  *
- * @package		view
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2009, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link		index
- * @version		0.1
+ * @package     view
+ * @author      Stefano Penge <steve@lynxlab.com>
+ * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
+ * @author      Vito Modena <vito@lynxlab.com>
+ * @copyright   Copyright (c) 2009, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @link        index
+ * @version     0.1
  */
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
@@ -23,6 +24,8 @@ use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\HtmlLibrary\UserModuleHtmlLib;
 use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * Destroy session
@@ -34,20 +37,20 @@ session_destroy();
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)).'/config_path.inc.php';
+require_once realpath(dirname(__FILE__)) . '/config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
  * $_SESSION was destroyed, so we do not need to clear data in session.
  */
-$allowedUsersAr = array(AMA_TYPE_VISITOR, AMA_TYPE_STUDENT,AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR, AMA_TYPE_ADMIN);
+$allowedUsersAr = [AMA_TYPE_VISITOR, AMA_TYPE_STUDENT,AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR, AMA_TYPE_ADMIN];
 /**
  * Performs basic controls before entering this module
  */
 
-require_once ROOT_DIR.'/include/module_init.inc.php';
+require_once ROOT_DIR . '/include/module_init.inc.php';
 $self =  index;
-include_once 'include/'.$self.'_functions.inc.php';
+include_once 'include/' . $self . '_functions.inc.php';
 
 
 
@@ -68,9 +71,9 @@ $_SESSION['ada_remote_address'] = $_SERVER['REMOTE_ADDR'];
 /*
  * Load news file
  */
-  $newsfile = 'news_'.$login_page_language_code.'.txt';
-  $infofile = 'info_'.$login_page_language_code.'.txt';
-  $helpfile = 'help_'.$login_page_language_code.'.txt';
+$newsfile = 'news_' . $login_page_language_code . '.txt';
+$infofile = 'info_' . $login_page_language_code . '.txt';
+$helpfile = 'help_' . $login_page_language_code . '.txt';
 
 /*
    $infomsg = '';
@@ -78,36 +81,39 @@ $_SESSION['ada_remote_address'] = $_SERVER['REMOTE_ADDR'];
    $hlpmsg = '';
 */
 
-if ($newsmsg == ''){
-   $newsfile = $root_dir."/browsing/".$newsfile; //  txt files in ada browsing directory
-   if ($fid = @fopen($newsfile,'r')){
-      while (!feof($fid))
-        $newsmsg .= fread($fid,4096);
-      fclose($fid);
+if ($newsmsg == '') {
+    $newsfile = $root_dir . "/browsing/" . $newsfile; //  txt files in ada browsing directory
+    if ($fid = @fopen($newsfile, 'r')) {
+        while (!feof($fid)) {
+            $newsmsg .= fread($fid, 4096);
+        }
+        fclose($fid);
     } else {
-       $newsmsg = translateFN("File news non trovato");
+        $newsmsg = translateFN("File news non trovato");
     }
 }
 
-if ($hlpmsg == ''){
-   $helpfile = $root_dir."/browsing/".$helpfile;  //  txt files in ada browsing directory
-   if ($fid = @fopen($helpfile,'r')){
-      while (!feof($fid))
-        $hlpmsg .= fread($fid,4096);
-      fclose($fid);
+if ($hlpmsg == '') {
+    $helpfile = $root_dir . "/browsing/" . $helpfile;  //  txt files in ada browsing directory
+    if ($fid = @fopen($helpfile, 'r')) {
+        while (!feof($fid)) {
+            $hlpmsg .= fread($fid, 4096);
+        }
+        fclose($fid);
     } else {
-       $hlpmsg = translateFN("File help non trovato");
+        $hlpmsg = translateFN("File help non trovato");
     }
 }
 
-if ($infomsg == ''){
-   $infofile = $root_dir."/browsing/".$infofile;  //  txt files in ada browsing directory
-   if ($fid = @fopen($infofile,'r')){
-      while (!feof($fid))
-        $infomsg .= fread($fid,4096);
-      fclose($fid);
+if ($infomsg == '') {
+    $infofile = $root_dir . "/browsing/" . $infofile;  //  txt files in ada browsing directory
+    if ($fid = @fopen($infofile, 'r')) {
+        while (!feof($fid)) {
+            $infomsg .= fread($fid, 4096);
+        }
+        fclose($fid);
     } else {
-       $infomsg = translateFN("File info non trovato");
+        $infomsg = translateFN("File info non trovato");
     }
 }
 
@@ -116,65 +122,61 @@ if ($infomsg == ''){
 /**
  * Perform login
  */
-if(isset($p_login)) {
-  $username = DataValidator::validate_username($p_username);
-  $password = DataValidator::validate_password($p_password, $p_password);
+if (isset($p_login)) {
+    $username = DataValidator::validate_username($p_username);
+    $password = DataValidator::validate_password($p_password, $p_password);
 
-  if($username !== FALSE && $password !== FALSE) {
-    $userObj = MultiPort::loginUser($username, $password);
-    //User has correctly logged in
-    if($userObj instanceof ADALoggableUser){
+    if ($username !== false && $password !== false) {
+        $userObj = MultiPort::loginUser($username, $password);
+        //User has correctly logged in
+        if ($userObj instanceof ADALoggableUser) {
+            $_SESSION['sess_user_language'] = $p_selected_language;
 
-      $_SESSION['sess_user_language'] = $p_selected_language;
+            $_SESSION['sess_id_user'] = $userObj->getId();
+            $GLOBALS['sess_id_user']  = $userObj->getId();
 
-      $_SESSION['sess_id_user'] = $userObj->getId();
-      $GLOBALS['sess_id_user']  = $userObj->getId();
+            $_SESSION['sess_id_user_type'] = $userObj->getType();
+            $GLOBALS['sess_id_user_type']  = $userObj->getType();
 
-      $_SESSION['sess_id_user_type'] = $userObj->getType();
-      $GLOBALS['sess_id_user_type']  = $userObj->getType();
+            $_SESSION['sess_userObj'] = $userObj;
 
-      $_SESSION['sess_userObj'] = $userObj;
+            $user_default_tester = $userObj->getDefaultTester();
+            if ($user_default_tester !== null) {
+                $_SESSION['sess_selected_tester'] = $user_default_tester;
+            }
 
-      $user_default_tester = $userObj->getDefaultTester();
-      if($user_default_tester !== NULL) {
-        $_SESSION['sess_selected_tester'] = $user_default_tester;
-      }
-
-      header('Location:'.$userObj->getHomePage());
-      exit();
+            header('Location:' . $userObj->getHomePage());
+            exit();
+        } else {
+            // Utente non loggato perché coppia username password non corretta
+            $login_error_message = translateFN("Username  e/o password non valide");
+        }
+    } else {
+        // Utente non loggato perche' informazioni in username e password non valide
+        // es. campi vuoti o contenenti caratteri non consentiti.
+        $login_error_message = translateFN("Username  e/o password non valide");
     }
-    else {
-      // Utente non loggato perché coppia username password non corretta
-      $login_error_message = translateFN("Username  e/o password non valide");
-    }
-  }
-  else {
-    // Utente non loggato perche' informazioni in username e password non valide
-    // es. campi vuoti o contenenti caratteri non consentiti.
-    $login_error_message = translateFN("Username  e/o password non valide");
-  }
 }
 
 /**
  * Show login page
  */
-$form_action = HTTP_ROOT_DIR .'/kiosk.php';
-$login = UserModuleHtmlLib::loginForm($form_action, $supported_languages,$login_page_language_code, $login_error_message);
+$form_action = HTTP_ROOT_DIR . '/kiosk.php';
+$login = UserModuleHtmlLib::loginForm($form_action, $supported_languages, $login_page_language_code, $login_error_message);
 
 $message = CDOMElement::create('div');
-if(isset($_GET['message'])) {
-  $message->addChild(new CText($_GET['message']));
+if (isset($_GET['message'])) {
+    $message->addChild(new CText($_GET['message']));
 }
 
-$content_dataAr = array(
+$content_dataAr = [
   'form' => $login->getHtml(),
   'text' => $newsmsg,
   'help' => $hlpmsg,
-  'message' => $message->getHtml()
-);
+  'message' => $message->getHtml(),
+];
 
 /**
  * Sends data to the rendering engine
  */
-ARE::render($layout_dataAr,$content_dataAr);
-?>
+ARE::render($layout_dataAr, $content_dataAr);
