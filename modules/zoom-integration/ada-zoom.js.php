@@ -11,28 +11,27 @@ header("Content-type: application/x-javascript");
 //header("Content-Disposition: attachment; filename=javascript_conf.js");
 
 require_once '../../config_path.inc.php';
-$allowedUsersAr = array(AMA_TYPE_STUDENT, AMA_TYPE_TUTOR); //, AMA_TYPE_AUTHOR, AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER);
+$allowedUsersAr = [AMA_TYPE_STUDENT, AMA_TYPE_TUTOR]; //, AMA_TYPE_AUTHOR, AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER);
 /**
  * Get needed objects
  */
-$neededObjAr = array(
+$neededObjAr = [
     // AMA_TYPE_VISITOR => array('node', 'layout', 'course'),
-    AMA_TYPE_STUDENT => array('node', 'layout', 'tutor', 'course', 'course_instance', 'videoroom'),
-    AMA_TYPE_TUTOR => array('node', 'layout', 'course', 'course_instance', 'videoroom'),
+    AMA_TYPE_STUDENT => ['node', 'layout', 'tutor', 'course', 'course_instance', 'videoroom'],
+    AMA_TYPE_TUTOR => ['node', 'layout', 'course', 'course_instance', 'videoroom'],
     // AMA_TYPE_AUTHOR => array('node', 'layout', 'course'),
     // AMA_TYPE_SWITCHER => array('node', 'layout', 'course')
-);
+];
 $trackPageToNavigationHistory = false;
 
 if (!defined('CONFERENCE_TO_INCLUDE')) {
     define('CONFERENCE_TO_INCLUDE', 'ZoomConf'); // Zoom conference
 }
 if (!defined('DATE_CONTROL')) {
-    define('DATE_CONTROL', FALSE);
+    define('DATE_CONTROL', false);
 }
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-require_once ROOT_DIR . '/comunica/include/videoroom.classes.inc.php';
 
 if (!isset($_SESSION['ada-zoom-bridge']) || (isset($_SESSION['ada-zoom-bridge']) && true !== $_SESSION['ada-zoom-bridge'])) {
     die("only running from ada zoom is allowed!");

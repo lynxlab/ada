@@ -55,17 +55,17 @@ namespace Lynxlab\ADA\Module\ZoomIntegration;
 
 class ZoomAPIWrapper
 {
-
     private $errors;
     private $apiKey;
     private $apiSecret;
     private $baseUrl;
     private $tokenUrl;
     private $timeout;
+    private $responseCode;
 
-    const S2STOKEN = 'ZOOMS2S_SESSTOKEN';
+    public const S2STOKEN = 'ZOOMS2S_SESSTOKEN';
 
-    public function __construct($apiKey, $apiSecret, $options = array())
+    public function __construct($apiKey, $apiSecret, $options = [])
     {
         $this->apiKey = $apiKey;
 
@@ -77,18 +77,20 @@ class ZoomAPIWrapper
 
         // Store any options if they map to valid properties
         foreach ($options as $key => $value) {
-            if (property_exists($this, $key)) $this->$key = $value;
+            if (property_exists($this, $key)) {
+                $this->$key = $value;
+            }
         }
     }
 
-    static function urlsafeB64Encode($string)
+    public static function urlsafeB64Encode($string)
     {
         return str_replace('=', '', strtr(base64_encode($string), '+/', '-_'));
     }
 
     private function generateAccessToken()
     {
-        $token = $this->doRequest('POST','/oauth/token',[
+        $token = $this->doRequest('POST', '/oauth/token', [
             'grant_type' => 'account_credentials',
             'account_id' => ZOOMCONF_S2S_ACCOUNTID,
         ]);
@@ -112,16 +114,16 @@ class ZoomAPIWrapper
 
     private function headers()
     {
-        return array(
+        return [
             'Authorization: Bearer ' . $this->generateJWT(),
             'Content-Type: application/json',
             'Accept: application/json',
-        );
+        ];
     }
 
     private function pathReplace($path, $requestParams)
     {
-        $errors = array();
+        $errors = [];
         $path = preg_replace_callback('/\\{(.*?)\\}/', function ($matches) use ($requestParams, $errors) {
             if (!isset($requestParams[$matches[1]])) {
                 $this->errors[] = 'Required path parameter was not specified: ' . $matches[1];
@@ -130,25 +132,32 @@ class ZoomAPIWrapper
             return rawurlencode($requestParams[$matches[1]]);
         }, $path);
 
-        if (count($errors)) $this->errors = array_merge($this->errors, $errors);
+        if (count($errors)) {
+            $this->errors = array_merge($this->errors, $errors);
+        }
         return $path;
     }
 
-    public function doRequest($method, $path, $queryParams = array(), $pathParams = array(), $body = '')
+    public function doRequest($method, $path, $queryParams = [], $pathParams = [], $body = '')
     {
 
         if (is_array($body)) {
             // Treat an empty array in the body data as if no body data was set
-            if (!count($body)) $body = '';
-            else $body = json_encode($body);
+            if (!count($body)) {
+                $body = '';
+            } else {
+                $body = json_encode($body);
+            }
         }
 
-        $this->errors = array();
+        $this->errors = [];
         $this->responseCode = 0;
 
         $path = $this->pathReplace($path, $pathParams);
 
-        if (count($this->errors)) return false;
+        if (count($this->errors)) {
+            return false;
+        }
 
         // Check if it's a call to token endpoint
         $isToken = stripos($path, 'token') !== false;
@@ -157,7 +166,9 @@ class ZoomAPIWrapper
         $url = ($isToken ? $this->tokenUrl : $this->baseUrl) . $path;
 
         // Add on any query parameters
-        if (count($queryParams)) $url .= '?' . http_build_query($queryParams);
+        if (count($queryParams)) {
+            $url .= '?' . http_build_query($queryParams);
+        }
 
         $ch = curl_init();
 
@@ -171,8 +182,7 @@ class ZoomAPIWrapper
         curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        if (in_array($method, array('DELETE', 'PATCH', 'POST', 'PUT'))) {
-
+        if (in_array($method, ['DELETE', 'PATCH', 'POST', 'PUT'])) {
             // All except DELETE can have a payload in the body
             if ($method != 'DELETE' && strlen($body)) {
                 curl_setopt($ch, CURLOPT_POST, true);
@@ -193,13 +203,13 @@ class ZoomAPIWrapper
     }
 
     // Returns the errors responseCode returned from the last call to doRequest
-    function requestErrors()
+    public function requestErrors()
     {
         return $this->errors;
     }
 
     // Returns the responseCode returned from the last call to doRequest
-    function responseCode()
+    public function responseCode()
     {
         return $this->responseCode;
     }

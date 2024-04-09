@@ -1,16 +1,18 @@
 <?php
 
 /**
- * @package 	zoom integration module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2020, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     zoom integration module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2020, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * Base config file
@@ -20,7 +22,7 @@ require_once realpath(dirname(__FILE__)) . '/../../config_path.inc.php';
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array();
+$variableToClearAR = [];
 array_push($variableToClearAR, 'layout');
 array_push($variableToClearAR, 'user');
 array_push($variableToClearAR, 'course');
@@ -29,22 +31,22 @@ array_push($variableToClearAR, 'course_instance');
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_STUDENT, AMA_TYPE_TUTOR);
+$allowedUsersAr = [AMA_TYPE_STUDENT, AMA_TYPE_TUTOR];
 
 /**
  * Performs basic controls before entering this module
  */
-$neededObjAr = array(
-  AMA_TYPE_STUDENT => array('layout', 'tutor', 'course', 'course_instance', 'videoroom'),
-  AMA_TYPE_TUTOR => array('layout', 'tutor', 'course', 'course_instance', 'videoroom')
-);
+$neededObjAr = [
+  AMA_TYPE_STUDENT => ['layout', 'tutor', 'course', 'course_instance', 'videoroom'],
+  AMA_TYPE_TUTOR => ['layout', 'tutor', 'course', 'course_instance', 'videoroom'],
+];
 
 if (!defined('CONFERENCE_TO_INCLUDE')) {
-  define('CONFERENCE_TO_INCLUDE', 'ZoomConf'); // Zoom
+    define('CONFERENCE_TO_INCLUDE', 'ZoomConf'); // Zoom
 }
 
 if (!defined('DATE_CONTROL')) {
-  define('DATE_CONTROL', FALSE);
+    define('DATE_CONTROL', false);
 }
 
 /**
@@ -88,34 +90,34 @@ ComunicaHelper::init($neededObjAr);
  * Redirect to correct home if comunication not enabled
  */
 if ($userObj->getType() == AMA_TYPE_VISITOR) {
-  $homepage = $userObj->getHomepage();
-  $msg =   translateFN("Utente non autorizzato");
-  header("Location: $homepage?err_msg=$msg");
-  exit;
+    $homepage = $userObj->getHomepage();
+    $msg =   translateFN("Utente non autorizzato");
+    header("Location: $homepage?err_msg=$msg");
+    exit;
 }
 $width = FRAME_WIDTH;
 $height = FRAME_HEIGHT;
 
 if (is_null($videoroomObj->link_to_room)) {
-  $errdiv = CDOMElement::create('div','class:ui icon error message');
-  $errdiv->addChild(CDOMElement::create('i','class: ban circle icon'));
-  $content = CDOMElement::create('div','class:content');
-  $header = CDOMElement::create('div','class:header');
-  $header->addChild(new CText(translateFN('Video Conferenza')));
-  $content->addChild($header);
-  $content->addChild(new CText('<p>'.translateFN('Video Conferenza non ancora iniziata').'</p>'));
-  $errdiv->addChild($content);
-  die($errdiv->getHtml());
-} else if (is_string($videoroomObj->link_to_room) && strlen($videoroomObj->link_to_room) > 0) {
-  $className = get_class($videoroomObj);
-  $iframe = "<iframe src='$videoroomObj->link_to_room' width='$width' height = '$height'";
-  if (defined($className . '::IFRAMEATTR')) {
-    $iframe .= constant($className . '::IFRAMEATTR');
-  }
-  $iframe .= " data-logout='".urlencode($videoroomObj->getLogoutUrlParams())."'";
-  $iframe .= "></iframe>";
-  $videoroomObj->logEnter();
-  die($iframe);
+    $errdiv = CDOMElement::create('div', 'class:ui icon error message');
+    $errdiv->addChild(CDOMElement::create('i', 'class: ban circle icon'));
+    $content = CDOMElement::create('div', 'class:content');
+    $header = CDOMElement::create('div', 'class:header');
+    $header->addChild(new CText(translateFN('Video Conferenza')));
+    $content->addChild($header);
+    $content->addChild(new CText('<p>' . translateFN('Video Conferenza non ancora iniziata') . '</p>'));
+    $errdiv->addChild($content);
+    die($errdiv->getHtml());
+} elseif (is_string($videoroomObj->link_to_room) && strlen($videoroomObj->link_to_room) > 0) {
+    $className = get_class($videoroomObj);
+    $iframe = "<iframe src='$videoroomObj->link_to_room' width='$width' height = '$height'";
+    if (defined($className . '::IFRAMEATTR')) {
+        $iframe .= constant($className . '::IFRAMEATTR');
+    }
+    $iframe .= " data-logout='" . urlencode($videoroomObj->getLogoutUrlParams()) . "'";
+    $iframe .= "></iframe>";
+    $videoroomObj->logEnter();
+    die($iframe);
 } else {
-  header(' ', true, 500);
+    header(' ', true, 500);
 }
