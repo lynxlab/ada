@@ -5,9 +5,6 @@ namespace Lynxlab\ADA\Module\StudentsGroups;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\User\ADAUser;
 
-if (!defined('StudentsGroupsTable')) define('StudentsGroupsTable', AMAStudentsGroupsDataHandler::PREFIX . 'groups');
-if (!defined('StudentsGroupsUtenteRel')) define('StudentsGroupsUtenteRel', AMAStudentsGroupsDataHandler::PREFIX . 'groups_utente');
-
 class Groups extends StudentsGroupsBase
 {
     /**
@@ -15,30 +12,30 @@ class Groups extends StudentsGroupsBase
      *
      * @var string
      */
-    const table = StudentsGroupsTable;
+    public const TABLE = AMAStudentsGroupsDataHandler::PREFIX . 'groups';
 
     /**
      * table name for groups/utente relation
      */
-    const utenteRelTable = StudentsGroupsUtenteRel;
+    public const UTENTERELTABLE = AMAStudentsGroupsDataHandler::PREFIX . 'groups_utente';
 
     /**
      * customField table field prefix
      */
-    const customFieldPrefix = 'customField';
+    public const CUSTOMFIELDPRFIX = 'customField';
 
     /**
      * array of labels for customFields
      */
-    const customFieldLbl = [
+    public const CUSTOMFIELDLBL = [
         0 => 'Classe',
-        1 => 'Sezione'
+        1 => 'Sezione',
     ];
 
     /**
      * array of values for customFields
      */
-    const customFieldsVal = [
+    public const CUSTOMFIELDSVAL = [
         0 => [
             0 => 'Prima',
             1 => 'Seconda',
@@ -73,13 +70,13 @@ class Groups extends StudentsGroupsBase
      */
     protected $customFields = [];
 
-    public function __construct($data = array())
+    public function __construct($data = [])
     {
         parent::__construct($data);
         $customFieldsArr = [];
-        foreach(self::getCustomFieldLbl() as $lKey => $lVal) {
-            if (array_key_exists(self::customFieldPrefix.$lKey, $data)) {
-                $customFieldsArr[$lKey] = $data[self::customFieldPrefix.$lKey];
+        foreach (self::getCustomFieldLbl() as $lKey => $lVal) {
+            if (array_key_exists(self::CUSTOMFIELDPRFIX . $lKey, $data)) {
+                $customFieldsArr[$lKey] = $data[self::CUSTOMFIELDPRFIX . $lKey];
             }
         }
         $this->setCustomFields($customFieldsArr);
@@ -89,21 +86,22 @@ class Groups extends StudentsGroupsBase
     {
         return [
             'members' => [
-                'reltable' => \Lynxlab\ADA\Module\StudentsGroups\Groups::utenteRelTable,
+                'reltable' => self::UTENTERELTABLE,
                 'key' => [
                     'name' => 'group_id',
-                    'getter' => self::GETTERPREFIX.'Id'
+                    'getter' => self::GETTERPREFIX . 'Id',
                 ],
                 'extkey' => 'utente_id',
-                'callback' => 'loadMembers'
+                'callback' => 'loadMembers',
             ],
         ];
     }
 
-    public function loadMembers($resArr) {
+    public function loadMembers($resArr)
+    {
         $retArr = [];
-        foreach($resArr as $aRes) {
-            foreach($aRes as $userId) {
+        foreach ($resArr as $aRes) {
+            foreach ($aRes as $userId) {
                 $user = MultiPort::findUser($userId);
                 if ($user instanceof ADAUser) {
                     array_push($retArr, $user);
@@ -115,25 +113,25 @@ class Groups extends StudentsGroupsBase
 
     public static function arrayProperties()
     {
-        return [ self::customFieldPrefix .'s' ];
+        return [ self::CUSTOMFIELDPRFIX . 's' ];
     }
 
     public static function explodeArrayProperties($properties)
     {
         $arrayProp = self::arrayProperties();
-		foreach($properties as $key => $property) {
+        foreach ($properties as $key => $property) {
             if (in_array($property, $arrayProp)) {
                 // build Lbl constant name: e.g. from customFields, build customFieldLbl
-                $singular = rtrim($property,'s');
-                $labels = constant( get_called_class().'::'.$singular.'Lbl' );
-                foreach(array_keys($labels) as $index) {
-                    $properties[] = $singular.$index;
+                $singular = rtrim($property, 's');
+                $labels = constant(get_called_class() . '::' . $singular . 'Lbl');
+                foreach (array_keys($labels) as $index) {
+                    $properties[] = $singular . $index;
                 }
                 unset($properties[$key]);
             }
         }
         return array_values($properties);
-	}
+    }
 
     /**
      * Get the value of id
@@ -231,8 +229,9 @@ class Groups extends StudentsGroupsBase
      *
      * @return array
      */
-    public static function getCustomFieldLbl() {
-        return self::customFieldLbl;
+    public static function getCustomFieldLbl()
+    {
+        return self::CUSTOMFIELDLBL;
     }
 
     /**
@@ -240,7 +239,8 @@ class Groups extends StudentsGroupsBase
      *
      * @return array
      */
-    public static function getCustomFieldsVal() {
-        return self::customFieldsVal;
+    public static function getCustomFieldsVal()
+    {
+        return self::CUSTOMFIELDSVAL;
     }
 }
