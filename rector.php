@@ -36,6 +36,7 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/services/media',
         __DIR__ . '/upload_file',
         __DIR__ . '/widgets/cache',
+        __DIR__ . '/api',
         // __DIR__ . '/include/phpMailer',
         // __DIR__ . '/include/MobileDetect',
         // __DIR__ . '/include/getid3',

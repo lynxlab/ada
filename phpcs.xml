@@ -5,19 +5,15 @@
     <!-- Run against the PHPCompatibility ruleset -->
     <rule ref="PHPCompatibility"/>
      <!-- Check for cross-version support for PHP 7.2 and higher. -->
-    <config name="testVersion" value="7.2-"/>
+    <config name="testVersion" value="7.4-"/>
 
     <!--Ignore -->
     <exclude-pattern>*/vendor/*</exclude-pattern>
-    <!-- <exclude-pattern>*/getid3/*</exclude-pattern>
-    <exclude-pattern>*/phpMailer/*</exclude-pattern>
-    <exclude-pattern>*/dompdf/*</exclude-pattern>
-    <exclude-pattern>*/Cezpdf/*</exclude-pattern>
-    <exclude-pattern>*/MobileDetect/*</exclude-pattern> -->
     <exclude-pattern>browsing/include/graph/*</exclude-pattern>
     <exclude-pattern>services/media/*</exclude-pattern>
     <exclude-pattern>upload_file/*</exclude-pattern>
     <exclude-pattern>widgets/cache/*</exclude-pattern>
+    <exclude-pattern>api/*</exclude-pattern>
     <exclude-pattern>*/**/*.css</exclude-pattern>
     <exclude-pattern>*/**/*.js</exclude-pattern>
 
