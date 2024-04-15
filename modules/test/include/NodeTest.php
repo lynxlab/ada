@@ -1,5 +1,63 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Module\Test\TopicTest;
+
+use Lynxlab\ADA\Module\Test\TestTest;
+
+use Lynxlab\ADA\Module\Test\SurveyTest;
+
+use Lynxlab\ADA\Module\Test\RootTest;
+
+use Lynxlab\ADA\Module\Test\QuestionTest;
+
+use Lynxlab\ADA\Module\Test\QuestionStandardTest;
+
+use Lynxlab\ADA\Module\Test\QuestionSlotClozeTest;
+
+use Lynxlab\ADA\Module\Test\QuestionSelectClozeTest;
+
+use Lynxlab\ADA\Module\Test\QuestionOpenUploadTest;
+
+use Lynxlab\ADA\Module\Test\QuestionOpenManualTest;
+
+use Lynxlab\ADA\Module\Test\QuestionOpenAutomaticTest;
+
+use Lynxlab\ADA\Module\Test\QuestionNormalClozeTest;
+
+use Lynxlab\ADA\Module\Test\QuestionMultipleClozeTest;
+
+use Lynxlab\ADA\Module\Test\QuestionMultipleCheckTest;
+
+use Lynxlab\ADA\Module\Test\QuestionMediumClozeTest;
+
+use Lynxlab\ADA\Module\Test\QuestionLikertTest;
+
+use Lynxlab\ADA\Module\Test\QuestionEraseClozeTest;
+
+use Lynxlab\ADA\Module\Test\QuestionDragDropClozeTest;
+
+use Lynxlab\ADA\Module\Test\NullTest;
+
+use Lynxlab\ADA\Module\Test\NodeTest;
+
+use Lynxlab\ADA\Module\Test\AnswerTest;
+
+use Lynxlab\ADA\Module\Test\AMATestDataHandler;
+
+use Lynxlab\ADA\Main\History\NavigationHistory;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+// Trigger: ClassWithNameSpace. The class NodeTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -126,7 +184,7 @@ abstract class NodeTest
      * @access private
      *
      * @param $data id node or database record as array
-     * @return an array with the node's data or an AMA_Error object
+     * @return an array with the node's data or an AMAError object
      */
     private static function readData($data)
     {
@@ -136,13 +194,13 @@ abstract class NodeTest
         if (!is_array($data)) {
             if (intval($data) > 0) {
                 $data = intval($data);
-                $data = $dh->test_getNode($data);
-                if (AMA_DataHandler::isError($data)) {
+                $data = $dh->testGetNode($data);
+                if (AMADataHandler::isError($data)) {
                     return $data;
                 }
             } elseif (!is_array($data) || empty($data)) {
                 //or it's not the record's array
-                return new AMA_Error(AMA_ERR_WRONG_ARGUMENTS);
+                return new AMAError(AMA_ERR_WRONG_ARGUMENTS);
             }
             //then it is the record's array
         }
@@ -150,7 +208,7 @@ abstract class NodeTest
         //eventually clean record's array from fields not compliant
         foreach ($data as $k => $v) {
             if (!property_exists(get_class(), $k)) {
-                return new AMA_Error(AMA_ERR_INCONSISTENT_DATA);
+                return new AMAError(AMA_ERR_INCONSISTENT_DATA);
             }
         }
         return $data;
@@ -163,13 +221,13 @@ abstract class NodeTest
      *
      * @param $data id node or database record as array
      * @param $parent object reference to parent node
-     * @return object relative node object or an AMA_Error object
+     * @return object relative node object or an AMAError object
      */
     public static function readNode($data, $parent = null)
     {
         //read data from database
         $data = self::readData($data);
-        if (is_object($data) && (get_class($data) == 'AMA_Error')) {
+        if (is_object($data) && (get_class($data) == 'AMAError')) {
             return $data;
         } else {
             //and if data is valid, let's check what kind of object we need to instantiate
@@ -250,7 +308,7 @@ abstract class NodeTest
      * @access public
      *
      * @param $data id node
-     * @return the relative nodes structure or an AMA_Error object
+     * @return the relative nodes structure or an AMAError object
      */
     public static function readTest($id_nodo, $dh = null)
     {
@@ -261,8 +319,8 @@ abstract class NodeTest
         //check if $id_nodo param is an integer and retrieve rows from database
         if (intval($id_nodo) > 0) {
             $id_nodo = intval($id_nodo);
-            $data = $dh->test_getNodesByRadix($id_nodo);
-            if (AMA_DataHandler::isError($data)) {
+            $data = $dh->testGetNodesByRadix($id_nodo);
+            if (AMADataHandler::isError($data)) {
                 return $data;
             } else {
                 $objects = [];
@@ -295,13 +353,13 @@ abstract class NodeTest
                 unset($objects);
                 //if $root is still null, the test doesn't exists!
                 if (is_null($root)) {
-                    return new AMA_Error(AMA_ERR_INCONSISTENT_DATA);
+                    return new AMAError(AMA_ERR_INCONSISTENT_DATA);
                 } else {
                     return $root;
                 }
             }
         } else {
-            return new AMA_Error(AMA_ERR_WRONG_ARGUMENTS);
+            return new AMAError(AMA_ERR_WRONG_ARGUMENTS);
         }
     }
 
@@ -311,7 +369,7 @@ abstract class NodeTest
      * @access public
      *
      * @param $child child object
-     * @return the relative nodes structure or an AMA_Error object
+     * @return the relative nodes structure or an AMAError object
      */
     public function addChild(NodeTest $child)
     {
@@ -540,9 +598,9 @@ abstract class NodeTest
         $redirectTo = '';
         $node = null;
         $test_db = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
-        $res = $test_db->test_getNodes(['id_nodo_riferimento' => $nodeObj->id]);
+        $res = $test_db->testGetNodes(['id_nodo_riferimento' => $nodeObj->id]);
 
-        if (!empty($res) && count($res) == 1 && !AMA_DataHandler::isError($res)) {
+        if (!empty($res) && count($res) == 1 && !AMADataHandler::isError($res)) {
             $node = array_shift($res);
         }
 
@@ -556,8 +614,8 @@ abstract class NodeTest
                 }
             }
         } else {
-            $res = $test_db->test_getCourseSurveys(['id_nodo' => $nodeObj->id]);
-            if (!empty($res) && count($res) == 1 && !AMA_DataHandler::isError($res)) {
+            $res = $test_db->testGetCourseSurveys(['id_nodo' => $nodeObj->id]);
+            if (!empty($res) && count($res) == 1 && !AMADataHandler::isError($res)) {
                 $node = array_shift($res);
                 if ($_SESSION['sess_id_user_type'] != AMA_TYPE_AUTHOR) {
                     $redirectTo = MODULES_TEST_HTTP . '/index.php?id_test=' . $node['id_test'];

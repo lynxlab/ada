@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * @package     notifications module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -81,7 +87,7 @@ $needed = [
         'key' => 'nodeId',
         'sanitize' => function ($v) {
             $v = trim($v);
-            return DataValidator::validate_node_id($v) ? $v : null;
+            return DataValidator::validateNodeId($v) ? $v : null;
         },
     ],
 ];
@@ -111,7 +117,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-if (AMA_DB::isError($res) || $res instanceof NotificationException) {
+if (AMADB::isError($res) || $res instanceof NotificationException) {
     // if it's an error display the error message
     $retArray['status'] = "ERROR";
     $retArray['msg'] = $res->getMessage();

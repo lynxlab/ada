@@ -1,5 +1,29 @@
 <?php
 
+use Lynxlab\ADA\Switcher\Subscription;
+
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * confirm.php
  *
@@ -125,7 +149,7 @@ switch ($op) {
 
         $password      = trim($_POST['password']);
         $passwordcheck = trim($_POST['passwordcheck']);
-        if (DataValidator::validate_password($password, $passwordcheck) === false) {
+        if (DataValidator::validatePassword($password, $passwordcheck) === false) {
             $message = translateFN('Le password digitate non corrispondono o contengono caratteri non validi.');
             header("Location: confirm.php?uid=$userid&cid=$id_course&tok=$token&message=$message");
             exit();
@@ -134,7 +158,7 @@ switch ($op) {
         $tokenObj = TokenFinder::findTokenForUserRegistration($userid, $token);
         if ($tokenObj == false) {
             $error_page = HTTP_ROOT_DIR;
-            $errObj = new ADA_Error(
+            $errObj = new ADAError(
                 $requestInfo,
                 translateFN('Impossibile confermare la richiesta di iscrizione'),
                 null,
@@ -230,8 +254,8 @@ switch ($op) {
         /*
          * Data validation
          */
-        $token     = DataValidator::validate_action_token($_GET['tok']);
-        $userid    = DataValidator::is_uinteger($_GET['uid']);
+        $token     = DataValidator::validateActionToken($_GET['tok']);
+        $userid    = DataValidator::isUinteger($_GET['uid']);
 
         if ($token == false || $userid == false) {
             /*
@@ -316,8 +340,8 @@ switch ($op) {
      * Send a new email to the user
      */
             $admtypeAr = [AMA_TYPE_ADMIN];
-            $admList = $common_dh->get_users_by_type($admtypeAr);
-            if (!AMA_DataHandler::isError($admList)) {
+            $admList = $common_dh->getUsersByType($admtypeAr);
+            if (!AMADataHandler::isError($admList)) {
                 $adm_uname = $admList[0]['username'];
             } else {
                 $adm_uname = ""; // ??? FIXME: serve un superadmin nel file di config?
@@ -340,8 +364,8 @@ switch ($op) {
             ];
 
             $mh = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
-            $result = $mh->send_message($message_ha);
-            if (AMA_DataHandler::isError($result)) {
+            $result = $mh->sendMessage($message_ha);
+            if (AMADataHandler::isError($result)) {
                 $title = translateFN('Registration process error');
                 $dati  = translateFN('An error occurred while processing your request. Try later');
             } else {

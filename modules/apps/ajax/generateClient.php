@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * generateClient.php
  *
@@ -63,12 +69,12 @@ $dh = AMAAppsDataHandler::instance();
 /**
  * Check if passed user is a real swithcer
  */
-$userArr = $dh->get_user_info(intval($userID));
+$userArr = $dh->getUserInfo(intval($userID));
 
-if (!AMA_DB::isError($userArr) && $userArr['tipo'] == AMA_TYPE_SWITCHER) {
+if (!AMADB::isError($userArr) && $userArr['tipo'] == AMA_TYPE_SWITCHER) {
     $clientArray = $dh->saveClientIDAndSecret(generateConsumerIdAndSecret(), intval($userArr['id']));
 
-    if (!AMA_DB::isError($clientArray)) {
+    if (!AMADB::isError($clientArray)) {
         $output = CDOMElement::create('div', 'class:appsecret');
         $span = CDOMElement::create('span', 'class:clientIDLabel');
         $span->addChild(new CText('clientID: '));

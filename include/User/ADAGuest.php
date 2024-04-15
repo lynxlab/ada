@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\User\ADAGuest;
+
+use Lynxlab\ADA\Main\User\ADAGenericUser;
+
+// Trigger: ClassWithNameSpace. The class ADAGuest was declared with namespace Lynxlab\ADA\Main\User. //
+
 /**
  * User classes
  *

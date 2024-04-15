@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * Esit tester - this module provides tester editing functionality
  *
@@ -95,51 +113,51 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
      */
     $errorsAr = [];
 
-    if (DataValidator::validate_not_empty_string($_POST['tester_name']) === false) {
+    if (DataValidator::validateNotEmptyString($_POST['tester_name']) === false) {
         $errorsAr['tester_name'] = true;
     }
 
-    if (DataValidator::validate_string($_POST['tester_rs']) === false) {
+    if (DataValidator::validateString($_POST['tester_rs']) === false) {
         $errorsAr['tester_rs'] = true;
     }
 
-    if (DataValidator::validate_not_empty_string($_POST['tester_address']) === false) {
+    if (DataValidator::validateNotEmptyString($_POST['tester_address']) === false) {
         $errorsAr['tester_address'] = true;
     }
 
-    if (DataValidator::validate_not_empty_string($_POST['tester_province']) === false) {
+    if (DataValidator::validateNotEmptyString($_POST['tester_province']) === false) {
         $errorsAr['tester_province'] = true;
     }
 
-    if (DataValidator::validate_not_empty_string($_POST['tester_city']) === false) {
+    if (DataValidator::validateNotEmptyString($_POST['tester_city']) === false) {
         $errorsAr['tester_city'] = true;
     }
 
-    if (DataValidator::validate_not_empty_string($_POST['tester_country']) === false) {
+    if (DataValidator::validateNotEmptyString($_POST['tester_country']) === false) {
         $errorsAr['tester_country'] = true;
     }
 
-    if (DataValidator::validate_phone($_POST['tester_phone']) === false) {
+    if (DataValidator::validatePhone($_POST['tester_phone']) === false) {
         $errorsAr['tester_phone'] = true;
     }
 
-    if (DataValidator::validate_email($_POST['tester_email']) === false) {
+    if (DataValidator::validateEmail($_POST['tester_email']) === false) {
         $errorsAr['tester_email'] = true;
     }
 
-    if (DataValidator::validate_string($_POST['tester_desc']) === false) {
+    if (DataValidator::validateString($_POST['tester_desc']) === false) {
         $errorsAr['tester_desc'] = true;
     }
 
-    if (DataValidator::validate_string($_POST['tester_resp']) === false) {
+    if (DataValidator::validateString($_POST['tester_resp']) === false) {
         $errorsAr['tester_resp'] = true;
     }
 
-    if (DataValidator::validate_testername($_POST['tester_pointer'], MULTIPROVIDER) === false) {
+    if (DataValidator::validateTestername($_POST['tester_pointer'], MULTIPROVIDER) === false) {
         $errorsAr['tester_pointer'] = true;
     }
 
-    if (array_key_exists('tester_iban', $_POST) && strlen(trim($_POST['tester_iban'])) > 0 && DataValidator::validate_iban(trim($_POST['tester_iban'])) === false) {
+    if (array_key_exists('tester_iban', $_POST) && strlen(trim($_POST['tester_iban'])) > 0 && DataValidator::validateIban(trim($_POST['tester_iban'])) === false) {
         $errorsAr['tester_iban'] = true;
     }
 
@@ -150,9 +168,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         unset($_POST['submit']);
         $tester_dataAr = $_POST;
 
-        $result = $common_dh->set_tester($tester_dataAr['tester_id'], $tester_dataAr);
-        if (AMA_Common_DataHandler::isError($result)) {
-            $errObj = new ADA_Error($result);
+        $result = $common_dh->setTester($tester_dataAr['tester_id'], $tester_dataAr);
+        if (AMACommonDataHandler::isError($result)) {
+            $errObj = new ADAError($result);
             $form = new CText('');
         } else {
             header('Location: ' . HTTP_ROOT_DIR . '/admin/tester_profile.php?id_tester=' . $tester_dataAr['tester_id']);
@@ -163,11 +181,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     /*
      * Display the add user form
      */
-    $id_tester = DataValidator::is_uinteger($_GET['id_tester']);
+    $id_tester = DataValidator::isUinteger($_GET['id_tester']);
     if ($id_tester !== false) {
-        $tester_infoAr = $common_dh->get_tester_info_from_id($id_tester);
-        if (AMA_Common_DataHandler::isError($tester_infoAr)) {
-            $errObj = new ADA_Error($tester_infoAr);
+        $tester_infoAr = $common_dh->getTesterInfoFromId($id_tester);
+        if (AMACommonDataHandler::isError($tester_infoAr)) {
+            $errObj = new ADAError($tester_infoAr);
         } else {
             $testersAr = [];
             $tester_dataAr = [

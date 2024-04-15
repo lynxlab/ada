@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * STUDENT EXERCISE HISTORY
  *
@@ -19,7 +39,7 @@ use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Services\Exercise\ExerciseDAO;
 use Lynxlab\ADA\Services\Exercise\ExerciseViewerFactory;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
+use function Lynxlab\ADA\Main\AMA\DBRead\readNodeFromDB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -90,10 +110,10 @@ if (!isset($op)) {
 
 switch ($op) {
     case 'exe':
-        $user_answer = $dh->get_ex_history_info($id_exe);
-        if (AMA_DataHandler::isError($user_answer)) {
+        $user_answer = $dh->getExHistoryInfo($id_exe);
+        if (AMADataHandler::isError($user_answer)) {
             //print("errore");
-            $errObj = new ADA_Error($user_answer, translateFN("Errore nell'ottenimento della risposta utente"));
+            $errObj = new ADAError($user_answer, translateFN("Errore nell'ottenimento della risposta utente"));
         }
 
         $node            = $user_answer['node_id'];
@@ -106,9 +126,9 @@ switch ($op) {
 
         $_SESSION['exercise_object'] = serialize($exercise);
 
-        if (AMA_DataHandler::isError($exercise)) {
+        if (AMADataHandler::isError($exercise)) {
             //print("errore");
-            $errObj = new ADA_Error($exercise, translateFN("Errore nella lettura dell'esercizio"));
+            $errObj = new ADAError($exercise, translateFN("Errore nella lettura dell'esercizio"));
         }
         $viewer  = ExerciseViewerFactory::create($exercise->getExerciseFamily());
         $history = $viewer->getExerciseHtml($exercise);
@@ -119,11 +139,11 @@ switch ($op) {
         // lettura dei dati dal database
         // Seleziona gli esercizi dello studente selezionato nel corso selezionato
 
-        $userObj->get_exercise_dataFN($id_course_instance, $userObj->getId()) ;
+        $userObj->getExerciseDataFN($id_course_instance, $userObj->getId()) ;
 
         // Esercizi svolti e relativi punteggi
         $history .= '<p>';
-        $history .= $userObj->history_ex_done_FN($userObj->id_user, AMA_TYPE_STUDENT, $id_course_instance) ;
+        $history .= $userObj->historyExDoneFN($userObj->id_user, AMA_TYPE_STUDENT, $id_course_instance) ;
         $history .= '</p>';
         $status = translateFN('Esercizi dello studente');
 
@@ -150,9 +170,9 @@ if (!empty($courseInstanceObj->title)) {
 }
 
 if (!is_object($nodeObj)) {
-    $nodeObj = read_node_from_DB($node);
+    $nodeObj = readNodeFromDB($node);
 }
-if (!ADA_Error::isError($nodeObj) and isset($courseObj->id)) {
+if (!ADAError::isError($nodeObj) and isset($courseObj->id)) {
     $_SESSION['sess_id_course'] = $courseObj->id;
     $node_path = $nodeObj->findPathFN();
 }
@@ -163,11 +183,11 @@ if (!ADA_Error::isError($nodeObj) and isset($courseObj->id)) {
  */
 
 if (isset($_SESSION['sess_id_course_instance'])) {
-    $last_access = $userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']), "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(($_SESSION['sess_id_course_instance']), "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 } else {
-    $last_access = $userObj->get_last_accessFN(null, "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(null, "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 }
 if ($last_access == '' || is_null($last_access)) {
     $last_access = '-';

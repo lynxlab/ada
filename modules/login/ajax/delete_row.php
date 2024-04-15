@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * LOGIN MODULE
  *
@@ -10,7 +16,7 @@
  * @version     0.1
  */
 
-use AMA_DB;
+use AMADB;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Login\AMALoginDataHandler;
 
@@ -72,7 +78,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $vowel = 'o';
         }
 
-        if (!AMA_DB::isError($result)) {
+        if (!AMADB::isError($result)) {
             $retArray =  ["status" => "OK", "msg" => translateFN($deletedElement . " cancellat" . $vowel)];
         } else {
             $retArray =  ["status" => "ERROR", "msg" => translateFN("Errore di cancellazione") ];

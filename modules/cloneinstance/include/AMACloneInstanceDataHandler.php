@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Module\CloneInstance\AMACloneInstanceDataHandler;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class AMACloneInstanceDataHandler was declared with namespace Lynxlab\ADA\Module\CloneInstance. //
+
 /**
  * @package     cloneinstance module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -40,27 +52,27 @@ class AMACloneInstanceDataHandler extends AMA_DataHandler
                 $cloneRecap = [];
                 $userId = $_SESSION['sess_userObj']->getID();
                 // ok to clone, load instance data
-                $instanceArr = $this->course_instance_get($sourceInstanceID);
-                if (!AMA_DB::isError($instanceArr)) {
+                $instanceArr = $this->courseInstanceGet($sourceInstanceID);
+                if (!AMADB::isError($instanceArr)) {
                     // get subscritions list from its table
                     $subscriptionArr =  $this->getAllPrepared(
                         "SELECT * FROM `iscrizioni` WHERE `id_istanza_corso`=?",
                         [$sourceInstanceID],
                         AMA_FETCH_ASSOC
                     );
-                    if (!AMA_DB::isError($subscriptionArr)) {
+                    if (!AMADB::isError($subscriptionArr)) {
                         // get tutors list from its table
                         $tutorsList = $this->getAllPrepared(
                             "SELECT * FROM `tutor_studenti` WHERE `id_istanza_corso`=?",
                             [$sourceInstanceID],
                             AMA_FETCH_ASSOC
                         );
-                        if (!AMA_DB::isError($tutorsList)) {
+                        if (!AMADB::isError($tutorsList)) {
                             // so far, so good. clone it!
                             $errMsg = null;
                             $this->beginTransaction();
                             foreach ($destCoursesID as $courseID) {
-                                $instanceID = $this->course_instance_add($courseID, $instanceArr);
+                                $instanceID = $this->courseInstanceAdd($courseID, $instanceArr);
                                 if (\intval($instanceID) > 0) {
                                     // add subscriptions
                                     // this will be modified by inserMultiRow
@@ -78,7 +90,7 @@ class AMACloneInstanceDataHandler extends AMA_DataHandler
                                     } else {
                                         $result = true;
                                     }
-                                    if (!AMA_DB::isError($result)) {
+                                    if (!AMADB::isError($result)) {
                                         // add tutors
                                         // this will be modified by inserMultiRow
                                         $saveTutorsArr = array_map(function ($el) use ($instanceID) {
@@ -95,14 +107,14 @@ class AMACloneInstanceDataHandler extends AMA_DataHandler
                                         } else {
                                             $result = true;
                                         }
-                                        if (!AMA_DB::isError($result)) {
+                                        if (!AMADB::isError($result)) {
                                             // done!
                                             $cloneRecap[] = [
                                                 'instanceId' => (int) $sourceInstanceID,
                                                 'clonedInCourse' => (int) $courseID,
                                                 'clonedInstanceId' => (int) $instanceID,
                                                 'userId' => (int) $userId,
-                                                'cloneTimestamp' => $this->date_to_ts('now'),
+                                                'cloneTimestamp' => $this->dateToTs('now'),
                                             ];
                                         } else {
                                             $errMsg = $result->getMessage();
@@ -130,7 +142,7 @@ class AMACloneInstanceDataHandler extends AMA_DataHandler
                                     ),
                                     array_values($saveRecap)
                                 );
-                                if (AMA_DB::isError($result)) {
+                                if (AMADB::isError($result)) {
                                     $errMsg = $result->getMessage();
                                 }
                             }
@@ -168,11 +180,11 @@ class AMACloneInstanceDataHandler extends AMA_DataHandler
      * @param string $className to use a class from your namespace, this string must start with "\"
      * @param array $whereArr
      * @param array $orderByArr
-     * @param Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
+     * @param AbstractAMADataHandler $dbToUse object used to run the queries. If null, use 'this'
      * @throws CloneInstanceException
      * @return array
      */
-    public function findBy($className, array $whereArr = null, array $orderByArr = null, Abstract_AMA_DataHandler $dbToUse = null)
+    public function findBy($className, array $whereArr = null, array $orderByArr = null, AbstractAMADataHandler $dbToUse = null)
     {
         if (
             stripos($className, '\\') !== 0 &&
@@ -205,7 +217,7 @@ class AMACloneInstanceDataHandler extends AMA_DataHandler
         }
 
         $result = $dbToUse->getAllPrepared($sql, (!is_null($whereArr) && count($whereArr) > 0) ? array_values($whereArr) : [], AMA_FETCH_ASSOC);
-        if (AMA_DB::isError($result)) {
+        if (AMADB::isError($result)) {
             throw new CloneInstanceException($result->getMessage(), (int) $result->getCode());
         } else {
             $retArr = array_map(function ($el) use ($className, $dbToUse) {
@@ -247,10 +259,10 @@ class AMACloneInstanceDataHandler extends AMA_DataHandler
      *
      * @param string $className
      * @param array $orderBy
-     * @param Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
+     * @param AbstractAMADataHandler $dbToUse object used to run the queries. If null, use 'this'
      * @return array
      */
-    public function findAll($className, array $orderBy = null, Abstract_AMA_DataHandler $dbToUse = null)
+    public function findAll($className, array $orderBy = null, AbstractAMADataHandler $dbToUse = null)
     {
         return $this->findBy($className, null, $orderBy, $dbToUse);
     }

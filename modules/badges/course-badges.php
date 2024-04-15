@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\Badges\Badge;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use function \translateFN;
+
 /**
  * @package     badges module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -58,7 +66,7 @@ $cdh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_select
 
 if (BadgesActions::canDo(BadgesActions::BADGE_COURSE_LINK)) {
     $badges = $GLOBALS['dh']->findAll('Badge');
-    $rulesList = $cdh->get_completeConditionSetList();
+    $rulesList = $cdh->getCompleteConditionSetList();
     $cbForm = new CourseBadgeForm($badges, $rulesList, 'cbform', null, $courseObj->getId());
     $badgesIndexDIV->addChild(new CText($cbForm->toSemanticUI()->getHtml()));
 }

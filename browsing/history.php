@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Main\User\ADAUser;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\Node\Media;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * File history.php
  *
@@ -87,7 +109,7 @@ if ($userObj->tipo == AMA_TYPE_STUDENT && ($self_instruction)) {
 }
 
 if ($userObj instanceof ADALoggableUser) {
-    $last_visited_node_id = $userObj->get_last_accessFN($sess_id_course_instance, 'N');
+    $last_visited_node_id = $userObj->getLastAccessFN($sess_id_course_instance, 'N');
     if (!empty($last_visited_node_id)) {
         $last_node_visited = '<a href="view.php?id_node=' . $last_visited_node_id . '">'
                 . translateFN('torna') . '</a>';
@@ -97,9 +119,9 @@ if ($userObj instanceof ADALoggableUser) {
     /*
      * Retrieve student's data
      */
-    $userObj->set_course_instance_for_history($sess_id_course_instance);
+    $userObj->setCourseInstanceForHistory($sess_id_course_instance);
     $user_historyObj = $userObj->getHistoryInCourseInstance($sess_id_course_instance);
-    $visited_nodes_table = $user_historyObj->history_nodes_visited_FN();
+    $visited_nodes_table = $user_historyObj->historyNodesVisitedFN();
     $history = '';
     if (isset($op) && $op == 'list') {
         // Nodi visitati e numero di visite per ciascun nodo
@@ -109,12 +131,12 @@ if ($userObj instanceof ADALoggableUser) {
     } else {
         // Sommario
         $history .= '<p align="center">';
-        $history .= $user_historyObj->history_summary_FN($sess_id_course);
+        $history .= $user_historyObj->historySummaryFN($sess_id_course);
         $history .= '</p>';
         // Percentuale nodi visitati
         $history .= '<p align="center">';
         $history .= translateFN('Percentuale nodi visitati/totale: ');
-        $nodes_percent = $user_historyObj->history_nodes_visitedpercent_FN() . '%';
+        $nodes_percent = $user_historyObj->historyNodesVisitedpercentFN() . '%';
         $history .= '<b>' . $nodes_percent . '</b>';
         $history .= '</p>';
         // grafico
@@ -124,10 +146,10 @@ if ($userObj instanceof ADALoggableUser) {
         // Tempo di visita nodi
         $history .= '<p align="center">';
         $history .= translateFN('Tempo totale di visita dei nodi (in ore:minuti): ');
-        $history .= '<b>' . $user_historyObj->history_nodes_time_FN() . '</b><br />';
+        $history .= '<b>' . $user_historyObj->historyNodesTimeFN() . '</b><br />';
         // Media di visita nodi
         $history .= translateFN('Tempo medio di visita dei nodi (in minuti:secondi): ');
-        $history .= '<b>' . $user_historyObj->history_nodes_average_FN() . '</b>';
+        $history .= '<b>' . $user_historyObj->historyNodesAverageFN() . '</b>';
         $history .= '</p>';
         // Exercises, messages, notes ...
         $npar = 7; // notes
@@ -135,7 +157,7 @@ if ($userObj instanceof ADALoggableUser) {
         $mpar = 5; //messages
         $epar = 3; // exercises
 
-        $userObj->get_exercise_dataFN($sess_id_course_instance, $sess_id_user);
+        $userObj->getExerciseDataFN($sess_id_course_instance, $sess_id_user);
         $st_exercise_dataAr = $userObj->user_ex_historyAr;
         $st_score = 0;
         $st_exer_number = 0;
@@ -146,12 +168,12 @@ if ($userObj instanceof ADALoggableUser) {
             }
         }
 
-        $sub_courses = $dh->get_subscription($sess_id_user, $sess_id_course_instance);
+        $sub_courses = $dh->getSubscription($sess_id_user, $sess_id_course_instance);
         if ($sub_courses['tipo'] == ADA_STATUS_SUBSCRIBED) {
             $out_fields_ar = ['nome', 'titolo', 'id_istanza', 'data_creazione'];
             $clause = "TIPO = " . ADA_NOTE_TYPE . " AND ID_UTENTE = $sess_id_user";
             $clause .= " AND ID_ISTANZA = " . $sess_id_course_instance;
-            $nodes = $dh->find_course_nodes_list($out_fields_ar, $clause, $sess_id_course);
+            $nodes = $dh->findCourseNodesList($out_fields_ar, $clause, $sess_id_course);
             $added_nodes_count = count($nodes);
             $added_notes = $added_nodes_count;
         } else {
@@ -159,7 +181,7 @@ if ($userObj instanceof ADALoggableUser) {
         }
 
         $st_history_count = '0';
-        $st_history_count = $userObj->total_visited_nodesFN($sess_id_user);
+        $st_history_count = $userObj->totalVisitedNodesFN($sess_id_user);
         $st_exercises = $st_score . " " . translateFN("su") . " " . ($st_exer_number * 100);
         // summary of activities
         $history .= '<p align="center">';
@@ -168,7 +190,7 @@ if ($userObj instanceof ADALoggableUser) {
         $history .= translateFN('Note inviate:') . '&nbsp;<strong>' . $added_notes . '</strong>&nbsp;';
         // messages
         $msgs_ha = MultiPort::getUserSentMessages($userObj);
-        if (AMA_DataHandler::isError($msgs_ha)) {
+        if (AMADataHandler::isError($msgs_ha)) {
             $user_message_count = '-';
         } else {
             $user_message_count = count($msgs_ha);
@@ -180,7 +202,7 @@ if ($userObj instanceof ADALoggableUser) {
         $history .= '<p align="center">';
         // Ultime 10 visite
         $history .= '<p>';
-        $history .= $user_historyObj->history_last_nodes_FN('10');
+        $history .= $user_historyObj->historyLastNodesFN('10');
         $history = preg_replace('/class="/', 'class="historytable ' . ADA_SEMANTICUI_TABLECLASS . ' ', $history, 1); // replace first occurence of class
         $history .= '</p>';
     }
@@ -193,11 +215,11 @@ if ($userObj instanceof ADALoggableUser) {
  */
 
 if (isset($_SESSION['sess_id_course_instance'])) {
-    $last_access = $userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']), "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(($_SESSION['sess_id_course_instance']), "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 } else {
-    $last_access = $userObj->get_last_accessFN(null, "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(null, "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 }
 if ($last_access == '' || is_null($last_access)) {
     $last_access = '-';

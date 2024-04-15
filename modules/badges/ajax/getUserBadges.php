@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\Badges\RewardedBadge;
+
+use Lynxlab\ADA\Module\Badges\CourseBadge;
+
+use Lynxlab\ADA\Module\Badges\Badge;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
 /**
  * @package     badges module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -67,11 +75,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
          * - zero value in IsPublic and the service level in the $GLOBALS['userHiddenServiceTypes'] array, to hide autosubscription instances
          */
         if (is_null($userId) && isset($params['courseInstanceId'])) {
-            $courseInstances = $bdh->get_instance_with_course($params['courseInstanceId']);
+            $courseInstances = $bdh->getInstanceWithCourse($params['courseInstanceId']);
         } else {
-            $courseInstances = $bdh->get_course_instances_for_this_student($userId, true);
+            $courseInstances = $bdh->getCourseInstancesForThisStudent($userId, true);
         }
-        if (\AMA_DB::isError($courseInstances)) {
+        if (\AMADB::isError($courseInstances)) {
             $courseInstances = [];
         }
         $courseInstances = array_filter($courseInstances, function ($courseInstance) {
@@ -110,7 +118,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             // load all the badges for this course
             $courseBadges = $bdh->findBy('CourseBadge', ['id_corso' => $courseId]);
 
-            if (!AMA_DB::isError($courseBadges) && is_array($courseBadges) && count($courseBadges) > 0) {
+            if (!AMADB::isError($courseBadges) && is_array($courseBadges) && count($courseBadges) > 0) {
                 if (!array_key_exists($courseId, $badges)) {
                     $badges[$courseId] = [
                         'course' => [
@@ -132,9 +140,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                  * @var \Lynxlab\ADA\Module\Badges\CourseBadge $cb
                  */
                 foreach ($courseBadges as $cb) {
-                    $badge = $bdh->findBy('Badge', [ 'uuid' => $cb->getBadge_uuid() ]);
+                    $badge = $bdh->findBy('Badge', [ 'uuid' => $cb->getBadgeUuid() ]);
                     $issuedOn = null;
-                    if (!AMA_DB::isError($badge) && is_array($badge) && count($badge) === 1) {
+                    if (!AMADB::isError($badge) && is_array($badge) && count($badge) === 1) {
                         /**
                          * @var \Lynxlab\ADA\Module\Badges $badge
                          */
@@ -147,7 +155,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                                 'id_istanza_corso' => $courseInstanceId,
                                 'approved' => 1,
                             ]);
-                            if (!AMA_DB::isError($reward) && is_array($reward) && count($reward) === 1) {
+                            if (!AMADB::isError($reward) && is_array($reward) && count($reward) === 1) {
                                 /**
                                  * @var \Lynxlab\ADA\Module\Badges\RewardedBadge $reward
                                  */

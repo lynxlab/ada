@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\EtherpadIntegration\Groups;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * @package     studentsgroups module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -56,7 +64,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     // try to save it
     $res = $GLOBALS['dh']->saveGroup($_POST);
 
-    if (AMA_DB::isError($res) || $res instanceof StudentsGroupsException) {
+    if (AMADB::isError($res) || $res instanceof StudentsGroupsException) {
         // if it's an error display the error message
         $retArray['status'] = "ERROR";
         $retArray['msg'] = $res->getMessage();
@@ -79,7 +87,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_GET['id']) && intval($_GET['id']) > 0) {
         // try to load
         $res = $GLOBALS['dh']->findBy('Groups', [ 'id' => intval(trim($_GET['id'])) ]);
-        if (!AMA_DB::isError($res) && is_array($res) && count($res) === 1) {
+        if (!AMADB::isError($res) && is_array($res) && count($res) === 1) {
             $group = reset($res);
             // display the form with loaded data
             $form = new GroupForm('editgroup', null, $group);
@@ -89,7 +97,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             // if it's an error display the error message without the form
             $retArray['status'] = "ERROR";
-            $retArray['msg'] = AMA_DB::isError($res) ? $res->getMessage() : translateFN('Errore caricamento gruppo');
+            $retArray['msg'] = AMADB::isError($res) ? $res->getMessage() : translateFN('Errore caricamento gruppo');
         }
     } else {
         /**

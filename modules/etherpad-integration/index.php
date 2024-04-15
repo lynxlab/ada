@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * @package     etherpad module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -58,13 +68,13 @@ try {
     } else {
         $nodeId = trim($_REQUEST['id_node']);
         $data = '';
-        if ($nodeId !== Pads::INSTANCEPADID && false === DataValidator::validate_node_id($nodeId)) {
+        if ($nodeId !== Pads::INSTANCEPADID && false === DataValidator::validateNodeId($nodeId)) {
             throw new EtherpadException('ID nodo non valido');
         } else {
             if ($nodeId !== Pads::INSTANCEPADID) {
                 // check that passed node exists
-                $nodeData = $etDH->get_node_info($nodeId);
-                if (AMA_DB::isError($nodeData)) {
+                $nodeData = $etDH->getNodeInfo($nodeId);
+                if (AMADB::isError($nodeData)) {
                     throw new EtherpadException('ID nodo non valido');
                 }
                 $padName = sprintf(translateFN(Pads::NODEPADNAME), $nodeData['name']);
@@ -102,7 +112,7 @@ try {
 
 $online_users_listing_mode = 2;
 $id_course_instance = $courseInstanceObj->getId();
-$online_users = ADALoggableUser::get_online_usersFN($id_course_instance, $online_users_listing_mode);
+$online_users = ADALoggableUser::getOnlineUsersFN($id_course_instance, $online_users_listing_mode);
 
 $content_dataAr = [
     'course_title' => $courseObj->getTitle() . ' &gt; ' . $courseInstanceObj->getTitle() . (strlen($padName) > 0 ? ' &gt; ' . ucwords(translateFN($padName)) : ''),
@@ -120,7 +130,7 @@ $content_dataAr = [
 
 $backNode = false;
 if (array_key_exists('sess_id_node', $_SESSION)) {
-    $backNode = DataValidator::validate_node_id($_SESSION['sess_id_node']);
+    $backNode = DataValidator::validateNodeId($_SESSION['sess_id_node']);
 }
 $content_dataAr['go_back'] = $backNode === false ? 'javascript:history.go(-1);' : HTTP_ROOT_DIR . '/browsing/view.php?id_node=' . $backNode;
 

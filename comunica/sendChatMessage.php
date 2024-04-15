@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\MultiPort;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * send chat message
  *
@@ -19,7 +37,7 @@ use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\Comunica\DataHandler\UserDataHandler;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 
-use function Lynxlab\ADA\Comunica\Functions\exitWith_JSON_Error;
+use function Lynxlab\ADA\Comunica\Functions\exitWithJSONError;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -92,7 +110,7 @@ ComunicaHelper::init($neededObjAr);
  * If not, stop script execution and report an error to the caller.
  */
 if (!isset($_POST['chatroom']) || !isset($_POST['message_to_send'])) {
-    exitWith_JSON_Error(translateFN("Errore: parametri passati allo script PHP non corretti, "));
+    exitWithJSONError(translateFN("Errore: parametri passati allo script PHP non corretti, "));
 }
 /*
  * Get the chatroom id
@@ -104,13 +122,13 @@ $id_chatroom = $_POST['chatroom'];
 $message_to_send = $_POST['message_to_send'];
 
 $mh = MessageHandler::instance($_SESSION['sess_selected_tester_dsn']);
-if (AMA_DataHandler::isError($mh)) {
-    exitWith_JSON_Error(translateFN("Errore nella creazione dell'oggetto MessageHandler"));
+if (AMADataHandler::isError($mh)) {
+    exitWithJSONError(translateFN("Errore nella creazione dell'oggetto MessageHandler"));
 }
 
 $chatroomObj = new ChatRoom($id_chatroom, $_SESSION['sess_selected_tester_dsn']);
-if (AMA_DataHandler::isError($chatroomObj)) {
-    exitWith_JSON_Error(translateFN("Errore nella creazione della chatroom"));
+if (AMADataHandler::isError($chatroomObj)) {
+    exitWithJSONError(translateFN("Errore nella creazione della chatroom"));
 }
 
 session_write_close();
@@ -121,16 +139,16 @@ $testo = $message_to_send;
 $errors = [];
 
 // get the status of the user into the current chatroom
-$user_status = $chatroomObj->get_user_statusFN($sess_id_user, $id_chatroom);
-if (AMA_DataHandler::isError($user_status)) {
-    exitWith_JSON_Error(translateFN("Errore nell'ottenimento delle informazioni sullo stato dell'utente nella chatroom"));
+$user_status = $chatroomObj->getUserStatusFN($sess_id_user, $id_chatroom);
+if (AMADataHandler::isError($user_status)) {
+    exitWithJSONError(translateFN("Errore nell'ottenimento delle informazioni sullo stato dell'utente nella chatroom"));
 }
 
 if ($user_status == STATUS_MUTE) {
-    exitWith_JSON_Error(translateFN("Non hai il permesso di parlare in questa stanza!"));
+    exitWithJSONError(translateFN("Non hai il permesso di parlare in questa stanza!"));
 }
 if ($user_status == STATUS_BAN) {
-    exitWith_JSON_Error(translateFN("Sei stato allontanato da questa stanza!"), 2);
+    exitWithJSONError(translateFN("Sei stato allontanato da questa stanza!"), 2);
 }
 /*
  * Distinguish public from private message
@@ -169,15 +187,15 @@ if (
 
     //  $udh = UserDataHandler::instance(MultiPort::getDSN($sess_selected_tester));
     $udh = UserDataHandler::instance($_SESSION['sess_selected_tester_dsn']);
-    if (AMA_DataHandler::isError($udh)) {
-        exitWith_JSON_Error(translateFN("Errore nella creazione dell'oggetto UserDataHandler"));
+    if (AMADataHandler::isError($udh)) {
+        exitWithJSONError(translateFN("Errore nella creazione dell'oggetto UserDataHandler"));
     }
 
     // verify that the user typed a correct username
-    $res_ar = $udh->find_users_list([], "username='$receiver_name'");
+    $res_ar = $udh->findUsersList([], "username='$receiver_name'");
 
-    if (AMA_DataHandler::isError($res_ar)) {
-        exitWith_JSON_Error(translateFN("Errore nella lettura dello username del destinatario del messaggio privato"));
+    if (AMADataHandler::isError($res_ar)) {
+        exitWithJSONError(translateFN("Errore nella lettura dello username del destinatario del messaggio privato"));
     }
 
     // getting only user_id
@@ -211,10 +229,10 @@ if (count($errors) == 0) {
     $message_ha['id_group'] = $id_chatroom;
 
     // delegate sending to the message handler
-    $res = $mh->send_message($message_ha);
-    if (AMA_DataHandler::isError($res)) {
+    $res = $mh->sendMessage($message_ha);
+    if (AMADataHandler::isError($res)) {
         $code = $res->errorMessage();
-        exitWith_JSON_Error(translateFN("Errore nell'invio del messaggio $code"));
+        exitWithJSONError(translateFN("Errore nell'invio del messaggio $code"));
     }
 }// end if count
 

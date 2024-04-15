@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Module\Test\TopicFormTest;
+
+use Lynxlab\ADA\Module\Test\FormTest;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class TopicFormTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  *
  * @package
@@ -46,7 +56,7 @@ class TopicFormTest extends FormTest
         $this->setCustomJavascript($js);
 
         //parent
-        $nodes = $dh->test_getNodesByParent($this->id_test, $this->id_test);
+        $nodes = $dh->testGetNodesByParent($this->id_test, $this->id_test);
         $options = [
             $this->id_test => $nodes[$this->id_test]['titolo'] . ' (' . $nodes[$this->id_test]['nome'] . ')',
         ];
@@ -75,7 +85,7 @@ class TopicFormTest extends FormTest
             } else {
                 $defaultValue = translateFN('argomento') . ' ';
             }
-            $res = $dh->test_getNodesByRadix($this->id_test);
+            $res = $dh->testGetNodesByRadix($this->id_test);
             if ($dh->isError($res) || empty($res)) {
                 $defaultValue .= 1;
             } else {

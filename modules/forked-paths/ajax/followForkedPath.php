@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 use Lynxlab\ADA\Module\ForkedPaths\AMAForkedPathsDataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
@@ -59,10 +67,10 @@ if (array_key_exists('fromId', $postParams) && array_key_exists('toId', $postPar
             throw new ForkedPathsException(translateFN('Nodo di destinazione non è storia a bivi'));
         }
 
-        $userLevel = (int) $userObj->get_student_level($userObj->getId(), $courseInstanceObj->getId());
+        $userLevel = (int) $userObj->getStudentLevel($userObj->getId(), $courseInstanceObj->getId());
 
         if ((int) $toNode->level == $userLevel + 1) {
-            if (AMA_DataHandler::isError($GLOBALS['dh']->set_student_level($courseInstanceObj->getId(), [$userObj->getId()], $toNode->level))) {
+            if (AMADataHandler::isError($GLOBALS['dh']->setStudentLevel($courseInstanceObj->getId(), [$userObj->getId()], $toNode->level))) {
                 throw new ForkedPathsException(translateFN("Errore nell'aggiornamento del livello utente"));
             }
         } elseif ((int) $toNode->level > $userLevel + 1) {
@@ -82,7 +90,7 @@ if (array_key_exists('fromId', $postParams) && array_key_exists('toId', $postPar
     }
 }
 
-$error = AMA_DB::isError($result) || $result instanceof \Exception;
+$error = AMADB::isError($result) || $result instanceof \Exception;
 
 if ($error === true) {
     header(' ', true, 400);

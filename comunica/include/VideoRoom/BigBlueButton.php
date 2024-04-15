@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
+
+use Lynxlab\ADA\Comunica\VideoRoom\IVideoRoom;
+
 namespace Lynxlab\ADA\Comunica\VideoRoom;
 
 use BigBlueButton\Parameters\JoinMeetingParameters;
@@ -66,13 +70,13 @@ class BigBlueButton extends VideoRoom implements IVideoRoom
         }
     }
 
-    public function videoroom_info($id_course_instance, $tempo_avvio = null, $interval = null, $more_query = null)
+    public function videoroomInfo($id_course_instance, $tempo_avvio = null, $interval = null, $more_query = null)
     {
         // load parent info
         if (is_null($more_query)) {
             $more_query = 'AND `tipo_videochat`="' . self::VIDEOCHATTYPE . '" ORDER BY `tempo_avvio` DESC';
         }
-        parent::videoroom_info($id_course_instance, $tempo_avvio, $interval, $more_query);
+        parent::videoroomInfo($id_course_instance, $tempo_avvio, $interval, $more_query);
         // load BigBlueButton own info and check that meeting does exists
         $video_roomAr = $this->bbbAPI->getInfo($this->id);
         $this->meetingID = null;

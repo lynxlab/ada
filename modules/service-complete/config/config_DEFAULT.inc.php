@@ -1,5 +1,7 @@
 <?php
 
+use Lynxlab\ADA\Main\Service\Service;
+
 /**
  * SERVICE-COMPLETE MODULE.
  *

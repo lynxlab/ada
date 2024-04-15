@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use function \translateFN;
+
 /**
  *
  * @package     user
@@ -80,11 +88,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     unset($_SESSION[GdprPolicy::SESSIONKEY]);
     if (isset($p_login) || (isset($selectedLoginProvider) && strlen($selectedLoginProvider) > 0)) {
         if (isset($p_login)) {
-            $username = DataValidator::validate_username($p_username);
-            $password = DataValidator::validate_password($p_password, $p_password);
+            $username = DataValidator::validateUsername($p_username);
+            $password = DataValidator::validatePassword($p_password, $p_password);
         } else {
-            $username = DataValidator::validate_not_empty_string($p_username);
-            $password = DataValidator::validate_not_empty_string($p_password);
+            $username = DataValidator::validateNotEmptyString($p_username);
+            $password = DataValidator::validateNotEmptyString($p_password);
         }
 
         if (!isset($p_remindme)) {

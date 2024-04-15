@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Module\Test\QuestionOpenFormTest;
+
+use Lynxlab\ADA\Module\Test\QuestionFormTest;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class QuestionOpenFormTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  *
  * @package
@@ -20,7 +30,7 @@ class QuestionOpenFormTest extends QuestionFormTest
 {
     protected function content()
     {
-        $this->common_elements();
+        $this->commonElements();
 
         //punteggio massimo
         if (isset($this->data['correttezza'])) {

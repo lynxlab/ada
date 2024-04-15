@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
 /**
  * SERVICE-COMPLETE MODULE.
  *
@@ -77,7 +81,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 
     if ($courseId > 0 && $instanceId > 0 && $studentId > 0) {
         // load the conditionset for this course
-        $conditionSet = $GLOBALS['dh']->get_linked_conditionset_for_course($courseId);
+        $conditionSet = $GLOBALS['dh']->getLinkedConditionsetForCourse($courseId);
         if ($conditionSet instanceof CompleteConditionSet) {
             $condString = $conditionSet->toString();
             if (strlen($condString) > 0) {

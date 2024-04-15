@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Stack\Stack;
+
+use Lynxlab\ADA\Main\Stack\RBStack;
+
+// Trigger: ClassWithNameSpace. The class RBStack was declared with namespace Lynxlab\ADA\Main\Stack. //
+
 /**
  *
  * @author
@@ -12,7 +18,7 @@
 /**
  * RBStack is a class which extends the Stack class and allows a more refined handling
  * of transactions. In particular nested transactions are possible by use of the markers.
- * If a begin_transaction is called and the rollback stack is not empty,
+ * If a beginTransaction is called and the rollback stack is not empty,
  * then a marker is set to sign the point where a rollback must stop or
  * the point untill the rollback segment must be deleted in a commit instruction.
  * After the rollback or the commit, the marker is released.
@@ -45,7 +51,7 @@ class RBStack extends Stack
      * @access public
      *
      */
-    public function insert_marker()
+    public function insertMarker()
     {
         $pos = sizeof($this->stack_ar);
         if ($pos != 0) {
@@ -61,7 +67,7 @@ class RBStack extends Stack
      * @return the value of the marker or zero if empty
      *
      */
-    public function remove_marker()
+    public function removeMarker()
     {
         if (!$this->marker_ar->isEmpty()) {
             return $this->marker_ar->pop();

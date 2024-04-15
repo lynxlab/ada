@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * ADMIN.
  *
@@ -88,8 +104,8 @@ $testersData_Ar = [];
 $log_dataAr = [];
 
 if ($userObj->getType() == AMA_TYPE_ADMIN) {
-    $Services_TypeAr = $GLOBALS['dh']->get_service_type($userObj->getId());
-    if (!empty($Services_TypeAr) && !AMA_DB::isError($Services_TypeAr)) {
+    $Services_TypeAr = $GLOBALS['dh']->getServiceType($userObj->getId());
+    if (!empty($Services_TypeAr) && !AMADB::isError($Services_TypeAr)) {
         foreach ($Services_TypeAr as $service) {
             if (isset($service['livello_servizio']) && isset($service['nome_servizio'])) {
                 $Services_Type[$service['livello_servizio']] = translateFN($service['nome_servizio']);

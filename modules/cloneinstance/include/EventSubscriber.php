@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\CloneInstance\EventSubscriber;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class EventSubscriber was declared with namespace Lynxlab\ADA\Module\CloneInstance. //
+
 /**
  * @package     cloneinstance module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -53,7 +61,7 @@ class EventSubscriber implements EventSubscriberInterface
     {
         if (false !== stristr($_SERVER['SCRIPT_FILENAME'], MODULES_CLONEINSTANCE_PATH)) {
             $menu = $event->getSubject();
-            $left = $menu->get_leftItemsArray();
+            $left = $menu->getLeftItemsArray();
             $item = [
                 'item_id' => null,
                 'label' => 'Indietro',
@@ -74,7 +82,7 @@ class EventSubscriber implements EventSubscriberInterface
             ];
             // Insert item at 2nd position, i.e. after Home
             array_splice($left, 1, 0, [$item]);
-            $menu->set_leftItemsArray($left);
+            $menu->setLeftItemsArray($left);
         }
     }
 }

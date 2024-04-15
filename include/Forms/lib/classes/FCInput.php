@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Forms\lib\classes\FormControl;
+
+use Lynxlab\ADA\Main\Forms\lib\classes\FCInput;
+
+// Trigger: ClassWithNameSpace. The class FCInput was declared with namespace Lynxlab\ADA\Main\Forms\lib\classes. //
+
 /**
  * FCInput file
  *

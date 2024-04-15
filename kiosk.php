@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use function \translateFN;
+
 /**
  * index.
  *
@@ -123,8 +129,8 @@ if ($infomsg == '') {
  * Perform login
  */
 if (isset($p_login)) {
-    $username = DataValidator::validate_username($p_username);
-    $password = DataValidator::validate_password($p_password, $p_password);
+    $username = DataValidator::validateUsername($p_username);
+    $password = DataValidator::validatePassword($p_password, $p_password);
 
     if ($username !== false && $password !== false) {
         $userObj = MultiPort::loginUser($username, $password);

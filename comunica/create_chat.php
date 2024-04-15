@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * create_chat.php
  *
@@ -125,11 +145,11 @@ if($id_profile == AMA_TYPE_TUTOR){
  */
 
 $actual_date = time();
-$actual_start_time = AMA_DataHandler::ts_to_date($actual_date, "%H:%M:%S");
-$actual_start_day = AMA_DataHandler::ts_to_date($actual_date, "%d/%m/%y");
+$actual_start_time = AMADataHandler::tsToDate($actual_date, "%H:%M:%S");
+$actual_start_day = AMADataHandler::tsToDate($actual_date, "%d/%m/%y");
 $default_end_date = time() + SHUTDOWN_CHAT_TIME;
-$default_end_time = AMA_DataHandler::ts_to_date($default_end_date, "%H:%M:%S");
-$default_end_day = AMA_DataHandler::ts_to_date($default_end_date, "%d/%m/%y");
+$default_end_time = AMADataHandler::tsToDate($default_end_date, "%H:%M:%S");
+$default_end_day = AMADataHandler::tsToDate($default_end_date, "%d/%m/%y");
 // default max users numebr
 $default_max_users = DEFAULT_MAX_USERS;
 // default course instance value
@@ -335,14 +355,14 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         } else {
             // transfrom username's into user's_id
             $owner_name = $_POST['chat_owner'];
-            $res_ar = $udh->find_users_list([], "username='$owner_name'");
-            if (AMA_DataHandler::isError($res_ar)) {
-                return new AMA_Error(AMA_ERR_READ_MSG);
+            $res_ar = $udh->findUsersList([], "username='$owner_name'");
+            if (AMADataHandler::isError($res_ar)) {
+                return new AMAError(AMA_ERR_READ_MSG);
             }
             // getting only user_id
             $id_chat_owner = $res_ar[0][0];
             // we get the info of the user
-            $user_info = $dh->get_user_info($id_chat_owner);
+            $user_info = $dh->getUserInfo($id_chat_owner);
             // we get the type of the user
             $owner_type = $user_info['tipo'];
             // we verify if the typed username from the user is a valid username
@@ -388,7 +408,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $chatroom_ha['id_course_instance'] = $_POST['id_course_instance'];
 
             // add chatroom_ha to the database
-            $chatroom = Chatroom::add_chatroomFN($chatroom_ha);
+            $chatroom = Chatroom::addChatroomFN($chatroom_ha);
 
             if (!is_object($chatroom)) {
                 // the chatroom id
@@ -398,7 +418,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 // the link to the chatroom
                 $chatroom_link = "../comunica/ada_chat.php?id_chatroom=$id_chatroom";
                 // invites him self into the chatroom
-                $add_himself = $chatroomObj->add_user_chatroomFN($sess_id_user, $sess_id_user, $id_chatroom, ACTION_INVITE, STATUS_INVITED);
+                $add_himself = $chatroomObj->addUserChatroomFN($sess_id_user, $sess_id_user, $id_chatroom, ACTION_INVITE, STATUS_INVITED);
                 // message display
                 $err_msg = translateFN("<b>La chatroom e' stata creata con successo!</b>");
                 // construct link for edit the chat if needed

@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\Node\Media;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * Media Manager
  *
@@ -14,7 +26,7 @@
  * @version     0.1
  */
 
-use function Lynxlab\ADA\Comunica\Functions\exitWith_JSON_Error;
+use function Lynxlab\ADA\Comunica\Functions\exitWithJSONError;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -51,13 +63,13 @@ $self = whoami();
 
 if ($op == 'read') {
     if (!isset($_POST['nome_file']) || !isset($_POST['id_utente'])) {
-        exitWith_JSON_Error(translateFN('Errore: parametri passati allo script PHP non corretti'));
+        exitWithJSONError(translateFN('Errore: parametri passati allo script PHP non corretti'));
     }
     $filename = $_POST['nome_file'];
     $author_id = $_POST['id_utente'];
-    $media_found = $dh->get_risorsa_esterna_info_autore($filename, $author_id);
-    if (AMA_DataHandler::isError($media_found) and $media_found->code == AMA_ERR_GET) {
-        exitWith_JSON_Error(translateFN('Errore: Media non trovato'));
+    $media_found = $dh->getRisorsaEsternaInfoAutore($filename, $author_id);
+    if (AMADataHandler::isError($media_found) and $media_found->code == AMA_ERR_GET) {
+        exitWithJSONError(translateFN('Errore: Media non trovato'));
     }
     print(json_encode($media_found));
 } elseif (!isset($op) || $op = 'insert' || $op == 'update') {
@@ -66,7 +78,7 @@ if ($op == 'read') {
      * If not, stop script execution and report an error to the caller.
      */
     if (!isset($_POST['nome_file']) || !isset($_POST['tipo']) || !isset($_POST['id_utente'])) {
-        exitWith_JSON_Error(translateFN('Errore: parametri passati allo script PHP non corretti'));
+        exitWithJSONError(translateFN('Errore: parametri passati allo script PHP non corretti'));
     }
 
     $filename  = $_POST['nome_file'];
@@ -94,26 +106,26 @@ if ($op == 'read') {
     $res_ha['pubblicato'] = $pubblicato;
     $res_ha['lingua'] = $lingua;
 
-    $media_found = $dh->get_risorsa_esterna_info_autore($filename, $author_id);
-    if (AMA_DataHandler::isError($media_found) and $media_found->code == AMA_ERR_NOT_FOUND) {
+    $media_found = $dh->getRisorsaEsternaInfoAutore($filename, $author_id);
+    if (AMADataHandler::isError($media_found) and $media_found->code == AMA_ERR_NOT_FOUND) {
         $op = 'insert';
-        $id_res_ext = $dh->add_only_in_risorsa_esterna($res_ha);
-        if (AMA_DataHandler::isError($id_res_ext)) {
-            exitWith_JSON_Error(translateFN("Errore nell'inserimento del media"));
+        $id_res_ext = $dh->addOnlyInRisorsaEsterna($res_ha);
+        if (AMADataHandler::isError($id_res_ext)) {
+            exitWithJSONError(translateFN("Errore nell'inserimento del media"));
         }
         $response = [];
         $response['result'] = 'Inserimento media riuscito';
     } elseif (isset($media_found['id_risorsa_ext'])) {
         $op = 'update';
         $id_res_ext = $media_found['id_risorsa_ext'];
-        $update_media = $dh->set_risorsa_esterna($id_res_ext, $res_ha);
-        if (AMA_DataHandler::isError($update_media)) {
-            exitWith_JSON_Error(translateFN("Errore nell'aggiornamento del media"));
+        $update_media = $dh->setRisorsaEsterna($id_res_ext, $res_ha);
+        if (AMADataHandler::isError($update_media)) {
+            exitWithJSONError(translateFN("Errore nell'aggiornamento del media"));
         }
         $response = [];
         $response['result'] = 'Aggiornamento media riuscito';
     } else {
-        if (AMA_DataHandler::isError($media_found) and $media_found->code == AMA_ERR_GET) {
+        if (AMADataHandler::isError($media_found) and $media_found->code == AMA_ERR_GET) {
             $response = [];
             $response['result'] = 'Errore AMA ';
         }

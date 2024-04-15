@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Admin\AdminUtils;
+
+use function \translateFN;
+
 /**
  * View user - this module shows the profile of an existing user
  *
@@ -88,7 +108,7 @@ include_once ROOT_DIR . '/admin/include/AdminUtils.inc.php';
  */
 $userId = false;
 if ($_SESSION['sess_userObj']->getType() == AMA_TYPE_SWITCHER) {
-    $userId = DataValidator::is_uinteger($_GET['id_user']);
+    $userId = DataValidator::isUinteger($_GET['id_user']);
 }
 
 if ($userId === false && isset($_SESSION['sess_userObj']) && $_SESSION['sess_userObj'] instanceof ADALoggableUser) {
@@ -98,8 +118,8 @@ if ($userId === false && isset($_SESSION['sess_userObj']) && $_SESSION['sess_use
 if ($userId === false) {
     $data = new CText('Utente non trovato');
 } else {
-    $user_info = $dh->get_user_info($userId);
-    if (AMA_DataHandler::isError($userId)) {
+    $user_info = $dh->getUserInfo($userId);
+    if (AMADataHandler::isError($userId)) {
         $data = new CText('Utente non trovato');
     } else {
         $viewedUserObj = MultiPort::findUser($userId);

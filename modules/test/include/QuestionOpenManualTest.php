@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Module\Test\QuestionTest;
+
+use Lynxlab\ADA\Module\Test\QuestionOpenManualTest;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class QuestionOpenManualTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>

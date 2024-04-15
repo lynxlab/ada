@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * @package     secretquestion module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -47,9 +53,9 @@ $data->exception = [];
 
 try {
     $postParams = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-    if (array_key_exists('uname', $_POST) && strlen(trim($_POST['uname'])) > 0 && DataValidator::validate_username(trim($_POST['uname']))) {
+    if (array_key_exists('uname', $_POST) && strlen(trim($_POST['uname'])) > 0 && DataValidator::validateUsername(trim($_POST['uname']))) {
         $userId = MultiPort::findUserByUsername(trim($_POST['uname']));
-        if (!AMA_DB::isError($userId) && $userId > 0) {
+        if (!AMADB::isError($userId) && $userId > 0) {
             // username exists
             throw new Exception(translateFN('Username esistente'));
         } else {

@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Main\Logger\ADAScreenLogger;
+
+use Lynxlab\ADA\Main\Logger\ADALogger;
+
+use Lynxlab\ADA\Main\Logger\ADAFileLogger;
+
+// Trigger: ClassWithNameSpace. The class ADALogger was declared with namespace Lynxlab\ADA\Main\Logger. //
+
 /**
  *
  * Requires PHP >= 5.2.2
@@ -50,7 +58,7 @@ class ADALogger
      * @param $text   the message to log
      * @return void
      */
-    public static function log_db($text)
+    public static function logDb($text)
     {
         if (ADA_LOGGING_LEVEL & ADA_LOG_DB) {
             switch (ADA_LOG_DB_SELECTED_LOGGER) {
@@ -73,7 +81,7 @@ class ADALogger
      * @param $text   the message to log
      * @return void
      */
-    public static function log_error($text)
+    public static function logError($text)
     {
         /*
          * Always log errors.
@@ -81,11 +89,11 @@ class ADALogger
         //if(ADA_LOGGING_LEVEL & ADA_LOG_ERROR) {
         switch (ADA_LOG_ERROR_SELECTED_LOGGER) {
             case ADA_LOGGER_SCREEN_LOG:
-                ADAScreenLogger::log_error($text);
+                ADAScreenLogger::logError($text);
                 break;
 
             case ADA_LOGGER_FILE_LOG:
-                ADAFileLogger::log_error($text, ADA_LOG_ERROR_FILE_LOG_OUTPUT_FILE);
+                ADAFileLogger::logError($text, ADA_LOG_ERROR_FILE_LOG_OUTPUT_FILE);
                 break;
 
             case ADA_LOGGER_NULL_LOG:

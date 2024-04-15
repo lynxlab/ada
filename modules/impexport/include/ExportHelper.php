@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Module\Impexport\ExportHelper;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+// Trigger: ClassWithNameSpace. The class ExportHelper was declared with namespace Lynxlab\ADA\Module\Impexport. //
+
 /**
  * @package     import/export course
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -117,16 +127,16 @@ class ExportHelper
     {
         static $count = 0;
         // first export all passed node data
-        $nodeInfo = $dh->get_node_info($nodeId);
-        if (AMA_DB::isError($nodeInfo)) {
+        $nodeInfo = $dh->getNodeInfo($nodeId);
+        if (AMADB::isError($nodeInfo)) {
             return;
         }
 
         if (MODULES_TEST && !$exportSurvey && $nodeInfo['type'][0] == ADA_PERSONAL_EXERCISE_TYPE) {
             // check if nodeInfo['id'] is linked to a survey
             $dh_test = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
-            $surveysArr = $dh_test->test_getCourseSurveys(['id_corso' => $course_id,'id_nodo' => $nodeId]);
-            if (AMA_DB::isError($surveysArr) || (!AMA_DB::isError($surveysArr) && is_array($surveysArr) && count($surveysArr) > 0)) {
+            $surveysArr = $dh_test->testGetCourseSurveys(['id_corso' => $course_id,'id_nodo' => $nodeId]);
+            if (AMADB::isError($surveysArr) || (!AMADB::isError($surveysArr) && is_array($surveysArr) && count($surveysArr) > 0)) {
                 // do not export the node
                 $this->logMessage(__METHOD__ . ' Skipping survey as per passed parameter, linked node has id=' . $nodeId);
                 return;
@@ -186,14 +196,14 @@ class ExportHelper
         unset($nodeInfo);
 
         // get the list of the links from the node
-        $nodeLinksArr = $dh->get_node_links($nodeId);
-        if (!empty($nodeLinksArr) && !AMA_DB::isError($nodeLinksArr)) {
+        $nodeLinksArr = $dh->getNodeLinks($nodeId);
+        if (!empty($nodeLinksArr) && !AMADB::isError($nodeLinksArr)) {
             foreach ($nodeLinksArr as &$nodeLinkId) {
-                $nodeLinkInfo = $dh->get_link_info($nodeLinkId);
+                $nodeLinkInfo = $dh->getLinkInfo($nodeLinkId);
                 /**
                  * - id_autore: WILL BE SELECTED BY THE USER DOING THE IMPORT (is the author, actually)
                 */
-                if (!AMA_DB::isError($nodeLinkInfo)) {
+                if (!AMADB::isError($nodeLinkInfo)) {
                     unset($nodeLinkInfo['autore']);
                     $nodeLinkInfo['id_nodo'] = self::stripOffCourseId($course_id, $nodeLinkInfo['id_nodo']);
                     $nodeLinkInfo['id_nodo_to'] = self::stripOffCourseId($course_id, $nodeLinkInfo['id_nodo_to']);
@@ -207,11 +217,11 @@ class ExportHelper
         // end get links
 
         // get the list of external resources associated to the node
-        $extResArr = $dh->get_node_resources($nodeId);
-        if (!empty($extResArr) && !AMA_DB::isError($extResArr)) {
+        $extResArr = $dh->getNodeResources($nodeId);
+        if (!empty($extResArr) && !AMADB::isError($extResArr)) {
             foreach ($extResArr as &$extResId) {
-                $extResInfo = $dh->get_risorsa_esterna_info($extResId);
-                if (!AMA_DB::isError($extResInfo)) {
+                $extResInfo = $dh->getRisorsaEsternaInfo($extResId);
+                if (!AMADB::isError($extResInfo)) {
                     $XMLnode->appendChild(self::buildExternalResourceXML($domtree, $extResInfo, $course_id));
                 }
             }
@@ -221,8 +231,8 @@ class ExportHelper
         // end get external resources
 
         // get extended nodes
-        $extendedNode = $dh->get_extended_node($nodeId);
-        if (!empty($extendedNode) && !AMA_DB::isError($extendedNode)) {
+        $extendedNode = $dh->getExtendedNode($nodeId);
+        if (!empty($extendedNode) && !AMADB::isError($extendedNode)) {
             $extendedNode['id_node'] = self::stripOffCourseId($course_id, $extendedNode['id_node']);
             $XMLnode->appendChild(self::buildExtendedNodeXML($domtree, $extendedNode));
         }
@@ -232,8 +242,8 @@ class ExportHelper
         // Okay, the node itself has been added to the XML, now do the recursion if asked to
         if ($mustRecur) {
             // get node children only having instance=0
-            $childNodesArray = $dh->export_get_node_children($nodeId, 0);
-            if (!empty($childNodesArray) && !AMA_DB::isError($childNodesArray)) {
+            $childNodesArray = $dh->exportGetNodeChildren($nodeId, 0);
+            if (!empty($childNodesArray) && !AMADB::isError($childNodesArray)) {
                 foreach ($childNodesArray as &$childNodeId) {
                     $temp = self::exportCourseNodeChildren($course_id, $childNodeId, $domtree, $dh, $exportSurvey, $mustRecur);
                     if (!is_null($temp)) {
@@ -260,8 +270,8 @@ class ExportHelper
     public function exportTestNodeChildren($course_id, $nodeId, &$domtree, &$dh_test, $XMLElement = null)
     {
         static $count = 0;
-        $nodeInfo = $dh_test->test_getNode($nodeId);
-        if (!AMA_DB::isError($nodeInfo)) {
+        $nodeInfo = $dh_test->testGetNode($nodeId);
+        if (!AMADB::isError($nodeInfo)) {
             if (function_exists('memory_get_usage')) {
                 $mem = memory_get_usage();
             } else {
@@ -277,7 +287,7 @@ class ExportHelper
                 $XMLElement = $XMLElement->appendChild(self::buildTestXML($domtree, $nodeInfo));
             }
 
-            $childrenNodesArr = $dh_test->test_getNodesByParent($nodeId, null, ['id_istanza' => 0]);
+            $childrenNodesArr = $dh_test->testGetNodesByParent($nodeId, null, ['id_istanza' => 0]);
             foreach ($childrenNodesArr as $childNode) {
                 $this->exportTestNodeChildren($course_id, $childNode['id_nodo'], $domtree, $dh_test);
             }
@@ -585,7 +595,7 @@ class ExportHelper
      *
      * @param int $languageID language id
      *
-     * @return string empty if value <=0 is passed|AMA_Error on error|int retrieved table identifier on success
+     * @return string empty if value <=0 is passed|AMAError on error|int retrieved table identifier on success
      *
      * @access public
      */
@@ -594,8 +604,8 @@ class ExportHelper
         if (intval($languageID) <= 0) {
             return '';
         }
-        $res = $GLOBALS['common_dh']->find_language_table_identifier_by_langauge_id($languageID);
-        return (AMA_DB::isError($res)) ? '' : $res;
+        $res = $GLOBALS['common_dh']->findLanguageTableIdentifierByLangaugeId($languageID);
+        return (AMADB::isError($res)) ? '' : $res;
     }
 
     /**
@@ -614,14 +624,14 @@ class ExportHelper
     public function getAllChildrenArray($rootNode, $dh, $mustRecur = true)
     {
         // first get all passed node data
-        $nodeInfo = $dh->get_node_info($rootNode);
+        $nodeInfo = $dh->getNodeInfo($rootNode);
 
         $retarray =  ['id' => $rootNode, 'label' => $nodeInfo['name']];
 
         if ($mustRecur) {
             // get node children only having instance=0
-            $childNodesArray = $dh->export_get_node_children($rootNode, 0);
-            if (!empty($childNodesArray) && !AMA_DB::isError($childNodesArray)) {
+            $childNodesArray = $dh->exportGetNodeChildren($rootNode, 0);
+            if (!empty($childNodesArray) && !AMADB::isError($childNodesArray)) {
                 $i = 0;
                 $children = [];
                 foreach ($childNodesArray as &$childNodeId) {

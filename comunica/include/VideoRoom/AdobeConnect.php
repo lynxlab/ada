@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
+
+use Lynxlab\ADA\Comunica\VideoRoom\IVideoRoom;
+
+use Lynxlab\ADA\Comunica\VideoRoom\ADAAdobeConnectApiClient;
+
+use function \translateFN;
+
 /**
  * AdobeConnect specific class
  *
@@ -67,7 +79,7 @@ class AdobeConnect extends VideoRoom implements IVideoRoom
         $filter['filter_login'] = $username;
         try {
             $userObj = $this->apiClient->principalList($filter);
-            $principal_id = VideoRoom::xml_attribute($userObj[0], 'principal-id');
+            $principal_id = VideoRoom::xmlAttribute($userObj[0], 'principal-id');
             $this->user_connected_id = $principal_id;
             return $this->user_connected_id;
         } catch (Exception $exc) {
@@ -85,8 +97,8 @@ class AdobeConnect extends VideoRoom implements IVideoRoom
         try {
             $folders = $this->apiClient->scoShortcuts();
             foreach ($folders as $OneFolder) {
-                if (VideoRoom::xml_attribute($OneFolder, 'type') == $folderName) {
-                    $this->userFolderNameId = VideoRoom::xml_attribute($OneFolder, 'sco-id');
+                if (VideoRoom::xmlAttribute($OneFolder, 'type') == $folderName) {
+                    $this->userFolderNameId = VideoRoom::xmlAttribute($OneFolder, 'sco-id');
                     return $this->userFolderNameId;
                 }
             }
@@ -142,7 +154,7 @@ class AdobeConnect extends VideoRoom implements IVideoRoom
 
         try {
             $newRoom = $this->apiClient->scoUpdate($paramsAr);
-            $roomCreatedId = VideoRoom::xml_attribute($newRoom, 'sco-id');
+            $roomCreatedId = VideoRoom::xmlAttribute($newRoom, 'sco-id');
             $roomCreatedPath = (string)$newRoom->{'url-path'};
             return [true, $roomCreatedId, $roomCreatedPath];
         } catch (Exception $exc) {
@@ -165,7 +177,7 @@ class AdobeConnect extends VideoRoom implements IVideoRoom
         try {
             $existingMeeting = $this->apiClient->scoByUrl($query);
             //            $existingMeeting = $this->apiClient->scoSearchByField($query,$field);
-            $existingMeetingId = VideoRoom::xml_attribute($existingMeeting, 'sco-id');
+            $existingMeetingId = VideoRoom::xmlAttribute($existingMeeting, 'sco-id');
             $existingMeetingPath = (string)$existingMeeting->{'url-path'};
             //            var_dump($existingMeeting);die();
             return [true, $existingMeetingId, $existingMeetingPath];
@@ -187,7 +199,7 @@ class AdobeConnect extends VideoRoom implements IVideoRoom
         $filters['filter-login'] = $username;
         try {
             $userInfo = $this->apiClient->principalList($filters);
-            $ACUserId = VideoRoom::xml_attribute($userInfo[0], 'principal-id');
+            $ACUserId = VideoRoom::xmlAttribute($userInfo[0], 'principal-id');
             return $ACUserId;
         } catch (Exception $ex) {
             return false;
@@ -204,7 +216,7 @@ class AdobeConnect extends VideoRoom implements IVideoRoom
     public function addUser($userObj)
     {
         $common_dh = $GLOBALS['common_dh'];
-        $userPwd = substr($common_dh->get_user_pwd($userObj->getId()), 0, 31);
+        $userPwd = substr($common_dh->getUserPwd($userObj->getId()), 0, 31);
 
         $principalData = [];
         $principalData['login'] = $userObj->getUserName();
@@ -219,7 +231,7 @@ class AdobeConnect extends VideoRoom implements IVideoRoom
         try {
             $userInfo = $this->apiClient->principalUpdate($principalData);
             //            var_dump($userInfo);die();
-            $ACUserId = VideoRoom::xml_attribute($userInfo, 'principal-id');
+            $ACUserId = VideoRoom::xmlAttribute($userInfo, 'principal-id');
             return $ACUserId;
         } catch (Exception $ex) {
             return false;
@@ -230,7 +242,7 @@ class AdobeConnect extends VideoRoom implements IVideoRoom
     {
         $common_dh = $GLOBALS['common_dh'];
 
-        $userPwd = substr($common_dh->get_user_pwd($sess_id_user), 0, 31);
+        $userPwd = substr($common_dh->getUserPwd($sess_id_user), 0, 31);
         $userName = $userObj->getUserName();
 
         try {
@@ -323,8 +335,8 @@ class AdobeConnect extends VideoRoom implements IVideoRoom
         $videoroom_dataAr['tempo_avvio'] = time();
         $videoroom_dataAr['tempo_fine'] = time() + $meeting_duration;
 
-        $videoroom_data = $dh->add_videoroom($videoroom_dataAr);
-        if (AMA_DB::isError($videoroom_data)) {
+        $videoroom_data = $dh->addVideoroom($videoroom_dataAr);
+        if (AMADB::isError($videoroom_data)) {
             return false;
         }
         return $ACroomId;
@@ -354,7 +366,7 @@ class AdobeConnect extends VideoRoom implements IVideoRoom
         $room_id = $this->id;
         $ACMeetingInfo = $this->getRoom($ACroom_id);
         if ($ACMeetingInfo == false) {
-            $deletedRoom = $dh->delete_videoroom($ACroom_id);
+            $deletedRoom = $dh->deleteVideoroom($ACroom_id);
             $room_name = translateFN('meeting rigenerato') . ' ' . translateFN('Tutor') . ': ' . $username;
             ;
             $comment = translateFN('inserimento automatico via') . ' ' . PORTAL_NAME;
@@ -392,7 +404,7 @@ class AdobeConnect extends VideoRoom implements IVideoRoom
 
             $common_dh = $GLOBALS['common_dh'];
             $userObj = $GLOBALS['userObj'];
-            $userPwd = substr($common_dh->get_user_pwd($sess_id_user), 0, 31);
+            $userPwd = substr($common_dh->getUserPwd($sess_id_user), 0, 31);
             $userName = $userObj->getUserName();
             $this->apiClientToEnter = $this->makeApiClient($userName, $userPwd);
 

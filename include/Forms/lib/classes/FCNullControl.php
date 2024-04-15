@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Forms\lib\classes\FormControl;
+
+use Lynxlab\ADA\Main\Forms\lib\classes\FCNullControl;
+
+// Trigger: ClassWithNameSpace. The class FCNullControl was declared with namespace Lynxlab\ADA\Main\Forms\lib\classes. //
+
 /**
  * FCNullControl file
  *

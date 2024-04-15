@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Comunica\DataHandler\ChatDataHandler;
+
+use function \translateFN;
+
 // +----------------------------------------------------------------------+
 // | ADA version 2.0                                                      |
 // +----------------------------------------------------------------------+
@@ -115,7 +137,7 @@ if ($id_profile == AMA_TYPE_TUTOR) {
 // initialize a new ChatDataHandler object
 $chatroomObj = new ChatRoom($id_room);
 // chek to see if the chatromm is started, in that case we disable some fields
-$chatroom_started = $chatroomObj->is_chatroom_startedFN($id_room);
+$chatroom_started = $chatroomObj->isChatroomStartedFN($id_room);
 $id_owner = $chatroomObj->id_chat_owner;
 
 if ($chatroom_started) {
@@ -135,7 +157,7 @@ elseif ($id_profile == AMA_TYPE_SWITCHER) {
 }
 // a moderator can edit the chatroom if chatroom is running
 elseif (($chatroom_started)) {
-    $is_moderator = $chatroomObj->is_user_moderatorFN($sess_id_user, $id_room);
+    $is_moderator = $chatroomObj->isUserModeratorFN($sess_id_user, $id_room);
     if ($is_moderator) {
         $msg = translateFN("Utente abilitato per questa operazione.");
     }
@@ -171,7 +193,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 $chatroom_ha['chat_type'] = PUBLIC_CHAT;
                 break;
             case '-- select --':
-                $chatroom_old_ha = $chatroomObj->get_info_chatroomFN($id_room);
+                $chatroom_old_ha = $chatroomObj->getInfoChatroomFN($id_room);
                 $chatroom_ha['chat_type'] = $chatroom_old_ha['tipo_chat'];
                 break;
             default:
@@ -181,11 +203,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
          * transfrom username's into user's_id
          *
          */
-        $id_owner = $common_dh->find_user_from_username($_POST['chat_owner']);
-        if (AMA_DataHandler::isError($id_owner) or $id_owner == '') {
+        $id_owner = $common_dh->findUserFromUsername($_POST['chat_owner']);
+        if (AMADataHandler::isError($id_owner) or $id_owner == '') {
             $id_owner = $_POST['id_owner']; // old owner
         }
-        // return new AMA_Error(AMA_ERR_READ_MSG);
+        // return new AMAError(AMA_ERR_READ_MSG);
         // getting only user_id
 
         // create a unix data date format
@@ -205,7 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $chatroom_ha['id_course_instance'] = $id_course_instance;
 
         // update chatroom_ha to the database
-        $chatroom = $chatroomObj->set_chatroomFN($id_room, $chatroom_ha);
+        $chatroom = $chatroomObj->setChatroomFN($id_room, $chatroom_ha);
 
         if ($chatroom) {
             $err_msg = translateFN("<strong>La chatroom e' stata aggiornata con successo!</strong><br/>");
@@ -222,7 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     }
 } else {
     //get the array with all the current info of the chatoorm to be modified
-    $chatroom_old_ha = $chatroomObj->get_info_chatroomFN($id_room);
+    $chatroom_old_ha = $chatroomObj->getInfoChatroomFN($id_room);
     if (!is_array($chatroom_old_ha)) {
         $msg = translateFN("<b>Non esiste nessuna chatroom con il chatroom ID specificato! Impossibile proseguire</b>");
         header("Location: $error?err_msg=$msg");
@@ -230,9 +252,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     // get the owner of the room
     $chat_room_HA['id_room'] = $id_room;
     $id_owner = $chatroom_old_ha['id_proprietario_chat'];
-    $res_ar = $common_dh->get_user_info($id_owner);
-    if (AMA_DataHandler::isError($res_ar)) {
-        return new AMA_Error(AMA_ERR_READ_MSG);
+    $res_ar = $common_dh->getUserInfo($id_owner);
+    if (AMADataHandler::isError($res_ar)) {
+        return new AMAError(AMA_ERR_READ_MSG);
     }
 
     // getting username that is the name of the owner from the array
@@ -257,10 +279,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
     //get time and date and transform it to sting format
     //ts2dFN()
-    $old_start_time = AMA_DataHandler::ts_to_date($chatroom_old_ha['tempo_avvio'], "%H:%M:%S");
-    $old_start_day = AMA_DataHandler::ts_to_date($chatroom_old_ha['tempo_avvio']);
-    $old_end_time = AMA_DataHandler::ts_to_date($chatroom_old_ha['tempo_fine'], "%H:%M:%S");
-    $old_end_day = AMA_DataHandler::ts_to_date($chatroom_old_ha['tempo_fine']);
+    $old_start_time = AMADataHandler::tsToDate($chatroom_old_ha['tempo_avvio'], "%H:%M:%S");
+    $old_start_day = AMADataHandler::tsToDate($chatroom_old_ha['tempo_avvio']);
+    $old_end_time = AMADataHandler::tsToDate($chatroom_old_ha['tempo_fine'], "%H:%M:%S");
+    $old_end_day = AMADataHandler::tsToDate($chatroom_old_ha['tempo_fine']);
     // different chat type options are available for admins and for tutors
     // admin case
     $chat_room_HA['start_day'] = $old_start_day;

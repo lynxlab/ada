@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use function \translateFN;
+
 /**
  * File edit_course.php
  *
@@ -91,20 +111,20 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($form->isValid()) {
             if ($_POST['deleteCourse'] == 1) {
                 $courseId = $courseObj->getId();
-                $serviceInfo = $common_dh->get_service_info_from_course($courseId);
-                if (!AMA_Common_DataHandler::isError($serviceInfo)) {
+                $serviceInfo = $common_dh->getServiceInfoFromCourse($courseId);
+                if (!AMACommonDataHandler::isError($serviceInfo)) {
                     $serviceId = $serviceInfo[0];
-                    $result = $common_dh->delete_service($serviceId);
-                    if (!AMA_Common_DataHandler::isError($result)) {
-                        $result = $common_dh->unlink_service_from_course($serviceId, $courseId);
-                        if (!AMA_DataHandler::isError($result)) {
+                    $result = $common_dh->deleteService($serviceId);
+                    if (!AMACommonDataHandler::isError($result)) {
+                        $result = $common_dh->unlinkServiceFromCourse($serviceId, $courseId);
+                        if (!AMADataHandler::isError($result)) {
                             $result = $dh->remove_course($courseId);
-                            if (AMA_DataHandler::isError($result)) {
+                            if (AMADataHandler::isError($result)) {
                                 $data = new CText(translateFN('Si sono verificati degli errori durante la cancellazione del corso.') . '(1)');
                             } else {
                                 if (defined('MODULES_TEST') && MODULES_TEST) {
                                     $test_db = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
-                                    if (AMA_DB::isError($test_db->test_removeCourseNodes($courseId))) {
+                                    if (AMADB::isError($test_db->testRemoveCourseNodes($courseId))) {
                                         // handle error here if needed
                                     }
                                 }
@@ -133,8 +153,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 } else {
     if ($courseObj instanceof Course && $courseObj->isFull()) {
-        $result = $dh->course_has_instances($courseObj->getId());
-        if (AMA_DataHandler::isError($result)) {
+        $result = $dh->courseHasInstances($courseObj->getId());
+        if (AMADataHandler::isError($result)) {
             $data = new CText(translateFN('Si è verificato un errore nella lettura dei dati del corso'));
         } elseif ($result == true) {
             $data = new CText(

@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Services\Exercise\StandardExerciseViewer;
+
+use Lynxlab\ADA\Services\Exercise\OpenUploadExerciseViewer;
+
+use Lynxlab\ADA\Services\Exercise\OpenManualExerciseViewer;
+
+use Lynxlab\ADA\Services\Exercise\OpenAutomaticExerciseViewer;
+
+use Lynxlab\ADA\Services\Exercise\ExerciseViewerFactory;
+
+use Lynxlab\ADA\Services\Exercise\ClozeExerciseViewer;
+
+// Trigger: ClassWithNameSpace. The class ExerciseViewerFactory was declared with namespace Lynxlab\ADA\Services\Exercise. //
+
 namespace Lynxlab\ADA\Services\Exercise;
 
 class ExerciseViewerFactory

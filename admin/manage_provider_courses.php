@@ -1,5 +1,31 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+
+use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\MultiPort;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * Manage association of services to the selected tester.
  *
@@ -85,12 +111,12 @@ AdminHelper::init($neededObjAr);
  * 3. link a lista utenti presenti sul tester
  */
 
-$id_tester = DataValidator::is_uinteger($_GET['id_tester']);
+$id_tester = DataValidator::isUinteger($_GET['id_tester']);
 
 if ($id_tester !== false) {
-    $tester_infoAr = $common_dh->get_tester_info_from_id($id_tester);
-    if (AMA_Common_DataHandler::isError($tester_infoAr)) {
-        $errObj = new ADA_Error($tester_infoAr);
+    $tester_infoAr = $common_dh->getTesterInfoFromId($id_tester);
+    if (AMACommonDataHandler::isError($tester_infoAr)) {
+        $errObj = new ADAError($tester_infoAr);
     } else {
         /*    $testersAr = array();
             $tester_dataAr = array(
@@ -110,9 +136,9 @@ if ($id_tester !== false) {
 
             $tester_data = AdminModuleHtmlLib::displayTesterInfo($tester_dataAr);
 
-            $services_dataAr = $common_dh->get_info_for_tester_services($id_tester);
-            if(AMA_Common_DataHandler::isError($services_dataAr)) {
-              $errObj = new ADA_Error($services_dataAr);
+            $services_dataAr = $common_dh->getInfoForTesterServices($id_tester);
+            if(AMACommonDataHandler::isError($services_dataAr)) {
+              $errObj = new ADAError($services_dataAr);
             }
             else {
               $tester_services = AdminModuleHtmlLib::displayServicesOnThisTester($id_tester, $services_dataAr);
@@ -120,10 +146,10 @@ if ($id_tester !== false) {
 
             $tester_dsn = MultiPort::getDSN($tester_infoAr[10]);
             if($tester_dsn != NULL) {
-              $tester_dh = AMA_DataHandler::instance($tester_dsn);
-              $users_on_this_tester = $tester_dh->count_users_by_type(array(AMA_TYPE_STUDENT,AMA_TYPE_AUTHOR,AMA_TYPE_TUTOR,AMA_TYPE_SWITCHER,AMA_TYPE_ADMIN));
-              if(AMA_DataHandler::isError($users_on_this_tester)) {
-              $errObj = new ADA_Error($users_on_this_tester);
+              $tester_dh = AMADataHandler::instance($tester_dsn);
+              $users_on_this_tester = $tester_dh->countUsersByType(array(AMA_TYPE_STUDENT,AMA_TYPE_AUTHOR,AMA_TYPE_TUTOR,AMA_TYPE_SWITCHER,AMA_TYPE_ADMIN));
+              if(AMADataHandler::isError($users_on_this_tester)) {
+              $errObj = new ADAError($users_on_this_tester);
               }
               else {
               $user_list_link = new CText('Numero di utenti presenti sul tester: '.$users_on_this_tester);

@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * NEWSLETTER MODULE.
  *
@@ -51,9 +57,9 @@ $GLOBALS['dh'] = AMANewsletterDataHandler::instance(MultiPort::getDSN($_SESSION[
 $retval = [];
 
 if (isset($_GET['selected'])  && intval($_GET['selected']) > 0) {
-    $instancesArr = $dh->course_instance_get_list(['title'], intval($_GET['selected']));
+    $instancesArr = $dh->courseInstanceGetList(['title'], intval($_GET['selected']));
 
-    if (!AMA_DB::isError($instancesArr)) {
+    if (!AMADB::isError($instancesArr)) {
         array_push($retval, [ "label" => translateFN('Tutte le istanze'), "value" => 0]);
         for ($i = 0; $i < count($instancesArr); $i++) {
             array_push($retval, [ "label" => $instancesArr[$i][1], "value" => intval($instancesArr[$i][0])  ]);

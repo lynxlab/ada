@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Module\Newsletter\FormFilterNewsLetter;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * NEWSLETTER MODULE.
  *
@@ -61,15 +73,15 @@ $containerDIV = CDOMElement::create('div', 'id:moduleContent');
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET'  && !empty($_GET) && isset($_GET['id']) && intval($_GET['id']) > 0) {
     $idNewsletter = intval($_GET['id']);
-    $newsletterAr = $dh->get_newsletter($idNewsletter);
-    if (!AMA_DB::isError($newsletterAr) && $newsletterAr !== false) {
+    $newsletterAr = $dh->getNewsletter($idNewsletter);
+    if (!AMADB::isError($newsletterAr) && $newsletterAr !== false) {
         $title = CDOMElement::create('span', 'class:sendNewsletterTitle');
         $title->addChild(new CText(translateFN('Seleziona i criteri per l\'invio della Newsletter: ') . '<strong>' . $newsletterAr['subject'] . '</strong>'));
 
         /**
          * load course list from the DB
          */
-        $providerCourses = $dh->get_courses_list(['nome','titolo']);
+        $providerCourses = $dh->getCoursesList(['nome','titolo']);
 
         $courses = [];
         foreach ($providerCourses as $course) {
@@ -89,7 +101,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET'  &&
         $containerDIV->addChild($summaryDIV);
     } else {
         $containerDIV->addChild(new CText(translateFN('Newsletter non trovata, id= ') . $idNewsletter));
-    } // if (!AMA_DB::isError($newsletterAr))
+    } // if (!AMADB::isError($newsletterAr))
 } else {
     $containerDIV->addChild(new CText(translateFN('Nessuna newsletter da inviare')));
 }

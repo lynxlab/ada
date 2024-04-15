@@ -1,5 +1,35 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Service\Service;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * Displays information about users
  *
@@ -97,9 +127,9 @@ include_once '../tutor/include/eguidance_tutor_form_functions.inc.php';
  * 3. le sue note private sull'utente
  */
 if (isset($_GET['op']) && $_GET['op'] == 'csv') {
-    $event_token = DataValidator::validate_event_token($_GET['event_token']);
+    $event_token = DataValidator::validateEventToken($_GET['event_token']);
     if ($event_token === false) {
-        $errObj = new ADA_Error(
+        $errObj = new ADAError(
             null,
             translateFN("Dati in input per il modulo user_service_detail non corretti"),
             null,
@@ -115,9 +145,9 @@ if (isset($_GET['op']) && $_GET['op'] == 'csv') {
      * service_duration
      */
 
-    $eguidance_session_dataAr = $dh->get_eguidance_session_with_event_token($event_token);
-    if (AMA_DataHandler::isError($eguidance_session_dataAr)) {
-        $errObj = new ADA_Error($eguidance_session_dataAr);
+    $eguidance_session_dataAr = $dh->getEguidanceSessionWithEventToken($event_token);
+    if (AMADataHandler::isError($eguidance_session_dataAr)) {
+        $errObj = new ADAError($eguidance_session_dataAr);
     } else {
         //  $tutoredUserObj = MultiPort::findUser($eguidance_session_dataAr['id_utente']);
         $eguidance_session_dataAr['user_fullname'] = $userObj->getFullName();
@@ -130,13 +160,13 @@ if (isset($_GET['op']) && $_GET['op'] == 'csv') {
          */
     }
 } else {
-    // $id_user = DataValidator::is_uinteger($_GET['id_user']);
-    // $id_course_instance = DataValidator::is_uinteger($_GET['id_course_instance']);
+    // $id_user = DataValidator::isUinteger($_GET['id_user']);
+    // $id_course_instance = DataValidator::isUinteger($_GET['id_course_instance']);
     $id_user = $_SESSION['sess_id_user'];
     $id_course_instance = $_SESSION['sess_id_course_instance'];
 
     if ($id_user === false || $id_course_instance === false) {
-        $errObj = new ADA_Error(
+        $errObj = new ADAError(
             null,
             translateFN("Dati in input per il modulo user_servide_detail non corretti"),
             null,
@@ -156,10 +186,10 @@ if (isset($_GET['op']) && $_GET['op'] == 'csv') {
     /*
      * Service data to display
      */
-    $id_course = $dh->get_course_id_for_course_instance($id_course_instance);
-    if (!AMA_DataHandler::isError($id_course)) {
-        $service_infoAr = $common_dh->get_service_info_from_course($id_course);
-        if (!AMA_Common_DataHandler::isError($service_infoAr)) {
+    $id_course = $dh->getCourseIdForCourseInstance($id_course_instance);
+    if (!AMADataHandler::isError($id_course)) {
+        $service_infoAr = $common_dh->getServiceInfoFromCourse($id_course);
+        if (!AMACommonDataHandler::isError($service_infoAr)) {
             $service_data = TutorModuleHtmlLib::getServiceDataTable($service_infoAr);
         } else {
             $service_data = new CText('');
@@ -169,8 +199,8 @@ if (isset($_GET['op']) && $_GET['op'] == 'csv') {
     /*
      * Eguidance sessions data to display
      */
-    $eguidance_sessionsAr = $dh->get_eguidance_sessions($id_course_instance);
-    if (AMA_DataHandler::isError($eguidance_sessionsAr) || count($eguidance_sessionsAr) == 0) {
+    $eguidance_sessionsAr = $dh->getEguidanceSessions($id_course_instance);
+    if (AMADataHandler::isError($eguidance_sessionsAr) || count($eguidance_sessionsAr) == 0) {
         $eguidance_data = new CText('');
     } else {
         $thead_data = [translateFN('Eguidance sessions conducted'), '', '',''];
@@ -208,14 +238,14 @@ if (isset($_GET['op']) && $_GET['op'] == 'csv') {
     $sort_field     = ' data_ora desc';
 
     $mh = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
-    $msgs_ha = $mh->find_messages(
+    $msgs_ha = $mh->findMessages(
         $userObj->getId(),
         ADA_MSG_AGENDA,
         $fields_list_Ar,
         $clause,
         $sort_field
     );
-    if (AMA_DataHandler::isError($msgs_ha) || count($msgs_ha) == 0) {
+    if (AMADataHandler::isError($msgs_ha) || count($msgs_ha) == 0) {
         $appointments_data = new CText('');
     } else {
         $thead_data = [translateFN('Date'), translateFN('Appointment type')];

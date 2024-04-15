@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\User\ADASwitcher;
+
+use Lynxlab\ADA\Main\User\ADALoggableUser;
+
+// Trigger: ClassWithNameSpace. The class ADASwitcher was declared with namespace Lynxlab\ADA\Main\User. //
+
 /**
  * User classes
  *

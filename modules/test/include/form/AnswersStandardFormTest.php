@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Module\Test\AnswerHeaderControlTest;
+
+use Lynxlab\ADA\Module\Test\AnswerFooterControlTest;
+
+use Lynxlab\ADA\Module\Test\AnswerControlTest;
+
+use Lynxlab\ADA\Module\Test\FormTest;
+
+use Lynxlab\ADA\Module\Test\AnswersStandardFormTest;
+
+// Trigger: ClassWithNameSpace. The class AnswersStandardFormTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  *
  * @package

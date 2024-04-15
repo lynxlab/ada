@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /*
  * @package
  * @author		Stefano Penge <steve@lynxlab.com>
@@ -24,9 +44,9 @@ use Lynxlab\ADA\CORE\HtmlElements\Table;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_course;
+use function Lynxlab\ADA\Main\AMA\DBRead\readCourse;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\today_dateFN;
+use function Lynxlab\ADA\Main\Utilities\todayDateFN;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 
@@ -93,7 +113,7 @@ $log_type = "db";
 /* 1. getting data about user
 
 */
-$ymdhms = today_dateFN();
+$ymdhms = todayDateFN();
 
 
 /*
@@ -110,14 +130,14 @@ if (!isset($id_chatroom)) {
     $id_chatroom = null;
 }
 $chatroomObj = new ChatRoom($id_chatroom);
-if (is_object($chatroomObj) && !AMA_DataHandler::isError($chatroomObj)) {
+if (is_object($chatroomObj) && !AMADataHandler::isError($chatroomObj)) {
     //get the array with all the current info of the chatoorm
     $id_course_instance = $chatroomObj->id_course_instance;
-    $id_course = $dh->get_course_id_for_course_instance($id_course_instance);
+    $id_course = $dh->getCourseIdForCourseInstance($id_course_instance);
     // ******************************************************
     // get  course object
-    $courseObj = read_course($id_course);
-    if ((is_object($courseObj)) && (!AMA_DB::isError($courseObj))) {
+    $courseObj = readCourse($id_course);
+    if ((is_object($courseObj)) && (!AMADB::isError($courseObj))) {
         $course_title = $courseObj->titolo; //title
         $id_toc = $courseObj->id_nodo_toc;  //id_toc_node
     }
@@ -211,7 +231,7 @@ switch ($op) {
                 if (!isset($sess_user_id)) {
                     $sess_user_id = null;
                 }
-                $chat_data = $mh->find_chat_messages($sess_user_id, ADA_MSG_CHAT, $id_chatroom, $fields_list = "", $clause = "", $ordering = "");
+                $chat_data = $mh->findChatMessages($sess_user_id, ADA_MSG_CHAT, $id_chatroom, $fields_list = "", $clause = "", $ordering = "");
                 if (is_array($chat_data)) {
                     $chat_dataAr = [];
                     $chat_data_simpleAr = [];
@@ -219,7 +239,7 @@ switch ($op) {
                     $tbody_data = [];
                     foreach ($chat_data as $chat_msgAr) {
                         if (is_numeric($chat_msgAr[0])) {
-                            $sender_dataHa = $dh->get_user_info($chat_msgAr[0]);
+                            $sender_dataHa = $dh->getUserInfo($chat_msgAr[0]);
 
                             $user = $sender_dataHa['nome'] . ' ' . $sender_dataHa['cognome'];
                             $message = $chat_msgAr[1];
@@ -256,7 +276,7 @@ switch ($op) {
         break;
     case 'index':
         $class_chatrooms_ar = [];
-        $class_chatrooms = ChatRoom::get_all_class_chatroomsFN($sess_id_course_instance);
+        $class_chatrooms = ChatRoom::getAllClassChatroomsFN($sess_id_course_instance);
         if (is_array($class_chatrooms)) {
             $class_chatrooms_ar[] = $class_chatrooms;
         }
@@ -274,7 +294,7 @@ switch ($op) {
             if (!is_object($id_chatroom)) {
                 $chatroomObj = new ChatRoom($id_chatroom);
                 //get the array with all the current info of the chatoorm
-                $chatroom_ha = $chatroomObj->get_info_chatroomFN($id_chatroom);
+                $chatroom_ha = $chatroomObj->getInfoChatroomFN($id_chatroom);
             }
             $list_chatrooms .= "<a href=\"report_chat.php?id_chatroom=$id_chatroom\">{$chatroom_ha['titolo_chat']}</a><br />";
         }
@@ -305,7 +325,7 @@ switch ($op) {
             }
         }
         $mh = MessageHandler::instance($_SESSION['sess_selected_tester_dsn']);
-        $chat_data = $mh->find_chat_messages($sess_user_id, ADA_MSG_CHAT, $id_chatroom, $fields_list = "", $clause = "", $ordering = "");
+        $chat_data = $mh->findChatMessages($sess_user_id, ADA_MSG_CHAT, $id_chatroom, $fields_list = "", $clause = "", $ordering = "");
         if (is_array($chat_data)) {
             $chat_dataAr = [];
             $c = 0;
@@ -313,7 +333,7 @@ switch ($op) {
             $export_log = translateFN('Data e ora') . ';' . translateFN('Utente') . ';' . translateFN('Messaggio') . PHP_EOL;
             foreach ($chat_data as $chat_msgAr) {
                 if (is_numeric($chat_msgAr[0])) {
-                    $sender_dataHa = $dh->get_user_info($chat_msgAr[0]);
+                    $sender_dataHa = $dh->getUserInfo($chat_msgAr[0]);
 
                     $user = $sender_dataHa['nome'] . ' ' . $sender_dataHa['cognome'];
                     $message = $chat_msgAr[1];

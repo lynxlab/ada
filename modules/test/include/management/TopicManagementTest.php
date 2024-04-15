@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Module\Test\TopicManagementTest;
+
+use Lynxlab\ADA\Module\Test\ManagementTest;
+
+use Lynxlab\ADA\Module\Test\TopicFormTest;
+
+use Lynxlab\ADA\Module\Test\DeleteFormTest;
+
+use Lynxlab\ADA\Module\Test\AMATestDataHandler;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class TopicManagementTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -75,7 +93,7 @@ class TopicManagementTest extends ManagementTest
     {
         $dh = $GLOBALS['dh'];
 
-        $test = $dh->test_getNode($this->id_test);
+        $test = $dh->testGetNode($this->id_test);
         $nodo = new Node($test['id_nodo_riferimento']);
         if (!AMATestDataHandler::isError($nodo)) {
             $path = $nodo->findPathFN();
@@ -85,7 +103,7 @@ class TopicManagementTest extends ManagementTest
 
         if ($_POST) {
             if ($form->isValid()) {
-                $siblings = $dh->test_getNodesByParent($_POST['id_nodo_parent']);
+                $siblings = $dh->testGetNodesByParent($_POST['id_nodo_parent']);
                 $ordine = count($siblings) + 1;
 
                 //crea nuovo topic con i dati del form
@@ -104,7 +122,7 @@ class TopicManagementTest extends ManagementTest
                     'durata' => $_POST['durata'] * 60,
                     'ordine' => $ordine,
                 ];
-                $res = $dh->test_addNode($data);
+                $res = $dh->testAddNode($data);
                 unset($data);
 
                 if (!AMATestDataHandler::isError($res)) {
@@ -142,7 +160,7 @@ class TopicManagementTest extends ManagementTest
 
         $topic = &$this->r;
 
-        $test = $dh->test_getNode($topic['id_nodo_radice']);
+        $test = $dh->testGetNode($topic['id_nodo_radice']);
         $nodo = new Node($test['id_nodo_riferimento']);
         if (!AMATestDataHandler::isError($nodo)) {
             $path = $nodo->findPathFN();
@@ -177,7 +195,7 @@ class TopicManagementTest extends ManagementTest
                     'livello' => $_POST['random_number'],
                     'durata' => $_POST['durata'] * 60,
                 ];
-                if ($dh->test_updateNode($topic['id_nodo'], $data)) {
+                if ($dh->testUpdateNode($topic['id_nodo'], $data)) {
                     $get_topic = (isset($_GET['topic']) ? '&topic=' . $_GET['topic'] : '');
                     redirect(MODULES_TEST_HTTP . '/index.php?id_test=' . $test['id_nodo'] . $get_topic);
                 } else {
@@ -209,7 +227,7 @@ class TopicManagementTest extends ManagementTest
 
         $topic = &$this->r;
 
-        $test = $dh->test_getNode($topic['id_nodo_radice']);
+        $test = $dh->testGetNode($topic['id_nodo_radice']);
         $nodo = new Node($test['id_nodo_riferimento']);
         if (!AMATestDataHandler::isError($nodo)) {
             $path = $nodo->findPathFN();
@@ -221,7 +239,7 @@ class TopicManagementTest extends ManagementTest
 
         if (isset($_POST['delete'])) {
             if ($_POST['delete'] == 1) {
-                if (AMATestDataHandler::isError($dh->test_deleteNodeTest($this->id))) {
+                if (AMATestDataHandler::isError($dh->testDeleteNodeTest($this->id))) {
                     $html = sprintf(translateFN('Errore durante la cancellazione del %s'), $this->what);
                 } else {
                     $get_topic = (isset($_GET['topic']) ? '&topic=' . $_GET['topic'] : '');

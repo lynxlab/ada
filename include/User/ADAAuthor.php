@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\User\ADALoggableUser;
+
+use Lynxlab\ADA\Main\User\ADAAuthor;
+
+// Trigger: ClassWithNameSpace. The class ADAAuthor was declared with namespace Lynxlab\ADA\Main\User. //
+
 /**
  * User classes
  *

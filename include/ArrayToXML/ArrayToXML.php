@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Main\ArrayToXML\ArrayToXML;
+
+// Trigger: ClassWithNameSpace. The class ArrayToXML was declared with namespace Lynxlab\ADA\Main\ArrayToXML. //
+
 /**
  * Class to translate PHP Array element into XML and vice versa.
  *

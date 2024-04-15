@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
+
+use function \translateFN;
+
 /**
  * This module displays a report on the exercises done by the students.
  *
@@ -86,8 +106,8 @@ switch ($mode) {
     case 'zoom':
         $out_fields_ar = ['data_visita','id_utente_studente','punteggio'];
         $clause = "id_nodo = '" . $id_node . "'";
-        $visits_ar = $dh->doFind_ex_history_list($out_fields_ar, $clause);
-        if (AMA_DataHandler::isError($visits)) {
+        $visits_ar = $dh->doFindExHistoryList($out_fields_ar, $clause);
+        if (AMADataHandler::isError($visits)) {
             $msg = $visits_ar->getMessage();
             print "$msg";
             //header("Location: $error?err_msg=$msg");
@@ -102,18 +122,18 @@ switch ($mode) {
             // message count?
             /*
                   $mh = new MessageHandler;
-                  $user_messages = $mh->get_messages($student_id, ADA_MSG_SIMPLE,array('id_mittente'));
+                  $user_messages = $mh->getMessages($student_id, ADA_MSG_SIMPLE,array('id_mittente'));
                   $user_interaction =  count($user_messages);
             */
             $out_fields_ar = ['autore'];
             $clause = "autore = $student_id";
             $course_id = $sess_id_course;
-            $added_notes = $dh->find_course_nodes_list($out_fields_ar, $clause, $course_id);
+            $added_notes = $dh->findCourseNodesList($out_fields_ar, $clause, $course_id);
             $user_interaction   = count($added_notes);
-            $user = $dh->get_user_info($student_id);
+            $user = $dh->getUserInfo($student_id);
             $username = $user['username'];
             $exercise_dataHa[] = [
-                    translateFN('Data') => AMA_DataHandler::ts_to_date($visit[1]),
+                    translateFN('Data') => AMADataHandler::tsToDate($visit[1]),
                     translateFN('Studente') => $username,
                     translateFN('Punteggio') => $visit[3],
                     translateFN('Interazione') => $user_interaction,
@@ -136,9 +156,9 @@ switch ($mode) {
     case 'summary':
         $field_list_ar = ['id_nodo','data_visita'];
         $clause = "";
-        $dataHa = $dh->doFind_ex_history_list($field_list_ar, $clause);
+        $dataHa = $dh->doFindExHistoryList($field_list_ar, $clause);
 
-        if (AMA_DataHandler::isError($dataHa)) {
+        if (AMADataHandler::isError($dataHa)) {
             $msg = $dataHa->getMessage();
             print $msg;
             //header("Location: $error?err_msg=$msg");
@@ -152,7 +172,7 @@ switch ($mode) {
             $data =  $exercise[2];
             $row = [
                     translateFN('Nodo') => "<a href=\"tutor_report.php?mode=zoom&id_node=$id_node\">$id_node : $nome </a>",
-                    translateFN('Data') => AMA_DataHandler::ts_to_date($data),
+                    translateFN('Data') => AMADataHandler::tsToDate($data),
             ];
             array_push($exercise_dataHa, $row);
         }

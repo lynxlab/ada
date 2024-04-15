@@ -1,7 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
- * File add_course.php
+ * File addCourse.php
  *
  * The switcher can use this module to create a new course.
  *
@@ -85,7 +105,7 @@ SwitcherHelper::init($neededObjAr);
  * YOUR CODE HERE
  */
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
-    $providerAuthors = $dh->find_authors_list(['username'], '');
+    $providerAuthors = $dh->findAuthorsList(['username'], '');
     $authors = [];
     foreach ($providerAuthors as $author) {
         $authors[$author[0]] = $author[1];
@@ -117,8 +137,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             'service_level' => $_POST['service_level'],
         ];
 
-        $id_course = $dh->add_course($course);
-        if (!AMA_DataHandler::isError($id_course)) {
+        $id_course = $dh->addCourse($course);
+        if (!AMADataHandler::isError($id_course)) {
             $node_data = [
                 'id' => $id_course . '_' . $_POST['id_nodo_iniziale'],
                 'name' => $_POST['titolo'],
@@ -130,7 +150,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 'id_course' => $id_course,
             ];
             $result = NodeEditing::createNode($node_data);
-            if (AMA_DataHandler::isError($result)) {
+            if (AMADataHandler::isError($result)) {
                 //
             }
 
@@ -144,35 +164,35 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 'service_max_meetings' => 0,
                 'service_meeting_duration' => 0,
             ];
-            $id_service = $common_dh->add_service($service_dataAr);
-            if (!AMA_DataHandler::isError($id_service)) {
-                $tester_infoAr = $common_dh->get_tester_info_from_pointer($sess_selected_tester);
-                if (!AMA_DataHandler::isError($tester_infoAr)) {
+            $id_service = $common_dh->addService($service_dataAr);
+            if (!AMADataHandler::isError($id_service)) {
+                $tester_infoAr = $common_dh->getTesterInfoFromPointer($sess_selected_tester);
+                if (!AMADataHandler::isError($tester_infoAr)) {
                     $id_tester = $tester_infoAr[0];
-                    $result = $common_dh->link_service_to_course($id_tester, $id_service, $id_course);
-                    if (AMA_DataHandler::isError($result)) {
-                        $errObj = new ADA_Error($result);
+                    $result = $common_dh->linkServiceToCourse($id_tester, $id_service, $id_course);
+                    if (AMADataHandler::isError($result)) {
+                        $errObj = new ADAError($result);
                     } else {
                         header('Location: list_courses.php');
                         exit();
                     }
                 } else {
-                    $errObj = new ADA_Error($result);
+                    $errObj = new ADAError($result);
                     $form = new CText(translateFN('Si è verificato un errore durante la creazione del corso. (1)'));
                 }
             } else {
-                $errObj = new ADA_Error($result);
+                $errObj = new ADAError($result);
                 $form = new CText(translateFN('Si è verificato un errore durante la creazione del corso. (2)'));
             }
         } else {
-            //          $errObj = new ADA_Error($id_course);
+            //          $errObj = new ADAError($id_course);
             $help = translateFN('Si è verificato un errore durante la creazione del corso: codice corso duplicato ');
         }
     } else {
         $form = new CText(translateFN('I dati inseriti nel form non sono validi'));
     }
 } else {
-    $providerAuthors = $dh->find_authors_list(['username'], '');
+    $providerAuthors = $dh->findAuthorsList(['username'], '');
     $authors = [];
     foreach ($providerAuthors as $author) {
         $authors[$author[0]] = $author[1];

@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Widgets\Widget;
+
+use Lynxlab\ADA\Widgets\AjaxRemoteContent;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class AjaxRemoteContent was declared with namespace Lynxlab\ADA\Widgets. //
+
 /**
  * helper class for the widget: gets a remote content when
  * the widget is rendered in asynchronous mode

@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use function \translateFN;
+
 /**
  * @package     instancesreport module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -62,7 +70,7 @@ $reportRows = [
 $reportRows[0] = array_map('strtoupper', $reportRows[0]);
 
 $fieldsAr = ['title', 'tipo_servizio'];
-$instancesAr = $dh->course_instance_get_list($fieldsAr, $courseObj->getId());
+$instancesAr = $dh->courseInstanceGetList($fieldsAr, $courseObj->getId());
 if (is_array($instancesAr) && count($instancesAr) > 0) {
     foreach ($instancesAr as $instance) {
         $allSubscriptions = true;
@@ -74,9 +82,9 @@ if (is_array($instancesAr) && count($instancesAr) > 0) {
 
                 /** @var \Lynxlab\ADA\Main\History\History $historyObj */
                 $historyObj = new History($instance['id_istanza_corso'], $subscription->getSubscriberId());
-                $visits = $historyObj->get_total_visited_nodes();
-                $time = $historyObj->history_nodes_time_FN();
-                $last = $historyObj->history_last_nodes_FN(1, $htmlFromHistory);
+                $visits = $historyObj->getTotalVisitedNodes();
+                $time = $historyObj->historyNodesTimeFN();
+                $last = $historyObj->historyLastNodesFN(1, $htmlFromHistory);
                 if (is_array($last) && count($last) > 0) {
                     $last = reset($last);
                     if (array_key_exists('Data', $last)) {

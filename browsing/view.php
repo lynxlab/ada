@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Browsing\CourseViewer;
+
+use function \translateFN;
+
 /**
  * VIEW.
  *
@@ -107,17 +127,17 @@ if ($userObj instanceof ADAGuest) {
      */
     if (isset($courseObj) && $courseObj instanceof Course && $courseObj->getAutoSubscription()) {
         // then check if user is subscribed to the instance
-        $subCheck = $dh->get_subscription($userObj->getId(), $courseInstanceObj->getId());
-        if (AMA_DB::isError($subCheck) && $subCheck->getCode() == AMA_ERR_NOT_FOUND) {
+        $subCheck = $dh->getSubscription($userObj->getId(), $courseInstanceObj->getId());
+        if (AMADB::isError($subCheck) && $subCheck->getCode() == AMA_ERR_NOT_FOUND) {
             // subscribe: mimc the info.php / subscribe section behaviour
             // 00. add the user to the session provider
             if (false !== MultiPort::setUser($userObj, [$_SESSION['sess_selected_tester']])) {
                 // 01. presubscribe
-                $temp = $dh->course_instance_student_presubscribe_add($courseInstanceObj->getId(), $userObj->getId(), $courseInstanceObj->getStartLevelStudent());
-                if (!AMA_DB::isError($temp) || $temp->code == AMA_ERR_UNIQUE_KEY) {
+                $temp = $dh->courseInstanceStudentPresubscribeAdd($courseInstanceObj->getId(), $userObj->getId(), $courseInstanceObj->getStartLevelStudent());
+                if (!AMADB::isError($temp) || $temp->code == AMA_ERR_UNIQUE_KEY) {
                     // 02. subscribe
-                    $temp = $dh->course_instance_student_subscribe($courseInstanceObj->getId(), $userObj->getId(), ADA_STATUS_SUBSCRIBED, $courseInstanceObj->getStartLevelStudent());
-                    if (AMA_DB::isError($temp)) {
+                    $temp = $dh->courseInstanceStudentSubscribe($courseInstanceObj->getId(), $userObj->getId(), ADA_STATUS_SUBSCRIBED, $courseInstanceObj->getStartLevelStudent());
+                    if (AMADB::isError($temp)) {
                         // handle subscription error if needed
                     } else {
                         // handle subscription success if needed
@@ -264,7 +284,7 @@ $node_path = $nodeObj->findPathFN();
 $node_index = $nodeObj->indexFN('', 1, $user_level, $user_history, $id_profile);
 $node_family = $nodeObj->template_family;
 $sess_id_node = $id_node;
-$data = $nodeObj->filter_nodeFN($user_level, $user_history, $id_profile, $querystring);
+$data = $nodeObj->filterNodeFN($user_level, $user_history, $id_profile, $querystring);
 
 
 
@@ -295,9 +315,9 @@ if (
         $accessed_from = ADA_GENERIC_ACCESS;
     }
     if (!isset($sess_id_course_instance)  || $courseObj->getIsPublic()) {
-        $dh->add_node_history($sess_id_user, 0, $sess_id_node, $remote_address, HTTP_ROOT_DIR, $accessed_from);
+        $dh->addNodeHistory($sess_id_user, 0, $sess_id_node, $remote_address, HTTP_ROOT_DIR, $accessed_from);
     } else {
-        $dh->add_node_history($sess_id_user, $sess_id_course_instance, $sess_id_node, $remote_address, HTTP_ROOT_DIR, $accessed_from);
+        $dh->addNodeHistory($sess_id_user, $sess_id_course_instance, $sess_id_node, $remote_address, HTTP_ROOT_DIR, $accessed_from);
         if (isset($courseObj) && isset($courseInstanceObj)) {
             BrowsingHelper::checkServiceComplete($userObj, $courseObj->getId(), $courseInstanceObj->getId());
             BrowsingHelper::checkRewardedBadges($userObj, $courseObj->getId(), $courseInstanceObj->getId());
@@ -307,7 +327,7 @@ if (
 
 // info on author and tutor and link for writing to tutor and author
 if (isset($tutor_uname)) {
-    $write_to_tutor_link = "<a href=\"$http_root_dir/comunica/send_message.php?destinatari=$tutor_uname\">$tutor_uname</a>";
+    $write_to_tutor_link = "<a href=\"$http_root_dir/comunica/sendMessage.php?destinatari=$tutor_uname\">$tutor_uname</a>";
     if (isset($tutor_id)) {
         $tutor_info_link = $tutor_uname;
     } else {
@@ -320,7 +340,7 @@ if (isset($tutor_uname)) {
 
 if (isset($node_author)) {
     if (isset($author_uname)) {
-        $write_to_author_link = "<a href=\"$http_root_dir/comunica/send_message.php?destinatari=$author_uname\">$node_author</a>";
+        $write_to_author_link = "<a href=\"$http_root_dir/comunica/sendMessage.php?destinatari=$author_uname\">$node_author</a>";
     } else {
         $write_to_author_link = null;
     }
@@ -475,7 +495,7 @@ $content_dataAr = [
     //        'agenda' => $user_agenda
 ];
 
-//dynamic data from $nodeObj->filter_nodeFN
+//dynamic data from $nodeObj->filterNodeFN
 
 $content_dataAr['text'] = $data['text'];
 $content_dataAr['link'] = $data['link'];
@@ -493,16 +513,16 @@ if ($node_type == ADA_GROUP_WORD_TYPE or $node_type == ADA_LEAF_WORD_TYPE) {
     $img_dir = $root_dir.'/browsing/dattilo/img';
     $url_dir = $http_root_dir.'/browsing/dattilo/img';
     if (file_exists($img_dir.'/a.jpg')) {
-        $dattilo = converti_dattiloFN($node_title,$url_dir);
+        $dattilo = convertiDattiloFN($node_title,$url_dir);
         $content_dataAr['dattilo'] = $dattilo;
     }
     * */
 }
 
-if ($reg_enabled && isset($add_bookmark)) {
-    $content_dataAr['add_bookmark'] = $add_bookmark;
+if ($reg_enabled && isset($addBookmark)) {
+    $content_dataAr['addBookmark'] = $addBookmark;
 } else {
-    $content_dataAr['add_bookmark'] = "";
+    $content_dataAr['addBookmark'] = "";
 }
 
 $content_dataAr['bookmark'] = $bookmark  ?? null;
@@ -545,7 +565,7 @@ if ($mod_enabled) {
 
 if ($com_enabled) {
     $online_users_listing_mode = 2;
-    $online_users = ADALoggableUser::get_online_usersFN($sess_id_course_instance, $online_users_listing_mode);
+    $online_users = ADALoggableUser::getOnlineUsersFN($sess_id_course_instance, $online_users_listing_mode);
 
     $content_dataAr['messages'] = $user_messages->getHtml();
     $content_dataAr['agenda'] = $user_agenda->getHtml();

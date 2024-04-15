@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * read chat
  *
@@ -17,7 +25,7 @@
 use Lynxlab\ADA\Comunica\ChatRoom;
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 
-use function Lynxlab\ADA\Comunica\Functions\exitWith_JSON_Error;
+use function Lynxlab\ADA\Comunica\Functions\exitWithJSONError;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -58,7 +66,7 @@ $self = whoami();
  * If not, stop script execution and report an error to the caller.
  */
 if (!isset($_POST['chatroom']) || !isset($_POST['lastMsgId'])) {
-    exitWith_JSON_Error(translateFN('Errore: parametri passati allo script PHP non corretti'));
+    exitWithJSONError(translateFN('Errore: parametri passati allo script PHP non corretti'));
 }
 
 $id_chatroom  = (isset($_POST['chatroom']) && intval($_POST['chatroom']) > 0) ? (int) $_POST['chatroom'] : null;
@@ -70,16 +78,16 @@ $studentId = (isset($_POST['studentId']) && intval($_POST['studentId']) > 0) ? (
  * Get Chatroom
  */
 $chatroomObj = new ChatRoom($id_chatroom, $_SESSION['sess_selected_tester_dsn']);
-if (AMA_DataHandler::isError($chatroomObj)) {
-    exitWith_JSON_Error(translateFN('Errore nella creazione della chatroom'));
+if (AMADataHandler::isError($chatroomObj)) {
+    exitWithJSONError(translateFN('Errore nella creazione della chatroom'));
 }
 
 /*
  * Get chatroom info
  */
-$chatroom_ha = $chatroomObj->get_info_chatroomFN($id_chatroom);
-if (AMA_DataHandler::isError($chatroomObj)) {
-    exitWith_JSON_Error(translateFN("Errore nell'ottenimento dei dati sulla chatroom"));
+$chatroom_ha = $chatroomObj->getInfoChatroomFN($id_chatroom);
+if (AMADataHandler::isError($chatroomObj)) {
+    exitWithJSONError(translateFN("Errore nell'ottenimento dei dati sulla chatroom"));
 }
 
 if (is_array($chatroom_ha)) {
@@ -99,23 +107,23 @@ if (is_array($chatroom_ha)) {
  * Get user status in the current chatroom
  */
 
-$user_status = $chatroomObj->get_user_statusFN($sess_id_user, $id_chatroom);
-if (AMA_DataHandler::isError($user_status)) {
-    exitWith_JSON_Error(translateFN("Errore nell'ottenimento dello stato dell'utente nella chatroom"));
+$user_status = $chatroomObj->getUserStatusFN($sess_id_user, $id_chatroom);
+if (AMADataHandler::isError($user_status)) {
+    exitWithJSONError(translateFN("Errore nell'ottenimento dello stato dell'utente nella chatroom"));
 }
 
 /*
  * User has been banned from the chatroom
  */
 if ($user_status == STATUS_BAN) {
-    exitWith_JSON_Error(translateFN('Sei stato bannato dalla chatroom'), 2);
+    exitWithJSONError(translateFN('Sei stato bannato dalla chatroom'), 2);
 }
 
 /*
  * User has been kicked from the chatroom
  */
 if ($user_status == STATUS_EXIT) {
-    exitWith_JSON_Error(translateFN("Sei stato cacciato dalla chatroom"), 2);
+    exitWithJSONError(translateFN("Sei stato cacciato dalla chatroom"), 2);
 }
 
 /*
@@ -123,8 +131,8 @@ if ($user_status == STATUS_EXIT) {
  */
 
 $mh = MessageHandler::instance($_SESSION['sess_selected_tester_dsn']);
-if (AMA_DataHandler::isError($mh)) {
-    exitWith_JSON_Error(translateFN("Errore nella creazione dell'oggetto MessageHandler"));
+if (AMADataHandler::isError($mh)) {
+    exitWithJSONError(translateFN("Errore nella creazione dell'oggetto MessageHandler"));
 }
 
 // set the sorting filter, we will get the list of the messages sorted by this variable
@@ -141,17 +149,17 @@ $msgs_pub_ha = [];
  * vito, uso $fields_list per indicare quali messaggi ottenere: quelli inviati
  * a partire dall'avvio della chat o quelli inviati a partire dall'ultima lettura
  */
-// TODO: usare find_messages al posto di get_messages e passare la clausola corretta
+// TODO: usare findMessages al posto di getMessages e passare la clausola corretta
 $fields_list = $lastMsgId;
-$msgs_pub_ha = $mh->get_messages($sess_id_user, ADA_MSG_CHAT, $fields_list, $sort_field);
-if (AMA_DataHandler::isError($msgs_pub_ha)) {
-    exitWith_JSON_Error(translateFN('Errore nella lettura dei messaggi dal DB'));
+$msgs_pub_ha = $mh->getMessages($sess_id_user, ADA_MSG_CHAT, $fields_list, $sort_field);
+if (AMADataHandler::isError($msgs_pub_ha)) {
+    exitWithJSONError(translateFN('Errore nella lettura dei messaggi dal DB'));
 }
 
 $msgs_priv_ha = [];
-$msgs_priv_ha = $mh->get_messages($sess_id_user, ADA_MSG_PRV_CHAT, $fields_list, $sort_field);
-if (AMA_DataHandler::isError($msgs_priv_ha)) {
-    exitWith_JSON_Error(translateFN('Errore nella lettura dei messaggi dal DB'));
+$msgs_priv_ha = $mh->getMessages($sess_id_user, ADA_MSG_PRV_CHAT, $fields_list, $sort_field);
+if (AMADataHandler::isError($msgs_priv_ha)) {
+    exitWithJSONError(translateFN('Errore nella lettura dei messaggi dal DB'));
 }
 
 //merge the two arrays without losing their keys.

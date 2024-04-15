@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Module\Test\TutorManagementTest;
+
+use Lynxlab\ADA\Module\Test\HistoryManagementTest;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class HistoryManagementTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -41,7 +55,7 @@ class HistoryManagementTest extends TutorManagementTest
      *
      * @return array an array composed of 'html', 'path' and 'title' keys
      */
-    protected function list_students()
+    protected function listStudents()
     {
         $array = [
             'html' => translateFN(''),
@@ -60,9 +74,9 @@ class HistoryManagementTest extends TutorManagementTest
      *
      * @return array an array composed of 'html', 'path' and 'title' keys
      */
-    protected function list_tests($student = false)
+    protected function listTests($student = false)
     {
-        $array = parent::list_tests(true);
+        $array = parent::listTests(true);
 
         $array['html'] = str_replace('&id_student=' . $this->id_student, '', $array['html']);
         $array['path'] = translateFN('Storico') . ' ' . ucfirst($this->plurale);
@@ -79,9 +93,9 @@ class HistoryManagementTest extends TutorManagementTest
      *
      * @return array an array composed of 'html', 'path' and 'title' keys
      */
-    protected function list_history_tests($student = false)
+    protected function listHistoryTests($student = false)
     {
-        $array = parent::list_history_tests(true);
+        $array = parent::listHistoryTests(true);
 
         $array['html'] = str_replace('&id_student=' . $this->id_student, '', $array['html']);
         $array['path'] = '<a href="' . $this->filepath . '?op=' . $this->what . '&id_course_instance=' . $this->course_instanceObj->id . '&id_course=' . $this->courseObj->id . '">' . translateFN('Storico') . ' ' . ucfirst($this->plurale) . '</a> &gt; ' . $this->test['titolo'];
@@ -96,9 +110,9 @@ class HistoryManagementTest extends TutorManagementTest
      *
      * @return array an array composed of 'html', 'path' and 'title' keys
      */
-    protected function view_history_tests()
+    protected function viewHistoryTests()
     {
-        $array = parent::view_history_tests();
+        $array = parent::viewHistoryTests();
 
         $array['path'] = '<a href="' . $this->filepath . '?op=' . $this->what . '&id_course_instance=' . $this->course_instanceObj->id . '&id_course=' . $this->courseObj->id . '">' . translateFN('Storico') . ' ' . ucfirst($this->plurale) . '</a> &gt; <a href="' . $this->filepath . '?op=' . $this->what . '&id_course_instance=' . $this->course_instanceObj->id . '&id_course=' . $this->courseObj->id . '&id_test=' . $this->test['id_nodo'] . '">' . $this->test['titolo'] . '</a> &gt; ' . translateFN('Tentativo') . ' #' . $this->history_test['id_history_test'];
         $array['title'] = translateFN('Storico') . ' ' . ucfirst($this->plurale);

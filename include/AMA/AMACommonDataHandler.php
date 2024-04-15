@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+
+// Trigger: ClassWithNameSpace. The class AMACommonDataHandler was declared with namespace Lynxlab\ADA\Main\AMA. //
+
 /**
  *
  * Common
@@ -15,7 +27,7 @@ use Lynxlab\ADA\Main\Logger\ADALogger;
 
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
-class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
+class AMACommonDataHandler extends AbstractAMADataHandler
 {
     protected static $instance = null;
     /**
@@ -40,14 +52,14 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
     public static function instance($dsn = null)
     {
 
-        //ADALogger::log_db('AMA_Common_DataHandler: get instance for main db connection');
+        //ADALogger::logDb('AMA_Common_DataHandler: get instance for main db connection');
         $callerClassName = get_called_class();
         if (!is_null(self::$instance) && get_class(self::$instance) !== $callerClassName) {
             self::$instance = null;
         }
 
         if (self::$instance == null) {
-            //ADALogger::log_db('AMA_Common_DataHandler: creating a new instance of AMA_Common_DataHandler');
+            //ADALogger::logDb('AMA_Common_DataHandler: creating a new instance of AMA_Common_DataHandler');
             self::$instance = new $callerClassName();
         }
         return self::$instance;
@@ -65,7 +77,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @param  string $password
      * @return mixed
      */
-    public function check_identity($username, $password)
+    public function checkIdentity($username, $password)
     {
 
         $sql = 'SELECT U.id_utente, U.tipo, U.nome, U.cognome FROM utente U ';
@@ -78,7 +90,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
          * match the user in the selected provider
          */
         if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && strlen($GLOBALS['user_provider']) > 0) {
-            $testerAr = $this->get_tester_info_from_pointer($GLOBALS['user_provider']);
+            $testerAr = $this->getTesterInfoFromPointer($GLOBALS['user_provider']);
             $sql .= ',utente_tester UT WHERE ' .
                     'U.id_utente = UT.id_utente AND U.username=? AND U.password=? AND UT.id_tester=?';
             array_push($sql_params, $testerAr[0]);
@@ -89,7 +101,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
         $resultHa = $this->getRowPrepared($sql, $sql_params, AMA_FETCH_ASSOC);
 
         if (!is_array($resultHa) || empty($resultHa)) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
         return $resultHa;
     }
@@ -99,7 +111,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @param $user_dataAr
      * @return unknown_type
      */
-    public function add_user($user_dataAr = [], $mustcheck = true)
+    public function addUser($user_dataAr = [], $mustcheck = true)
     {
 
         /*
@@ -108,10 +120,10 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
         if ($mustcheck) {
             $user_id_sql = 'SELECT id_utente FROM utente WHERE username=?';
             $user_id = $this->getOnePrepared($user_id_sql, [$user_dataAr['username']]);
-            if (AMA_DB::isError($user_id)) {
+            if (AMADB::isError($user_id)) {
                 return $user_id;
             } elseif ($user_id) {
-                return new AMA_Error(AMA_ERR_UNIQUE_KEY);
+                return new AMAError(AMA_ERR_UNIQUE_KEY);
             }
         }
 
@@ -134,17 +146,17 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
                 $user_dataAr['provincia'],
                 $user_dataAr['nazione'],
                 $user_dataAr['codice_fiscale'],
-                AMA_Common_DataHandler::date_to_ts($user_dataAr['birthdate']),
+                AMACommonDataHandler::dateToTs($user_dataAr['birthdate']),
                 $user_dataAr['sesso'],
                 $user_dataAr['telefono'],
-//                $this->or_null($user_dataAr['indirizzo']),
-//                $this->or_null($user_dataAr['citta']),
-//                $this->or_null($user_dataAr['provincia']),
-//                $this->or_null($user_dataAr['nazione']),
-//                $this->or_null($user_dataAr['codice_fiscale']),
-//                $this->or_zero($user_dataAr['birthdate']),
-//                $this->or_null($user_dataAr['sesso']),
-//                $this->or_null($user_dataAr['telefono']),
+//                $this->orNull($user_dataAr['indirizzo']),
+//                $this->orNull($user_dataAr['citta']),
+//                $this->orNull($user_dataAr['provincia']),
+//                $this->orNull($user_dataAr['nazione']),
+//                $this->orNull($user_dataAr['codice_fiscale']),
+//                $this->orZero($user_dataAr['birthdate']),
+//                $this->orNull($user_dataAr['sesso']),
+//                $this->orNull($user_dataAr['telefono']),
                 $user_dataAr['stato'],
                 $user_dataAr['lingua'],
                 $user_dataAr['timezone'],
@@ -158,7 +170,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * Adds the user
         */
         $result = $this->executeCriticalPrepared($add_user_sql, $values);
-        if (AMA_DB::isError($result)) {
+        if (AMADB::isError($result)) {
             return $result;
         }
         /*
@@ -171,14 +183,14 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
              */
             $user_id = $this->getConnection()->lastInsertID();
         } else {
-            $user_id = $this->find_user_from_username($user_dataAr['username']);
+            $user_id = $this->findUserFromUsername($user_dataAr['username']);
         }
 
         /*
     $user_id_sql = 'SELECT id_utente FROM utente WHERE username=?';
     $user_id = $this->getOnePrepared($user_id_sql, $user_dataAr['username']);
-    if (AMA_DB::isError($user_id)) {
-      return new AMA_Error(AMA_ERR_GET);
+    if (AMADB::isError($user_id)) {
+      return new AMAError(AMA_ERR_GET);
     }
         */
         return $user_id;
@@ -188,9 +200,9 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * Return the user id of the user with username = $username
      *
      * @param string $username
-     * @return AMA_Error|number
+     * @return AMAError|number
      */
-    public function find_user_from_username($username)
+    public function findUserFromUsername($username)
     {
         /**
          * @author giorgio 05/mag/2014 15:44:34
@@ -200,7 +212,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
          *
          */
         if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && strlen($GLOBALS['user_provider']) > 0) {
-            $testerAr = $this->get_tester_info_from_pointer($GLOBALS['user_provider']);
+            $testerAr = $this->getTesterInfoFromPointer($GLOBALS['user_provider']);
             $user_id_sql = 'SELECT U.id_utente FROM utente U, utente_tester UT WHERE ' .
                            'U.id_utente = UT.id_utente AND id_tester=? AND username=?';
             $sql_params =  [$testerAr[0], $username];
@@ -209,8 +221,8 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
             $sql_params = $username;
         }
         $user_id = $this->getOnePrepared($user_id_sql, $sql_params);
-        if (AMA_DB::isError($user_id) || $user_id == null) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($user_id) || $user_id == null) {
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $user_id;
@@ -220,9 +232,9 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * Return the user id of the user with email = $e_mail
      *
      * @param string $email
-     * @return AMA_Error|number
+     * @return AMAError|number
      */
-    public function find_user_from_email($email)
+    public function findUserFromEmail($email)
     {
         /**
          * @author giorgio 05/mag/2014 16:29:39
@@ -231,7 +243,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
          * match the user in the selected provider
          */
         if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && strlen($GLOBALS['user_provider']) > 0) {
-            $testerAr = $this->get_tester_info_from_pointer($GLOBALS['user_provider']);
+            $testerAr = $this->getTesterInfoFromPointer($GLOBALS['user_provider']);
             $user_id_sql = 'SELECT U.id_utente FROM utente U, utente_tester UT WHERE ' .
                     'U.id_utente = UT.id_utente AND id_tester=? AND e_mail=?';
             $sql_params =  [$email, $testerAr[0]];
@@ -240,8 +252,8 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
             $sql_params = $email;
         }
         $user_id = $this->getOnePrepared($user_id_sql, $sql_params);
-        if (AMA_DB::isError($user_id) || $user_id == null) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($user_id) || $user_id == null) {
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $user_id;
@@ -251,17 +263,17 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @param $user_dataAr
      * @return unknown_type
      */
-    public function add_user_to_tester($user_id, $tester_id)
+    public function addUserToTester($user_id, $tester_id)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         $sql = 'INSERT INTO utente_tester VALUES(' . $user_id . ',' . $tester_id . ')';
         $result = $db->query($sql);
-        if (AMA_DB::isError($result)) {
-            return new AMA_Error(AMA_ERR_ADD);
+        if (AMADB::isError($result)) {
+            return new AMAError(AMA_ERR_ADD);
         }
         return true;
     }
@@ -277,21 +289,21 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
     */
 
 
-    public function get_user_pwd($id)
+    public function getUserPwd($id)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         // get a row from table UTENTE
         $query = "select password from utente where id_utente=$id";
         $res_ar =  $db->getOne($query, null, AMA_FETCH_ASSOC);
-        if (AMA_DB::isError($res_ar)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($res_ar)) {
+            return new AMAError(AMA_ERR_GET);
         }
         if (empty($res_ar) or is_object($res_ar)) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
         return $res_ar;
     }
@@ -314,10 +326,10 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      */
 
     //private function get_user_info($id) {
-    public function get_user_info($id)
+    public function getUserInfo($id)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -326,11 +338,11 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
                 "indirizzo, citta, provincia, nazione, codice_fiscale, birthdate, sesso, " .
                 "telefono, stato, lingua, timezone, cap, matricola, avatar, birthcity, birthprovince from utente where id_utente=$id";
         $res_ar =  $db->getRow($query, null, AMA_FETCH_ASSOC);
-        if (AMA_DB::isError($res_ar)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($res_ar)) {
+            return new AMAError(AMA_ERR_GET);
         }
         if (empty($res_ar) or is_object($res_ar)) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
 
         $res_ar['id'] = $id;
@@ -347,25 +359,25 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @param $id_course_instance
      * @return unknown_type
      */
-    private function get_student_level($id_user, $id_course_instance)
+    private function getStudentLevel($id_user, $id_course_instance)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         if (empty($id_course_instance)) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
 
         // get a row from table iscrizioni
         // FIXME: usare getOne al posto di getRow
         $res_ar =  $db->getRow("select livello from iscrizioni where id_utente_studente=$id_user and  id_istanza_corso=$id_course_instance");
-        if (AMA_DB::isError($res_ar)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($res_ar)) {
+            return new AMAError(AMA_ERR_GET);
         }
         if (empty($res_ar) or is_object($res_ar)) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
 
         return $res_ar[0];
@@ -380,19 +392,19 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      *
      * @return an INT (1,2,3,4) or Error
      */
-    public function get_user_type($id)
+    public function getUserType($id)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         $result =  $db->getOne("select tipo from utente where id_utente=$id");
-        if (AMA_DB::isError($result)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($result)) {
+            return new AMAError(AMA_ERR_GET);
         }
         if (empty($result)) { //OR is_object($res_ar)){
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
 
         return $result;
@@ -407,19 +419,19 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      *
      * @return an INT (1,2,3,4) or Error
      */
-    public function get_user_status($id)
+    public function getUserStatus($id)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
         $query = "select stato from utente where id_utente=$id";
         $result =  $db->getOne($query);
-        if (AMA_DB::isError($result)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($result)) {
+            return new AMAError(AMA_ERR_GET);
         }
         if (empty($result)) { //OR is_object($res_ar)){
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
 
         return $result;
@@ -444,17 +456,17 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      *        res_ha['layout']
      *
      */
-    public function get_author($id)
+    public function getAuthor($id)
     {
         // get a row from table UTENTE
-        $get_user_result = $this->get_user_info($id);
-        if (AMA_Common_DataHandler::isError($get_user_result)) {
-            // $get_user_result is an AMA_Error object
+        $get_user_result = $this->getUserInfo($id);
+        if (AMACommonDataHandler::isError($get_user_result)) {
+            // $get_user_result is an AMAError object
             return $get_user_result;
         }
 
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -463,12 +475,12 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         //    $get_author_sql = "SELECT tariffa, profilo FROM autore WHERE id_utente_autore=$id";
         //    $get_author_result = $db->getRow($get_author_sql, NULL, AMA_FETCH_ASSOC);
-        //    if (AMA_DB::isError($get_author_result)) {
-        //      return new AMA_Error(AMA_ERR_GET);
+        //    if (AMADB::isError($get_author_result)) {
+        //      return new AMAError(AMA_ERR_GET);
         //    }
         //    if(!$get_author_result) {
         /* inconsistency found! a message should be logged */
-        //      return new AMA_Error(AMA_ERR_INCONSISTENT_DATA);
+        //      return new AMAError(AMA_ERR_INCONSISTENT_DATA);
         //    }
 
         //    return array_merge($get_user_result, $get_author_result);
@@ -493,12 +505,12 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      *        res_ha['profilo']
      *
      */
-    public function get_student($id)
+    public function getStudent($id)
     {
         // get a row from table UTENTE
-        $get_user_result = $this->get_user_info($id);
-        if (AMA_Common_DataHandler::isError($get_user_result)) {
-            // $get_user_result is an AMA_Error object
+        $get_user_result = $this->getUserInfo($id);
+        if (AMACommonDataHandler::isError($get_user_result)) {
+            // $get_user_result is an AMAError object
             return $get_user_result;
         }
         // get_student($id) originally did not return the user id as a result,
@@ -507,9 +519,9 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
         return $get_user_result;
     }
 
-    public function get_user($id)
+    public function getUser($id)
     {
-        return $this->get_student($id);
+        return $this->getStudent($id);
     }
     /**
      * Get all informations about tutor
@@ -529,23 +541,23 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      *        res_ha['profilo']
      *        res_ha['layout']
      *
-     *        an AMA_Error object on failure
+     *        an AMAError object on failure
      *
      */
-    public function get_tutor($id)
+    public function getTutor($id)
     {
 
         // get a row from table UTENTE
-        $get_user_result = $this->get_user_info($id);
-        if (AMA_Common_DataHandler::isError($get_user_result)) {
-            // $get_user_result is an AMA_Error object
+        $get_user_result = $this->getUserInfo($id);
+        if (AMACommonDataHandler::isError($get_user_result)) {
+            // $get_user_result is an AMAError object
             return $get_user_result;
         }
         // get_tutor($id) originally did not return the user id as a result,
         unset($get_user_result['id']);
 
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -563,25 +575,25 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @return an error if something goes wrong, true on success
      *
      */
-    public function set_user($id, $user_ha)
+    public function setUser($id, $user_ha)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         // verify that the record exists and store old values for rollback
         $user_id_sql =  'SELECT id_utente FROM utente WHERE id_utente=?';
         $user_id = $this->getOnePrepared($user_id_sql, [$id]);
-        if (AMA_DB::isError($user_id)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($user_id)) {
+            return new AMAError(AMA_ERR_GET);
         }
         if (is_null($user_id)) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
 
         // backup old values
-        $old_values_ha = $this->get_user($id);
+        $old_values_ha = $this->getUser($id);
 
         // verify unique constraint once updated
         /*
@@ -600,11 +612,11 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
         //      //$existing_user_id_sql = 'SELECT id_utente FROM utente WHERE nome=? AND cognome=?';
         //      $existing_user_id_sql = 'SELECT id_utente FROM utente WHERE nome=? AND cognome=?';
         //      $result = $this->getOnePrepared($existing_user_id_sql, array($new_nome, $new_cognome));
-        //      if(AMA_DB::isError($result)) {
-        //        return new AMA_Error(AMA_ERR_GET);
+        //      if(AMADB::isError($result)) {
+        //        return new AMAError(AMA_ERR_GET);
         //      }
         //      if($result) {
-        //        return new AMA_Error(AMA_ERR_UNIQUE_KEY);
+        //        return new AMAError(AMA_ERR_UNIQUE_KEY);
         //      }
         //    }
 
@@ -625,7 +637,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
                     $user_ha['provincia'],
                     $user_ha['nazione'],
                     $user_ha['codice_fiscale'],
-                    AMA_Common_DataHandler::date_to_ts($user_ha['birthdate']),
+                    AMACommonDataHandler::dateToTs($user_ha['birthdate']),
                     $user_ha['sesso'],
                     $user_ha['telefono'],
                     $user_ha['stato'],
@@ -654,7 +666,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
                     $user_ha['provincia'],
                     $user_ha['nazione'],
                     $user_ha['codice_fiscale'],
-                    AMA_Common_DataHandler::date_to_ts($user_ha['birthdate']),
+                    AMACommonDataHandler::dateToTs($user_ha['birthdate']),
                     $user_ha['sesso'],
                     $user_ha['telefono'],
                     $user_ha['stato'],
@@ -679,8 +691,8 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
         $valuesAr[] = $id;
 
         $result = $this->queryPrepared($update_user_sql, $valuesAr);
-        if (AMA_DB::isError($result)) {
-            return new AMA_Error(AMA_ERR_UPDATE);
+        if (AMADB::isError($result)) {
+            return new AMAError(AMA_ERR_UPDATE);
         }
         return true;
     }
@@ -697,21 +709,21 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @return  if something goes wrong, new status on success
      *
      */
-    public function set_user_status($userid, $status)
+    public function setUserStatus($userid, $status)
     {
         $student_ha = [];
         $student_ha['stato'] = $status;
-        $usertype = $this->get_user_type($userid);
+        $usertype = $this->getUserType($userid);
         if ((is_numeric($status)) and ($usertype == AMA_TYPE_STUDENT)) {
-            $result =  $this->set_student($userid, $student_ha);
+            $result =  $this->setStudent($userid, $student_ha);
             if ($this->isError($result)) {
                 return $result;
             } else {
-                $new_status = $this->get_user_status($userid);
+                $new_status = $this->getUserStatus($userid);
                 return $new_status;
             }
         } else {
-            return new AMA_Error(AMA_ERR_UPDATE);
+            return new AMAError(AMA_ERR_UPDATE);
         }
     }
 
@@ -729,16 +741,16 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      *
      * @param  $order the ordering filter
      *
-     * @return a nested array containing the list, or an AMA_Error object or a DB_Error object if something goes wrong
+     * @return a nested array containing the list, or an AMAError object or a DB_Error object if something goes wrong
      * The form of the nested array is:
      *     array(array(ID1, 'field_1_1', 'field_1_2'),
      *           array(ID2, 'field_2_1', 'field_2_2'),
      *           array(ID3, 'field_3_1', 'field_3_2'))
      */
-    public function find_users_list($field_list_ar, $clause = '', $usertype = AMA_TYPE_STUDENT, $order = 'cognome')
+    public function findUsersList($field_list_ar, $clause = '', $usertype = AMA_TYPE_STUDENT, $order = 'cognome')
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -760,8 +772,8 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         // do the query
         $users_ar =  $db->getAll($query);
-        if (AMA_DB::isError($users_ar)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($users_ar)) {
+            return new AMAError(AMA_ERR_GET);
         }
         //
         // return nested array in the form
@@ -775,10 +787,10 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
     // MARK: Methods accessing table `tester`
 
 
-    public function get_testers_for_user($id_user)
+    public function getTestersForUser($id_user)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -787,16 +799,16 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         $testers_result = $db->getCol($testers_sql);
         if (self::isError($testers_result)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $testers_result;
     }
 
-    public function get_testers_for_username($username)
+    public function getTestersForUsername($username)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -805,16 +817,16 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         $testers_result = $db->getCol($testers_sql);
         if (self::isError($testers_result)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $testers_result;
     }
 
-    public function get_all_testers($field_data_Ar = [])
+    public function getAllTesters($field_data_Ar = [])
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
         if (!empty($field_data_Ar)) {
@@ -827,16 +839,16 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
         $testers_sql = 'SELECT ' . $fields . ' puntatore FROM tester WHERE 1';
         $testers_result = $db->getAll($testers_sql, null, AMA_FETCH_ASSOC);
         if (self::isError($testers_result)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $testers_result;
     }
 
-    public function get_tester_info_from_id($id_tester, $fetchmode = null)
+    public function getTesterInfoFromId($id_tester, $fetchmode = null)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -845,16 +857,16 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         $testers_result = $db->getRow($testers_sql, $id_tester, $fetchmode);
         if (self::isError($testers_result)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $testers_result;
     }
 
-    public function get_tester_info_from_id_course($id_course)
+    public function getTesterInfoFromIdCourse($id_course)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -863,19 +875,19 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         $tester_resultAr = $db->getRow($tester_sql, null, AMA_FETCH_ASSOC);
         if (self::isError($tester_resultAr)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         }
         if (is_null($tester_resultAr)) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
 
         return $tester_resultAr;
     }
 
-    public function get_tester_info_from_service($id_service)
+    public function getTesterInfoFromService($id_service)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -884,20 +896,20 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         $tester_resultAr = $db->getRow($tester_sql, null, AMA_FETCH_ASSOC);
         if (self::isError($tester_resultAr)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         }
         if (is_null($tester_resultAr)) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
 
         return $tester_resultAr;
     }
 
 
-    public function get_tester_info_from_pointer($tester)
+    public function getTesterInfoFromPointer($tester)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -906,13 +918,13 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         $testers_result = $db->getRow($testers_sql);
         if (self::isError($testers_result)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $testers_result;
     }
 
-    public function add_tester($tester_dataAr = [])
+    public function addTester($tester_dataAr = [])
     {
 
         $tester_sql = 'INSERT INTO tester(nome, ragione_sociale,indirizzo,citta,provincia,nazione,telefono,e_mail,responsabile,puntatore,descrizione,iban) '
@@ -934,14 +946,14 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
         ];
 
         $result = $this->queryPrepared($tester_sql, $valuesAr);
-        if (AMA_DB::isError($result)) {
-            return new AMA_Error(AMA_ERR_ADD);
+        if (AMADB::isError($result)) {
+            return new AMAError(AMA_ERR_ADD);
         }
 
         return $this->getConnection()->lastInsertID();
     }
 
-    public function set_tester($tester_id, $tester_dataAr = [])
+    public function setTester($tester_id, $tester_dataAr = [])
     {
 
         $tester_sql = 'UPDATE tester SET nome=?, ragione_sociale=?,indirizzo=?,citta=?,provincia=?,nazione=?,telefono=?,e_mail=?,responsabile=?,puntatore=?,descrizione=?,iban=? WHERE id_tester=?';
@@ -963,8 +975,8 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
         ];
 
         $result = $this->queryPrepared($tester_sql, $valuesAr);
-        if (AMA_DB::isError($result)) {
-            return new AMA_Error(AMA_ERR_UPDATE);
+        if (AMADB::isError($result)) {
+            return new AMAError(AMA_ERR_UPDATE);
         }
 
         return true; // FIXME: deve restituire l'id del tester appena aggiunto
@@ -985,10 +997,10 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @return an error if something goes wrong
      *
      */
-    public function get_tester_for_service($id_service)
+    public function getTesterForService($id_service)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -997,7 +1009,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         $testers_result = $db->getCol($testers_sql);
         if (self::isError($testers_result)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $testers_result;
@@ -1014,10 +1026,10 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @return an error if something goes wrong
      *
      */
-    public function get_services_for_tester($id_tester)
+    public function getServicesForTester($id_tester)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -1026,7 +1038,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         $testers_result = $db->getCol($testers_sql);
         if (self::isError($testers_result)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $testers_result;
@@ -1043,10 +1055,10 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @return an error if something goes wrong
      *
      */
-    public function get_services_tester_info($id_tester = [])
+    public function getServicesTesterInfo($id_tester = [])
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -1069,7 +1081,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         $res = $db->getAll($sql, null, AMA_FETCH_ASSOC);
         if (self::isError($res)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $res;
@@ -1086,10 +1098,10 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @return an error if something goes wrong
      *
      */
-    public function get_courses_for_tester($id_tester)
+    public function getCoursesForTester($id_tester)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -1098,7 +1110,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         $testers_result = $db->getCol($testers_sql);
         if (self::isError($testers_result)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $testers_result;
@@ -1111,16 +1123,16 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      *
      * @author giorgio
      *
-     * @return AMA_Error | integer
+     * @return AMAError | integer
      * @access public
      */
-    public function get_course_max_id()
+    public function getCourseMaxId()
     {
         $sql = "SELECT MAX(id_corso) FROM servizio_tester";
         $max_id = $this->getOnePrepared($sql);
 
-        if (AMA_DB::isError($max_id)) {
-            $retval = new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($max_id)) {
+            $retval = new AMAError(AMA_ERR_GET);
         } else {
             $retval = $max_id;
         }
@@ -1139,10 +1151,10 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @return an error if something goes wrong
      *
      */
-    public function get_service_info($id_servizio)
+    public function getServiceInfo($id_servizio)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -1151,7 +1163,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         $service_result = $db->getRow($service_sql);
         if (self::isError($service_result)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $service_result;
@@ -1168,10 +1180,10 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @return an error if something goes wrong
      *
      */
-    public function get_info_for_tester_services($id_tester)
+    public function getInfoForTesterServices($id_tester)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -1180,7 +1192,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         $services_result = $db->getAll($services_sql, null, AMA_FETCH_ASSOC);
         if (self::isError($services_result)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $services_result;
@@ -1196,17 +1208,17 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
    * @return an error if something goes wrong
    *
     */
-    public function get_service_levels()
+    public function getServiceLevels()
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         $service_sql = "SELECT id_servizio, livello  FROM servizio ";
         $service_result = $db->getAll($service_sql);
         if (self::isError($service_result)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $service_result;
@@ -1223,10 +1235,10 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
    * @return an error if something goes wrong
    *
     */
-    public function get_services($orderByAr = null, $clause = null)
+    public function getServices($orderByAr = null, $clause = null)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -1264,7 +1276,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
         //echo $service_sql;
         $service_result = $db->getAll($service_sql);
         if (self::isError($service_result)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $service_result;
@@ -1280,17 +1292,17 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
    * @return an error if something goes wrong
    *
     */
-    public function get_service_implementors()
+    public function getServiceImplementors()
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         $service_sql = "SELECT id_servizio, id_corso FROM servizio_tester ";
         $service_result = $db->getAll($service_sql);
         if (self::isError($service_result)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $service_result;
@@ -1308,10 +1320,10 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @return an error if something goes wrong
      *
      */
-    public function get_courses_for_service($id_service, $id_tester = null)
+    public function getCoursesForService($id_service, $id_tester = null)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -1325,7 +1337,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         $courses_result = $db->getAll($courses_sql, null, AMA_FETCH_ASSOC);
         if (self::isError($courses_result)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $courses_result;
@@ -1344,10 +1356,10 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @return an error if something goes wrong
      *
      */
-    public function get_service_info_from_course($id_course)
+    public function getServiceInfoFromCourse($id_course)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
         // FIXME:sistemare query
@@ -1359,7 +1371,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         $service_result = $db->getRow($service_sql);
         if (self::isError($service_result)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $service_result;
@@ -1376,7 +1388,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @return an error if something goes wrong
      *
      */
-    public function get_service_type_info_from_course($id_course)
+    public function getServiceTypeInfoFromCourse($id_course)
     {
 
         $sql = "SELECT STYPE.* FROM `service_type` as STYPE, " .
@@ -1386,17 +1398,17 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         $result = $this->getRowPrepared($sql, $id_course, AMA_FETCH_ASSOC);
         if (self::isError($result)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $result;
     }
 
-    public function add_service($service_dataAr = [])
+    public function addService($service_dataAr = [])
     {
 
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -1413,14 +1425,14 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         $result = $this->queryPrepared($service_sql, $valuesAr);
         if (self::isError($result)) {
-            return new AMA_Error(AMA_ERR_ADD);
+            return new AMAError(AMA_ERR_ADD);
         }
 
         return $db->lastInsertID();
     }
 
 
-    public function delete_service($id_service)
+    public function deleteService($id_service)
     {
         $service_sql = 'DELETE FROM servizio WHERE id_servizio=?';
         $valuesAr = [
@@ -1429,12 +1441,12 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         $result = $this->queryPrepared($service_sql, $valuesAr);
         if (self::isError($result)) {
-            return new AMA_Error(AMA_ERR_REMOVE);
+            return new AMAError(AMA_ERR_REMOVE);
         }
         return true;
     }
 
-    public function set_service($id_service, $service_dataAr = [])
+    public function setService($id_service, $service_dataAr = [])
     {
 
         $service_sql = 'UPDATE servizio SET nome=?, descrizione=?, livello=?, durata_servizio=?, min_incontri=?, max_incontri=?, durata_max_incontro=? WHERE id_servizio=?';
@@ -1451,13 +1463,13 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         $result = $this->queryPrepared($service_sql, $valuesAr);
         if (self::isError($result)) {
-            return new AMA_Error(AMA_ERR_UPDATE);
+            return new AMAError(AMA_ERR_UPDATE);
         }
 
         return true;
     }
 
-    public function link_service_to_course($id_tester, $id_service, $id_course)
+    public function linkServiceToCourse($id_tester, $id_service, $id_course)
     {
         $service_sql = 'INSERT INTO servizio_tester(id_tester, id_servizio, id_corso) VALUES(?,?,?)';
         $valuesAr = [
@@ -1468,13 +1480,13 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         $result = $this->queryPrepared($service_sql, $valuesAr);
         if (self::isError($result)) {
-            return new AMA_Error(AMA_ERR_ADD);
+            return new AMAError(AMA_ERR_ADD);
         }
 
         return true;
     }
 
-    public function unlink_service_from_course($id_service, $id_course)
+    public function unlinkServiceFromCourse($id_service, $id_course)
     {
         $sql = 'DELETE FROM servizio_tester WHERE id_servizio=? AND id_corso=?';
         $valuesAr = [
@@ -1484,7 +1496,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         $result = $this->queryPrepared($sql, $valuesAr);
         if (self::isError($result)) {
-            return new AMA_Error(AMA_ERR_REMOVE);
+            return new AMAError(AMA_ERR_REMOVE);
         }
         return true;
     }
@@ -1494,10 +1506,10 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * giorgio 13/ago/2013
      * added id_tester parameter that is passed if it's not a multiprovider environment
      */
-    public function get_published_courses($id_tester = null)
+    public function getPublishedCourses($id_tester = null)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -1509,8 +1521,8 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
         }
 
         $result = $db->getAll($courses_sql, null, AMA_FETCH_ASSOC);
-        if (AMA_DB::isError($result)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($result)) {
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $result;
@@ -1530,10 +1542,10 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @return an error if something goes wrong
      *
      */
-    public function get_users_by_type($user_type = [], $retrieve_extended_data = false)
+    public function getUsersByType($user_type = [], $retrieve_extended_data = false)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -1545,20 +1557,20 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
         }
 
         $result = $db->getAll($sql, null, AMA_FETCH_ASSOC);
-        if (AMA_DB::isError($result)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($result)) {
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $result;
     }
 
-    public function get_number_of_users_with_status($user_idsAr = [], $status = -1)
+    public function getNumberOfUsersWithStatus($user_idsAr = [], $status = -1)
     {
         if (count($user_idsAr) == 0) {
             return 0;
         }
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -1566,8 +1578,8 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
         $sql = 'SELECT count(id_utente) FROM utente WHERE id_utente IN(' . $user_ids . ')
     		AND stato=' . $status;
         $result = $db->getOne($sql);
-        if (AMA_DB::isError($result)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($result)) {
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $result;
@@ -1588,7 +1600,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      *  'valid'
      * @return unknown_type
      */
-    public function add_token($token_dataAr = [])
+    public function addToken($token_dataAr = [])
     {
         $token_sql = 'INSERT INTO token(token, id_utente, timestamp_richiesta, azione, valido) VALUES(?,?,?,?,?)';
         $valuesAr = [
@@ -1601,7 +1613,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         $result = $this->queryPrepared($token_sql, $valuesAr);
         if (self::isError($result)) {
-            return new AMA_Error(AMA_ERR_ADD);
+            return new AMAError(AMA_ERR_ADD);
         }
 
         return true;
@@ -1614,27 +1626,27 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @param $action
      * @return unknown_type
      */
-    public function get_token($token, $user_id, $action)
+    public function getToken($token, $user_id, $action)
     {
         $db  = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         $sql = "SELECT token, id_utente, timestamp_richiesta, azione, valido FROM token WHERE token='$token' AND id_utente=$user_id AND azione=$action";
 
         $result = $db->getRow($sql, null, AMA_FETCH_ASSOC);
-        if (AMA_DB::isError($result) || !is_array($result)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($result) || !is_array($result)) {
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $result;
     }
 
-    public function update_token($token_dataAr = [])
+    public function updateToken($token_dataAr = [])
     {
         $db  = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -1644,8 +1656,8 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
         $sql = "UPDATE token SET valido=$valido WHERE token='$token'";
 
         $result = $db->query($sql);
-        if (AMA_DB::isError($result)) {
-            return new AMA_Error(AMA_ERR_UPDATE);
+        if (AMADB::isError($result)) {
+            return new AMAError(AMA_ERR_UPDATE);
         }
 
         return true;
@@ -1668,38 +1680,38 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      *
      * @param string $message_text  - ADA system message string to be translated
      * @param string $language_code - ISO 639-1 language code (e.g. 'it' for 'italian')
-     * @return mixed - An AMA_Error object if something went wrong or a string.
+     * @return mixed - An AMAError object if something went wrong or a string.
      */
-    public function find_message_translation($message_text, $language_code)
+    public function findMessageTranslation($message_text, $language_code)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
-        $table_name = $this->get_translation_table_name_for_language_code($language_code);
+        $table_name = $this->getTranslationTableNameForLanguageCode($language_code);
 
-        if (AMA_DB::isError($table_name)) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+        if (AMADB::isError($table_name)) {
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
 
-        $sql_message = $this->sql_prepared($message_text);
+        $sql_message = $this->sqlPrepared($message_text);
         /*
      * Check if the given message is already in table messaggi_sistema
         */
         $sql_message_id = "SELECT id_messaggio FROM messaggi_sistema WHERE testo_messaggio=$sql_message";
 
         $result = $db->getRow($sql_message_id);
-        if (AMA_DB::isError($result)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($result)) {
+            return new AMAError(AMA_ERR_GET);
         }
 
         /*
      * If the given message is not in table messaggi_sistema, add it.
         */
         if ($result ==  null) {
-            $insert = $this->add_translation_message($sql_message);
-            if (AMA_DB::isError($insert)) {
-                return new AMA_Error(AMA_ERR_ADD);
+            $insert = $this->addTranslationMessage($sql_message);
+            if (AMADB::isError($insert)) {
+                return new AMAError(AMA_ERR_ADD);
             }
             /*
        * For this message there aren't translations at this moment, so return the original message
@@ -1712,12 +1724,12 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
         */
 
         $message_id = $result[0];
-        $result = $this->select_message_text($table_name, $message_id);
+        $result = $this->selectMessageText($table_name, $message_id);
 
         /*
      * If a translation in the given language is not found, return the original message
         */
-        if (AMA_DB::isError($result) or $result ==  null) {
+        if (AMADB::isError($result) or $result ==  null) {
             return $message_text;
         }
 
@@ -1740,17 +1752,17 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @param $message_id
      * @return unknown_type
      */
-    public function select_message_text($table_name, $message_id)
+    public function selectMessageText($table_name, $message_id)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         $sql_translated_message = "SELECT testo_messaggio FROM $table_name WHERE id_messaggio=$message_id";
         $result = $db->getRow($sql_translated_message, null, AMA_FETCH_ASSOC);
-        if (AMA_DB::isError($result)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($result)) {
+            return new AMAError(AMA_ERR_GET);
         }
         return $result;
     }
@@ -1762,12 +1774,12 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @param string  $message_text
      * @param string  $language_code
      * @param integer $limit_results_number_to
-     * @return mixed - An AMA_Error object if there were errors, an array of string otherwise
+     * @return mixed - An AMAError object if there were errors, an array of string otherwise
      */
-    public function find_translation_for_message($message_text, $language_code, $limit_results_number_to)
+    public function findTranslationForMessage($message_text, $language_code, $limit_results_number_to)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -1776,10 +1788,10 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
          * Check if the user has specified an exact query (e.g. '"some text"')
          */
         if ($message_text[0] == '"' && $message_text[$last_char - 1] == '"') {
-            $sql_prepared_text = $this->sql_prepared(trim($message_text, '"'));
+            $sql_prepared_text = $this->sqlPrepared(trim($message_text, '"'));
             $sql_for_where     = "testo_messaggio=$sql_prepared_text";
         } elseif ($message_text[1] == '"' && $message_text[$last_char] == '"') {
-            $sql_prepared_text = $this->sql_prepared(trim($message_text, '\"'));
+            $sql_prepared_text = $this->sqlPrepared(trim($message_text, '\"'));
             $sql_for_where     = "testo_messaggio=$sql_prepared_text";
         } else {
             /*
@@ -1787,10 +1799,10 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
              */
             $sql_for_where = "";
             $token = strtok($message_text, ' ');
-            $sql_prepared_text = $this->sql_prepared("%$token%");
+            $sql_prepared_text = $this->sqlPrepared("%$token%");
             $sql_for_where .= "testo_messaggio LIKE $sql_prepared_text ";
             while (($token = strtok(' ')) !== false) {
-                $sql_prepared_text = $this->sql_prepared("%$token%");
+                $sql_prepared_text = $this->sqlPrepared("%$token%");
                 $sql_for_where .= "AND testo_messaggio LIKE $sql_prepared_text ";
             }
             if ($limit_results_number_to != null || $limit_results_number_to != "") {
@@ -1798,9 +1810,9 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
             }
         }
 
-        $table_name = $this->get_translation_table_name_for_language_code($language_code);
-        if (AMA_DB::isError($table_name)) {
-            return new AMA_Error(AMA_ERR_GET);
+        $table_name = $this->getTranslationTableNameForLanguageCode($language_code);
+        if (AMADB::isError($table_name)) {
+            return new AMAError(AMA_ERR_GET);
         }
 
         $sql_translated_message = "SELECT id_messaggio,testo_messaggio
@@ -1808,8 +1820,8 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
                                   WHERE $sql_for_where";
 
         $result = $db->getAll($sql_translated_message, null, AMA_FETCH_ASSOC);
-        if (AMA_DB::isError($result)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($result)) {
+            return new AMAError(AMA_ERR_GET);
         }
         return $result;
     }
@@ -1819,20 +1831,20 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * function get_all_system_messages: used to obtain all the messages stored
      * in table 'messaggi_sistema'.
      *
-     * @return mixed - An AMA_Error object if there were errors, an array of strings otherwise.
+     * @return mixed - An AMAError object if there were errors, an array of strings otherwise.
      */
-    public function get_all_system_messages()
+    public function getAllSystemMessages()
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         $sql_get_messages = "SELECT testo_messaggio FROM messaggi_sistema";
         $result = $db->getAll($sql_get_messages, null, AMA_FETCH_ASSOC);
 
-        if (AMA_DB::isError($result)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($result)) {
+            return new AMAError(AMA_ERR_GET);
         }
 
         return $result;
@@ -1846,12 +1858,12 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      *
      * @access private
      * @param  string $sql_prepared_message - a message already prepared by calling $this->sql_prepare
-     * @return true if the message was successfully inserted, an AMA_DB error otherwise
+     * @return true if the message was successfully inserted, an AMADB error otherwise
      */
-    private function add_translation_message($sql_prepared_message)
+    private function addTranslationMessage($sql_prepared_message)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -1861,8 +1873,8 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
         $sql_insert_message    = "INSERT INTO messaggi_sistema(testo_messaggio) VALUES($sql_prepared_message)";
 
         $result = $db->query($sql_insert_message);
-        if (AMA_DB::isError($result)) {
-            return new AMA_Error(AMA_ERR_ADD);
+        if (AMADB::isError($result)) {
+            return new AMAError(AMA_ERR_ADD);
         }
 
         /**
@@ -1871,15 +1883,15 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
          */
         $sql_select_translation_tables_suffixes = "SELECT identificatore_tabella FROM lingue";
         $suffixes = $db->getCol($sql_select_translation_tables_suffixes);
-        if (AMA_DB::isError($suffixes)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($suffixes)) {
+            return new AMAError(AMA_ERR_GET);
         }
         // ottenere l'id per il messaggio appena inserito
 
         $sql_id_message    = "SELECT id_messaggio FROM messaggi_sistema WHERE testo_messaggio=$sql_prepared_message";
         $id_message = $db->getOne($sql_id_message);
-        if (AMA_DB::isError($id_message)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($id_message)) {
+            return new AMAError(AMA_ERR_GET);
         }
 
         foreach ($suffixes as $table_suffix) {
@@ -1893,8 +1905,8 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
              * If an error occurs while adding the message into this table, then add an empty string, since
              * we don't want to loose identifier one-to-one mapping between this table and table messaggi_sistema
              */
-            if (AMA_DB::isError($result)) {
-                ADALogger::log_db("Error encountered while adding message $sql_prepared_message into table $table_name");
+            if (AMADB::isError($result)) {
+                ADALogger::logDb("Error encountered while adding message $sql_prepared_message into table $table_name");
                 $sql_insert_in_case_of_error = "INSERT INTO $table_name(testo_messaggio) VALUES('')";
                 $result = $db->query($sql_insert_in_case_of_error);
             }
@@ -1913,27 +1925,27 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @param integer $message_id    - the identifier of the message in table 'messaggi_sistema'
      * @param string  $message_text  - the text for the translated message
      * @param string  $language_code - the language code that identifies the translation
-     * @return mixed  - An AMA_Error object if there were errors, true otherwise
+     * @return mixed  - An AMAError object if there were errors, true otherwise
      */
-    public function update_message_translation_for_language_code($message_id, $message_text, $language_code)
+    public function updateMessageTranslationForLanguageCode($message_id, $message_text, $language_code)
     {
 
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
-        $table_name = $this->get_translation_table_name_for_language_code($language_code);
-        if (AMA_DB::isError($table_name)) {
-            return new AMA_Error(AMA_ERR_GET);
+        $table_name = $this->getTranslationTableNameForLanguageCode($language_code);
+        if (AMADB::isError($table_name)) {
+            return new AMAError(AMA_ERR_GET);
         }
 
-        $sql_prepared_message_text = $this->sql_prepared($message_text);
+        $sql_prepared_message_text = $this->sqlPrepared($message_text);
         $sql_update_message_text = "UPDATE $table_name SET testo_messaggio=$sql_prepared_message_text WHERE id_messaggio=$message_id";
         $result = $db->query($sql_update_message_text);
 
-        if (AMA_DB::isError($result)) {
-            return new AMA_Error(AMA_ERR_UPDATE);
+        if (AMADB::isError($result)) {
+            return new AMAError(AMA_ERR_UPDATE);
         }
 
         return true;
@@ -1945,30 +1957,30 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @param string $message_text     - the existing string in the translation
      * @param string $new_message_text - the new string
      * @param string $language_code    - ISO 639-1 code which identifies the translation
-     * @return mixed - AMA_Error object if there were errors, the number of affected rows otherwise
+     * @return mixed - AMAError object if there were errors, the number of affected rows otherwise
      */
-    public function update_message_translation_for_language_code_given_this_text($message_text, $new_message_text, $language_code)
+    public function updateMessageTranslationForLanguageCodeGivenThisText($message_text, $new_message_text, $language_code)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
-        $table_name = $this->get_translation_table_name_for_language_code($language_code);
-        if (AMA_DB::isError($table_name)) {
-            return new AMA_Error(AMA_ERR_GET);
+        $table_name = $this->getTranslationTableNameForLanguageCode($language_code);
+        if (AMADB::isError($table_name)) {
+            return new AMAError(AMA_ERR_GET);
         }
 
-        $sql_prepared_message_text = $this->sql_prepared($message_text);
-        $sql_prepared_new_message_text = $this->sql_prepared($new_message_text);
+        $sql_prepared_message_text = $this->sqlPrepared($message_text);
+        $sql_prepared_new_message_text = $this->sqlPrepared($new_message_text);
         /*
      * Check if the given message is already in table messaggi_sistema
         */
         $sql_message_id = "SELECT id_messaggio FROM messaggi_sistema WHERE testo_messaggio=$sql_prepared_message_text";
 
         $result = $db->getRow($sql_message_id);
-        if (AMA_DB::isError($result)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($result)) {
+            return new AMAError(AMA_ERR_GET);
         }
 
         $message_id = $result[0];
@@ -1978,7 +1990,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
         $result = $this->executeCritical($sql_update_message_text);
 
-        if (AMA_DB::isError($result)) {
+        if (AMADB::isError($result)) {
             return $result;
         }
 
@@ -1991,12 +2003,12 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      *
      * @access public
      * @param  string $sql_prepared_message - a message already prepared by calling $this->sql_prepare
-     * @return true if the message was successfully inserted, an AMA_DB error otherwise
+     * @return true if the message was successfully inserted, an AMADB error otherwise
      */
-    public function add_translated_message($sql_prepared_message, $id, $suffix)
+    public function addTranslatedMessage($sql_prepared_message, $id, $suffix)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -2010,8 +2022,8 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
          * If an error occurs while adding the message into this table, then add an empty string, since
          * we don't want to loose identifier one-to-one mapping between this table and table messaggi_sistema
          */
-        if (AMA_DB::isError($result)) {
-            ADALogger::log_db("Error encountered while adding message $sql_prepared_message into table $table_name");
+        if (AMADB::isError($result)) {
+            ADALogger::logDb("Error encountered while adding message $sql_prepared_message into table $table_name");
             return $result;
         }
 
@@ -2024,12 +2036,12 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      *
      * @access public
      * @param  string $suffix - (it, is, es)
-     * @return true if the table was emptied, an AMA_DB error otherwise
+     * @return true if the table was emptied, an AMADB error otherwise
      */
-    public function delete_all_messages($suffix)
+    public function deleteAllMessages($suffix)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -2042,14 +2054,14 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
         /**
          * If an error occurs while deleting all the messages from this table
          */
-        if (AMA_DB::isError($result)) {
-            ADALogger::log_db("Error encountered while deleting messages from table $table_name");
+        if (AMADB::isError($result)) {
+            ADALogger::logDb("Error encountered while deleting messages from table $table_name");
             return $result;
         }
         $sql = "ALTER TABLE $table_name AUTO_INCREMENT = 0";
         $result = $db->query($sql);
-        if (AMA_DB::isError($result)) {
-            ADALogger::log_db("Error encountered while deleting messages from table $table_name");
+        if (AMADB::isError($result)) {
+            ADALogger::logDb("Error encountered while deleting messages from table $table_name");
             return $result;
         }
 
@@ -2064,25 +2076,25 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * function find_languages: used to get the language names for all of the language
      * supported in the user interface message translation
      *
-     * @return mixed - An AMA_Error object if there were errors, an array of string otherwise
+     * @return mixed - An AMAError object if there were errors, an array of string otherwise
      */
-    public function find_languages()
+    public function findLanguages()
     {
 
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         $sql_select_languages = "SELECT id_lingua,nome_lingua,codice_lingua FROM lingue";
         $result = $db->getAll($sql_select_languages, null, AMA_FETCH_ASSOC);
 
-        if (AMA_DB::isError($result)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($result)) {
+            return new AMAError(AMA_ERR_GET);
         }
 
         if (empty($result)) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
 
         return $result;
@@ -2095,22 +2107,22 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @author giorgio
      *
      */
-    public function find_language_table_identifier_by_langauge_id($language_id)
+    public function findLanguageTableIdentifierByLangaugeId($language_id)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         $sql_select_languages = "SELECT identificatore_tabella FROM lingue WHERE id_lingua=" . $language_id;
         $result = $db->getOne($sql_select_languages, null, AMA_FETCH_ASSOC);
 
-        if (AMA_DB::isError($result)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($result)) {
+            return new AMAError(AMA_ERR_GET);
         }
 
         if (empty($result)) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
 
         return $result;
@@ -2123,22 +2135,22 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @author giorgio
      *
      */
-    public function find_language_id_by_langauge_table_identifier($table_identifier)
+    public function findLanguageIdByLangaugeTableIdentifier($table_identifier)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         $sql_select_languages = "SELECT id_lingua FROM lingue WHERE identificatore_tabella='" . $table_identifier . "'";
         $result = $db->getOne($sql_select_languages, null, AMA_FETCH_ASSOC);
 
-        if (AMA_DB::isError($result)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($result)) {
+            return new AMAError(AMA_ERR_GET);
         }
 
         if (empty($result)) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
 
         return $result;
@@ -2151,11 +2163,11 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
      * @param  string $language_code - the ISO 639-1 language code (e.g. 'it' for 'italian')
      * @return string $table_name    - a string containing the table name for the given language code
      */
-    private function get_translation_table_name_for_language_code($language_code)
+    private function getTranslationTableNameForLanguageCode($language_code)
     {
 
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
         // = AMA_DB_MDB2_wrapper
@@ -2164,8 +2176,8 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
         $sql_translation_table_suffix_for_language_code = "SELECT identificatore_tabella FROM lingue WHERE codice_lingua='$language_code'";
 
         $result = $db->getRow($sql_translation_table_suffix_for_language_code);
-        if (AMA_DB::isError($result)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($result)) {
+            return new AMAError(AMA_ERR_GET);
         }
 
         /*
@@ -2192,7 +2204,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
         if (!MULTIPROVIDER && strlen($thirdleveldomain) > 0) {
             $query = "SELECT `puntatore` FROM `tester` WHERE `3rdleveldomain`=?";
             $res = $this->getOnePrepared($query, [ $thirdleveldomain ]);
-            if ($res !== false && !AMA_DB::isError($res) && strlen($res) > 0) {
+            if ($res !== false && !AMADB::isError($res) && strlen($res) > 0) {
                 return $res;
             }
         }
@@ -2201,7 +2213,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler
 
     /**
      * (non-PHPdoc)
-     * @see include/Abstract_AMA_DataHandler#__destruct()
+     * @see include/AbstractAMADataHandler#__destruct()
      */
     public function __destruct()
     {

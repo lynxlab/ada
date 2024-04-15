@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Module\Test\AMATestDataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMATesterDataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+// Trigger: ClassWithNameSpace. The class AMATestDataHandler was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -12,7 +24,7 @@ namespace Lynxlab\ADA\Module\Test;
 
 use Lynxlab\ADA\Main\Logger\ADALogger;
 
-class AMATestDataHandler extends AMA_DataHandler
+class AMATestDataHandler extends AMADataHandler
 {
     public static $PREFIX = 'module_test_';
 
@@ -25,7 +37,7 @@ class AMATestDataHandler extends AMA_DataHandler
      *
      * @return an error if something goes wrong or an array (empty if there are no tests)
      */
-    public function test_getList($id_instance, $id_nodo_riferimento = false)
+    public function testGetList($id_instance, $id_nodo_riferimento = false)
     {
         $sql = "SELECT *
                 FROM `" . self::$PREFIX . "nodes` t
@@ -37,7 +49,7 @@ class AMATestDataHandler extends AMA_DataHandler
         $res =  $this->getAllPrepared($sql, [$id_instance], AMA_FETCH_ASSOC);
 
         if (self::isError($res)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         }
 
         if (!empty($res)) {
@@ -61,7 +73,7 @@ class AMATestDataHandler extends AMA_DataHandler
      * @return an error if something goes wrong or true
      *
      */
-    public function test_addNode($data)
+    public function testAddNode($data)
     {
         $db = & $this->getConnection();
         if (self::isError($db)) {
@@ -88,12 +100,12 @@ class AMATestDataHandler extends AMA_DataHandler
         $placeholders = array_fill(0, count($data), '?');
 
         $sql = "INSERT INTO `" . self::$PREFIX . "nodes` (" . implode(',', $keys) . ") VALUES (" . implode(",", $placeholders) . ")";
-        ADALogger::log_db("trying inserting the test node: " . $sql);
+        ADALogger::logDb("trying inserting the test node: " . $sql);
 
         $res = $this->queryPrepared($sql, $array_values);
         // if an error is detected, an error is created and reported
         if (self::isError($res)) {
-            return new AMA_Error($this->errorMessage(AMA_ERR_ADD) . " while in test_addNode." . AMA_SEP . ": " . $res->getMessage());
+            return new AMAError($this->errorMessage(AMA_ERR_ADD) . " while in test_addNode." . AMA_SEP . ": " . $res->getMessage());
         }
         return $db->lastInsertID();
     }
@@ -109,7 +121,7 @@ class AMATestDataHandler extends AMA_DataHandler
      * @return an error if something goes wrong or true
      *
      */
-    public function test_updateNode($id_nodo, $data)
+    public function testUpdateNode($id_nodo, $data)
     {
         //validazione campi
         $d = [
@@ -136,9 +148,9 @@ class AMATestDataHandler extends AMA_DataHandler
 
         // if an error is detected, an error is created and reported
         if (self::isError($res)) {
-            return new AMA_Error($this->errorMessage(AMA_ERR_ADD) . " while in test_updateNode." . AMA_SEP . ": " . $res->getMessage());
+            return new AMAError($this->errorMessage(AMA_ERR_ADD) . " while in test_updateNode." . AMA_SEP . ": " . $res->getMessage());
         } else {
-            $this->test_countVersion($id_nodo);
+            $this->testCountVersion($id_nodo);
             return true;
         }
     }
@@ -153,7 +165,7 @@ class AMATestDataHandler extends AMA_DataHandler
      * @return an error if something goes wrong or true
      *
      */
-    public function test_deleteByRadixTest($id_node)
+    public function testDeleteByRadixTest($id_node)
     {
         $values = [$id_node];
         $sql = "DELETE FROM `" . self::$PREFIX . "nodes` t
@@ -161,9 +173,9 @@ class AMATestDataHandler extends AMA_DataHandler
 
         $result = $this->queryPrepared($sql, $values);
         if (self::isError($result)) {
-            return new AMA_Error(AMA_ERR_REMOVE);
+            return new AMAError(AMA_ERR_REMOVE);
         } else {
-            return $this->test_deleteNodeTest($id_node);
+            return $this->testDeleteNodeTest($id_node);
         }
     }
 
@@ -177,15 +189,15 @@ class AMATestDataHandler extends AMA_DataHandler
      * @return an error if something goes wrong or true
      *
      */
-    public function test_deleteNodeTest($id_node)
+    public function testDeleteNodeTest($id_node)
     {
-        $res = $this->test_getNode($id_node);
+        $res = $this->testGetNode($id_node);
         if (self::isError($res)) {
-            return new AMA_Error(AMA_ERR_REMOVE);
+            return new AMAError(AMA_ERR_REMOVE);
         } else {
             if (!empty($res['id_nodo_riferimento'])) {
                 //if exists, delete also standard ada node
-                $this->remove_node($res['id_nodo_riferimento']);
+                $this->removeNode($res['id_nodo_riferimento']);
             }
         }
 
@@ -194,13 +206,13 @@ class AMATestDataHandler extends AMA_DataHandler
 
         $result = $this->queryPrepared($sql, $values);
         if (self::isError($result)) {
-            return new AMA_Error(AMA_ERR_REMOVE);
+            return new AMAError(AMA_ERR_REMOVE);
         } else {
-            $res = $this->test_getNodesByParent($id_node);
+            $res = $this->testGetNodesByParent($id_node);
             $return = true;
             if (!empty($res)) {
                 foreach ($res as $k => $r) {
-                    $return = $return && $this->test_deleteNodeTest($r['id_nodo']);
+                    $return = $return && $this->testDeleteNodeTest($r['id_nodo']);
                 }
             }
             return $return;
@@ -217,7 +229,7 @@ class AMATestDataHandler extends AMA_DataHandler
      * @return an error if something goes wrong or an array (empty if the node doesn't exists)
      *
      */
-    public function test_getNode($id_node)
+    public function testGetNode($id_node)
     {
         $values = [$id_node];
         $sql = "SELECT *
@@ -226,7 +238,7 @@ class AMATestDataHandler extends AMA_DataHandler
         $res =  $this->getRowPrepared($sql, $values, AMA_FETCH_ASSOC);
 
         if (self::isError($res)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         } else {
             return $res;
         }
@@ -242,7 +254,7 @@ class AMATestDataHandler extends AMA_DataHandler
      * @return an error if something goes wrong or an array (empty if the node doesn't exists)
      *
      */
-    public function test_getNodes($where)
+    public function testGetNodes($where)
     {
         // $values = array($id_node);
         $sql = "SELECT *
@@ -269,7 +281,7 @@ class AMATestDataHandler extends AMA_DataHandler
         $tmp_res =  $this->getAllPrepared($sql, array_values($where), AMA_FETCH_ASSOC);
 
         if (self::isError($tmp_res)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         } else {
             $res = [];
             if (!empty($tmp_res)) {
@@ -293,9 +305,9 @@ class AMATestDataHandler extends AMA_DataHandler
      * @return an error if something goes wrong or an array (empty if there are no tests)
      *
      */
-    public function test_getNodesByRadix($id_node, $where = [])
+    public function testGetNodesByRadix($id_node, $where = [])
     {
-        $id_node = $this->sql_prepared($id_node);
+        $id_node = $this->sqlPrepared($id_node);
         $sql = "SELECT *
 				FROM `" . self::$PREFIX . "nodes` t
 				WHERE t.`id_nodo` = " . $id_node . "
@@ -323,7 +335,7 @@ class AMATestDataHandler extends AMA_DataHandler
         $tmp_res =  $this->getAllPrepared($sql, array_values($where), AMA_FETCH_ASSOC);
 
         if (self::isError($tmp_res)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         } else {
             $res = [];
             if (!empty($tmp_res)) {
@@ -347,7 +359,7 @@ class AMATestDataHandler extends AMA_DataHandler
      * @return an error if something goes wrong or an array (empty if there are no tests)
      *
      */
-    public function test_getTopicNodesByRadix($id_node)
+    public function testGetTopicNodesByRadix($id_node)
     {
         $sql = "SELECT *
 				FROM `" . self::$PREFIX . "nodes` t
@@ -357,7 +369,7 @@ class AMATestDataHandler extends AMA_DataHandler
 
         $tmp_res = $this->getAllPrepared($sql, [$id_node], AMA_FETCH_ASSOC);
         if (self::isError($tmp_res)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         } else {
             $res = [];
             if (!empty($tmp_res)) {
@@ -382,17 +394,17 @@ class AMATestDataHandler extends AMA_DataHandler
      * @return an error if something goes wrong or an array (empty if there are no tests)
      *
      */
-    public function test_getNodesByParent($id_nodo_parent, $id_nodo = null, $where = [])
+    public function testGetNodesByParent($id_nodo_parent, $id_nodo = null, $where = [])
     {
         $db = & $this->getConnection();
         if (self::isError($db)) {
             return $db;
         }
 
-        $id_nodo_parent = $this->sql_prepared($id_nodo_parent);
+        $id_nodo_parent = $this->sqlPrepared($id_nodo_parent);
 
         if (!is_null($id_nodo)) {
-            $id_nodo = $this->sql_prepared($id_nodo);
+            $id_nodo = $this->sqlPrepared($id_nodo);
         }
 
         $sql = "SELECT *
@@ -423,7 +435,7 @@ class AMATestDataHandler extends AMA_DataHandler
         $tmp_res =  $this->getAllPrepared($sql, array_values($where), AMA_FETCH_ASSOC);
 
         if (self::isError($tmp_res)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         } else {
             $res = [];
             if (!empty($tmp_res)) {
@@ -446,7 +458,7 @@ class AMATestDataHandler extends AMA_DataHandler
      * @return an error if something goes wrong or an array (empty if there are no tests)
      *
      */
-    public function test_getGivenAnswers($id_history_text)
+    public function testGetGivenAnswers($id_history_text)
     {
         $sql = "SELECT *
 				FROM `" . self::$PREFIX . "history_answer` ha
@@ -454,7 +466,7 @@ class AMATestDataHandler extends AMA_DataHandler
         $res =  $this->getAllPrepared($sql, [$id_history_text], AMA_FETCH_ASSOC);
 
         if (self::isError($res)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         } else {
             return $res;
         }
@@ -470,7 +482,7 @@ class AMATestDataHandler extends AMA_DataHandler
      * @return an error if something goes wrong or an array (empty if there are no tests)
      *
      */
-    public function test_getAnswer($id_answer)
+    public function testGetAnswer($id_answer)
     {
         $sql = "SELECT *
 				FROM `" . self::$PREFIX . "history_answer` ha
@@ -478,7 +490,7 @@ class AMATestDataHandler extends AMA_DataHandler
         $res =  $this->getAllPrepared($sql, [$id_answer], AMA_FETCH_ASSOC);
 
         if (self::isError($res)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         } else {
             return $res;
         }
@@ -489,9 +501,9 @@ class AMATestDataHandler extends AMA_DataHandler
      *
      * @param $id_history_test the id of the node to be updated
      *
-     * @return an AMA_Error object if something goes wrong, the record's id on success
+     * @return an AMAError object if something goes wrong, the record's id on success
      */
-    public function test_updateEndTestDate($id_history_test)
+    public function testUpdateEndTestDate($id_history_test)
     {
         $sql = "UPDATE `" . self::$PREFIX . "history_test` SET
 				`data_fine` = ?
@@ -503,7 +515,7 @@ class AMATestDataHandler extends AMA_DataHandler
 
         $result = $this->queryPrepared($sql, $values);
         if (self::isError($result)) {
-            return new AMA_Error(AMA_ERR_UPDATE);
+            return new AMAError(AMA_ERR_UPDATE);
         }
 
         return true;
@@ -514,10 +526,10 @@ class AMATestDataHandler extends AMA_DataHandler
      *
      * @param $id_answer the id of the node to be removed or an array with ids
      *
-     * @return an AMA_Error object if something goes wrong, true on success
+     * @return an AMAError object if something goes wrong, true on success
      *
      */
-    public function test_removeTestAnswerNode($id_answer)
+    public function testRemoveTestAnswerNode($id_answer)
     {
         if (!is_array($id_answer)) {
             $id_answer = [$id_answer];
@@ -537,10 +549,10 @@ class AMATestDataHandler extends AMA_DataHandler
      *
      * @param $where - array with key (field) and values (value)
      *
-     * @return an AMA_Error object if something goes wrong, true on success
+     * @return an AMAError object if something goes wrong, true on success
      *
      */
-    public function test_getHistoryTest($where = [])
+    public function testGetHistoryTest($where = [])
     {
         $sql = "SELECT *
 				FROM  `" . self::$PREFIX . "history_test` ht
@@ -566,7 +578,7 @@ class AMATestDataHandler extends AMA_DataHandler
         $res = $this->getAllPrepared($sql, array_values($where), AMA_FETCH_ASSOC);
 
         if (self::isError($res)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         } else {
             return $res;
         }
@@ -578,10 +590,10 @@ class AMATestDataHandler extends AMA_DataHandler
      *
      * @param $where - array with key (field) and values (value)
      *
-     * @return an AMA_Error object if something goes wrong, true on success
+     * @return an AMAError object if something goes wrong, true on success
      *
      */
-    public function test_getHistoryTestJoined($where = [], $tipo = null)
+    public function testGetHistoryTestJoined($where = [], $tipo = null)
     {
         $sql = "SELECT
 					ht.*,
@@ -625,7 +637,7 @@ class AMATestDataHandler extends AMA_DataHandler
         $res = $this->getAllPrepared($sql, array_values($where), AMA_FETCH_ASSOC);
 
         if (self::isError($res)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         } else {
             return $res;
         }
@@ -637,10 +649,10 @@ class AMATestDataHandler extends AMA_DataHandler
      *
      * @param $id_history_test the id of the history test record
      *
-     * @return an AMA_Error object if something goes wrong, true on success
+     * @return an AMAError object if something goes wrong, true on success
      *
      */
-    public function test_retrieveTestPoints($id_history_test)
+    public function testRetrieveTestPoints($id_history_test)
     {
         $values = [$id_history_test];
         $sql = "SELECT SUM(ha.`punteggio`)
@@ -649,7 +661,7 @@ class AMATestDataHandler extends AMA_DataHandler
         $res = $this->getOnePrepared($sql, $values);
 
         if (self::isError($res)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         } else {
             return $res;
         }
@@ -662,9 +674,9 @@ class AMATestDataHandler extends AMA_DataHandler
      * @param $id_istanza_corso the id of the node to be removed
      * @param $id_studente the id of the node to be removed
      *
-     * @return an AMA_Error object if something goes wrong, the record's id on success
+     * @return an AMAError object if something goes wrong, the record's id on success
      */
-    public function test_recordAttempt($id_test, $id_istanza_corso, $id_corso, $id_utente, $domande)
+    public function testRecordAttempt($id_test, $id_istanza_corso, $id_corso, $id_utente, $domande)
     {
         $db = & $this->getConnection();
         if (self::isError($db)) {
@@ -685,7 +697,7 @@ class AMATestDataHandler extends AMA_DataHandler
 
         $result = $this->queryPrepared($sql, $values);
         if (self::isError($result)) {
-            return new AMA_Error(AMA_ERR_ADD);
+            return new AMAError(AMA_ERR_ADD);
         }
 
         return $db->lastInsertID();
@@ -701,7 +713,7 @@ class AMATestDataHandler extends AMA_DataHandler
      * @return an error if something goes wrong or an array (empty if the node doesn't exists)
      *
      */
-    public function test_countVisit($id_node)
+    public function testCountVisit($id_node)
     {
         $sql = "UPDATE `" . self::$PREFIX . "nodes`
 				SET `n_contatti`=`n_contatti`+1
@@ -709,7 +721,7 @@ class AMATestDataHandler extends AMA_DataHandler
         $res =  $this->executeCritical($sql);
 
         if (self::isError($res)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         } else {
             return $res;
         }
@@ -725,7 +737,7 @@ class AMATestDataHandler extends AMA_DataHandler
      * @return an error if something goes wrong or an array (empty if the node doesn't exists)
      *
      */
-    public function test_countVersion($id_node)
+    public function testCountVersion($id_node)
     {
         $sql = "UPDATE `" . self::$PREFIX . "nodes`
 				SET `versione`=`versione`+1
@@ -733,7 +745,7 @@ class AMATestDataHandler extends AMA_DataHandler
         $res =  $this->queryPrepared($sql, [$id_node]);
 
         if (self::isError($res)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         } else {
             return $res;
         }
@@ -749,9 +761,9 @@ class AMATestDataHandler extends AMA_DataHandler
      * @param $min_barrier_point minimum barrier points to gain a new level
      * @param $level_gained new level gained by user
      *
-     * @return an AMA_Error object if something goes wrong, the record's id on success
+     * @return an AMAError object if something goes wrong, the record's id on success
      */
-    public function test_saveTest($id_history_test, $tempo_scaduto = 0, $points = 0, $repeatable = false, $min_barrier_point = 0, $level_gained = null)
+    public function testSaveTest($id_history_test, $tempo_scaduto = 0, $points = 0, $repeatable = false, $min_barrier_point = 0, $level_gained = null)
     {
         $sql = "UPDATE `" . self::$PREFIX . "history_test` SET
 				`data_fine` = ?,
@@ -770,7 +782,7 @@ class AMATestDataHandler extends AMA_DataHandler
 
         $result = $this->queryPrepared($sql, $values);
         if (self::isError($result)) {
-            return new AMA_Error(AMA_ERR_UPDATE);
+            return new AMAError(AMA_ERR_UPDATE);
         }
 
         return true;
@@ -781,9 +793,9 @@ class AMATestDataHandler extends AMA_DataHandler
      *
      * @param $id_history_test id
      *
-     * @return an AMA_Error object if something goes wrong, the record's id on success
+     * @return an AMAError object if something goes wrong, the record's id on success
      */
-    public function test_recalculateHistoryTestPoints($id_history_test)
+    public function testRecalculateHistoryTestPoints($id_history_test)
     {
         $sql = "UPDATE `" . self::$PREFIX . "history_test` SET
 				`ripetibile` = ?
@@ -800,7 +812,7 @@ class AMATestDataHandler extends AMA_DataHandler
 
         $result = $this->queryPrepared($sql, [$id_history_test,$id_history_test]);
         if (self::isError($result)) {
-            return new AMA_Error(AMA_ERR_UPDATE);
+            return new AMAError(AMA_ERR_UPDATE);
         }
 
         return true;
@@ -812,9 +824,9 @@ class AMATestDataHandler extends AMA_DataHandler
      * @param $id_history_test id
      * @param $repeatable boolean, sets the test repeatable or not
      *
-     * @return an AMA_Error object if something goes wrong, the record's id on success
+     * @return an AMAError object if something goes wrong, the record's id on success
      */
-    public function test_setHistoryTestRepeatable($id_history_test, $repeatable)
+    public function testSetHistoryTestRepeatable($id_history_test, $repeatable)
     {
         $sql = "UPDATE `" . self::$PREFIX . "history_test` SET
 				`ripetibile` = ?
@@ -824,7 +836,7 @@ class AMATestDataHandler extends AMA_DataHandler
 
         $result = $this->queryPrepared($sql, [$repeatable, $id_history_test]);
         if (self::isError($result)) {
-            return new AMA_Error(AMA_ERR_UPDATE);
+            return new AMAError(AMA_ERR_UPDATE);
         }
 
         return true;
@@ -842,9 +854,9 @@ class AMATestDataHandler extends AMA_DataHandler
      * @param $points points gained
      * @param $attachment attachment url
      *
-     * @return an AMA_Error object if something goes wrong, the record's id on success
+     * @return an AMAError object if something goes wrong, the record's id on success
      */
-    public function test_saveAnswer($id_history_test, $student_id, $topic_id, $question_id, $course_id, $course_instance_id, $answer, $points, $attachment = '')
+    public function testSaveAnswer($id_history_test, $student_id, $topic_id, $question_id, $course_id, $course_instance_id, $answer, $points, $attachment = '')
     {
         if (is_null($id_history_test)) {
             return false;
@@ -872,7 +884,7 @@ class AMATestDataHandler extends AMA_DataHandler
 
         $result = $this->queryPrepared($sql, $values);
         if (self::isError($result)) {
-            return new AMA_Error(AMA_ERR_ADD);
+            return new AMAError(AMA_ERR_ADD);
         }
 
         return $db->lastInsertID();
@@ -883,16 +895,16 @@ class AMATestDataHandler extends AMA_DataHandler
      *
      * @param $id_nodo node id
      *
-     * @return an AMA_Error object if something goes wrong, an array with siblings nodes
+     * @return an AMAError object if something goes wrong, an array with siblings nodes
      */
-    public function test_getSiblingsNode($id_nodo)
+    public function testGetSiblingsNode($id_nodo)
     {
-        $nodo = $this->test_getNode($id_nodo);
+        $nodo = $this->testGetNode($id_nodo);
         if (self::isError($nodo)) {
             return $nodo;
         }
 
-        $siblings = $this->test_getNodesByParent($nodo['id_nodo_parent']);
+        $siblings = $this->testGetNodesByParent($nodo['id_nodo_parent']);
         if (self::isError($siblings)) {
             return $siblings;
         }
@@ -908,9 +920,9 @@ class AMATestDataHandler extends AMA_DataHandler
      *
      * @return boolean
      */
-    public function test_moveNode($id_nodo, $direction)
+    public function testMoveNode($id_nodo, $direction)
     {
-        $siblings = $this->test_getSiblingsNode($id_nodo);
+        $siblings = $this->testGetSiblingsNode($id_nodo);
         if (self::isError($siblings)) {
             return false;
         }
@@ -941,7 +953,7 @@ class AMATestDataHandler extends AMA_DataHandler
         if ($moved_items) {
             foreach ($nodes as $k => $v) {
                 $v['ordine']++;
-                $res = $this->test_updateNode($v['id_nodo'], ['ordine' => $v['ordine']]);
+                $res = $this->testUpdateNode($v['id_nodo'], ['ordine' => $v['ordine']]);
                 if (self::isError($res)) {
                     return false;
                 }
@@ -958,7 +970,7 @@ class AMATestDataHandler extends AMA_DataHandler
      * @param $id_course course id
      * @param $id_instance instance id
      *
-     * @return an AMA_Error object if something goes wrong, an array with siblings nodes
+     * @return an AMAError object if something goes wrong, an array with siblings nodes
      */
     public function getStudentsScores($id_course, $id_instance)
     {
@@ -1053,7 +1065,7 @@ class AMATestDataHandler extends AMA_DataHandler
      * @return an error if something goes wrong or true
      *
      */
-    public function test_updateAnswer($id_answer, $data)
+    public function testUpdateAnswer($id_answer, $data)
     {
         //validazione campi
         $d = ['risposta','commento','punteggio','correzione_risposta','allegato'];
@@ -1077,7 +1089,7 @@ class AMATestDataHandler extends AMA_DataHandler
         // if an error is detected, an error is created and reported
         if (self::isError($res)) {
             print_r($res);
-            return new AMA_Error($this->errorMessage(AMA_ERR_ADD) . " while in test_updateAnswer." . AMA_SEP . ": " . $res->getMessage());
+            return new AMAError($this->errorMessage(AMA_ERR_ADD) . " while in test_updateAnswer." . AMA_SEP . ": " . $res->getMessage());
         } else {
             return true;
         }
@@ -1097,7 +1109,7 @@ class AMATestDataHandler extends AMA_DataHandler
      * @return an error if something goes wrong or true
      *
      */
-    public function test_addCourseTest($id_course, $id_test, $id_node)
+    public function testAddCourseTest($id_course, $id_test, $id_node)
     {
         $sql = "INSERT INTO `" . self::$PREFIX . "course_survey` (`id_corso`, `id_test`, `id_nodo`)
 				VALUES (?,?,?)
@@ -1106,7 +1118,7 @@ class AMATestDataHandler extends AMA_DataHandler
         $res = $this->queryPrepared($sql, [$id_course, $id_test, $id_node, $id_node]);
         // if an error is detected, an error is created and reported
         if (self::isError($res)) {
-            return new AMA_Error($this->errorMessage(AMA_ERR_ADD) . " while in test_addCourseTest." . AMA_SEP . ": " . $res->getMessage());
+            return new AMAError($this->errorMessage(AMA_ERR_ADD) . " while in test_addCourseTest." . AMA_SEP . ": " . $res->getMessage());
         }
         return true;
     }
@@ -1123,7 +1135,7 @@ class AMATestDataHandler extends AMA_DataHandler
      *
      * @see test_addCourseTest
      */
-    public function test_removeCourseTest($id_course, $id_test)
+    public function testRemoveCourseTest($id_course, $id_test)
     {
         $sql = "DELETE FROM `" . self::$PREFIX . "course_survey`
 				WHERE `id_corso` = ?
@@ -1132,7 +1144,7 @@ class AMATestDataHandler extends AMA_DataHandler
         $res = $this->queryPrepared($sql, [$id_course, $id_test]);
         // if an error is detected, an error is created and reported
         if (self::isError($res)) {
-            return new AMA_Error($this->errorMessage(AMA_ERR_REMOVE) . " while in test_removeCourseTest." . AMA_SEP . ": " . $res->getMessage());
+            return new AMAError($this->errorMessage(AMA_ERR_REMOVE) . " while in test_removeCourseTest." . AMA_SEP . ": " . $res->getMessage());
         }
         return true;
     }
@@ -1147,7 +1159,7 @@ class AMATestDataHandler extends AMA_DataHandler
      * @return an error if something goes wrong or an array (empty if the node doesn't exists)
      *
      */
-    public function test_getCourseSurveys($where)
+    public function testGetCourseSurveys($where)
     {
         // $values = array($id_node);
         $sql = "SELECT t.*, n.`titolo`, n.`data_creazione`
@@ -1175,7 +1187,7 @@ class AMATestDataHandler extends AMA_DataHandler
         $tmp_res =  $this->getAllPrepared($sql, array_values($where), AMA_FETCH_ASSOC);
 
         if (self::isError($tmp_res)) {
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         } else {
             $res = [];
             if (!empty($tmp_res)) {
@@ -1194,13 +1206,13 @@ class AMATestDataHandler extends AMA_DataHandler
      *
      * @param number $courseId course to delete all nodes for
      *
-     * @return AMA_Error|true on success
+     * @return AMAError|true on success
      *
      * @access public
      *
      * @author giorgio 04/mar/2015
      */
-    public function test_removeCourseNodes($courseId)
+    public function testRemoveCourseNodes($courseId)
     {
         $clause = ['id_nodo_riferimento' => 'LIKE ' . $courseId . '\_%'];
 
@@ -1208,8 +1220,8 @@ class AMATestDataHandler extends AMA_DataHandler
 
         $nodesToDel = [];
         foreach ($nodeTypes as $nodeType) {
-            $res = $this->test_getNodes(array_merge($clause, ['tipo' => 'LIKE ' . $nodeType . '%']));
-            if (!AMA_DB::isError($res)) {
+            $res = $this->testGetNodes(array_merge($clause, ['tipo' => 'LIKE ' . $nodeType . '%']));
+            if (!AMADB::isError($res)) {
                 $nodesToDel = array_merge($nodesToDel, $res);
             } else {
                 return $res;
@@ -1218,16 +1230,16 @@ class AMATestDataHandler extends AMA_DataHandler
 
         if (count($nodesToDel) > 0) {
             foreach ($nodesToDel as $nodeToDel) {
-                $res = $this->test_deleteNodeTest($nodeToDel['id_nodo']);
-                if (AMA_DB::isError($res)) {
+                $res = $this->testDeleteNodeTest($nodeToDel['id_nodo']);
+                if (AMADB::isError($res)) {
                     return $res;
                 }
             }
         }
 
-        if (!AMA_DB::isError($res)) {
+        if (!AMADB::isError($res)) {
             $res = $this->queryPrepared('DELETE FROM `' . self::$PREFIX . 'course_survey` WHERE `id_corso`=?', $courseId);
-            if (AMA_DB::isError($res)) {
+            if (AMADB::isError($res)) {
                 return $res;
             }
         }
@@ -1257,15 +1269,15 @@ class AMATestDataHandler extends AMA_DataHandler
      * @param $ripetibile   NOT USED IN MODULES_TEST, kept for compatibility reasons.
      * @param $attach       NOT USED IN MODULES_TEST, kept for compatibility reasons.
      *
-     * @return number|AMA_Error inserted row id or AMA_Error object
+     * @return number|AMAError inserted row id or AMAError object
      *
      * (non-PHPdoc)
-     * @see AMA_Tester_DataHandler::add_ex_history()
+     * @see AMATesterDataHandler::add_ex_history()
      */
-    public function add_ex_history($student_id, $course_instance_id, $node_id, $answer = '', $remark = '', $points = 0, $correction = '', $ripetibile = 0, $attach = '')
+    public function addExHistory($student_id, $course_instance_id, $node_id, $answer = '', $remark = '', $points = 0, $correction = '', $ripetibile = 0, $attach = '')
     {
-        $result = parent::add_ex_history($student_id, $course_instance_id, $node_id);
-        if (!AMA_DB::isError($result)) {
+        $result = parent::addExHistory($student_id, $course_instance_id, $node_id);
+        if (!AMADB::isError($result)) {
             return $this->getConnection()->lastInsertId();
         } else {
             return $result;
@@ -1281,7 +1293,7 @@ class AMATestDataHandler extends AMA_DataHandler
      *
      * @return mixed
      */
-    public function update_exit_time_ex_history($student_id, $course_instance_id, $node_id)
+    public function updateExitTimeExHistory($student_id, $course_instance_id, $node_id)
     {
         $sql = 'UPDATE `history_esercizi` SET `data_uscita`=? WHERE `data_visita`=`data_uscita` AND ' .
         '`id_utente_studente` = ? AND `id_nodo` = ? AND `id_istanza_corso`= ?';

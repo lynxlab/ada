@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
+
+use Lynxlab\ADA\Module\Servicecomplete\CompleteCondition;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\ADAError;
+
+// Trigger: ClassWithNameSpace. The class CompleteCondition was declared with namespace Lynxlab\ADA\Module\Servicecomplete. //
+
 /**
  * SERVICE-COMPLETE MODULE.
  *
@@ -88,11 +98,11 @@ abstract class CompleteCondition
              */
             ADAFileLogger::log(__CLASS__ . '::' . __METHOD__ . ' WRONG NUMBER OR TYPE OF PARAMETERS');
             /**
-             * third: raise an ADA_Error if wrong number of arguments
+             * third: raise an ADAError if wrong number of arguments
              * see config_errors.inc.php line 167 and following.
              * depending on the erorr phase / severity something will happen...
             */
-            new ADA_Error(null, null, __METHOD__, AMA_ERR_WRONG_ARGUMENTS, ADA_ERROR_SEVERITY_NONE);
+            new ADAError(null, null, __METHOD__, AMA_ERR_WRONG_ARGUMENTS, ADA_ERROR_SEVERITY_NONE);
             /**
              * third throw an exception to be catched by the caller
             */

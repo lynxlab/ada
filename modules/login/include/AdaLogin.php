@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Module\Login\AdaLogin;
+
+use Lynxlab\ADA\Module\Login\AbstractLogin;
+
+// Trigger: ClassWithNameSpace. The class AdaLogin was declared with namespace Lynxlab\ADA\Module\Login. //
+
 /**
  * LOGIN MODULE
  *

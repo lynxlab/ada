@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\Badges\Badge;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * @package     badges module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -56,7 +64,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $postParams = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
     $res = $GLOBALS['dh']->saveBadge($postParams);
 
-    if (AMA_DB::isError($res) || $res instanceof \Exception) {
+    if (AMADB::isError($res) || $res instanceof \Exception) {
         // if it's an error display the error message
         $retArray['status'] = "ERROR";
         $retArray['msg'] = $res->getMessage();

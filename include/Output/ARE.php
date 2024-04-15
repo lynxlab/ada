@@ -1,5 +1,29 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
+
+use Lynxlab\ADA\Main\Output\PDF;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\Html;
+
+use Lynxlab\ADA\Main\Output\GenericXML;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class ARE was declared with namespace Lynxlab\ADA\Main\Output. //
+
 /**
  * NEW Output classes
  *
@@ -26,9 +50,9 @@ use Lynxlab\ADA\Module\EventDispatcher\Events\MenuEvent;
 use Lynxlab\ADA\Module\Impersonate\ImpersonateActions;
 use Lynxlab\ADA\Module\Impersonate\Utils;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_layout_from_DB;
+use function Lynxlab\ADA\Main\AMA\DBRead\readLayoutFromDB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\today_dateFN;
+use function Lynxlab\ADA\Main\Utilities\todayDateFN;
 
 /**
  * ARE
@@ -75,7 +99,7 @@ class ARE
 
         switch ($renderer) {
             case ARE_PRINT_RENDER:
-                $layoutObj = read_layout_from_DB(
+                $layoutObj = readLayoutFromDB(
                     $id_profile,
                     $layout_dataAr['family'] ?? '',
                     $layout_dataAr['node_type'] ?? '',
@@ -122,18 +146,18 @@ class ARE
                 );
 
 
-                $html_renderer->fillin_templateFN($content_dataAr);
+                $html_renderer->fillinTemplateFN($content_dataAr);
 
                 $imgpath = (dirname($layout_template));
                 $html_renderer->resetImgSrcFN($imgpath, $layoutObj->family ?? ADA_TEMPLATE_FAMILY);
-                $html_renderer->apply_styleFN();
+                $html_renderer->applyStyleFN();
 
                 $html_renderer->outputFN('page');
 
                 break;
 
             case ARE_XML_RENDER:
-                $today = today_dateFN();
+                $today = todayDateFN();
                 $title = $options['course_title'];
                 $portal =  $options['portal'];
                 $xml_renderer = new GenericXML($portal, $today, $title);
@@ -144,7 +168,7 @@ class ARE
                 break;
 
             case ARE_FILE_RENDER:
-                $layoutObj = read_layout_from_DB(
+                $layoutObj = readLayoutFromDB(
                     $id_profile,
                     $layout_dataAr['family'] ?? null,
                     $layout_dataAr['node_type'] ?? null,
@@ -191,11 +215,11 @@ class ARE
                 );
 
                 $html_renderer->full_static_filename = $cached_file;
-                $html_renderer->fillin_templateFN($content_dataAr);
+                $html_renderer->fillinTemplateFN($content_dataAr);
 
                 $imgpath = (dirname($layout_template));
                 $html_renderer->resetImgSrcFN($imgpath, $layoutObj->family ?? ADA_TEMPLATE_FAMILY);
-                $html_renderer->apply_styleFN();
+                $html_renderer->applyStyleFN();
 
                 $html_renderer->outputFN('file');
 
@@ -205,7 +229,7 @@ class ARE
             case ARE_HTML_RENDER:
             case ARE_PDF_RENDER:
             default:
-                $layoutObj = read_layout_from_DB(
+                $layoutObj = readLayoutFromDB(
                     $id_profile,
                     $layout_dataAr['family'] ?? null,
                     $layout_dataAr['node_type'] ?? null,
@@ -377,8 +401,8 @@ class ARE
                     if (!isset($layout_dataAr['widgets'])) {
                         $layout_dataAr['widgets'] = '';
                     }
-                    $widgets_dataAr = $html_renderer->fillin_widgetsFN($layoutObj->WIDGET_filename, $layout_dataAr['widgets']);
-                    if (!ADA_Error::isError($widgets_dataAr)) {
+                    $widgets_dataAr = $html_renderer->fillinWidgetsFN($layoutObj->WIDGET_filename, $layout_dataAr['widgets']);
+                    if (!ADAError::isError($widgets_dataAr)) {
                         $content_dataAr = array_merge($content_dataAr, $widgets_dataAr);
                     }
                 }
@@ -425,7 +449,7 @@ class ARE
                     }
 
                     if (!array_key_exists('last_visit', $content_dataAr)) {
-                        $tmpla = trim(AMA_DataHandler::ts_to_date($_SESSION['sess_userObj']->get_last_accessFN(null, "UT", null)));
+                        $tmpla = trim(AMADataHandler::tsToDate($_SESSION['sess_userObj']->getLastAccessFN(null, "UT", null)));
                         if (strlen($tmpla) > 0) {
                             $content_dataAr['last_visit'] = translateFN('ultimo accesso') . ': ' . $tmpla;
                         }
@@ -450,12 +474,12 @@ class ARE
                     }
                 }
 
-                $html_renderer->fillin_templateFN($content_dataAr);
+                $html_renderer->fillinTemplateFN($content_dataAr);
 
                 $imgpath = (dirname($layout_template));
                 // $html_renderer->resetImgSrcFN($imgpath,$template_family);
                 $html_renderer->resetImgSrcFN($imgpath, $layoutObj->family);
-                $html_renderer->apply_styleFN();
+                $html_renderer->applyStyleFN();
 
                 if (property_exists($html_renderer, 'returnasstring') && $html_renderer->returnasstring === true) {
                     return $html_renderer->outputFN(($renderer == ARE_PDF_RENDER) ? 'pdf' : 'page');

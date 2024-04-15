@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class VideoRoom was declared with namespace Lynxlab\ADA\Comunica\VideoRoom. //
+
 /**
  * videoroom abstract class
  *
@@ -66,16 +76,16 @@ abstract class VideoRoom
     /*
      * retrieve infos about room memorized in local DB
      */
-    public function videoroom_info($id_course_instance, $tempo_avvio = null, $interval = null, $more_query = null)
+    public function videoroomInfo($id_course_instance, $tempo_avvio = null, $interval = null, $more_query = null)
     {
         $dh            =   $GLOBALS['dh'];
         $error         =   $GLOBALS['error'];
         $debug         =   $GLOBALS['debug'] ?? null;
         $root_dir      =   $GLOBALS['root_dir'];
         $http_root_dir =   $GLOBALS['http_root_dir'];
-        $video_roomAr = $dh->get_videoroom_info($id_course_instance, $tempo_avvio, $more_query);
+        $video_roomAr = $dh->getVideoroomInfo($id_course_instance, $tempo_avvio, $more_query);
 
-        if (AMA_DataHandler::isError($video_roomAr) || !is_array($video_roomAr)) {
+        if (AMADataHandler::isError($video_roomAr) || !is_array($video_roomAr)) {
             $this->full = 0;
         } else {
             $this->id_room = $video_roomAr['id_room'];
@@ -90,7 +100,7 @@ abstract class VideoRoom
         }
     }
 
-    public static function xml_attribute($object, $attribute)
+    public static function xmlAttribute($object, $attribute)
     {
         if (isset($object[$attribute])) {
             return (string) $object[$attribute];
@@ -118,12 +128,12 @@ abstract class VideoRoom
                 'is_tutor' => $_SESSION['sess_userObj']->getType() == AMA_TYPE_TUTOR,
             ];
         }
-        return $GLOBALS['dh']->log_videoroom($eventData);
+        return $GLOBALS['dh']->logVideoroom($eventData);
     }
 
     public static function getInstanceLog($id_course_instance, $id_room = null, $id_user = null)
     {
-        return $GLOBALS['dh']->get_log_videoroom($id_course_instance, $id_room, $id_user);
+        return $GLOBALS['dh']->getLogVideoroom($id_course_instance, $id_room, $id_user);
     }
 
     public function getLogoutUrlParams()

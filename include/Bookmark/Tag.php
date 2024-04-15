@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\Bookmark\Tag;
+
+use Lynxlab\ADA\Main\Bookmark\Bookmark;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class Tag was declared with namespace Lynxlab\ADA\Main\Bookmark. //
+
 //
 // +----------------------------------------------------------------------+
 // | ADA version 1.8                                                      |
@@ -46,19 +62,19 @@ class Tag extends Bookmark
         // finds out information about a tag
         $dh = $GLOBALS['dh'];
         if (!empty($id_bk)) {
-            $dataHa = $dh->get_bookmark_info($id_bk);
-            if (AMA_DataHandler::isError($dataHa)) {
+            $dataHa = $dh->getBookmarkInfo($id_bk);
+            if (AMADataHandler::isError($dataHa)) {
                 $this->error_msg = $dataHa->getMessage();
                 $this->full = 0;
             } else {
                 $this->bookmark_id = $id_bk;
                 $this->node_id =  $dataHa['node_id'];
                 $course_instance_id = $dataHa['course_id'];
-                $course_instanceHa = $dh->course_instance_get($course_instance_id);
+                $course_instanceHa = $dh->courseInstanceGet($course_instance_id);
                 $course_id = $course_instanceHa['id_corso'];
-                $courseHa = $dh->get_course($course_id);
+                $courseHa = $dh->getCourse($course_id);
                 $this->corso = $courseHa['titolo'];
-                $node = $dh->get_node_info($this->node_id);
+                $node = $dh->getNodeInfo($this->node_id);
                 $node_title = $node['name'];
                 $this->titolo =  $node_title;
                 $this->data = $dataHa['date'];
@@ -70,7 +86,7 @@ class Tag extends Bookmark
         }
     }
 
-    public function edit_tag($dataHa)
+    public function editTag($dataHa)
     {
 
         $sess_id_user = $GLOBALS['sess_id_user'];
@@ -134,7 +150,7 @@ class Tag extends Bookmark
         return $formatted_data;
     }
 
-    public function add_tag($existing_tagsAr)
+    public function addTag($existing_tagsAr)
     {
 
 
@@ -211,7 +227,7 @@ class Tag extends Bookmark
         return $formatted_data;
     }
 
-    public function get_tagsFN($sess_id_course_instance, $id_bk)
+    public function getTagsFN($sess_id_course_instance, $id_bk)
     {
         // ritorna una lista di tag con la descrizione uguale a quella passata
         $dh = $GLOBALS['dh'];
@@ -220,12 +236,12 @@ class Tag extends Bookmark
         $sess_id_user = $GLOBALS['sess_id_user'];
 
         $debug = $GLOBALS['debug'];
-        $dataHa = $dh->get_bookmark_info($id_bk);
+        $dataHa = $dh->getBookmarkInfo($id_bk);
         $description = $dataHa['description'];
         $out_fields_ar = ['id_nodo', 'data', 'descrizione', 'id_utente_studente'];
         $clause = "descrizione = '$description'";
-        $dataHa = $dh->doFind_bookmarks_list($out_fields_ar, $clause);
-        if (AMA_DataHandler::isError($dataHa)) {
+        $dataHa = $dh->doFindBookmarksList($out_fields_ar, $clause);
+        if (AMADataHandler::isError($dataHa)) {
             $msg = $dataHa->getMessage();
             return $msg;
             // header("Location: $error?err_msg=$msg");
@@ -233,7 +249,7 @@ class Tag extends Bookmark
         return $dataHa;
     }
 
-    public function get_class_tagsFN($sess_id_node, $sess_id_course_instance, $ordering = 's')
+    public function getClassTagsFN($sess_id_node, $sess_id_course_instance, $ordering = 's')
     {
         //   ritorna una lista di tag per questo nodo, da tutta la classe
 
@@ -246,7 +262,7 @@ class Tag extends Bookmark
 
         $out_fields_ar = ['id_nodo', 'data', 'descrizione', 'id_utente_studente'];
         $dataHa = $dh->find_bookmarks_list($out_fields_ar, '', $sess_id_course_instance, $sess_id_node);
-        if (AMA_DataHandler::isError($dataHa)) {
+        if (AMADataHandler::isError($dataHa)) {
             $msg = $dataHa->getMessage();
             return $msg;
             // header("Location: $error?err_msg=$msg");
@@ -267,7 +283,7 @@ class Tag extends Bookmark
                 $student_listAr =  $student_classObj->student_list;
                 foreach ($student_listAr as $student) {
                     $id_student = $student['id_utente_studente'];
-                    $student_dataHa =  $student_classObj->find_student_index_att($id_course, $sess_id_course_instance, $id_student);
+                    $student_dataHa =  $student_classObj->findStudentIndexAtt($id_course, $sess_id_course_instance, $id_student);
                     $user_activity_index = $student_dataHa['index_att'];
                     $class_student_activityAr[$id_student] = $user_activity_index;
                     //echo "$id_student : $user_activity_index <br>";
@@ -306,7 +322,7 @@ class Tag extends Bookmark
         return  $ordered_tagsHa;
     }
 
-    public function format_as_tag($dataHa)
+    public function formatAsTag($dataHa)
     {
         $id_bk = $dataHa[0]['id'];
 
@@ -331,7 +347,7 @@ class Tag extends Bookmark
         return $res;
     }
 
-    public function format_as_tags($dataAr)
+    public function formatAsTags($dataAr)
     {
         $dh = $GLOBALS['dh'];
         $debug = $GLOBALS['debug'];
@@ -349,18 +365,18 @@ class Tag extends Bookmark
                 $id_node = $bookmark[1];
                 $date =   $bookmark[2];
                 $author_id =   $bookmark[4];
-                $node = $dh->get_node_info($id_node);
+                $node = $dh->getNodeInfo($id_node);
                 $title = $node['name'];
                 $icon  = $node['icon'];
                 $description =   $bookmark[3];
-                $authorHa = $dh->get_user_info($author_id);
+                $authorHa = $dh->getUserInfo($author_id);
                 $author_uname = $authorHa['username'];
                 $k++;
                 $formatted_dataHa[$k]['autore'] = "<a href=\"tags.php?op=list_by_user&id_auth=$author_id\">$author_uname</a>";
                 $formatted_dataHa[$k]['data'] =  ts2dFN($date);
                 $formatted_dataHa[$k]['tag'] = "<a href=\"tags.php?op=list_by_tag&id_bk=$id_bk\"><img src=\"img/check.png\" border=0>&nbsp;$description</a>";
 
-                if (is_array($dh->get_tutor($author_id))) { // tag del tutor differenziate ??
+                if (is_array($dh->getTutor($author_id))) { // tag del tutor differenziate ??
                     $formatted_dataHa[$k]['id_nodo'] = "<a href=\"view.php?id_node=$id_node\"><img src=\"img/$icon\" border=0> $title</a> (" . translateFN("Tutor") . ")";
                     //vito 13 gennaio 2009
                     //                if ($id_profile == AMA_TYPE_TUTOR){

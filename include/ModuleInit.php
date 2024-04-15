@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Main\User\ADAUser;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\Layout;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * Functions used by module_init.inc.php
  *
@@ -27,15 +47,15 @@ use Lynxlab\ADA\Main\User\ADAAuthor;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 use Lynxlab\ADA\Main\User\ADAGuest;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_course;
-use function Lynxlab\ADA\Main\AMA\DBRead\read_course_instance_from_DB;
-use function Lynxlab\ADA\Main\AMA\DBRead\read_user;
+use function Lynxlab\ADA\Main\AMA\DBRead\readCourse;
+use function Lynxlab\ADA\Main\AMA\DBRead\readCourseInstanceFromDB;
+use function Lynxlab\ADA\Main\AMA\DBRead\readUser;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  *
  */
-function session_controlFN($neededObjAr = [], $allowedUsersAr = [], $trackPageToNavigationHistory = true)
+function sessionControlFN($neededObjAr = [], $allowedUsersAr = [], $trackPageToNavigationHistory = true)
 {
     //ADALogger::log('session control FN');
 
@@ -60,7 +80,7 @@ function session_controlFN($neededObjAr = [], $allowedUsersAr = [], $trackPageTo
                 $servername = $_SERVER['SERVER_NAME'];
             }
             [$client] = explode('.', preg_replace('/(http[s]?:\/\/)/', '', $servername));
-            $tmpcommon = AMA_Common_DataHandler::instance();
+            $tmpcommon = AMACommonDataHandler::instance();
             $client = $tmpcommon->getPointerFromThirdLevel($client);
             unset($tmpcommon);
         }
@@ -120,7 +140,7 @@ function session_controlFN($neededObjAr = [], $allowedUsersAr = [], $trackPageTo
 
     $GLOBALS['sess_id'] = session_id();
 
-    $parm_errorHa = parameter_controlFN($neededObjAr, $allowedUsersAr);
+    $parm_errorHa = parameterControlFN($neededObjAr, $allowedUsersAr);
     //var_dump($parm_errorHa);
 
 
@@ -129,7 +149,7 @@ function session_controlFN($neededObjAr = [], $allowedUsersAr = [], $trackPageTo
 
     if ($parm_errorHa['user']) {
         // FIXME: passare messaggio di errore
-        $errObj = new ADA_Error(
+        $errObj = new ADAError(
             null,
             null,
             null,
@@ -168,7 +188,7 @@ function session_controlFN($neededObjAr = [], $allowedUsersAr = [], $trackPageTo
          *  that is responsible for asking the user to select an instance.
          */
         if (is_array($parm_errorHa['course'])) {
-            $errObj = new ADA_Error(
+            $errObj = new ADAError(
                 null,
                 null,
                 null,
@@ -178,7 +198,7 @@ function session_controlFN($neededObjAr = [], $allowedUsersAr = [], $trackPageTo
             );
         } else {
             // FIXME: passare messaggio di errore
-            $errObj = new ADA_Error(
+            $errObj = new ADAError(
                 null,
                 null,
                 null,
@@ -198,7 +218,7 @@ function session_controlFN($neededObjAr = [], $allowedUsersAr = [], $trackPageTo
             !($sess_userObj instanceof ADAAuthor) &&
             !($sess_userObj instanceof  ADAGuest) // ??? steve 6/9
         ) {
-            $errObj = new ADA_Error(
+            $errObj = new ADAError(
                 null,
                 null,
                 null,
@@ -211,7 +231,7 @@ function session_controlFN($neededObjAr = [], $allowedUsersAr = [], $trackPageTo
 
     if ($parm_errorHa['node']) {
         // FIXME: passare messaggio di errore
-        $errObj = new ADA_Error(
+        $errObj = new ADAError(
             null,
             null,
             null,
@@ -223,7 +243,7 @@ function session_controlFN($neededObjAr = [], $allowedUsersAr = [], $trackPageTo
 
     if ($parm_errorHa['guest_user_not_allowed']) {
         // FIXME: passare messaggio di errore
-        $errObj = new ADA_Error(
+        $errObj = new ADAError(
             null,
             null,
             null,
@@ -247,7 +267,7 @@ function session_controlFN($neededObjAr = [], $allowedUsersAr = [], $trackPageTo
     $GLOBALS['sess_user_language']      = $_SESSION['sess_user_language'] ?? null;
 }
 
-function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
+function parameterControlFN($neededObjAr = [], $allowedUsersAr = [])
 {
 
     $invalid_session         = false;
@@ -262,8 +282,8 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
      * ADA common data handler
      */
     $common_dh = $GLOBALS['common_dh'] ?? null;
-    if (!$common_dh instanceof AMA_Common_DataHandler) {
-        $common_dh = AMA_Common_DataHandler::instance();
+    if (!$common_dh instanceof AMACommonDataHandler) {
+        $common_dh = AMACommonDataHandler::instance();
         $GLOBALS['common_dh'] = $common_dh;
     }
 
@@ -271,8 +291,8 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
      * User object: always load a user
      */
     $sess_id_user = isset($_SESSION['sess_id_user']) ? (int)$_SESSION['sess_id_user'] : 0;
-    $sess_userObj = read_user($sess_id_user);
-    if (ADA_Error::isError($sess_userObj)) {
+    $sess_userObj = readUser($sess_id_user);
+    if (ADAError::isError($sess_userObj)) {
         $sess_userObj->handleError();
     }
     $_SESSION['sess_id_user'] = $sess_id_user;
@@ -337,19 +357,19 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
         unset($_SESSION['sess_id_node']);
     } elseif ($id_profile == AMA_TYPE_STUDENT) {
         if (isset($_REQUEST['id_course'])) {
-            $id_course      = DataValidator::is_uinteger($_REQUEST['id_course']/*$GLOBALS['id_course']*/);
+            $id_course      = DataValidator::isUinteger($_REQUEST['id_course']/*$GLOBALS['id_course']*/);
         } else {
             $id_course = false;
         }
 
         if (isset($_SESSION['sess_id_course'])) {
-            $sess_id_course = DataValidator::is_uinteger($_SESSION['sess_id_course']);
+            $sess_id_course = DataValidator::isUinteger($_SESSION['sess_id_course']);
         } else {
             $sess_id_course = false;
         }
 
         if (isset($_REQUEST['id_node'])) {
-            $req_id_node = DataValidator::validate_node_id($_REQUEST['id_node']);
+            $req_id_node = DataValidator::validateNodeId($_REQUEST['id_node']);
         } else {
             $req_id_node = false;
         }
@@ -359,8 +379,8 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
         }
 
         if ($id_course !== false && $id_course !== $sess_id_course) {
-            $tester_infoAr = $common_dh->get_tester_info_from_id_course($id_course);
-            if (AMA_Common_DataHandler::isError($tester_infoAr)) {
+            $tester_infoAr = $common_dh->getTesterInfoFromIdCourse($id_course);
+            if (AMACommonDataHandler::isError($tester_infoAr)) {
                 $selected_tester = null;
             } else {
                 $selected_tester = $tester_infoAr['puntatore'];
@@ -383,7 +403,7 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
         $sess_selected_tester = $_SESSION['sess_selected_tester'] ?? null;
     }
 
-    //$dh = AMA_DataHandler::instance(MultiPort::getDSN($sess_selected_tester));
+    //$dh = AMADataHandler::instance(MultiPort::getDSN($sess_selected_tester));
 
     $sess_selected_tester_dsn = MultiPort::getDSN($sess_selected_tester);
     $_SESSION['sess_selected_tester_dsn'] = $sess_selected_tester_dsn;
@@ -391,7 +411,7 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
         $_SESSION['sess_selected_tester'] = $sess_selected_tester;
     }
 
-    $dh = new AMA_DataHandler($sess_selected_tester_dsn);
+    $dh = new AMADataHandler($sess_selected_tester_dsn);
     $GLOBALS['dh'] = $dh;
     loadServiceTypes();
 
@@ -404,21 +424,21 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
      */
     // TODO: portare in sessione $nodeObj?
     if (in_array('node', $thisUserNeededObjAr)) {
-        $id_node      = isset($_REQUEST['id_node']) ? DataValidator::validate_node_id($_REQUEST['id_node']/*$GLOBALS['id_node']*/) : false;
-        $sess_id_node = isset($_SESSION['sess_id_node']) ? DataValidator::validate_node_id($_SESSION['sess_id_node']) : false;
+        $id_node      = isset($_REQUEST['id_node']) ? DataValidator::validateNodeId($_REQUEST['id_node']/*$GLOBALS['id_node']*/) : false;
+        $sess_id_node = isset($_SESSION['sess_id_node']) ? DataValidator::validateNodeId($_SESSION['sess_id_node']) : false;
 
         if ($id_node !== false) {
-            $dataHa = $dh->get_node_info($id_node);
+            $dataHa = $dh->getNodeInfo($id_node);
 
-            if (AMA_DataHandler::isError($dataHa) || !is_array($dataHa)) {
+            if (AMADataHandler::isError($dataHa) || !is_array($dataHa)) {
                 $invalid_node = true;
             } else {
                 $_SESSION['sess_id_node'] = $id_node;
             }
         } elseif ($sess_id_node !== false) {
-            $dataHa = $dh->get_node_info($sess_id_node);
+            $dataHa = $dh->getNodeInfo($sess_id_node);
 
-            if (AMA_DataHandler::isError($dataHa) || !is_array($dataHa)) {
+            if (AMADataHandler::isError($dataHa) || !is_array($dataHa)) {
                 $invalid_node = true;
             } else {
                 $_SESSION['sess_id_node'] = $sess_id_node;
@@ -443,15 +463,15 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
      * Course object
      */
     if (in_array('course', $thisUserNeededObjAr)) {
-        $id_course      = isset($_REQUEST['id_course']) ? DataValidator::is_uinteger($_REQUEST['id_course']/*$GLOBALS['id_course']*/) : false;
-        $sess_id_course = isset($_SESSION['sess_id_course']) ? DataValidator::is_uinteger($_SESSION['sess_id_course']) : false;
+        $id_course      = isset($_REQUEST['id_course']) ? DataValidator::isUinteger($_REQUEST['id_course']/*$GLOBALS['id_course']*/) : false;
+        $sess_id_course = isset($_SESSION['sess_id_course']) ? DataValidator::isUinteger($_SESSION['sess_id_course']) : false;
         /* extracting the course id from node id, if given */
         if (isset($_SESSION['sess_id_node']) && !$invalid_node && $id_course === false) {
             //    if ($nodeObj instanceof Node){
             $courseIdFromNodeId =  substr($_SESSION['sess_id_node'], 0, strpos($_SESSION['sess_id_node'], '_'));
-            $sess_courseObj = read_course($courseIdFromNodeId);
+            $sess_courseObj = readCourse($courseIdFromNodeId);
 
-            if (ADA_Error::isError($sess_courseObj)) {
+            if (ADAError::isError($sess_courseObj)) {
                 unset($_SESSION['sess_courseObj']);
                 $invalid_course = true;
             } elseif ($sess_userObj instanceof ADAGuest  && !$sess_courseObj->getIsPublic()) {
@@ -462,8 +482,8 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
                 $_SESSION['sess_id_course'] = $courseIdFromNodeId;
             }
         } elseif ($id_course !== false) {
-            $sess_courseObj = read_course($id_course);
-            if (ADA_Error::isError($sess_courseObj)) {
+            $sess_courseObj = readCourse($id_course);
+            if (ADAError::isError($sess_courseObj)) {
                 unset($_SESSION['sess_courseObj']);
                 $invalid_course = true;
             } elseif ($sess_userObj instanceof ADAGuest  && !$sess_courseObj->getIsPublic()) {
@@ -474,8 +494,8 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
                 $_SESSION['sess_id_course'] = $id_course;
             }
         } elseif ($sess_id_course !== false) {
-            $sess_courseObj = read_course($sess_id_course);
-            if (ADA_Error::isError($sess_courseObj)) {
+            $sess_courseObj = readCourse($sess_id_course);
+            if (ADAError::isError($sess_courseObj)) {
                 unset($_SESSION['sess_courseObj']);
                 $invalid_course = true;
             } elseif ($sess_userObj instanceof ADAGuest  && !$sess_courseObj->getIsPublic()) {
@@ -548,15 +568,15 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
              */
             switch ($sess_userObj->getType()) {
                 case AMA_TYPE_STUDENT:
-                    $instances = $dh->get_course_instance_for_this_student_and_course_model($sess_userObj->getId(), $_SESSION['sess_id_course'], $getAll);
+                    $instances = $dh->getCourseInstanceForThisStudentAndCourseModel($sess_userObj->getId(), $_SESSION['sess_id_course'], $getAll);
                     break;
                 case AMA_TYPE_TUTOR:
-                    $instances = $dh->get_course_instance_for_this_student_and_course_model($sess_userObj->getId(), $_SESSION['sess_id_course'], $getAll);
-                    if (AMA_DB::isError($instances) || !is_array($instances) || count($instances) <= 0) {
+                    $instances = $dh->getCourseInstanceForThisStudentAndCourseModel($sess_userObj->getId(), $_SESSION['sess_id_course'], $getAll);
+                    if (AMADB::isError($instances) || !is_array($instances) || count($instances) <= 0) {
                         $instances = [];
                     }
-                    $tutorInstances = $dh->get_tutors_assigned_course_instance($sess_userObj->getId(), $_SESSION['sess_id_course'], $sess_userObj->isSuper());
-                    if (!AMA_DB::isError($tutorInstances) && is_array($tutorInstances) && count($tutorInstances) > 0) {
+                    $tutorInstances = $dh->getTutorsAssignedCourseInstance($sess_userObj->getId(), $_SESSION['sess_id_course'], $sess_userObj->isSuper());
+                    if (!AMADB::isError($tutorInstances) && is_array($tutorInstances) && count($tutorInstances) > 0) {
                         /**
                          * the returned array is array[id_tutor]=>array[key]=>array['id_istanza_corso']
                          * and needs to be converted to reflect the structre returned in student case
@@ -568,7 +588,7 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
                     break;
             }
 
-            if (!AMA_DB::isError($instances) && count($instances) > 0) {
+            if (!AMADB::isError($instances) && count($instances) > 0) {
                 if (count($instances) == 1) {
                     /**
                      * User is subscribed to one instance only of a non autosubscription, good!
@@ -616,9 +636,9 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
 
         if (!$invalid_course && !is_null($sess_courseObj) && !$sess_courseObj->getIsPublic()) {
             if (isset($target_course_instance)) {
-                $id_course_instance = DataValidator::is_uinteger($target_course_instance);
+                $id_course_instance = DataValidator::isUinteger($target_course_instance);
             } elseif (isset($_REQUEST['id_course_instance'])) {
-                $id_course_instance = DataValidator::is_uinteger($_REQUEST['id_course_instance']/*$GLOBALS['id_course_instance']*/); // FIXME: qui ci va $_REQUEST['id_course_instance']
+                $id_course_instance = DataValidator::isUinteger($_REQUEST['id_course_instance']/*$GLOBALS['id_course_instance']*/); // FIXME: qui ci va $_REQUEST['id_course_instance']
             } else {
                 $id_course_instance = false;
             }
@@ -634,7 +654,7 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
                  * has no instances, remove the false from the if condition an do
                  * the implementation in the if block
                  */
-                if (!$dh->course_has_instances($sess_courseObj->getId())) {
+                if (!$dh->courseHasInstances($sess_courseObj->getId())) {
                     /**
                      * take no instances actions here
                      */
@@ -654,8 +674,8 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
                     $getAll = true;
 
                     // check if student is subscribed to some instance of the course (that is an autosubscription one)
-                    $autoInstancesArr = $dh->get_course_instance_for_this_student_and_course_model($sess_userObj->getId(), $sess_courseObj->getId(), $getAll);
-                    if (!AMA_DB::isError($autoInstancesArr) && count($autoInstancesArr) > 0) {
+                    $autoInstancesArr = $dh->getCourseInstanceForThisStudentAndCourseModel($sess_userObj->getId(), $sess_courseObj->getId(), $getAll);
+                    if (!AMADB::isError($autoInstancesArr) && count($autoInstancesArr) > 0) {
                         // sort by id_istanza_corso DESC
                         usort($autoInstancesArr, function ($a, $b) {
                             return $b['id_istanza_corso'] - $a['id_istanza_corso'];
@@ -667,12 +687,12 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
                     unset($autoInstancesArr);
 
                     // get max subscribeable course instance id
-                    $autoInstancesArr = $dh->course_instance_find_list([], "id_corso=" . $sess_courseObj->getId() .
+                    $autoInstancesArr = $dh->courseInstanceFindList([], "id_corso=" . $sess_courseObj->getId() .
                         " AND `data_inizio`>0 AND `durata`>0" .
                         " AND `self_registration`=1 AND `open_subscription`=1" .
                         " ORDER BY `id_istanza_corso` DESC LIMIT 0,1");
 
-                    if (!AMA_DB::isError($autoInstancesArr) && count($autoInstancesArr) > 0) {
+                    if (!AMADB::isError($autoInstancesArr) && count($autoInstancesArr) > 0) {
                         $temp = reset($autoInstancesArr);
                         $maxSubscribeableID = intval($temp['id_istanza_corso']);
                         unset($temp);
@@ -685,17 +705,17 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
                 }
             }
 
-            $sess_id_course_instance = isset($_SESSION['sess_id_course_instance']) ? DataValidator::is_uinteger($_SESSION['sess_id_course_instance']) : false;
+            $sess_id_course_instance = isset($_SESSION['sess_id_course_instance']) ? DataValidator::isUinteger($_SESSION['sess_id_course_instance']) : false;
             if ($id_course_instance !== false) {
-                $course_instanceObj = read_course_instance_from_DB($id_course_instance);
-                if (ADA_Error::isError($course_instanceObj)) {
+                $course_instanceObj = readCourseInstanceFromDB($id_course_instance);
+                if (ADAError::isError($course_instanceObj)) {
                     $invalid_course_instance = true;
                 } else {
                     $UserType = $sess_userObj->getType();
                     switch ($sess_userObj->getType()) {
                         case AMA_TYPE_STUDENT:
-                            $studentLevel = $dh->get_student_level($sess_id_user, $id_course_instance);
-                            if (AMA_DataHandler::isError($studentLevel)) {
+                            $studentLevel = $dh->getStudentLevel($sess_id_user, $id_course_instance);
+                            if (AMADataHandler::isError($studentLevel)) {
                                 if ($sess_courseObj->getAutoSubscription()) {
                                     $invalid_course_instance = false;
                                 } else {
@@ -705,8 +725,8 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
                             break;
                         case AMA_TYPE_TUTOR:
                             if (!$sess_userObj->isSuper() && $course_instanceObj->getServiceLevel() != ADA_SERVICE_TUTORCOMMUNITY) {
-                                $tutorsInstance = $dh->course_instance_tutor_get($id_course_instance, $number = 2);
-                                if (AMA_DataHandler::isError($tutorsInstance)) {
+                                $tutorsInstance = $dh->courseInstanceTutorGet($id_course_instance, $number = 2);
+                                if (AMADataHandler::isError($tutorsInstance)) {
                                     $invalid_course_instance = true;
                                 } elseif (!in_array($sess_id_user, $tutorsInstance)) {
                                     $invalid_course_instance = true;
@@ -732,8 +752,8 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
                         $field_list_ar = [];
                         if (isset($_SESSION['sess_id_course']) && !$invalid_course) {
                             $courseIdRequired = $_SESSION['sess_id_course'];
-                            $InstanceIdList = $dh->course_instance_get_list($field_list_ar, $courseIdRequired);
-                            if (AMA_DataHandler::isError($InstanceIdList) || count($InstanceIdList) == 0) {
+                            $InstanceIdList = $dh->courseInstanceGetList($field_list_ar, $courseIdRequired);
+                            if (AMADataHandler::isError($InstanceIdList) || count($InstanceIdList) == 0) {
                                 $invalid_course_instance = true;
                             }
                         } else {
@@ -747,8 +767,8 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
                     // end if node
                 } elseif ($sess_courseObj instanceof Course) {
                     $courseIdRequired = $sess_courseObj->id;
-                    $InstanceIdList = $dh->course_instance_get_list([], $courseIdRequired);
-                    if (AMA_DataHandler::isError($InstanceIdList) || count($InstanceIdList) == 0) {
+                    $InstanceIdList = $dh->courseInstanceGetList([], $courseIdRequired);
+                    if (AMADataHandler::isError($InstanceIdList) || count($InstanceIdList) == 0) {
                         $invalid_course_instance = true;
                     }
                     $instanceIdRequired = [];
@@ -770,8 +790,8 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
                     default:
                         break;
                 } //end switch UserType
-                $course_instanceObj = read_course_instance_from_DB($sess_id_course_instance);
-                if (ADA_Error::isError($course_instanceObj)) {
+                $course_instanceObj = readCourseInstanceFromDB($sess_id_course_instance);
+                if (ADAError::isError($course_instanceObj)) {
                     $course_instanceObj->handleError();
                 }
                 $_SESSION['sess_id_course_instance'] = $sess_id_course_instance;
@@ -817,7 +837,7 @@ function parameter_controlFN($neededObjAr = [], $allowedUsersAr = [])
  * @param $data
  * @return void
  */
-function clear_dataFN($variableToClearAr = [])
+function clearDataFN($variableToClearAr = [])
 {
     //ADALogger::log('clear data FN');
 
@@ -893,9 +913,9 @@ function loadServiceTypes()
 {
 
     if (!isset($_SESSION['service_level'])) {
-        if ($GLOBALS['dh'] instanceof AMA_DataHandler) {
+        if ($GLOBALS['dh'] instanceof AMADataHandler) {
             $servicesTypeAr =  $GLOBALS['dh']->get_service_type();
-            if (!empty($servicesTypeAr) && !AMA_DB::isError($servicesTypeAr)) {
+            if (!empty($servicesTypeAr) && !AMADB::isError($servicesTypeAr)) {
                 foreach ($servicesTypeAr as $servicesType) {
                     if (isset($servicesType['livello_servizio']) && isset($servicesType['nome_servizio'])) {
                         $serviceLevel = $servicesType['livello_servizio'];
@@ -931,12 +951,12 @@ function checkAndSetPublicTester($objType, $objID)
 {
     $common_dh = $GLOBALS['common_dh'];
     if ($objType !== 'course' || is_null($objID)) {
-        $tmp_id_course = isset($_REQUEST['id_course']) ? DataValidator::is_uinteger($_REQUEST['id_course']) : false;
+        $tmp_id_course = isset($_REQUEST['id_course']) ? DataValidator::isUinteger($_REQUEST['id_course']) : false;
         if ($tmp_id_course === false) {
             $tmp_id_course =  (isset($_REQUEST['id_node'])) ? substr($_REQUEST['id_node'], 0, strpos($_REQUEST['id_node'], '_')) : false;
         }
         if ($tmp_id_course === false) {
-            $tmp_id_course = isset($_SESSION['sess_id_course']) ? DataValidator::is_uinteger($_SESSION['sess_id_course']) : false;
+            $tmp_id_course = isset($_SESSION['sess_id_course']) ? DataValidator::isUinteger($_SESSION['sess_id_course']) : false;
         }
         if ($tmp_id_course === false) {
             $tmp_id_course =  (isset($_SESSION['sess_id_node'])) ? substr($_SESSION['sess_id_node'], 0, strpos($_SESSION['sess_id_node'], '_')) : false;
@@ -947,26 +967,26 @@ function checkAndSetPublicTester($objType, $objID)
 
     if ($tmp_id_course !== false) {
         // get the tester for the passed id_course
-        $tester_infoAr = $common_dh->get_tester_info_from_id_course($tmp_id_course);
+        $tester_infoAr = $common_dh->getTesterInfoFromIdCourse($tmp_id_course);
         // get the service info for the passed id_course
-        $service_inforAr = $common_dh->get_service_type_info_from_course($tmp_id_course);
+        $service_inforAr = $common_dh->getServiceTypeInfoFromCourse($tmp_id_course);
         // check that the tester is valid and is the public one and
         // check that the service is valid and is a public one
         if (
-            !AMA_DB::isError($tester_infoAr) && is_array($tester_infoAr) &&
+            !AMADB::isError($tester_infoAr) && is_array($tester_infoAr) &&
             isset($tester_infoAr['puntatore']) && $tester_infoAr['puntatore'] == ADA_PUBLIC_TESTER &&
-            !AMA_DB::isError($service_inforAr) && is_array($service_inforAr) &&
+            !AMADB::isError($service_inforAr) && is_array($service_inforAr) &&
             isset($service_inforAr['isPublic']) && intval($service_inforAr['isPublic']) !== 0
         ) {
             // save the dh, if a restrore is needed afterwards
             $olddh = $GLOBALS['dh'];
             // load the dh
-            $dh = AMA_DataHandler::instance(MultiPort::getDSN($tester_infoAr['puntatore']));
-            if (!AMA_DB::isError($dh)) {
+            $dh = AMADataHandler::instance(MultiPort::getDSN($tester_infoAr['puntatore']));
+            if (!AMADB::isError($dh)) {
                 // check the object
                 if ($objType == 'node') {
-                    $dataHa = $dh->get_node_info($objID);
-                    if (AMA_DB::isError($dataHa) || !is_array($dataHa)) {
+                    $dataHa = $dh->getNodeInfo($objID);
+                    if (AMADB::isError($dataHa) || !is_array($dataHa)) {
                         $retval = true;
                         // restore the saved datahandler
                         $GLOBALS['dh'] = $olddh;
@@ -980,8 +1000,8 @@ function checkAndSetPublicTester($objType, $objID)
                 } elseif ($objType == 'course') {
                     // set the datahandler
                     $GLOBALS['dh'] = $dh;
-                    $sess_courseObj = read_course($objID);
-                    if (AMA_DB::isError($sess_courseObj) || !$sess_courseObj instanceof Course) {
+                    $sess_courseObj = readCourse($objID);
+                    if (AMADB::isError($sess_courseObj) || !$sess_courseObj instanceof Course) {
                         $retval = true;
                         // restore the saved datahandler
                         $GLOBALS['dh'] = $olddh;

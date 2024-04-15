@@ -1,11 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
 namespace Lynxlab\ADA\Main\Upload\Functions;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 // Funzione di upload dei file
-function upload_file($file_up_ha, $source, $dest)
+function uploadFile($file_up_ha, $source, $dest)
 {
     // inizializzazione variabili
     $str[0] = "";
@@ -22,10 +26,10 @@ function upload_file($file_up_ha, $source, $dest)
 
     // controllo tipo file inviato, se non consentito -> stop
     $file_type = mime_content_type($source);
-    $mimetypeControl = upload_tipo_stop($file_type);//$file_up_ha['file_up']['type']);
+    $mimetypeControl = uploadTipoStop($file_type);//$file_up_ha['file_up']['type']);
     // if php detected mimetype is not accepted, try with browser declared mimetype
     if ($mimetypeControl != ADA_FILE_UPLOAD_ACCEPTED_MIMETYPE) {
-        $mimetypeControl = upload_tipo_stop($file_up_ha['file_up']['type']);
+        $mimetypeControl = uploadTipoStop($file_up_ha['file_up']['type']);
     }
     if ($mimetypeControl == ADA_FILE_UPLOAD_ACCEPTED_MIMETYPE) {
         if (($source != 'none') && ($source != '')) {
@@ -60,7 +64,7 @@ function upload_file($file_up_ha, $source, $dest)
     return $str ;
 }
 
-function upload_tipo_stop($tipo)
+function uploadTipoStop($tipo)
 {
     // read it from config
     $mimetypeHa = $GLOBALS['ADA_MIME_TYPE'];

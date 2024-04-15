@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * eguidance sessions summary
  *
@@ -90,9 +112,9 @@ TutorHelper::init($neededObjAr);
  * If id course instance is not set or is not valid,
  * return to user's home page
  */
-$id_course_instance = DataValidator::is_uinteger($_GET['id_course_instance']);
+$id_course_instance = DataValidator::isUinteger($_GET['id_course_instance']);
 if ($id_course_instance === false) {
-    $errObj = new ADA_Error(
+    $errObj = new ADAError(
         null,
         translateFN('Impossibile accedere al modulo'),
         null,
@@ -106,9 +128,9 @@ if ($id_course_instance === false) {
  * If id user is not set or is not valid,
  * return to user's home page
  */
-$id_user = DataValidator::is_uinteger($_GET['id_user']);
+$id_user = DataValidator::isUinteger($_GET['id_user']);
 if ($id_user === false) {
-    $errObj = new ADA_Error(
+    $errObj = new ADAError(
         null,
         translateFN('Impossibile accedere al modulo'),
         null,
@@ -118,7 +140,7 @@ if ($id_user === false) {
     );
 }
 
-$page = DataValidator::is_uinteger($_GET['page']);
+$page = DataValidator::isUinteger($_GET['page']);
 if ($page === false) {
     $page = 1;
 }
@@ -128,9 +150,9 @@ $tutoredUserObj = MultiPort::findUser($id_user);
 /*
  * Obtain service information and eguidance data for the given id_course_instance
  */
-$id_course = $dh->get_course_id_for_course_instance($id_course_instance);
-if (AMA_DataHandler::isError($id_course)) {
-    $errObj = new ADA_Error(
+$id_course = $dh->getCourseIdForCourseInstance($id_course_instance);
+if (AMADataHandler::isError($id_course)) {
+    $errObj = new ADAError(
         null,
         translateFN("Errore nell'ottenimento dell'id del servzio"),
         null,
@@ -140,9 +162,9 @@ if (AMA_DataHandler::isError($id_course)) {
     );
 }
 
-$service_infoAr = $common_dh->get_service_info_from_course($id_course);
-if (AMA_Common_DataHandler::isError($service_infoAr)) {
-    $errObj = new ADA_Error(
+$service_infoAr = $common_dh->getServiceInfoFromCourse($id_course);
+if (AMACommonDataHandler::isError($service_infoAr)) {
+    $errObj = new ADAError(
         null,
         translateFN("Errore nell'ottenimento delle informazioni sul servizio"),
         null,
@@ -152,9 +174,9 @@ if (AMA_Common_DataHandler::isError($service_infoAr)) {
     );
 }
 
-$eguidance_session_datesAr = $dh->get_eguidance_session_dates($id_course_instance);
-if (AMA_DataHandler::isError($eguidance_session_datesAr)) {
-    $errObj = new ADA_Error(
+$eguidance_session_datesAr = $dh->getEguidanceSessionDates($id_course_instance);
+if (AMADataHandler::isError($eguidance_session_datesAr)) {
+    $errObj = new ADAError(
         null,
         translateFN("Errore nell'ottenimento delle informazioni sul servizio"),
         null,
@@ -174,10 +196,10 @@ if ($page > $eguidance_sessions_count) {
  */
 $eguidance_session_dataAr = $dh->get_eguidance_session($id_course_instance, $page - 1);
 if (
-    AMA_DataHandler::isError($eguidance_session_dataAr)
+    AMADataHandler::isError($eguidance_session_dataAr)
     && $eguidance_session_dataAr->code != AMA_ERR_GET
 ) {
-    $errObj = new ADA_Error(
+    $errObj = new ADAError(
         null,
         translateFN("Errore nell'ottenimento delle informazioni sul servizio"),
         null,
@@ -185,7 +207,7 @@ if (
         null,
         $userObj->getHomePage()
     );
-} elseif (AMA_DataHandler::isError($eguidance_session_dataAr)) {
+} elseif (AMADataHandler::isError($eguidance_session_dataAr)) {
     // Mostrare messaggio non ci sono dati
     $data = new CText(translateFN("There aren't evaluation sheets available"));
     $htmlData = $data->getHtml();

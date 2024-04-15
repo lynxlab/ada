@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Module\Badges\RewardedBadge;
+
+use Lynxlab\ADA\Module\Badges\BadgesBase;
+
+use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class RewardedBadge was declared with namespace Lynxlab\ADA\Module\Badges. //
+
 /**
  * @package     badges module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -81,7 +93,7 @@ class RewardedBadge extends BadgesBase
      *
      * @return self
      */
-    public function setUuid_bin($uuid)
+    public function setUuidBin($uuid)
     {
         $tmpuuid = Uuid::fromBytes($uuid);
         return $this->setUuid($tmpuuid->toString());
@@ -90,7 +102,7 @@ class RewardedBadge extends BadgesBase
     /**
      * Get the value of badge_uuid
      */
-    public function getBadge_uuid()
+    public function getBadgeUuid()
     {
         return $this->badge_uuid;
     }
@@ -100,7 +112,7 @@ class RewardedBadge extends BadgesBase
      *
      * @return  self
      */
-    public function setBadge_uuid($badge_uuid)
+    public function setBadgeUuid($badge_uuid)
     {
         $this->badge_uuid = $badge_uuid;
 
@@ -114,10 +126,10 @@ class RewardedBadge extends BadgesBase
      *
      * @return self
      */
-    public function setBadge_uuid_bin($uuid)
+    public function setBadgeUuidBin($uuid)
     {
         $tmpuuid = Uuid::fromBytes($uuid);
-        return $this->setBadge_uuid($tmpuuid->toString());
+        return $this->setBadgeUuid($tmpuuid->toString());
     }
 
     /**
@@ -183,7 +195,7 @@ class RewardedBadge extends BadgesBase
     /**
      * Get the value of id_utente
      */
-    public function getId_utente()
+    public function getIdUtente()
     {
         return $this->id_utente;
     }
@@ -193,7 +205,7 @@ class RewardedBadge extends BadgesBase
      *
      * @return  self
      */
-    public function setId_utente($id_utente)
+    public function setIdUtente($id_utente)
     {
         $this->id_utente = $id_utente;
 
@@ -203,7 +215,7 @@ class RewardedBadge extends BadgesBase
     /**
      * Get the value of id_corso
      */
-    public function getId_corso()
+    public function getIdCorso()
     {
         return $this->id_corso;
     }
@@ -213,7 +225,7 @@ class RewardedBadge extends BadgesBase
      *
      * @return  self
      */
-    public function setId_corso($id_corso)
+    public function setIdCorso($id_corso)
     {
         $this->id_corso = $id_corso;
 
@@ -223,7 +235,7 @@ class RewardedBadge extends BadgesBase
     /**
      * Get the value of id_istanza_corso
      */
-    public function getId_istanza_corso()
+    public function getIdIstanzaCorso()
     {
         return $this->id_istanza_corso;
     }
@@ -233,7 +245,7 @@ class RewardedBadge extends BadgesBase
      *
      * @return  self
      */
-    public function setId_istanza_corso($id_istanza_corso)
+    public function setIdIstanzaCorso($id_istanza_corso)
     {
         $this->id_istanza_corso = $id_istanza_corso;
 

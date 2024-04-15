@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * communities.php
  *
@@ -97,12 +113,12 @@ $courseInstances = [];
  */
 
 $provider_dh = $GLOBALS['dh'];
-//     $courseInstances = $provider_dh->get_course_instances_active_for_this_student($userObj->getId());
-$courseInstances = $provider_dh->get_course_instances_for_this_student($userObj->getId(), true);
+//     $courseInstances = $provider_dh->getCourseInstancesActiveForThisStudent($userObj->getId());
+$courseInstances = $provider_dh->getCourseInstancesForThisStudent($userObj->getId(), true);
 
 $data = print_r($courseInstances, true);
 
-if (!AMA_DataHandler::isError($courseInstances) && is_array($courseInstances) && count($courseInstances) > 0) {
+if (!AMADataHandler::isError($courseInstances) && is_array($courseInstances) && count($courseInstances) > 0) {
     $thead_dataAr = [
         translateFN('Titolo'),
         translateFN('Iniziato'),
@@ -136,7 +152,7 @@ if (!AMA_DataHandler::isError($courseInstances) && is_array($courseInstances) &&
 
         if (!$isEnded && isset($c['duration_subscription']) && intval($c['duration_subscription']) > 0) {
             $duration = $c['duration_subscription'];
-            $end_date = $common_dh->add_number_of_days($duration, $start_date);
+            $end_date = $common_dh->addNumberOfDays($duration, $start_date);
         } else {
             $duration = $c['durata'];
             $end_date = $c['data_fine'];
@@ -162,7 +178,7 @@ if (!AMA_DataHandler::isError($courseInstances) && is_array($courseInstances) &&
                 if (!isset($c['duration_subscription']) || is_null($c['duration_subscription'])) {
                     $c['duration_subscription'] = PHP_INT_MAX;
                 }
-                $subscritionEndDate = $common_dh->add_number_of_days($c['duration_subscription'], intval($c['data_iscrizione']));
+                $subscritionEndDate = $common_dh->addNumberOfDays($c['duration_subscription'], intval($c['data_iscrizione']));
                 /**
                  * giorgio 13/01/2021: force subscritionEndDate to have time set to 23:59:59
                  */

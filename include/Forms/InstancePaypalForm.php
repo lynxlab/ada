@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
+
+use Lynxlab\ADA\Main\Forms\InstancePaypalForm;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class InstancePaypalForm was declared with namespace Lynxlab\ADA\Main\Forms. //
+
 /**
  * InstancePaypalForm file
  *

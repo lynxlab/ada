@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
+
+use function \translateFN;
+
 /**
  * READ MESSAGE.
  *
@@ -97,10 +119,10 @@ if (isset($id_course_instance)) {
 
 if (isset($del_msg_id) and (!empty($del_msg_id))) {
     // vito, 19 gennaio 2009, qui va in errore durante il log del messaggio
-    //$res = $mh->remove_messages($sess_id_user, array($del_msg_id));
+    //$res = $mh->removeMessages($sess_id_user, array($del_msg_id));
     $res = MultiPort::removeUserMessages($userObj, [$del_msg_id]);
-    if (AMA_DataHandler::isError($res)) {
-        $errObj = new ADA_Error(
+    if (AMADataHandler::isError($res)) {
+        $errObj = new ADAError(
             $msg_ha,
             translateFN('Errore in cancellazione messaggi'),
             null,
@@ -116,10 +138,10 @@ if (isset($del_msg_id) and (!empty($del_msg_id))) {
 }
 
 // get message content
-//$msg_ha = $mh->get_message($sess_id_user, $msg_id);
+//$msg_ha = $mh->getMessage($sess_id_user, $msg_id);
 $msg_ha = MultiPort::getUserMessage($userObj, $msg_id);
-if (AMA_DataHandler::isError($msg_ha)) {
-    $errObj = new ADA_Error(
+if (AMADataHandler::isError($msg_ha)) {
+    $errObj = new ADAError(
         $msg_ha,
         translateFN('Errore in lettura messaggio'),
         null,
@@ -135,7 +157,7 @@ $mittente = $msg_ha['mittente'];
  * cosa fare se entrambe gli utenti sono iscritti a due classi?
  */
 
-$Data_messaggio = AMA_DataHandler::ts_to_date($msg_ha['data_ora'], "%d/%m/%Y - %H:%M:%S");
+$Data_messaggio = AMADataHandler::tsToDate($msg_ha['data_ora'], "%d/%m/%Y - %H:%M:%S");
 $oggetto        = $msg_ha['titolo'];
 $destinatario   = str_replace(",", ", ", $msg_ha['destinatari']);
 $message_text   = $msg_ha['testo'];
@@ -163,7 +185,7 @@ $_SESSION['destinatari_replay_all'] = $destinatari_replay_all;
 $testo_ar = explode(chr(13),  chop($message_text));
 $testo = "";
 foreach($testo_ar as $riga) {
-  $testo .= MessageHandler::render_message_textFN($riga) ."<BR>";
+  $testo .= MessageHandler::renderMessageTextFN($riga) ."<BR>";
 }
 */
 

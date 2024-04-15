@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
 /**
  * NEWSLETTER MODULE.
  *
@@ -82,14 +86,14 @@ if (function_exists('fastcgi_finish_request')) {
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['id']) && intval($_POST['id']) > 0) {
         $id_newsletter = intval($_POST['id']);
-        $newsLetterArray = $dh->get_newsletter($_POST['id']);
-        $filterArray = $dh->build_filter_from_array($_POST);
-        $recipients = $dh->get_users_filtered($filterArray, false);
+        $newsLetterArray = $dh->getNewsletter($_POST['id']);
+        $filterArray = $dh->buildFilterFromArray($_POST);
+        $recipients = $dh->getUsersFiltered($filterArray, false);
         $count = count($recipients);
 
-        $history_id = $dh->save_newsletter_history($id_newsletter, $filterArray, $count, AMANewsletterDataHandler::MODULES_NEWSLETTER_HISTORY_STATUS_UNDEFINED);
+        $history_id = $dh->saveNewsletterHistory($id_newsletter, $filterArray, $count, AMANewsletterDataHandler::MODULES_NEWSLETTER_HISTORY_STATUS_UNDEFINED);
 
-        if (!AMA_DB::isError($history_id)) {
+        if (!AMADB::isError($history_id)) {
             ignore_user_abort(true);
             session_write_close();
 
@@ -105,7 +109,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
             ADAFileLogger::log("Sending out to: \n" . print_r($recipients, true), $logFile);
 
-            $dh->set_history_status($history_id, AMANewsletterDataHandler::MODULES_NEWSLETTER_HISTORY_STATUS_SENDING);
+            $dh->setHistoryStatus($history_id, AMANewsletterDataHandler::MODULES_NEWSLETTER_HISTORY_STATUS_SENDING);
             register_shutdown_function('Lynxlab\ADA\Module\Newsletter\Functions\shutDown', $dh, $history_id);
 
             /**
@@ -113,21 +117,21 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
              */
             $courseTitle = '';
             if (!is_null($filterArray['idCourse'])) {
-                $courseInfo = $dh->get_course(intval($filterArray['idCourse']));
-                if (!AMA_DB::isError($courseInfo)) {
+                $courseInfo = $dh->getCourse(intval($filterArray['idCourse']));
+                if (!AMADB::isError($courseInfo)) {
                     $courseTitle = $courseInfo['nome'] . '-' . $courseInfo['titolo'];
                 }
             }
 
             $instanceTitle = '';
             if (!is_null($filterArray['idInstance'])) {
-                $instanceInfo = $dh->course_instance_get(intval($filterArray['idInstance']));
-                if (!AMA_DB::isError($instanceInfo)) {
+                $instanceInfo = $dh->courseInstanceGet(intval($filterArray['idInstance']));
+                if (!AMADB::isError($instanceInfo)) {
                     $instanceTitle = $instanceInfo['title'];
                 }
             }
 
-            $senderEmail = MODULES_NEWSLETTER_DEFAULT_EMAIL_ADDRESS; // uncomment to get domain from HTTP_ROOT_DIR.'@'.get_domain(HTTP_ROOT_DIR);
+            $senderEmail = MODULES_NEWSLETTER_DEFAULT_EMAIL_ADDRESS; // uncomment to get domain from HTTP_ROOT_DIR.'@'.getDomain(HTTP_ROOT_DIR);
             $senderFullName = (isset($newsLetterArray['sender'])) ? $newsLetterArray['sender'] : $senderEmail;
 
             // perform general substitutions for course and instance
@@ -153,12 +157,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 ADAFileLogger::log('sending out#' . $num . ' userID=' . $recipient[0] . ' e-mail=' . $recipient[1], $logFile);
 
-                $userInfo = $dh->get_user($recipient[0]);
+                $userInfo = $dh->getUser($recipient[0]);
 
                 if (strlen($recipient[1]) > 0) {
                     $userFullName = '';
 
-                    if (!AMA_DB::isError($userInfo)) {
+                    if (!AMADB::isError($userInfo)) {
                         // performs user substitutions
                         $HTMLText = str_replace(
                             ["{name}","{lastname}","{e-mail}"],
@@ -195,8 +199,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                     ADAFileLogger::log('empty email#' . $num . ' userID=' . $recipient[0] . ' e-mail=' . $recipient[1], $logFile);
                 }
             }
-            $res = $dh->set_history_status($history_id, AMANewsletterDataHandler::MODULES_NEWSLETTER_HISTORY_STATUS_SENT);
-            if (AMA_DB::isError($res)) {
+            $res = $dh->setHistoryStatus($history_id, AMANewsletterDataHandler::MODULES_NEWSLETTER_HISTORY_STATUS_SENT);
+            if (AMADB::isError($res)) {
                 ADAFileLogger::log(print_r($res, true), $logFile);
             }
             ADAFileLogger::log('Done... OK!', $logFile);

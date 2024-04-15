@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\PDF;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use function \translateFN;
+
 /**
  * HELP
  *

@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\PDF;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
 /**
  * SLIDEIMPORT MODULE.
  *

@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Main\User\UserExtraTables;
+
+use Lynxlab\ADA\Main\User\ADAUser;
+
+use Lynxlab\ADA\Main\User\ADAGenericUser;
+
+use Lynxlab\ADA\Main\User\ADAAbstractUser;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+// Trigger: ClassWithNameSpace. The class ADAUser was declared with namespace Lynxlab\ADA\Main\User. //
+
 /**
  * ADAUser class
  *
@@ -435,7 +451,7 @@ class ADAUser extends ADAAbstractUser
                 }
             }
 
-            $tester = DataValidator::validate_testername($candidate, MULTIPROVIDER);
+            $tester = DataValidator::validateTestername($candidate, MULTIPROVIDER);
             if ($tester !== false) {
                 return $tester;
             } else {
@@ -454,7 +470,7 @@ class ADAUser extends ADAAbstractUser
      * @param number $courseId
      * @param number $courseInstanceId
      *
-     * @return AMA_Error on error or true on success
+     * @return AMAError on error or true on success
      *
      * @access public
      *
@@ -467,12 +483,12 @@ class ADAUser extends ADAAbstractUser
         $s->setSubscriptionStatus(ADA_STATUS_TERMINATED);
         $s->setStartStudentLevel(null); // null means no level update
         // search the provider of the current iteration course
-        $courseProv = $common_dh->get_tester_info_from_id_course($courseId);
-        if (!AMA_DB::isError($courseProv) && is_array($courseProv) && isset($courseProv['puntatore'])) {
+        $courseProv = $common_dh->getTesterInfoFromIdCourse($courseId);
+        if (!AMADB::isError($courseProv) && is_array($courseProv) && isset($courseProv['puntatore'])) {
             // save the datahandler
             $savedDH = $GLOBALS['dh'];
             // set the datahandler to be used
-            $GLOBALS['dh'] = AMA_DataHandler::instance(MultiPort::getDSN($courseProv['puntatore']));
+            $GLOBALS['dh'] = AMADataHandler::instance(MultiPort::getDSN($courseProv['puntatore']));
             // update the subscription
             $retval = Subscription::updateSubscription($s);
             // restore the datahandler

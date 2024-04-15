@@ -1,4 +1,6 @@
 <?php
+
+use Lynxlab\ADA\Main\Output\CSS;
 /**
  * Base config file
  */

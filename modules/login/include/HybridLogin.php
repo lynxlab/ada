@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Module\Login\HybridManagement;
+
+use Lynxlab\ADA\Module\Login\HybridLogin;
+
+use Lynxlab\ADA\Module\Login\AbstractLogin;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class HybridLogin was declared with namespace Lynxlab\ADA\Module\Login. //
+
 /**
  * LOGIN MODULE
  *
@@ -340,7 +356,7 @@ class HybridLogin extends AbstractLogin
         $configIndexDIV->addChild(CDOMElement::create('div', 'class:clearfix'));
 
         $tableOutData = [];
-        if (!\AMA_DB::isError($optionSetList)) {
+        if (!\AMADB::isError($optionSetList)) {
             unset($optionSetList['optionscount']);
             unset($optionSetList['providers_options_id']);
             /**

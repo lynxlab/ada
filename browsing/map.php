@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * map - this module provides edit user functionality of maps
  *
@@ -26,7 +44,7 @@ use function Lynxlab\ADA\Browsing\Map\returnAdaNodeLink;
 use function Lynxlab\ADA\Browsing\Map\returnAdaNodePos;
 use function Lynxlab\ADA\Browsing\Map\returnAdaNodeType;
 use function Lynxlab\ADA\Browsing\Map\returnMapType;
-use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
+use function Lynxlab\ADA\Main\AMA\DBRead\readNodeFromDB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -114,17 +132,17 @@ $node_path = $nodeObj->findPathFN('map');
 $data = "<h1 class='ui header map-title'>{$nodeObj->name}</h1>\n\n";
 $data .= "<div id=\"map_content\" style=\"position:relative;top:0px;left:0px;\">\n";
 
-$nodeList = $nodeObj->graph_indexFN();
+$nodeList = $nodeObj->graphIndexFN();
 $otherPos = [0,0,0,0];
 $tipo_mappa = returnMapType();
 
-if (!AMA_DB::isError($nodeList) && is_array($nodeList) && count($nodeList) > 0) {
+if (!AMADB::isError($nodeList) && is_array($nodeList) && count($nodeList) > 0) {
     // AND HIS CHILDS
     foreach ($nodeList as $key) {
         if ($userObj->getType() == AMA_TYPE_AUTHOR || $nodeObj->level <= $userObj->livello) {
             //        print_r($key);
             $nodePostId = 'input_' . $key['id_child']; // node id for javascript
-            $childNodeObj = read_node_from_DB($key['id_child']);
+            $childNodeObj = readNodeFromDB($key['id_child']);
             if ($childNodeObj instanceof Node) {
                 // saving new positions
                 if (isset($_POST[$nodePostId])) {

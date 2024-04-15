@@ -1,5 +1,31 @@
 <?php
 
+use Lynxlab\ADA\Module\GDPR\GdprRequestType;
+
+use Lynxlab\ADA\Module\GDPR\GdprRequest;
+
+use Lynxlab\ADA\Module\GDPR\GdprPolicy;
+
+use Lynxlab\ADA\Module\GDPR\GdprBase;
+
+use Lynxlab\ADA\Module\GDPR\GdprAPI;
+
+use Lynxlab\ADA\Module\GDPR\GdprActions;
+
+use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
+
+use Lynxlab\ADA\Main\Output\PDF;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\CORE\html4\CBaseElement;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class GdprRequest was declared with namespace Lynxlab\ADA\Module\GDPR. //
+
 /**
  * @package     gdpr module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -156,7 +182,7 @@ class GdprRequest extends GdprBase
             /**
              * Check on user type to prevent multiport to do its error handling if no user found
              */
-            if (!AMA_DB::isError($GLOBALS['common_dh']->get_user_type($this->getGeneratedBy()))) {
+            if (!AMADB::isError($GLOBALS['common_dh']->getUserType($this->getGeneratedBy()))) {
                 $targetUser = MultiPort::findUser(intval($this->getGeneratedBy()));
                 if ($targetUser instanceof ADALoggableUser) {
                     if ($_SESSION['sess_userObj']->getId() != $targetUser->getId()) {

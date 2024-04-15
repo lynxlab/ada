@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * @package     collabora-access-list module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -116,7 +122,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
      */
     $res = $GLOBALS['dh']->saveGrantedUsers($passedData);
 
-    if (AMA_DB::isError($res) || $res instanceof CollaboraACLException) {
+    if (AMADB::isError($res) || $res instanceof CollaboraACLException) {
         // if it's an error display the error message
         $retArray['status'] = "ERROR";
         $retArray['msg'] = $res->getMessage();

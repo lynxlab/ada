@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Module\Test\SwitcherFormTest;
+
+use Lynxlab\ADA\Module\Test\FormTest;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class SwitcherFormTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  *
  * @package
@@ -32,24 +44,24 @@ class SwitcherFormTest extends FormTest
         $this->setName('switcherForm');
 
         //lista dei test presenti
-        $test_list = $dh->test_getCourseSurveys(['id_corso' => $this->id_course]); //getting already present test list
+        $test_list = $dh->testGetCourseSurveys(['id_corso' => $this->id_course]); //getting already present test list
         $test_ids = [];
         if (!empty($test_list)) {
             $checkboxes = [];
             foreach ($test_list as $v) {
-                $checkboxes[$v['id_test']] = $v['titolo'] . ' (ID:' . $v['id_test'] . '  creato il: ' . AMA_DataHandler::ts_to_date($v['data_creazione']) . ')';
+                $checkboxes[$v['id_test']] = $v['titolo'] . ' (ID:' . $v['id_test'] . '  creato il: ' . AMADataHandler::tsToDate($v['data_creazione']) . ')';
                 $test_ids[] = $v['id_test'];
             }
             $this->addCheckboxes('delete_test[]', translateFN('Seleziona i sondaggi da rimuovere dal corso') . ':', $checkboxes, null);
         }
 
         //lista dei test da aggiungere
-        $tmp_tests = $dh->test_getNodes(['id_nodo_parent' => null,'tipo' => 'LIKE ' . ADA_TYPE_SURVEY . '%']); //getting available test
+        $tmp_tests = $dh->testGetNodes(['id_nodo_parent' => null,'tipo' => 'LIKE ' . ADA_TYPE_SURVEY . '%']); //getting available test
         $options = ['' => ' --- '];
         $empty = true;
         foreach ($tmp_tests as $v) {
             if (!in_array($v['id_nodo'], $test_ids)) {
-                $options[$v['id_nodo']] = $v['titolo'] . ' (ID:' . $v['id_nodo'] . '  creato il: ' . AMA_DataHandler::ts_to_date($v['data_creazione']) . ')';
+                $options[$v['id_nodo']] = $v['titolo'] . ' (ID:' . $v['id_nodo'] . '  creato il: ' . AMADataHandler::tsToDate($v['data_creazione']) . ')';
                 $empty = false;
             }
         }

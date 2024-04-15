@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Module\Badges\RewardedBadge;
+
+use Lynxlab\ADA\Module\Badges\CourseBadge;
+
+use Lynxlab\ADA\Module\Badges\Badge;
+
+use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class AMABadgesDataHandler was declared with namespace Lynxlab\ADA\Module\Badges. //
+
 /**
  * @package     badges module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -37,9 +59,9 @@ class AMABadgesDataHandler extends AMA_DataHandler
      * array of the course's badges
      *
      * @param integer $id_course_instance
-     * @return array|\AMA_Error
+     * @return array|\AMAError
      */
-    public function get_instance_with_course($id_course_instance)
+    public function getInstanceWithCourse($id_course_instance)
     {
 
         $sql = 'SELECT C.id_corso, C.titolo, IC.id_istanza_corso, ' .
@@ -47,8 +69,8 @@ class AMABadgesDataHandler extends AMA_DataHandler
             'FROM modello_corso AS C, istanza_corso AS IC ' .
             'WHERE IC.id_istanza_corso = ? AND C.id_corso = IC.id_corso ';
         $result = $this->getAllPrepared($sql, [$id_course_instance], AMA_FETCH_ASSOC);
-        if (AMA_DB::isError($result)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($result)) {
+            return new AMAError(AMA_ERR_GET);
         }
         return $result;
     }
@@ -64,7 +86,7 @@ class AMABadgesDataHandler extends AMA_DataHandler
         $sql = 'SELECT COUNT(`badge_uuid_bin`) FROM `' .
             self::PREFIX . 'course_badges` WHERE `id_corso`=?';
         $result = $this->getOnePrepared($sql, [$courseId]);
-        return (AMA_DB::isError($result) ? 0 : intval($result));
+        return (AMADB::isError($result) ? 0 : intval($result));
     }
 
     /**
@@ -86,7 +108,7 @@ class AMABadgesDataHandler extends AMA_DataHandler
         $sql .= ' GROUP BY `id_utente`';
         $result = $this->getAllPrepared($sql, [], AMA_FETCH_ASSOC);
         $retArr = [];
-        if (!AMA_DB::isError($result) && is_array($result) && count($result) > 0) {
+        if (!AMADB::isError($result) && is_array($result) && count($result) > 0) {
             foreach ($result as $ares) {
                 $retArr[$ares['id_utente']] = intval($ares['awardedcount']);
             }
@@ -123,7 +145,7 @@ class AMABadgesDataHandler extends AMA_DataHandler
                     unset($saveData['badge_uuid']);
                     $result =  $this->executeCriticalPrepared($this->sqlInsert(CourseBadge::TABLE, $saveData), array_values($saveData));
 
-                    if (AMA_DB::isError($result)) {
+                    if (AMADB::isError($result)) {
                         return new BadgesException($result->getMessage());
                     }
                     return $result;
@@ -154,7 +176,7 @@ class AMABadgesDataHandler extends AMA_DataHandler
             array_values($saveData)
         );
 
-        if (!AMA_DB::isError($result)) {
+        if (!AMADB::isError($result)) {
             return true;
         } else {
             return new BadgesException($result->getMessage());
@@ -216,7 +238,7 @@ class AMABadgesDataHandler extends AMA_DataHandler
             $saveData['uuid_bin'] = $uuid->getBytes();
         }
 
-        if (!AMA_DB::isError($result)) {
+        if (!AMADB::isError($result)) {
             $badge = new Badge($saveData);
             if (isset($badgepng)) {
                 $this->moveBadgeFile($badgepng, strtoupper($badge->getUuid()) . '.png');
@@ -250,7 +272,7 @@ class AMABadgesDataHandler extends AMA_DataHandler
             array_values($saveData)
         );
 
-        if (!AMA_DB::isError($result)) {
+        if (!AMADB::isError($result)) {
             if (is_file($deletefile)) {
                 unlink($deletefile);
             }
@@ -277,7 +299,7 @@ class AMABadgesDataHandler extends AMA_DataHandler
         } else {
             // it's a new reward, set the timestamp to now and notified to false
             $isUpdate = false;
-            $saveData['issuedOn'] = $this->date_to_ts('now');
+            $saveData['issuedOn'] = $this->dateToTs('now');
             $saveData['notified'] = 0;
         }
 
@@ -313,7 +335,7 @@ class AMABadgesDataHandler extends AMA_DataHandler
             $saveData['uuid_bin'] = $uuid->getBytes();
         }
 
-        if (!AMA_DB::isError($result)) {
+        if (!AMADB::isError($result)) {
             $saveData['badge_uuid_bin'] = $badgeUUid->getBytes();
             $reward = new RewardedBadge($saveData);
             return $reward;
@@ -348,11 +370,11 @@ class AMABadgesDataHandler extends AMA_DataHandler
      * @param string $className to use a class from your namespace, this string must start with "\"
      * @param array $whereArr
      * @param array $orderByArr
-     * @param Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
+     * @param AbstractAMADataHandler $dbToUse object used to run the queries. If null, use 'this'
      * @throws BadgesException
      * @return array
      */
-    public function findBy($className, array $whereArr = null, array $orderByArr = null, Abstract_AMA_DataHandler $dbToUse = null)
+    public function findBy($className, array $whereArr = null, array $orderByArr = null, AbstractAMADataHandler $dbToUse = null)
     {
         if (
             stripos($className, '\\') !== 0 &&
@@ -384,7 +406,7 @@ class AMABadgesDataHandler extends AMA_DataHandler
         }
 
         $result = $dbToUse->getAllPrepared($sql, (!is_null($whereArr) && count($whereArr) > 0) ? array_values($whereArr) : [], AMA_FETCH_ASSOC);
-        if (AMA_DB::isError($result)) {
+        if (AMADB::isError($result)) {
             throw new BadgesException($result->getMessage(), (int)$result->getCode());
         } else {
             $retArr = array_map(function ($el) use ($className, $dbToUse) {
@@ -395,7 +417,7 @@ class AMABadgesDataHandler extends AMA_DataHandler
                 foreach ($joined as $joinKey) {
                     $sql = sprintf("SELECT `%s` FROM `%s` WHERE `%s`=?", $joinKey, $retObj::table, $retObj::key);
                     $res = $dbToUse->getAllPrepared($sql, $retObj->{$retObj::GETTERPREFIX . ucfirst($retObj::key)}(), AMA_FETCH_ASSOC);
-                    if (!AMA_DB::isError($res)) {
+                    if (!AMADB::isError($res)) {
                         foreach ($res as $row) {
                             $retObj->{$retObj::ADDERPREFIX . ucfirst($joinKey)}($row[$joinKey], $dbToUse);
                         }
@@ -412,10 +434,10 @@ class AMABadgesDataHandler extends AMA_DataHandler
      *
      * @param string $className
      * @param array $orderBy
-     * @param Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
+     * @param AbstractAMADataHandler $dbToUse object used to run the queries. If null, use 'this'
      * @return array
      */
-    public function findAll($className, array $orderBy = null, Abstract_AMA_DataHandler $dbToUse = null)
+    public function findAll($className, array $orderBy = null, AbstractAMADataHandler $dbToUse = null)
     {
         return $this->findBy($className, null, $orderBy, $dbToUse);
     }

@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * ADA notify badges widget
  *
@@ -84,8 +90,8 @@ try {
             throw new \Exception(translateFN('Nessun fornitore di servizi &egrave; stato configurato'));
         }
     } elseif (isset($courseId)) {
-        $testerInfo = $GLOBALS['common_dh']->get_tester_info_from_id_course($courseId);
-        if (!AMA_DB::isError($testerInfo) && is_array($testerInfo) && isset($testerInfo['puntatore'])) {
+        $testerInfo = $GLOBALS['common_dh']->getTesterInfoFromIdCourse($courseId);
+        if (!AMADB::isError($testerInfo) && is_array($testerInfo) && isset($testerInfo['puntatore'])) {
             $testerName = $testerInfo['puntatore'];
         }
     } // end if (!MULTIPROVIDER)
@@ -108,11 +114,11 @@ try {
 
         $rewardsList = $bdh->findBy('RewardedBadge', $findByArr);
         $outputArr = [];
-        if (!\AMA_DB::isError($rewardsList) && is_array($rewardsList) && count($rewardsList) > 0) {
+        if (!\AMADB::isError($rewardsList) && is_array($rewardsList) && count($rewardsList) > 0) {
             /** @var RewardedBadge  $reward */
             foreach ($rewardsList as $reward) {
-                $badge = $bdh->findBy('Badge', [ 'uuid' => $reward->getBadge_uuid() ]);
-                if (!AMA_DB::isError($badge) && is_array($badge) && count($badge) === 1) {
+                $badge = $bdh->findBy('Badge', [ 'uuid' => $reward->getBadgeUuid() ]);
+                if (!AMADB::isError($badge) && is_array($badge) && count($badge) === 1) {
                     /** @var Badge $badge */
                     $badge = reset($badge);
                     $div = CDOMElement::create('div', 'class:ui blue icon floating message,id:' . $reward->getUuid());

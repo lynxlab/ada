@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAGenericUser;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * TUTOR.
  *
@@ -26,13 +46,13 @@ use Lynxlab\ADA\Main\Output\PdfClass;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
+use function Lynxlab\ADA\Main\AMA\DBRead\readNodeFromDB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
-use function Lynxlab\ADA\Tutor\Functions\get_courses_tutorFN;
-use function Lynxlab\ADA\Tutor\Functions\get_student_coursesFN;
-use function Lynxlab\ADA\Tutor\Functions\get_student_dataFN;
+use function Lynxlab\ADA\Tutor\Functions\getCoursesTutorFN;
+use function Lynxlab\ADA\Tutor\Functions\getStudentCoursesFN;
+use function Lynxlab\ADA\Tutor\Functions\getStudentDataFN;
 
 /**
  * Base config file
@@ -119,8 +139,8 @@ switch ($op) {
     case 'tutor':
         $help = '';
         $fieldsAr = ['nome','cognome','username'];
-        $tutorsAr = $dh->get_tutors_list($fieldsAr);
-        if (!AMA_DB::isError($tutorsAr) && is_array($tutorsAr) && count($tutorsAr) > 0) {
+        $tutorsAr = $dh->getTutorsList($fieldsAr);
+        if (!AMADB::isError($tutorsAr) && is_array($tutorsAr) && count($tutorsAr) > 0) {
             $tableDataAr = [];
             $imgDetails = CDOMElement::create('img', 'src:' . HTTP_ROOT_DIR . '/layout/' . $_SESSION['sess_template_family'] . '/img/details_open.png');
             $imgDetails->setAttribute('title', translateFN('visualizza/nasconde i dettagli del tutor'));
@@ -134,14 +154,14 @@ switch ($op) {
                 $imgDetails->setAttribute('onclick', "toggleTutorDetails(" . $aTutor[0] . ",this);");
                 // received messages
                 $receivedMessages = 0;
-                $msgs_ha = $mh->get_messages($aTutor[0], ADA_MSG_SIMPLE);
-                if (!AMA_DataHandler::isError($msgs_ha)) {
+                $msgs_ha = $mh->getMessages($aTutor[0], ADA_MSG_SIMPLE);
+                if (!AMADataHandler::isError($msgs_ha)) {
                     $receivedMessages = count($msgs_ha);
                 }
                 // sent messages
                 $sentMessages = 0;
-                $msgs_ha = $mh->get_sent_messages($aTutor[0], ADA_MSG_SIMPLE);
-                if (!AMA_DataHandler::isError($msgs_ha)) {
+                $msgs_ha = $mh->getSentMessages($aTutor[0], ADA_MSG_SIMPLE);
+                if (!AMADataHandler::isError($msgs_ha)) {
                     $sentMessages = count($msgs_ha);
                 }
                 $tableDataAr[] = array_merge([$imgDetails->getHtml()], $aTutor, [$receivedMessages,$sentMessages]);
@@ -162,10 +182,10 @@ switch ($op) {
     case 'student_level':
         $studenti_ar = [$id_student];
         $info_course = $dh->get_course($id_course);
-        if (AMA_DataHandler::isError($info_course)) {
+        if (AMADataHandler::isError($info_course)) {
         } else {
-            $updated = $dh->set_student_level($id_instance, $studenti_ar, $level);
-            if (AMA_DataHandler::isError($updated)) {
+            $updated = $dh->setStudentLevel($id_instance, $studenti_ar, $level);
+            if (AMADataHandler::isError($updated)) {
                 // GESTIRE ERRORE.
             } else {
                 header('Location: tutor.php?op=student&id_instance=' . $id_instance . '&id_course=' . $id_course . '&mode=update');
@@ -176,8 +196,8 @@ switch ($op) {
     case 'student':
     case 'class_report': // Show the students subscribed in selected course and a report
         if (!isset($id_course)) {
-            $id_course = $dh->get_course_id_for_course_instance($id_instance);
-            if (AMA_DataHandler::isError($id_course)) {
+            $id_course = $dh->getCourseIdForCourseInstance($id_instance);
+            if (AMADataHandler::isError($id_course)) {
                 $id_course = 0;
             }
         }
@@ -187,7 +207,7 @@ switch ($op) {
         if (!isset($order)) {
             $order = null;
         }
-        $courses_student = get_student_coursesFN($id_instance, $id_course, $order, "HTML", $speed_mode);
+        $courses_student = getStudentCoursesFN($id_instance, $id_course, $order, "HTML", $speed_mode);
 
         if (!is_null($courses_student)) {
             if (isset($courses_student['report_generation_date']) && !is_null($courses_student['report_generation_date'])) {
@@ -224,7 +244,7 @@ switch ($op) {
         }
 
         $info_course = $dh->get_course($id_course); // Get title course
-        if (AMA_DataHandler::isError($info_course)) {
+        if (AMADataHandler::isError($info_course)) {
             $msg = $info_course->getMessage();
             $data = $msg;
         } else {
@@ -242,8 +262,8 @@ switch ($op) {
 
             $chat_link = "<a href=\"$http_root_dir/comunica/chat.php\" target=_blank>" . translateFN('chat di classe') . '</a>';
 
-            $instance_course_ha = $dh->course_instance_get($id_instance); // Get the instance courses data
-            $start_date =  AMA_DataHandler::ts_to_date($instance_course_ha['data_inizio'], ADA_DATE_FORMAT);
+            $instance_course_ha = $dh->courseInstanceGet($id_instance); // Get the instance courses data
+            $start_date =  AMADataHandler::tsToDate($instance_course_ha['data_inizio'], ADA_DATE_FORMAT);
 
             $help = translateFN("Studenti del corso") . " <strong>$course_title</strong>  - " .
                     translateFN("Classe") . " " . $instance_course_ha['title'] . " (" .
@@ -278,34 +298,34 @@ switch ($op) {
 
     case 'student_notes':   // nodi inseriti dallo studente
     case 'student_notes_export':
-        $student_dataHa = $dh->get_user_info($id_student);
+        $student_dataHa = $dh->getUserInfo($id_student);
         $studente_username = $student_dataHa['username'];
         //          if (isset($id_course)){    // un corso (e un'istanza...) alla volta ?
         $sub_course_dataHa = [];
-        $today_date = $dh->date_to_ts("now");
+        $today_date = $dh->dateToTs("now");
         $clause = "data_inizio <= '$today_date' AND data_inizio != '0'";
         $field_ar = ['id_corso','data_inizio','data_inizio_previsto'];
-        $all_instance = $dh->course_instance_find_list($field_ar, $clause);
+        $all_instance = $dh->courseInstanceFindList($field_ar, $clause);
         if (is_array($all_instance)) {
             $added_nodesHa = [];
             foreach ($all_instance as $one_instance) {
                 //mydebug(__LINE__,__FILE__,$one_instance);
                 $id_course_instance = $one_instance[0];
                 //check on tutor:
-                //           $tutorId = $dh->course_instance_tutor_get($id_course_instance);
+                //           $tutorId = $dh->courseInstanceTutorGet($id_course_instance);
                 //           if (($tutorId == $sess_id_user)  AND ($id_course_instance == $sess_id_course_instance))
-                // warning: 1 tutor per class ! ELSE: $tutored_instancesAr = $dh->course_tutor_instance_get($sess_id_user); etc
+                // warning: 1 tutor per class ! ELSE: $tutored_instancesAr = $dh->courseTutorInstanceGet($sess_id_user); etc
                 // check only on course_instance
                 if ($id_course_instance == $id_instance) {
                     $id_course = $one_instance[1];
                     $data_inizio = $one_instance[2];
                     $data_previsto = $one_instance[3];
-                    $sub_courses = $dh->get_subscription($id_student, $id_instance);
+                    $sub_courses = $dh->getSubscription($id_student, $id_instance);
                     //mydebug(__LINE__,__FILE__,$sub_courses);
                     if ($sub_courses['tipo'] == 2) {
                         $out_fields_ar = ['nome','titolo','id_istanza','data_creazione','testo'];
                         $clause = "tipo = '2' AND id_utente = '$id_student'";
-                        $nodes = $dh->find_course_nodes_list($out_fields_ar, $clause, $id_course);
+                        $nodes = $dh->findCourseNodesList($out_fields_ar, $clause, $id_course);
                         $course = $dh->get_course($id_course);
                         $course_title = $course['titolo'];
                         $node_index = translateFN("Nodi aggiunti dallo studente:") . $studente_username . "\n\n";
@@ -371,7 +391,7 @@ switch ($op) {
         //$sess_id_course_instance = $id_instance;
         if (isset($id_course)) {
             $info_course = $dh->get_course($id_course); // Get title course
-            if (AMA_DataHandler::isError($info_course)) {
+            if (AMADataHandler::isError($info_course)) {
                 $msg = $info_course->getMessage();
             } else {
                 $course_title = $info_course['titolo'];
@@ -383,13 +403,13 @@ switch ($op) {
         // $online_users_listing_mode = 2  : username and email of users
 
         $online_users_listing_mode = 2;
-        $online_users = ADALoggableUser::get_online_usersFN($id_instance, $online_users_listing_mode);
+        $online_users = ADALoggableUser::getOnlineUsersFN($id_instance, $online_users_listing_mode);
 
         $chat_link = '<a href="' . HTTP_ROOT_DIR
                    . '/comunica/adaChat.php target=_blank>'
                    . translateFN('chat') . '</a>';
 
-        $data = get_student_dataFN($id_student, $id_instance);
+        $data = getStudentDataFN($id_student, $id_instance);
         $data = preg_replace('/class="/', 'class="' . ADA_SEMANTICUI_TABLECLASS . ' ', $data, 1); // replace first occurence of class
 
         $status = translateFN('caratteristiche dello studente');
@@ -413,23 +433,23 @@ switch ($op) {
         }
 
         // get needed data
-        $courses_student = get_student_coursesFN($id_instance, $id_course, '', ($type == 'xls') ? 'HTML' : 'FILE', $speed_mode);
+        $courses_student = getStudentCoursesFN($id_instance, $id_course, '', ($type == 'xls') ? 'HTML' : 'FILE', $speed_mode);
 
         // build the caption
         // 0. Get title course
         $info_course = $dh->get_course($id_course);
-        if (AMA_DB::isError($info_course)) {
+        if (AMADB::isError($info_course)) {
             $course_title = '';
         } else {
             $course_title =  $info_course['titolo'];
         }
         // 1. Get the instance courses data
-        $instance_course_ha = $dh->course_instance_get($id_instance);
-        if (AMA_DB::isError($instance_course_ha)) {
+        $instance_course_ha = $dh->courseInstanceGet($id_instance);
+        if (AMADB::isError($instance_course_ha)) {
             $start_date = '';
             $instance_title = '';
         } else {
-            $start_date =  AMA_DataHandler::ts_to_date($instance_course_ha['data_inizio'], ADA_DATE_FORMAT);
+            $start_date =  AMADataHandler::tsToDate($instance_course_ha['data_inizio'], ADA_DATE_FORMAT);
             $instance_title = $instance_course_ha['title'];
         }
 
@@ -500,13 +520,13 @@ switch ($op) {
             $data['status'] = translateFN('lista dei corsi tutorati');
         }
         $isSuper = (isset($userObj) && $userObj instanceof ADAPractitioner && $userObj->isSuper());
-        $data = get_courses_tutorFN($_SESSION['sess_id_user'], $isSuper);
+        $data = getCoursesTutorFN($_SESSION['sess_id_user'], $isSuper);
         $help = translateFN("Da qui il Tutor può visualizzare l'elenco dei corsi di cui è attualmente tutor.");
         $online_users_listing_mode = 2;
         if (!isset($id_course_instance)) {
             $id_course_instance = null;
         }
-        $online_users = ADALoggableUser::get_online_usersFN($id_course_instance, $online_users_listing_mode);
+        $online_users = ADALoggableUser::getOnlineUsersFN($id_course_instance, $online_users_listing_mode);
 
 
         $chat_link = "<a href=\"../comunica/adaChat.php\" target=_blank>" . translateFN("chat") . "</a>";
@@ -516,11 +536,11 @@ switch ($op) {
 
 
 $online_users_listing_mode = 2;
-//$online_users = ADAGenericUser::get_online_usersFN($id_course_instance, $online_users_listing_mode);
+//$online_users = ADAGenericUser::getOnlineUsersFN($id_course_instance, $online_users_listing_mode);
 if (!isset($id_course_instance)) {
     $id_course_instance = null;
 }
-$online_users = ADALoggableUser::get_online_usersFN($id_course_instance, $online_users_listing_mode);
+$online_users = ADALoggableUser::getOnlineUsersFN($id_course_instance, $online_users_listing_mode);
 
 if (!empty($id_instance)) {
     $courseInstanceObj = new CourseInstance($id_instance);
@@ -535,10 +555,10 @@ if (!empty($id_instance)) {
         if (!isset($node)) {
             $node = null;
         }
-        $nodeObj = read_node_from_DB($node);
+        $nodeObj = readNodeFromDB($node);
     }
 
-    if (!ADA_Error::isError($nodeObj) and isset($courseObj->id)) {
+    if (!ADAError::isError($nodeObj) and isset($courseObj->id)) {
         $_SESSION['sess_id_course'] = $courseObj->id;
         $node_path = $nodeObj->findPathFN();
     }

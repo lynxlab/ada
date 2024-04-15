@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Media;
+
+use Lynxlab\ADA\Main\Forms\CourseModelForm;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class CourseModelForm was declared with namespace Lynxlab\ADA\Main\Forms. //
+
 /**
  * CourseModelForm file
  *

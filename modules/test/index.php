@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Module\Test\TestTest;
+
+use Lynxlab\ADA\Module\Test\SurveyTest;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\History\NavigationHistory;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * TEST.
  *
@@ -75,7 +93,7 @@ if (!AMATestDataHandler::isError($test)) {
     if (
         $userObj->getType() == AMA_TYPE_STUDENT && isset($sess_id_course_instance) && intval($sess_id_course_instance) > 0 &&
             in_array(
-                $userObj->get_student_status($userObj->getId(), $sess_id_course_instance),
+                $userObj->getStudentStatus($userObj->getId(), $sess_id_course_instance),
                 [ADA_STATUS_COMPLETED, ADA_STATUS_TERMINATED]
             )
     ) {
@@ -95,8 +113,8 @@ if (!AMATestDataHandler::isError($test)) {
             /**
              * else redirect to the parent of $test->id_nodo_riferimento
              */
-            $nodeInfo = $GLOBALS['dh']->get_node_info($test->id_nodo_riferimento);
-            if (!AMA_DB::isError($nodeInfo) && isset($nodeInfo['parent_id']) && strlen($nodeInfo['parent_id']) > 0) {
+            $nodeInfo = $GLOBALS['dh']->getNodeInfo($test->id_nodo_riferimento);
+            if (!AMADB::isError($nodeInfo) && isset($nodeInfo['parent_id']) && strlen($nodeInfo['parent_id']) > 0) {
                 $id_node = $nodeInfo['parent_id'];
             }
         }
@@ -187,10 +205,10 @@ if (isset($other_node_data['private_notes'])) {
     $content_dataAr['personal'] = $other_node_data['private_notes'];
 }
 
-if ($reg_enabled && isset($add_bookmark)) {
-    $content_dataAr['add_bookmark'] = $add_bookmark;
+if ($reg_enabled && isset($addBookmark)) {
+    $content_dataAr['addBookmark'] = $addBookmark;
 } else {
-    $content_dataAr['add_bookmark'] = "";
+    $content_dataAr['addBookmark'] = "";
 }
 
 $content_dataAr['bookmark'] = $bookmark ?? '';

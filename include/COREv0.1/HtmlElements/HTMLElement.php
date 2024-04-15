@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\CORE\HtmlElements\Tform;
+
+use Lynxlab\ADA\CORE\HtmlElements\Table;
+
+use Lynxlab\ADA\CORE\HtmlElements\HTMLElement;
+
+use Lynxlab\ADA\CORE\HtmlElements\Form;
+
+// Trigger: ClassWithNameSpace. The class HTMLElement was declared with namespace Lynxlab\ADA\CORE\HtmlElements. //
+
 /**
  * Html_element, Table, Ilist, Form and Tform classes
  *
@@ -19,21 +29,21 @@ class HTMLElement
     public $data;
     public $error;
 
-    public function print_element()
+    public function printElement()
     {
         if (empty($this->error) and (!empty($this->data))) {
             print $this->data;
         }
     }
 
-    public function get_element()
+    public function getElement()
     {
         if (empty($this->error) and (!empty($this->data))) {
             return $this->data;
         }
     }
 
-    public function get_error()
+    public function getError()
     {
         if (!empty($this->error)) {
             return $this->error;

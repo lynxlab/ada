@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\Layout;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\Course\AbstractCourseInstance;
+
+use Lynxlab\ADA\CORE\HtmlElements\Table;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class AbstractCourseInstance was declared with namespace Lynxlab\ADA\Main\Course. //
+
 /**
  * AbstractCourseInstance class
  *
@@ -47,8 +67,8 @@ abstract class AbstractCourseInstance
         $dh = $GLOBALS['dh'];
 
         // constructor
-        $dataHa = $dh->course_instance_get($id_course_instance, true);
-        if (AMA_DataHandler::isError($dataHa) || (!is_array($dataHa))) {
+        $dataHa = $dh->courseInstanceGet($id_course_instance, true);
+        if (AMADataHandler::isError($dataHa) || (!is_array($dataHa))) {
             $this->full = 0;
         } else {
             if (!empty($dataHa['id_corso'])) {
@@ -65,7 +85,7 @@ abstract class AbstractCourseInstance
         }
     }
 
-    public function class_main_indexFN($id_toc = '', $depth = 1, $id_profile = AMA_TYPE_STUDENT, $order = 'struct', $expand = 1)
+    public function classMainIndexFN($id_toc = '', $depth = 1, $id_profile = AMA_TYPE_STUDENT, $order = 'struct', $expand = 1)
     {
         // indice di classe
         //  this version is intended for  tutor  or author use only
@@ -87,19 +107,19 @@ abstract class AbstractCourseInstance
                 $index .= "<a href=view.php?id_node=" . $id_toc . ">" . translateFN("Principale") . "</a>";
             }
         }
-        $index .= $this->tabled_class_explode_nodesFN(1, $id_toc, $id_profile, $order, $expand);
+        $index .= $this->tabledClassExplodeNodesFN(1, $id_toc, $id_profile, $order, $expand);
         $index .= "</p>";
         return $index;
     }
 
-    public function tabled_class_explode_nodesFN($depth, $id_parent, $id_profile, $order, $expand = 1)
+    public function tabledClassExplodeNodesFN($depth, $id_parent, $id_profile, $order, $expand = 1)
     {
         $lObj = new Ilist();
         if ($order == 'alfa') {
-            $data =  $this->class_explode_nodes_iterativeFN($depth, $id_parent, $id_profile, $order, $expand);
+            $data =  $this->classExplodeNodesIterativeFN($depth, $id_parent, $id_profile, $order, $expand);
             $lObj->initList('1', '1', 1);
         } else {    // = 'r'
-            $data =  $this->class_explode_nodesFN($depth, $id_parent, $id_profile, $order, $expand);
+            $data =  $this->classExplodeNodesFN($depth, $id_parent, $id_profile, $order, $expand);
             $lObj->initList(0, '', 1);
         }
         $lObj->setList($data);
@@ -108,7 +128,7 @@ abstract class AbstractCourseInstance
         return $tabled_index;
     }
 
-    public function class_explode_nodes_iterativeFN($depth, $id_parent, $id_profile, $order, $expand = 1)
+    public function classExplodeNodesIterativeFN($depth, $id_parent, $id_profile, $order, $expand = 1)
     {
         //  this version is intended for  tutor  or author use only
         // returns an array
@@ -129,18 +149,18 @@ abstract class AbstractCourseInstance
         $indexAr = [];
         $out_fields_ar = ['nome', 'tipo'];
         $clause = "";
-        $childrenAr = $dh->find_course_nodes_list($out_fields_ar, $clause, $sess_id_course);
+        $childrenAr = $dh->findCourseNodesList($out_fields_ar, $clause, $sess_id_course);
         $childrenAr = masort($childrenAr, 1); // il campo 1 �il nome del nodo
         foreach ($childrenAr as $nodeHa) {
             $index_item = "";
             $id_child = $nodeHa[0];
             if (!empty($id_child)) {
                 $childnumber++;
-                $child_dataHa = $dh->get_node_info($id_child);
+                $child_dataHa = $dh->getNodeInfo($id_child);
                 $node_instance = $child_dataHa['instance'];
                 $id_node_parent = $child_dataHa['parent_id'];
                 $node_keywords = $child_dataHa['title'];
-                $parent_dataHa = $dh->get_node_info($id_node_parent);
+                $parent_dataHa = $dh->getNodeInfo($id_node_parent);
                 if ((!AMA_datahandler::isError($parent_dataHa)) && ($parent_dataHa['type'] >= ADA_STANDARD_EXERCISE_TYPE)) {
                     $node_type = 'answer';
                 } else {
@@ -154,7 +174,7 @@ abstract class AbstractCourseInstance
                         $alt = translateFN("Nodo inferiore");
                         $icon = "_nodo.png";
                         if (!isset($hide_visits) or $hide_visits == 0) {
-                            $visit_count  = ADAUser::is_visited_by_userFN($id_child, $sess_id_course_instance, $sess_id_user);
+                            $visit_count  = ADAUser::isVisitedByUserFN($id_child, $sess_id_course_instance, $sess_id_user);
                         }
                         if (empty($visit_count)) {
                             $index_item = "<img name=\"nodo\" alt=\"$alt\" src=\"img/$icon\">&nbsp;<b><a href=view.php?id_node=" . $id_child . ">" . $child_dataHa['name'] . "</a></b>\n";
@@ -162,7 +182,7 @@ abstract class AbstractCourseInstance
                             $index_item = "<img name=\"nodo\" alt=\"$alt\" src=\"img/$icon\">&nbsp;<a href=view.php?id_node=" . $id_child . ">" . $child_dataHa['name'] . "</a> ($visit_count)\n";
                         }
                         // has user bookmarked this node?
-                        $id_bk = Bookmark::is_node_bookmarkedFN($sess_id_user, $id_child);
+                        $id_bk = Bookmark::isNodeBookmarkedFN($sess_id_user, $id_child);
                         if ($id_bk) {
                             $index_item .= "&nbsp;<a href=\"bookmarks.php?op=zoom&id_bk=$id_bk\"><img name=\"bookmark\" alt=\"bookmark\" src=\"img/check.png\"  border=\"0\"></a>";
                         }
@@ -172,7 +192,7 @@ abstract class AbstractCourseInstance
                         $alt = translateFN("Approfondimento");
                         $icon = "_gruppo.png";
                         if (!isset($hide_visits) or $hide_visits == 0) {
-                            $visit_count  = ADAUser::is_visited_by_userFN($id_child, $sess_id_course_instance, $sess_id_user);
+                            $visit_count  = ADAUser::isVisitedByUserFN($id_child, $sess_id_course_instance, $sess_id_user);
                         }
                         if (empty($visit_count)) {
                             $index_item .= "<img name=\"nodo\" alt=$alt src=\"img/$icon\">&nbsp;<b><a href=view.php?id_node=" . $id_child . ">" . $child_dataHa['name'] . "</a></b>\n";
@@ -187,7 +207,7 @@ abstract class AbstractCourseInstance
                         }
 
                         // has user bookmarked this node?
-                        $id_bk = Bookmark::is_node_bookmarkedFN($sess_id_user, $id_child);
+                        $id_bk = Bookmark::isNodeBookmarkedFN($sess_id_user, $id_child);
                         if ($id_bk) {
                             $index_item .= "<a href=\"bookmarks.php?op=zoom&id_bk=$id_bk\"><img name=\"bookmark\" alt=\"bookmark\" src=\"img/check.png\" border=\"0\"></a>&nbsp;";
                         }
@@ -208,7 +228,7 @@ abstract class AbstractCourseInstance
         return $indexAr;
     }
 
-    public function class_explode_nodesFN($depth, $id_parent, $id_profile, $order, $expand)
+    public function classExplodeNodesFN($depth, $id_parent, $id_profile, $order, $expand)
     {
         //  this version is intended for  tutor  or author use only
         // returns an array
@@ -226,7 +246,7 @@ abstract class AbstractCourseInstance
         // recursive
 
         if (!empty($expand)  && ($expand > $depth)) {
-            $childrenAr = $dh->get_node_children($id_parent);
+            $childrenAr = $dh->getNodeChildren($id_parent);
             $indexAr = [];
             if (is_array($childrenAr)) {
                 $index_item = "";
@@ -237,7 +257,7 @@ abstract class AbstractCourseInstance
                     if (!empty($id_child)) {
                         $childnumber++;
                         $visit_count = 0;
-                        $child_dataHa = $dh->get_node_info($id_child);
+                        $child_dataHa = $dh->getNodeInfo($id_child);
                         $node_type = $child_dataHa['type'];
                         switch ($node_type) {
                             case ADA_LEAF_TYPE:    //node
@@ -249,13 +269,13 @@ abstract class AbstractCourseInstance
                                         break;
                                     case AMA_TYPE_TUTOR:
                                         if (!isset($hide_visits) or $hide_visits == 0) {
-                                            $visit_count  = ADAUser::is_visited_by_classFN($id_child, $sess_id_course_instance, $sess_id_course);
+                                            $visit_count  = ADAUser::isVisitedByClassFN($id_child, $sess_id_course_instance, $sess_id_course);
                                         }
                                         break;
 
                                     case AMA_TYPE_AUTHOR:
                                         if (!isset($hide_visits) or $hide_visits == 0) {
-                                            $visit_count  = ADAUser::is_visitedFN($id_child);
+                                            $visit_count  = ADAUser::isVisitedFN($id_child);
                                         }
                                         // no break
                                     case AMA_TYPE_ADMIN:
@@ -277,7 +297,7 @@ abstract class AbstractCourseInstance
                                 }
 
                                 // is someone else there?
-                                $is_someone = ADAUser::is_someone_thereFN($sess_id_course_instance, $id_child);
+                                $is_someone = ADAUser::isSomeoneThereFN($sess_id_course_instance, $id_child);
                                 if ($is_someone >= 1) {
                                     $index_item .= "<img  name=\"altri\" alt=\"altri\" src=\"img/_student.png\">";
                                 }
@@ -290,12 +310,12 @@ abstract class AbstractCourseInstance
                                 switch ($id_profile) {
                                     case AMA_TYPE_TUTOR:
                                         if (!isset($hide_visits) or $hide_visits == 0) {
-                                            $visit_count  = ADAUser::is_visited_by_classFN($id_child, $sess_id_course_instance, $sess_id_course);
+                                            $visit_count  = ADAUser::isVisitedByClassFN($id_child, $sess_id_course_instance, $sess_id_course);
                                         }
                                         break;
                                     case AMA_TYPE_AUTHOR:
                                         if (!isset($hide_visits) or $hide_visits == 0) {
-                                            $visit_count  = ADAUser::is_visitedFN($id_child);
+                                            $visit_count  = ADAUser::isVisitedFN($id_child);
                                         }
                                 } // end switch $id_profile
 
@@ -313,12 +333,12 @@ abstract class AbstractCourseInstance
                                 }
 
                                 // is someone else there?
-                                $is_someone = ADAUser::is_someone_thereFN($sess_id_course_instance, $id_child);
+                                $is_someone = ADAUser::isSomeoneThereFN($sess_id_course_instance, $id_child);
                                 if ($is_someone >= 1) {
                                     $index_item .= "<img  name=\"altri\" alt=\"altri\" src=\"img/_student.png\">";
                                 }
 
-                                $sub_indexAr = $this->class_explode_nodesFN($depth, $id_child, $id_profile, $order, $expand);
+                                $sub_indexAr = $this->classExplodeNodesFN($depth, $id_child, $id_profile, $order, $expand);
 
                                 break;
                             case ADA_NOTE_TYPE:    // note added by users
@@ -366,7 +386,7 @@ abstract class AbstractCourseInstance
         }
     }
 
-    public function forum_main_indexFN($id_toc = '', $depth = 1, $id_profile = AMA_TYPE_STUDENT, $order = 'chrono', $id_student = -1, $mode = 'standard')
+    public function forumMainIndexFN($id_toc = '', $depth = 1, $id_profile = AMA_TYPE_STUDENT, $order = 'chrono', $id_student = -1, $mode = 'standard')
     {
         if ($id_student == -1) {
             return '';
@@ -394,31 +414,31 @@ abstract class AbstractCourseInstance
 
         $out_fields_ar = ['data_creazione', 'tipo'];
         $clause = "id_istanza =  $sess_id_course_instance AND tipo = " . ADA_NOTE_TYPE;
-        $childrenAr = $dh->find_course_nodes_list($out_fields_ar, $clause, $sess_id_course);
+        $childrenAr = $dh->findCourseNodesList($out_fields_ar, $clause, $sess_id_course);
         $note_count = count($childrenAr);
         $index = $note_count . translateFN(" note attualmente presenti nel Forum di classe.");
         $index .= "<p>";
         if ($order == 'struct') {
             // $index .= "<img name=\"nodo\" alt=$alt src=\"img/$icon\"> <a href=view.php?id_node=".$id_toc.">".translateFN("Principale")."</a>";
-            $index .= $this->tabled_forum_explode_nodesFN(1, $id_toc, $id_profile, $order, $id_student, $mode);
+            $index .= $this->tabledForumExplodeNodesFN(1, $id_toc, $id_profile, $order, $id_student, $mode);
         } else { //order=chrono
-            $index .= $this->tabled_forum_explode_nodesFN(1, $id_toc, $id_profile, $order, $id_student, $mode);
+            $index .= $this->tabledForumExplodeNodesFN(1, $id_toc, $id_profile, $order, $id_student, $mode);
         }
         $index .= "</p>";
         return $index;
     }
 
 
-    public function tabled_forum_explode_nodesFN($depth, $id_parent, $id_profile, $order, $id_student, $mode = 'standard')
+    public function tabledForumExplodeNodesFN($depth, $id_parent, $id_profile, $order, $id_student, $mode = 'standard')
     {
         // returns an html list
         $lObj = new Ilist();
 
         if ($order == 'chrono') {
-            $data =  $this->forum_explode_nodes_iterativeFN($depth, $id_parent, $id_profile, $order, $id_student, $mode);
+            $data =  $this->forumExplodeNodesIterativeFN($depth, $id_parent, $id_profile, $order, $id_student, $mode);
             $lObj->initList('1', '1', 1);
         } else {    // = 'struct'
-            $data =  $this->forum_explode_nodesFN($depth, $id_parent, $id_profile, $order, $id_student, $mode);
+            $data =  $this->forumExplodeNodesFN($depth, $id_parent, $id_profile, $order, $id_student, $mode);
             $lObj->initList(0, '', 1);
         }
         $lObj->setList($data);
@@ -426,7 +446,7 @@ abstract class AbstractCourseInstance
         return $tabled_index;
     }
 
-    public function forum_explode_nodes_iterativeFN($depth, $id_parent, $id_profile, $order, $id_student, $mode = 'standard')
+    public function forumExplodeNodesIterativeFN($depth, $id_parent, $id_profile, $order, $id_student, $mode = 'standard')
     {
         // only notes are showed !
         // returns an array
@@ -448,7 +468,7 @@ abstract class AbstractCourseInstance
         $indexAr = [];
         $out_fields_ar = ['data_creazione', 'tipo'];
         $clause = "id_istanza =  $sess_id_course_instance";
-        $childrenAr = $dh->find_course_nodes_list($out_fields_ar, $clause, $sess_id_course);
+        $childrenAr = $dh->findCourseNodesList($out_fields_ar, $clause, $sess_id_course);
         // $debug=1; mydebug(__LINE__,__FILE__,$childrenAr);
         $childrenAr = masort($childrenAr, 1, -1);
         foreach ($childrenAr as $nodeHa) {
@@ -456,7 +476,7 @@ abstract class AbstractCourseInstance
             $id_child = $nodeHa[0];
             if (!empty($id_child)) {
                 $childnumber++;
-                $child_dataHa = $dh->get_node_info($id_child);
+                $child_dataHa = $dh->getNodeInfo($id_child);
                 $node_type = $child_dataHa['type'];
                 $node_instance = $child_dataHa['instance'];
                 switch ($node_type) {
@@ -473,7 +493,7 @@ abstract class AbstractCourseInstance
                         $autoreHa = $child_dataHa['author'];
                         $autore =  $autoreHa['id'];
                         $is_note_visibile = 0;
-                        $class_tutor_id = $dh->course_instance_tutor_get($sess_id_course_instance);
+                        $class_tutor_id = $dh->courseInstanceTutorGet($sess_id_course_instance);
                         $expand_link = "<a href=\"main_index.php?op=forum&id_course=$sess_id_course&id_course_instance=$sess_id_course_instance&id_node_exp=$id_child\"><img src=\"img/_expand.png\" border=0></a>&nbsp;";
                         $contract_link = "<a href=\"main_index.php?op=forum&id_course=$sess_id_course&id_course_instance=$sess_id_course_instance\"><img src=\"img/_contract.png\" border=0></a>&nbsp;";
 
@@ -493,8 +513,8 @@ abstract class AbstractCourseInstance
                                 $icon = "_nota_pers.png";
                                 $author_name = "<strong>" . $autoreHa['username'] . "</strong>";
                             } else {
-                                //   $author_dataHa =  $dh->get_subscription($autore, $sess_id_course_instance);
-                                //   if (!AMA_DB::isError($author_dataHa) AND (!VIEW_PRIVATE_NOTES_ONLY)){
+                                //   $author_dataHa =  $dh->getSubscription($autore, $sess_id_course_instance);
+                                //   if (!AMADB::isError($author_dataHa) AND (!VIEW_PRIVATE_NOTES_ONLY)){
                                 $is_note_visibile = 1;
                                 $alt = translateFN("Nota di un altro studente");
                                 $icon = "_nota.png";
@@ -503,7 +523,7 @@ abstract class AbstractCourseInstance
                         }
                         if ($is_note_visibile) {
                             if ((($id_profile == AMA_TYPE_TUTOR)  or ($id_profile == AMA_TYPE_STUDENT)) and (!isset($hide_visits) or $hide_visits == 0)) {
-                                $visit_count  = "(" . ADAUser::is_visited_by_classFN($id_child, $sess_id_course_instance, $sess_id_course) . ")";
+                                $visit_count  = "(" . ADAUser::isVisitedByClassFN($id_child, $sess_id_course_instance, $sess_id_course) . ")";
                             } else {
                                 $visit_count = "";
                             }
@@ -535,7 +555,7 @@ abstract class AbstractCourseInstance
                                     }
 
                                     // is someone else there?
-                                    $is_someone = ADAUser::is_someone_thereFN($sess_id_course_instance, $id_child);
+                                    $is_someone = ADAUser::isSomeoneThereFN($sess_id_course_instance, $id_child);
                                     if ($is_someone >= 1) {
                                         if ($with_icons) {
                                             $index_item .= "&nbsp;<img  name=\"altri\" alt=\"altri\" src=\"img/_student.png\">";
@@ -559,7 +579,7 @@ abstract class AbstractCourseInstance
         return $indexAr;
     }
 
-    public function forum_explode_nodesFN($depth, $id_parent, $id_profile, $order, $id_student, $mode = 'standard')
+    public function forumExplodeNodesFN($depth, $id_parent, $id_profile, $order, $id_student, $mode = 'standard')
     {
         // recursive (slow!)
         // only notes are showed
@@ -587,24 +607,24 @@ abstract class AbstractCourseInstance
             $tot_notes = 0;
         }
 
-        $childrenAr = $dh->get_node_children($id_parent, $sess_id_course_instance);
+        $childrenAr = $dh->getNodeChildren($id_parent, $sess_id_course_instance);
 
         if (is_array($childrenAr)) {
             $depth++;
             $childnumber = 0;
-            $class_tutor_id = $dh->course_instance_tutor_get($sess_id_course_instance);
+            $class_tutor_id = $dh->courseInstanceTutorGet($sess_id_course_instance);
             foreach ($childrenAr as $id_child) {
                 if (!empty($id_child)) {
                     $sub_indexAr = "";
                     $index_item = "";
                     $childnumber++;
-                    $child_dataHa = $dh->get_node_info($id_child);
+                    $child_dataHa = $dh->getNodeInfo($id_child);
                     $node_type = $child_dataHa['type'];
                     $node_instance = $child_dataHa['instance'];
                     switch ($node_type) {
                         case ADA_LEAF_TYPE:    //node
                         case ADA_GROUP_TYPE:    //group
-                            $sub_indexAr = $this->forum_explode_nodesFN($depth, $id_child, $id_profile, $order, $id_student);
+                            $sub_indexAr = $this->forumExplodeNodesFN($depth, $id_child, $id_profile, $order, $id_student);
                             break;
                         case ADA_NOTE_TYPE:    // node added by users
                         case ADA_PRIVATE_NOTE_TYPE:
@@ -640,8 +660,8 @@ abstract class AbstractCourseInstance
                    $author_name = "<strong>".$autoreHa['username']."</strong>";
                    }
                    } else {
-                   // $author_dataHa =  $dh->get_subscription($autore, $sess_id_course_instance);
-                   // if ((!AMA_DB::isError($author_dataHa))  AND (!VIEW_PRIVATE_NOTES_ONLY)){
+                   // $author_dataHa =  $dh->getSubscription($autore, $sess_id_course_instance);
+                   // if ((!AMADB::isError($author_dataHa))  AND (!VIEW_PRIVATE_NOTES_ONLY)){
                    if ($node_instance == $sess_id_course_instance) {
                    $is_note_visibile = 1;
                    $alt = translateFN("Nota di un altro studente");
@@ -664,8 +684,8 @@ abstract class AbstractCourseInstance
                                     $node_type == ADA_NOTE_TYPE
                                     && $node_instance == $sess_id_course_instance
                                 ) {
-                                    // $author_dataHa =  $dh->get_subscription($autore, $sess_id_course_instance);
-                                    // if ((!AMA_DB::isError($author_dataHa))  AND (!VIEW_PRIVATE_NOTES_ONLY)){
+                                    // $author_dataHa =  $dh->getSubscription($autore, $sess_id_course_instance);
+                                    // if ((!AMADB::isError($author_dataHa))  AND (!VIEW_PRIVATE_NOTES_ONLY)){
                                     $is_note_visibile = 1;
                                     $icon = "_nota.png";
 
@@ -681,7 +701,7 @@ abstract class AbstractCourseInstance
 
                             if ($is_note_visibile) {
                                 if ((($id_profile == AMA_TYPE_TUTOR) or ($id_profile == AMA_TYPE_STUDENT)) and (!isset($hide_visits) or $hide_visits == 0)) {
-                                    $visit_count  = "(" . ADAUser::is_visited_by_classFN($id_child, $sess_id_course_instance, $sess_id_course) . ")";
+                                    $visit_count  = "(" . ADAUser::isVisitedByClassFN($id_child, $sess_id_course_instance, $sess_id_course) . ")";
                                 } else {
                                     $visit_count = "";
                                 }
@@ -693,7 +713,7 @@ abstract class AbstractCourseInstance
                                 }
 
                                 // is someone else there?
-                                //  TOO SLOW !  $is_someone = User::is_someone_thereFN($sess_id_course_instance,$id_child);
+                                //  TOO SLOW !  $is_someone = User::isSomeoneThereFN($sess_id_course_instance,$id_child);
                                 if ($is_someone >= 1) {
                                     $index_item .= "<img  name=\"altri\" alt=\"altri\" src=\"img/_student.png\">";
                                 } else {
@@ -701,9 +721,9 @@ abstract class AbstractCourseInstance
                                 }
                             }
                             // echo "<br> $tot_notes $id_child $node_type $is_note_visibile";
-                            $children2Ar = $dh->get_node_children($id_child, $sess_id_course_instance);
+                            $children2Ar = $dh->getNodeChildren($id_child, $sess_id_course_instance);
                             if (is_array($children2Ar)) { // there are sub-notes
-                                $sub_indexAr = $this->forum_explode_nodesFN($depth, $id_child, $id_profile, $order, $id_student);
+                                $sub_indexAr = $this->forumExplodeNodesFN($depth, $id_child, $id_profile, $order, $id_student);
                             }
                             break;
                         case ADA_TYPE_STANDARD_EXERCISE: // exercise

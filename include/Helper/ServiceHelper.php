@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Main\Service\Service;
+
+use Lynxlab\ADA\Main\Helper\ViewBaseHelper;
+
+use Lynxlab\ADA\Main\Helper\ServiceHelper;
+
+// Trigger: ClassWithNameSpace. The class ServiceHelper was declared with namespace Lynxlab\ADA\Main\Helper. //
+
 /**
  * AUTHOR FUNCTIONS
  *

@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Main\Node\Media;
+
+use Lynxlab\ADA\Main\Media\VideoPlayer;
+
+use Lynxlab\ADA\Main\Media\MediaViewer;
+
+use Lynxlab\ADA\Main\Media\InternalLinkViewer;
+
+use Lynxlab\ADA\Main\Media\ImageViewer;
+
+use Lynxlab\ADA\Main\Media\ExternalLinkViewer;
+
+use Lynxlab\ADA\Main\Media\DocumentViewer;
+
+use Lynxlab\ADA\Main\Media\AudioPlayer;
+
+// Trigger: ClassWithNameSpace. The class MediaViewer was declared with namespace Lynxlab\ADA\Main\Media. //
+
 /**
  * Media Viewers
  *

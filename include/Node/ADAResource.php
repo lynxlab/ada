@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\Node\Media;
+
+use Lynxlab\ADA\Main\Node\ADAResource;
+
+// Trigger: ClassWithNameSpace. The class ADAResource was declared with namespace Lynxlab\ADA\Main\Node. //
+
 /**
  * Node, Media, Link classes
  *

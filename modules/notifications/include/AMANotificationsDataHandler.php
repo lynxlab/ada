@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Module\Notifications\Notification;
+
+use Lynxlab\ADA\Module\Notifications\EmailQueueItem;
+
+use Lynxlab\ADA\Module\Notifications\AMANotificationsDataHandler;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class AMANotificationsDataHandler was declared with namespace Lynxlab\ADA\Module\Notifications. //
+
 /**
  * @package     notifications module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -69,7 +85,7 @@ class AMANotificationsDataHandler extends AMA_DataHandler
             );
         }
 
-        if (!AMA_DB::isError($result)) {
+        if (!AMADB::isError($result)) {
             if (!$isUpate) {
                 $saveData['notificationId'] = intval($this->getConnection()->lastInsertID());
             }
@@ -114,7 +130,7 @@ class AMANotificationsDataHandler extends AMA_DataHandler
             );
         }
 
-        if (!AMA_DB::isError($result)) {
+        if (!AMADB::isError($result)) {
             if (!$isUpate) {
                 $saveData['id'] = intval($this->getConnection()->lastInsertID());
             }
@@ -146,7 +162,7 @@ class AMANotificationsDataHandler extends AMA_DataHandler
                 ),
                 array_values($insertData)
             );
-            if (AMA_DB::isError($result)) {
+            if (AMADB::isError($result)) {
                 throw new NotificationException($result->getMessage());
             } else {
                 $this->commit();
@@ -165,11 +181,11 @@ class AMANotificationsDataHandler extends AMA_DataHandler
      * @param string $className to use a class from your namespace, this string must start with "\"
      * @param array $whereArr
      * @param array $orderByArr
-     * @param Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
+     * @param AbstractAMADataHandler $dbToUse object used to run the queries. If null, use 'this'
      * @throws NotificationException
      * @return array
      */
-    public function findBy($className, array $whereArr = null, array $orderByArr = null, Abstract_AMA_DataHandler $dbToUse = null)
+    public function findBy($className, array $whereArr = null, array $orderByArr = null, AbstractAMADataHandler $dbToUse = null)
     {
         if (
             stripos($className, '\\') !== 0 &&
@@ -202,7 +218,7 @@ class AMANotificationsDataHandler extends AMA_DataHandler
         }
 
         $result = $dbToUse->getAllPrepared($sql, (!is_null($whereArr) && count($whereArr) > 0) ? array_values($whereArr) : [], AMA_FETCH_ASSOC);
-        if (AMA_DB::isError($result)) {
+        if (AMADB::isError($result)) {
             throw new NotificationException($result->getMessage(), (int) $result->getCode());
         } else {
             $retArr = array_map(function ($el) use ($className, $dbToUse) {
@@ -252,10 +268,10 @@ class AMANotificationsDataHandler extends AMA_DataHandler
      *
      * @param string $className
      * @param array $orderBy
-     * @param Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
+     * @param AbstractAMADataHandler $dbToUse object used to run the queries. If null, use 'this'
      * @return array
      */
-    public function findAll($className, array $orderBy = null, Abstract_AMA_DataHandler $dbToUse = null)
+    public function findAll($className, array $orderBy = null, AbstractAMADataHandler $dbToUse = null)
     {
         return $this->findBy($className, null, $orderBy, $dbToUse);
     }
@@ -267,11 +283,11 @@ class AMANotificationsDataHandler extends AMA_DataHandler
      * @param string $className to use a class from your namespace, this string must start with "\"
      * @param array $whereArr
      * @param array $orderByArr
-     * @param Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
+     * @param AbstractAMADataHandler $dbToUse object used to run the queries. If null, use 'this'
      * @throws NotificationException
      * @return object
      */
-    public function findOneBy($className, array $whereArr = null, array $orderByArr = null, Abstract_AMA_DataHandler $dbToUse = null)
+    public function findOneBy($className, array $whereArr = null, array $orderByArr = null, AbstractAMADataHandler $dbToUse = null)
     {
         $retval = $this->findBy($className, $whereArr, $orderByArr, $dbToUse);
         if (is_array($retval) && count($retval) > 0) {

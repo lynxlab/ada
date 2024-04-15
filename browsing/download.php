@@ -1,5 +1,29 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use function \translateFN;
+
 /**
  * Download Area
  *
@@ -24,7 +48,7 @@ use Lynxlab\ADA\Module\CollaboraACL\FileACL;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\leggidir;
-use function Lynxlab\ADA\Main\Utilities\today_dateFN;
+use function Lynxlab\ADA\Main\Utilities\todayDateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -110,13 +134,13 @@ if ((is_object($userObj)) && (!AMA_dataHandler::isError($userObj))) {
     $userHomePage =   $userObj->getHomePage();
     if ($id_profile == AMA_TYPE_STUDENT) {
         $user_history = $userObj->history;
-        $user_level = $userObj->get_student_level($sess_id_user, $sess_id_course_instance);
+        $user_level = $userObj->getStudentLevel($sess_id_user, $sess_id_course_instance);
     }
 } else {
     $errObj = new ADA_error(translateFN("Utente non trovato"), translateFN("Impossibile proseguire."));
 }
 
-$ymdhms = today_dateFN();
+$ymdhms = todayDateFN();
 
 $help = translateFN("Da qui lo studente può scaricare i file allegati ai nodi");
 
@@ -244,8 +268,8 @@ if (isset($_GET['file'])) {
                             $filename .= "_";
                         }
                     }
-                    $sender_array = $common_dh->get_user_info($id_sender);
-                    if (!AMA_Common_DataHandler::isError($sender_array)) {
+                    $sender_array = $common_dh->getUserInfo($id_sender);
+                    if (!AMACommonDataHandler::isError($sender_array)) {
                         $id_profile = $sender_array['tipo'];
                         switch ($id_profile) {
                             case AMA_TYPE_STUDENT:
@@ -263,8 +287,8 @@ if (isset($_GET['file'])) {
                                 if (!isset($fid_node) or ($fid_node == $id_node)) {
                                     $out_fields_ar = ['nome'];
                                     $clause = "ID_NODO = '$id_node'";
-                                    $nodes = $dh->doFind_nodes_list($out_fields_ar, $clause);
-                                    if (!AMA_DB::isError($nodes)) {
+                                    $nodes = $dh->doFindNodesList($out_fields_ar, $clause);
+                                    if (!AMADB::isError($nodes)) {
                                         foreach ($nodes as $single_node) {
                                             $id_node = $single_node[0];
                                             $node_name = $single_node[1];
@@ -303,7 +327,7 @@ if (isset($_GET['file'])) {
                                             } else {
                                                 $aclObj = null;
                                             }
-                                            if ((is_null($aclObj) && $id_sender == $userObj->getId()) || (!is_null($aclObj) && $aclObj->getId_owner() == $userObj->getId())) {
+                                            if ((is_null($aclObj) && $id_sender == $userObj->getId()) || (!is_null($aclObj) && $aclObj->getIdOwner() == $userObj->getId())) {
                                                 $buttonACL = CDOMElement::create('button', 'class:ui icon button aclButton');
                                                 $buttonACL->addChild(CDOMElement::create('i', 'class:basic add user icon'));
                                                 $buttonACL->setAttribute('title', translateFN('Imposta chi può vedere il file'));
@@ -337,11 +361,11 @@ if (isset($_GET['file'])) {
  * Last access link
  */
 if (isset($_SESSION['sess_id_course_instance'])) {
-    $last_access = $userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']), "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(($_SESSION['sess_id_course_instance']), "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 } else {
-    $last_access = $userObj->get_last_accessFN(null, "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(null, "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 }
 
 $node_data = [

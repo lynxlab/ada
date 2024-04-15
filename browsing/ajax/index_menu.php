@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * show index menu
  *
@@ -137,7 +155,7 @@ if ($expand_nodes) {
     $node_index  = $exp_link;
 }
 $main_index = CourseViewer::displayMainIndex($userObj, $sess_id_course, $expand, $order, $sess_id_course_instance, 'structIndex');
-if (!AMA_DataHandler::isError($main_index)) {
+if (!AMADataHandler::isError($main_index)) {
     $node_index .= $main_index->getHtml();
 }
 $node_index = preg_replace('#</?' . 'img' . '[^>]*>#is', '', $node_index);

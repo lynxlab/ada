@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\Newsletter\FormFilterNewsLetter;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class FormFilterNewsLetter was declared with namespace Lynxlab\ADA\Module\Newsletter. //
+
 /**
  * NEWSLETTER MODULE.
  *

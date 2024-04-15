@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * File uploader
  *
@@ -19,7 +39,7 @@ use Lynxlab\ADA\Main\HtmlLibrary\UserModuleHtmlLib;
 use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLException;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
+use function Lynxlab\ADA\Main\AMA\DBRead\readNodeFromDB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Upload\Functions\upload_file;
 use function Lynxlab\ADA\Main\Utilities\redirect;
@@ -136,8 +156,8 @@ if (isset($_GET['caller']) && $_GET['caller'] == 'editor') {
      * codice esistente:
      */
 
-    $course_ha = $dh->get_course($course_id);//$id_course);
-    if (AMA_DataHandler::isError($course_ha)) {
+    $course_ha = $dh->getCourse($course_id);//$id_course);
+    if (AMADataHandler::isError($course_ha)) {
         $msg = $course_ha->getMessage();
         header("Location: " . $http_root_dir . "/browsing/student.php?status=$msg");
         exit();
@@ -242,8 +262,8 @@ if (isset($_GET['caller']) && $_GET['caller'] == 'editor') {
                 'copyright' => 0,
                 'id_utente' => $user_id];
 
-            $result = $dh->add_only_in_risorsa_esterna($res_ha);
-            if (AMA_DataHandler::isError($result)) {
+            $result = $dh->addOnlyInRisorsaEsterna($res_ha);
+            if (AMADataHandler::isError($result)) {
                 return $result;
             }
         } elseif ($empty_filename) {
@@ -268,12 +288,92 @@ if (isset($_GET['caller']) && $_GET['caller'] == 'editor') {
     //echo $error_code;
     ?>
 <script type="text/javascript">
-    var error    = <?php echo $error_code; ?>;
-    var filename = '<?php echo $filename_prefix . $filename; ?>';
-    var filetype = <?php echo $ada_filetype; ?>;
+    var error    = <?php 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+echo $error_code; ?>;
+    var filename = '<?php 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+echo $filename_prefix . $filename; ?>';
+    var filetype = <?php 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+echo $ada_filetype; ?>;
     window.parent.exitUploadFileState(error, filename, filetype);
 </script>
     <?php
+
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
     exit();
 }
 /*
@@ -309,9 +409,9 @@ elseif ($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
          * codice esistente:
          */
 
-        $course_ha = $dh->get_course($id_course);
+        $course_ha = $dh->getCourse($id_course);
         $course_title = $course_ha['titolo'];
-        if (AMA_DataHandler::isError($course_ha)) {
+        if (AMADataHandler::isError($course_ha)) {
             $msg = $course_ha->getMessage();
             header("Location: " . $http_root_dir . "/browsing/student.php?status=$msg");
         }
@@ -427,7 +527,7 @@ elseif ($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
                         $GLOBALS['dh'] = AMACollaboraACLDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
                         $res = $GLOBALS['dh']->saveGrantedUsers($saveData);
 
-                        if (AMA_DB::isError($res) || $res instanceof CollaboraACLException) {
+                        if (AMADB::isError($res) || $res instanceof CollaboraACLException) {
                             // handle ACL error here
                         } else {
                             // handle ACL saved OK here
@@ -522,8 +622,8 @@ elseif ($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
         }
     }
 
-    $nodeObj = read_node_from_DB($id_node);
-    if (!AMA_DataHandler::isError($nodeObj)) {
+    $nodeObj = readNodeFromDB($id_node);
+    if (!AMADataHandler::isError($nodeObj)) {
         $node_title = $nodeObj->name;
         $node_version = $nodeObj->version;
         $node_date = $nodeObj->creation_date;

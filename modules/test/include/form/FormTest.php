@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Module\Test\FormTest;
+
+// Trigger: ClassWithNameSpace. The class FormTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  *
  * @package

@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Main\Node\Media;
+
+use Lynxlab\ADA\Main\Media\ExternalLinkViewer;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+// Trigger: ClassWithNameSpace. The class ExternalLinkViewer was declared with namespace Lynxlab\ADA\Main\Media. //
+
 /**
  * Media Viewers
  *
@@ -62,8 +70,8 @@ class ExternalLinkViewer
          * e costruisce il link a external_link.php
                 */
                 $dh = $GLOBALS['dh'];
-                $id = $dh->get_risorsa_esterna_id($media_value);
-                if (AMA_DataHandler::isError($id)) {
+                $id = $dh->getRisorsaEsternaId($media_value);
+                if (AMADataHandler::isError($id)) {
                     $exploded_ext_link = $cleaned_string;
                 } else {
                     $spanLink = CDOMElement::create('span');

@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * mylog - this module provides management of a personal diary
  *
@@ -21,10 +43,10 @@ use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_user_from_DB;
+use function Lynxlab\ADA\Main\AMA\DBRead\readUserFromDB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\today_dateFN;
-use function Lynxlab\ADA\Main\Utilities\today_timeFN;
+use function Lynxlab\ADA\Main\Utilities\todayDateFN;
+use function Lynxlab\ADA\Main\Utilities\todayTimeFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -106,7 +128,7 @@ $log_extension = ".htm";
 //$classi_dichiarate = get_declared_classes();
 //mydebug(__LINE__,__FILE__,$classi_dichiarate);
 
-$ymdhms = today_dateFN();
+$ymdhms = todayDateFN();
 
 //import_request_variables("gP","");
 
@@ -116,7 +138,7 @@ $log_enabled = true; // link to history
 $mod_enabled = true; // link to modify nod/tes
 $com_enabled = true;  // link to comunicate among users
 // Get user object
-$userObj = read_user_from_DB($sess_id_user);
+$userObj = readUserFromDB($sess_id_user);
 //print_r($userObj);
 if ((is_object($userObj)) && (!AMA_dataHandler::isError($userObj))) {
     $id_profile = $userObj->tipo;
@@ -150,8 +172,8 @@ $public_dir = "/services/media/";
 
 if (isset($sess_id_course) and  (!($sess_id_course == ""))) {
     // finding course's author
-    $course_ha = $dh->get_course($sess_id_course);
-    if (AMA_DataHandler::isError($course_ha)) { // not enrolled yet?
+    $course_ha = $dh->getCourse($sess_id_course);
+    if (AMADataHandler::isError($course_ha)) { // not enrolled yet?
         $msg = $course_ha->getMessage();
         header("Location: " . $http_root_dir . "/browsing/student.php?status=$msg");
     }
@@ -208,7 +230,7 @@ if (isset($op) && ($op == "export")) {
     echo $log_text;
     exit;
 } else {
-    $date = today_dateFN() . " " . today_timeFN() . "\n";
+    $date = todayDateFN() . " " . todayTimeFN() . "\n";
     $log_form = new Form();
     $log_data = [
     [
@@ -248,16 +270,16 @@ $export_log_link = "<a href=$http_root_dir/browsing/mylog.php?op=export>" . tran
 // $online_users_listing_mode = 2  : username and email of users
 
 $online_users_listing_mode = 2;
-$online_users = ADALoggableUser::get_online_usersFN($sess_id_course_instance, $online_users_listing_mode);
+$online_users = ADALoggableUser::getOnlineUsersFN($sess_id_course_instance, $online_users_listing_mode);
 
 
 /*
  $online_users_listing_mode = 0;
 
 // vito 19 gennaio 2009
-//$online_users = User::get_online_usersFN($id_course_instance,$online_users_listing_mode);
+//$online_users = User::getOnlineUsersFN($id_course_instance,$online_users_listing_mode);
 if(isset($sess_id_course_instance) && !empty($sess_id_course_instance)) {
-  $online_users = User::get_online_usersFN($sess_id_course_instance,$online_users_listing_mode);
+  $online_users = User::getOnlineUsersFN($sess_id_course_instance,$online_users_listing_mode);
 }
 else {
   $online_users = '';
@@ -267,15 +289,15 @@ else {
 $menu = $export_log_link;
 // vito 19 gennaio 2009
 if (isset($sess_id_course_instance) && !empty($sess_id_course_instance)) {
-    $last_visited_node_id = $userObj->get_last_accessFN($sess_id_course_instance, "N");
+    $last_visited_node_id = $userObj->getLastAccessFN($sess_id_course_instance, "N");
     $node_path = $nodeObj->findPathFN();
 } else {
     $last_visited_node_id = '';
 }
 $last_node_visited = "";
 if (!empty($last_visited_node_id)) {
-    $last_node = $dh->get_node_info($last_visited_node_id);
-    if (!AMA_DB::isError($last_node)) {
+    $last_node = $dh->getNodeInfo($last_visited_node_id);
+    if (!AMADB::isError($last_node)) {
         $last_visited_node_name = $last_node['name'];
         $last_node_visited = "<a href=view.php?id_node=$last_visited_node_id>" . translateFN("torna") . "</a><br>";
     }
@@ -295,11 +317,11 @@ $help = translateFN("Nel Diario si possono inserire i propri commenti privati, o
  */
 
 if (isset($_SESSION['sess_id_course_instance'])) {
-    $last_access = $userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']), "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(($_SESSION['sess_id_course_instance']), "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 } else {
-    $last_access = $userObj->get_last_accessFN(null, "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(null, "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 }
 if ($last_access == '' || is_null($last_access)) {
     $last_access = '-';
@@ -378,7 +400,7 @@ ARE::render($layout_dataAR, $node_data, null, $options, $menuOptions ?? null);
 /* Versione XML:
 
  $xmlObj = new XML($layout_template,$layout_CSS,$imgpath);
- $xmlObj->fillin_templateFN($node_data);
+ $xmlObj->fillinTemplateFN($node_data);
  $xmlObj->outputFN('page','XML');
 
 */

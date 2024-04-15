@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Services\Exercise\OpenAutomaticExerciseCorrection;
+
+use Lynxlab\ADA\Services\Exercise\ExerciseCorrection;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class OpenAutomaticExerciseCorrection was declared with namespace Lynxlab\ADA\Services\Exercise. //
+
 namespace Lynxlab\ADA\Services\Exercise;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;

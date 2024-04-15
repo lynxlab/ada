@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\User\ADAAuthor;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Admin\AdminUtils;
+
+use function \translateFN;
+
 /**
  * Edit user - this module provides edit user functionality
  *
@@ -86,7 +108,7 @@ SwitcherHelper::init($neededObjAr);
 /**
  * Check if the switcher is editing a student profile
  */
-$isEditingAStudent = (DataValidator::is_uinteger($_GET['usertype'] ?? null) === AMA_TYPE_STUDENT);
+$isEditingAStudent = (DataValidator::isUinteger($_GET['usertype'] ?? null) === AMA_TYPE_STUDENT);
 
 if (!$isEditingAStudent) {
     /**
@@ -103,7 +125,7 @@ if (!$isEditingAStudent) {
         $form->fillWithPostData();
         $password = trim($_POST['password']);
         $passwordcheck = trim($_POST['passwordcheck']);
-        if (DataValidator::validate_password_modified($password, $passwordcheck) === false) {
+        if (DataValidator::validatePasswordModified($password, $passwordcheck) === false) {
             $message = translateFN('Le password digitate non corrispondono o contengono caratteri non validi.');
             header("Location: edit_user.php?message=$message&id_user=" . $_POST['id_utente']);
             exit();
@@ -114,7 +136,7 @@ if (!$isEditingAStudent) {
             } else {
                 $user_layout = '';
             }
-            $userId = DataValidator::is_uinteger($_POST['id_utente']);
+            $userId = DataValidator::isUinteger($_POST['id_utente']);
             if ($userId > 0) {
                 $editedUserObj = MultiPort::findUser($userId);
                 $editedUserObj->fillWithArrayData($_POST);
@@ -137,7 +159,7 @@ if (!$isEditingAStudent) {
                 $result = MultiPort::setUser($editedUserObj, [], true);
             }
 
-            if (!AMA_DataHandler::isError($result)) {
+            if (!AMADataHandler::isError($result)) {
                 header('Location: view_user.php?id_user=' . $editedUserObj->getId());
                 exit();
             }
@@ -160,7 +182,7 @@ if (!$isEditingAStudent) {
             $form = new CText(translateFN('I dati inseriti nel form non sono validi'));
         }
     } else {
-        $userId = DataValidator::is_uinteger($_GET['id_user']);
+        $userId = DataValidator::isUinteger($_GET['id_user']);
         if ($userId === false) {
             $data = new CText('Utente non trovato');
         } else {

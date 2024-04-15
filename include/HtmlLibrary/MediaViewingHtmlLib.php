@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\HtmlLibrary\MediaViewingHtmlLib;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class MediaViewingHtmlLib was declared with namespace Lynxlab\ADA\Main\HtmlLibrary. //
+
 /**
  * MediaViewingHtmlLib.inc.php
  *

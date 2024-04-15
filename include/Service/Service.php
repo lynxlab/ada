@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Main\Service\ServiceImplementor;
+
+use Lynxlab\ADA\Main\Service\Service;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class Service was declared with namespace Lynxlab\ADA\Main\Service. //
+
 /**
  * SERVICE.
  *
@@ -43,7 +55,7 @@ class Service
 
 
         // filtering on levels
-        // $level_ha = Multiport::get_service_max_level($sess_id_user); FIXME: it OUGHT TO be used to filter services
+        // $level_ha = Multiport::getServiceMaxLevel($sess_id_user); FIXME: it OUGHT TO be used to filter services
 
         // version using COMMON
 
@@ -63,9 +75,9 @@ class Service
 
         //  ordering
         if ($orderBy == 'service') {
-            $service_infoAr = $common_dh->get_services(['s.nome', 't.nazione', 's.livello'], $clause);
+            $service_infoAr = $common_dh->getServices(['s.nome', 't.nazione', 's.livello'], $clause);
         } elseif ($orderBy == 'country') {
-            $service_infoAr = $common_dh->get_services(['t.nazione', 't.provincia', 't.nome'], $clause);
+            $service_infoAr = $common_dh->getServices(['t.nazione', 't.provincia', 't.nome'], $clause);
         }
 
         $s = 0;
@@ -76,7 +88,7 @@ class Service
             $provider_name =  $course_dataHa[5];
             $provider_id =  $course_dataHa[4];
             if (!isset($providers_data[$provider_id])) {
-                $provider_dataHa =  $common_dh->get_tester_info_from_id($provider_id);
+                $provider_dataHa =  $common_dh->getTesterInfoFromId($provider_id);
                 $provider_pointer = $provider_dataHa[10];
                 $providers_data[$provider_id] = $provider_dataHa;
             } else {
@@ -84,16 +96,16 @@ class Service
             }
             $provider_dsn = MultiPort::getDSN($provider_pointer);
             if ($provider_dsn != null) {
-                // $provider_dataHa = $common_dh->get_tester_info_from_pointer($provider);
-                $provider_dh = AMA_DataHandler::instance($provider_dsn);
-                $id_course_instanceAr = $provider_dh->get_course_instance_for_this_student_and_course_model($sess_id_user, $service_implementation_id);
+                // $provider_dataHa = $common_dh->getTesterInfoFromPointer($provider);
+                $provider_dh = AMADataHandler::instance($provider_dsn);
+                $id_course_instanceAr = $provider_dh->getCourseInstanceForThisStudentAndCourseModel($sess_id_user, $service_implementation_id);
             } else {
                 $id_course_instanceAr = null;
             }
 
             // already subscribed?
             if (
-                (AMA_DataHandler::isError($id_course_instanceAr)) or ($id_course_instanceAr == null)
+                (AMADataHandler::isError($id_course_instanceAr)) or ($id_course_instanceAr == null)
             ) { // never subscribed
                 $id_course_instance = 0;
             } else {
@@ -123,7 +135,7 @@ class Service
     public static function findServiceFromImplementor($id_course)
     {
         $common_dh = $GLOBALS['common_dh'];
-        $service_dataHa = $common_dh->get_service_info_from_course($id_course);
+        $service_dataHa = $common_dh->getServiceInfoFromCourse($id_course);
         $serviceObj = new Service($service_dataHa);
         return $serviceObj;
     }
@@ -134,17 +146,17 @@ class Service
         $this->id_service = $serviceAr[0];
         /*
 
-    $providersAr = $common_dh->get_tester_for_service( $this->id_service);
+    $providersAr = $common_dh->getTesterForService( $this->id_service);
 
-    if (AMA_DataHandler::isError($providersAr)){
+    if (AMADataHandler::isError($providersAr)){
         // ??
         } else {
-        // $provider_pointer = $this->get_provider_pointer();
+        // $provider_pointer = $this->getProviderPointer();
         foreach ($providersAr as $providerAr){
         $id_provider = $providerAr[0];
-        $implementorsAr = $common_dh->get_courses_for_service($this->id_service,$id_provider);
+        $implementorsAr = $common_dh->getCoursesForService($this->id_service,$id_provider);
         $implementorId = $implementorsAr[0];
-        $provider_dataHa =  $common_dh->get_tester_info_from_id($id_provider);
+        $provider_dataHa =  $common_dh->getTesterInfoFromId($id_provider);
         $provider_pointer = $provider_dataHa[10];
         $implementorObj = new Service_implementor($implementorId,$provider_pointer);
         //          var_dump($this->implementors);
@@ -152,15 +164,15 @@ class Service
         }
         }
 
-        $providersAr = $common_dh->get_tester_info_from_service( $this->id_service);
+        $providersAr = $common_dh->getTesterInfoFromService( $this->id_service);
         //T.id_tester,T.nome,T.ragione_sociale,T.indirizzo,T.provincia,T.nazione,T.telefono,T.e_mail,T.responsabile,T.puntatore
-        if (AMA_DataHandler::isError($providersAr)){
+        if (AMADataHandler::isError($providersAr)){
         // ??
         } else {
-        // $provider_pointer = $this->get_provider_pointer();
+        // $provider_pointer = $this->getProviderPointer();
         foreach ($providersAr as $providerAr){
         $id_provider = $providerAr['id_tester'];
-        $implementorsAr = $common_dh->get_courses_for_service($this->id_service,$id_provider);
+        $implementorsAr = $common_dh->getCoursesForService($this->id_service,$id_provider);
         $implementorId = $implementorsAr[0];
         $provider_pointer = $providerAr['puntatore'];
         $implementorObj = new Service_implementor($implementorId,$provider_pointer);
@@ -169,7 +181,7 @@ class Service
         }
         */
 
-        if (AMA_DataHandler::isError($serviceAr)) {
+        if (AMADataHandler::isError($serviceAr)) {
             //
         } else {
             $this->title =  $serviceAr[1];
@@ -185,56 +197,56 @@ class Service
 
     /* Getters */
 
-    public function get_title()
+    public function getTitle()
     {
         return translateFN($this->title);
     }
 
-    public function get_description()
+    public function getDescription()
     {
         return translateFN($this->description);
     }
 
-    public function get_level()
+    public function getLevel()
     {
         return $this->level;
     }
 
-    public function get_duration()
+    public function getDuration()
     {
         return $this->duration;
     }
 
-    public function get_min_meetings()
+    public function getMinMeetings()
     {
         return $this->min_meetings;
     }
 
-    public function get_max_meetings()
+    public function getMaxMeetings()
     {
         return $this->max_meetings;
     }
 
-    public function get_meeting_max_time()
+    public function getMeetingMaxTime()
     {
         return $this->meeting_max_time;
     }
 
-    public function get_service_info()
+    public function getServiceInfo()
     {
         $serviceAr = [
-            $this->get_title(),
-            $this->get_description(),
-            $this->get_level(),
-            $this->get_duration(),
-            $this->get_min_meetings(),
-            $this->get_max_meetings(),
-            $this->get_meeting_max_time(),
+            $this->getTitle(),
+            $this->getDescription(),
+            $this->getLevel(),
+            $this->getDuration(),
+            $this->getMinMeetings(),
+            $this->getMaxMeetings(),
+            $this->getMeetingMaxTime(),
         ];
         return $serviceAr;
     }
 
-    public function get_implementors()
+    public function getImplementors()
     {
 
         $courseAr = [];
@@ -249,10 +261,10 @@ class Service
         return  $courseAr;
     }
 
-    public function get_implementor($implementorId)
+    public function getImplementor($implementorId)
     {
         if (!isset($this->implementors[$implementorId])) {
-            $courseAr = $this->get_implementors();
+            $courseAr = $this->getImplementors();
             return $courseAr[$implementorId];
         } else {
             return $this->implementors[$implementorId];

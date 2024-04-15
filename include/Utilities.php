@@ -1,5 +1,7 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
 /**
  *
  * @package
@@ -28,7 +30,7 @@ function mydebug($line, $file, $vars)
                 }
                 break;
             case 'object':
-                print_vars($vars);
+                printVars($vars);
                 break;
             default:
                 print($vars);
@@ -46,7 +48,7 @@ function mydebug($line, $file, $vars)
  *    @param $origin_tz If null the servers current timezone is used as the origin.
  *    @return int
  */
-function get_timezone_offset($remote_tz, $origin_tz = null)
+function getTimezoneOffset($remote_tz, $origin_tz = null)
 {
     /*
  *
@@ -84,13 +86,13 @@ function get_timezone_offset($remote_tz, $origin_tz = null)
     return $offset;
 }
 
-function today_dateFN()
+function todayDateFN()
 {
     $now = time();
     return ts2dFN($now);
 }
 
-function today_timeFN()
+function todayTimeFN()
 {
     $now = time();
     return ts2tmFN($now);
@@ -262,7 +264,7 @@ function masort($array, $arg, $sort_order = 1, $sort_method = SORT_STRING)
     return $arraycopy;
 }
 
-function check_javascriptFN($browser)
+function checkJavascriptFN($browser)
 {
     /* ********
    Check Browser version
@@ -311,7 +313,7 @@ function whoami()
  * @param  int  $limit - an array with additional parameters
  * @return string $new_str       - a substring with no truncated ending word
  */
-function substr_gentle($str, $limit)
+function substrGentle($str, $limit)
 {
     $str = str_replace("\n", '', substr($str, 0, $limit + 50));
     $array = explode("\n", wordwrap($str, $limit));
@@ -350,10 +352,10 @@ function delTree($dir)
 
 function leggidir($dir, $ext = "", $moreExtension = [])
 {
-    return read_dir($dir, $ext, $moreExtension);
+    return readDir($dir, $ext, $moreExtension);
 }
 
-function print_vars($obj)
+function printVars($obj)
 {
     $arr = get_object_vars($obj);
     foreach ($arr as $prop => $val) {
@@ -361,7 +363,7 @@ function print_vars($obj)
     }
 }
 
-function read_dir($dir, $ext = "", $moreExtension = [])
+function readDir($dir, $ext = "", $moreExtension = [])
 {
     /*
    **** dato un percorso ritorna l'elenco dei file dei tipi consentiti ****
@@ -438,7 +440,7 @@ function read_dir($dir, $ext = "", $moreExtension = [])
  *
  */
 
-function converti_dattiloFN($word, $img_dir)
+function convertiDattiloFN($word, $img_dir)
 {
     $dattilo_string = "";
 

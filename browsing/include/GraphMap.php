@@ -1,5 +1,7 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
 /* FUNCTIONS */
 
 namespace Lynxlab\ADA\Browsing\GraphMap;
@@ -8,7 +10,7 @@ use Lynxlab\ADA\Browsing\ImageDevice;
 
 use function Lynxlab\ADA\Main\Utilities\mydebug;
 
-function make_image_mapFN($children_ha, $user_level, $id_profile)
+function makeImageMapFN($children_ha, $user_level, $id_profile)
 {
     $sess_id_node = $_SESSION['sess_id_node'];
     $media_path = $GLOBALS['media_path'];
@@ -94,7 +96,7 @@ function make_image_mapFN($children_ha, $user_level, $id_profile)
 
 /*-------------------------------------------------------------------------*/
 /* calcola le coordinate massime per la generazione dell'immagine di fondo */
-function compute_maxFN($children_ha)
+function computeMaxFN($children_ha)
 {
     $max_X = 0;
     $max_Y = 0;
@@ -125,7 +127,7 @@ function compute_maxFN($children_ha)
 /*-------------------------------------------------------------------------*/
 /* Incolla le icone dei nodi all'interno dell'immagine generale            */
 /*-------------------------------------------------------------------------*/
-function copy_imageFN($children_ha, $im_dest, $max_X, $max_Y, $user_level)
+function copyImageFN($children_ha, $im_dest, $max_X, $max_Y, $user_level)
 {
     $background_R = $GLOBALS['background_R'];
     $background_G = $GLOBALS['background_G'];
@@ -244,7 +246,7 @@ function copy_imageFN($children_ha, $im_dest, $max_X, $max_Y, $user_level)
 
 /*----------------------------------------------------*/
 /* Genera le linee indicanti i collegamenti tra i nodi*/
-function make_linkFN($children_ha, $im_dest, $position_node)
+function makeLinkFN($children_ha, $im_dest, $position_node)
 {
     $background_R = $GLOBALS['background_R'];
     $background_G = $GLOBALS['background_G'];
@@ -356,7 +358,7 @@ function make_linkFN($children_ha, $im_dest, $position_node)
 
 /*----------------------------------------------*/
 /* Mostra l'immagine della mappa */
-function show_image_FN($im_dest)
+function showImageFN($im_dest)
 {
     $id_img = new ImageDevice();
     if (empty($id_img->error())) {

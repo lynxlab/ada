@@ -1,5 +1,7 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
 /**
  * gets videoroom log data
  *

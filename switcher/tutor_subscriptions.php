@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * tutor_subscriptions file
  *
@@ -138,8 +154,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 $subscribers = count($usersToSubscribe);
 
                 $admtypeAr = [AMA_TYPE_ADMIN];
-                $admList = $common_dh->get_users_by_type($admtypeAr);
-                if (!AMA_DataHandler::isError($admList)) {
+                $admList = $common_dh->getUsersByType($admtypeAr);
+                if (!AMADataHandler::isError($admList)) {
                     $adm_uname = $admList[0]['username'];
                 } else {
                     $adm_uname = '';
@@ -209,8 +225,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
                             $mh = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
 
-                            $result = $mh->send_message($message_ha);
-                            if (AMA_DataHandler::isError($result)) {
+                            $result = $mh->sendMessage($message_ha);
+                            if (AMADataHandler::isError($result)) {
                                 $help = translateFN('Errore');
                                 $data = new CText('Invio mail non riuscita');
                             }

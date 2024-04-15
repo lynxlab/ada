@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Module\GDPR\GdprPolicyForm;
+
+use Lynxlab\ADA\Module\GDPR\GdprAbstractForm;
+
+use Lynxlab\ADA\Module\GDPR\GdprPolicy;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class GdprPolicyForm was declared with namespace Lynxlab\ADA\Module\GDPR. //
+
 /**
  * @package     gdpr module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -61,7 +75,7 @@ class GdprPolicyForm extends GdprAbstractForm
         $toggleDIV->addChild($label);
         $cbContainer->addChild($toggleDIV);
 
-        if (!is_null($policy->getPolicy_content_id())) {
+        if (!is_null($policy->getPolicyContentId())) {
             $toggleDIV = CDOMElement::create('div', 'class:ui toggle checkbox');
             $checkBox = CDOMElement::create('checkbox', 'id:newVersion,type:checkbox,name:newVersion,value:1');
             $toggleDIV->addChild($checkBox);
@@ -83,6 +97,6 @@ class GdprPolicyForm extends GdprAbstractForm
             $this->addCDOM($vDIV);
         }
 
-        $this->addHidden('policy_content_id')->withData($policy->getPolicy_content_id());
+        $this->addHidden('policy_content_id')->withData($policy->getPolicyContentId());
     }
 }

@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Service\Service;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 namespace Lynxlab\ADA\Main\Service\Functions;
 
 use Lynxlab\ADA\CORE\HtmlElements\Table;
@@ -9,7 +21,7 @@ use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
-function get_course_instance_info($id_course, $id_course_instance)
+function getCourseInstanceInfo($id_course, $id_course_instance)
 {
 
     $common_dh = $GLOBALS['common_dh'];
@@ -18,29 +30,29 @@ function get_course_instance_info($id_course, $id_course_instance)
     $userObj = $_SESSION['sess_userObj'];
 
 
-    $course_dataHa = $common_dh->get_service_info_from_course($id_course);
+    $course_dataHa = $common_dh->getServiceInfoFromCourse($id_course);
     $service_title = $course_dataHa[1];
     $service_level = $course_dataHa[3];
     //..
 
 
-    $provider_dataHa = $common_dh->get_tester_info_from_id_course($id_course);
-    if (!AMA_DataHandler::isError($provider_dataHa)) {
+    $provider_dataHa = $common_dh->getTesterInfoFromIdCourse($id_course);
+    if (!AMADataHandler::isError($provider_dataHa)) {
         $provider_pointer = $provider_dataHa['puntatore'];
         $provider_name =  $provider_dataHa['nome'];
         $provider_dsn = Multiport::getDSN($provider_pointer);
         if ($provider_dsn != null) {
-            $provider_dh = AMA_DataHandler::instance($provider_dsn);
-            $sub_courses = $provider_dh->get_subscription($sess_id_user, $id_course_instance);
-            // if (!AMA_DataHandler::isError($sub_courses)&&$sub_courses['tipo'] == 2) { // introducing status 3 (suspended) and 5 (completed)
-            if (!AMA_DataHandler::isError($sub_courses)) { // introducing status 3 (suspended) and 5 (completed)
+            $provider_dh = AMADataHandler::instance($provider_dsn);
+            $sub_courses = $provider_dh->getSubscription($sess_id_user, $id_course_instance);
+            // if (!AMADataHandler::isError($sub_courses)&&$sub_courses['tipo'] == 2) { // introducing status 3 (suspended) and 5 (completed)
+            if (!AMADataHandler::isError($sub_courses)) { // introducing status 3 (suspended) and 5 (completed)
                 $info_dataHa = [];
-                $id_tutor = $dh->course_instance_tutor_get($id_course_instance);
+                $id_tutor = $dh->courseInstanceTutorGet($id_course_instance);
                 // vito, 27 may 2009
                 if ($id_tutor !== false) {
-                    $tutor = $dh->get_tutor($id_tutor);
+                    $tutor = $dh->getTutor($id_tutor);
                     // vito, 27 may 2009
-                    if (!AMA_DataHandler::isError($tutor) && is_array($tutor)) {
+                    if (!AMADataHandler::isError($tutor) && is_array($tutor)) {
                         $tutor_name = $tutor['nome'] . " " . $tutor['cognome'];
                         if (empty($tutor_name)) {
                             $tutor_info = translateFN('Non assegnato');
@@ -65,8 +77,8 @@ function get_course_instance_info($id_course, $id_course_instance)
 
                 // appuntamenti
                 $msgs_ha = MultiPort::getUserAgenda($userObj);
-                if (AMA_DataHandler::isError($msgs_ha)) {
-                    $errObj = new ADA_Error($msgs_ha, translateFN('Errore in lettura appuntamenti'));
+                if (AMADataHandler::isError($msgs_ha)) {
+                    $errObj = new ADAError($msgs_ha, translateFN('Errore in lettura appuntamenti'));
                 }
                 $testers_dataAr = MultiPort::getTestersPointersAndIds();
                 $meeting_list   = CommunicationModuleHtmlLib::getAgendaAsForm($dataAr, $testers_dataAr);

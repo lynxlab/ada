@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * @package     etherpad module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -83,8 +89,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' && 
         } else {
             if (EtherpadActions::canDo(EtherpadActions::INSTANCE_GROUP_MAP)) {
                 // check instance existence
-                $instanceAr = $etDH->course_instance_get($passedData['instanceId']);
-                if (!AMA_DB::isError($instanceAr)) {
+                $instanceAr = $etDH->courseInstanceGet($passedData['instanceId']);
+                if (!AMADB::isError($instanceAr)) {
                     // create an etherpad group and save its id locally
                     $ethClient = new EtherpadClient(MODULES_ETHERPAD_APIKEY, Utils::getEtherpadURL());
                     $rawGroup = $ethClient->createGroupIfNotExistsFor($passedData['instanceId']);
@@ -112,7 +118,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' && 
         $res = $e;
     }
 
-    if (AMA_DB::isError($res) || $res instanceof \Exception) {
+    if (AMADB::isError($res) || $res instanceof \Exception) {
         // if it's an error display the error message
         $retArray['status'] = "ERROR";
         $retArray['msg'] = $res->getMessage();

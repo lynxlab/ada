@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionAnsweredSurvey;
+
+use Lynxlab\ADA\Module\Servicecomplete\CompleteCondition;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class CompleteConditionAnsweredSurvey was declared with namespace Lynxlab\ADA\Module\Servicecomplete. //
+
 /**
  * SERVICE-COMPLETE MODULE.
  *
@@ -86,17 +100,17 @@ class CompleteConditionAnsweredSurvey extends CompleteCondition
                 $GLOBALS['dh']->disconnect();
             }
             $GLOBALS['dh'] = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
-            if (!AMA_DB::isError($GLOBALS['dh'])) {
-                $courseId = $GLOBALS['dh']->get_course_id_for_course_instance($id_course_instance);
-                $test_list = $GLOBALS['dh']->test_getCourseSurveys(['id_corso' => $courseId]);
-                if (!AMA_DB::isError($test_list) && is_array($test_list)) {
+            if (!AMADB::isError($GLOBALS['dh'])) {
+                $courseId = $GLOBALS['dh']->getCourseIdForCourseInstance($id_course_instance);
+                $test_list = $GLOBALS['dh']->testGetCourseSurveys(['id_corso' => $courseId]);
+                if (!AMADB::isError($test_list) && is_array($test_list)) {
                     if (count($test_list) === 0) {
                         // define no-survey behaviour here
                         $retval = false;
                     } else {
                         $retval = true;
                         foreach ($test_list as $test_listEL) {
-                            $historyArr = $GLOBALS['dh']->test_getHistoryTest([
+                            $historyArr = $GLOBALS['dh']->testGetHistoryTest([
                                     'id_corso' => $courseId,
                                     'id_istanza_corso' => $id_course_instance,
                                     'id_nodo' => $test_listEL['id_test'],
@@ -107,7 +121,7 @@ class CompleteConditionAnsweredSurvey extends CompleteCondition
                              * Should the course have more than one survey, the condition is true
                              * only if the student has answered at least $this->param times to EVERY survey
                              */
-                            $retval = $retval && !AMA_DB::isError($historyArr) && is_array($historyArr) && count($historyArr) >= $this->param;
+                            $retval = $retval && !AMADB::isError($historyArr) && is_array($historyArr) && count($historyArr) >= $this->param;
                             if (!is_null($summary) && is_array($summary)) {
                                 $summary[__CLASS__]['check'][$test_listEL['id_nodo']] = [
                                     'title' => $test_listEL['titolo'],

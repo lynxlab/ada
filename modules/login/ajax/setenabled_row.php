@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * LOGIN MODULE
  *
@@ -64,7 +70,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST' &&
             $vowel = 'o';
         }
 
-        if (!AMA_DB::isError($result)) {
+        if (!AMADB::isError($result)) {
             if ($status) {
                 $statusText = translateFN('Abilitat' . $vowel);
                 $buttonTitle = translateFN('Disabilita');

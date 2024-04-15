@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\MultiPort;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Comunica\DataHandler\ChatDataHandler;
+
+use function \translateFN;
+
 /**
  * quit chat
  *
@@ -18,7 +38,7 @@ use Lynxlab\ADA\Comunica\ChatRoom;
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 
-use function Lynxlab\ADA\Comunica\Functions\exitWith_JSON_Error;
+use function Lynxlab\ADA\Comunica\Functions\exitWithJSONError;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -87,7 +107,7 @@ ComunicaHelper::init($neededObjAr);
 
 //if ( /*!isset($_GET['user']) ||*/ !isset($_GET['chatroom']) /*|| !isset($_GET['course_instance'])*/ )
 if (!isset($_POST['chatroom'])) {
-    exitWith_JSON_Error(translateFN("Errore: parametri passati allo script PHP non corretti"));
+    exitWithJSONError(translateFN("Errore: parametri passati allo script PHP non corretti"));
 }
 
 $id_user      = $sess_id_user;
@@ -105,14 +125,14 @@ switch ($exit_reason) {
         // initialize a new ChatDataHandler object
 
         $chatroomObj = new ChatRoom($id_chatroom, $_SESSION['sess_selected_tester_dsn']);
-        if (AMA_DataHandler::isError($chatroomObj)) {
-            exitWith_JSON_Error(translateFN("Errore nella creazione della chatroom"));
+        if (AMADataHandler::isError($chatroomObj)) {
+            exitWithJSONError(translateFN("Errore nella creazione della chatroom"));
         }
 
         //get the type of the chatroom
-        $chatroomHa = $chatroomObj->get_info_chatroomFN($id_chatroom);
-        if (AMA_DataHandler::isError($chatroomHa)) {
-            exitWith_JSON_Error(translateFN("Errore nell'ottenimento dei dati sulla chatroom"));
+        $chatroomHa = $chatroomObj->getInfoChatroomFN($id_chatroom);
+        if (AMADataHandler::isError($chatroomHa)) {
+            exitWithJSONError(translateFN("Errore nell'ottenimento dei dati sulla chatroom"));
         }
 
         // we have to distinguish the case that the chatroom is a private chatroom
@@ -121,20 +141,20 @@ switch ($exit_reason) {
         // in the case of private rooms we just set his status to 'E' value
         $chat_type = $chatroomHa['tipo_chat'];
         if ($chat_type == INVITATION_CHAT) {
-            $user_exits = $chatroomObj->set_user_statusFN(
+            $user_exits = $chatroomObj->setUserStatusFN(
                 $id_user,
                 $id_user,
                 $id_chatroom,
                 ACTION_EXIT
             );
-            if (AMA_DataHandler::isError($user_exits)) {
-                exitWith_JSON_Error(translateFN("Errore nell'uscita dell'utente dalla chatroom"));
+            if (AMADataHandler::isError($user_exits)) {
+                exitWithJSONError(translateFN("Errore nell'uscita dell'utente dalla chatroom"));
             }
         } else {
             // removes user form database
-            $user_exits = $chatroomObj->quit_chatroomFN($id_user, $id_user, $id_chatroom);
-            if (AMA_DataHandler::isError($user_exits)) {
-                exitWith_JSON_Error(translateFN("Errore nell'uscita dell'utente dalla chatroom"));
+            $user_exits = $chatroomObj->quitChatroomFN($id_user, $id_user, $id_chatroom);
+            if (AMADataHandler::isError($user_exits)) {
+                exitWithJSONError(translateFN("Errore nell'uscita dell'utente dalla chatroom"));
             }
         }
 
@@ -144,8 +164,8 @@ switch ($exit_reason) {
 
         //$mh = new MessageHandler(MultiPort::getDSN($sess_selected_tester));
         $mh = MessageHandler::instance($_SESSION['sess_selected_tester_dsn']);
-        if (AMA_DataHandler::isError($mh)) {
-            exitWith_JSON_Error(translateFN("Errore nella creazione dell'oggetto MessageHandler"));
+        if (AMADataHandler::isError($mh)) {
+            exitWithJSONError(translateFN("Errore nella creazione dell'oggetto MessageHandler"));
         }
         // send a message to announce the entrance of the user
         $message_ha['tipo']     = ADA_MSG_CHAT;
@@ -154,9 +174,9 @@ switch ($exit_reason) {
         $message_ha['id_group'] = $id_chatroom;
         $message_ha['testo']    = addslashes(sprintf(translateFN("L'utente %s e' uscito dalla stanza!"), $user_uname));
         // delegate sending to the message handler
-        $result = $mh->send_message($message_ha);
-        if (AMA_DataHandler::isError($result)) {
-            exitWith_JSON_Error(translateFN("Errore nel'invio del messaggio"));
+        $result = $mh->sendMessage($message_ha);
+        if (AMADataHandler::isError($result)) {
+            exitWithJSONError(translateFN("Errore nel'invio del messaggio"));
         }
         // message to display while logging out
         $display_message1 = translateFN("Grazie per aver effettuato correttamente il logout.");
@@ -184,10 +204,10 @@ switch ($exit_reason) {
         // in that case we do not have to remove the user, since if we remove him
         // he will not be able to come back once he wants to rejoin the chatroom
         // in the case of private rooms we just set his status to 'E' value
-        $chatroomHa = $chatroomObj->get_info_chatroomFN($id_chatroom);
+        $chatroomHa = $chatroomObj->getInfoChatroomFN($id_chatroom);
         $chat_type = $chatroomHa['tipo_chat'];
         if ($chat_type == INVITATION_CHAT) {
-            $user_exits = $chatroomObj->set_user_statusFN(
+            $user_exits = $chatroomObj->setUserStatusFN(
                 $id_user,
                 $id_user,
                 $id_chatroom,
@@ -195,7 +215,7 @@ switch ($exit_reason) {
             );
         } else {
             // removes user form database
-            $user_exits = $chatroomObj->quit_chatroomFN($id_user, $id_user, $id_chatroom);
+            $user_exits = $chatroomObj->quitChatroomFN($id_user, $id_user, $id_chatroom);
         }
         // message to display while logging out
         $display_message1 = translateFN("La chatroom cui stai provando ad accedere non e' stata ancora avviata! Verifica l'orario di apertura e riprova piu' tardi.");
@@ -209,10 +229,10 @@ switch ($exit_reason) {
         // in that case we do not have to remove the user, since if we remove him
         // he will not be able to come back once he wants to rejoin the chatroom
         // in the case of private rooms we just set his status to 'E' value
-        $chatroomHa = $chatroomObj->get_info_chatroomFN($id_chatroom);
+        $chatroomHa = $chatroomObj->getInfoChatroomFN($id_chatroom);
         $chat_type = $chatroomHa['tipo_chat'];
         if ($chat_type == INVITATION_CHAT) {
-            $user_exits = $chatroomObj->set_user_statusFN(
+            $user_exits = $chatroomObj->setUserStatusFN(
                 $id_user,
                 $id_user,
                 $id_chatroom,
@@ -220,7 +240,7 @@ switch ($exit_reason) {
             );
         } else {
             // removes user form database
-            $user_exits = $chatroomObj->quit_chatroomFN($id_user, $id_user, $id_chatroom);
+            $user_exits = $chatroomObj->quitChatroomFN($id_user, $id_user, $id_chatroom);
         }
         // message to display while logging out
         $display_message1 = translateFN("La chatroom cui stai provando ad accedere e' stata terminata!");
@@ -235,10 +255,10 @@ switch ($exit_reason) {
         // initialize a new ChatDataHandler object
         $chatroomObj = new ChatRoom($id_chatroom, $_SESSION['sess_selected_tester_dsn']);
         //get the type of the chatroom
-        $chatroomHa = $chatroomObj->get_info_chatroomFN($id_chatroom);
+        $chatroomHa = $chatroomObj->getInfoChatroomFN($id_chatroom);
         $chat_type = $chatroomHa['tipo_chat'];
         if ($chat_type == INVITATION_CHAT) {
-            $user_exits = $chatroomObj->set_user_statusFN(
+            $user_exits = $chatroomObj->setUserStatusFN(
                 $id_user,
                 $id_user,
                 $id_chatroom,
@@ -246,7 +266,7 @@ switch ($exit_reason) {
             );
         } else {
             // removes user form database
-            $user_exits = $chatroomObj->quit_chatroomFN($id_user, $id_user, $id_chatroom);
+            $user_exits = $chatroomObj->quitChatroomFN($id_user, $id_user, $id_chatroom);
         }
         // message to display while logging out
         $display_message1 = translateFN("La chatroom cui stai provando ad accedere ha raggiunto il massimo numero di utenti che pu� ospitare! Riprova pi� tardi!");

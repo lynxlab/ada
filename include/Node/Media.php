@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\Node\Media;
+
+use Lynxlab\ADA\Main\Node\EmptyMedia;
+
+use Lynxlab\ADA\Main\Node\ADAResource;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+// Trigger: ClassWithNameSpace. The class Media was declared with namespace Lynxlab\ADA\Main\Node. //
+
 /**
  * Node, Media, Link classes
  *
@@ -23,8 +35,8 @@ class Media extends ADAResource
     {
         $dh = $GLOBALS['dh'];
 
-        $result = $dh->get_risorsa_esterna_info($id);
-        if (AMA_DataHandler::isError($result)) {
+        $result = $dh->getRisorsaEsternaInfo($id);
+        if (AMADataHandler::isError($result)) {
             $mediaObj = new EmptyMedia();
         } else {
             if (defined('USE_MEDIA_CLASS') && class_exists(USE_MEDIA_CLASS, false)) {

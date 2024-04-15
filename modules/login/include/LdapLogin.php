@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Module\Login\LdapManagement;
+
+use Lynxlab\ADA\Module\Login\LdapLogin;
+
+use Lynxlab\ADA\Module\Login\AbstractLogin;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class LdapLogin was declared with namespace Lynxlab\ADA\Module\Login. //
+
 /**
  * LOGIN MODULE
  *
@@ -226,7 +240,7 @@ class LdapLogin extends AbstractLogin
         $tableOutData = [];
         $optionSetList = $this->getAllOptions();
 
-        if (!AMA_DB::isError($optionSetList)) {
+        if (!AMADB::isError($optionSetList)) {
             $labels =  [translateFN('nome'), translateFN('host'),  translateFN('stato'),
                     translateFN('azioni')];
             foreach ($optionSetList as $i => $elementArr) {
@@ -313,7 +327,7 @@ class LdapLogin extends AbstractLogin
                 $bottomButton->setAttribute('class', 'newButton bottom tooltip');
                 $configIndexDIV->addChild($bottomButton);
             }
-        } // if (!AMA_DB::isError($optionSetList))
+        } // if (!AMADB::isError($optionSetList))
         return $configIndexDIV;
     }
 }

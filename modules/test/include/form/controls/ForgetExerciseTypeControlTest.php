@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\Test\ForgetExerciseTypeControlTest;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class ForgetExerciseTypeControlTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  *
  * @package

@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAUser;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
+
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use Lynxlab\ADA\Comunica\DataHandler\UserDataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class CommunicationModuleHtmlLib was declared with namespace Lynxlab\ADA\Main\HtmlLibrary. //
+
 /**
  *
  * @package
@@ -24,8 +46,8 @@ use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\check_javascriptFN;
-use function Lynxlab\ADA\Main\Utilities\get_timezone_offset;
+use function Lynxlab\ADA\Main\Utilities\checkJavascriptFN;
+use function Lynxlab\ADA\Main\Utilities\getTimezoneOffset;
 use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 
 class CommunicationModuleHtmlLib
@@ -256,7 +278,7 @@ class CommunicationModuleHtmlLib
             $tester_TimeZone = SERVER_TIMEZONE;
         } else {
             $tester_TimeZone = MultiPort::getTesterTimeZone($tester);
-            $offset = get_timezone_offset($tester_TimeZone, SERVER_TIMEZONE);
+            $offset = getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
         }
         $now = time() + $offset;
         $zone = translateFN("Time zone:") . " " . $tester_TimeZone . " " . translateFN("actual time: ") . ts2tmFN($now);
@@ -437,7 +459,7 @@ class CommunicationModuleHtmlLib
             $tester_TimeZone = SERVER_TIMEZONE;
         } else {
             $tester_TimeZone = MultiPort::getTesterTimeZone($tester);
-            $offset = get_timezone_offset($tester_TimeZone, SERVER_TIMEZONE);
+            $offset = getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
         }
         $now = time() + $offset;
         $zone = translateFN("Time zone:") . " " . $tester_TimeZone . " " . translateFN("actual time: ") . ts2tmFN($now);
@@ -597,7 +619,7 @@ class CommunicationModuleHtmlLib
         }
 
         $common_dh = $GLOBALS['common_dh'];
-        $javascript_ok = check_javascriptFN($_SERVER['HTTP_USER_AGENT']);
+        $javascript_ok = checkJavascriptFN($_SERVER['HTTP_USER_AGENT']);
 
         $appointments_Ar = [];
         /*
@@ -611,14 +633,14 @@ class CommunicationModuleHtmlLib
         $module = 'read_event.php';
 
         foreach ($data_Ar as $tester => $appointment_data_Ar) {
-            //$tester_info_Ar = $common_dh->get_tester_info_from_pointer($tester);
+            //$tester_info_Ar = $common_dh->getTesterInfoFromPointer($tester);
             $tester_id = $testers_data_Ar[$tester];
 
-            //       if (AMA_Common_DataHandler::isError($tester_info_Ar)) {
+            //       if (AMACommonDataHandler::isError($tester_info_Ar)) {
             //         /*
-            //          * Return a ADA_Error with delayed error handling.
+            //          * Return a ADAError with delayed error handling.
             //          */
-            //         return new ADA_Error($tester_info_Ar,translateFN('Errore in ottenimento informazioni tester'),
+            //         return new ADAError($tester_info_Ar,translateFN('Errore in ottenimento informazioni tester'),
             //                               NULL,NULL,NULL,NULL,TRUE);
             //       }
 
@@ -633,7 +655,7 @@ class CommunicationModuleHtmlLib
                 $subject        = ADAEventProposal::removeEventToken($appointment_Ar[2]);
                 $priority       = $appointment_Ar[3];
                 $read_timestamp = $appointment_Ar[4];
-                $data_msg        = AMA_DataHandler::ts_to_date($date_time, "%d/%m/%Y - %H:%M:%S");
+                $data_msg        = AMADataHandler::tsToDate($date_time, "%d/%m/%Y - %H:%M:%S");
 
                 $sender_username = $appointment_Ar[6];
 
@@ -720,7 +742,7 @@ class CommunicationModuleHtmlLib
         foreach ($data_Ar as $tester => $message_dataAr) {
             $tester_id = $testers_dataAr[$tester];
             $tester_TimeZone = MultiPort::getTesterTimeZone($tester);
-            $offset = get_timezone_offset($tester_TimeZone, SERVER_TIMEZONE);
+            $offset = getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
 
             foreach ($message_dataAr as $message_Ar) {
                 // trasform message content into variable names
@@ -734,7 +756,7 @@ class CommunicationModuleHtmlLib
 
                 $date_time_zone = $date_time + $offset;
                 // $zone            = translateFN("Time zone:") . " " . $tester_TimeZone;
-                $data_msg        = AMA_DataHandler::ts_to_date($date_time_zone, "%d/%m/%Y %H:%M:%S"); // ." " . $zone;
+                $data_msg        = AMADataHandler::tsToDate($date_time_zone, "%d/%m/%Y %H:%M:%S"); // ." " . $zone;
 
                 $addressee_username = $message_Ar['nome_destinatario'] . ' ' . $message_Ar['cognome_destinatario'];
 
@@ -766,7 +788,7 @@ class CommunicationModuleHtmlLib
         foreach ($data_Ar as $tester => $message_dataAr) {
             $tester_id = $testers_dataAr[$tester];
             $tester_TimeZone = MultiPort::getTesterTimeZone($tester);
-            $offset = get_timezone_offset($tester_TimeZone, SERVER_TIMEZONE);
+            $offset = getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
 
             foreach ($message_dataAr as $message_id => $message_Ar) {
                 // trasform message content into variable names
@@ -781,7 +803,7 @@ class CommunicationModuleHtmlLib
 
                 $date_time_zone = $date_time + $offset;
                 // $zone            = translateFN("Time zone:") . " " . $tester_TimeZone;
-                $data_msg        = AMA_DataHandler::ts_to_date($date_time_zone, "%d/%m/%Y %H:%M:%S"); // ." " . $zone;
+                $data_msg        = AMADataHandler::tsToDate($date_time_zone, "%d/%m/%Y %H:%M:%S"); // ." " . $zone;
 
                 $sender_username = $message_Ar[6];
                 $sender_name_surname = $message_Ar[7] . " " . $message_Ar[8];
@@ -916,7 +938,7 @@ class CommunicationModuleHtmlLib
     private static function displayMessagesAsTable($data_Ar = [], $message_type = ADA_MSG_SIMPLE, $testers_dataAr = [])
     {
         $common_dh = $GLOBALS['common_dh'];
-        $javascript_ok = check_javascriptFN($_SERVER['HTTP_USER_AGENT']);
+        $javascript_ok = checkJavascriptFN($_SERVER['HTTP_USER_AGENT']);
 
         $appointments_Ar = [];
 
@@ -929,18 +951,18 @@ class CommunicationModuleHtmlLib
         foreach ($data_Ar as $tester => $appointment_data_Ar) {
             //$udh = UserDataHandler::instance(self::getDSN($tester));
 
-            //$tester_info_Ar = $common_dh->get_tester_info_from_pointer($tester);
+            //$tester_info_Ar = $common_dh->getTesterInfoFromPointer($tester);
             $tester_id = $testers_dataAr[$tester];
 
-            //       if (AMA_Common_DataHandler::isError($tester_info_Ar)) {
+            //       if (AMACommonDataHandler::isError($tester_info_Ar)) {
             //         /*
-            //          * Return a ADA_Error with delayed error handling.
+            //          * Return a ADAError with delayed error handling.
             //          */
-            //         return new ADA_Error($tester_info_Ar,translateFN('Errore in ottenimento informazioni tester'),
+            //         return new ADAError($tester_info_Ar,translateFN('Errore in ottenimento informazioni tester'),
             //                               NULL,NULL,NULL,NULL,TRUE);
             //       }
             $tester_TimeZone = MultiPort::getTesterTimeZone($tester);
-            $offset = get_timezone_offset($tester_TimeZone, SERVER_TIMEZONE);
+            $offset = getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
 
             foreach ($appointment_data_Ar as $appointment_id => $appointment_Ar) {
                 // trasform message content into variable names
@@ -956,11 +978,11 @@ class CommunicationModuleHtmlLib
                 $read_timestamp = $appointment_Ar[4];
                 $date_time_zone = $date_time + $offset;
                 $zone           = translateFN("Time zone:") . " " . $tester_TimeZone;
-                $data_msg        = AMA_DataHandler::ts_to_date($date_time_zone, "%d/%m/%Y - %H:%M:%S") . " " . $zone;
+                $data_msg        = AMADataHandler::tsToDate($date_time_zone, "%d/%m/%Y - %H:%M:%S") . " " . $zone;
 
                 // transform sender's id into sender's name
-                //        $res_ar = $udh->find_users_list(array("username"), "id_utente=$sender_id");
-                //        if (AMA_DataHandler::isError($res_ar)) {
+                //        $res_ar = $udh->findUsersList(array("username"), "id_utente=$sender_id");
+                //        if (AMADataHandler::isError($res_ar)) {
                 //          $sender_username = '';
                 //        }
                 //        else {
@@ -1000,7 +1022,7 @@ class CommunicationModuleHtmlLib
     private static function displayMessagesAsForm($data_Ar = [], $message_type = ADA_MSG_SIMPLE, $testers_dataAr = [])
     {
         $common_dh = $GLOBALS['common_dh'];
-        $javascript_ok = check_javascriptFN($_SERVER['HTTP_USER_AGENT']);
+        $javascript_ok = checkJavascriptFN($_SERVER['HTTP_USER_AGENT']);
 
         $appointments_Ar = [];
 
@@ -1040,17 +1062,17 @@ class CommunicationModuleHtmlLib
         foreach ($data_Ar as $tester => $appointment_data_Ar) {
             //$udh = UserDataHandler::instance(self::getDSN($tester));
 
-            //$tester_info_Ar = $common_dh->get_tester_info_from_pointer($tester);
+            //$tester_info_Ar = $common_dh->getTesterInfoFromPointer($tester);
             $tester_id = $testers_dataAr[$tester];
-            //      if (AMA_Common_DataHandler::isError($tester_info_Ar)) {
+            //      if (AMACommonDataHandler::isError($tester_info_Ar)) {
             //        /*
-            //         * Return a ADA_Error with delayed error handling.
+            //         * Return a ADAError with delayed error handling.
             //         */
-            //        return new ADA_Error($tester_info_Ar,translateFN('Errore in ottenimento informazioni tester'),
+            //        return new ADAError($tester_info_Ar,translateFN('Errore in ottenimento informazioni tester'),
             //                              NULL,NULL,NULL,NULL,TRUE);
             //      }
             $tester_TimeZone = MultiPort::getTesterTimeZone($tester);
-            $offset = get_timezone_offset($tester_TimeZone, SERVER_TIMEZONE);
+            $offset = getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
 
             foreach ($appointment_data_Ar as $appointment_id => $appointment_Ar) {
                 // trasform message content into variable names
@@ -1067,13 +1089,13 @@ class CommunicationModuleHtmlLib
 
                 $date_time_zone = $date_time + $offset;
                 $zone           = translateFN("Time zone:") . " " . $tester_TimeZone;
-                $data_msg        = AMA_DataHandler::ts_to_date($date_time_zone, "%d/%m/%Y - %H:%M:%S") . " " . $zone;
+                $data_msg        = AMADataHandler::tsToDate($date_time_zone, "%d/%m/%Y - %H:%M:%S") . " " . $zone;
 
-                //        $data_msg        = AMA_DataHandler::ts_to_date($date_time, "%d/%m/%Y - %H:%M:%S");
+                //        $data_msg        = AMADataHandler::tsToDate($date_time, "%d/%m/%Y - %H:%M:%S");
 
                 // transform sender's id into sender's name
-                //        $res_ar = $udh->find_users_list(array("username"), "id_utente=$sender_id");
-                //        if (AMA_DataHandler::isError($res_ar)) {
+                //        $res_ar = $udh->findUsersList(array("username"), "id_utente=$sender_id");
+                //        if (AMADataHandler::isError($res_ar)) {
                 //          $sender_username = '';
                 //        }
                 //        else {

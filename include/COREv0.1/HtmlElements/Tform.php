@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\CORE\HtmlElements\Tform;
+
+use Lynxlab\ADA\CORE\HtmlElements\Table;
+
+use Lynxlab\ADA\CORE\HtmlElements\Form;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class Tform was declared with namespace Lynxlab\ADA\CORE\HtmlElements. //
+
 /**
  * Html_element, Table, Ilist, Form and Tform classes
  *

@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Forms\UserSubscriptionForm;
+
+use Lynxlab\ADA\Main\Forms\UserRegistrationForm;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class UserSubscriptionForm was declared with namespace Lynxlab\ADA\Main\Forms. //
+
 /**
  * UserSubscriptionForm file
  *

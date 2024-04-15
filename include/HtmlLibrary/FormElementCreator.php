@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\HtmlLibrary\FormElementCreator;
+
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class FormElementCreator was declared with namespace Lynxlab\ADA\Main\HtmlLibrary. //
+
 namespace Lynxlab\ADA\Main\HtmlLibrary;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;

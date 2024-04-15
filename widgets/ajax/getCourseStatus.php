@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Main\User\ADAUser;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * ADA course status widget
  *
@@ -91,14 +103,14 @@ try {
             throw new Exception(translateFN('Nessun fornitore di servizi &egrave; stato configurato'));
         }
     } else {
-        $testerInfo = $GLOBALS['common_dh']->get_tester_info_from_id_course($courseId);
-        if (!AMA_DB::isError($testerInfo) && is_array($testerInfo) && isset($testerInfo['puntatore'])) {
+        $testerInfo = $GLOBALS['common_dh']->getTesterInfoFromIdCourse($courseId);
+        if (!AMADB::isError($testerInfo) && is_array($testerInfo) && isset($testerInfo['puntatore'])) {
             $testerName = $testerInfo['puntatore'];
         }
     } // end if (!MULTIPROVIDER)
 
     if (isset($testerName)) {
-        $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($testerName));
+        $tester_dh = AMADataHandler::instance(MultiPort::getDSN($testerName));
         // setting of the global is needed to load the course object
         $GLOBALS['dh'] = $tester_dh;
     } else {
@@ -109,12 +121,12 @@ try {
      * @var ADAUser $userObj
      * @var History $historyObj
      */
-    $userObj->set_course_instance_for_history($courseInstanceId);
+    $userObj->setCourseInstanceForHistory($courseInstanceId);
     $historyObj = $userObj->getHistoryInCourseInstance($courseInstanceId);
-    $historyObj->get_course_data();
+    $historyObj->getCourseData();
     $nodeSuff = $historyObj->visited_nodes_count > 0 ? 'i' : 'o';
     $nodesTxt = sprintf(translateFN("Hai visitato <strong>%d</strong> nod$nodeSuff su un totale di <strong>%d</strong>"), $historyObj->visited_nodes_count, $historyObj->nodes_count);
-    [$spentH, $spentM] = explode(':', $historyObj->history_nodes_time_FN());
+    [$spentH, $spentM] = explode(':', $historyObj->historyNodesTimeFN());
     $timeArr = [];
     if ($spentH > 0 || $spentM > 0) {
         $timeArr[] = ['label' => ' ' . translateFN('e hai studiato per') . ' '];
@@ -133,7 +145,7 @@ try {
         $completeTimeClassName = 'completeConditionTime';
         $mydh = AMACompleteDataHandler::instance(MultiPort::getDSN($testerName));
         // load the conditionset for this course
-        $conditionSet = $mydh->get_linked_conditionset_for_course($courseId);
+        $conditionSet = $mydh->getLinkedConditionsetForCourse($courseId);
         $mydh->disconnect();
         if ($conditionSet instanceof CompleteConditionSet) {
             foreach ($conditionSet->getOperandsForPriority() as $condArr) {

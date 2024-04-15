@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * FORMMAIL MODULE.
  *
@@ -59,7 +67,7 @@ $GLOBALS['dh'] = AMAFormmailDataHandler::instance(MultiPort::getDSN($_SESSION['s
 $helpTypes = $GLOBALS['dh']->getHelpTypes($userObj->getType());
 $helpTypesHTML = '';
 
-if (!AMA_DB::isError($helpTypes) && is_array($helpTypes) && count($helpTypes) > 0) {
+if (!AMADB::isError($helpTypes) && is_array($helpTypes) && count($helpTypes) > 0) {
     foreach ($helpTypes as $helpType) {
         $helpTypesDOM = CDOMElement::create('div', 'class:helptype item');
         $helpTypesDOM->setAttribute('data-value', $helpType[AMAFormmailDataHandler::$PREFIX . 'helptype_id']);

@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use function \translateFN;
+
 /**
  * index.
  *
@@ -163,11 +171,11 @@ if (class_exists('Lynxlab\\ADA\\Module\\GDPR\\GdprPolicy', true)) {
 
 if (isset($p_login) || (isset($selectedLoginProvider) && strlen($selectedLoginProvider) > 0)) {
     if (isset($p_login)) {
-        $username = DataValidator::validate_username($p_username);
-        $password = DataValidator::validate_password($p_password, $p_password);
+        $username = DataValidator::validateUsername($p_username);
+        $password = DataValidator::validatePassword($p_password, $p_password);
     } else {
-        $username = DataValidator::validate_not_empty_string($p_username);
-        $password = DataValidator::validate_not_empty_string($p_password);
+        $username = DataValidator::validateNotEmptyString($p_username);
+        $password = DataValidator::validateNotEmptyString($p_password);
     }
 
     if (!isset($p_remindme)) {
@@ -239,7 +247,7 @@ if (!MULTIPROVIDER) {
         /**
          * overwrite $newsmsg with generated available providers listing
          */
-        $allTesters = $common_dh->get_all_testers(['nome']);
+        $allTesters = $common_dh->getAllTesters(['nome']);
         $addHtml = false;
 
         foreach ($allTesters as $aTester) {

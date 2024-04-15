@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\PreferenceSelector;
+
+use Lynxlab\ADA\Services\NodeEditing\NodeEditing;
+
+// Trigger: ClassWithNameSpace. The class PreferenceSelector was declared with namespace Lynxlab\ADA\Services\NodeEditing. //
+
 /**
  * PreferenceSelector class.
  *

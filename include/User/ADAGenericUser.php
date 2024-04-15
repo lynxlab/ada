@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\User\ADAGenericUser;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class ADAGenericUser was declared with namespace Lynxlab\ADA\Main\User. //
+
 /**
  * User classes
  *
@@ -448,7 +458,7 @@ abstract class ADAGenericUser
 
     public function setPassword($password)
     {
-        if (DataValidator::validate_password($password, $password) != false) {
+        if (DataValidator::validatePassword($password, $password) != false) {
             $this->password = sha1($password);
         }
     }
@@ -471,7 +481,7 @@ abstract class ADAGenericUser
 
     public function addTester($tester)
     {
-        $tester = DataValidator::validate_testername($tester, MULTIPROVIDER);
+        $tester = DataValidator::validateTestername($tester, MULTIPROVIDER);
         if ($tester !== false) {
             $this->setTesters($this->getTesters());
             array_push($this->testers, $tester);
@@ -524,7 +534,7 @@ abstract class ADAGenericUser
 
     // MARK: existing methods
 
-    public function get_messagesFN($id_user)
+    public function getMessagesFN($id_user)
     {
     }
 
@@ -566,35 +576,35 @@ abstract class ADAGenericUser
         return ($translate ? translateFN($user_type) : $user_type);
     }
 
-    public function get_agendaFN($id_user)
+    public function getAgendaFN($id_user)
     {
     }
 
-    public static function get_online_usersFN($id_course_instance, $mode)
+    public static function getOnlineUsersFN($id_course_instance, $mode)
     {
     }
 
-    private static function online_usersFN($id_course_instance, $mode = 0)
+    private static function onlineUsersFN($id_course_instance, $mode = 0)
     {
     }
 
-    public static function is_someone_thereFN($id_course_instance, $id_node)
+    public static function isSomeoneThereFN($id_course_instance, $id_node)
     {
     }
 
-    public function get_last_accessFN($id_course_instance = "")
+    public function getLastAccessFN($id_course_instance = "")
     {
     }
 
-    public static function is_visited_by_userFN($node_id, $course_instance_id, $user_id)
+    public static function isVisitedByUserFN($node_id, $course_instance_id, $user_id)
     {
     }
 
-    public static function is_visited_by_classFN($node_id, $course_instance_id, $course_id)
+    public static function isVisitedByClassFN($node_id, $course_instance_id, $course_id)
     {
     }
 
-    public static function is_visitedFN($node_id)
+    public static function isVisitedFN($node_id)
     {
     }
 }

@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsHistory;
+
+use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsBase;
+
+use Lynxlab\ADA\Module\ForkedPaths\AMAForkedPathsDataHandler;
+
+// Trigger: ClassWithNameSpace. The class ForkedPathsHistory was declared with namespace Lynxlab\ADA\Module\ForkedPaths. //
+
 /**
  * @package     forked-paths module
  * @author      giorgio <g.consorti@lynxlab.com>

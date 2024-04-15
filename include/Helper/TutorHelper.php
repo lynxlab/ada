@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Helper\ViewBaseHelper;
+
+use Lynxlab\ADA\Main\Helper\TutorHelper;
+
+// Trigger: ClassWithNameSpace. The class TutorHelper was declared with namespace Lynxlab\ADA\Main\Helper. //
+
 /**
  * TUTOR FUNCTIONS
  *

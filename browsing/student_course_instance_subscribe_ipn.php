@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Switcher\Subscription;
+
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use function \translateFN;
+
 /**
  *
  * @package     Subscription IPN from Paypal
@@ -18,9 +40,9 @@ use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_user;
+use function Lynxlab\ADA\Main\AMA\DBRead\readUser;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\today_dateFN;
+use function Lynxlab\ADA\Main\Utilities\todayDateFN;
 
 /**
  * Base config file
@@ -141,19 +163,19 @@ if (!is_file($lockfile)) {
     ini_set("log_errors", 1);
     ini_set("error_log", ROOT_DIR . '/log/paypal/paypal-ipn-error.log');
 
-    $today_date = today_dateFN();
-    $providerId = DataValidator::is_uinteger($_REQUEST['provider']);
-    $courseId = DataValidator::is_uinteger($_REQUEST['course']);
-    $instanceId = DataValidator::is_uinteger($_REQUEST['instance']);
-    $studentId = DataValidator::is_uinteger($_REQUEST['student']);
+    $today_date = todayDateFN();
+    $providerId = DataValidator::isUinteger($_REQUEST['provider']);
+    $courseId = DataValidator::isUinteger($_REQUEST['course']);
+    $instanceId = DataValidator::isUinteger($_REQUEST['instance']);
+    $studentId = DataValidator::isUinteger($_REQUEST['student']);
 
-    $testerInfoAr = $common_dh->get_tester_info_from_id($providerId, AMA_FETCH_BOTH);
-    $buyerObj = read_user($studentId);
+    $testerInfoAr = $common_dh->getTesterInfoFromId($providerId, AMA_FETCH_BOTH);
+    $buyerObj = readUser($studentId);
     if ((is_object($buyerObj)) && (!AMA_dataHandler::isError($buyerObj))) {
-        if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
+        if (!AMACommonDataHandler::isError($testerInfoAr)) {
             $provider_name = $testerInfoAr[1];
             $tester = $testerInfoAr[10];
-            $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
+            $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester));
             // $currentTesterId = $newTesterId;
             $GLOBALS['dh'] = $tester_dh;
             $dh = $tester_dh;
@@ -169,7 +191,7 @@ if (!is_file($lockfile)) {
             $instanceObj = new CourseInstance($instanceId);
             $price = $instanceObj->getPrice();
             $user_level = $instanceObj->getStartLevelStudent();
-            $course = $dh->get_course($courseId);
+            $course = $dh->getCourse($courseId);
             $course_name = $course['titolo'];
 
             /**
@@ -269,10 +291,10 @@ if (!is_file($lockfile)) {
 
                         // iscrizione al corso
                         $status = 2;
-                        $res = $dh->course_instance_student_subscribe($instanceId, $studentId, $status, $user_level);
-                        if (AMA_DataHandler::isError($res)) {
+                        $res = $dh->courseInstanceStudentSubscribe($instanceId, $studentId, $status, $user_level);
+                        if (AMADataHandler::isError($res)) {
                             $msg = $res->getMessage();
-                            //                    $dh->course_instance_student_presubscribe_remove($id_course_instance,$id_studente);
+                            //                    $dh->courseInstanceStudentPresubscribeRemove($id_course_instance,$id_studente);
                             //                    header("Location: $error?err_msg=$msg");
                             $message_ha["testo"] = translateFN('Gentile') . " " . $firstname . ",\r\n" . translateFN("Si è verificato un errore nell'iscrizione al corso") . " " . $course_name . "\n\r\n\r";
                             $message_ha["testo"] .=  $body_mail;
@@ -285,8 +307,8 @@ if (!is_file($lockfile)) {
                             // Send mail to the user with his/her data.
                             $switcherTypeAr = [AMA_TYPE_SWITCHER];
                             $extended_data = true;
-                            $switcherList = $dh->get_users_by_type($switcherTypeAr, $extended_data);
-                            if (!AMA_DataHandler::isError($switcherList)) {
+                            $switcherList = $dh->getUsersByType($switcherTypeAr, $extended_data);
+                            if (!AMADataHandler::isError($switcherList)) {
                                 $switcher_email = $switcherList[0]['e_mail'];
                             } else {
                                 $switcher_email = ADA_ADMIN_MAIL_ADDRESS;
@@ -318,7 +340,7 @@ if (!is_file($lockfile)) {
                             }
                         }
                         $mailer = new Mailer();
-                        $res = $mailer->send_mail($message_ha, $sender_email, $recipients_emails_ar);
+                        $res = $mailer->sendMail($message_ha, $sender_email, $recipients_emails_ar);
                     } else {
                         $message = translateFN('Gentile') . " " . $firstname . ", <BR />";
                         $message .= translateFN('il corso pagato non corrisponde ai dettagli in nostro possesso') . "<BR />";

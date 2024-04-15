@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\CORE\HtmlElements\Tform;
+
+use Lynxlab\ADA\CORE\HtmlElements\Table;
+
+use Lynxlab\ADA\CORE\HtmlElements\IList;
+
+use Lynxlab\ADA\CORE\HtmlElements\HTMLElement;
+
+use Lynxlab\ADA\CORE\HtmlElements\Form;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class IList was declared with namespace Lynxlab\ADA\CORE\HtmlElements. //
+
 /**
  * Html_element, Table, Ilist, Form and Tform classes
  *
@@ -102,12 +118,12 @@ $var = $lObj->getList();
 
     public function printList()
     {
-        return $this->print_element();
+        return $this->printElement();
     }
 
     public function getList()
     {
-        return $this->get_element();
+        return $this->getElement();
     }
 
 

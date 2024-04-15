@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * Add user - this module provides add user functionality
  *
@@ -109,67 +125,67 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $errorsAr['user_tester'] = true;
     }
 
-    if (DataValidator::is_uinteger($_POST['user_type']) === false) {
+    if (DataValidator::isUinteger($_POST['user_type']) === false) {
         $errorsAr['user_type'] = true;
     }
 
-    if (DataValidator::validate_firstname($_POST['user_firstname']) === false) {
+    if (DataValidator::validateFirstname($_POST['user_firstname']) === false) {
         $errorsAr['user_firstname'] = true;
     }
 
-    if (DataValidator::validate_lastname($_POST['user_lastname']) === false) {
+    if (DataValidator::validateLastname($_POST['user_lastname']) === false) {
         $errorsAr['user_lastname'] = true;
     }
 
-    if (DataValidator::validate_email($_POST['user_email']) === false) {
+    if (DataValidator::validateEmail($_POST['user_email']) === false) {
         $errorsAr['user_email'] = true;
     }
 
-    if (DataValidator::validate_username($_POST['user_username']) === false) {
+    if (DataValidator::validateUsername($_POST['user_username']) === false) {
         $errorsAr['user_username'] = true;
     }
 
-    if (DataValidator::validate_password($_POST['user_password'], $_POST['user_passwordcheck']) === false) {
+    if (DataValidator::validatePassword($_POST['user_password'], $_POST['user_passwordcheck']) === false) {
         $errorsAr['user_password'] = true;
     }
 
-    if (DataValidator::validate_string($_POST['user_address']) === false) {
+    if (DataValidator::validateString($_POST['user_address']) === false) {
         $errorsAr['user_address'] = true;
     }
 
-    if (DataValidator::validate_string($_POST['user_city']) === false) {
+    if (DataValidator::validateString($_POST['user_city']) === false) {
         $errorsAr['user_city'] = true;
     }
 
-    if (DataValidator::validate_string($_POST['user_province']) === false) {
+    if (DataValidator::validateString($_POST['user_province']) === false) {
         $errorsAr['user_province'] = true;
     }
 
-    if (DataValidator::validate_string($_POST['user_country']) === false) {
+    if (DataValidator::validateString($_POST['user_country']) === false) {
         $errorsAr['user_country'] = true;
     }
 
-    if (DataValidator::validate_string($_POST['user_fiscal_code']) === false) {
+    if (DataValidator::validateString($_POST['user_fiscal_code']) === false) {
         $errorsAr['user_fiscal_code'] = true;
     }
 
-    if (DataValidator::validate_birthdate($_POST['user_birthdate']) === false) {
+    if (DataValidator::validateBirthdate($_POST['user_birthdate']) === false) {
         $errorsAr['user_birthdate'] = true;
     }
 
-    if (DataValidator::validate_not_empty_string($_POST['user_birthcity']) === false) {
+    if (DataValidator::validateNotEmptyString($_POST['user_birthcity']) === false) {
         $errorsAr['user_birthcity'] = true;
     }
 
-    if (DataValidator::validate_string($_POST['user_birthprovince']) === false) {
+    if (DataValidator::validateString($_POST['user_birthprovince']) === false) {
         $errorsAr['user_birthprovince'] = true;
     }
 
-    if (DataValidator::validate_string($_POST['user_sex']) === false) {
+    if (DataValidator::validateString($_POST['user_sex']) === false) {
         $errorsAr['user_sex'] = true;
     }
 
-    if (DataValidator::validate_phone($_POST['user_phone']) === false) {
+    if (DataValidator::validatePhone($_POST['user_phone']) === false) {
         $errorsAr['user_phone'] = true;
     }
 
@@ -177,10 +193,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if (count($errorsAr) > 0) {
         unset($_POST['submit']);
         $user_dataAr = $_POST;
-        $testers_dataAr = $common_dh->get_all_testers(['id_tester','nome']);
+        $testers_dataAr = $common_dh->getAllTesters(['id_tester','nome']);
 
-        if (AMA_Common_DataHandler::isError($testers_dataAr)) {
-            $errObj = new ADA_Error($testersAr, translateFN("Errore nell'ottenimento delle informazioni sui provider"));
+        if (AMACommonDataHandler::isError($testers_dataAr)) {
+            $errObj = new ADAError($testersAr, translateFN("Errore nell'ottenimento delle informazioni sui provider"));
         } else {
             $testersAr = [];
             foreach ($testers_dataAr as $tester_dataAr) {
@@ -211,7 +227,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         'birthdate'      => $_POST['user_birthdate'],
         'sesso'          => $_POST['user_sex'],
         'telefono'               => $_POST['user_phone'],
-        'stato'                  => 0,//DataValidator::validate_string($_POST['user_status'])
+        'stato'                  => 0,//DataValidator::validateString($_POST['user_status'])
         'birthcity'      => $_POST['user_birthcity'],
         'birthprovince'  => $_POST['user_birthprovince'],
         ];
@@ -254,10 +270,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
             unset($_POST['submit']);
             $user_dataAr = $_POST;
-            $testers_dataAr = $common_dh->get_all_testers(['id_tester','nome']);
+            $testers_dataAr = $common_dh->getAllTesters(['id_tester','nome']);
 
-            if (AMA_Common_DataHandler::isError($testers_dataAr)) {
-                $errObj = new ADA_Error($testersAr, translateFN("Errore nell'ottenimento delle informazioni sui tester"));
+            if (AMACommonDataHandler::isError($testers_dataAr)) {
+                $errObj = new ADAError($testersAr, translateFN("Errore nell'ottenimento delle informazioni sui tester"));
             } else {
                 $testersAr = [];
                 foreach ($testers_dataAr as $tester_dataAr) {
@@ -271,10 +287,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     /*
      * Display the add user form
      */
-    $testers_dataAr = $common_dh->get_all_testers(['id_tester','nome']);
+    $testers_dataAr = $common_dh->getAllTesters(['id_tester','nome']);
 
-    if (AMA_Common_DataHandler::isError($testers_dataAr)) {
-        $errObj = new ADA_Error($testersAr, translateFN("Errore nell'ottenimento delle informazioni sui provider"));
+    if (AMACommonDataHandler::isError($testers_dataAr)) {
+        $errObj = new ADAError($testersAr, translateFN("Errore nell'ottenimento delle informazioni sui provider"));
     } else {
         $testersAr = [];
         foreach ($testers_dataAr as $tester_dataAr) {

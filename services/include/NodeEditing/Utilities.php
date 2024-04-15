@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Services\NodeEditing\NodeEditing;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class Utilities was declared with namespace Lynxlab\ADA\Services\NodeEditing. //
+
 /**
  * Utilities class.
  *

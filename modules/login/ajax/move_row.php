@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * LOGIN MODULE
  *
@@ -63,7 +69,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST' &&
             $result = $GLOBALS['dh']->moveLoginProvider(intval($_POST['provider_id']), $delta);
         }
 
-        if (!AMA_DB::isError($result)) {
+        if (!AMADB::isError($result)) {
             $retArray =  ["status" => "OK"];
         } else {
             $retArray =  ["status" => "ERROR", "msg" => translateFN("Errore nello spostamento") ];

@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use function \translateFN;
+
 /**
  * save_registration.php - save user personal data in the DB
  *
@@ -99,7 +117,7 @@ switch ($userObj->getType()) {
         $editUserObj = & $userObj;
         break;
     case AMA_TYPE_SWITCHER:
-        $userId = DataValidator::is_uinteger($_POST['id_utente']);
+        $userId = DataValidator::isUinteger($_POST['id_utente']);
         if ($userId !== false) {
             $editUserObj = MultiPort::findUser($userId);
         }

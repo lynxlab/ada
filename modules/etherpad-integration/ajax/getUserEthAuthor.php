@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * @package     etherpad module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -76,7 +82,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             $tmpUser = $userObj;
         } else {
             // check user, findUser will redirect if not found :(
-            if (AMA_DB::isError($GLOBALS['common_dh']->get_user_type($passedData['userId']))) {
+            if (AMADB::isError($GLOBALS['common_dh']->getUserType($passedData['userId']))) {
                 throw new EtherpadException(translateFN('Utente sconosciuto'));
             }
             $tmpUser = MultiPort::findUser($passedData['userId']);
@@ -117,7 +123,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
         $res = $e;
     }
 
-    if (AMA_DB::isError($res) || $res instanceof Exception) {
+    if (AMADB::isError($res) || $res instanceof Exception) {
         // if it's an error display the error message
         $retArray['status'] = "ERROR";
         $retArray['msg'] = $res->getMessage();

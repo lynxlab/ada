@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * SLIDEIMPORT MODULE.
  *
@@ -105,7 +111,7 @@ if (
             $selectedPage = array_shift($selectedPages);
             $node_data['text'] = str_replace('%filenamehere%', $selectedPage . '.jpg', $imgtemplate);
             /**
-             * cursed add_media method in ama.inc.php starts inserting resources from array index 1!!!
+             * cursed addMedia method in ama.inc.php starts inserting resources from array index 1!!!
              */
             $node_data['resources_ar'] = [ 1 =>
                 array_merge($resource_data, [
@@ -115,8 +121,8 @@ if (
         }
 
         if ($asNewCourse === false) {
-            $order = $GLOBALS['dh']->get_ordine_max_val($startNode);
-            if (AMA_DB::isError($order) || is_null($order)) {
+            $order = $GLOBALS['dh']->getOrdineMaxVal($startNode);
+            if (AMADB::isError($order) || is_null($order)) {
                 $order = 0;
             }
             $node_data['id'] = null;
@@ -133,7 +139,7 @@ if (
             $createdNodeID = $startNode;
         }
 
-        if (!AMA_DB::isError($createdNodeID)) {
+        if (!AMADB::isError($createdNodeID)) {
             $error = false;
             if ($createStartNode) {
                 $createdNodes = [$createdNodeID];
@@ -141,8 +147,8 @@ if (
                 $createdNodes = [];
             }
 
-            $order = $GLOBALS['dh']->get_ordine_max_val($createdNodeID);
-            if (AMA_DB::isError($order) || is_null($order)) {
+            $order = $GLOBALS['dh']->getOrdineMaxVal($createdNodeID);
+            if (AMADB::isError($order) || is_null($order)) {
                 $order = 0;
             }
 
@@ -170,7 +176,7 @@ if (
                     $child_data['text'] = str_replace('%filenamehere%', $selectedPage . '.jpg', $imgtemplate);
 
                     /**
-                     * cursed add_media method in ama.inc.php starts inserting resources from array index 1!!!
+                     * cursed addMedia method in ama.inc.php starts inserting resources from array index 1!!!
                      */
                     $child_data['resources_ar'] = [ 1 =>
                         array_merge($resource_data, [
@@ -179,11 +185,11 @@ if (
                         ])];
 
                     $childNodeID = NodeEditing::createNode($child_data);
-                    if (AMA_DB::isError($childNodeID)) {
+                    if (AMADB::isError($childNodeID)) {
                         $error = true;
                         // delete all nodes
                         foreach ($createdNodes as $createdNode) {
-                            $GLOBALS['dh']->remove_node($createdNode);
+                            $GLOBALS['dh']->removeNode($createdNode);
                         }
                         break;
                     } else {
@@ -192,7 +198,7 @@ if (
                 } elseif ($key == 0 && $asSlideShow && $withLinkedNodes) {
                     // must add first node external resource here, otherwise it will
                     // be incorrectly listed as last one in the navigation panel/resource section
-                    $GLOBALS['dh']->add_only_in_risorsa_esterna(array_merge($resource_data, [
+                    $GLOBALS['dh']->addOnlyInRisorsaEsterna(array_merge($resource_data, [
                         'id_nodo' => $createdNodeID,
                         'nome_file' => $info['filename'] . DIRECTORY_SEPARATOR . $selectedPage . '.' . IMAGE_FORMAT,
                         'titolo' => $selectedPage . ' - ' . $nodeBaseName]));
@@ -209,7 +215,7 @@ if (
                     $img->setAttribute('src', $imgPath);
 
                     if (
-                        isset($childNodeID) && !AMA_DB::isError($childNodeID) && $withLinkedNodes &&
+                        isset($childNodeID) && !AMADB::isError($childNodeID) && $withLinkedNodes &&
                         ($key != 0  || ($key == 0 && !$hasFrontPage))
                     ) {
                         $a = CDOMElement::create('a', 'href:view.php?id_node=' . $childNodeID);
@@ -226,11 +232,11 @@ if (
             if ($asSlideShow) {
                 $slideshow_data['id'] = $createdNodeID;
                 $slideshow_data['text'] = $wrapper->getHtml();
-                if (AMA_DB::isError(NodeEditing::saveNode($slideshow_data))) {
+                if (AMADB::isError(NodeEditing::saveNode($slideshow_data))) {
                     $error = true;
                     // delete all nodes
                     foreach ($createdNodes as $createdNode) {
-                        $GLOBALS['dh']->remove_node($createdNode);
+                        $GLOBALS['dh']->removeNode($createdNode);
                     }
                 } else {
                     // update node media

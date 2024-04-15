@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Main\Token\UserRegistrationToken;
+
+use Lynxlab\ADA\Main\Token\TokenFinder;
+
+use Lynxlab\ADA\Main\Token\ChangePasswordToken;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+// Trigger: ClassWithNameSpace. The class TokenFinder was declared with namespace Lynxlab\ADA\Main\Token. //
+
 namespace Lynxlab\ADA\Main\Token;
 
 class TokenFinder
@@ -8,8 +18,8 @@ class TokenFinder
     {
         $common_dh = $GLOBALS['common_dh'];
 
-        $token_dataAr = $common_dh->get_token($token, $user_id, ADA_TOKEN_FOR_REGISTRATION);
-        if (AMA_Common_DataHandler::isError($token_dataAr)) {
+        $token_dataAr = $common_dh->getToken($token, $user_id, ADA_TOKEN_FOR_REGISTRATION);
+        if (AMACommonDataHandler::isError($token_dataAr)) {
             return false;
         }
         $tokenObj = new UserRegistrationToken();
@@ -21,8 +31,8 @@ class TokenFinder
     {
         $common_dh = $GLOBALS['common_dh'];
 
-        $token_dataAr = $common_dh->get_token($token, $user_id, ADA_TOKEN_FOR_PASSWORD_CHANGE);
-        if (AMA_Common_DataHandler::isError($token_dataAr)) {
+        $token_dataAr = $common_dh->getToken($token, $user_id, ADA_TOKEN_FOR_PASSWORD_CHANGE);
+        if (AMACommonDataHandler::isError($token_dataAr)) {
             return false;
         }
         $tokenObj = new ChangePasswordToken();

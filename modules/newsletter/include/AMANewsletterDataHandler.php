@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Module\Newsletter\AMANewsletterDataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+// Trigger: ClassWithNameSpace. The class AMANewsletterDataHandler was declared with namespace Lynxlab\ADA\Module\Newsletter. //
+
 /**
  * NEWSLETTER MODULE.
  *
@@ -15,7 +27,7 @@ namespace Lynxlab\ADA\Module\Newsletter;
 
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
-class AMANewsletterDataHandler extends AMA_DataHandler
+class AMANewsletterDataHandler extends AMADataHandler
 {
     public const MODULES_NEWSLETTER_HISTORY_STATUS_UNDEFINED = 0;
     public const MODULES_NEWSLETTER_HISTORY_STATUS_SENDING = 1;
@@ -41,14 +53,14 @@ class AMANewsletterDataHandler extends AMA_DataHandler
      *
      * @param string $tablename table name to retreive fields list
      * @param bool $backTick true if fields name must be backtrick enquoted
-     * @return array|AMA_Error on error, array on success
+     * @return array|AMAError on error, array on success
      *
      * @access private
      */
     private function getFieldsList($tablename, $backTick = true)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -57,7 +69,7 @@ class AMANewsletterDataHandler extends AMA_DataHandler
         $sql = "SHOW COLUMNS FROM " . self::$PREFIX . $tablename . " WHERE field NOT LIKE 'id'";
         $res = $db->getAll($sql, [], AMA_FETCH_ORDERED);
 
-        if (!AMA_DB::isError($res)) {
+        if (!AMADB::isError($res)) {
             // row index 0 is 'Field' field
             foreach ($res as $row) {
                 $fields[] = (($backTick) ? '`' : '') . $row[0] . (($backTick) ? '`' : '');
@@ -71,14 +83,14 @@ class AMANewsletterDataHandler extends AMA_DataHandler
      *
      * @param bool $countOnly true if it's executing a count only query
      * @param string $sql the query to be executed
-     * @return AMA_Error on error, result of query execution on success
+     * @return AMAError on error, result of query execution on success
      *
      * @access private
      */
     private function getOneOrGetAll($countOnly, $sql)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -88,7 +100,7 @@ class AMANewsletterDataHandler extends AMA_DataHandler
             $retval =  $db->getAll($sql);
         }
 
-        if ($countOnly && AMA_DB::isError($retval)) {
+        if ($countOnly && AMADB::isError($retval)) {
             return -1;
         } else {
             return $retval;
@@ -100,7 +112,7 @@ class AMANewsletterDataHandler extends AMA_DataHandler
      *
      * @param string $id_course course id agains which must filter
      * @param bool $countOnly true to only count authors
-     * @return AMA_Error on error, result of query execution on success
+     * @return AMAError on error, result of query execution on success
      *
      * @access private
      */
@@ -136,7 +148,7 @@ class AMANewsletterDataHandler extends AMA_DataHandler
      * @param string $id_course course id agains which must filter
      * @param string $id_instance instance id agains which must filter
      * @param bool $countOnly true to only count tutors
-     * @return AMA_Error on error, result of query execution on success
+     * @return AMAError on error, result of query execution on success
      *
      * @access private
      */
@@ -176,7 +188,7 @@ class AMANewsletterDataHandler extends AMA_DataHandler
      * Gets a list of switchers filtered with specified criteria
      *
      * @param bool $countOnly true to only count switchers
-     * @return  AMA_Error on error, result of query execution on success
+     * @return  AMAError on error, result of query execution on success
      *
      * @access private
      */
@@ -207,7 +219,7 @@ class AMANewsletterDataHandler extends AMA_DataHandler
      * @param string $userCourseStatus status of students in the course agains which must filter
      * @param string $userPlatformStatus status of students in the platform agains which must filter
      * @param bool $countOnly true to only count students
-     * @return AMA_Error on error, result of query execution on success
+     * @return AMAError on error, result of query execution on success
      *
      * @access private
      */
@@ -275,7 +287,7 @@ class AMANewsletterDataHandler extends AMA_DataHandler
      *
      * @access public
      */
-    public function build_filter_from_array($arrayValues = [])
+    public function buildFilterFromArray($arrayValues = [])
     {
         if (isset($arrayValues['userType']) && intval($arrayValues['userType']) > 0) {
             $filter['userType'] = $arrayValues['userType'];
@@ -319,11 +331,11 @@ class AMANewsletterDataHandler extends AMA_DataHandler
      *
      * @access public
      */
-    public function get_users_filtered($filterValues = [], $countOnly = true)
+    public function getUsersFiltered($filterValues = [], $countOnly = true)
     {
         // prepare vars depending on passed array values
 
-        extract($this->build_filter_from_array($filterValues));
+        extract($this->buildFilterFromArray($filterValues));
 
         $retval    = ($countOnly) ? 0 : [];
         $authors   = ($countOnly) ? 0 : [];
@@ -364,28 +376,28 @@ class AMANewsletterDataHandler extends AMA_DataHandler
      * @param array $filterArray the filter used to send the newsletter out
      * @param int $count users count
      * @param int $status status of the sending process as defined in module config.inc.php
-     * @return AMA_Error on error, inserted row id on success
+     * @return AMAError on error, inserted row id on success
      *
      * @access public
      */
-    public function save_newsletter_history($id_newsletter, $filterArray, $count, $status)
+    public function saveNewsletterHistory($id_newsletter, $filterArray, $count, $status)
     {
         $values[0] = $id_newsletter;
         $values[1] = json_encode($filterArray);
-        $values[2] = $this->date_to_ts("now");
+        $values[2] = $this->dateToTs("now");
         $values[3] = $count;
         $values[4] = $status;
 
         $sql = 'INSERT INTO `' . self::$PREFIX . 'history`  (' . implode(',', $this->getFieldsList('history')) . ') VALUES (?,?,?,?,?)';
 
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         $result = $this->queryPrepared($sql, $values);
 
-        if (AMA_DB::isError($result)) {
+        if (AMADB::isError($result)) {
             return new $result();
         }
         return $db->lastInsertID();
@@ -395,17 +407,17 @@ class AMANewsletterDataHandler extends AMA_DataHandler
      * Gets the newsletter details
      *
      * @param int $id the id pf the newsletter
-     * @return  AMA_Error on error, result of query execution on success
+     * @return  AMAError on error, result of query execution on success
      *
      * @access public
      */
-    public function get_newsletter($id)
+    public function getNewsletter($id)
     {
         $sql = 'SELECT * FROM `' . self::$PREFIX . 'newsletters` WHERE id=?';
 
         $retval = $this->getRowPrepared($sql, $id, AMA_FETCH_ASSOC);
 
-        if (!AMA_DB::isError($retval) && $retval !== false) {
+        if (!AMADB::isError($retval) && $retval !== false) {
             $retval['date'] = ts2dFN($retval['date']);
         }
 
@@ -416,11 +428,11 @@ class AMANewsletterDataHandler extends AMA_DataHandler
      * Performs newsletter duplication
      *
      * @param int $id_newsletter the id of the newsletter to be duplicated
-     * @return  AMA_Error on error, result of query execution on success
+     * @return  AMAError on error, result of query execution on success
      *
      * @access public
      */
-    public function duplicate_newsletter($id_newsletter)
+    public function duplicateNewsletter($id_newsletter)
     {
         $fieldsArr = $this->getFieldsList('newsletters');
 
@@ -435,11 +447,11 @@ class AMANewsletterDataHandler extends AMA_DataHandler
      * Performs newsletter deletion, together with history
      *
      * @param unknown $id_newsletter the id of the newsletter to be deleted
-     * @return  AMA_Error on error, result of query execution on success
+     * @return  AMAError on error, result of query execution on success
      *
      * @access public
      */
-    public function delete_newsletter($id_newsletter)
+    public function deleteNewsletter($id_newsletter)
     {
         $sql = 'DELETE FROM `' . self::$PREFIX . 'history` WHERE id_newsletter=?';
         $retval = $this->executeCriticalPrepared($sql, $id_newsletter);
@@ -476,9 +488,9 @@ class AMANewsletterDataHandler extends AMA_DataHandler
      *
      * @param int $id_newsletter the id of the newsletter
      * @param boolean $statusSent true if must return a value only if newsletter is in sending status
-     * @return AMA_Error on error, result of query execution on success
+     * @return AMAError on error, result of query execution on success
      */
-    public function get_newsletter_history($id_newsletter, $statusSent = false)
+    public function getNewsletterHistory($id_newsletter, $statusSent = false)
     {
         $sql = 'SELECT * FROM `' . self::$PREFIX . 'history` WHERE id_newsletter=?';
         if ($statusSent) {
@@ -487,7 +499,7 @@ class AMANewsletterDataHandler extends AMA_DataHandler
 
         $retval = $this->getAllPrepared($sql, $id_newsletter, AMA_FETCH_ASSOC);
 
-        if (!AMA_DB::isError($retval) && $retval !== false) {
+        if (!AMADB::isError($retval) && $retval !== false) {
             for ($i = 0; $i < count($retval); $i++) {
                 $retval[$i]['datesent'] = ts2dFN($retval[$i]['datesent']);
             }
@@ -500,11 +512,11 @@ class AMANewsletterDataHandler extends AMA_DataHandler
      *
      * @param int $history_id the history id of the newsletter
      * @param int $newstatus status to be set, as defined in module config.inc.php
-     * @return AMA_Error on error, result of query execution on success
+     * @return AMAError on error, result of query execution on success
      *
      * @access public
      */
-    public function set_history_status($history_id, $newstatus)
+    public function setHistoryStatus($history_id, $newstatus)
     {
         $sql = 'UPDATE `' . self::$PREFIX . 'history` SET `status`=? WHERE `id`=?';
         return $this->executeCriticalPrepared($sql, [$newstatus, $history_id]);
@@ -515,11 +527,11 @@ class AMANewsletterDataHandler extends AMA_DataHandler
      *
      * @param array $fields the array of the fields to get
      * @param boolean $idOrdered true if must order by insertion id asc
-     * @return AMA_Error on error, result of query execution on success
+     * @return AMAError on error, result of query execution on success
      *
      * @access public
      */
-    public function get_newsletters($fields = [], $idOrdered = true)
+    public function getNewsletters($fields = [], $idOrdered = true)
     {
         $sql = 'SELECT ';
 
@@ -541,11 +553,11 @@ class AMANewsletterDataHandler extends AMA_DataHandler
      * Saves a newsletter, either in insert or update mode
      *
      * @param array $newsletterHa contains the datas to be saved
-     * @return AMA_Error on error, result of query execution on success
+     * @return AMAError on error, result of query execution on success
      *
      * @access public
      */
-    public function save_newsletter($newsletterHa)
+    public function saveNewsletter($newsletterHa)
     {
 
         if (intval($newsletterHa['id']) <= 0) {

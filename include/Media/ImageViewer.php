@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Node\Media;
+
+use Lynxlab\ADA\Main\Media\ImageViewer;
+
+// Trigger: ClassWithNameSpace. The class ImageViewer was declared with namespace Lynxlab\ADA\Main\Media. //
+
 /**
  * Media Viewers
  *

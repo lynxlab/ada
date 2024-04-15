@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * Add tester - this module provides add tester functionality
  *
@@ -96,56 +116,56 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
      */
     $errorsAr = [];
 
-    if (DataValidator::validate_not_empty_string($_POST['tester_name']) === false) {
+    if (DataValidator::validateNotEmptyString($_POST['tester_name']) === false) {
         $errorsAr['tester_name'] = true;
     }
 
-    if (DataValidator::validate_string($_POST['tester_rs']) === false) {
+    if (DataValidator::validateString($_POST['tester_rs']) === false) {
         $errorsAr['tester_rs'] = true;
     }
 
-    if (DataValidator::validate_not_empty_string($_POST['tester_address']) === false) {
+    if (DataValidator::validateNotEmptyString($_POST['tester_address']) === false) {
         $errorsAr['tester_address'] = true;
     }
 
-    if (DataValidator::validate_not_empty_string($_POST['tester_province']) === false) {
+    if (DataValidator::validateNotEmptyString($_POST['tester_province']) === false) {
         $errorsAr['tester_province'] = true;
     }
 
-    if (DataValidator::validate_not_empty_string($_POST['tester_city']) === false) {
+    if (DataValidator::validateNotEmptyString($_POST['tester_city']) === false) {
         $errorsAr['tester_city'] = true;
     }
 
-    if (DataValidator::validate_not_empty_string($_POST['tester_country']) === false) {
+    if (DataValidator::validateNotEmptyString($_POST['tester_country']) === false) {
         $errorsAr['tester_country'] = true;
     }
 
-    if (DataValidator::validate_phone($_POST['tester_phone']) === false) {
+    if (DataValidator::validatePhone($_POST['tester_phone']) === false) {
         $errorsAr['tester_phone'] = true;
     }
 
-    if (DataValidator::validate_email($_POST['tester_email']) === false) {
+    if (DataValidator::validateEmail($_POST['tester_email']) === false) {
         $errorsAr['tester_email'] = true;
     }
 
-    if (DataValidator::validate_string($_POST['tester_desc']) === false) {
+    if (DataValidator::validateString($_POST['tester_desc']) === false) {
         $errorsAr['tester_desc'] = true;
     }
 
-    if (DataValidator::validate_string($_POST['tester_resp']) === false) {
+    if (DataValidator::validateString($_POST['tester_resp']) === false) {
         $errorsAr['tester_resp'] = true;
     }
-    // validate_testername valida il puntatore, non il nome del tester.
-    if (DataValidator::validate_testername($_POST['tester_pointer'], MULTIPROVIDER) === false) {
+    // validateTestername valida il puntatore, non il nome del tester.
+    if (DataValidator::validateTestername($_POST['tester_pointer'], MULTIPROVIDER) === false) {
         $errorsAr['tester_pointer'] = true;
     }
 
-    if (array_key_exists('tester_iban', $_POST) && strlen(trim($_POST['tester_iban'])) > 0 && DataValidator::validate_iban(trim($_POST['tester_iban'])) === false) {
+    if (array_key_exists('tester_iban', $_POST) && strlen(trim($_POST['tester_iban'])) > 0 && DataValidator::validateIban(trim($_POST['tester_iban'])) === false) {
         $errorsAr['tester_iban'] = true;
     }
 
     if (array_key_exists('db_host', $_POST)) {
-        if (DataValidator::validate_not_empty_string($_POST['db_host']) === false) {
+        if (DataValidator::validateNotEmptyString($_POST['db_host']) === false) {
             $errorsAr['db_host'] = true;
         } else {
             [$h, $p] = array_pad(explode(':', $_POST['db_host']), 2, '');
@@ -157,12 +177,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $h = $p = '';
     }
 
-    if (DataValidator::validate_not_empty_string($_POST['db_name']) === false) {
+    if (DataValidator::validateNotEmptyString($_POST['db_name']) === false) {
         $errorsAr['db_name'] = true;
     }
 
     if (array_key_exists('db_user', $_POST)) {
-        if (DataValidator::validate_not_empty_string($_POST['db_user']) === false) {
+        if (DataValidator::validateNotEmptyString($_POST['db_user']) === false) {
             $errorsAr['db_user'] = true;
         }
     } else {
@@ -170,7 +190,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (array_key_exists('db_password', $_POST)) {
-        if (DataValidator::validate_not_empty_string($_POST['db_password']) === false) {
+        if (DataValidator::validateNotEmptyString($_POST['db_password']) === false) {
             $errorsAr['db_password'] = true;
         }
     } else {
@@ -205,15 +225,15 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $form = AdminModuleHtmlLib::getAddTesterForm($testersAr, $tester_dataAr, $errorsAr);
         } else {
             $result = $common_dh->add_tester($tester_dataAr);
-            if (AMA_Common_DataHandler::isError($result)) {
-                $errObj = new ADA_Error($result);
+            if (AMACommonDataHandler::isError($result)) {
+                $errObj = new ADAError($result);
                 $form = new CText('');
             } else {
-                $adminUsersArr = $common_dh->get_users_by_type([AMA_TYPE_ADMIN]);
-                if (!AMA_DB::isError($adminUsersArr) && is_array($adminUsersArr) && count($adminUsersArr) > 0) {
+                $adminUsersArr = $common_dh->getUsersByType([AMA_TYPE_ADMIN]);
+                if (!AMADB::isError($adminUsersArr) && is_array($adminUsersArr) && count($adminUsersArr) > 0) {
                     foreach ($adminUsersArr as $adminUser) {
                         $adminUserObj = MultiPort::findUserByUsername($adminUser['username']);
-                        if (!AMA_DB::isError($adminUserObj)) {
+                        if (!AMADB::isError($adminUserObj)) {
                             MultiPort::setUser($adminUserObj, [ $tester_dataAr['tester_pointer'] ]);
                         }
                     }

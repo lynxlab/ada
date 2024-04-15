@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Main\Forms\CountriesList;
+
+use Lynxlab\ADA\CORE\html4\CI;
+
+use Lynxlab\ADA\CORE\html4\CA;
+
+// Trigger: ClassWithNameSpace. The class CountriesList was declared with namespace Lynxlab\ADA\Main\Forms. //
+
 namespace Lynxlab\ADA\Main\Forms;
 
 class CountriesList

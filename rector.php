@@ -24,7 +24,7 @@ return static function (RectorConfig $rectorConfig): void {
         // __DIR__ . '/services',
         // __DIR__ . '/switcher',
         // __DIR__ . '/tutor',
-        // __DIR__ . '/upload_file',
+        // __DIR__ . '/uploadFile',
         // __DIR__ . '/widgets',
     ]);
 
@@ -34,7 +34,7 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/include/graph',
         __DIR__ . '/browsing/include/graph',
         __DIR__ . '/services/media',
-        __DIR__ . '/upload_file',
+        __DIR__ . '/uploadFile',
         __DIR__ . '/widgets/cache',
         __DIR__ . '/api',
         // __DIR__ . '/include/phpMailer',

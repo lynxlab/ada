@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Module\GDPR\GdprUserType;
+
+use Lynxlab\ADA\Module\GDPR\GdprUser;
+
+use Lynxlab\ADA\Module\GDPR\GdprRequest;
+
+use Lynxlab\ADA\Module\GDPR\GdprPolicy;
+
+use Lynxlab\ADA\Module\GDPR\GdprAPI;
+
+use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
+
+use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
+
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+
+// Trigger: ClassWithNameSpace. The class GdprAPI was declared with namespace Lynxlab\ADA\Module\GDPR. //
+
 /**
  * @package     gdpr module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -255,7 +273,7 @@ class GdprAPI
                             'accepted' => false,
                             'details' => [
                                 'current' => $policy,
-                                'user' => $userPolicies[$userID][$policy->getPolicy_content_id()],
+                                'user' => $userPolicies[$userID][$policy->getPolicyContentId()],
                             ],
                         ];
                         // break out of the loop at the first not accepted policy
@@ -323,8 +341,8 @@ class GdprAPI
      */
     private static function ckeckAcceptedPolicy(GdprPolicy $policy, array $userPolicies)
     {
-        return (array_key_exists($policy->getPolicy_content_id(), $userPolicies) &&
-        intval($userPolicies[$policy->getPolicy_content_id()]['acceptedVersion']) >= $policy->getVersion());
+        return (array_key_exists($policy->getPolicyContentId(), $userPolicies) &&
+        intval($userPolicies[$policy->getPolicyContentId()]['acceptedVersion']) >= $policy->getVersion());
     }
 
     /**
@@ -333,10 +351,10 @@ class GdprAPI
      * @param string $className
      * @param array $whereArr
      * @param array $orderByArr
-     * @param Abstract_AMA_DataHandler $dbToUse
+     * @param AbstractAMADataHandler $dbToUse
      * @return array
      */
-    public function findBy($className, array $whereArr = null, array $orderByArr = null, Abstract_AMA_DataHandler $dbToUse = null)
+    public function findBy($className, array $whereArr = null, array $orderByArr = null, AbstractAMADataHandler $dbToUse = null)
     {
         return $this->dh->findBy($className, $whereArr, $orderByArr, $dbToUse);
     }
@@ -346,10 +364,10 @@ class GdprAPI
      *
      * @param string $className
      * @param array $orderBy
-     * @param Abstract_AMA_DataHandler $dbToUse
+     * @param AbstractAMADataHandler $dbToUse
      * @return array
      */
-    public function findAll($className, array $orderBy = null, Abstract_AMA_DataHandler $dbToUse = null)
+    public function findAll($className, array $orderBy = null, AbstractAMADataHandler $dbToUse = null)
     {
         return $this->dh->findAll($className, $orderBy, $dbToUse);
     }

@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * NEWSLETTER MODULE.
  *
@@ -72,15 +82,15 @@ $newButton->addChild(new CText(translateFN('Nuova Newsletter')));
 
 $newsletterData = [];
 
-$newslettersList = $dh->get_newsletters([ 'id','subject', 'date','draft' ]);
+$newslettersList = $dh->getNewsletters([ 'id','subject', 'date','draft' ]);
 
-if (!AMA_DB::isError($newslettersList)) {
+if (!AMADB::isError($newslettersList)) {
     $labels =  [translateFN('oggetto'), translateFN('data'), translateFN('bozza'), translateFN('N. Invii'), translateFN('azioni')];
 
     foreach ($newslettersList as $i => $newsletterAr) {
-        $sentDetails = $dh->get_newsletter_history($newsletterAr['id']);
+        $sentDetails = $dh->getNewsletterHistory($newsletterAr['id']);
         $isSending = $dh->isSending($newsletterAr['id']);
-        if (AMA_DB::isError($sentDetails)) {
+        if (AMADB::isError($sentDetails)) {
             $displayDetailsLink = false;
         } else {
             $displayDetailsLink = (count($sentDetails) > 0);

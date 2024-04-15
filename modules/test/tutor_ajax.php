@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\HtmlLibrary\ServicesModuleHtmlLib;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * Add exercise
  *
@@ -15,7 +23,7 @@ use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_user_from_DB;
+use function Lynxlab\ADA\Main\AMA\DBRead\readUserFromDB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
@@ -50,14 +58,14 @@ switch ($_GET['mode']) {
         $res = false;
         break;
     case 'comment':
-        $res = $dh->test_updateAnswer($_GET['id_answer'], ['commento' => $_POST['comment']]);
+        $res = $dh->testUpdateAnswer($_GET['id_answer'], ['commento' => $_POST['comment']]);
         if (!$dh->isError($res) && $res && $_POST['notify'] == true) {
-            $answer = $dh->test_getAnswer($_GET['id_answer']);
+            $answer = $dh->testGetAnswer($_GET['id_answer']);
             $answer = $answer[0];
-            $history = $dh->test_getHistoryTest(['id_history_test' => $answer['id_history_test']]);
+            $history = $dh->testGetHistoryTest(['id_history_test' => $answer['id_history_test']]);
             $history = $history[0];
-            $test = $dh->test_getNode($history['id_nodo']);
-            $studentObj = read_user_from_DB($answer['id_utente']);
+            $test = $dh->testGetNode($history['id_nodo']);
+            $studentObj = readUserFromDB($answer['id_utente']);
             if (!$dh->isError($studentObj) && !$dh->isError($answer) && !$dh->isError($history) && !$dh->isError($test)) {
                 $what = '';
                 $link = '';
@@ -89,19 +97,19 @@ switch ($_GET['mode']) {
                     'priorita' => 2,
                 ];
                 $mh = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
-                $result = $mh->send_message($message_ha);
+                $result = $mh->sendMessage($message_ha);
             }
         }
         break;
     case 'answer':
-        $res = $dh->test_updateAnswer($_GET['id_answer'], ['correzione_risposta' => $_POST['answer']]);
+        $res = $dh->testUpdateAnswer($_GET['id_answer'], ['correzione_risposta' => $_POST['answer']]);
         break;
     case 'points':
-        $res = $dh->test_updateAnswer($_GET['id_answer'], ['punteggio' => $_GET['points']]);
+        $res = $dh->testUpdateAnswer($_GET['id_answer'], ['punteggio' => $_GET['points']]);
         break;
     case 'repeatable':
-        $res = ($dh->test_setHistoryTestRepeatable($_GET['id_history_test'], $_GET['repeatable'])
-            && $dh->test_recalculateHistoryTestPoints($_GET['id_history_test']));
+        $res = ($dh->testSetHistoryTestRepeatable($_GET['id_history_test'], $_GET['repeatable'])
+            && $dh->testRecalculateHistoryTestPoints($_GET['id_history_test']));
         break;
 }
 

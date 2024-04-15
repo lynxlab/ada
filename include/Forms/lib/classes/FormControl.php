@@ -1,5 +1,29 @@
 <?php
 
+use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
+
+use Lynxlab\ADA\Main\Forms\lib\classes\FormControl;
+
+use Lynxlab\ADA\Main\Forms\lib\classes\FCTextarea;
+
+use Lynxlab\ADA\Main\Forms\lib\classes\FCSelect;
+
+use Lynxlab\ADA\Main\Forms\lib\classes\FCOption;
+
+use Lynxlab\ADA\Main\Forms\lib\classes\FCNullControl;
+
+use Lynxlab\ADA\Main\Forms\lib\classes\FCInputHidden;
+
+use Lynxlab\ADA\Main\Forms\lib\classes\FCInputCheckable;
+
+use Lynxlab\ADA\Main\Forms\lib\classes\FCInput;
+
+use Lynxlab\ADA\Main\Forms\lib\classes\FCFieldset;
+
+use Lynxlab\ADA\Main\Forms\lib\classes\FCButton;
+
+// Trigger: ClassWithNameSpace. The class FormControl was declared with namespace Lynxlab\ADA\Main\Forms\lib\classes. //
+
 /**
  * FormControl file
  *

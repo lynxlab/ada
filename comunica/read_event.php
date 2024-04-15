@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * READ EVENT.
  *
@@ -17,7 +37,7 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\get_timezone_offset;
+use function Lynxlab\ADA\Main\Utilities\getTimezoneOffset;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -98,8 +118,8 @@ if (isset($id_course_instance)) {
 
 if (isset($del_msg_id) and !empty($del_msg_id)) {
     $res = MultiPort::removeUserAppointments($userObj, [$del_msg_id]);
-    if (AMA_DataHandler::isError($res)) {
-        $errObj = new ADA_Error(
+    if (AMADataHandler::isError($res)) {
+        $errObj = new ADAError(
             $res,
             translateFN('Errore durante la cancellazione di un evento'),
             null,
@@ -134,8 +154,8 @@ if (MultiPort::isUserBrowsingThePublicTester()) {
  * Find the appointment
  */
 $msg_ha = MultiPort::getUserAppointment($userObj, $msg_id);
-if (AMA_DataHandler::isError($msg_ha)) {
-    $errObj = new ADA_Error(
+if (AMADataHandler::isError($msg_ha)) {
+    $errObj = new ADAError(
         $msg_ha,
         translateFN('Errore durante la lettura di un evento'),
         null,
@@ -150,12 +170,12 @@ if (AMA_DataHandler::isError($msg_ha)) {
  * Conversione Time Zone
  */
 $tester_TimeZone = MultiPort::getTesterTimeZone($tester);
-$offset          = get_timezone_offset($tester_TimeZone, SERVER_TIMEZONE);
+$offset          = getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
 $date_time       = $msg_ha['data_ora'];
 $date_time_zone  = $date_time + $offset;
 $zone            = translateFN("Time zone:") . " " . $tester_TimeZone;
-$Data_messaggio  = AMA_DataHandler::ts_to_date($date_time_zone, "%d/%m/%Y - %H:%M:%S") . " " . $zone;
-//$Data_messaggio = AMA_DataHandler::ts_to_date($msg_ha['data_ora'], "%d/%m/%Y - %H:%M:%S");
+$Data_messaggio  = AMADataHandler::tsToDate($date_time_zone, "%d/%m/%Y - %H:%M:%S") . " " . $zone;
+//$Data_messaggio = AMADataHandler::tsToDate($msg_ha['data_ora'], "%d/%m/%Y - %H:%M:%S");
 
 /*
  * Check if the subject has an internal identifier and remove it

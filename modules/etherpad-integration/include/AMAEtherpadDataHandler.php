@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Module\EtherpadIntegration\Session;
+
+use Lynxlab\ADA\Module\EtherpadIntegration\Pads;
+
+use Lynxlab\ADA\Module\EtherpadIntegration\HashKey;
+
+use Lynxlab\ADA\Module\EtherpadIntegration\Groups;
+
+use Lynxlab\ADA\Module\EtherpadIntegration\Authors;
+
+use Lynxlab\ADA\Module\EtherpadIntegration\AMAEtherpadDataHandler;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class AMAEtherpadDataHandler was declared with namespace Lynxlab\ADA\Module\EtherpadIntegration. //
+
 /**
  * @package     etherpad module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -94,7 +116,7 @@ class AMAEtherpadDataHandler extends AMA_DataHandler
             array_values($saveData)
         );
 
-        if (!AMA_DB::isError($result)) {
+        if (!AMADB::isError($result)) {
             $this->commit();
             return true;
         } else {
@@ -110,11 +132,11 @@ class AMAEtherpadDataHandler extends AMA_DataHandler
      * @param string $className to use a class from your namespace, this string must start with "\"
      * @param array $whereArr
      * @param array $orderByArr
-     * @param Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
+     * @param AbstractAMADataHandler $dbToUse object used to run the queries. If null, use 'this'
      * @throws EtherpadException
      * @return array
      */
-    public function findBy($className, array $whereArr = null, array $orderByArr = null, Abstract_AMA_DataHandler $dbToUse = null)
+    public function findBy($className, array $whereArr = null, array $orderByArr = null, AbstractAMADataHandler $dbToUse = null)
     {
         if (
             stripos($className, '\\') !== 0 &&
@@ -147,7 +169,7 @@ class AMAEtherpadDataHandler extends AMA_DataHandler
         }
 
         $result = $dbToUse->getAllPrepared($sql, (!is_null($whereArr) && count($whereArr) > 0) ? array_values($whereArr) : [], AMA_FETCH_ASSOC);
-        if (AMA_DB::isError($result)) {
+        if (AMADB::isError($result)) {
             throw new EtherpadException($result->getMessage(), (int) $result->getCode());
         } else {
             $retArr = array_map(function ($el) use ($className, $dbToUse) {
@@ -197,15 +219,15 @@ class AMAEtherpadDataHandler extends AMA_DataHandler
      *
      * @param string $className
      * @param array $orderBy
-     * @param Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
+     * @param AbstractAMADataHandler $dbToUse object used to run the queries. If null, use 'this'
      * @return array
      */
-    public function findAll($className, array $orderBy = null, Abstract_AMA_DataHandler $dbToUse = null)
+    public function findAll($className, array $orderBy = null, AbstractAMADataHandler $dbToUse = null)
     {
         return $this->findBy($className, null, $orderBy, $dbToUse);
     }
 
-    public function findOneBy($className, array $whereArr = null, array $orderByArr = null, Abstract_AMA_DataHandler $dbToUse = null)
+    public function findOneBy($className, array $whereArr = null, array $orderByArr = null, AbstractAMADataHandler $dbToUse = null)
     {
         $retval = $this->findBy($className, $whereArr, $orderByArr, $dbToUse);
         if (is_array($retval) && count($retval) > 0) {
@@ -421,7 +443,7 @@ class AMAEtherpadDataHandler extends AMA_DataHandler
             array_values($saveData)
         );
 
-        if (!AMA_DB::isError($result)) {
+        if (!AMADB::isError($result)) {
             $this->commit();
             return true;
         } else {

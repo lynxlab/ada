@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Module\Servicecomplete\FormCompleteRules;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Forms\lib\classes\FForm;
+
+use Lynxlab\ADA\CORE\html4\CBaseElement;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class FormCompleteRules was declared with namespace Lynxlab\ADA\Module\Servicecomplete. //
+
 /**
  * SERVICE-COMPLETE MODULE.
  *

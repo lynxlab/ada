@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Module\Login\ILogin;
+
+// Trigger: ClassWithNameSpace. The class ILogin was declared with namespace Lynxlab\ADA\Module\Login. //
+
 /**
  * LOGIN MODULE
  *

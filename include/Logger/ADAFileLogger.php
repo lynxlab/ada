@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Main\Logger\ADASimpleLogger;
+
+use Lynxlab\ADA\Main\Logger\ADAScreenLogger;
+
+use Lynxlab\ADA\Main\Logger\ADAFileLogger;
+
+// Trigger: ClassWithNameSpace. The class ADAFileLogger was declared with namespace Lynxlab\ADA\Main\Logger. //
+
 /**
  *
  * Requires PHP >= 5.2.2
@@ -43,7 +51,7 @@ class ADAFileLogger extends ADASimpleLogger
         }
     }
 
-    public static function log_error($text, $filename = ADA_LOG_ERROR_FILE_LOG_OUTPUT_FILE)
+    public static function logError($text, $filename = ADA_LOG_ERROR_FILE_LOG_OUTPUT_FILE)
     {
 
         if (is_file($filename) && is_writable($filename)) {

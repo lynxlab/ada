@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\Course\AbstractCourseInstance;
+
+// Trigger: ClassWithNameSpace. The class CourseInstance was declared with namespace Lynxlab\ADA\Main\Course. //
+
 /**
  * CourseInstance file
  *

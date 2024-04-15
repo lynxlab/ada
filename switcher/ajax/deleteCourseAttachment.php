@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * delete a course attachment
  *
@@ -47,11 +53,11 @@ if (array_key_exists('resourceID', $_POST) && intval($_POST['resourceID']) > 0) 
     if (array_key_exists('courseID', $_POST) && intval($_POST['courseID']) > 0) {
         $resourceID = intval($_POST['resourceID']);
         $courseID = intval($_POST['courseID']);
-        $resInfo = $GLOBALS['dh']->get_risorsa_esterna_info($resourceID);
-        $res = $GLOBALS['dh']->del_risorse_nodi($courseID, $resourceID);
-        if (!AMA_DB::isError($res)) {
-            $res = $GLOBALS['dh']->remove_risorsa_esterna($resourceID);
-            if (!AMA_DB::isError($res) && !AMA_DB::isError($resInfo) && array_key_exists('nome_file', $resInfo)) {
+        $resInfo = $GLOBALS['dh']->getRisorsaEsternaInfo($resourceID);
+        $res = $GLOBALS['dh']->delRisorseNodi($courseID, $resourceID);
+        if (!AMADB::isError($res)) {
+            $res = $GLOBALS['dh']->removeRisorsaEsterna($resourceID);
+            if (!AMADB::isError($res) && !AMADB::isError($resInfo) && array_key_exists('nome_file', $resInfo)) {
                 unlink(Course::MEDIA_PATH_DEFAULT . $courseID . '/' . str_replace(' ', '_', $resInfo['nome_file']));
                 // this will remove the courseID dir only if it's empty
                 @rmdir(Course::MEDIA_PATH_DEFAULT . $courseID);

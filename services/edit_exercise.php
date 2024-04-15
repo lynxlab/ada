@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Services\Exercise\ExerciseViewer;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * Edit exercise
  *
@@ -174,7 +196,7 @@ switch ($op) {
             $exercise->updateExercise($_POST);
 
             if (!ExerciseDAO::save($exercise)) {
-                $errObj = new ADA_Error(null, translateFN("Errore nel salvataggio delle modifiche apportate all'esercizio"));
+                $errObj = new ADAError(null, translateFN("Errore nel salvataggio delle modifiche apportate all'esercizio"));
             } else {
                 /*
              * Update the session variable too.
@@ -202,7 +224,7 @@ switch ($op) {
             $exercise->deleteDataItem($node_id);
 
             if (!ExerciseDAO::save($exercise)) {
-                $errObj = new ADA_Error(null, translateFN("Errore nel salvataggio delle modifiche apportate all'esercizio"));
+                $errObj = new ADAError(null, translateFN("Errore nel salvataggio delle modifiche apportate all'esercizio"));
             } else {
                 /*
              * Update the session variable too.
@@ -215,7 +237,7 @@ switch ($op) {
         } elseif (isset($save) && !empty($save)) {
             unset($_SESSION['sess_edit_exercise']['exercise']);
             //        if ( !ExerciseDAO::save($exercise) ) {
-            //          $errObj = new ADA_Error(NULL, translateFN("Errore nel salvataggio delle modifiche apportate all'esercizio"));
+            //          $errObj = new ADAError(NULL, translateFN("Errore nel salvataggio delle modifiche apportate all'esercizio"));
             //       }
             //        else {
             header('Location: ' . HTTP_ROOT_DIR . '/browsing/exercise.php?op=view');
@@ -251,8 +273,8 @@ switch ($op) {
             break;
         }
         $result = ExerciseDAO::delete($id_node);
-        if (AMA_DataHandler::isError($result)) {
-            $errObj = new ADA_Error($result, translateFN("Errore durante la cancellazione dell'esercizio"));
+        if (AMADataHandler::isError($result)) {
+            $errObj = new ADAError($result, translateFN("Errore durante la cancellazione dell'esercizio"));
         }
         $dataHa['exercise'] = translateFN("L'esercizio &egrave; stato cancellato correttamente");
         break;

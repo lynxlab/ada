@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Services\Exercise\OpenAutomaticExerciseViewer;
+
+use Lynxlab\ADA\Services\Exercise\ExerciseViewer;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class OpenAutomaticExerciseViewer was declared with namespace Lynxlab\ADA\Services\Exercise. //
+
 namespace Lynxlab\ADA\Services\Exercise;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
@@ -131,9 +141,9 @@ class OpenAutomaticExerciseViewer extends ExerciseViewer
         $error_msg = "";
         if (isset($data['empty_field']) && $data['empty_field'] == true) {
             $error_msg = translateFN("Attenzione: campo non compilato!");
-            $question  = parent::fill_field_with_data('question', $data);
-            $answer    = parent::fill_field_with_data('last_answer', $data);
-            $comment   = parent::fill_field_with_data('last_comment', $data);
+            $question  = parent::fillFieldWithData('question', $data);
+            $answer    = parent::fillFieldWithData('last_answer', $data);
+            $comment   = parent::fillFieldWithData('last_comment', $data);
         }
 
         $div = CDOMElement::create('div');

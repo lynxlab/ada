@@ -1,5 +1,31 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Module\Badges\CourseBadge;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * USER.
  *
@@ -90,12 +116,12 @@ $displayTable = false;
  * instances completely disappear from the HTML table
  */
 if (count($serviceProviders) == 1) {
-    $provider_dh = AMA_DataHandler::instance(MultiPort::getDSN($serviceProviders[0]));
-    $courseInstances = $provider_dh->get_course_instances_for_this_student($userObj->getId(), true);
+    $provider_dh = AMADataHandler::instance(MultiPort::getDSN($serviceProviders[0]));
+    $courseInstances = $provider_dh->getCourseInstancesForThisStudent($userObj->getId(), true);
 } else {
     foreach ($serviceProviders as $Provider) {
-        $provider_dh = AMA_DataHandler::instance(MultiPort::getDSN($Provider));
-        $courseInstances_provider = $provider_dh->get_course_instances_for_this_student($userObj->getId(), true);
+        $provider_dh = AMADataHandler::instance(MultiPort::getDSN($Provider));
+        $courseInstances_provider = $provider_dh->getCourseInstancesForThisStudent($userObj->getId(), true);
         if (!is_array($courseInstances_provider)) {
             $courseInstances_provider = [];
         }
@@ -103,7 +129,7 @@ if (count($serviceProviders) == 1) {
     }
 }
 
-if (!AMA_DataHandler::isError($courseInstances)) {
+if (!AMADataHandler::isError($courseInstances)) {
     /**
      * @author giorgio 23/apr/2015
      *
@@ -176,7 +202,7 @@ if (!AMA_DataHandler::isError($courseInstances)) {
 
         if (!$isEnded && isset($c['duration_subscription']) && intval($c['duration_subscription']) > 0) {
             $duration = $c['duration_subscription'];
-            $end_date = $common_dh->add_number_of_days($duration, $start_date);
+            $end_date = $common_dh->addNumberOfDays($duration, $start_date);
         } else {
             $duration = $c['durata'];
             $end_date = $c['data_fine'];
@@ -189,12 +215,12 @@ if (!AMA_DataHandler::isError($courseInstances)) {
         /**
          * check service completeness and badges
          */
-        $provider = $common_dh->get_tester_info_from_id_course($courseId);
+        $provider = $common_dh->getTesterInfoFromIdCourse($courseId);
         if (array_key_exists('puntatore', $provider)) {
             if (isset($GLOBALS['dh'])) {
                 $oldDH = $GLOBALS['dh'];
             }
-            $GLOBALS['dh'] = AMA_DataHandler::instance(MultiPort::getDSN($provider['puntatore']));
+            $GLOBALS['dh'] = AMADataHandler::instance(MultiPort::getDSN($provider['puntatore']));
             $_SESSION['sess_selected_tester'] = $provider['puntatore'];
             if ($subscription_status != ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED) {
                 if ($new_status = BrowsingHelper::checkServiceComplete($userObj, $courseId, $courseInstanceId) > 0) {
@@ -236,7 +262,7 @@ if (!AMA_DataHandler::isError($courseInstances)) {
                 if (!isset($c['duration_subscription']) || is_null($c['duration_subscription'])) {
                     $c['duration_subscription'] = PHP_INT_MAX;
                 }
-                $subscritionEndDate = $common_dh->add_number_of_days($c['duration_subscription'], intval($c['data_iscrizione']));
+                $subscritionEndDate = $common_dh->addNumberOfDays($c['duration_subscription'], intval($c['data_iscrizione']));
                 /**
                  * giorgio 13/01/2021: force subscritionEndDate to have time set to 23:59:59
                  */
@@ -356,8 +382,8 @@ if (!AMA_DataHandler::isError($courseInstances)) {
     $data = new CText('');
 }
 
-$last_access = $userObj->get_last_accessFN(null, "UT", null);
-$last_access = AMA_DataHandler::ts_to_date($last_access);
+$last_access = $userObj->getLastAccessFN(null, "UT", null);
+$last_access = AMADataHandler::tsToDate($last_access);
 if ($last_access == '' || is_null($last_access)) {
     $last_access = '-';
 }
@@ -413,7 +439,7 @@ if ($displayTable) {
     // unset ($students_link);
 
     // @author giorgio 26/apr/2013 new nodes
-    $provider = $common_dh->get_tester_info_from_id_course($courseId);
+    $provider = $common_dh->getTesterInfoFromIdCourse($courseId);
     $providerId = $provider['id_tester'];
 
     $new_nodes_html = '';
@@ -442,7 +468,7 @@ if ($displayTable) {
     }
 
     // @author giorgio 24/apr/2013 forum messages (NOTES!!!!! BE WARNED: THESE ARE NOTES!!!)
-    $msg_forum_count = MultiPort::count_new_notes($userObj, $courseInstanceId);
+    $msg_forum_count = MultiPort::countNewNotes($userObj, $courseInstanceId);
 
     //display a direct link to forum if there are new messages
     if ($msg_forum_count > 0) {
@@ -467,7 +493,7 @@ if ($displayTable) {
     }
 
     // @author giorgio 24/apr/2013 gocontinue link
-    $last_visited_node_id = $userObj->get_last_accessFN($courseInstanceId, "N", AMA_DataHandler::instance(MultiPort::getDSN($provider['puntatore'])));
+    $last_visited_node_id = $userObj->getLastAccessFN($courseInstanceId, "N", AMADataHandler::instance(MultiPort::getDSN($provider['puntatore'])));
     if ((!empty($last_visited_node_id)) and (!is_object($last_visited_node_id)) && $isStarted && !$isEnded) {
         $last_node_visitedObj = BaseHtmlLib::link("view.php?id_course=$courseId&id_node=$last_visited_node_id&id_course_instance=$courseInstanceId", translateFN("Continua"));
         // echo "<!--"; var_dump($last_node_visitedObj);echo "-->";
@@ -516,18 +542,18 @@ if ($displayTable) {
         $goforum_link = $goforum->getHtml();
         $gohistory = BaseHtmlLib::link('history.php?id_course=' . $courseId . '&id_course_instance=' . $courseInstanceId, translateFN('Cronologia'));
 
-        $enddateForTemplate = AMA_DataHandler::ts_to_date(min($c['data_fine'], $subscritionEndDate));
+        $enddateForTemplate = AMADataHandler::tsToDate(min($c['data_fine'], $subscritionEndDate));
     }
 
     // must set the DH to the course provider one
-    $GLOBALS['dh'] = AMA_DataHandler::instance(MultiPort::getDSN($provider['puntatore']));
+    $GLOBALS['dh'] = AMADataHandler::instance(MultiPort::getDSN($provider['puntatore']));
 
     /**
      * @author giorgio 22/feb/2016
      * get course description
      */
-    $cd_res = $GLOBALS['dh']->find_courses_list(['descrizione'], 'id_corso=' . $courseId);
-    if (!AMA_DB::isError($cd_res) && is_array($cd_res) && count($cd_res) > 0) {
+    $cd_res = $GLOBALS['dh']->findCoursesList(['descrizione'], 'id_corso=' . $courseId);
+    if (!AMADB::isError($cd_res) && is_array($cd_res) && count($cd_res) > 0) {
         $cd_el = reset($cd_res);
         $course_description = $cd_el['descrizione'];
     }
@@ -558,7 +584,7 @@ if ($displayTable) {
         // need the service-complete module data handler
         $mydh = AMACompleteDataHandler::instance(MultiPort::getDSN($provider['puntatore']));
         // load the conditionset for this course
-        $conditionSet = $mydh->get_linked_conditionset_for_course($courseId);
+        $conditionSet = $mydh->getLinkedConditionsetForCourse($courseId);
         $mydh->disconnect();
 
         if ($conditionSet instanceof CompleteConditionSet) {
@@ -580,7 +606,7 @@ if ($displayTable) {
         $bdh = AMABadgesDataHandler::instance(MultiPort::getDSN($provider['puntatore']));
         // load all the badges for this course
         $courseBadges = $bdh->findBy('CourseBadge', ['id_corso' => $courseId]);
-        if (!AMA_DB::isError($courseBadges) && is_array($courseBadges) && count($courseBadges) > 0) {
+        if (!AMADB::isError($courseBadges) && is_array($courseBadges) && count($courseBadges) > 0) {
             $badgesLink = CDOMElement::create('div', 'class:item');
             $badgesLink->addChild(CDOMElement::create('i', 'class:certificate icon'));
             $badgesLink->setAttribute('data-dataurl', MODULES_BADGES_HTTP . '/ajax/getUserBadges.php?courseInstanceId=' . $courseInstanceId);
@@ -593,11 +619,11 @@ if ($displayTable) {
     }
 
     if (!isset($content_dataAr['completeSummary'])) {
-        $userObj->set_course_instance_for_history($courseInstanceId);
+        $userObj->setCourseInstanceForHistory($courseInstanceId);
         $user_history = $userObj->getHistoryInCourseInstance($courseInstanceId);
         $span = CDOMElement::create('span', 'class:percent label item');
         $span->addChild(CDOMElement::create('i', 'class:ok circle icon'));
-        $span->addChild(new CText(translateFN('Contenuti visitati') . ': <strong>' . $user_history->history_nodes_visitedpercent_FN([ADA_GROUP_TYPE, ADA_LEAF_TYPE]) . '%</strong>'));
+        $span->addChild(new CText(translateFN('Contenuti visitati') . ': <strong>' . $user_history->historyNodesVisitedpercentFN([ADA_GROUP_TYPE, ADA_LEAF_TYPE]) . '%</strong>'));
         $content_dataAr['completeSummary'] = $span->getHtml();
     }
     $GLOBALS['dh']->disconnect();

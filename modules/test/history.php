@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * TEST.
  *
@@ -17,7 +27,7 @@ use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 use Lynxlab\ADA\Module\Test\HistoryManagementTest;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_course_instance_from_DB;
+use function Lynxlab\ADA\Main\AMA\DBRead\readCourseInstanceFromDB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
@@ -60,7 +70,7 @@ if ($userObj->tipo == AMA_TYPE_STUDENT && ($self_instruction)) {
 }
 
 if (!isset($course_instanceObj) || !is_a($course_instanceObj, 'CourseInstance')) {
-    $course_instanceObj = read_course_instance_from_DB($_GET['id_course_instance']);
+    $course_instanceObj = readCourseInstanceFromDB($_GET['id_course_instance']);
 }
 
 $management = new HistoryManagementTest(
@@ -101,9 +111,9 @@ $content_dataAr['notes'] = $other_node_data['notes'] ?? null;
 $content_dataAr['personal'] = $other_node_data['private_notes'] ?? null;
 
 if ($reg_enabled) {
-    $content_dataAr['add_bookmark'] = $add_bookmark ?? "";
+    $content_dataAr['addBookmark'] = $addBookmark ?? "";
 } else {
-    $content_dataAr['add_bookmark'] = "";
+    $content_dataAr['addBookmark'] = "";
 }
 
 $content_dataAr['bookmark'] = $bookmark ?? "";

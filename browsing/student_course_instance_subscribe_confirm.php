@@ -1,5 +1,33 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\User\ADALoggableUser;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Student;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use function \translateFN;
+
 /**
  *
  * @package     Subscription Confirm from Paypal
@@ -23,7 +51,7 @@ use Lynxlab\ADA\Main\User\ADAGuest;
 use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\today_dateFN;
+use function Lynxlab\ADA\Main\Utilities\todayDateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -93,17 +121,17 @@ if (file_exists(ROOT_DIR . '/browsing/paypal/paypal_conf.inc.php')) {
     $paypal_allowed = true;
 }
 
-$today_date = today_dateFN();
-$providerId = DataValidator::is_uinteger($_GET['provider']);
-$courseId = DataValidator::is_uinteger($_GET['course']);
-$instanceId = DataValidator::is_uinteger($_GET['instance']);
-$studentId = DataValidator::is_uinteger($_GET['student']);
+$today_date = todayDateFN();
+$providerId = DataValidator::isUinteger($_GET['provider']);
+$courseId = DataValidator::isUinteger($_GET['course']);
+$instanceId = DataValidator::isUinteger($_GET['instance']);
+$studentId = DataValidator::isUinteger($_GET['student']);
 
-$testerInfoAr = $common_dh->get_tester_info_from_id($providerId, AMA_FETCH_BOTH);
-if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
+$testerInfoAr = $common_dh->getTesterInfoFromId($providerId, AMA_FETCH_BOTH);
+if (!AMACommonDataHandler::isError($testerInfoAr)) {
     $provider_name = $testerInfoAr[1];
     $tester = $testerInfoAr[10];
-    $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
+    $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester));
     // $currentTesterId = $newTesterId;
     $GLOBALS['dh'] = $tester_dh;
     $dh = $tester_dh;
@@ -136,7 +164,7 @@ if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
     $instanceObj = new CourseInstance($instanceId);
     //    print_r($instanceObj);
     $price = $instanceObj->getPrice();
-    $course = $dh->get_course($courseId);
+    $course = $dh->getCourse($courseId);
     $course_name = $course['titolo'];
 
     if (!isset($back_url)) {
@@ -236,7 +264,7 @@ if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
                 ($payment_currency == $price_currency) &&
                 ($payment_status == 'Completed')
             ) {
-                $date = AMA_DataHandler::ts_to_date(time(), "%d/%m/%Y - %H:%M:%S");
+                $date = AMADataHandler::tsToDate(time(), "%d/%m/%Y - %H:%M:%S");
                 if ($debug == 1) {
                     fwrite($fpx, "Paypal PDT DATA OK - $date\n");
                 }
@@ -268,9 +296,9 @@ if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
                     }
                 )) > 0;
                 if (!$isSubscribed) {
-                    $ressub = $dh->course_instance_student_subscribe($instanceObj->getId(), $userObj->getId(), ADA_STATUS_SUBSCRIBED, $instanceObj->getStartLevelStudent());
+                    $ressub = $dh->courseInstanceStudentSubscribe($instanceObj->getId(), $userObj->getId(), ADA_STATUS_SUBSCRIBED, $instanceObj->getStartLevelStudent());
                     if ($debug == 1) {
-                        if (!AMA_DB::isError($ressub)) {
+                        if (!AMADB::isError($ressub)) {
                             fwrite($fpx, "Successfully subscribed!!\n");
                         } else {
                             fwrite($fpx, "DB Error while subscribing!!\n");

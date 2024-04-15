@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionTime;
+
+use Lynxlab\ADA\Module\Servicecomplete\CompleteCondition;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class CompleteConditionTime was declared with namespace Lynxlab\ADA\Module\Servicecomplete. //
+
 /**
  * SERVICE-COMPLETE MODULE.
  *
@@ -77,11 +89,11 @@ class CompleteConditionTime extends CompleteCondition
 
 
         $history = new History($id_course_instance, $id_student);
-        $id_course = $GLOBALS['dh']->get_course_id_for_course_instance($id_course_instance);
+        $id_course = $GLOBALS['dh']->getCourseIdForCourseInstance($id_course_instance);
         if (is_numeric($id_course)) {
             $history->setCourse($id_course);
         }
-        $history->get_visit_time();
+        $history->getVisitTime();
         if ($history->total_time > 0) {
             $timeSpentInCourse = intval($history->total_time);
         } else {

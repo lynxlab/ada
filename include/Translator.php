@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Main\Logger\ADALogger;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\Translator;
+
+use Lynxlab\ADA\Main\ADAError;
+
+// Trigger: ClassWithNameSpace. The class Translator was declared with namespace Lynxlab\ADA\Main. //
+
 /**
  *
  * @package
@@ -51,9 +61,9 @@ class Translator
             return self::$already_translated_messages[self::messageHash($message, $language_code)];
         }
 
-        $translated_message = $common_dh->find_message_translation($message, $language_code);
+        $translated_message = $common_dh->findMessageTranslation($message, $language_code);
 
-        if (AMA_DataHandler::isError($translated_message)) {
+        if (AMADataHandler::isError($translated_message)) {
             /*
              * In case an error occurs during translation retrieval,
              * return the original message to the user.
@@ -69,7 +79,7 @@ class Translator
      * function loadSupportedLanguagesInSession: used to load ADA supported languages for
      * user interface messages translation into a session variable.
      *
-     * @return TRUE if there arn't errors, ADA_Error object otherwise
+     * @return TRUE if there arn't errors, ADAError object otherwise
      */
     public static function loadSupportedLanguagesInSession()
     {
@@ -78,11 +88,11 @@ class Translator
         $common_dh = $GLOBALS['common_dh'];
 
         $supported_languages = [];
-        $supported_languages = $common_dh->find_languages();
+        $supported_languages = $common_dh->findLanguages();
 
-        if (AMA_DataHandler::isError($supported_languages)) {
+        if (AMADataHandler::isError($supported_languages)) {
             // FIXME: qui si verifica questo errore anche quando c'è un errore di connessione al database.
-            $errObj = new ADA_Error(
+            $errObj = new ADAError(
                 $supported_languages,
                 'No languages for user interface translation were found.',
                 'Translator'
@@ -96,14 +106,14 @@ class Translator
     /**
      * function getSupportedLanguages(): returns ADA supported languages as stored in
      * the session variable sess_ada_supported_languages.
-     * If this variable isn't set, return an ADA_Error.
+     * If this variable isn't set, return an ADAError.
      *
-     * @return mixed - array of supported languages or ADA_Error object.
+     * @return mixed - array of supported languages or ADAError object.
      */
     public static function getSupportedLanguages()
     {
         if (!isset($_SESSION['sess_ada_supported_languages'])) {
-            $errObj = new ADA_Error(
+            $errObj = new ADAError(
                 null,
                 'No languages for user interface translation were found.',
                 'Translator'
@@ -115,7 +125,7 @@ class Translator
     public static function getLanguagesIdAndName()
     {
         if (!isset($_SESSION['sess_ada_supported_languages'])) {
-            $errObj = new ADA_Error(null, 'lingua non trovata', 'Translator');
+            $errObj = new ADAError(null, 'lingua non trovata', 'Translator');
         }
 
         $l = $_SESSION['sess_ada_supported_languages'];
@@ -139,7 +149,7 @@ class Translator
     public static function getLanguageCodeForLanguageName($user_language)
     {
         if (!isset($_SESSION['sess_ada_supported_languages'])) {
-            $errObj = new ADA_Error(null, 'lingua non trovata', 'Translator');
+            $errObj = new ADAError(null, 'lingua non trovata', 'Translator');
         }
 
         $l = $_SESSION['sess_ada_supported_languages'];
@@ -150,7 +160,7 @@ class Translator
             }
         }
 
-        $errObj = new ADA_Error(null, 'Language code not found.', 'Translator');
+        $errObj = new ADAError(null, 'Language code not found.', 'Translator');
         return '';
     }
 
@@ -167,7 +177,7 @@ class Translator
     public static function getLanguageNameForLanguageCode($ISO_code)
     {
         if (!isset($_SESSION['sess_ada_supported_languages'])) {
-            $errObj = new ADA_Error(null, 'lingua non trovata', 'Translator');
+            $errObj = new ADAError(null, 'lingua non trovata', 'Translator');
         }
 
         $l = $_SESSION['sess_ada_supported_languages'];
@@ -178,7 +188,7 @@ class Translator
             }
         }
         return null;
-        //    $errObj = new ADA_Error(NULL,'Language code not found.', 'Translator');
+        //    $errObj = new ADAError(NULL,'Language code not found.', 'Translator');
     }
 
 
@@ -186,7 +196,7 @@ class Translator
     public static function getLanguageInfoForLanguageId($language_id)
     {
         if (!isset($_SESSION['sess_ada_supported_languages'])) {
-            $errObj = new ADA_Error(null, 'lingua non trovata', 'Translator');
+            $errObj = new ADAError(null, 'lingua non trovata', 'Translator');
         }
 
         $l = $_SESSION['sess_ada_supported_languages'];
@@ -203,7 +213,7 @@ class Translator
 
     //  public static function getLanguageCodeForNativeName($native_name) {
     //    if (!isset($_SESSION['sess_ada_supported_languages'])) {
-    //      $errObj = new ADA_Error(NULL,'lingua non trovata', 'Translator');
+    //      $errObj = new ADAError(NULL,'lingua non trovata', 'Translator');
     //    }
     //
     //    $l = $_SESSION['sess_ada_supported_languages'];
@@ -212,7 +222,7 @@ class Translator
     //        return $language_code;
     //      }
     //    }
-    //    $errObj = new ADA_Error(NULL,'Language code not found.','Translator');
+    //    $errObj = new ADAError(NULL,'Language code not found.','Translator');
     //  }
 
     public static function negotiateLoginPageLanguage($lang_get = null)
@@ -269,7 +279,7 @@ class Translator
         $ada_supported_languages_count = count($ada_supported_languages);
 
         if ($ada_supported_languages_count == 0) {
-            $errObj = new ADA_Error(null, 'No supported languages found.', 'Translator');
+            $errObj = new ADAError(null, 'No supported languages found.', 'Translator');
         }
         /*
          * No user defined languages were given, return a default language

@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
 /**
  * Add user - this module provides import language in DB functionality
  *
@@ -106,10 +124,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     if (count($errorsAr) > 0) {
         unset($_POST['submit']);
-        $testers_dataAr = $common_dh->get_all_testers(['id_tester','nome']);
+        $testers_dataAr = $common_dh->getAllTesters(['id_tester','nome']);
 
-        if (AMA_Common_DataHandler::isError($testers_dataAr)) {
-            $errObj = new ADA_Error($testersAr, "Errore nell'ottenimento delle informazioni sui provider");
+        if (AMACommonDataHandler::isError($testers_dataAr)) {
+            $errObj = new ADAError($testersAr, "Errore nell'ottenimento delle informazioni sui provider");
         } else {
             $testersAr = [];
             foreach ($testers_dataAr as $tester_dataAr) {
@@ -137,9 +155,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         //  exit();
 
         if ($tester == "all") {
-            $testers_dataAr = $common_dh->get_all_testers(['id_tester','nome']);
-            if (AMA_Common_DataHandler::isError($testers_dataAr)) {
-                $errObj = new ADA_Error($testersAr, "Errore nell'ottenimento delle informazioni sui provider");
+            $testers_dataAr = $common_dh->getAllTesters(['id_tester','nome']);
+            if (AMACommonDataHandler::isError($testers_dataAr)) {
+                $errObj = new ADAError($testersAr, "Errore nell'ottenimento delle informazioni sui provider");
                 header('Location:' . $http_root_dir . '/admin/admin.php');
                 exit();
             }
@@ -153,12 +171,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             //        $testersAr[$tester_dataAr['puntatore']] = $tester_dataAr['nome'];
 
             $tester_dsn = MultiPort::getDSN($tester);
-            $tester_dh = AMA_DataHandler::instance($tester_dsn);
+            $tester_dh = AMADataHandler::instance($tester_dsn);
             if ($delete_messages == "yes") {
-                $tester_dh->delete_all_messages($suffix);
+                $tester_dh->deleteAllMessages($suffix);
             }
             if ($delete_sistema == "yes") {
-                $tester_dh->delete_all_messages("sistema");
+                $tester_dh->deleteAllMessages("sistema");
                 // inserisce le frasi di base in messaggi sistema dopo aver svuotato la tabella
                 $file_sistema_to_import = "../db/messaggi/ADA_messaggi_sistema.xml";
                 $lang_XML = file_get_contents($file_sistema_to_import);
@@ -171,8 +189,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 foreach ($array_sistema_lang as $one_message_sitema) {
                     $message_text = $one_message_sitema['message'];
                     $message_id = $one_message_sitema['id'];
-                    $sql_message_prepared = $tester_dh->sql_prepared($message_text);
-                    $inserted_message = $tester_dh->add_translated_message($sql_message_prepared, $message_id, "sistema");
+                    $sql_message_prepared = $tester_dh->sqlPrepared($message_text);
+                    $inserted_message = $tester_dh->addTranslatedMessage($sql_message_prepared, $message_id, "sistema");
                 }
             }
             $imported_sentences = 0;
@@ -183,20 +201,20 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 $message_id = $one_message['id'];
                 if ($delete_messages != "yes") {
                     $table_name = "messaggi_" . $suffix;
-                    $result = $tester_dh->select_message_text($table_name, $message_id);
+                    $result = $tester_dh->selectMessageText($table_name, $message_id);
                     if ($result != null) {
                         $sent_to_insert = false;
                     }
                 }
                 if ($sent_to_insert) {
-                    $sql_message_prepared = $tester_dh->sql_prepared($message_text);
-                    $inserted_message = $tester_dh->add_translated_message($sql_message_prepared, $message_id, $suffix);
-                    if (!AMA_Common_DataHandler::isError($inserted_message)) {
+                    $sql_message_prepared = $tester_dh->sqlPrepared($message_text);
+                    $inserted_message = $tester_dh->addTranslatedMessage($sql_message_prepared, $message_id, $suffix);
+                    if (!AMACommonDataHandler::isError($inserted_message)) {
                         $imported_sentences++;
                     }
                 } else { // ID message already exist: update record
-                    $result = $tester_dh->update_message_translation_for_language_code($message_id, $message_text, $suffix);
-                    if (!AMA_Common_DataHandler::isError($result)) {
+                    $result = $tester_dh->updateMessageTranslationForLanguageCode($message_id, $message_text, $suffix);
+                    if (!AMACommonDataHandler::isError($result)) {
                         $imported_sentences++;
                     }
                 }
@@ -215,10 +233,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
         unset($_POST['submit']);
         $user_dataAr = $_POST;
-        $testers_dataAr = $common_dh->get_all_testers(['id_tester','nome']);
+        $testers_dataAr = $common_dh->getAllTesters(['id_tester','nome']);
 
-        if (AMA_Common_DataHandler::isError($testers_dataAr)) {
-            $errObj = new ADA_Error($testersAr, "Errore nell'ottenimento delle informazioni sui provider");
+        if (AMACommonDataHandler::isError($testers_dataAr)) {
+            $errObj = new ADAError($testersAr, "Errore nell'ottenimento delle informazioni sui provider");
         } else {
             $testersAr = [];
             foreach ($testers_dataAr as $tester_dataAr) {
@@ -233,10 +251,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     /*
      * Display the import language form
      */
-    $testers_dataAr = $common_dh->get_all_testers(['id_tester','nome']);
+    $testers_dataAr = $common_dh->getAllTesters(['id_tester','nome']);
 
-    if (AMA_Common_DataHandler::isError($testers_dataAr)) {
-        $errObj = new ADA_Error($testersAr, "Errore nell'ottenimento delle informazioni sui provider");
+    if (AMACommonDataHandler::isError($testers_dataAr)) {
+        $errObj = new ADAError($testersAr, "Errore nell'ottenimento delle informazioni sui provider");
     } else {
         $testersAr = [];
         foreach ($testers_dataAr as $tester_dataAr) {

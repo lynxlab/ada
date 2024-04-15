@@ -1,5 +1,13 @@
 <?php
 
+use function \progressCallback;
+
+use function \formatSizeUnits;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
@@ -98,7 +106,7 @@ $_SESSION['importProgress']['progressSTATUS'] = 'ERROR';
 $retArray =  ['status' => 'ERROR'];
 
 $url = (isset($_GET['url']) && strlen(trim($_GET['url'])) > 0) ? $url = trim($url, '!"#$%&\'()*+,-./@:;<=>[\\]^_`{|}~') : false;
-$url = DataValidator::validate_url($url);
+$url = DataValidator::validateUrl($url);
 
 if ($url !== false) {
     if (is_dir(ADA_UPLOAD_PATH) && is_writable(ADA_UPLOAD_PATH)) {

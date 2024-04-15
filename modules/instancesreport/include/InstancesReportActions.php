@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Module\InstancesReport\InstancesReportActions;
+
+// Trigger: ClassWithNameSpace. The class InstancesReportActions was declared with namespace Lynxlab\ADA\Module\InstancesReport. //
+
 /**
  * @package     instancesreport module
  * @author      giorgio <g.consorti@lynxlab.com>

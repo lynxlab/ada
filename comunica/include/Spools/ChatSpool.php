@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Comunica\Spools\Spool;
+
+use Lynxlab\ADA\Comunica\Spools\SimpleSpool;
+
+use Lynxlab\ADA\Comunica\Spools\ChatSpool;
+
+// Trigger: ClassWithNameSpace. The class ChatSpool was declared with namespace Lynxlab\ADA\Comunica\Spools. //
+
 /**
  * ChatSpool extends Spool and implements some peculiarities
  * related to the Chat sentence.
@@ -47,7 +61,7 @@ class ChatSpool extends Spool
      * @param   $message_ha        - message data as an hash
      * @param   $recipients_ids_ar - list of recipients ids
      *
-     * @return  an AMA_Error object if something goes wrong
+     * @return  an AMAError object if something goes wrong
      *
      * (non-PHPdoc)
      * @see Spool::add_message()
@@ -58,13 +72,13 @@ class ChatSpool extends Spool
      * definition compatible with Spool::add_message()
      *
      */
-    public function add_message($message_ha, $recipients_ids_ar = [], $check_on_uniqueness = false)
+    public function addMessage($message_ha, $recipients_ids_ar = [], $check_on_uniqueness = false)
     {
         $this->clean();
         /*
          * Call parent add_message with no checks on message uniqueness
          */
-        return parent::add_message($message_ha, $recipients_ids_ar, $check_on_uniqueness);
+        return parent::addMessage($message_ha, $recipients_ids_ar, $check_on_uniqueness);
     }
 
 
@@ -80,7 +94,7 @@ class ChatSpool extends Spool
      * @return  a refrerence to a 2-dim array,
      *           each row will have id_utente in the 0 element
      *           and the fields specified in the list in the others
-     *          an AMA_Error object if something goes wrong
+     *          an AMAError object if something goes wrong
      *
      */
     public function clean()
@@ -89,7 +103,7 @@ class ChatSpool extends Spool
     }
 
 
-    public function &find_messages($fields_list = "", $clause = "", $ordering = "")
+    public function &findMessages($fields_list = "", $clause = "", $ordering = "")
     {
         // cleaning (don't bother on errors)
         $this->clean();
@@ -99,7 +113,7 @@ class ChatSpool extends Spool
         // TODO: se e' un valore numerico, allora deve essere l'id dell'ultimo messaggio
         // ricevuto
         if (is_numeric($fields_list)) {
-            return $this->new_find_messages($fields_list);
+            return $this->newFindMessages($fields_list);
         }
 
         $id_chatroom = $this->id_chatroom;
@@ -124,16 +138,16 @@ class ChatSpool extends Spool
             $clause .= " and $basic_clause";
         }
         // call the parent's find_messages (without clean)
-        $res = parent::find_messages($fields_list, $clause, $ordering);
-        //    if (AMA_DataHandler::isError($res)) {
-        //      // $res is an AMA_Error
+        $res = parent::findMessages($fields_list, $clause, $ordering);
+        //    if (AMADataHandler::isError($res)) {
+        //      // $res is an AMAError
         //      return $res;
         //    }
-        // $res can be an AMA_Error object or the messages list
+        // $res can be an AMAError object or the messages list
         return $res;
     }
 
-    private function &new_find_messages($last_read_message_id)
+    private function &newFindMessages($last_read_message_id)
     {
 
         $id_group = $this->id_chatroom;
@@ -141,7 +155,7 @@ class ChatSpool extends Spool
         $user_id  = $this->user_id;
 
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -170,8 +184,8 @@ class ChatSpool extends Spool
         }
 
         $result = $db->getAll($sql, null, AMA_FETCH_ASSOC);
-        if (AMA_DataHandler::isError($result)) {
-            $retval = new AMA_Error(AMA_ERR_GET);
+        if (AMADataHandler::isError($result)) {
+            $retval = new AMAError(AMA_ERR_GET);
             return $retval;
         }
         return $result;

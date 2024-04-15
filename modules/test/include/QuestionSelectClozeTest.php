@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Module\Test\RootTest;
+
+use Lynxlab\ADA\Module\Test\QuestionSelectClozeTest;
+
+use Lynxlab\ADA\Module\Test\QuestionClozeTest;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class QuestionSelectClozeTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>

@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use function \translateFN;
+
 /**
  * build certificates for all students in the passed instance and downloads as a zip file
  *
@@ -86,7 +92,7 @@ if (array_key_exists('selectedIds', $_REQUEST) && is_array($_REQUEST['selectedId
                         unset($selectedIs);
                         // filter out students not having the requirements
                         $subscriptions = array_filter($subscriptions, function ($asub) {
-                            return ADAUser::Check_Requirements_Certificate($asub->getSubscriberId(), $asub->getSubscriptionStatus());
+                            return ADAUser::CheckRequirementsCertificate($asub->getSubscriberId(), $asub->getSubscriptionStatus());
                         });
                         if (is_array($subscriptions) && count($subscriptions) > 0) {
                             // do the report

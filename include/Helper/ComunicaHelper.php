@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Helper\ViewBaseHelper;
+
+use Lynxlab\ADA\Main\Helper\ComunicaHelper;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class ComunicaHelper was declared with namespace Lynxlab\ADA\Main\Helper. //
+
 /**
  * Comunica functions
  *
@@ -75,8 +85,8 @@ class ComunicaHelper extends ViewBaseHelper
         $mod_enabled = true; // links to modify nodes  enabled
         $com_enabled = true;  // links to comunicate among users  enabled
 
-        if (method_exists($userObj, 'get_student_status')) {
-            $user_status = $userObj->get_student_status($sess_id_user, $sess_id_course_instance);
+        if (method_exists($userObj, 'getStudentStatus')) {
+            $user_status = $userObj->getStudentStatus($sess_id_user, $sess_id_course_instance);
         } else {
             $user_status = ADA_STATUS_VISITOR;
         }

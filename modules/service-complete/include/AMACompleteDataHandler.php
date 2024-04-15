@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Module\Servicecomplete\Operation;
+
+use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
+
+use Lynxlab\ADA\Module\Servicecomplete\AMACompleteDataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+// Trigger: ClassWithNameSpace. The class AMACompleteDataHandler was declared with namespace Lynxlab\ADA\Module\Servicecomplete. //
+
 /**
  * SERVICE-COMPLETE MODULE.
  *
@@ -15,7 +29,7 @@ namespace Lynxlab\ADA\Module\Servicecomplete;
 
 use Exception;
 
-class AMACompleteDataHandler extends AMA_DataHandler
+class AMACompleteDataHandler extends AMADataHandler
 {
     /**
      * module's own data tables prefix
@@ -29,13 +43,13 @@ class AMACompleteDataHandler extends AMA_DataHandler
      *
      * @param string $tablename table name to retreive fields list
      * @param bool $backTick true if fields name must be backtrick enquoted
-     * @return AMA_Error on error, array on success
+     * @return AMAError on error, array on success
      * @access private
      */
-    private function get_fields_list($tablename, $backTick = true)
+    private function getFieldsList($tablename, $backTick = true)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -44,7 +58,7 @@ class AMACompleteDataHandler extends AMA_DataHandler
         $sql = "SHOW COLUMNS FROM " . self::$PREFIX . $tablename . " WHERE field NOT LIKE 'id'";
         $res = $db->getAll($sql, [], AMA_FETCH_ORDERED);
 
-        if (!AMA_DB::isError($res)) {
+        if (!AMADB::isError($res)) {
             // row index 0 is 'Field' field
             foreach ($res as $row) {
                 $fields[] = (($backTick) ? '`' : '') . $row[0] . (($backTick) ? '`' : '');
@@ -67,14 +81,14 @@ class AMACompleteDataHandler extends AMA_DataHandler
      *
      * @param string $orderBy optional to order other than descrizione ASC
      * @throws Exception
-     * @return array|AMA_Error
+     * @return array|AMAError
      * @access public
      */
 
-    public function get_completeConditionSetList($orderBy = 'descrizione ASC')
+    public function getCompleteConditionSetList($orderBy = 'descrizione ASC')
     {
         $result = $this->getAllPrepared('SELECT * FROM `' . self::$PREFIX . 'conditionset` ORDER BY ' . $orderBy, null, AMA_FETCH_ASSOC);
-        if (AMA_DB::isError($result)) {
+        if (AMADB::isError($result)) {
             throw new Exception('Could not load condition set list');
         }
         return $result;
@@ -86,29 +100,29 @@ class AMACompleteDataHandler extends AMA_DataHandler
      *
      * @param CompleteConditionSet $cond
      * @throws Exception
-     * @return Ambigous AMA_Error, boolean false|boolean true on success
+     * @return Ambigous AMAError, boolean false|boolean true on success
      * @access public
      */
     public function saveCompleteConditionSet(CompleteConditionSet $cond)
     {
         // the db is needed to get the last insert id
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         if (is_null($cond->getID())) {
             $isUpdate = false;
-            $sql = 'INSERT INTO `' . self::$PREFIX . 'conditionset` (' . implode(',', $this->get_fields_list('conditionset')) . ') VALUES (?)';
+            $sql = 'INSERT INTO `' . self::$PREFIX . 'conditionset` (' . implode(',', $this->getFieldsList('conditionset')) . ') VALUES (?)';
             $result = $this->queryPrepared($sql, $cond->description);
         } else {
             $isUpdate = $cond->getID();
-            $sql = 'UPDATE `' . self::$PREFIX . 'conditionset` SET ' . implode('=?,', $this->get_fields_list('conditionset')) . '=? WHERE id=?';
+            $sql = 'UPDATE `' . self::$PREFIX . 'conditionset` SET ' . implode('=?,', $this->getFieldsList('conditionset')) . '=? WHERE id=?';
             $result = $this->queryPrepared($sql, [$cond->description, $isUpdate]);
         }
 
         // saves the operation
-        if (!AMA_DB::isError($result)) {
+        if (!AMADB::isError($result)) {
             if ($isUpdate === false) {
                 $id_conditionset = $db->lastInsertID();
             } else {
@@ -116,7 +130,7 @@ class AMACompleteDataHandler extends AMA_DataHandler
                 $this->queryPrepared('DELETE FROM `' . self::$PREFIX . 'operations` WHERE `id_conditionset`=?', $id_conditionset);
             }
 
-            $sql = 'INSERT INTO  `' . self::$PREFIX . 'operations` (' . implode(',', $this->get_fields_list('operations')) . ') VALUES (?,?,?,?,?)';
+            $sql = 'INSERT INTO  `' . self::$PREFIX . 'operations` (' . implode(',', $this->getFieldsList('operations')) . ') VALUES (?,?,?,?,?)';
 
             $toSave    = $cond->toArray();
 
@@ -177,7 +191,7 @@ class AMACompleteDataHandler extends AMA_DataHandler
 
                         $result = $this->queryPrepared($sql, $saveData);
 
-                        if (!AMA_DB::isError($result)) {
+                        if (!AMADB::isError($result)) {
                             $mappedIDs[$currentOperation['id']] = $db->lastInsertID();
                         }
 
@@ -217,10 +231,10 @@ class AMACompleteDataHandler extends AMA_DataHandler
      * and all linking to the courses
      *
      * @param int $id_conditionSet the id of the conditionset to be deleted
-     * @return array|AMA_Error
+     * @return array|AMAError
      * @access public
      */
-    public function delete_completeRule($id_conditionSet)
+    public function deleteCompleteRule($id_conditionSet)
     {
         $sqlArr =  [
                 'DELETE FROM `' . self::$PREFIX . 'operations` WHERE id_conditionset=?',
@@ -253,7 +267,7 @@ class AMACompleteDataHandler extends AMA_DataHandler
 
         $arrOperations = $this->getAllPrepared($sql, $id_conditionSet, AMA_FETCH_ASSOC);
 
-        if (!AMA_DB::isError($arrOperations) && !empty($arrOperations)) {
+        if (!AMADB::isError($arrOperations) && !empty($arrOperations)) {
             require_once 'completeConditionSet.class.inc.php';
             require_once 'operation.class.inc.php';
             $conditionSet = new CompleteConditionSet($arrOperations[0]['id_conditionset'], $arrOperations[0]['descrizione']);
@@ -269,16 +283,16 @@ class AMACompleteDataHandler extends AMA_DataHandler
      * gets the conditionSet linked to the passed id_course
      *
      * @param int $id_course the course id
-     * @return mixed CompleteConditionSet|AMA_Error
+     * @return mixed CompleteConditionSet|AMAError
      * @access public
      */
-    public function get_linked_conditionset_for_course($id_course)
+    public function getLinkedConditionsetForCourse($id_course)
     {
         $sql = 'SELECT `id_conditionset` FROM `' . self::$PREFIX . 'conditionset_course` WHERE `id_course`=?';
         $result = $this->getOnePrepared($sql, $id_course);
 
         try {
-            if (!AMA_DB::isError($result)) {
+            if (!AMADB::isError($result)) {
                 return $this->getCompleteConditionSet($result);
             }
         } catch (Exception $e) {
@@ -291,16 +305,16 @@ class AMACompleteDataHandler extends AMA_DataHandler
      *
      * @param int $id_conditionSet the id of the conditionset to be loaded
      * @throws Exception
-     * @return array|AMA_Error
+     * @return array|AMAError
      * @access public
      */
-    public function get_linked_courses_for_conditionset($id_conditionSet)
+    public function getLinkedCoursesForConditionset($id_conditionSet)
     {
         $sql = 'SELECT `id_course` FROM `' . self::$PREFIX . 'conditionset_course` WHERE `id_conditionset`=?';
 
         $result = $this->getAllPrepared($sql, $id_conditionSet);
 
-        if (AMA_DB::isError($result)) {
+        if (AMADB::isError($result)) {
             throw new Exception('Could not load linked courses list');
         }
         return $result;
@@ -318,21 +332,21 @@ class AMACompleteDataHandler extends AMA_DataHandler
     {
         // unlink all courses to the passed condition set
         $result = $this->queryPrepared('DELETE FROM `' . self::$PREFIX . 'conditionset_course` WHERE `id_conditionset`=?', $id_conditionSet);
-        if (!AMA_DB::isError($result)) {
+        if (!AMADB::isError($result)) {
             if (is_array($linkCourse) && !empty($linkCourse)) {
-                $sqlLink = 'INSERT INTO  `' . self::$PREFIX . 'conditionset_course` (' . implode(',', $this->get_fields_list('conditionset_course')) . ') VALUES (?,?)';
+                $sqlLink = 'INSERT INTO  `' . self::$PREFIX . 'conditionset_course` (' . implode(',', $this->getFieldsList('conditionset_course')) . ') VALUES (?,?)';
                 $sqlUnlink = 'DELETE FROM `' . self::$PREFIX . 'conditionset_course` WHERE `id_course`=?';
                 foreach ($linkCourse as $course_id => $isLinked) {
                     if (intval($isLinked) === 1) {
                         // unlink the course to any previous conditions it might have
                         $result = $this->queryPrepared($sqlUnlink, $course_id);
-                        if (AMA_DB::isError($result)) {
+                        if (AMADB::isError($result)) {
                             throw new Exception('Could not unlink conditionset from single course');
                             return false;
                         } else {
                             // link the selected course to the selected conditionset
                             $result = $this->queryPrepared($sqlLink, [$id_conditionSet,$course_id]);
-                            if (AMA_DB::isError($result)) {
+                            if (AMADB::isError($result)) {
                                 throw new Exception('Could not link conditionset to course');
                                 return false;
                             }

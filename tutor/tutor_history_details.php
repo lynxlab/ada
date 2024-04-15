@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\PDF;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\Node\Media;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * TUTOR.
  *
@@ -17,10 +37,10 @@ use Lynxlab\ADA\Main\Helper\TutorHelper;
 use Lynxlab\ADA\Main\Output\PdfClass;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_course_from_DB;
-use function Lynxlab\ADA\Main\AMA\DBRead\read_user_from_DB;
+use function Lynxlab\ADA\Main\AMA\DBRead\readCourseFromDB;
+use function Lynxlab\ADA\Main\AMA\DBRead\readUserFromDB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Tutor\Functions\menu_detailsFN;
+use function Lynxlab\ADA\Tutor\Functions\menuDetailsFN;
 
 /**
  * Base config file
@@ -84,11 +104,11 @@ TutorHelper::init($neededObjAr);
  * YOUR CODE HERE
  */
 $id_course = $courseInstanceObj->id_corso;
-$start_date = AMA_DataHandler::ts_to_date($courseInstanceObj->data_inizio, "%d/%m/%Y");
+$start_date = AMADataHandler::tsToDate($courseInstanceObj->data_inizio, "%d/%m/%Y");
 $history = '';
 if ($id_course) {
     // get object course
-    $courseObj = read_course_from_DB($id_course);
+    $courseObj = readCourseFromDB($id_course);
     if ((is_object($courseObj)) && (!AMA_dataHandler::isError($courseObj))) {
         $course_title = $courseObj->titolo; //title
         $id_toc = $courseObj->id_nodo_toc;  //id_toc_node
@@ -97,7 +117,7 @@ if ($id_course) {
     }
 }
 
-$studentObj = read_user_from_DB($id_student);
+$studentObj = readUserFromDB($id_student);
 if ((is_object($studentObj)) && (!AMA_dataHandler::isError($studentObj))) {
     if ($studentObj instanceof ADAPractitioner) {
         /**
@@ -108,7 +128,7 @@ if ((is_object($studentObj)) && (!AMA_dataHandler::isError($studentObj))) {
          */
         $studentObj = $studentObj->toStudent();
     }
-    $studentObj->set_course_instance_for_history($id_course_instance);
+    $studentObj->setCourseInstanceForHistory($id_course_instance);
     $id_profile_student = $studentObj->tipo;
     $user_name_student = $studentObj->username;
     $student_name = $studentObj->nome . " " . $studentObj->cognome;
@@ -123,13 +143,13 @@ if ($period != 'all') {
     // Nodi visitati negli ultimi n giorni. Periodo in giorni.
     //     $history = '<p>' . translateFN('Periodo:') . ' ' . $period . ' ' . translateFN('giorno/i') . '<br>';
     //  $history .= translateFN('Nodi visitati negli ultimi $period giorni:') ;
-    $history .= $user_historyObj->history_nodes_list_filtered_FN($period);
+    $history .= $user_historyObj->historyNodesListFilteredFN($period);
     //     $history .= '</p>';
 } else {
     // Full history
     //     $history = '<p>' . translateFN('Periodo:') . ' ' . translateFN('tutto') . '<br>';
     //  $history .= translateFN('Cronologia completa:') ;
-    $history .= $user_historyObj->get_historyFN();
+    $history .= $user_historyObj->getHistoryFN();
     //     $history .= '</p>';
 }
 if (!isset($op)) {
@@ -151,12 +171,12 @@ switch ($op) {
         $filename = date("Ymd") . "-" . $courseInstanceObj->id . "-" . $studentObj->getLastName() . "-" . $studentObj->getId() . "_period_" . $period . "." . $type;
 
         if ($type === 'pdf') {
-            $nodes_percent = $user_historyObj->history_nodes_visitedpercent_FN() . "%" ;
+            $nodes_percent = $user_historyObj->historyNodesVisitedpercentFN() . "%" ;
             $allowableTags = '<b><i>';
 
             $PDFdata['title']  = sprintf(translateFN('Cronologia dello studente %s, aggiornata al %s'), $student_name, $ymdhms);
 
-            $PDFdata['block1'] =  $user_historyObj->history_summary_FN();
+            $PDFdata['block1'] =  $user_historyObj->historySummaryFN();
             // replace <br> with new line.
             // note that \r\n MUST be double quoted, otherwise PhP won't recognize 'em as a <CR><LF> sequence!
             $PDFdata['block1'] = preg_replace('/<br\\s*?\/??>/i', "\r\n", $PDFdata['block1']);
@@ -168,18 +188,18 @@ switch ($op) {
 
             $PDFdata['block3'] =
             translateFN("Tempo totale di visita dei nodi (in ore:minuti): ") .
-            "<b>" . $user_historyObj->history_nodes_time_FN() . "</b>\r\n" .
+            "<b>" . $user_historyObj->historyNodesTimeFN() . "</b>\r\n" .
             translateFN("Tempo medio di visita dei nodi (in minuti:secondi): ") .
-            "<b>" . $user_historyObj->history_nodes_average_FN() . "</b>" ;
+            "<b>" . $user_historyObj->historyNodesAverageFN() . "</b>" ;
 
             if ($period != 'all') {
-                $PDFdata['table'][0]['data'] = $user_historyObj->history_nodes_list_filtered_FN($period, false);
+                $PDFdata['table'][0]['data'] = $user_historyObj->historyNodesListFilteredFN($period, false);
             } else {
-                $PDFdata['table'][0]['data'] = $user_historyObj->get_historyFN(false);
+                $PDFdata['table'][0]['data'] = $user_historyObj->getHistoryFN(false);
             }
 
             if (
-                !AMA_DB::isError($PDFdata['table'][0]['data']) &&
+                !AMADB::isError($PDFdata['table'][0]['data']) &&
                     is_array($PDFdata['table'][0]['data']) && count($PDFdata['table'][0]['data']) > 0
             ) {
                 // set table title
@@ -284,22 +304,22 @@ $prehistory .= "<br/>";
 $prehistory .= translateFN("Classe") . ": <b>" . $courseInstanceObj->getTitle() . "</b> (" . $courseInstanceObj->getId() . ")";
 
 // lettura dei dati dal database
-$studentObj->set_course_instance_for_history($courseInstanceObj->id);
+$studentObj->setCourseInstanceForHistory($courseInstanceObj->id);
 $user_historyObj = $studentObj->history;
-$visited_nodes_table = $user_historyObj->history_nodes_visited_FN();
+$visited_nodes_table = $user_historyObj->historyNodesVisitedFN();
 
 
 // Totali: nodi e  nodi visitati (necessita dati che vengono calcolati dalla
-// funzione in history_nodes_visited_FN()
+// funzione in historyNodesVisitedFN()
 $prehistory .= "<p>";
-$prehistory .= $user_historyObj->history_summary_FN() ;
+$prehistory .= $user_historyObj->historySummaryFN() ;
 $prehistory .= "</p>";
 
 // Percentuale nodi visitati (necessita dati che vengono calcolati dalla
-// funzione in history_nodes_visited_FN() )
+// funzione in historyNodesVisitedFN() )
 $prehistory .= "<p align=\"center\">";
 $prehistory .= translateFN("Percentuale nodi visitati/totale: ") ;
-$nodes_percent = $user_historyObj->history_nodes_visitedpercent_FN() . "%" ;
+$nodes_percent = $user_historyObj->historyNodesVisitedpercentFN() . "%" ;
 $prehistory .= "<b>" . $nodes_percent . "</b>" ;
 $prehistory .= "</p>";
 
@@ -311,10 +331,10 @@ $prehistory .= "</p>";
 // Tempo di visita nodi
 $prehistory .= "<p align=\"center\">";
 $prehistory .= translateFN("Tempo totale di visita dei nodi (in ore:minuti): ") ;
-$prehistory .= "<b data-seconds=" . $user_historyObj->total_time . ">" . $user_historyObj->history_nodes_time_FN() . "</b><br>" ;
+$prehistory .= "<b data-seconds=" . $user_historyObj->total_time . ">" . $user_historyObj->historyNodesTimeFN() . "</b><br>" ;
 // Media di visita nodi
 $prehistory .= translateFN("Tempo medio di visita dei nodi (in minuti:secondi): ") ;
-$prehistory .= "<b>" . $user_historyObj->history_nodes_average_FN() . "</b>" ;
+$prehistory .= "<b>" . $user_historyObj->historyNodesAverageFN() . "</b>" ;
 $prehistory .= "</p>";
 
 $history = $prehistory . $history;
@@ -325,7 +345,7 @@ $content_dataAr = [
     'user_name' => $user_name,
     'student' => $student_name,
     'level' => $user_level,
-    'data' => menu_detailsFN($id_student, $id_course_instance, $id_course)
+    'data' => menuDetailsFN($id_student, $id_course_instance, $id_course)
            . $history,
     'status' => $status,
     'messages' => $user_messages->getHtml(),

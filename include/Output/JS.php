@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Template;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\Layout;
+
+use Lynxlab\ADA\Main\Output\JS;
+
+use Lynxlab\ADA\Main\Output\CSS;
+
+// Trigger: ClassWithNameSpace. The class JS was declared with namespace Lynxlab\ADA\Main\Output. //
+
 /**
  * Layout, Template, CSS, JS classes
  *

@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use function \translateFN;
+
 /**
  * ZOOM TUTOR.
  *
@@ -80,7 +94,7 @@ SwitcherHelper::init($neededObjAr);
  * YOUR CODE HERE
  */
 
-if (DataValidator::is_uinteger($id) !== false) {
+if (DataValidator::isUinteger($id) !== false) {
     /*
        * Aggiungere un controllo per verificare che l'utente di cui si vuole vedere
        * il profilo sia un utente seguito da questo switcher?

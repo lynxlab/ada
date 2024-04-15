@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * gets course attachments
  *
@@ -47,11 +53,11 @@ $data = null;
 $withTrashLink = false;
 if (array_key_exists('courseID', $_GET) && intval($_GET['courseID']) > 0) {
     $courseID = intval($_GET['courseID']);
-    $res = $GLOBALS['dh']->get_node_resources($courseID);
-    if (!AMA_DB::isError($res)) {
+    $res = $GLOBALS['dh']->getNodeResources($courseID);
+    if (!AMADB::isError($res)) {
         foreach ($res as $extResID) {
-            $resInfo = $GLOBALS['dh']->get_risorsa_esterna_info($extResID);
-            if (!AMA_DB::isError($resInfo)) {
+            $resInfo = $GLOBALS['dh']->getRisorsaEsternaInfo($extResID);
+            if (!AMADB::isError($resInfo)) {
                 if (is_null($data)) {
                     $data = [];
                 }

@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class Utils was declared with namespace Lynxlab\ADA\Tutor\Eguidance. //
+
 namespace Lynxlab\ADA\Tutor\Eguidance;
 
 use Lynxlab\ADA\Main\HtmlLibrary\EguidanceSession;

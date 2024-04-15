@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLBase;
+
+// Trigger: ClassWithNameSpace. The class CollaboraACLBase was declared with namespace Lynxlab\ADA\Module\CollaboraACL. //
+
 /**
  * @package     collabora-access-list module
  * @author      giorgio <g.consorti@lynxlab.com>

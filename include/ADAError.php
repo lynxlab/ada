@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class ADAError was declared with namespace Lynxlab\ADA\Main. //
+
 /**
  * ADA Error class
  *
@@ -19,7 +27,7 @@ use Lynxlab\ADA\Main\Logger\ADALogger;
 use Lynxlab\ADA\Main\Logger\ADAScreenLogger;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
-class ADA_Error
+class ADAError
 {
     private $AMAErrorObject;
     private $errorMessage;
@@ -38,7 +46,7 @@ class ADA_Error
 
     public function __construct($AMAErrorObject = null, $errorMessage = null, $callerName = null, $ADAErrorCode = null, $severity = null, $redirectTo = null, $delayErrorHandling = false)
     {
-        //ADALogger::log_error('call to new ADA_Error');
+        //ADALogger::logError('call to new ADA_Error');
 
         $this->AMAErrorObject = $AMAErrorObject;
         $this->errorMessage   = $errorMessage;
@@ -103,7 +111,7 @@ class ADA_Error
         if ($action & ADA_ERROR_LOG_TO_FILE) {
             ADALogger::log('ADA ERROR LOG TO FILE');
 
-            ADAFileLogger::log_error($this->asTextToLogInFile());
+            ADAFileLogger::logError($this->asTextToLogInFile());
         }
 
         if ($action & ADA_ERROR_LOG_TO_HTML_COMMENT) {
@@ -111,7 +119,7 @@ class ADA_Error
         }
 
         if ($action & ADA_ERROR_LOG_TO_HTML) {
-            ADAScreenLogger::log_error($this->asTextToLogInHTML());
+            ADAScreenLogger::logError($this->asTextToLogInHTML());
         }
 
         if ($action & ADA_ERROR_LOG_TO_EMAIL) {
@@ -273,6 +281,6 @@ class ADA_Error
 
     public static function isError($object)
     {
-        return $object instanceof ADA_Error;
+        return $object instanceof ADAError;
     }
 }

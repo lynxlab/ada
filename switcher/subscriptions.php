@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * subscriptions file
  *
@@ -97,7 +113,7 @@ SwitcherHelper::init($neededObjAr);
  * YOUR CODE HERE
  */
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
-    //    $fileUploader = new FileUploader(ROOT_DIR . '/upload_file/uploaded_files/switcher/' . $userObj->getId().'/');
+    //    $fileUploader = new FileUploader(ROOT_DIR . '/uploadFile/uploaded_files/switcher/' . $userObj->getId().'/');
     $fileUploader = new FileUploader(ADA_UPLOAD_PATH . $userObj->getId() . '/');
 
     if ($fileUploader->upload() == false) {
@@ -148,8 +164,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 $subscribers = count($usersToSubscribe);
 
                 $admtypeAr = [AMA_TYPE_ADMIN];
-                $admList = $common_dh->get_users_by_type($admtypeAr);
-                if (!AMA_DataHandler::isError($admList)) {
+                $admList = $common_dh->getUsersByType($admtypeAr);
+                if (!AMADataHandler::isError($admList)) {
                     $adm_uname = $admList[0]['username'];
                 } else {
                     $adm_uname = ''; // ??? FIXME: serve un superadmin nel file di config?
@@ -239,29 +255,29 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                             /**
                              * Send the message as an internal message
                              */
-                            //                        $result = $mh->send_message($message_ha);
-                            //                        if(AMA_DataHandler::isError($result)) {
+                            //                        $result = $mh->sendMessage($message_ha);
+                            //                        if(AMADataHandler::isError($result)) {
                             //                        }
                             /**
                              * Send the message an email message
                              */
                             //                        $message_ha['tipo'] = ADA_MSG_MAIL;
-                            $result = $mh->send_message($message_ha);
-                            if (AMA_DataHandler::isError($result)) {
+                            $result = $mh->sendMessage($message_ha);
+                            if (AMADataHandler::isError($result)) {
                             }
 
                             $canSubscribeUser = true;
                         }
                     } elseif ($subscriberObj instanceof ADAUser) {
-                        $courseProviderAr = $common_dh->get_tester_info_from_id_course($courseId);
+                        $courseProviderAr = $common_dh->getTesterInfoFromIdCourse($courseId);
                         $isUserInProvider = in_array($courseProviderAr['puntatore'], $subscriberObj->getTesters());
                         if (!$isUserInProvider) {
                             // subscribe user to course provider
                             $isUserInProvider = Multiport::setUser($subscriberObj, [$courseProviderAr['puntatore']]);
                         }
                         if ($isUserInProvider) {
-                            $result = $dh->student_can_subscribe_to_course_instance($subscriberObj->getId(), $courseInstanceId);
-                            if (!AMA_DataHandler::isError($result) && $result !== false) {
+                            $result = $dh->studentCanSubscribeToCourseInstance($subscriberObj->getId(), $courseInstanceId);
+                            if (!AMADataHandler::isError($result) && $result !== false) {
                                 $canSubscribeUser = true;
                             } else {
                                 $alreadySubscribed++;
@@ -304,8 +320,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                         /**
                          * Send the message an email message
                          */
-                        $result = $mh->send_message($message_ha);
-                        if (AMA_DataHandler::isError($result)) {
+                        $result = $mh->sendMessage($message_ha);
+                        if (AMADataHandler::isError($result)) {
                         }
 
                         $subscribed++;

@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * @package     badges module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -44,7 +54,7 @@ if (in_array($userObj->getType(), [ AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR ])) {
     if (isset($_GET['id_student'])) {
         $title = translateFN('Badges dello studente');
         $studentObj = MultiPort::findUser(trim($_GET['id_student']));
-        if (!AMA_DataHandler::isError($studentObj)) {
+        if (!AMADataHandler::isError($studentObj)) {
             $title .= ': <strong>' . $studentObj->getFullName() . '</strong>';
         }
     }
@@ -53,8 +63,8 @@ if (in_array($userObj->getType(), [ AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR ])) {
          * @var AMABadgesDataHandler $bdh
          */
         $bdh = AMABadgesDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
-        $instance = $bdh->get_instance_with_course($_GET['id_instance']);
-        if (!AMA_DB::isError($instance) && is_array($instance) && count($instance) == 1) {
+        $instance = $bdh->getInstanceWithCourse($_GET['id_instance']);
+        if (!AMADB::isError($instance) && is_array($instance) && count($instance) == 1) {
             $instance = reset($instance);
             if (!isset($title)) {
                 $title = "Badges";

@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Admin\AdminHelper;
+
+use function \translateFN;
+
+use function \importSQL;
+
+use function \isEmptyDB;
+
+use function \checkDB;
+
+use function \createDB;
+
+// Trigger: ClassWithNameSpace. The class AdminHelper was declared with namespace Lynxlab\ADA\Admin. //
+
 /**
  * ADMIN FUNCTIONS
  *

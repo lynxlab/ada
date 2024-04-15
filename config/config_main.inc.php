@@ -1,4 +1,12 @@
 <?php
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\Node\Media;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
 /**
  * Standard configuration file for ADA
  *
@@ -256,7 +264,7 @@ define('AMA_SEP',  '<br>');
 define('AMA_ROLLBACK_SUCCESSFUL', 'Rollback was completed successfully');
 define('AMA_ROLLBACK_NOT_SUCCESSFUL', 'Attention: Rollback failed!');
 /**
- * AMA_DB
+ * AMADB
  */
 /**
  * Retrieve results as an array.

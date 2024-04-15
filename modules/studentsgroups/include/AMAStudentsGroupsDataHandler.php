@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Module\StudentsGroups\AMAStudentsGroupsDataHandler;
+
+use Lynxlab\ADA\Module\EtherpadIntegration\Groups;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class AMAStudentsGroupsDataHandler was declared with namespace Lynxlab\ADA\Module\StudentsGroups. //
+
 /**
  * @package     studentsgroups module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -41,11 +55,11 @@ class AMAStudentsGroupsDataHandler extends AMA_DataHandler
      * @param string $className to use a class from your namespace, this string must start with "\"
      * @param array $whereArr
      * @param array $orderByArr
-     * @param Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
+     * @param AbstractAMADataHandler $dbToUse object used to run the queries. If null, use 'this'
      * @throws StudentsGroupsException
      * @return array
      */
-    public function findBy($className, array $whereArr = null, array $orderByArr = null, Abstract_AMA_DataHandler $dbToUse = null)
+    public function findBy($className, array $whereArr = null, array $orderByArr = null, AbstractAMADataHandler $dbToUse = null)
     {
         if (
             stripos($className, '\\') !== 0 &&
@@ -78,7 +92,7 @@ class AMAStudentsGroupsDataHandler extends AMA_DataHandler
         }
 
         $result = $dbToUse->getAllPrepared($sql, (!is_null($whereArr) && count($whereArr) > 0) ? array_values($whereArr) : [], AMA_FETCH_ASSOC);
-        if (AMA_DB::isError($result)) {
+        if (AMADB::isError($result)) {
             throw new StudentsGroupsException($result->getMessage(), (int) $result->getCode());
         } else {
             $retArr = array_map(function ($el) use ($className, $dbToUse) {
@@ -120,10 +134,10 @@ class AMAStudentsGroupsDataHandler extends AMA_DataHandler
      *
      * @param string $className
      * @param array $orderBy
-     * @param Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
+     * @param AbstractAMADataHandler $dbToUse object used to run the queries. If null, use 'this'
      * @return array
      */
-    public function findAll($className, array $orderBy = null, Abstract_AMA_DataHandler $dbToUse = null)
+    public function findAll($className, array $orderBy = null, AbstractAMADataHandler $dbToUse = null)
     {
         return $this->findBy($className, null, $orderBy, $dbToUse);
     }
@@ -179,7 +193,7 @@ class AMAStudentsGroupsDataHandler extends AMA_DataHandler
             $saveData['id'] = $whereArr['id'];
         }
 
-        if (!AMA_DB::isError($result)) {
+        if (!AMADB::isError($result)) {
             $retArr = ['group' => new Groups($saveData)];
             /**
              * import the uploaded CSV if it's not an update
@@ -229,7 +243,7 @@ class AMAStudentsGroupsDataHandler extends AMA_DataHandler
                                         'birthcity' => '',
                                     ]
                                 );
-                                if (DataValidator::validate_password($userDataAr[3], $userDataAr[3])) {
+                                if (DataValidator::validatePassword($userDataAr[3], $userDataAr[3])) {
                                     $subscriberObj->setPassword($userDataAr[3]);
                                     if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
                                         $subscriberObj->setEmail('');
@@ -296,16 +310,16 @@ class AMAStudentsGroupsDataHandler extends AMA_DataHandler
     {
         $saveData = array_map('intval', $saveData);
         $result = $this->findBy('Groups', ['id' => $saveData['groupId']]);
-        if (!AMA_DB::isError($result)) {
+        if (!AMADB::isError($result)) {
             // check instance existence
-            $iArr = $GLOBALS['dh']->course_instance_get($saveData['instanceId']);
-            if (!AMA_DB::isError($iArr) && is_array($iArr) && isset($iArr['id_corso']) && $iArr['id_corso'] == $saveData['courseId']) {
+            $iArr = $GLOBALS['dh']->courseInstanceGet($saveData['instanceId']);
+            if (!AMADB::isError($iArr) && is_array($iArr) && isset($iArr['id_corso']) && $iArr['id_corso'] == $saveData['courseId']) {
                 $counters = [
                     'alreadySubscribed' => 0,
                     'subscribed' => 0,
                 ];
                 $group = reset($result);
-                $courseProviderAr = $GLOBALS['common_dh']->get_tester_info_from_id_course($saveData['courseId']);
+                $courseProviderAr = $GLOBALS['common_dh']->getTesterInfoFromIdCourse($saveData['courseId']);
                 $subscribedIds = array_map(function ($s) {
                     return $s->getSubscriberId();
                 }, Subscription::findSubscriptionsToClassRoom($saveData['instanceId'], true));
@@ -353,7 +367,7 @@ class AMAStudentsGroupsDataHandler extends AMA_DataHandler
             array_values($saveData)
         );
 
-        if (!AMA_DB::isError($result)) {
+        if (!AMADB::isError($result)) {
             return true;
         } else {
             return new StudentsGroupsException($result->getMessage());

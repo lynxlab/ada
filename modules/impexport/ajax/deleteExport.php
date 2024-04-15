@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * IMPORT MODULE
  *
@@ -59,7 +65,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     try {
         $postParams = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
         $res = $rdh->deleteExport($postParams);
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             // if it's an error display the error message
             $retArray['status'] = "ERROR";
             $retArray['msg'] = $res->getMessage();

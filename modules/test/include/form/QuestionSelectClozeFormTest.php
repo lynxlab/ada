@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Module\Test\QuestionSelectClozeFormTest;
+
+use Lynxlab\ADA\Module\Test\QuestionFormTest;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class QuestionSelectClozeFormTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  *
  * @package
@@ -18,7 +28,7 @@ class QuestionSelectClozeFormTest extends QuestionFormTest
 {
     protected function content()
     {
-        $this->common_elements();
+        $this->commonElements();
 
         //tipologia domanda cloze sinonimi
         $cloze_sinonimi = 'cloze_sinonimi';

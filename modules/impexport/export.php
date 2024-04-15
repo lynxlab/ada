@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use function \translateFN;
+
 /**
  * EXPORT MODULE
  *
@@ -57,7 +63,7 @@ $exportCourse = (isset($_GET['id_course']) && intval($_GET['id_course']) > 0) ? 
 /**
  * load course list from the DB
  */
-$providerCourses = $dh->get_courses_list(['nome','titolo']);
+$providerCourses = $dh->getCoursesList(['nome','titolo']);
 
 $courses = [];
 foreach ($providerCourses as $course) {

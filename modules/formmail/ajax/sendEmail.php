@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Service\Service;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
 /**
  * FORMMAIL MODULE.
  *

@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Main\Service\Service;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\HtmlLibrary\GuestHtmlLib;
+
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class GuestHtmlLib was declared with namespace Lynxlab\ADA\Main\HtmlLibrary. //
+
 /**
  *
  * @package
@@ -79,7 +93,7 @@ class GuestHtmlLib
             $provider_name = $course_dataHa[5];
 
             //var_dump($course_dataHa);
-            //if (AMA_DataHandler::isError($id_course_instanceAr)){ // never subscribed
+            //if (AMADataHandler::isError($id_course_instanceAr)){ // never subscribed
             if ($course_dataHa[8] == 0) { // never subscribed
                 $norequest = "";
                 // is level attainable for this provider?
@@ -248,7 +262,7 @@ class GuestHtmlLib
 
 
 
-        if (!AMA_DataHandler::isError($service_infoAr)) {
+        if (!AMADataHandler::isError($service_infoAr)) {
             $service_title =  $service_infoAr[0];
 
             $service_level = level2stringFN($service_infoAr[2]);
@@ -313,7 +327,7 @@ class GuestHtmlLib
 
 
 
-        if (!AMA_DataHandler::isError($service_infoAr)){
+        if (!AMADataHandler::isError($service_infoAr)){
             $service_title =  $service_infoAr[0];
                     // provider's infos
             $service_provider_name = $service_infoAr[7];

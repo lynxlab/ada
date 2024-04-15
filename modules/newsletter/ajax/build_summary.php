@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
 /**
  * NEWSLETTER MODULE.
  *
@@ -56,7 +60,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         if (isset($_POST['userType']) && $_POST['userType'] > 0) {
             $html = convertFilterArrayToString($_POST, $dh);
 
-            $count = $dh->get_users_filtered($_POST, true);
+            $count = $dh->getUsersFiltered($_POST, true);
 
             $htmlcount = translateFN('In totale, la newsletter sar&agrave; inviata a ');
             $htmlcount .= '<strong>' . $count . '</strong> ';

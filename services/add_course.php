@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use function \translateFN;
+
 /**
  * AUTHOR ADD COURSE.
  *
@@ -133,7 +153,7 @@ if (@$submit) {
     if (!$dati) {
         $course_id = $dh->add_course($course);
 
-        if (AMA_DataHandler::isError($course_id)) {
+        if (AMADataHandler::isError($course_id)) {
             // $dati = $result->getMessage();
             $msg =  $course_id->getMessage();
             if ($course_id->code == AMA_ERR_UNIQUE_KEY) {
@@ -166,8 +186,8 @@ if (@$submit) {
                 $dataHa['pos_x1'] = 0;
                 $dataHa['pos_y0'] = 0;
                 $dataHa['pos_y1'] = 0;
-                $result = $dh->add_node($dataHa);
-                if (AMA_DataHandler::isError($result)) {
+                $result = $dh->addNode($dataHa);
+                if (AMADataHandler::isError($result)) {
                     // $dati = $result->getMessage();
                     $msg =  $result->getMessage();
                     if ($result->code == -4) {
@@ -191,15 +211,15 @@ if (@$submit) {
                     $service_dataAr['service_min_meetings'] = 1;
                     $service_dataAr['service_max_meetings'] = 999;
                     $service_dataAr['service_meeting_duration'] = 7200;
-                    $service_id = $common_dh->add_service($service_dataAr);
-                    if (AMA_Common_DataHandler::isError($service_id)) {
+                    $service_id = $common_dh->addService($service_dataAr);
+                    if (AMACommonDataHandler::isError($service_id)) {
                         $service_id = null;
                         $msg .= ' Aggiunta servizio non riuscita';
                     } else {
                         $selected_tester = $_SESSION['sess_selected_tester'];
                         $testerId = $GLOBALS['testers_dataAr'][$selected_tester];
-                        $link_service = $common_dh->link_service_to_course($testerId, $service_id, $course_id);
-                        if (AMA_Common_DataHandler::isError($link_service)) {
+                        $link_service = $common_dh->linkServiceToCourse($testerId, $service_id, $course_id);
+                        if (AMACommonDataHandler::isError($link_service)) {
                             $msg .= ' Associazione servizio non riuscita';
                         }
                     }
@@ -220,7 +240,7 @@ if (@$submit) {
     }
 } else {
     // retrieve authors' data
-    //$dh = AMA_DataHandler::instance();
+    //$dh = AMADataHandler::instance();
     $author = [
             [$sess_id_user,$user_name,""],
     ];

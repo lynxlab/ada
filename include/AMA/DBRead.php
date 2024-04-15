@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Main\User\ADAAbstractUser;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Course\Student;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * DB_read
  *
@@ -30,11 +44,11 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
  * Reads a ADA node from database.
  *
  * @param  string $id_node - a valid ADA node identifier. e.g. '1_0'
- * @return \Lynxlab\ADA\Main\Node\Node a Node object on success, on failure raises a ADA_Error.
+ * @return \Lynxlab\ADA\Main\Node\Node a Node object on success, on failure raises a ADAError.
  */
-function read_node_from_DB($id_node)
+function readNodeFromDB($id_node)
 {
-    if (DataValidator::validate_node_id($id_node) !== false) {
+    if (DataValidator::validateNodeId($id_node) !== false) {
         $read_id_node = $id_node;
     } else {
         $read_id_node = $_SESSION['sess_id_node'] ?? null;
@@ -44,9 +58,9 @@ function read_node_from_DB($id_node)
         $nodeObj = new Node($read_id_node);
         if ($nodeObj->full == 0) {
             /*
-             * Return a ADA_Error object with delayedErrorHandling set to TRUE.
+             * Return a ADAError object with delayedErrorHandling set to TRUE.
              */
-            return new ADA_Error(
+            return new ADAError(
                 null,
                 translateFN('Errore in lettura oggetto nodo'),
                 'read_node_from_DB',
@@ -59,9 +73,9 @@ function read_node_from_DB($id_node)
         return $nodeObj;
     }
     /*
-     * Return a ADA_Error object with delayedErrorHandling set to TRUE.
+     * Return a ADAError object with delayedErrorHandling set to TRUE.
      */
-    return new ADA_Error(
+    return new ADAError(
         null,
         translateFN('Errore in lettura oggetto nodo'),
         'read_node_from_DB',
@@ -76,7 +90,7 @@ function read_node_from_DB($id_node)
  * Wrapper function for read_course_from_DB.
  * @see read_course_from_DB
  */
-function read_course($id_course = null)
+function readCourse($id_course = null)
 {
     /*
      * Return the course object in sess_courseObj
@@ -86,7 +100,7 @@ function read_course($id_course = null)
         if ($sess_courseObj instanceof Course) {
             return $sess_courseObj;
         }
-        return new ADA_Error(
+        return new ADAError(
             null,
             translateFN('Errore in lettura oggetto corso in sessione'),
             'read_course',
@@ -99,7 +113,7 @@ function read_course($id_course = null)
 
     $sess_id_course = $_SESSION['sess_id_course'] ?? null;
 
-    if (DataValidator::is_uinteger($id_course) !== false) {
+    if (DataValidator::isUinteger($id_course) !== false) {
         $read_id_course = $id_course;
     } else {
         $read_id_course = $sess_id_course;
@@ -114,24 +128,24 @@ function read_course($id_course = null)
     /*
      * get course object from database
      */
-    return read_course_from_DB($read_id_course);
+    return readCourseFromDB($read_id_course);
 }
 
 /**
  * Reads a ADA service from database.
  * @param  int $id_course - a valid ADA service identifier
- * @return a Course object on success, on failure raises a ADA_Error
+ * @return a Course object on success, on failure raises a ADAError
  */
-function read_course_from_DB($id_course)
+function readCourseFromDB($id_course)
 {
 
     if (isset($id_course)) {
         $courseObj = new Course($id_course);
         if ($courseObj->full == 0) {
             /*
-             * Return a ADA_Error object with delayedErrorHandling set to TRUE.
+             * Return a ADAError object with delayedErrorHandling set to TRUE.
              */
-            return new ADA_Error(
+            return new ADAError(
                 null,
                 translateFN('Errore in lettura oggetto corso'),
                 'read_course_from_DB',
@@ -144,9 +158,9 @@ function read_course_from_DB($id_course)
         return $courseObj;
     } else {
         /*
-         * Return a ADA_Error object with delayedErrorHandling set to TRUE.
+         * Return a ADAError object with delayedErrorHandling set to TRUE.
          */
-        return new ADA_Error(
+        return new ADAError(
             null,
             translateFN('Errore in lettura oggetto corso'),
             'read_course_from_DB',
@@ -160,12 +174,12 @@ function read_course_from_DB($id_course)
 
 /**
  * @param  int $id_course_instance - a valid ADA
- * @return a Course_instance object on success, on failure raises a ADA_Error
+ * @return a Course_instance object on success, on failure raises a ADAError
  */
-function read_course_instance_from_DB($id_course_instance)
+function readCourseInstanceFromDB($id_course_instance)
 {
 
-    if (DataValidator::is_uinteger($id_course_instance) !== false) {
+    if (DataValidator::isUinteger($id_course_instance) !== false) {
         $read_id_course_instance = $id_course_instance;
     } else {
         $read_id_course_instance = $_SESSION['sess_id_course_instance'];
@@ -175,9 +189,9 @@ function read_course_instance_from_DB($id_course_instance)
         $courseInstanceObj = new CourseInstance($read_id_course_instance);
         if ($courseInstanceObj->full == 0) {
             /*
-             * Return a ADA_Error object with delayedErrorHandling set to TRUE.
+             * Return a ADAError object with delayedErrorHandling set to TRUE.
              */
-            return new ADA_Error(
+            return new ADAError(
                 null,
                 translateFN('Errore in lettura oggetto istanza corso'),
                 'read_course_instance_from_DB',
@@ -190,9 +204,9 @@ function read_course_instance_from_DB($id_course_instance)
         return $courseInstanceObj;
     } else {
         /*
-         * Return a ADA_Error object with delayedErrorHandling set to TRUE.
+         * Return a ADAError object with delayedErrorHandling set to TRUE.
          */
-        return new ADA_Error(
+        return new ADAError(
             null,
             translateFN('Errore in lettura oggetto istanza corso'),
             'read_course_instance_from_DB',
@@ -210,7 +224,7 @@ function read_course_instance_from_DB($id_course_instance)
  * @return \Lynxlab\ADA\Main\User\ADAGenericUser
  * @see read_user_from_DB
  */
-function read_user($id_user = null)
+function readUser($id_user = null)
 {
 
     /*
@@ -221,7 +235,7 @@ function read_user($id_user = null)
         if ($sess_userObj instanceof ADAGenericUser) {
             return $sess_userObj;
         }
-        return new ADA_Error(
+        return new ADAError(
             null,
             translateFN('Errore in lettura oggetto utente in sessione'),
             'read_user',
@@ -238,8 +252,8 @@ function read_user($id_user = null)
         $sess_userObj = $_SESSION['sess_userObj'];
         if ($sess_userObj instanceof ADAGenericUser && $sess_userObj->getId() == $id_user) {
             // QUI DEVO VEDERE QUALI SONO I TESTER ASSOCIATI A QUESTO UTENTE.
-            $user_testersAr = $GLOBALS['common_dh']->get_testers_for_user($id_user);
-            if (!AMA_Common_DataHandler::isError($user_testersAr)) {
+            $user_testersAr = $GLOBALS['common_dh']->getTestersForUser($id_user);
+            if (!AMACommonDataHandler::isError($user_testersAr)) {
                 $sess_userObj->setTesters($user_testersAr);
                 $_SESSION['sess_userObj'] = $sess_userObj;
             }
@@ -248,14 +262,14 @@ function read_user($id_user = null)
         }
     }
 
-    return read_user_from_DB($id_user);
+    return readUserFromDB($id_user);
 }
 /**
  * Reads a ADA user from database.
  * @param  int $id_user - a valid ADA user identifier
- * @return \Lynxlab\ADA\Main\User\ADAAbstractUser object on success, on failure raises a ADA_Error
+ * @return \Lynxlab\ADA\Main\User\ADAAbstractUser object on success, on failure raises a ADAError
  */
-function read_user_from_DB($id_user)
+function readUserFromDB($id_user)
 {
 
     if ($id_user > 0) {
@@ -265,9 +279,9 @@ function read_user_from_DB($id_user)
         $userObj = MultiPort::findUser($id_user);
         if (is_null($userObj)) {
             /*
-             * Return a ADA_Error object with delayedErrorHandling set to TRUE.
+             * Return a ADAError object with delayedErrorHandling set to TRUE.
              */
-            return new ADA_Error(
+            return new ADAError(
                 null,
                 translateFN('Errore in lettura oggetto utente'),
                 'read_user_from_DB',
@@ -310,9 +324,9 @@ function read_user_from_DB($id_user)
     //                         if ($id_profile==AMA_TYPE_STUDENT){
     //                              $level = 0;
     //                                    if (isset($sess_id_course_instance))
-    //                                         $level = $dh->get_student_level($id_user,$sess_id_course_instance);
+    //                                         $level = $dh->getStudentLevel($id_user,$sess_id_course_instance);
     //                                // or else:
-    //                                  //  $data_Ha = $dh->get_subscription($id_user, $sess_id_course_instance);
+    //                                  //  $data_Ha = $dh->getSubscription($id_user, $sess_id_course_instance);
     //                                  //  $level =  $data_Ha["livello"];
     //                                    $userObj->level = $level;
     //                          }
@@ -329,7 +343,7 @@ function read_user_from_DB($id_user)
 }
 
 
-function read_layout_from_DB($id_profile, $family = "", $node_type = "", $node_author_id = "", $node_course_id = "", $module_dir = "")
+function readLayoutFromDB($id_profile, $family = "", $node_type = "", $node_author_id = "", $node_course_id = "", $module_dir = "")
 {
 
     /**
@@ -347,23 +361,23 @@ function read_layout_from_DB($id_profile, $family = "", $node_type = "", $node_a
     }
 
     $layoutObj = new Layout($id_profile, $read_node_type, $family, $node_author_id, $node_course_id, $module_dir);
-    // FIXME: controllare $layoutObj lanciare eventualmente un errore ADA_Error
+    // FIXME: controllare $layoutObj lanciare eventualmente un errore ADAError
 
     return $layoutObj;
 }
 
 
-function get_max_idFN($id_course = 1, $id_toc = '', $depth = 1)
+function getMaxIdFN($id_course = 1, $id_toc = '', $depth = 1)
 {
     // return the max id_node of the course
     $dh = $GLOBALS['dh'];
-    $id_node_max = $dh->doGet_max_idFN($id_course, $id_toc, $depth);
+    $id_node_max = $dh->doGetMaxIdFN($id_course, $id_toc, $depth);
     // vito, 15/07/2009
-    if (AMA_DataHandler::isError($id_node_max)) {
+    if (AMADataHandler::isError($id_node_max)) {
         /*
-         * Return a ADA_Error object with delayedErrorHandling set to TRUE.
+         * Return a ADAError object with delayedErrorHandling set to TRUE.
          */
-        return new ADA_Error(
+        return new ADAError(
             $id_node_max,
             translateFN('Errore in lettura max id'),
             'get_max_idFN',

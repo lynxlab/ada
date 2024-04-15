@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Forms\TutorSecondaryAssignmentForm;
+
+use Lynxlab\ADA\Main\Forms\TutorAssignmentForm;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class TutorSecondaryAssignmentForm was declared with namespace Lynxlab\ADA\Main\Forms. //
+
 /**
  * TutorAssignmentForm file
  *

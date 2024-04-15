@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionLevel;
+
+use Lynxlab\ADA\Module\Servicecomplete\CompleteCondition;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class CompleteConditionLevel was declared with namespace Lynxlab\ADA\Module\Servicecomplete. //
+
 /**
  * SERVICE-COMPLETE MODULE.
  *
@@ -80,13 +94,13 @@ class CompleteConditionLevel extends CompleteCondition
         $retval = false;
 
         if ($user instanceof ADAUser && isset($GLOBALS['dh'])) {
-            $level = $user->get_student_level($id_student, $id_course_instance);
-            if (!AMA_DB::isError($level) && is_numeric($level)) {
+            $level = $user->getStudentLevel($id_student, $id_course_instance);
+            if (!AMADB::isError($level) && is_numeric($level)) {
                 if (intval($this->param) === 0) {
-                    $course_id = $GLOBALS['dh']->get_course_id_for_course_instance($id_course_instance);
-                    if (!AMA_DB::isError($course_id) && is_numeric($course_id)) {
-                        $max_level = intval($GLOBALS['dh']->get_course_max_level($course_id));
-                        if (!AMA_DB::isError($max_level) && is_numeric($max_level)) {
+                    $course_id = $GLOBALS['dh']->getCourseIdForCourseInstance($id_course_instance);
+                    if (!AMADB::isError($course_id) && is_numeric($course_id)) {
+                        $max_level = intval($GLOBALS['dh']->getCourseMaxLevel($course_id));
+                        if (!AMADB::isError($max_level) && is_numeric($max_level)) {
                             $retval = intval($level) > intval($max_level);
                         }
                     }

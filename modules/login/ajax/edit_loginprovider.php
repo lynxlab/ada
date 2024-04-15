@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * LOGIN MODULE
  *
@@ -10,7 +16,7 @@
  * @version     0.1
  */
 
-use AMA_DB;
+use AMADB;
 use Lynxlab\ADA\Module\Login\AMALoginDataHandler;
 use Lynxlab\ADA\Module\Login\Constants;
 use Lynxlab\ADA\Module\Login\LoginProviderManagement;
@@ -59,7 +65,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $loginProviderManager = new LoginProviderManagement($_POST);
     $res = $GLOBALS['dh']->saveLoginProvider($loginProviderManager->toArray());
 
-    if (AMA_DB::isError($res)) {
+    if (AMADB::isError($res)) {
         // if it's an error display the error message
         $retArray['status'] = "ERROR";
         $retArray['msg'] = $res->getMessage();
@@ -79,7 +85,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     // try to load it
     $res = $GLOBALS['dh']->getLoginProvider($provider_id);
 
-    if (AMA_DB::isError($res)) {
+    if (AMADB::isError($res)) {
         // if it's an error display the error message without the form
         $retArray['status'] = "ERROR";
         $retArray['msg'] = $res->getMessage();

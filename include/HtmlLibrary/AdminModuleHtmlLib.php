@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\HtmlLibrary\FormElementCreator;
+
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+
+use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class AdminModuleHtmlLib was declared with namespace Lynxlab\ADA\Main\HtmlLibrary. //
+
 namespace Lynxlab\ADA\Main\HtmlLibrary;
 
 use Lynxlab\ADA\Admin\AdminHelper;
@@ -12,7 +26,7 @@ use Lynxlab\ADA\Main\User\ADAGenericUser;
 use Lynxlab\ADA\Module\GDPR\GdprAPI;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\read_dir;
+use function Lynxlab\ADA\Main\Utilities\readDir;
 
 class AdminModuleHtmlLib
 {
@@ -338,10 +352,10 @@ class AdminModuleHtmlLib
             $edit_user_link,
             ];
 
-            if (defined('MODULES_GDPR') && true === MODULES_GDPR && isset($_GET['user_type']) && DataValidator::is_uinteger($_GET['user_type']) == AMA_TYPE_SWITCHER) {
+            if (defined('MODULES_GDPR') && true === MODULES_GDPR && isset($_GET['user_type']) && DataValidator::isUinteger($_GET['user_type']) == AMA_TYPE_SWITCHER) {
                 require_once MODULES_GDPR_PATH . '/include/GdprAPI.php';
                 if (!isset($gdprApi)) {
-                    $tester_info = $GLOBALS['common_dh']->get_tester_info_from_id($id_tester);
+                    $tester_info = $GLOBALS['common_dh']->getTesterInfoFromId($id_tester);
                     $gdprAPI = new GdprAPI($tester_info[10]);
                     $gdprNoneTypes = $gdprAPI->getGdprNoneUserTypes();
                 }
@@ -690,7 +704,7 @@ class AdminModuleHtmlLib
 
         $fileAr = [];
         $fileAr['none'] = '--Choose the file--';
-        $file_data = read_dir("../db/messaggi", "xml");
+        $file_data = readDir("../db/messaggi", "xml");
         /*
         foreach($file_data as $key => $value) {
           $fileAr[$key] = $value;

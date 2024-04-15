@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * EVENT PROPOSAL.
  *
@@ -20,7 +42,7 @@ use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\get_timezone_offset;
+use function Lynxlab\ADA\Main\Utilities\getTimezoneOffset;
 use function Lynxlab\ADA\Main\Utilities\sumDateTimeFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -108,9 +130,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $subject     = $practitioner_proposal['titolo'];
 
 
-    $tutor_id = $common_dh->find_user_from_username($practitioner_proposal['mittente']);
-    if (AMA_Common_DataHandler::isError($tutor_id)) {
-        $errObj = new ADA_Error(null, translateFN("Errore nell'ottenimento del practitioner"));
+    $tutor_id = $common_dh->findUserFromUsername($practitioner_proposal['mittente']);
+    if (AMACommonDataHandler::isError($tutor_id)) {
+        $errObj = new ADAError(null, translateFN("Errore nell'ottenimento del practitioner"));
     }
     $tutorObj = MultiPort::findUser($tutor_id);
 
@@ -119,8 +141,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
      * to both the users as ADA.
      */
     $admtypeAr = [AMA_TYPE_ADMIN];
-    $admList = $common_dh->get_users_by_type($admtypeAr);
-    if (!AMA_DataHandler::isError($admList)) {
+    $admList = $common_dh->getUsersByType($admtypeAr);
+    if (!AMADataHandler::isError($admList)) {
         $adm_uname = $admList[0]['username'];
     } else {
         $adm_uname = ""; // ??? FIXME: serve un superadmin nel file di config?
@@ -181,9 +203,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         /*
          * Send the email message
          */
-        $res = $mh->send_message($email_message_ha);
-        if (AMA_DataHandler::isError($res)) {
-            $errObj = new ADA_Error(
+        $res = $mh->sendMessage($email_message_ha);
+        if (AMADataHandler::isError($res)) {
+            $errObj = new ADAError(
                 $res,
                 translateFN('Impossibile spedire il messaggio'),
                 null,
@@ -199,22 +221,22 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
          * e, se di tipo appuntamento in chat, creiamo anche la chatroom.
          */
 
-        $tester_dh = AMA_DataHandler::instance($tester_dsn);
+        $tester_dh = AMADataHandler::instance($tester_dsn);
 
-        $id_course = $tester_dh->get_course_id_for_course_instance($course_instance);
-        if (AMA_DataHandler::isError($id_course)) {
-            $errObj = new ADA_Error($id_chatroom, translateFN("An error occurred."));
+        $id_course = $tester_dh->getCourseIdForCourseInstance($course_instance);
+        if (AMADataHandler::isError($id_course)) {
+            $errObj = new ADAError($id_chatroom, translateFN("An error occurred."));
         }
 
-        $tester_infoAr = $common_dh->get_tester_info_from_pointer($tester);
-        if (AMA_Common_DataHandler::isError($tester_infoAr)) {
-            $errObj = new ADA_Error($service_infoAr, translateFN("An error occurred."));
+        $tester_infoAr = $common_dh->getTesterInfoFromPointer($tester);
+        if (AMACommonDataHandler::isError($tester_infoAr)) {
+            $errObj = new ADAError($service_infoAr, translateFN("An error occurred."));
         }
         $tester_name = $tester_infoAr[1];
 
-        $service_infoAr = $common_dh->get_service_info_from_course($id_course);
-        if (AMA_Common_DataHandler::isError($service_infoAr)) {
-            $errObj = new ADA_Error($service_infoAr, translateFN("An error occurred."));
+        $service_infoAr = $common_dh->getServiceInfoFromCourse($id_course);
+        if (AMACommonDataHandler::isError($service_infoAr)) {
+            $errObj = new ADAError($service_infoAr, translateFN("An error occurred."));
         }
         $service_name = translateFN($service_infoAr[1]);
 
@@ -228,7 +250,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $tester_TimeZone = SERVER_TIMEZONE;
         } else {
             $tester_TimeZone = MultiPort::getTesterTimeZone($tester);
-            $offset = get_timezone_offset($tester_TimeZone, SERVER_TIMEZONE);
+            $offset = getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
         }
         $data_ora = sumDateTimeFN([$date,$time]) - $offset;
 
@@ -281,9 +303,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                  //'welcome_msg'        => $welcome_msg,  //usiamo messaggio di benvenuto di default
                 //'max_users'          => $max_users     // di default 2 utenti
                 ];
-                $id_chatroom = ChatRoom::add_chatroomFN($chatroom_ha, $tester_dsn);
-                if (AMA_DataHandler::isError($id_chatroom)) {
-                    $errObj = new ADA_Error(
+                $id_chatroom = ChatRoom::addChatroomFN($chatroom_ha, $tester_dsn);
+                if (AMADataHandler::isError($id_chatroom)) {
+                    $errObj = new ADAError(
                         $id_chatroom,
                         translateFN("Si è verificato un errore nella creazione della chatroom. L'appuntamento non è stato creato."),
                         null,
@@ -341,9 +363,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         /*
          * Send the email message to the practitioner
          */
-        $res = $mh->send_message($practitioner_email_message_ha);
-        if (AMA_DataHandler::isError($res)) {
-            $errObj = new ADA_Error(
+        $res = $mh->sendMessage($practitioner_email_message_ha);
+        if (AMADataHandler::isError($res)) {
+            $errObj = new ADAError(
                 $res,
                 translateFN('Impossibile spedire il messaggio'),
                 null,
@@ -356,9 +378,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         /*
          * Send the email message to the user
          */
-        $res = $mh->send_message($user_email_message_ha);
-        if (AMA_DataHandler::isError($res)) {
-            $errObj = new ADA_Error(
+        $res = $mh->sendMessage($user_email_message_ha);
+        if (AMADataHandler::isError($res)) {
+            $errObj = new ADAError(
                 $res,
                 translateFN('Impossibile spedire il messaggio'),
                 null,
@@ -378,9 +400,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                         );
     }
 
-    $res = $mh->send_message($message_ha);
-    if (AMA_DataHandler::isError($res)) {
-        $errObj = new ADA_Error(
+    $res = $mh->sendMessage($message_ha);
+    if (AMADataHandler::isError($res)) {
+        $errObj = new ADAError(
             $res,
             translateFN('Impossibile spedire il messaggio'),
             null,
@@ -415,7 +437,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
      */
     $datetimesAr = ADAEventProposal::extractDateTimesFromEventProposalText($data['testo']);
     if ($datetimesAr === false) {
-        $errObj = new ADA_Error(null, translateFN("Errore nell'ottenimento delle date per l'appuntamento"));
+        $errObj = new ADAError(null, translateFN("Errore nell'ottenimento delle date per l'appuntamento"));
     }
 
     /*

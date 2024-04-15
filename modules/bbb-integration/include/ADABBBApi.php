@@ -1,5 +1,7 @@
 <?php
 
+use Lynxlab\ADA\Module\BBBIntegration\AMABBBIntegrationDataHandler;
+
 /**
  * @package     ADA BigBlueButton Integration
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -46,7 +48,7 @@ class ADABBBApi extends \BigBlueButton\BigBlueButton
     public function create($meetingData)
     {
         try {
-            $meetingData = $this->dh->add_videoroom($meetingData);
+            $meetingData = $this->dh->addVideoroom($meetingData);
 
             $createParams = new \BigBlueButton\Parameters\CreateMeetingParameters(
                 $meetingData['meetingID']->toString(),
@@ -82,7 +84,7 @@ class ADABBBApi extends \BigBlueButton\BigBlueButton
                 if (isset($meetingData['attendeePW'])) {
                     unset($meetingData['attendeePW']);
                 }
-                // $this->dh->delete_videoroom($roomId);
+                // $this->dh->deleteVideoroom($roomId);
             }
             return $meetingData;
         } catch (\Exception $e) {

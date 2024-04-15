@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Module\EventDispatcher\Events\ForumEvent;
+
+// Trigger: ClassWithNameSpace. The class ForumEvent was declared with namespace Lynxlab\ADA\Module\EventDispatcher\Events. //
+
 /**
  * @package     event-dispatcher module
  * @author      giorgio <g.consorti@lynxlab.com>

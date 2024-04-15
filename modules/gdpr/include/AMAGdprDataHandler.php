@@ -1,5 +1,31 @@
 <?php
 
+use Lynxlab\ADA\Module\GDPR\GdprUser;
+
+use Lynxlab\ADA\Module\GDPR\GdprRequestType;
+
+use Lynxlab\ADA\Module\GDPR\GdprRequest;
+
+use Lynxlab\ADA\Module\GDPR\GdprPolicy;
+
+use Lynxlab\ADA\Module\GDPR\GdprBase;
+
+use Lynxlab\ADA\Module\GDPR\GdprAPI;
+
+use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class AMAGdprDataHandler was declared with namespace Lynxlab\ADA\Module\GDPR. //
+
 /**
  * @package     gdpr module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -104,7 +130,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
                 // make a new request
                 $className = self::getObjectClasses()[self::REQUESTCLASSKEY];
                 $request = new $className([], $this);
-                $request->setGeneratedTs($this->date_to_ts('now'))->setType(reset($type));
+                $request->setGeneratedTs($this->dateToTs('now'))->setType(reset($type));
                 $isUpdate = false;
 
                 if (!array_key_exists('requestContent', $data)) {
@@ -170,7 +196,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
                 $result = $this->queryPrepared($this->sqlUpdate($request::table, array_keys($fields), 'uuid'), array_values($fields + [$request->getUuid()]));
             }
 
-            if (AMA_DB::isError($result)) {
+            if (AMADB::isError($result)) {
                 throw new GdprException($result->getMessage(), is_numeric($result->getCode()) ? $result->getCode() : null);
             }
             $request->afterSave($isUpdate);
@@ -205,7 +231,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
         }
 
         if (!$isUpdate) {
-            $policy->setTester_pointer($_SESSION['sess_selected_tester'])->setVersion(1);
+            $policy->setTesterPointer($_SESSION['sess_selected_tester'])->setVersion(1);
         } else {
             if ((int)(array_key_exists('newVersion', $data) && intval($data['newVersion']) === 1)) {
                 unset($data['newVersion']);
@@ -216,7 +242,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
         $policy->setTitle(trim($data['title']))->setContent(trim($data['content']))
                ->setMandatory((int)(array_key_exists('mandatory', $data) && intval($data['mandatory']) === 1))
                ->setIsPublished((int)(array_key_exists('isPublished', $data) && intval($data['isPublished']) === 1))
-               ->setLastEditTS($this->date_to_ts('now'));
+               ->setLastEditTS($this->dateToTs('now'));
 
         if (strlen($policy->getTitle()) <= 0) {
             $policy->setTitle(null);
@@ -231,10 +257,10 @@ class AMAGdprDataHandler extends AMA_DataHandler
             $result = self::getPoliciesDB()->executeCriticalPrepared($this->sqlInsert($policy::TABLE, $fields), array_values($fields));
         } else {
             unset($fields['policy_content_id']);
-            $result = self::getPoliciesDB()->queryPrepared($this->sqlUpdate($policy::TABLE, array_keys($fields), 'policy_content_id'), array_values($fields + [$policy->getPolicy_content_id()]));
+            $result = self::getPoliciesDB()->queryPrepared($this->sqlUpdate($policy::TABLE, array_keys($fields), 'policy_content_id'), array_values($fields + [$policy->getPolicyContentId()]));
         }
 
-        if (AMA_DB::isError($result)) {
+        if (AMADB::isError($result)) {
             throw new GdprException($result->getMessage(), is_numeric($result->getCode()) ? $result->getCode() : null);
         }
 
@@ -274,7 +300,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
         }
         $result = self::getPoliciesDB()->getAllPrepared($sql, $isArray ? null : $userID, AMA_FETCH_ASSOC);
         $retArr = [];
-        if (!AMA_DB::isError($result) && is_array($result) && count($result) > 0) {
+        if (!AMADB::isError($result) && is_array($result) && count($result) > 0) {
             foreach ($result as $row) {
                 if ($isArray) {
                     $retArr[$row['id_utente']][$row['id_policy']] = $row;
@@ -323,7 +349,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
             $tmp = array_filter(
                 $publishedPolicies,
                 function (GdprPolicy $el) use ($policyID) {
-                    return intval($el->getPolicy_content_id()) === $policyID;
+                    return intval($el->getPolicyContentId()) === $policyID;
                 }
             );
             $policyObj = reset($tmp);
@@ -335,7 +361,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
                     $accepted != $userPolicies[$policyID]['isAccepted'] ||
                     $policyObj->getVersion() > $userPolicies[$policyID]['acceptedVersion']
                 ) {
-                    $queries[] = sprintf("UPDATE `%s` SET `acceptedVersion`=%d, `lastmodTS`=%d, `isAccepted`=%d" . $where, $tableName, $policyObj->getVersion(), $this->date_to_ts('now'), $accepted, $policyID);
+                    $queries[] = sprintf("UPDATE `%s` SET `acceptedVersion`=%d, `lastmodTS`=%d, `isAccepted`=%d" . $where, $tableName, $policyObj->getVersion(), $this->dateToTs('now'), $accepted, $policyID);
                 }
             } else {
                 // 2. if the user did not already accepted the $policyID, must insert a new row
@@ -343,7 +369,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
                     'id_utente' => $data['userId'],
                     'id_policy' => $policyID,
                     'acceptedVersion' => $policyObj->getVersion(),
-                    'lastmodTS' => $this->date_to_ts('now'),
+                    'lastmodTS' => $this->dateToTs('now'),
                     'isAccepted' => $accepted,
                 ];
                 $query = $this->sqlInsert($tableName, $fields);
@@ -357,7 +383,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
 
         $result = count($queries) > 0 ? self::getPoliciesDB()->queryPrepared(implode(';', $queries)) : true;
 
-        if (AMA_DB::isError($result)) {
+        if (AMADB::isError($result)) {
             throw new GdprException($result->getMessage(), is_numeric($result->getCode()) ? $result->getCode() : null);
         } else {
             if ($_SESSION['sess_userObj']->getType() == AMA_TYPE_VISITOR) {
@@ -398,9 +424,9 @@ class AMAGdprDataHandler extends AMA_DataHandler
         if ($request instanceof GdprRequest) {
             $result = $this->queryPrepared(
                 $this->sqlUpdate(GdprRequest::TABLE, ['closedTs', 'closedBy'], 'uuid'),
-                [$this->date_to_ts('now'), $closedBy, $request->getUuid()]
+                [$this->dateToTs('now'), $closedBy, $request->getUuid()]
             );
-            if (AMA_DB::isError($result)) {
+            if (AMADB::isError($result)) {
                 throw new GdprException($result->getMessage(), $result->getCode());
             }
         } else {
@@ -421,7 +447,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
             $request = reset($tmp);
         }
         if ($request instanceof GdprRequest) {
-            $this->saveRequest(['requestUUID' => $request->getUuid(), 'confirmedTs' => $this->date_to_ts('now')]);
+            $this->saveRequest(['requestUUID' => $request->getUuid(), 'confirmedTs' => $this->dateToTs('now')]);
         } else {
             throw new GdprException(translateFN('Pratica non trovata'));
         }
@@ -440,7 +466,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
             // use queryPrepared because executeCriticalPrepared will return
             // an error if no deleted rows
             $result = $this->queryPrepared($sql, [intval($data['id_utente'])]);
-            if (AMA_DB::isError($result)) {
+            if (AMADB::isError($result)) {
                 throw new GdprException($result->getMessage(), $result->getCode());
             }
             if (array_key_exists('type', $data) && is_array($data['type']) && count($data['type']) > 0) {
@@ -452,7 +478,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
                         ),
                         [$data['id_utente'], $gdprUserType->getId()]
                     );
-                    if (AMA_DB::isError($result)) {
+                    if (AMADB::isError($result)) {
                         throw new GdprException($result->getMessage(), $result->getCode());
                     }
                 }
@@ -472,8 +498,8 @@ class AMAGdprDataHandler extends AMA_DataHandler
         $retVal = ['uuid' => $uuid];
         $found = false;
 
-        $testers_infoAr = $GLOBALS['common_dh']->get_all_testers(['id_tester','e_mail','responsabile']);
-        if (!AMA_DB::isError($testers_infoAr)) {
+        $testers_infoAr = $GLOBALS['common_dh']->getAllTesters(['id_tester','e_mail','responsabile']);
+        if (!AMADB::isError($testers_infoAr)) {
             while (!$found && $tester = current($testers_infoAr)) {
                 if (!$found) {
                     $gdprAPI = new GdprAPI($tester['puntatore']);
@@ -513,11 +539,11 @@ class AMAGdprDataHandler extends AMA_DataHandler
      * @param string $className to use a class from your namespace, this string must start with "\"
      * @param array $whereArr
      * @param array $orderByArr
-     * @param Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
+     * @param AbstractAMADataHandler $dbToUse object used to run the queries. If null, use 'this'
      * @throws GdprException
      * @return array
      */
-    public function findBy($className, array $whereArr = null, array $orderByArr = null, Abstract_AMA_DataHandler $dbToUse = null)
+    public function findBy($className, array $whereArr = null, array $orderByArr = null, AbstractAMADataHandler $dbToUse = null)
     {
         if (
             stripos($className, '\\') !== 0 &&
@@ -599,7 +625,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
         }
 
         $result = $dbToUse->getAllPrepared($sql, (!is_null($whereArr) && count($whereArr) > 0) ? array_values($whereArr) : [], AMA_FETCH_ASSOC);
-        if (AMA_DB::isError($result)) {
+        if (AMADB::isError($result)) {
             throw new GdprException($result->getMessage(), (int)$result->getCode());
         } else {
             $retArr = array_map(function ($el) use ($className, $dbToUse) {
@@ -610,7 +636,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
                 foreach ($joined as $joinKey) {
                     $sql = sprintf("SELECT `%s` FROM `%s` WHERE `%s`=?", $joinKey, $retObj::table, $retObj::key);
                     $res = $dbToUse->getAllPrepared($sql, $retObj->{$retObj::GETTERPREFIX . ucfirst($retObj::key)}(), AMA_FETCH_ASSOC);
-                    if (!AMA_DB::isError($res)) {
+                    if (!AMADB::isError($res)) {
                         foreach ($res as $row) {
                             $retObj->{$retObj::ADDERPREFIX . ucfirst($joinKey)}($row[$joinKey], $dbToUse);
                         }
@@ -627,10 +653,10 @@ class AMAGdprDataHandler extends AMA_DataHandler
      *
      * @param string $className
      * @param array $orderBy
-     * @param Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
+     * @param AbstractAMADataHandler $dbToUse object used to run the queries. If null, use 'this'
      * @return array
      */
-    public function findAll($className, array $orderBy = null, Abstract_AMA_DataHandler $dbToUse = null)
+    public function findAll($className, array $orderBy = null, AbstractAMADataHandler $dbToUse = null)
     {
         return $this->findBy($className, null, $orderBy, $dbToUse);
     }
@@ -679,7 +705,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
     /**
      * Gets the AMA_DataHandler object to be used for policies objects
      *
-     * @return Abstract_AMA_DataHandler
+     * @return AbstractAMADataHandler
      */
     public static function getPoliciesDB()
     {
@@ -745,7 +771,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
         $theInstance = parent::instance($dsn);
 
         if (is_null(self::$policiesDB)) {
-            self::$policiesDB = AMA_Common_DataHandler::instance();
+            self::$policiesDB = AMACommonDataHandler::instance();
             if (!MULTIPROVIDER && !is_null($dsn)) {
                 // must check if passed $dsn has the module login tables
                 // execute this dummy query, if result is not an error table is there
@@ -753,7 +779,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
                 // must use AMA_DataHandler because we are not able to
                 // query AMALoginDataHandelr in this method!
                 $ok = AMA_DataHandler::instance($dsn)->getOnePrepared($sql);
-                if (!AMA_DB::isError($ok)) {
+                if (!AMADB::isError($ok)) {
                     self::$policiesDB = $theInstance;
                 }
             }

@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Module\Test\QuestionTest;
+
+use Lynxlab\ADA\Module\Test\QuestionOpenUploadTest;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class QuestionOpenUploadTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -14,7 +24,7 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Upload\Functions\upload_file;
+use function Lynxlab\ADA\Main\Upload\Functions\uploadFile;
 
 class QuestionOpenUploadTest extends QuestionTest
 {
@@ -167,7 +177,7 @@ class QuestionOpenUploadTest extends QuestionTest
 
             $file_destination = $this->getFilePath($this->id_utente, $this->id_istanza, $_SESSION['sess_id_user'], $this->id_nodo, $filename);
 
-            $file_move = upload_file($_FILES, $source, ROOT_DIR . $file_destination);
+            $file_move = uploadFile($_FILES, $source, ROOT_DIR . $file_destination);
 
             if ($file_move[0] == "ok") {
                 $replace = [" " => "_","\'" => "_"];

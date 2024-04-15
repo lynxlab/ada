@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Module\Test\TopicTest;
+
+use Lynxlab\ADA\Module\Test\RootTest;
+
+use Lynxlab\ADA\Module\Test\QuestionTest;
+
+use Lynxlab\ADA\Module\Test\NodeTest;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class TopicTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -186,9 +200,9 @@ class TopicTest extends NodeTest
             isset($_SESSION['sess_id_course_instance']) && isset($GLOBALS['dh'])
         ) {
             if (!isset($_GET['unload'])) {
-                $GLOBALS['dh']->add_ex_history($_SESSION['sess_id_user'], $_SESSION['sess_id_course_instance'], $this->id_nodo);
+                $GLOBALS['dh']->addExHistory($_SESSION['sess_id_user'], $_SESSION['sess_id_course_instance'], $this->id_nodo);
             } else {
-                $GLOBALS['dh']->update_exit_time_ex_history($_SESSION['sess_id_user'], $_SESSION['sess_id_course_instance'], $this->id_nodo);
+                $GLOBALS['dh']->updateExitTimeExHistory($_SESSION['sess_id_user'], $_SESSION['sess_id_course_instance'], $this->id_nodo);
             }
         }
     }

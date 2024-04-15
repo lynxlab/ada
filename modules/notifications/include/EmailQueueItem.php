@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\Notifications\NotificationBase;
+
+use Lynxlab\ADA\Module\Notifications\EmailQueueItem;
+
+use Lynxlab\ADA\Module\Notifications\AMANotificationsDataHandler;
+
+// Trigger: ClassWithNameSpace. The class EmailQueueItem was declared with namespace Lynxlab\ADA\Module\Notifications. //
+
 /**
  * @package     notifications module
  * @author      giorgio <g.consorti@lynxlab.com>

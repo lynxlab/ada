@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Main\DataValidator;
+
+// Trigger: ClassWithNameSpace. The class DataValidator was declared with namespace Lynxlab\ADA\Main. //
+
 /**
  *
  * @author      Stefano Penge <steve@lynxlab.com>
@@ -16,9 +20,9 @@ namespace Lynxlab\ADA\Main;
 
 class DataValidator
 {
-    public static function validate_local_filename($filename)
+    public static function validateLocalFilename($filename)
     {
-        if (self::validate_not_empty_string($filename)) {
+        if (self::validateNotEmptyString($filename)) {
             $pattern = '/^[a-zA-Z\_]+\.[a-zA-Z0-9\.]+$/';
             if (preg_match($pattern, $filename)) {
                 return $filename;
@@ -27,7 +31,7 @@ class DataValidator
         return false;
     }
 
-    public static function validate_string($string)
+    public static function validateString($string)
     {
         if (!isset($string) || empty($string)) {
             return '';
@@ -37,7 +41,7 @@ class DataValidator
         return false;
     }
 
-    public static function validate_not_empty_string($string)
+    public static function validateNotEmptyString($string)
     {
         if (isset($string) && !empty($string)) {
             return $string;
@@ -45,9 +49,9 @@ class DataValidator
         return false;
     }
 
-    public static function validate_birthdate($date)
+    public static function validateBirthdate($date)
     {
-        $ok = self::validate_date_format($date);
+        $ok = self::validateDateFormat($date);
         if ($ok) {
             [$giorno, $mese, $anno] = explode("/", $date);
 
@@ -65,7 +69,7 @@ class DataValidator
         return $ok;
     }
 
-    public static function validate_date_format($date)
+    public static function validateDateFormat($date)
     {
         if (isset($date) && !empty($date)) {
             $pattern = '/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/';
@@ -76,7 +80,7 @@ class DataValidator
         return false;
     }
 
-    public static function validate_event_token($event_token)
+    public static function validateEventToken($event_token)
     {
         if (isset($event_token) && !empty($event_token)) {
             $pattern = '/^[1-9][0-9]*_[1-9][0-9]*_[1-9][0-9]*_[1-9][0-9]+$/';
@@ -87,7 +91,7 @@ class DataValidator
         return false;
     }
 
-    public static function validate_action_token($action_token)
+    public static function validateActionToken($action_token)
     {
         if (isset($action_token) && !empty($action_token)) {
             $pattern = '/^[a-f0-9]{40}$/';
@@ -98,7 +102,7 @@ class DataValidator
         return false;
     }
 
-    public static function is_uinteger($value)
+    public static function isUinteger($value)
     {
         if (isset($value) && !empty($value)) {
             if (is_int($value) && $value >= 0) {
@@ -112,7 +116,7 @@ class DataValidator
         return false;
     }
 
-    public static function validate_node_id($node_id)
+    public static function validateNodeId($node_id)
     {
         if (isset($node_id) && !empty($node_id)) {
             $pattern = '/^[1-9][0-9]*\_[0-9]*$/';
@@ -123,7 +127,7 @@ class DataValidator
         return false;
     }
 
-    public static function validate_testername($testername, $multiprovider = true)
+    public static function validateTestername($testername, $multiprovider = true)
     {
         if (isset($testername) && !empty($testername)) {
             /**
@@ -146,7 +150,7 @@ class DataValidator
     }
 
     // TODO: definire minima e massima lunghezza per lo username
-    public static function validate_firstname($firstname)
+    public static function validateFirstname($firstname)
     {
         if (isset($firstname) && !empty($firstname)) {
             //  $pattern = '/^$/';
@@ -158,7 +162,7 @@ class DataValidator
     }
 
     // TODO: definire minima e massima lunghezza per lo username
-    public static function validate_lastname($lastname)
+    public static function validateLastname($lastname)
     {
         if (isset($lastname) && !empty($lastname)) {
             // $pattern = '/^$/';
@@ -170,7 +174,7 @@ class DataValidator
     }
 
     // TODO: definire minima e massima lunghezza per lo username
-    public static function validate_username($username)
+    public static function validateUsername($username)
     {
         /* username is the user's email
          * ->  return self::validate_email($username);
@@ -186,7 +190,7 @@ class DataValidator
     }
 
 
-    public static function validate_password($password, $passwordcheck)
+    public static function validatePassword($password, $passwordcheck)
     {
         /**
          * @author steve 28/mag/2020
@@ -209,7 +213,7 @@ class DataValidator
         return false;
     }
 
-    public static function validate_password_modified($password, $passwordcheck)
+    public static function validatePasswordModified($password, $passwordcheck)
     {
         if (
             isset($password) && !empty($password) && isset($passwordcheck)
@@ -229,7 +233,7 @@ class DataValidator
         return false;
     }
 
-    public static function validate_phone($phone)
+    public static function validatePhone($phone)
     {
         if (!isset($phone)) {
             return '';
@@ -237,7 +241,7 @@ class DataValidator
         return $phone;
     }
 
-    public static function validate_age($age)
+    public static function validateAge($age)
     {
         if (!isset($age)) {
             return '';
@@ -250,7 +254,7 @@ class DataValidator
         return false;
     }
 
-    public static function validate_email($email)
+    public static function validateEmail($email)
     {
         if (isset($email) && !empty($email)) {
             $email_pattern = '/(?:[a-zA-Z0-9_\-\.\+\^!#\$%&*+\/\=\?\`\|\{\}~\'\[\]]+)@(?:(?:(?:[a-z0-9][a-z0-9\-_\[\]]*\.)+(?:aero|arpa|biz|com|cat|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel|mobi|media|[a-z]{2}))|(?:[0-9]{1,3}(?:\.[0-9]{1,3}){3})|(?:[0-9a-fA-F]{1,4}(?:\:[0-9a-fA-F]{1-4}){7}))$/';
@@ -262,7 +266,7 @@ class DataValidator
         return false;
     }
 
-    public static function validate_url($url)
+    public static function validateUrl($url)
     {
         if (isset($url) && !empty($url)) {
             /**
@@ -281,7 +285,7 @@ class DataValidator
         return false;
     }
 
-    public static function validate_iban($iban)
+    public static function validateIban($iban)
     {
         if (isset($iban) && !empty($iban)) {
             /**

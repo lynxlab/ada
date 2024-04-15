@@ -1,5 +1,29 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * e-guidance tutor form.
  *
@@ -112,17 +136,17 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         /*
          * Update an existing eguidance session evaluation
          */
-        $result = $dh->update_eguidance_session_data($eguidance_dataAr);
-        if (AMA_DataHandler::isError($result)) {
-            $errObj = new ADA_Error($result);
+        $result = $dh->updateEguidanceSessionData($eguidance_dataAr);
+        if (AMADataHandler::isError($result)) {
+            $errObj = new ADAError($result);
         }
     } else {
         /*
          * Save a new eguidance session evaluation
          */
-        $result = $dh->add_eguidance_session_data($eguidance_dataAr);
-        if (AMA_DataHandler::isError($result)) {
-            $errObj = new ADA_Error($result);
+        $result = $dh->addEguidanceSessionData($eguidance_dataAr);
+        if (AMADataHandler::isError($result)) {
+            $errObj = new ADAError($result);
         }
     }
     //createCSVFileToDownload($_POST);
@@ -142,9 +166,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
      */
 
     if (isset($_GET['event_token'])) {
-        $event_token = DataValidator::validate_event_token($_GET['event_token']);
+        $event_token = DataValidator::validateEventToken($_GET['event_token']);
         if ($event_token === false) {
-            $errObj = new ADA_Error(
+            $errObj = new ADAError(
                 null,
                 translateFN("Dati in input per il modulo eguidance_tutor_form non corretti"),
                 null,
@@ -154,7 +178,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             );
         }
     } else {
-        $errObj = new ADA_Error(
+        $errObj = new ADAError(
             null,
             translateFN("Dati in input per il modulo eguidance_tutor_form non corretti"),
             null,
@@ -169,9 +193,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     /*
      * Get service info
      */
-    $id_course = $dh->get_course_id_for_course_instance($id_course_instance);
-    if (AMA_DataHandler::isError($id_course)) {
-        $errObj = new ADA_Error(
+    $id_course = $dh->getCourseIdForCourseInstance($id_course_instance);
+    if (AMADataHandler::isError($id_course)) {
+        $errObj = new ADAError(
             null,
             translateFN("Errore nell'ottenimento dell'id del servzio"),
             null,
@@ -181,9 +205,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         );
     }
 
-    $service_infoAr = $common_dh->get_service_info_from_course($id_course);
-    if (AMA_Common_DataHandler::isError($service_infoAr)) {
-        $errObj = new ADA_Error(
+    $service_infoAr = $common_dh->getServiceInfoFromCourse($id_course);
+    if (AMACommonDataHandler::isError($service_infoAr)) {
+        $errObj = new ADAError(
             null,
             translateFN("Errore nell'ottenimento delle informazioni sul servizio"),
             null,
@@ -193,9 +217,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         );
     }
 
-    $users_infoAr = $dh->course_instance_students_presubscribe_get_list($id_course_instance);
-    if (AMA_DataHandler::isError($users_infoAr)) {
-        $errObj = new ADA_Error(
+    $users_infoAr = $dh->courseInstanceStudentsPresubscribeGetList($id_course_instance);
+    if (AMADataHandler::isError($users_infoAr)) {
+        $errObj = new ADAError(
             $users_infoAr,
             translateFN("Errore nell'ottenimento dei dati dello studente"),
             null,
@@ -226,16 +250,16 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
      * Check if an eguidance session with this event_token exists. In this case,
      * use this data to fill the form.
      */
-    $eguidance_session_dataAr = $dh->get_eguidance_session_with_event_token($event_token);
-    if (!AMA_DataHandler::isError($eguidance_session_dataAr)) {
+    $eguidance_session_dataAr = $dh->getEguidanceSessionWithEventToken($event_token);
+    if (!AMADataHandler::isError($eguidance_session_dataAr)) {
         if ($is_popup) {
             $eguidance_session_dataAr['is_popup'] = true;
         }
         $form = TutorModuleHtmlLib::getEditEguidanceDataForm($tutoredUserObj, $service_infoAr, $eguidance_session_dataAr);
     } else {
-        $last_eguidance_session_dataAr = $dh->get_last_eguidance_session($id_course_instance);
-        if (AMA_DataHandler::isError($last_eguidance_session_dataAr)) {
-            $errObj = new ADA_Error(
+        $last_eguidance_session_dataAr = $dh->getLastEguidanceSession($id_course_instance);
+        if (AMADataHandler::isError($last_eguidance_session_dataAr)) {
+            $errObj = new ADAError(
                 $users_infoAr,
                 translateFN("Errore nell'ottenimento dei dati della precedente sessione di eguidance"),
                 null,

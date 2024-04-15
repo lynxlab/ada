@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Module\Impexport\AMARepositoryDataHandler;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class AMARepositoryDataHandler was declared with namespace Lynxlab\ADA\Module\Impexport. //
+
 /**
  * @package     import/export course
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -17,7 +33,7 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 
-class AMARepositoryDataHandler extends AMA_Common_DataHandler
+class AMARepositoryDataHandler extends AMACommonDataHandler
 {
     /**
      * module's own data tables prefix
@@ -37,7 +53,7 @@ class AMARepositoryDataHandler extends AMA_Common_DataHandler
     {
         $isUpdate = array_key_exists('id', $saveData) && intval($saveData['id']) > 0;
         if (!array_key_exists('exportTS', $saveData)) {
-            $saveData['exportTS'] = $this->date_to_ts('now');
+            $saveData['exportTS'] = $this->dateToTs('now');
         }
         if (!array_key_exists('exporter_userid', $saveData)) {
             $saveData['exporter_userid'] = $_SESSION['sess_userObj']->getId();
@@ -64,7 +80,7 @@ class AMARepositoryDataHandler extends AMA_Common_DataHandler
             );
         }
 
-        if (!AMA_DB::isError($result)) {
+        if (!AMADB::isError($result)) {
             return $saveData;
         } else {
             throw new Exception($result->getMessage(), $result->getCode());
@@ -83,11 +99,11 @@ class AMARepositoryDataHandler extends AMA_Common_DataHandler
                 . $this->buildWhereClause($whereArr, array_keys($whereArr));
         $res = $this->getAllPrepared($sql, array_values($whereArr), AMA_FETCH_ASSOC);
 
-        if (!AMA_DB::isError($res)) {
+        if (!AMADB::isError($res)) {
             /**
              * this is needed to instantiate the proper dh and get course data
              */
-            $testersArr = $this->get_all_testers(['id_tester']);
+            $testersArr = $this->getAllTesters(['id_tester']);
             $cachedValues = ['courseTitles' => [], 'courseProviders' => []];
             $res = array_map(function ($element) use ($testersArr, &$cachedValues) {
                 if (!array_key_exists($element['id_course'], $cachedValues['courseTitles'])) {
@@ -96,9 +112,9 @@ class AMARepositoryDataHandler extends AMA_Common_DataHandler
                         return $el['id_tester'] == $element['id_tester'];
                     });
                     $provider = reset($provider);
-                    $pdh = AMA_DataHandler::instance(MultiPort::getDSN($provider['puntatore']));
-                    $courseData = $pdh->get_course($element['id_course']);
-                    if (!AMA_DB::isError($courseData)) {
+                    $pdh = AMADataHandler::instance(MultiPort::getDSN($provider['puntatore']));
+                    $courseData = $pdh->getCourse($element['id_course']);
+                    if (!AMADB::isError($courseData)) {
                         $cachedValues['courseTitles'][$element['id_course']] = $courseData['titolo'];
                     } else {
                         $cachedValues['courseTitles'][$element['id_course']] = translateFN('Corso Sconosciuto');
@@ -138,7 +154,7 @@ class AMARepositoryDataHandler extends AMA_Common_DataHandler
                     ),
                     array_values($delArr)
                 );
-                if (!AMA_DB::isError($result)) {
+                if (!AMADB::isError($result)) {
                     $repodir = MODULES_IMPEXPORT_REPOBASEDIR . $toDelete['id_course'] . DIRECTORY_SEPARATOR . MODULES_IMPEXPORT_REPODIR;
                     @unlink($repodir . DIRECTORY_SEPARATOR . $toDelete['filename']);
                     @rmdir($repodir);
@@ -166,8 +182,8 @@ class AMARepositoryDataHandler extends AMA_Common_DataHandler
         if (is_null($pointer)) {
             $pointer = $_SESSION['sess_selected_tester'];
         }
-        $testerInfo = $this->get_tester_info_from_pointer($pointer);
-        if (!AMA_DB::isError($testerInfo) && is_array($testerInfo) && isset($testerInfo[0])) {
+        $testerInfo = $this->getTesterInfoFromPointer($pointer);
+        if (!AMADB::isError($testerInfo) && is_array($testerInfo) && isset($testerInfo[0])) {
             $testerId = $testerInfo[0];
         }
         return $testerId;

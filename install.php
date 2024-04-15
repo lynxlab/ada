@@ -1,5 +1,33 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use function \translateFN;
+
+use function \importSQL;
+
+use function \isEmptyDB;
+
+use function \checkDB;
+
+use function \createDB;
+
+use function \sendToBrowser;
+
+use function \getBaseUrl;
+
+use function \sendSkip;
+
+use function \sendFail;
+
+use function \sendOK;
+
+use function \outputBufferOff;
+
 use Lynxlab\ADA\Main\User\ADAGuest;
 
 use function Lynxlab\ADA\Main\Utilities\delTree;
@@ -17,7 +45,7 @@ use function Lynxlab\ADA\Main\Utilities\whoami;
  * @version     0.1
  */
 
-function output_buffer_off()
+function outputBufferOff()
 {
     if (!headers_sent()) {
         // Disable gzip in PHP.
@@ -239,7 +267,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         session_destroy();
     }
-    output_buffer_off();
+    outputBufferOff();
     ini_set('max_execution_time', 300);
     $postData = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
     $postData = array_map(function ($el) {

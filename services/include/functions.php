@@ -1,11 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 namespace Lynxlab\ADA\Services\Functions;
 
 use Lynxlab\ADA\Main\form\PhpOpenFormGen;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
+use function Lynxlab\ADA\Main\AMA\DBRead\readNodeFromDB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
@@ -18,7 +28,7 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
  * @version     0.1
  */
 
-function delete_nodeFN($id_node, $id_course, $action)
+function deleteNodeFN($id_node, $id_course, $action)
 {
 
     $http_root_dir = $GLOBALS['http_root_dir'];
@@ -31,8 +41,8 @@ function delete_nodeFN($id_node, $id_course, $action)
     /*
      * get object node
      */
-    $nodeObj = read_node_from_DB($id_node);
-    if (is_object($nodeObj) && (!AMA_DataHandler::isError($nodeObj))) {
+    $nodeObj = readNodeFromDB($id_node);
+    if (is_object($nodeObj) && (!AMADataHandler::isError($nodeObj))) {
         //$sess_id_node = $nodeObj->id;
         $name = $nodeObj->name;
         $title = $nodeObj->title;
@@ -51,7 +61,7 @@ function delete_nodeFN($id_node, $id_course, $action)
         $id_node_author = $nodeObj->author;
         $creation_date = $nodeObj->creation_date;
 
-        $node_childrenAr = $dh->get_node_children($id_node, $sess_id_course_instance);
+        $node_childrenAr = $dh->getNodeChildren($id_node, $sess_id_course_instance);
 
         $has_children = is_array($node_childrenAr);//(!is_object($node_childrenAr));
         $is_root_node = (strpos($nodeObj->id, '_0') !== false);
@@ -118,13 +128,13 @@ function delete_nodeFN($id_node, $id_course, $action)
         $data['form'] = $form;
         return $data;
     } else {
-        $errObj = new ADA_Error($nodeObj, translateFN('Nodo non trovato, impossibile proseguire.'));
+        $errObj = new ADAError($nodeObj, translateFN('Nodo non trovato, impossibile proseguire.'));
         // FIXME: eliminare il return?
         return  $errObj;
     }
 }
 
-function copy_nodeFN($id_node, $id_course, $action)
+function copyNodeFN($id_node, $id_course, $action)
 {
     //global $http_root_dir,$sess_id_node,$self;
     $self = $GLOBALS['self'];
@@ -132,10 +142,10 @@ function copy_nodeFN($id_node, $id_course, $action)
     $http_root_dir = $GLOBALS['http_root_dir'];
 
     // get object node
-    $nodeObj = read_node_from_DB($id_node);
+    $nodeObj = readNodeFromDB($id_node);
     // per il momento se non e' un oggetto vuol dire che c'e' un errore
     // invece deve COMUQNQUE ritornare un oggetto, ma di tipo diverso: Errore
-    if (is_object($nodeObj) && (!AMA_DataHandler::isError($nodeObj))) {
+    if (is_object($nodeObj) && (!AMADataHandler::isError($nodeObj))) {
         $sess_id_node = $nodeObj->id;
         $name = $nodeObj->name;
         $title = $nodeObj->title;
@@ -192,13 +202,13 @@ function copy_nodeFN($id_node, $id_course, $action)
         $data['form'] = $form;
         return $data;
     } else {
-        $errObj = new ADA_Error($nodeObj, translateFN('Nodo non trovato, impossibile proseguire.'));
+        $errObj = new ADAError($nodeObj, translateFN('Nodo non trovato, impossibile proseguire.'));
         // FIXME: eliminare il return?
         return  $errObj;
     }
 }
 
-function preview_nodeFN($id_node, $id_course, $action)
+function previewNodeFN($id_node, $id_course, $action)
 {
     //global $http_root_dir,$sess_id_node,$self;
     //global $level,$order,$version,$correctness,$creation_date,$icon,$course,$name,$title,$type,$text;
@@ -366,7 +376,7 @@ function preview_nodeFN($id_node, $id_course, $action)
     return $data;
 }
 
-function edit_nodeFN($id_node, $id_course, $action)
+function editNodeFN($id_node, $id_course, $action)
 {
 
     $self = $GLOBALS['self'];
@@ -375,8 +385,8 @@ function edit_nodeFN($id_node, $id_course, $action)
     $http_root_dir = $GLOBALS['http_root_dir'];
     $dh = $GLOBALS['dh'];
     // get object node
-    $nodeObj = read_node_from_DB($id_node);
-    if (is_object($nodeObj) && (!AMA_DataHandler::isError($nodeObj))) {
+    $nodeObj = readNodeFromDB($id_node);
+    if (is_object($nodeObj) && (!AMADataHandler::isError($nodeObj))) {
         $sess_id_node = $nodeObj->id;
         $name = $nodeObj->name;
         $title = $nodeObj->title;
@@ -398,8 +408,8 @@ function edit_nodeFN($id_node, $id_course, $action)
         $id_instance = $nodeObj->id_instance;
 
         //get parent obj node [useful in several tasks]
-        $nodeObjParent = read_node_from_DB($sess_id_node);
-        if (is_object($nodeObj) && (!AMA_DataHandler::isError($nodeObj))) {
+        $nodeObjParent = readNodeFromDB($sess_id_node);
+        if (is_object($nodeObj) && (!AMADataHandler::isError($nodeObj))) {
             $sess_id_nodeParent = $nodeObjParent->id;
             $nameParent = $nodeObjParent->name;
             $titleParent = $nodeObjParent->title;
@@ -472,7 +482,7 @@ function edit_nodeFN($id_node, $id_course, $action)
                 $label_parent = translateFN('Gruppo');
                 $label_position = translateFN('Posizione');
                 // genitori  del nodo
-                $nodesCourse = $dh->find_course_nodes_list(['nome','tipo'], "ID_UTENTE = '$sess_id_user' AND TIPO in (0,1) AND  ID_NODO!=" . $id_node . " order by ID_NODO asc", $id_course);
+                $nodesCourse = $dh->findCourseNodesList(['nome','tipo'], "ID_UTENTE = '$sess_id_user' AND TIPO in (0,1) AND  ID_NODO!=" . $id_node . " order by ID_NODO asc", $id_course);
 
                 if (is_array($nodesCourse) && sizeof($nodesCourse) > 0) {
                     foreach ($nodesCourse as $value) {
@@ -591,7 +601,7 @@ function edit_nodeFN($id_node, $id_course, $action)
                 $names["add"][] = $desc_pos;
                 $edittypes["add"][] = "link";
                 $necessary["add"][] = "";
-                $values["add"][] = "add_link.php?link_type=0&id_nodefrom=" . $id_node . "&id_course=" . $id_course;
+                $values["add"][] = "addLink.php?link_type=0&id_nodefrom=" . $id_node . "&id_course=" . $id_course;
                 $options["add"][] = ['target' => '_blank'];
                 $maxsize["add"][] = "";
 
@@ -601,7 +611,7 @@ function edit_nodeFN($id_node, $id_course, $action)
                 $names["add"][] = $desc_pos;
                 $edittypes["add"][] = "link";
                 $necessary["add"][] = "";
-                $values["add"][] = "add_link.php?link_type=1&id_nodefrom=" . $id_node . "&id_course=" . $id_course;
+                $values["add"][] = "addLink.php?link_type=1&id_nodefrom=" . $id_node . "&id_course=" . $id_course;
                 $options["add"][] = ['target' => '_blank'];
                 $maxsize["add"][] = "";
 
@@ -673,7 +683,7 @@ function edit_nodeFN($id_node, $id_course, $action)
         $data['form'] = $form;
         return $data;
     } else {
-        $errObj = new ADA_Error($nodeObj, translateFN('Nodo non trovato, impossibile proseguire.'));
+        $errObj = new ADAError($nodeObj, translateFN('Nodo non trovato, impossibile proseguire.'));
         // FIXME: eliminare il return?
         return  $errObj;
     }
@@ -683,8 +693,8 @@ function edit_nodeFN($id_node, $id_course, $action)
 
 function getNodeData($id_node)
 {
-    $nodeObj = read_node_from_DB($id_node);
-    if (AMA_DataHandler::isError($nodeObj)) {
+    $nodeObj = readNodeFromDB($id_node);
+    if (AMADataHandler::isError($nodeObj)) {
         return $nodeObj;
     }
     if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS) {

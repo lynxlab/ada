@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Module\JitsiIntegration\AMAJitsiIntegrationDataHandler;
+
+use Lynxlab\ADA\Module\JitsiIntegration\ADAJitsiApi;
+
+// Trigger: ClassWithNameSpace. The class ADAJitsiApi was declared with namespace Lynxlab\ADA\Module\JitsiIntegration. //
+
 /**
  * @package     ADA Jitsi Integration
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -39,7 +45,7 @@ class ADAJitsiApi
     public function create($meetingData)
     {
         try {
-            $meetingData = $this->dh->add_videoroom($meetingData);
+            $meetingData = $this->dh->addVideoroom($meetingData);
             return $meetingData;
         } catch (Exception $e) {
             return false;

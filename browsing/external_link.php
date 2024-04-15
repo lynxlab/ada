@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * External link
  *
@@ -84,15 +106,15 @@ BrowsingHelper::init($neededObjAr);
 
 $self =  whoami();
 
-$external_link_id = isset($_GET['id']) ? DataValidator::is_uinteger($_GET['id']) : false;
-$filename = isset($_GET['file']) ? DataValidator::validate_local_filename($_GET['file']) : false;
+$external_link_id = isset($_GET['id']) ? DataValidator::isUinteger($_GET['id']) : false;
+$filename = isset($_GET['file']) ? DataValidator::validateLocalFilename($_GET['file']) : false;
 
-//$url = DataValidator::validate_url($_GET['url']);
+//$url = DataValidator::validateUrl($_GET['url']);
 $url = $_GET['url'] ?? null;
 
 if ($external_link_id != false) {
-    $external_resourceAr = $dh->get_risorsa_esterna_info($external_link_id);
-    if (AMA_DataHandler::isError($external_resourceAr)) {
+    $external_resourceAr = $dh->getRisorsaEsternaInfo($external_link_id);
+    if (AMADataHandler::isError($external_resourceAr)) {
         $data = '';
     } elseif ($external_resourceAr['tipo'] != _LINK) {
         $data = '';
@@ -121,7 +143,7 @@ if ($external_link_id != false) {
         $foundFile = findInClientDir($filename);
         /**
          * NOTE: it's safe to assume that $filename has a dot, the
-         * validate_local_filename would have returned false if it had not
+         * validateLocalFilename would have returned false if it had not
          */
         $exploded_filename = explode('.', $filename);
 

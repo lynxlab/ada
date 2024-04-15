@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * ZOOM TUTOR.
  *
@@ -77,26 +97,26 @@ SwitcherHelper::init($neededObjAr);
 /*
  * YOUR CODE HERE
  */
-$tutor_id = DataValidator::is_uinteger($_GET['id']);
+$tutor_id = DataValidator::isUinteger($_GET['id']);
 if ($tutor_id == false) {
     header('Location: ' . $userObj->getHomePage());
     exit();
 }
 
-$tutor_ha = $dh->get_tutor($tutor_id);
-if (AMA_DataHandler::isError($tutor_ha)) {
-    $errObj = new ADA_Error($tutor_ha, translateFN('An error occurred while reading tutor data.'));
+$tutor_ha = $dh->getTutor($tutor_id);
+if (AMADataHandler::isError($tutor_ha)) {
+    $errObj = new ADAError($tutor_ha, translateFN('An error occurred while reading tutor data.'));
 }
 
-//$tutored_users_number = $dh->get_number_of_tutored_users($id);
-$tutored_user_ids = $dh->get_tutored_user_ids($id);
-if (AMA_DataHandler::isError($tutored_user_ids)) {
-    $errObj = new ADA_Error($tutored_user_ids, translateFN('An error occurred while reading tutored user ids'));
+//$tutored_users_number = $dh->getNumberOfTutoredUsers($id);
+$tutored_user_ids = $dh->getTutoredUserIds($id);
+if (AMADataHandler::isError($tutored_user_ids)) {
+    $errObj = new ADAError($tutored_user_ids, translateFN('An error occurred while reading tutored user ids'));
 }
 
-$number_of_active_tutored_users = $common_dh->get_number_of_users_with_status($tutored_user_ids, ADA_STATUS_REGISTERED);
-if (AMA_Common_DataHandler::isError($number_of_active_tutored_users)) {
-    $errObj = new ADA_Error($number_of_active_tutored_users, translateFN('An error occurred while retrieving the number of active tutored users.'));
+$number_of_active_tutored_users = $common_dh->getNumberOfUsersWithStatus($tutored_user_ids, ADA_STATUS_REGISTERED);
+if (AMACommonDataHandler::isError($number_of_active_tutored_users)) {
+    $errObj = new ADAError($number_of_active_tutored_users, translateFN('An error occurred while retrieving the number of active tutored users.'));
 }
 
 $tutor_ha['utenti seguiti'] = $number_of_active_tutored_users;

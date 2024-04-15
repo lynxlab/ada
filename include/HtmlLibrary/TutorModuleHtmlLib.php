@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Main\Service\Service;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\HtmlLibrary\TutorModuleHtmlLib;
+
+use Lynxlab\ADA\Main\HtmlLibrary\EguidanceSession;
+
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+
+use Lynxlab\ADA\CORE\HtmlElements\Form;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class TutorModuleHtmlLib was declared with namespace Lynxlab\ADA\Main\HtmlLibrary. //
+
 /**
  *
  * @package
@@ -373,7 +389,7 @@ class TutorModuleHtmlLib
         $user_gender = $tutoredUserObj->getGender();
         $user_foreign_culture = 'FOREIGN CULTURE';
 
-        if (($id = DataValidator::is_uinteger($form_dataAr['id'])) !== false) {
+        if (($id = DataValidator::isUinteger($form_dataAr['id'])) !== false) {
             $hidden_id_eguidance_session  = CDOMElement::create('hidden', 'id:id_eguidance_session, name:id_eguidance_session');
             $hidden_id_eguidance_session->setAttribute('value', $id);
             $form->addChild($hidden_id_eguidance_session);

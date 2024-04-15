@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\Badges\Badge;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use function \translateFN;
+
 /**
  * @package     badges module
  * @author      giorgio <g.consorti@lynxlab.com>

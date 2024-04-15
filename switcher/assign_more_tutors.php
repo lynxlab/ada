@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * ASSIGN Tutor.
  *
@@ -98,9 +118,9 @@ if (
         $id_tutors_old = explode(',', $id_tutors_old);
         foreach ($id_tutors_old as $idTutorOld) {
             if ($idTutorOld != '' && is_numeric($idTutorOld) && $idTutorOld > 0) {
-                $result = $dh->course_instance_tutor_unsubscribe($courseInstanceId, $idTutorOld);
-                if (AMA_DataHandler::isError($result)) {
-                    $errObj = new ADA_Error($result, translateFN('Errore nel disassociare il practitioner dal client'));
+                $result = $dh->courseInstanceTutorUnsubscribe($courseInstanceId, $idTutorOld);
+                if (AMADataHandler::isError($result)) {
+                    $errObj = new ADAError($result, translateFN('Errore nel disassociare il practitioner dal client'));
                 }
             }
         }
@@ -108,9 +128,9 @@ if (
     if (is_array($id_tutors_new)) {
         foreach ($id_tutors_new as $id_tutor_new) {
             if ($id_tutor_new != '' && is_numeric($id_tutor_new) && $id_tutor_new > 0) {
-                $result = $dh->course_instance_tutor_subscribe($courseInstanceId, $id_tutor_new);
-                if (AMA_DataHandler::isError($result)) {
-                    $errObj = new ADA_Error($result, translateFN('Errore durante assegnazione del practitioner al client'));
+                $result = $dh->courseInstanceTutorSubscribe($courseInstanceId, $id_tutor_new);
+                if (AMADataHandler::isError($result)) {
+                    $errObj = new ADAError($result, translateFN('Errore durante assegnazione del practitioner al client'));
                 } else {
                     /*
                      * For each course instance, a class chatroom with the same duration
@@ -120,13 +140,13 @@ if (
                     $id_instance = $courseInstanceId;
                     /*
                      *                $start_time = $start_date;
-                                   $end_time = $dh->add_number_of_days($_POST['durata'],$start_time);
+                                   $end_time = $dh->addNumberOfDays($_POST['durata'],$start_time);
                     //               $end_time   = $course_instance_data_before_update['data_fine'];
                     */
 
-                    $id_chatroom = ChatRoom::get_class_chatroom_for_instance($id_instance, 'C');
+                    $id_chatroom = ChatRoom::getClassChatroomForInstance($id_instance, 'C');
 
-                    if (!AMA_DataHandler::isError($id_chatroom)) {
+                    if (!AMADataHandler::isError($id_chatroom)) {
                         /*
                          * An existing chatroom with id class and type = C (chat classroom)
                          * already exists, so update this chatroom owner (= tutor id).
@@ -134,9 +154,9 @@ if (
                         $chatroomObj = new Chatroom($id_chatroom);
                         $chatroom_data['id_chat_owner'] = $id_tutor_new;
 
-                        $result = $chatroomObj->set_chatroomFN($chatroomObj->id_chatroom, $chatroom_data);
+                        $result = $chatroomObj->setChatroomFN($chatroomObj->id_chatroom, $chatroom_data);
 
-                        if (AMA_DataHandler::isError($result)) {
+                        if (AMADataHandler::isError($result)) {
                             // gestire l'errore
                         }
                     }
@@ -153,10 +173,10 @@ if (
         $id_course = $courseInstanceObj->getCourseId();
         $className = $courseInstanceObj->getTitle();
         $idInstance = $courseInstanceObj->getId();
-        $result = $dh->course_instance_tutor_get($courseInstanceObj->getId(), $number);
-        if (AMA_DataHandler::isError($result)) {
+        $result = $dh->courseInstanceTutorGet($courseInstanceObj->getId(), $number);
+        if (AMADataHandler::isError($result)) {
             // FIXME: verificare che si venga redirezionati alla home page del'utente
-            $errObj = new ADA_Error($result, translateFN('Errore in lettura tutor'));
+            $errObj = new ADAError($result, translateFN('Errore in lettura tutor'));
         }
         if ($result === false) {
             $id_tutors_old = 'no';
@@ -166,9 +186,9 @@ if (
 
         // array dei tutor
         $field_list_ar = ['nome', 'cognome'];
-        $tutors_ar = $dh->get_tutors_list($field_list_ar);
-        if (AMA_DataHandler::isError($tutors_ar)) {
-            $errObj = new ADA_Error($tutors_ar, translateFN('Errore in lettura dei tutor'));
+        $tutors_ar = $dh->getTutorsList($field_list_ar);
+        if (AMADataHandler::isError($tutors_ar)) {
+            $errObj = new ADAError($tutors_ar, translateFN('Errore in lettura dei tutor'));
         }
 
 
@@ -189,7 +209,7 @@ if (
             $tutors[$tutor[0]] = $link->getHtml();
         }
 
-        $tutor_monitoring = $dh->get_tutors_assigned_course_instance($ids_tutor);
+        $tutor_monitoring = $dh->getTutorsAssignedCourseInstance($ids_tutor);
 
         //create tooltips with tutor's assignments (html + javascript)
         $tooltips = '';

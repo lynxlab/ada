@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
@@ -85,13 +93,53 @@ if ('function' == typeof ZoomMtg.prepareWebSDK) {
 }
 
 //Add the language code to the internationalization.reload method.
-ZoomMtg.i18n.load("<?php echo strtolower($_SESSION['sess_user_language']).'-'.strtoupper($_SESSION['sess_user_language']); ?>");
-ZoomMtg.i18n.reload("<?php echo strtolower($_SESSION['sess_user_language']).'-'.strtoupper($_SESSION['sess_user_language']); ?>");
-//Add the language code to the ZoomMtg.reRender method.
-ZoomMtg.reRender({lang: "<?php echo strtolower($_SESSION['sess_user_language']).'-'.strtoupper($_SESSION['sess_user_language']); ?>"});
-ZoomMtg.setZoomJSLib('https://source.zoom.us/<?php echo ZOOM_WEBSDK_VERSION; ?>/lib', '/av');
+ZoomMtg.i18n.load("<?php 
+use Lynxlab\ADA\Main\User\ADAPractitioner;
 
-const API_KEY = "<?php echo ZOOMCONF_APIKEY; ?>";
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+echo strtolower($_SESSION['sess_user_language']).'-'.strtoupper($_SESSION['sess_user_language']); ?>");
+ZoomMtg.i18n.reload("<?php 
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+echo strtolower($_SESSION['sess_user_language']).'-'.strtoupper($_SESSION['sess_user_language']); ?>");
+//Add the language code to the ZoomMtg.reRender method.
+ZoomMtg.reRender({lang: "<?php 
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+echo strtolower($_SESSION['sess_user_language']).'-'.strtoupper($_SESSION['sess_user_language']); ?>"});
+ZoomMtg.setZoomJSLib('https://source.zoom.us/<?php 
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+echo ZOOM_WEBSDK_VERSION; ?>/lib', '/av');
+
+const API_KEY = "<?php 
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+echo ZOOMCONF_APIKEY; ?>";
 
 /**
  * https://marketplace.zoom.us/docs/sdk/native-sdks/web/build/signature
@@ -101,12 +149,60 @@ const API_KEY = "<?php echo ZOOMCONF_APIKEY; ?>";
 
 const meetingConfig = {
     apiKey: API_KEY,
-    meetingNumber: '<?php echo $videoroomObj->getMeetingID(); ?>',
-    leaveUrl: '<?php echo $videoroomObj->getLogoutUrl(); ?>',
-    userName: '<?php echo $userObj->getFullName(); ?>',
-    userEmail: '<?php echo $userObj->getEmail(); ?>',
-    passWord: '<?php echo $videoroomObj->getMeetingPWD(); ?>', // if required
-    role: '<?php echo $role; ?>'
+    meetingNumber: '<?php 
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+echo $videoroomObj->getMeetingID(); ?>',
+    leaveUrl: '<?php 
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+echo $videoroomObj->getLogoutUrl(); ?>',
+    userName: '<?php 
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+echo $userObj->getFullName(); ?>',
+    userEmail: '<?php 
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+echo $userObj->getEmail(); ?>',
+    passWord: '<?php 
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+echo $videoroomObj->getMeetingPWD(); ?>', // if required
+    role: '<?php 
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+echo $role; ?>'
 };
 
 ZoomMtg.init({
@@ -127,7 +223,15 @@ ZoomMtg.init({
             console.log("intResponse is ", initResp);
         }
         ZoomMtg.join({
-            signature: '<?php echo $videoroomObj->generateSignature($role); ?>',
+            signature: '<?php 
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+echo $videoroomObj->generateSignature($role); ?>',
             sdkKey: meetingConfig.apiKey,
             meetingNumber: meetingConfig.meetingNumber,
             userName: meetingConfig.userName,

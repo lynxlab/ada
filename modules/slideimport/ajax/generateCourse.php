@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
 /**
  * SLIDEIMPORT MODULE.
  *
@@ -68,14 +72,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['courseName']) && strle
 
     $rename_count = 3;
     do {
-        $courseNewID = $GLOBALS['dh']->add_course($courseArr);
-        if (AMA_DB::isError($courseNewID)) {
+        $courseNewID = $GLOBALS['dh']->addCourse($courseArr);
+        if (AMADB::isError($courseNewID)) {
             $courseArr['nome'] = generateRandomString(8);
             $rename_count--;
         }
-    } while (AMA_DB::isError($courseNewID) && $rename_count >= 0);
+    } while (AMADB::isError($courseNewID) && $rename_count >= 0);
 
-    if (!AMA_DB::isError($courseNewID)) {
+    if (!AMADB::isError($courseNewID)) {
         // add a row in common.servizio
         $service_dataAr = [
                 'service_name' => trim($_POST['courseName']),
@@ -88,13 +92,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['courseName']) && strle
         ];
     }
 
-    $id_service = $GLOBALS['common_dh']->add_service($service_dataAr);
-    if (!AMA_DB::isError($id_service)) {
-        $tester_infoAr = $GLOBALS['common_dh']->get_tester_info_from_pointer($_SESSION['sess_selected_tester']);
-        if (!AMA_DB::isError($tester_infoAr)) {
+    $id_service = $GLOBALS['common_dh']->addService($service_dataAr);
+    if (!AMADB::isError($id_service)) {
+        $tester_infoAr = $GLOBALS['common_dh']->getTesterInfoFromPointer($_SESSION['sess_selected_tester']);
+        if (!AMADB::isError($tester_infoAr)) {
             $id_tester = $tester_infoAr[0];
-            $result = $common_dh->link_service_to_course($id_tester, $id_service, $courseNewID);
-            if (AMA_DB::isError($result)) {
+            $result = $common_dh->linkServiceToCourse($id_tester, $id_service, $courseNewID);
+            if (AMADB::isError($result)) {
                 $courseNewID = -1;
             }
         }

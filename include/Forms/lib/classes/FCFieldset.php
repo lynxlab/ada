@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Forms\lib\classes\FormControl;
+
+use Lynxlab\ADA\Main\Forms\lib\classes\FCFieldset;
+
+// Trigger: ClassWithNameSpace. The class FCFieldset was declared with namespace Lynxlab\ADA\Main\Forms\lib\classes. //
+
 /**
  * FCFieldset file
  *

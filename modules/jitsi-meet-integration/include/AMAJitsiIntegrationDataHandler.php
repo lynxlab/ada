@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\JitsiIntegration\AMAJitsiIntegrationDataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+// Trigger: ClassWithNameSpace. The class AMAJitsiIntegrationDataHandler was declared with namespace Lynxlab\ADA\Module\JitsiIntegration. //
+
 /**
  * @package     ADA Jitsi Integration
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -10,7 +18,7 @@
 
 namespace Lynxlab\ADA\Module\JitsiIntegration;
 
-class AMAJitsiIntegrationDataHandler extends AMA_DataHandler
+class AMAJitsiIntegrationDataHandler extends AMADataHandler
 {
     /**
      * module's own data tables prefix
@@ -28,12 +36,12 @@ class AMAJitsiIntegrationDataHandler extends AMA_DataHandler
     {
         // update main table
         $result = $this->executeCriticalPrepared("UPDATE `openmeetings_room` SET `id_room`=? WHERE `id`=?", [$saveData['openmeetings_room_id'], $saveData['openmeetings_room_id']]);
-        if (AMA_DB::isError($result)) {
+        if (AMADB::isError($result)) {
             throw new JitsiIntegrationException($result->getMessage(), is_numeric($result->getCode()) ? $result->getCode() : null);
         }
 
         $result = $this->executeCriticalPrepared($this->sqlInsert(self::PREFIX . 'meeting', $saveData), array_values($saveData));
-        if (AMA_DB::isError($result)) {
+        if (AMADB::isError($result)) {
             throw new JitsiIntegrationException($result->getMessage(), is_numeric($result->getCode()) ? $result->getCode() : null);
         }
 
@@ -44,7 +52,7 @@ class AMAJitsiIntegrationDataHandler extends AMA_DataHandler
     {
         $query = 'SELECT * FROM `' . self::PREFIX . 'meeting` WHERE `openmeetings_room_id` = ?;';
         $result =  $this->getRowPrepared($query, [$roomId], AMA_FETCH_ASSOC);
-        if (AMA_DB::isError($result)) {
+        if (AMADB::isError($result)) {
             throw new JitsiIntegrationException($result->getMessage(), is_numeric($result->getCode()) ? $result->getCode() : null);
         }
         if (is_array($result) && count($result) > 0) {
@@ -53,10 +61,10 @@ class AMAJitsiIntegrationDataHandler extends AMA_DataHandler
         return [];
     }
 
-    public function add_videoroom($videoroom_dataAr = [])
+    public function addVideoroom($videoroom_dataAr = [])
     {
-        $result = parent::add_videoroom($videoroom_dataAr);
-        if (!AMA_DB::isError($result)) {
+        $result = parent::addVideoroom($videoroom_dataAr);
+        if (!AMADB::isError($result)) {
             $meetingData = [
                 'openmeetings_room_id' => $this->getConnection()->lastInsertID(),
                 'meetingID' => self::buildMeetingID($videoroom_dataAr),
@@ -82,12 +90,12 @@ class AMAJitsiIntegrationDataHandler extends AMA_DataHandler
         }
     }
 
-    public function delete_videoroom($id_room)
+    public function deleteVideoroom($id_room)
     {
-        parent::delete_videoroom($id_room);
+        parent::deleteVideoroom($id_room);
         $sql = "DELETE FROM `" . self::PREFIX . "meeting` WHERE `openmeetings_room_id` = ?";
         $result = $this->queryPrepared($sql, $id_room);
-        if (AMA_DB::isError($result)) {
+        if (AMADB::isError($result)) {
             throw new JitsiIntegrationException($result->getMessage(), is_numeric($result->getCode()) ? $result->getCode() : null);
         }
         return true;

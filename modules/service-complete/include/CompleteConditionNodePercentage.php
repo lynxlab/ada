@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionNodePercentage;
+
+use Lynxlab\ADA\Module\Servicecomplete\CompleteCondition;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class CompleteConditionNodePercentage was declared with namespace Lynxlab\ADA\Module\Servicecomplete. //
+
 /**
  * SERVICE-COMPLETE MODULE.
  *
@@ -76,11 +88,11 @@ class CompleteConditionNodePercentage extends CompleteCondition
     {
         /** @var History $history */
         $history = new History($id_course_instance, $id_student);
-        $id_course = $GLOBALS['dh']->get_course_id_for_course_instance($id_course_instance);
+        $id_course = $GLOBALS['dh']->getCourseIdForCourseInstance($id_course_instance);
         if (is_numeric($id_course)) {
             $history->setCourse($id_course);
         }
-        $checkFloat = $history->history_nodes_visitedpercent_float_FN([ADA_GROUP_TYPE, ADA_LEAF_TYPE]);
+        $checkFloat = $history->historyNodesVisitedpercentFloatFN([ADA_GROUP_TYPE, ADA_LEAF_TYPE]);
         $retval =  $checkFloat >= floatval($this->param);
 
         if ($this->getLogToFile()) {

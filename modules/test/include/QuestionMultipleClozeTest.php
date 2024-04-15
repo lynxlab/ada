@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Module\Test\QuestionMultipleClozeTest;
+
+use Lynxlab\ADA\Module\Test\QuestionEraseClozeTest;
+
+use Lynxlab\ADA\Module\Test\QuestionClozeTest;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\CORE\html4\CBase;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class QuestionMultipleClozeTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -789,7 +803,7 @@ class QuestionMultipleClozeTest extends QuestionClozeTest
         }
 
         if ($updateData) {
-            $dh->test_updateNode($this->id_nodo, ['titolo_dragdrop' => $titolo_dragdrop]);
+            $dh->testUpdateNode($this->id_nodo, ['titolo_dragdrop' => $titolo_dragdrop]);
             echo '1';
             exit();
         }

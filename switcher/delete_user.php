@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use function \translateFN;
+
 /**
  * Add user - this module provides add user functionality
  *
@@ -84,7 +100,7 @@ SwitcherHelper::init($neededObjAr);
 $restore = isset($_REQUEST['restore']);
 $prefix = $restore ? '' : 'dis';
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
-    $userId = DataValidator::is_uinteger($_POST['id_user']);
+    $userId = DataValidator::isUinteger($_POST['id_user']);
     $postKey = $restore ? 'restore' : 'delete';
     if ($userId !== false && isset($_POST[$postKey]) && intval($_POST[$postKey]) === 1) {
         $userToDeleteObj = MultiPort::findUser($userId);
@@ -102,7 +118,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $data = new CText(translateFN("Utente non {$prefix}abilitato."));
     }
 } else {
-    $userId = DataValidator::is_uinteger($_GET['id_user']);
+    $userId = DataValidator::isUinteger($_GET['id_user']);
     $restore = (isset($_GET['restore']) && intval($_GET['restore']) === 1);
     if ($userId === false) {
         $data = new CText(translateFN('Utente non trovato') . '(1)');

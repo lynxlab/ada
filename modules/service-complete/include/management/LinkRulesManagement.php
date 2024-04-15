@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\Servicecomplete\LinkRulesManagement;
+
+use Lynxlab\ADA\Module\Servicecomplete\FormLinkRules;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+// Trigger: ClassWithNameSpace. The class LinkRulesManagement was declared with namespace Lynxlab\ADA\Module\Servicecomplete. //
+
 /**
  * SERVICE-COMPLETE MODULE.
  *
@@ -46,8 +54,8 @@ class LinkRulesManagement
         $dh = $GLOBALS['dh'];
 
         // load the courses list to be passed to the form
-        $coursesAr = $dh->find_courses_list(['nome','titolo']);
-        if (!AMA_DB::isError($coursesAr)) {
+        $coursesAr = $dh->findCoursesList(['nome','titolo']);
+        if (!AMADB::isError($coursesAr)) {
             foreach ($coursesAr as $courseEl) {
                 $this->coursesList[$courseEl[0]] = $courseEl[1] . ' - ' . $courseEl[2];
             }

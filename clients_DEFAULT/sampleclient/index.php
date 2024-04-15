@@ -13,7 +13,7 @@ ini_set('display_errors', '0'); error_reporting(E_ALL);
 
 	/**
 	 * Base config file, pls note that selected provider will be set in 
-	 * session_controlFN function of module_init_functions.inc.php
+	 * sessionControlFN function of module_init_functions.inc.php
 	 * and will be detected from script filename.
 	 */
 	require_once realpath(dirname(__FILE__)).'../../../config_path.inc.php';

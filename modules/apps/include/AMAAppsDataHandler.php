@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\Apps\AMAAppsDataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+// Trigger: ClassWithNameSpace. The class AMAAppsDataHandler was declared with namespace Lynxlab\ADA\Module\Apps. //
+
 /**
  * APPS MODULE.
  *
@@ -13,7 +21,7 @@
 
 namespace Lynxlab\ADA\Module\Apps;
 
-class AMAAppsDataHandler extends AMA_Common_DataHandler
+class AMAAppsDataHandler extends AMACommonDataHandler
 {
     /**
      * module's own data tables prefix
@@ -49,7 +57,7 @@ class AMAAppsDataHandler extends AMA_Common_DataHandler
             $sql = "INSERT INTO " . self::$PREFIX . "oauth_clients VALUES (?,?,?,NULL,NULL,?)";
             $res = $this->queryPrepared($sql, [$client_array['client_id'], $client_array['client_secret'],'',$userID]);
 
-            if (!AMA_DB::isError($res)) {
+            if (!AMADB::isError($res)) {
                 return $client_array;
             } else {
                 return null;

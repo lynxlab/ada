@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\PDF;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\Node\Media;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * TUTOR.
  *
@@ -19,10 +41,10 @@ use Lynxlab\ADA\Main\Helper\TutorHelper;
 use Lynxlab\ADA\Main\Output\PdfClass;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_course_from_DB;
+use function Lynxlab\ADA\Main\AMA\DBRead\readCourseFromDB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
-use function Lynxlab\ADA\Tutor\Functions\menu_detailsFN;
+use function Lynxlab\ADA\Tutor\Functions\menuDetailsFN;
 
 /**
  * Base config file
@@ -104,15 +126,15 @@ if (!isset($epar)) {
  *
 */
 
-$courseObj = read_course_from_DB($courseInstanceObj->id_corso);
-if (AMA_DataHandler::isError($courseObj)) {
+$courseObj = readCourseFromDB($courseInstanceObj->id_corso);
+if (AMADataHandler::isError($courseObj)) {
 } else {
     $course_title = $courseObj->titolo;
-    $start_date = AMA_DataHandler::ts_to_date($courseInstanceObj->data_inizio);
+    $start_date = AMADataHandler::tsToDate($courseInstanceObj->data_inizio);
 }
 
 $studentObj = MultiPort::findUser($id_student);
-if (AMA_DataHandler::isError($studentObj)) {
+if (AMADataHandler::isError($studentObj)) {
     header('Location: tutor.php');
     exit();
 } elseif ($studentObj instanceof ADAPractitioner) {
@@ -140,22 +162,22 @@ switch ($mode) {
     case "visits":
     default:
         // lettura dei dati dal database
-        $studentObj->set_course_instance_for_history($courseInstanceObj->id);
+        $studentObj->setCourseInstanceForHistory($courseInstanceObj->id);
         $user_historyObj = $studentObj->history;
-        $visited_nodes_table = $user_historyObj->history_nodes_visited_FN();
+        $visited_nodes_table = $user_historyObj->historyNodesVisitedFN();
 
 
         // Totali: nodi e  nodi visitati (necessita dati che vengono calcolati dalla
-        // funzione in history_nodes_visited_FN()
+        // funzione in historyNodesVisitedFN()
         $history .= "<p>";
-        $history .= $user_historyObj->history_summary_FN();
+        $history .= $user_historyObj->historySummaryFN();
         $history .= "</p>";
 
         // Percentuale nodi visitati (necessita dati che vengono calcolati dalla
-        // funzione in history_nodes_visited_FN() )
+        // funzione in historyNodesVisitedFN() )
         $history .= "<p align=\"center\">";
         $history .= translateFN("Percentuale nodi visitati/totale: ");
-        $nodes_percent = $user_historyObj->history_nodes_visitedpercent_FN() . "%";
+        $nodes_percent = $user_historyObj->historyNodesVisitedpercentFN() . "%";
         $history .= "<b>" . $nodes_percent . "</b>";
         $history .= "</p>";
 
@@ -167,15 +189,15 @@ switch ($mode) {
         // Tempo di visita nodi
         $history .= "<p align=\"center\">";
         $history .= translateFN("Tempo totale di visita dei nodi (in ore:minuti:secondi): ");
-        $history .= "<b>" . $user_historyObj->history_nodes_time_FN() . "</b><br>";
+        $history .= "<b>" . $user_historyObj->historyNodesTimeFN() . "</b><br>";
         // Media di visita nodi
         $history .= translateFN("Tempo medio di visita dei nodi (in ore:minuti:secondi): ");
-        $history .= "<b>" . $user_historyObj->history_nodes_average_FN() . "</b>";
+        $history .= "<b>" . $user_historyObj->historyNodesAverageFN() . "</b>";
         $history .= "</p>";
 
         // Ultimi nodi visitati (10)
         $history .= "<p>";
-        $history .= $user_historyObj->history_last_nodes_FN(10);
+        $history .= $user_historyObj->historyLastNodesFN(10);
         $history .= "</p>";
 
         // Nodi visitati e numero di visite per ciascun nodo
@@ -186,7 +208,7 @@ switch ($mode) {
         break;
 
     case 'score':
-        $studentObj->get_exercise_dataFN($sess_id_course_instance, $id_student);
+        $studentObj->getExerciseDataFN($sess_id_course_instance, $id_student);
         $st_exercise_dataAr = $studentObj->user_ex_historyAr;
         $st_score = 0;
         $st_exer_number = 0;
@@ -197,10 +219,10 @@ switch ($mode) {
             }
         }
 
-        $studentObj->set_course_instance_for_history($sess_id_course_instance);
+        $studentObj->setCourseInstanceForHistory($sess_id_course_instance);
 
-        $st_history_count = $studentObj->total_visited_nodesFN($id_student);
-        $st_history_notes_count = $studentObj->total_visited_notesFN($id_student);
+        $st_history_count = $studentObj->totalVisitedNodesFN($id_student);
+        $st_history_notes_count = $studentObj->totalVisitedNotesFN($id_student);
 
         $st_exercises =  $st_score . ' ' . translateFN('su') . ' ' . ($st_exer_number * 100);
         $history .=  '<br />' . translateFN('Punteggio esercizi:') . '<strong>' . $st_exercises . '</strong>'
@@ -211,12 +233,12 @@ switch ($mode) {
 
     case "writings":
         // added notes in forum
-        $sub_courses = $dh->get_subscription($id_student, $sess_id_course_instance);
+        $sub_courses = $dh->getSubscription($id_student, $sess_id_course_instance);
         if ((!AMA_datahandler::isError($sub_courses)) && ($sub_courses['tipo'] == ADA_STATUS_SUBSCRIBED)) {
             $out_fields_ar = ['nome', 'titolo', 'id_istanza', 'data_creazione'];
             $clause = "TIPO = " . ADA_NOTE_TYPE . " AND ID_UTENTE = $id_student";
             $clause .= " AND ID_ISTANZA = " . $sess_id_course_instance;
-            $nodes = $dh->find_course_nodes_list($out_fields_ar, $clause, $sess_id_course);
+            $nodes = $dh->findCourseNodesList($out_fields_ar, $clause, $sess_id_course);
             $added_nodes_count = count($nodes);
             $added_notes = $added_nodes_count;
         } else {
@@ -230,13 +252,13 @@ switch ($mode) {
 
         $mh = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
         $sort_field = 'data_ora desc';
-        $msgs_ha = $mh->get_sent_messages(
+        $msgs_ha = $mh->getSentMessages(
             $id_student,
             ADA_MSG_SIMPLE,
             ['id_mittente', 'data_ora'],
             $sort_field
         );
-        if (AMA_DataHandler::isError($msgs_ha)) {
+        if (AMADataHandler::isError($msgs_ha)) {
             $user_message_count = '-';
         } else {
             $user_message_count =  count($msgs_ha);
@@ -246,12 +268,12 @@ switch ($mode) {
     case "summary":
         // activity index
         // added notes in forum
-        $sub_courses = $dh->get_subscription($id_student, $sess_id_course_instance);
+        $sub_courses = $dh->getSubscription($id_student, $sess_id_course_instance);
         if ((!AMA_datahandler::isError($sub_courses)) && ($sub_courses['tipo'] == ADA_STATUS_SUBSCRIBED)) {
             $out_fields_ar = ['nome', 'titolo', 'id_istanza', 'data_creazione'];
             $clause = "TIPO = " . ADA_NOTE_TYPE . " AND ID_UTENTE = $id_student";
             $clause .= " AND ID_ISTANZA = " . $sess_id_course_instance;
-            $nodes = $dh->find_course_nodes_list($out_fields_ar, $clause, $sess_id_course);
+            $nodes = $dh->findCourseNodesList($out_fields_ar, $clause, $sess_id_course);
             $added_nodes_count = count($nodes);
             $added_notes = $added_nodes_count;
         } else {
@@ -263,19 +285,19 @@ switch ($mode) {
 
         $mh = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
         $sort_field = 'data_ora desc';
-        $msgs_ha = $mh->get_sent_messages(
+        $msgs_ha = $mh->getSentMessages(
             $id_student,
             ADA_MSG_SIMPLE,
             ['id_mittente', 'data_ora'],
             $sort_field
         );
-        if (AMA_DataHandler::isError($msgs_ha)) {
+        if (AMADataHandler::isError($msgs_ha)) {
             $user_message_count = '-';
         } else {
             $user_message_count =  count($msgs_ha);
         }
 
-        $studentObj->get_exercise_dataFN($sess_id_course_instance, $id_student);
+        $studentObj->getExerciseDataFN($sess_id_course_instance, $id_student);
         $st_exercise_dataAr = $userObj->user_ex_historyAr ?? null;
         $st_score = 0;
         $st_exer_number = 0;
@@ -286,8 +308,8 @@ switch ($mode) {
             }
         }
 
-        $st_history_count = $studentObj->total_visited_nodesFN($id_student);
-        $st_history_notes_count = $studentObj->total_visited_notesFN($id_student);
+        $st_history_count = $studentObj->totalVisitedNodesFN($id_student);
+        $st_history_notes_count = $studentObj->totalVisitedNotesFN($id_student);
 
         $history .= '<p>';
         $index   =  ($added_notes * $npar) + ($st_history_count * $hpar)  + ($user_message_count * $mpar) + ($st_exer_number * $epar);
@@ -316,7 +338,7 @@ switch ($op) {
 
         $PDFdata['title']  = sprintf(translateFN('Cronologia dello studente %s, aggiornata al %s'), $student_name, $ymdhms);
 
-        $PDFdata['block1'] =  $user_historyObj->history_summary_FN();
+        $PDFdata['block1'] =  $user_historyObj->historySummaryFN();
         // replace <br> with new line.
         // note that \r\n MUST be double quoted, otherwise PhP won't recognize 'em as a <CR><LF> sequence!
         $PDFdata['block1'] = preg_replace('/<br\\s*?\/??>/i', "\r\n", $PDFdata['block1']);
@@ -328,18 +350,18 @@ switch ($op) {
 
         $PDFdata['block3'] =
             translateFN("Tempo totale di visita dei nodi (in ore:minuti): ") .
-            "<b>" . $user_historyObj->history_nodes_time_FN() . "</b>\r\n" .
+            "<b>" . $user_historyObj->historyNodesTimeFN() . "</b>\r\n" .
             translateFN("Tempo medio di visita dei nodi (in minuti:secondi): ") .
-            "<b>" . $user_historyObj->history_nodes_average_FN() . "</b>";
+            "<b>" . $user_historyObj->historyNodesAverageFN() . "</b>";
 
         // each element of the table array as a data and cols element holding
         // holding datas and column orders and label respectively.
         // Then, it has a title element containg the title of the table itself.
 
         // begin table 0
-        $PDFdata['table'][0]['data'] = $user_historyObj->history_last_nodes_FN(10, false);
+        $PDFdata['table'][0]['data'] = $user_historyObj->historyLastNodesFN(10, false);
         if (
-            !AMA_DB::isError($PDFdata['table'][0]['data']) &&
+            !AMADB::isError($PDFdata['table'][0]['data']) &&
             is_array($PDFdata['table'][0]['data']) && count($PDFdata['table'][0]['data']) > 0
         ) {
             // add sequence number to each returned element
@@ -361,9 +383,9 @@ switch ($op) {
         }
 
         // begin table 1
-        $PDFdata['table'][1]['data'] =  $user_historyObj->history_nodes_visited_FN(false);
+        $PDFdata['table'][1]['data'] =  $user_historyObj->historyNodesVisitedFN(false);
         if (
-            !AMA_DB::isError($PDFdata['table'][1]['data']) &&
+            !AMADB::isError($PDFdata['table'][1]['data']) &&
             is_array($PDFdata['table'][1]['data']) && count($PDFdata['table'][1]['data']) > 0
         ) {
             // add sequence number to each returned element
@@ -453,7 +475,7 @@ $home = "<a href=\"tutor.php\">" . translateFN("home") . "</a>";
 $bookmark = "<a href=\"../browsing/bookmarks.php\">" . translateFN("bookmarks") . "</a>";
 $chat_link = "<a href=\"$http_root_dir/comunica/ada_chat.php\" target=_blank>" . translateFN("chat") . "</a>";
 
-$menu_07 = menu_detailsFN($id_student, $id_course_instance, $id_course);
+$menu_07 = menuDetailsFN($id_student, $id_course_instance, $id_course);
 
 $content_dataAr = [
     'help' => $help ?? '',

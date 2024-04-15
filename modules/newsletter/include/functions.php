@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
 /**
  * NEWSLETTER MODULE.
  *
@@ -89,7 +93,7 @@ function convertFilterArrayToString($filterArray, $dh, $futureSentence = true)
 
         if (isset($filterArray['idInstance']) && intval($filterArray['idInstance']) > 0) {
             $html .= " " . translateFN("dell' istanza") . ': <strong>';
-            $instanceInfo = $dh->course_instance_get(intval($filterArray['idInstance']));
+            $instanceInfo = $dh->courseInstanceGet(intval($filterArray['idInstance']));
             $html .= '<instancename></strong>';
         } else {
             $html .= " <strong>" . translateFN("di tutte le istanze") . "</strong>";
@@ -97,7 +101,7 @@ function convertFilterArrayToString($filterArray, $dh, $futureSentence = true)
 
         if (isset($filterArray['idCourse']) && intval($filterArray['idCourse']) > 0) {
             $html .= " " . translateFN("del corso") . ': <strong>';
-            $courseInfo = $dh->get_course(intval($filterArray['idCourse']));
+            $courseInfo = $dh->getCourse(intval($filterArray['idCourse']));
             $html .= '<coursename></strong>';
         } else {
             $html .= " <strong>" . translateFN("di tutti i corsi") . "</strong>";
@@ -126,7 +130,7 @@ function convertFilterArrayToString($filterArray, $dh, $futureSentence = true)
     return  $html;
 }
 
-function get_domain($url)
+function getDomain($url)
 {
     $pieces = parse_url($url);
     $domain = $pieces['host'] ?? '';
@@ -139,5 +143,5 @@ function get_domain($url)
 // should something have gone wrong, hopefully this gets called!
 function shutDown($dh, $history_id)
 {
-    $dh->set_history_status($history_id, AMANewsletterDataHandler::MODULES_NEWSLETTER_HISTORY_STATUS_UNDEFINED);
+    $dh->setHistoryStatus($history_id, AMANewsletterDataHandler::MODULES_NEWSLETTER_HISTORY_STATUS_UNDEFINED);
 }

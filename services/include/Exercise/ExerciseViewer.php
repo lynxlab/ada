@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Services\Exercise\ExerciseViewer;
+
+// Trigger: ClassWithNameSpace. The class ExerciseViewer was declared with namespace Lynxlab\ADA\Services\Exercise. //
+
 namespace Lynxlab\ADA\Services\Exercise;
 
 /**
@@ -18,7 +22,7 @@ class ExerciseViewer //extends AbsExerciseViewer
      * @param array  $data       - an associative array
      * @return string
      */
-    public function fill_field_with_data($field_name, $data = [])
+    public function fillFieldWithData($field_name, $data = [])
     {
         //return ( isset($data[$field_name]) ) ? $data[$field_name] : "";
         $field_data = '';

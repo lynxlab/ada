@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\CORE\HtmlElements\Form;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use function \translateFN;
+
 /**
  * File edit_course.php
  *
@@ -85,7 +105,7 @@ SwitcherHelper::init($neededObjAr);
  * YOUR CODE HERE
  */
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
-    $providerAuthors = $dh->find_authors_list(['username'], '');
+    $providerAuthors = $dh->findAuthorsList(['username'], '');
     $authors = [];
     foreach ($providerAuthors as $author) {
         $authors[$author[0]] = $author[1];
@@ -116,11 +136,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             'duration_hours' => $_POST['duration_hours'] ?? null,
             'service_level' => $_POST['service_level'] ?? null,
         ];
-        $result = $dh->set_course($_POST['id_corso'], $course);
+        $result = $dh->setCourse($_POST['id_corso'], $course);
 
-        if (!AMA_DataHandler::isError($result)) {
-            $service_dataAr = $common_dh->get_service_info_from_course($_POST['id_corso']);
-            if (!AMA_Common_DataHandler::isError($service_dataAr)) {
+        if (!AMADataHandler::isError($result)) {
+            $service_dataAr = $common_dh->getServiceInfoFromCourse($_POST['id_corso']);
+            if (!AMACommonDataHandler::isError($service_dataAr)) {
                 $update_serviceDataAr = [
                     'service_name' => $_POST['titolo'],
                     'service_description' => $_POST['descrizione'],
@@ -130,8 +150,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                     'service_max_meetings' => $service_dataAr[6],
                     'service_meeting_duration' => $service_dataAr[7],
                 ];
-                $result = $common_dh->set_service($service_dataAr[0], $update_serviceDataAr);
-                if (AMA_Common_DataHandler::isError($result)) {
+                $result = $common_dh->setService($service_dataAr[0], $update_serviceDataAr);
+                if (AMACommonDataHandler::isError($result)) {
                     $form = new CText("Si è verificato un errore durante l'aggiornamento dei dati del corso");
                 } else {
                     // AGGIORNARE l'oggetto corso in sessione e poi fare il redirect a view_course.php
@@ -150,7 +170,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
         $form = new CText(translateFN('Corso non trovato'));
     } else {
-        $providerAuthors = $dh->find_authors_list(['username'], '');
+        $providerAuthors = $dh->findAuthorsList(['username'], '');
         $authors = [];
         foreach ($providerAuthors as $author) {
             $authors[$author[0]] = $author[1];

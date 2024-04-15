@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Services\Exercise\OpenManualExerciseViewer;
+
+use Lynxlab\ADA\Services\Exercise\ExerciseViewer;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\CORE\HtmlElements\Form;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class OpenManualExerciseViewer was declared with namespace Lynxlab\ADA\Services\Exercise. //
+
 namespace Lynxlab\ADA\Services\Exercise;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;

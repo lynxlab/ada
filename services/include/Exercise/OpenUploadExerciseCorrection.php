@@ -1,12 +1,22 @@
 <?php
 
+use Lynxlab\ADA\Services\Exercise\OpenUploadExerciseCorrection;
+
+use Lynxlab\ADA\Services\Exercise\ExerciseCorrection;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class OpenUploadExerciseCorrection was declared with namespace Lynxlab\ADA\Services\Exercise. //
+
 namespace Lynxlab\ADA\Services\Exercise;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Upload\Functions\upload_file;
+use function Lynxlab\ADA\Main\Upload\Functions\uploadFile;
 
 class OpenUploadExerciseCorrection extends ExerciseCorrection
 {
@@ -25,7 +35,7 @@ class OpenUploadExerciseCorrection extends ExerciseCorrection
             $file_destination .= $id_course_instance . "_" . $id_student . "_" . $exercise->getId() . "_";
             $file_destination .= $filename;
 
-            $file_move = upload_file($_FILES, $source, ROOT_DIR . $file_destination);
+            $file_move = uploadFile($_FILES, $source, ROOT_DIR . $file_destination);
 
             if ($file_move[0] == "ok") {
                 $file_uploaded = true;

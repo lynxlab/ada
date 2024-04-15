@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Forms\lib\classes\FormControl;
+
+use Lynxlab\ADA\Main\Forms\lib\classes\FCTextarea;
+
+// Trigger: ClassWithNameSpace. The class FCTextarea was declared with namespace Lynxlab\ADA\Main\Forms\lib\classes. //
+
 /**
  * FCTextarea file
  *

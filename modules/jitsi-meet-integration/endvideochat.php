@@ -1,5 +1,7 @@
 <?php
 
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
 /**
  * @package     jitsi integration module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -37,10 +39,10 @@ if (count($data) == 0) {
     $data = $_REQUEST;
 }
 
-if (isset($data['p']) && strlen($data['p']) && DataValidator::validate_testername($data['p'])) {
+if (isset($data['p']) && strlen($data['p']) && DataValidator::validateTestername($data['p'])) {
     require_once ROOT_DIR . '/comunica/include/videoroom.classes.inc.php';
 
-    $GLOBALS['dh'] = new AMA_DataHandler(MultiPort::getDSN($data['p']));
+    $GLOBALS['dh'] = new AMADataHandler(MultiPort::getDSN($data['p']));
     $videoroomObj = VideoRoom::getVideoObj();
     $logData = [
         'event' => VideoRoom::EVENT_EXIT,
@@ -87,5 +89,7 @@ if (isset($videoroomObj)) {
 }
 ?>
 <script type="text/javascript">
-    window.parent.postMessage('endVideochat', '<?php echo HTTP_ROOT_DIR; ?>');
+    window.parent.postMessage('endVideochat', '<?php 
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+echo HTTP_ROOT_DIR; ?>');
 </script>

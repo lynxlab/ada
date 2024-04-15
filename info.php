@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use function \translateFN;
+
 /**
  *
  * @package     user
@@ -27,7 +41,7 @@ use Lynxlab\ADA\Main\User\ADAUser;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\redirect;
-use function Lynxlab\ADA\Main\Utilities\today_dateFN;
+use function Lynxlab\ADA\Main\Utilities\todayDateFN;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -63,8 +77,8 @@ $neededObjAr = [
 require_once ROOT_DIR . '/include/module_init.inc.php';
 BrowsingHelper::init($neededObjAr);
 
-$op = isset($_GET['op']) ? DataValidator::validate_string($_GET['op']) : false;
-$today_date = today_dateFN();
+$op = isset($_GET['op']) ? DataValidator::validateString($_GET['op']) : false;
+$today_date = todayDateFN();
 
 //$self = 'list_chatrooms'; // x template
 $self = whoami();
@@ -79,13 +93,13 @@ if (!isset($_SESSION['sess_user_language'])) {
 
 if ($op !== false && $op == 'course_info') {
     $self = 'course-info';
-    $serviceId = DataValidator::is_uinteger($_GET['id']);
+    $serviceId = DataValidator::isUinteger($_GET['id']);
 
     if ($serviceId !== false && $serviceId > 0) {
-        $coursesAr = $common_dh->get_courses_for_service($serviceId);
+        $coursesAr = $common_dh->getCoursesForService($serviceId);
     }
 
-    if (isset($coursesAr) && !AMA_Common_DataHandler::isError($coursesAr) && is_array($coursesAr) && count($coursesAr) > 0) {
+    if (isset($coursesAr) && !AMACommonDataHandler::isError($coursesAr) && is_array($coursesAr) && count($coursesAr) > 0) {
         $currentTesterId = 0;
         $currentTester = '';
         $tester_dh = null;
@@ -96,8 +110,8 @@ if ($op !== false && $op == 'course_info') {
         foreach ($coursesAr as $courseData) {
             $newTesterId = $courseData['id_tester'];
             if ($newTesterId != $currentTesterId) {
-                $testerInfoAr = $common_dh->get_tester_info_from_id($newTesterId, AMA_FETCH_ASSOC);
-                if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
+                $testerInfoAr = $common_dh->getTesterInfoFromId($newTesterId, AMA_FETCH_ASSOC);
+                if (!AMACommonDataHandler::isError($testerInfoAr)) {
                     $layout_dataAr['widgets']['provider_address_map'] =  [
                             'isActive' => 0,
                     ];
@@ -142,11 +156,11 @@ if ($op !== false && $op == 'course_info') {
                     }
 
                     $tester = $testerInfoAr['puntatore'];
-                    $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
+                    $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester));
                     $currentTesterId = $newTesterId;
                     $courseId = $courseData['id_corso'];
                     $course_dataHa = $tester_dh->get_course($courseId);
-                    if (!AMA_DataHandler::isError($course_dataHa)) {
+                    if (!AMADataHandler::isError($course_dataHa)) {
                         // supponiamo che tutti i dati di un servizio (su tester diversi) abbiano lo stesso valore
                         // quindi prendiamo solo l'ultimo
                         $courseInfoContent['course_title'] = $course_dataHa['titolo'];
@@ -172,15 +186,15 @@ if ($op !== false && $op == 'course_info') {
             $courseId = $courseData['id_corso'];
             $timestamp = time();
 
-            $instancesAr = $tester_dh->course_instance_subscribeable_get_list(
+            $instancesAr = $tester_dh->courseInstanceSubscribeableGetList(
                 ['data_inizio_previsto', 'durata', 'data_fine', 'title','price','self_instruction','duration_hours','tipo_servizio'],
                 $courseId
             );
 
-            $CourseIstanceIscription = $tester_dh->course_users_instance_get($courseId);
+            $CourseIstanceIscription = $tester_dh->courseUsersInstanceGet($courseId);
             $id_node = $courseId . '_0';
 
-            if (!AMA_DB::isError($instancesAr) && is_array($instancesAr) && count($instancesAr) > 0) {
+            if (!AMADB::isError($instancesAr) && is_array($instancesAr) && count($instancesAr) > 0) {
                 foreach ($instancesAr as $instance) {
                     $instanceId = $instance[0];
                     $flagSubscribe_link = false;
@@ -237,12 +251,12 @@ if ($op !== false && $op == 'course_info') {
 
                     /*
                      * Da migliorare, spostare l'ottenimento dei dati necessari in un'unica query
-                     * per ogni istanza corso (qualcosa che vada a sostituire course_instance_get_list solo in questo caso.
+                     * per ogni istanza corso (qualcosa che vada a sostituire courseInstanceGetList solo in questo caso.
                      */
-                    $tutorId = $tester_dh->course_instance_tutor_get($instanceId);
-                    if (!AMA_DataHandler::isError($tutorId) && $tutorId !== false) {
-                        $tutor_infoAr = $tester_dh->get_tutor($tutorId);
-                        if (!AMA_DataHandler::isError($tutor_infoAr)) {
+                    $tutorId = $tester_dh->courseInstanceTutorGet($instanceId);
+                    if (!AMADataHandler::isError($tutorId) && $tutorId !== false) {
+                        $tutor_infoAr = $tester_dh->getTutor($tutorId);
+                        if (!AMADataHandler::isError($tutor_infoAr)) {
                             $tutorFullName = $tutor_infoAr['nome'] . ' ' . $tutor_infoAr['cognome'];
                         } else {
                             $tutorFullName = translateFN('Utente non trovato');
@@ -255,8 +269,8 @@ if ($op !== false && $op == 'course_info') {
                      * Get instance information
                      */
                     $duration = sprintf("%d giorni", $instance[2]);
-                    $scheduled = AMA_DataHandler::ts_to_date($instance[1]);
-                    $end_date =  AMA_DataHandler::ts_to_date($instance[3]);
+                    $scheduled = AMADataHandler::tsToDate($instance[1]);
+                    $end_date =  AMADataHandler::tsToDate($instance[3]);
                     $nome_instanza = $instance[4];
                     // instance price
                     if (intval($instance[5]) >= 0) {
@@ -328,7 +342,7 @@ if ($op !== false && $op == 'course_info') {
                         }
                     }
 
-                    $course_infoAr = $tester_dh->get_course_info_for_course_instance($instanceId);
+                    $course_infoAr = $tester_dh->getCourseInfoForCourseInstance($instanceId);
                     /*
                      * The first element of the array come from concat_ws
                      * the key of the array is like this [concat_ws(' ',u.nome,u.cognome)]
@@ -397,7 +411,7 @@ if ($op !== false && $op == 'course_info') {
 
                     $courseInfoContent['instancesColumn'] = $instancesCDOM->getHtml();
                 } // foreach($instancesAr as $instance)
-            } // if(!AMA_DB::isError($instancesAr) && is_array($instancesAr) && count($instancesAr) > 0)
+            } // if(!AMADB::isError($instancesAr) && is_array($instancesAr) && count($instancesAr) > 0)
         } // foreach ($coursesAr as $courseData)
     } else {
         $errorMSG = CDOMElement::create('div', 'id:errorMSG,class:ui error icon large message');
@@ -413,30 +427,30 @@ if ($op !== false && $op == 'course_info') {
 
     $optionsAr['onload_func'] = 'initDoc(' . intval(isset($errorMSG)) . ');';
 } elseif ($op !== false && $op == 'subscribe') {
-    $providerId = DataValidator::is_uinteger($_GET['provider']);
-    $courseId = DataValidator::is_uinteger($_GET['course']);
-    $instanceId = DataValidator::is_uinteger($_GET['instance']);
+    $providerId = DataValidator::isUinteger($_GET['provider']);
+    $courseId = DataValidator::isUinteger($_GET['course']);
+    $instanceId = DataValidator::isUinteger($_GET['instance']);
     $_SESSION['subscription_page'] = HTTP_ROOT_DIR . '/info.php?op=subscribe&provider=' . $providerId .
                                      '&course=' . $courseId . '&instance=' . $instanceId;
     if ($userObj instanceof ADAUser) {
         if ($providerId !== false && $courseId !== false && $instanceId !== false) {
-            $testerInfoAr = $common_dh->get_tester_info_from_id($providerId, AMA_FETCH_ASSOC);
-            if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
+            $testerInfoAr = $common_dh->getTesterInfoFromId($providerId, AMA_FETCH_ASSOC);
+            if (!AMACommonDataHandler::isError($testerInfoAr)) {
                 $tester = $testerInfoAr['puntatore'];
                 $provider_name = $testerInfoAr['nome'];
 
                 $testersAr[0] = $tester; // it is a pointer (string)
-                $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
-                $course_instance_infoAR = $tester_dh->course_instance_get($instanceId);
-                if (!AMA_DataHandler::isError($course_instance_infoAR)) {
+                $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester));
+                $course_instance_infoAR = $tester_dh->courseInstanceGet($instanceId);
+                if (!AMADataHandler::isError($course_instance_infoAR)) {
                     $course_infoAr = $tester_dh->get_course($courseId);
                     $startStudentLevel = $course_instance_infoAR['start_level_student'];
 
                     // add user to tester DB
                     $id_tester_user = Multiport::setUser($userObj, $testersAr, $update_user_data = false);
                     if ($id_tester_user !== false) {
-                        $result = $tester_dh->course_instance_student_presubscribe_add($instanceId, $userObj->getId(), $startStudentLevel);
-                        if (!AMA_DataHandler::isError($result) || $result->code == AMA_ERR_UNIQUE_KEY) {
+                        $result = $tester_dh->courseInstanceStudentPresubscribeAdd($instanceId, $userObj->getId(), $startStudentLevel);
+                        if (!AMADataHandler::isError($result) || $result->code == AMA_ERR_UNIQUE_KEY) {
                             $data = CDOMElement::create('div', 'class:ui success icon large message');
                             $data->addChild(CDOMElement::create('i', 'class:ok sign icon'));
                             $MSGcontent = CDOMElement::create('div', 'class:content');
@@ -486,8 +500,8 @@ if ($op !== false && $op == 'course_info') {
                                     BaseHtmlLib::link(HTTP_ROOT_DIR, HTTP_ROOT_DIR)->getHtml()
                                 );
                             } else {
-                                $result = $tester_dh->course_instance_student_subscribe($instanceId, $userObj->getId(), ADA_STATUS_SUBSCRIBED, $startStudentLevel);
-                                if (!AMA_DataHandler::isError($result)) {
+                                $result = $tester_dh->courseInstanceStudentSubscribe($instanceId, $userObj->getId(), ADA_STATUS_SUBSCRIBED, $startStudentLevel);
+                                if (!AMADataHandler::isError($result)) {
                                     $data = CDOMElement::create('div', 'class:ui success icon large message');
                                     $data->addChild(CDOMElement::create('i', 'class:ok sign icon'));
                                     $MSGcontent = CDOMElement::create('div', 'class:content');
@@ -580,7 +594,7 @@ if ($op !== false && $op == 'course_info') {
                     }
                 }
 
-                $course_infoAr = $tester_dh->get_course_info_for_course_instance($instanceId);
+                $course_infoAr = $tester_dh->getCourseInfoForCourseInstance($instanceId);
                 /*
                  * The first element of the array come from concat_ws
                  * the key of the array is like this [concat_ws(' ',u.nome,u.cognome)]
@@ -601,21 +615,21 @@ if ($op !== false && $op == 'course_info') {
         exit();
     }
 } elseif (($op !== false && $op == 'undo_subscription')) {
-    $providerId = DataValidator::is_uinteger($_GET['provider']);
-    $courseId = DataValidator::is_uinteger($_GET['course']);
-    $instanceId = DataValidator::is_uinteger($_GET['instance']);
-    $studentId = DataValidator::is_uinteger($_GET['student']);
-    $testerInfoAr = $common_dh->get_tester_info_from_id($providerId, AMA_FETCH_ASSOC);
-    if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
+    $providerId = DataValidator::isUinteger($_GET['provider']);
+    $courseId = DataValidator::isUinteger($_GET['course']);
+    $instanceId = DataValidator::isUinteger($_GET['instance']);
+    $studentId = DataValidator::isUinteger($_GET['student']);
+    $testerInfoAr = $common_dh->getTesterInfoFromId($providerId, AMA_FETCH_ASSOC);
+    if (!AMACommonDataHandler::isError($testerInfoAr)) {
         $tester = $testerInfoAr['puntatore'];
         $provider_name = $testerInfoAr['nome'];
 
         $testersAr[0] = $tester; // it is a pointer (string)
-        $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
-        $course_instance_infoAR = $tester_dh->course_instance_get($instanceId);
-        if (!AMA_DataHandler::isError($course_instance_infoAR)) {
-            $result = $tester_dh->course_instance_student_presubscribe_remove($instanceId, $userObj->getId());
-            if (!AMA_DataHandler::isError($result)) {
+        $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester));
+        $course_instance_infoAR = $tester_dh->courseInstanceGet($instanceId);
+        if (!AMADataHandler::isError($course_instance_infoAR)) {
+            $result = $tester_dh->courseInstanceStudentPresubscribeRemove($instanceId, $userObj->getId());
+            if (!AMADataHandler::isError($result)) {
                 $info_div = CDOMElement::create('DIV', 'id:info_div');
                 $info_div->setAttribute('class', 'info_div');
                 $label_text = CDOMElement::create('span', 'class:info');
@@ -665,15 +679,15 @@ if ($op !== false && $op == 'course_info') {
          * check if user selected provider name has a valid id in the database
          */
         if (isset($user_provider_name)) {
-            $userTesterInfo = $common_dh->get_tester_info_from_pointer($user_provider_name);
-            $user_provider_id = (!AMA_DB::isError($userTesterInfo)) ? $userTesterInfo[0] : null;
+            $userTesterInfo = $common_dh->getTesterInfoFromPointer($user_provider_name);
+            $user_provider_id = (!AMADB::isError($userTesterInfo)) ? $userTesterInfo[0] : null;
             $redirect = is_null($user_provider_id);
         } else {
             $redirect = true;
         }
 
         if (!$redirect) {
-            $publishedServices = $common_dh->get_published_courses($user_provider_id);
+            $publishedServices = $common_dh->getPublishedCourses($user_provider_id);
         } else {
             header('Location: ' . HTTP_ROOT_DIR . '/info.php');
             die();
@@ -681,19 +695,19 @@ if ($op !== false && $op == 'course_info') {
         $thead_data = ['&nbsp;', 'ID', translateFN('corso'), translateFN('descrizione'), translateFN('crediti'),'&nbsp;'];
     } else {
         $thead_data = ['&nbsp;', 'ID', translateFN('corso'), translateFN('Fornito da'), translateFN('descrizione'), translateFN('crediti'),'&nbsp;'];
-        $publishedServices = $common_dh->get_published_courses(
+        $publishedServices = $common_dh->getPublishedCourses(
             isset($_GET['provider']) && intval($_GET['provider'] > 0) ? intval($_GET['provider']) : null
         );
     }
 
-    if (!AMA_Common_DataHandler::isError($publishedServices)) {
+    if (!AMACommonDataHandler::isError($publishedServices)) {
         //      $thead_data = array('nome', 'descrizione', 'durata (giorni)', 'informazioni');
         $tbody_data = [];
 
         foreach ($publishedServices as $service) {
             $serviceId = $service['id_servizio'];
-            $coursesAr = $common_dh->get_courses_for_service($serviceId);
-            if (!AMA_DB::isError($coursesAr)) {
+            $coursesAr = $common_dh->getCoursesForService($serviceId);
+            if (!AMADB::isError($coursesAr)) {
                 $currentTesterId = 0;
                 $currentTester = '';
                 $tester_dh = null;
@@ -702,21 +716,21 @@ if ($op !== false && $op == 'course_info') {
                     $Flag_course_has_instance = false;
                     $newTesterId = $courseData['id_tester'];
                     if ($newTesterId != $currentTesterId) { // stesso corso su altro tester ?
-                        $testerInfoAr = $common_dh->get_tester_info_from_id($newTesterId, AMA_FETCH_ASSOC);
-                        if (!AMA_DB::isError($testerInfoAr)) {
+                        $testerInfoAr = $common_dh->getTesterInfoFromId($newTesterId, AMA_FETCH_ASSOC);
+                        if (!AMADB::isError($testerInfoAr)) {
                             $providerName = $testerInfoAr['nome'];
                             $tester = $testerInfoAr['puntatore'];
-                            $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
+                            $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester));
                             $currentTesterId = $newTesterId;
                             $course_dataHa = $tester_dh->get_course($courseId);
-                            $instancesAr = $tester_dh->course_instance_subscribeable_get_list(
+                            $instancesAr = $tester_dh->courseInstanceSubscribeableGetList(
                                 ['data_inizio_previsto', 'durata', 'data_fine', 'title'],
                                 $courseId
                             );
                             if (is_array($instancesAr) && count($instancesAr) > 0) {
                                 $Flag_course_has_instance = true;
                             }
-                            if (!AMA_DB::isError($course_dataHa)) {
+                            if (!AMADB::isError($course_dataHa)) {
                                 $credits =  $course_dataHa['crediti'];
                                 // supponiamo che tutti i corsi di un servizio (su tester diversi) abbiano lo stesso numero di crediti
                                 // quindi prendiamo solo l'ultimo

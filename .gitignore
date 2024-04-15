@@ -11,5 +11,6 @@
 /log/
 /vendor/
 *.cache
+*.bak
 
 

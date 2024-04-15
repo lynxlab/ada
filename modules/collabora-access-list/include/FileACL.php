@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Module\CollaboraACL\FileACL;
+
+use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLBase;
+
+use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLActions;
+
+use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
+
+use Lynxlab\ADA\Main\User\ADAUser;
+
+// Trigger: ClassWithNameSpace. The class FileACL was declared with namespace Lynxlab\ADA\Module\CollaboraACL. //
+
 /**
  * @package     collabora-access-list module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -72,7 +84,7 @@ class FileACL extends CollaboraACLBase
             } else {
                 // $i-1 is the found filesACL index
                 --$i;
-                if ($filesACL[$i]->getId_owner() == $userId) {
+                if ($filesACL[$i]->getIdOwner() == $userId) {
                     return true;
                 }
                 foreach ($filesACL[$i]->getAllowedUsers() as $allowedAr) {
@@ -158,7 +170,7 @@ class FileACL extends CollaboraACLBase
     /**
      * Get the value of id_nodo
      */
-    public function getId_nodo()
+    public function getIdNodo()
     {
         return $this->id_nodo;
     }
@@ -168,7 +180,7 @@ class FileACL extends CollaboraACLBase
      *
      * @return  self
      */
-    public function setId_nodo($id_nodo)
+    public function setIdNodo($id_nodo)
     {
         $this->id_nodo = $id_nodo;
 
@@ -209,7 +221,7 @@ class FileACL extends CollaboraACLBase
     /**
      * Get the value of id_corso
      */
-    public function getId_corso()
+    public function getIdCorso()
     {
         return $this->id_corso;
     }
@@ -219,7 +231,7 @@ class FileACL extends CollaboraACLBase
      *
      * @return  self
      */
-    public function setId_corso($id_corso)
+    public function setIdCorso($id_corso)
     {
         $this->id_corso = $id_corso;
 
@@ -229,7 +241,7 @@ class FileACL extends CollaboraACLBase
     /**
      * Get the value of id_istanza
      */
-    public function getId_istanza()
+    public function getIdIstanza()
     {
         return $this->id_istanza;
     }
@@ -239,7 +251,7 @@ class FileACL extends CollaboraACLBase
      *
      * @return  self
      */
-    public function setId_istanza($id_istanza)
+    public function setIdIstanza($id_istanza)
     {
         $this->id_istanza = $id_istanza;
 
@@ -249,7 +261,7 @@ class FileACL extends CollaboraACLBase
     /**
      * Get the value of id_owner
      */
-    public function getId_owner()
+    public function getIdOwner()
     {
         return $this->id_owner;
     }
@@ -259,7 +271,7 @@ class FileACL extends CollaboraACLBase
      *
      * @return  self
      */
-    public function setId_owner($id_owner)
+    public function setIdOwner($id_owner)
     {
         $this->id_owner = $id_owner;
 

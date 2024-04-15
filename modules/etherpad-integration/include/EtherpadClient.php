@@ -1,5 +1,7 @@
 <?php
 
+use Lynxlab\ADA\Module\EtherpadIntegration\HashKey;
+
 /**
  * @package     etherpad module
  * @author      giorgio <g.consorti@lynxlab.com>

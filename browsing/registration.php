@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * registration.php file
  *
@@ -186,8 +208,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $admTypeAr = [AMA_TYPE_ADMIN];
             $extended_data = true;
-            $admList = $dh->get_users_by_type($admTypeAr, $extended_data);
-            if (!AMA_DataHandler::isError($admList) && array_key_exists('username', $admList[0]) && $admList[0]['username'] != '' && $admList[0]['username'] != null) {
+            $admList = $dh->getUsersByType($admTypeAr, $extended_data);
+            if (!AMADataHandler::isError($admList) && array_key_exists('username', $admList[0]) && $admList[0]['username'] != '' && $admList[0]['username'] != null) {
                 $adm_uname = $admList[0]['username'];
                 $adm_email = strlen($admList[0]['e_mail']) ? $admList[0]['e_mail'] : ADA_NOREPLY_MAIL_ADDRESS;
             } else {
@@ -250,8 +272,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             /**
              * Send the message as an internal message
              */
-            $result = $mh->send_message($message_ha);
-            if (AMA_DataHandler::isError($result)) {
+            $result = $mh->sendMessage($message_ha);
+            if (AMADataHandler::isError($result)) {
             }
             /**
              * Send the message an email message
@@ -274,8 +296,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
              * Send the message an email message
              * via ADA spool
             $message_ha['tipo'] = ADA_MSG_MAIL;
-            $result = $mh->send_message($message_ha);
-            if(AMA_DataHandler::isError($result)) {
+            $result = $mh->sendMessage($message_ha);
+            if(AMADataHandler::isError($result)) {
             }
              */
         }

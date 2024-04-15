@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Module\Impersonate\LinkedUsers;
+
+use Lynxlab\ADA\Module\Impersonate\ImpersonateBase;
+
+use Lynxlab\ADA\Module\Impersonate\AMAImpersonateDataHandler;
+
+use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
+
+// Trigger: ClassWithNameSpace. The class LinkedUsers was declared with namespace Lynxlab\ADA\Module\Impersonate. //
+
 /**
  * @package     impersonate module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -142,7 +152,7 @@ class LinkedUsers extends ImpersonateBase
     /**
      * Get the value of source_id
      */
-    public function getSource_id()
+    public function getSourceId()
     {
         return $this->source_id;
     }
@@ -152,7 +162,7 @@ class LinkedUsers extends ImpersonateBase
      *
      * @return  self
      */
-    public function setSource_id($source_id)
+    public function setSourceId($source_id)
     {
         $this->source_id = $source_id;
 
@@ -162,7 +172,7 @@ class LinkedUsers extends ImpersonateBase
     /**
      * Get the value of linked_id
      */
-    public function getLinked_id()
+    public function getLinkedId()
     {
         return $this->linked_id;
     }
@@ -172,7 +182,7 @@ class LinkedUsers extends ImpersonateBase
      *
      * @return  self
      */
-    public function setLinked_id($linked_id)
+    public function setLinkedId($linked_id)
     {
         $this->linked_id = $linked_id;
 
@@ -182,7 +192,7 @@ class LinkedUsers extends ImpersonateBase
     /**
      * Get the value of source_type
      */
-    public function getSource_type()
+    public function getSourceType()
     {
         return $this->source_type;
     }
@@ -192,7 +202,7 @@ class LinkedUsers extends ImpersonateBase
      *
      * @return  self
      */
-    public function setSource_type($source_type)
+    public function setSourceType($source_type)
     {
         $this->source_type = $source_type;
 
@@ -202,7 +212,7 @@ class LinkedUsers extends ImpersonateBase
     /**
      * Get the value of linked_type
      */
-    public function getLinked_type()
+    public function getLinkedType()
     {
         return $this->linked_type;
     }
@@ -212,7 +222,7 @@ class LinkedUsers extends ImpersonateBase
      *
      * @return  self
      */
-    public function setLinked_type($linked_type)
+    public function setLinkedType($linked_type)
     {
         $this->linked_type = $linked_type;
 
@@ -222,7 +232,7 @@ class LinkedUsers extends ImpersonateBase
     /**
      * Get the value of is_active
      */
-    public function getIs_active()
+    public function getIsActive()
     {
         return $this->is_active;
     }
@@ -232,7 +242,7 @@ class LinkedUsers extends ImpersonateBase
      *
      * @return  self
      */
-    public function setIs_active($is_active)
+    public function setIsActive($is_active)
     {
         $this->is_active = $is_active;
 

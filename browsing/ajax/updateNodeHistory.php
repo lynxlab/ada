@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use function \translateFN;
+
 /**
  * closeNodeHistory.php - force the setting of data_uscita to the last history_nodi row of the passed node
  *
@@ -97,7 +115,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         'idNode' => $nodeId,
     ];
 
-    if (true === $GLOBALS['dh']->add_node_history($sess_id_user, $instanceId, $nodeId, $remote_address, HTTP_ROOT_DIR, $accessed_from, true)) {
+    if (true === $GLOBALS['dh']->addNodeHistory($sess_id_user, $instanceId, $nodeId, $remote_address, HTTP_ROOT_DIR, $accessed_from, true)) {
         $retArray['status'] = $retArray['msg'] = "OK";
     }
 }

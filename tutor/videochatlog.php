@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use function \translateFN;
+
 /**
  * TUTOR.
  *
@@ -52,7 +60,7 @@ TutorHelper::init($neededObjAr);
 
 $online_users_listing_mode = 2;
 $id_course_instance = $courseInstanceObj->getId();
-$online_users = ADALoggableUser::get_online_usersFN($id_course_instance, $online_users_listing_mode);
+$online_users = ADALoggableUser::getOnlineUsersFN($id_course_instance, $online_users_listing_mode);
 
 $content_dataAr = [
     'course_title' => ucwords(translateFN('Log videochat')) . ' &gt; ' . $courseObj->getTitle() . ' &gt; ' . $courseInstanceObj->getTitle(),

@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use function \translateFN;
+
 /**
  * Edit switcher - this module provides edit switcher functionality
  *
@@ -91,7 +107,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $form->fillWithPostData();
     $password = trim($_POST['password']);
     $passwordcheck = trim($_POST['passwordcheck']);
-    if (DataValidator::validate_password_modified($password, $passwordcheck) === false) {
+    if (DataValidator::validatePasswordModified($password, $passwordcheck) === false) {
         $message = translateFN('Le password digitate non corrispondono o contengono caratteri non validi.');
         header("Location: edit_switcher.php?message=$message");
         exit();

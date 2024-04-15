@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Module\Test\QuestionEraseClozeTest;
+
+use Lynxlab\ADA\Module\Test\QuestionClozeTest;
+
+use Lynxlab\ADA\Module\Test\NodeTest;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class QuestionEraseClozeTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -415,11 +427,11 @@ class QuestionEraseClozeTest extends QuestionClozeTest
         $nuovi_ordini = $questionObj->getClozeOrders();
 
         //save new computed orders for each answer
-        $res = $dh->test_getNodesByParent($questionObj->id_nodo);
+        $res = $dh->testGetNodesByParent($questionObj->id_nodo);
         if (!empty($res)) {
             foreach ($res as $v) {
                 $v['ordine'] = $nuovi_ordini[$v['ordine']];
-                $dh->test_updateNode($v['id_nodo'], ['ordine' => $v['ordine']]);
+                $dh->testUpdateNode($v['id_nodo'], ['ordine' => $v['ordine']]);
             }
         }
 
@@ -429,6 +441,6 @@ class QuestionEraseClozeTest extends QuestionClozeTest
             $testo = str_replace('<cloze title="' . $k . '">', '<clozeTMP title="' . $v . '">', $testo);
         }
         $testo = str_replace('<clozeTMP', '<cloze', $testo);
-        $dh->test_updateNode($questionObj->id_nodo, ['testo' => $testo]);
+        $dh->testUpdateNode($questionObj->id_nodo, ['testo' => $testo]);
     }
 }

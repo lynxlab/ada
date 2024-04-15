@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Node\Media;
+
+use Lynxlab\ADA\Main\Media\InternalLinkViewer;
+
+// Trigger: ClassWithNameSpace. The class InternalLinkViewer was declared with namespace Lynxlab\ADA\Main\Media. //
+
 /**
  * Media Viewers
  *

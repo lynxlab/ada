@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Module\Impexport\ImportHelper;
+
+use Lynxlab\ADA\Module\Impexport\AMAImpExportDataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+// Trigger: ClassWithNameSpace. The class ImportHelper was declared with namespace Lynxlab\ADA\Module\Impexport. //
+
 /**
  * @package     import/export course
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -69,7 +83,7 @@ class ImportHelper
 
     /**
      * common AMA data handler
-     * @var AMA_Common_DataHandler
+     * @var AMACommonDataHandler
      */
     private $common_dh;
 
@@ -180,7 +194,7 @@ class ImportHelper
         $this->common_dh = $GLOBALS['common_dh'];
         $this->dh = AMAImpExportDataHandler::instance(MultiPort::getDSN($this->selectedTester));
 
-        $this->importStartTime = $this->dh->date_to_ts('now');
+        $this->importStartTime = $this->dh->dateToTs('now');
 
         unset($_SESSION['importHelper']['filename']);
 
@@ -211,7 +225,7 @@ class ImportHelper
     /**
      * runs the actual import
      *
-     * @return Ambigous AMA_Error on error |array recpArray on success
+     * @return Ambigous AMAError on error |array recpArray on success
      *
      * @access public
      */
@@ -251,7 +265,7 @@ class ImportHelper
                     $this->logFile = MODULES_IMPEXPORT_LOGDIR . "import-" . $this->courseOldID .
                     "_" . date('d-m-Y_His') . ".log";
 
-                    $this->logMessage('**** IMPORT STARTED at ' . date('d/m/Y H:i:s') . '(timestamp: ' . $this->dh->date_to_ts('now') . ') ****');
+                    $this->logMessage('**** IMPORT STARTED at ' . date('d/m/Y H:i:s') . '(timestamp: ' . $this->dh->dateToTs('now') . ') ****');
 
                     $this->progressSetTitle((string) $course->titolo);
                     /**
@@ -271,7 +285,7 @@ class ImportHelper
                             $courseNewID = $this->selectedCourseID;
                         }
 
-                        if (AMA_DB::isError($courseNewID)) {
+                        if (AMADB::isError($courseNewID)) {
                             return $courseNewID;
                         }
                     } else {
@@ -306,7 +320,7 @@ class ImportHelper
                         if (method_exists($this, $method) && !empty($course->$groupName)) {
                             $specialVal = $this->$method($course->{$groupName}, $courseNewID);
                             // if it's an error return it right away
-                            if (AMA_DB::isError($specialVal)) {
+                            if (AMADB::isError($specialVal)) {
                                 $this->logMessage(__METHOD__ . ' Error saving ' . $groupName . '. DB returned the following:');
                                 $this->logMessage(print_r($specialVal, true));
 
@@ -333,7 +347,7 @@ class ImportHelper
                     }
                     //                  $this->_updateTestLinksInNodes ( $courseNewID );
                 } // if ($objName === 'modello_corso')
-                $this->logMessage('**** IMPORT ENDED at ' . date('d/m/Y H:i:s') . '(timestamp: ' . $this->dh->date_to_ts('now') . ') ****');
+                $this->logMessage('**** IMPORT ENDED at ' . date('d/m/Y H:i:s') . '(timestamp: ' . $this->dh->dateToTs('now') . ') ****');
                 $this->logMessage('If there\'s no zip log below, this is a multi course import: pls find unzip log at the end of the last course log');
             } // foreach ($XMLObj as $objName=>$course)
 
@@ -397,7 +411,7 @@ class ImportHelper
      *
      * @param array $positionObj
      *
-     * @return AMA_Error on error | number position id
+     * @return AMAError on error | number position id
      *
      * @access private
      */
@@ -414,19 +428,19 @@ class ImportHelper
         // gets a position id by checkin if it's already in the DB
         // or adding a new position row if needed.
 
-        if (($id = $this->dh->get_id_position($pos_ar)) != -1) {
+        if (($id = $this->dh->getIdPosition($pos_ar)) != -1) {
             // if a position is found in the posizione table, the use it
             $id_posizione = $id;
         } else {
             // add row to table "posizione"
-            if (AMA_DB::isError($res = $this->dh->add_position($pos_ar))) {
+            if (AMADB::isError($res = $this->dh->addPosition($pos_ar))) {
                 $this->logMessage(__METHOD__ . ' Error adding position! DB returned the following:');
                 $this->logMessage(print_r($res, true));
 
-                return new AMA_Error($res->getMessage());
+                return new AMAError($res->getMessage());
             } else {
                 // get id of position just added
-                $id_posizione = $this->dh->get_id_position($pos_ar);
+                $id_posizione = $this->dh->getIdPosition($pos_ar);
             }
         }
         $this->logMessage('Successfully got position_id=' . $id_posizione);
@@ -442,7 +456,7 @@ class ImportHelper
      * @param SimpleXMLElement $extObj the element to be saved
      * @param int $courseNewID the generated ID of the imported course
      *
-     * @return boolean on debug|AMA_Error on error|true on success
+     * @return boolean on debug|AMAError on error|true on success
      *
      * @access private
      */
@@ -483,7 +497,7 @@ class ImportHelper
      * @param string  $nodeID the id of the node it's saving resources for
      * @param int $courseNewID the generated ID of the imported course
      *
-     * @return boolean on debug|AMA_Error on error|int inserted id on success
+     * @return boolean on debug|AMAError on error|int inserted id on success
      *
      * @access private
      */
@@ -522,7 +536,7 @@ class ImportHelper
      * @param SimpleXMLElement $linkObj the element to be saved
      * @param int $courseNewID the generated ID of the imported course
      *
-     * @return boolean on debug|AMA_Error on error|true on success
+     * @return boolean on debug|AMAError on error|true on success
      *
      * @access private
      */
@@ -566,7 +580,7 @@ class ImportHelper
      * @param SimpleXMLElement $xml the element from which the recursion starts (i.e. root node)
      * @param int $courseNewID the generated ID of the imported course
      *
-     * @return boolean on debug |AMA_Error on error |int number of imported nodes on success
+     * @return boolean on debug |AMAError on error |int number of imported nodes on success
      *
      * @access private
      */
@@ -593,7 +607,7 @@ class ImportHelper
 
                     $this->logMessage(__METHOD__ . ' Saving survey: id_corso=' . $courseNewID . ' id_test=' . $this->testNodeIDMapping[$id_nodoTestEsportato] . ' id_nodo=' . $courseNewID . self::$courseSeparator . $id_nodo);
 
-                    $surveyResult = $this->dh->test_addCourseTest(
+                    $surveyResult = $this->dh->testAddCourseTest(
                         $courseNewID,
                         $this->testNodeIDMapping[$id_nodoTestEsportato],
                         $courseNewID . self::$courseSeparator . $id_nodo
@@ -605,7 +619,7 @@ class ImportHelper
                     $surveyResult = true;
                 }
                 // if it's an error return it right away, as usual
-                if (AMA_DB::isError($surveyResult)) {
+                if (AMADB::isError($surveyResult)) {
                     $this->logMessage(__METHOD__ . ' Error saving survey. DB returned the following:');
                     $this->logMessage(print_r($surveyResult, true));
 
@@ -630,7 +644,7 @@ class ImportHelper
      * @param SimpleXMLElement $xml the element from which the recursion starts (i.e. root node)
      * @param int $courseNewID the generated ID of the imported course
      *
-     * @return boolean on debug |AMA_Error on error |int number of imported nodes on success
+     * @return boolean on debug |AMAError on error |int number of imported nodes on success
      *
      * @access private
      */
@@ -676,7 +690,7 @@ class ImportHelper
         }
 
         if (!empty($outArr)) {
-            // make some adjustments to invoke the test datahandler's test_addNode method
+            // make some adjustments to invoke the test datahandler's testAddNode method
 
             $this->logMessage(__METHOD__ . ' Saving test node. course id=' . $courseNewID .
                     ' so far ' . $count . ' nodes have been imported');
@@ -734,12 +748,12 @@ class ImportHelper
              * ACTUALLY SAVE THE NODE!! YAHOOOO!!!
              */
             if (!self::$DEBUG) {
-                $this->logMessage('Saving test node with a call to test_addNode test data handler, passing:');
+                $this->logMessage('Saving test node with a call to testAddNode test data handler, passing:');
                 $this->logMessage(print_r($outArr, true));
 
-                $newNodeID = $this->dh->test_addNode($outArr);
+                $newNodeID = $this->dh->testAddNode($outArr);
                 // if it's an error return it right away, as usual
-                if (AMA_DB::isError($newNodeID)) {
+                if (AMADB::isError($newNodeID)) {
                     $this->logMessage(__METHOD__ . ' Error saving test node. DB returned the following:');
                     $this->logMessage(print_r($newNodeID, true));
 
@@ -777,7 +791,7 @@ class ImportHelper
      * @param SimpleXMLElement $xml the element from which the recursion starts (i.e. root node)
      * @param int $courseNewID the generated ID of the imported course
      *
-     * @return boolean on debug |AMA_Error on error |int number of imported nodes on success
+     * @return boolean on debug |AMAError on error |int number of imported nodes on success
      *
      * @access private
      */
@@ -876,7 +890,7 @@ class ImportHelper
             unset($outArr['id']); // when a generated id will be used and comment below
 
             // set array of resources to be saved together with the node
-            // for some unbelievable reason the add_media method called by add_node
+            // for some unbelievable reason the addMedia method called by add_node
             // expects the resources array to start at index 1, so let's make it happy.
             unset($resourcesArr[0]);
             $outArr['resources_ar'] =  $resourcesArr;
@@ -913,7 +927,7 @@ class ImportHelper
 
                 $addResult = $this->dh->add_node($outArr);
                 // if it's an error return it right away, as usual
-                if (AMA_DB::isError($addResult)) {
+                if (AMADB::isError($addResult)) {
                     $this->logMessage(__METHOD__ . ' Error saving course node. DB returned the following:');
                     $this->logMessage(print_r($addResult, true));
                     return $addResult;
@@ -949,7 +963,7 @@ class ImportHelper
      *
      * @param SimpleXMLElement $course the root course node to be saved
      *
-     * @return AMA_Error on error | int generated course id on success
+     * @return AMAError on error | int generated course id on success
      *
      * @access private
      */
@@ -977,7 +991,7 @@ class ImportHelper
         $rename_count = 0;
         do {
             $courseNewID = $this->dh->add_course($courseArr);
-            if (AMA_DB::isError($courseNewID)) {
+            if (AMADB::isError($courseNewID)) {
                 if (strlen($courseArr['nome']) > 32) { // 32 is the size of the field in the database
                     $this->logMessage('Generated name will be over maximum allowed size, I\'ll give up and generate an error message.');
                     $rename_count = -1; // this will force an exit from the while loop
@@ -988,9 +1002,9 @@ class ImportHelper
             } else {
                 $this->logMessage('Successfully created new corse with name:' . $courseArr['nome'] . ' and id: ' . $courseNewID);
             }
-        } while (AMA_DB::isError($courseNewID) && $rename_count >= 0);
+        } while (AMADB::isError($courseNewID) && $rename_count >= 0);
 
-        if (!AMA_DB::isError($courseNewID)) {
+        if (!AMADB::isError($courseNewID)) {
             $retval = $courseNewID;
             // add a row in common.servizio
             $service_dataAr = [
@@ -1002,26 +1016,26 @@ class ImportHelper
                     'service_max_meetings' => 0,
                     'service_meeting_duration' => 0,
             ];
-            $id_service = $this->common_dh->add_service($service_dataAr);
-            if (!AMA_DB::isError($id_service)) {
-                $tester_infoAr = $this->common_dh->get_tester_info_from_pointer($this->selectedTester);
-                if (!AMA_DB::isError($tester_infoAr)) {
+            $id_service = $this->common_dh->addService($service_dataAr);
+            if (!AMADB::isError($id_service)) {
+                $tester_infoAr = $this->common_dh->getTesterInfoFromPointer($this->selectedTester);
+                if (!AMADB::isError($tester_infoAr)) {
                     $id_tester = $tester_infoAr[0];
-                    $result = $this->common_dh->link_service_to_course($id_tester, $id_service, $courseNewID);
-                    if (AMA_DB::isError($result)) {
+                    $result = $this->common_dh->linkServiceToCourse($id_tester, $id_service, $courseNewID);
+                    if (AMADB::isError($result)) {
                         $retval = $result;
                     }
                 } else {
-                    $retval = $tester_infoAr; // if (!AMA_DB::isError($tester_infoAr))
+                    $retval = $tester_infoAr; // if (!AMADB::isError($tester_infoAr))
                 }
             } else {
-                $retval = $id_service; // if (!AMA_DB::isError($id_service))
+                $retval = $id_service; // if (!AMADB::isError($id_service))
             }
         } else {
-            $retval = $courseNewID; // if (!AMA_DB::isError($courseNewID))
+            $retval = $courseNewID; // if (!AMADB::isError($courseNewID))
         }
 
-        if (AMA_DB::isError($retval)) {
+        if (AMADB::isError($retval)) {
             $this->logMessage('Adding course (modello_corso table) has FAILED! Pls find details below:');
             $this->logMessage(print_r($retval, true));
         } else {
@@ -1044,9 +1058,9 @@ class ImportHelper
         $this->logMessage(__METHOD__ . ' Updating nodes that have an internal link');
         $this->logMessage(__METHOD__ . ' Timestamp used to select node to update is: ' . $this->importStartTime);
 
-        $nodesToUpdate = $this->dh->get_nodes_with_internal_link_for_course($courseNewID, $this->importStartTime);
+        $nodesToUpdate = $this->dh->getNodesWithInternalLinkForCourse($courseNewID, $this->importStartTime);
 
-        if (!AMA_DB::isError($nodesToUpdate)) {
+        if (!AMADB::isError($nodesToUpdate)) {
             $this->logMessage(__METHOD__ . " Candidates for updating: \n" . print_r($nodesToUpdate, true));
             $this->logMessage(__METHOD__ . " This is the replacement NODE ids array \n" . print_r($this->courseNodeIDMapping, true));
 
@@ -1085,11 +1099,11 @@ class ImportHelper
             foreach ($nodesToUpdate as $arrElem) {
                 foreach ($arrElem as $nodeID) {
                     $this->logMessage(__METHOD__ . ' UPDATING NODE id=' . $nodeID);
-                    $nodeInfo = $this->dh->get_node_info($nodeID);
+                    $nodeInfo = $this->dh->getNodeInfo($nodeID);
                     $nodeInfo['text'] = str_ireplace($search, $replace, $nodeInfo['text']);
                     // strip off the random fake attribute
                     $nodeInfo['text'] = str_ireplace($randomStr, '', $nodeInfo['text']);
-                    $this->dh->set_node_text($nodeID, $nodeInfo['text']);
+                    $this->dh->setNodeText($nodeID, $nodeInfo['text']);
                 }
             }
         }
@@ -1107,9 +1121,9 @@ class ImportHelper
     {
         $this->logMessage(__METHOD__ . ' Updating nodes that have a link to a test:');
 
-        $nodesToUpdate = $this->dh->get_nodes_with_test_link_for_course($courseNewID, $this->importStartTime);
+        $nodesToUpdate = $this->dh->getNodesWithTestLinkForCourse($courseNewID, $this->importStartTime);
 
-        if (!AMA_DB::isError($nodesToUpdate)) {
+        if (!AMADB::isError($nodesToUpdate)) {
             $this->logMessage(__METHOD__ . " Candidates for updating: \n" . print_r($nodesToUpdate, true));
             $this->logMessage(__METHOD__ . " This is the replacement TEST ids array \n" . print_r($this->testNodeIDMapping, true));
 
@@ -1127,7 +1141,7 @@ class ImportHelper
             foreach ($nodesToUpdate as $arrElem) {
                 foreach ($arrElem as $nodeID) {
                     $this->logMessage(__METHOD__ . ' UPDATING NODE id=' . $nodeID);
-                    $nodeInfo = $this->dh->get_node_info($nodeID);
+                    $nodeInfo = $this->dh->getNodeInfo($nodeID);
                     /**
                      * First put a delimiter just after the linked id_test to prevent
                      * this situation:
@@ -1144,7 +1158,7 @@ class ImportHelper
                         preg_replace($regExp, 'id_test=$1' . $delimiter, $nodeInfo['text'])
                     );
 
-                    $this->dh->set_node_text($nodeID, $nodeInfo['text']);
+                    $this->dh->setNodeText($nodeID, $nodeInfo['text']);
                 }
             }
         } else {
@@ -1172,9 +1186,9 @@ class ImportHelper
                     $linkArray['id_nodo'] = $this->courseNodeIDMapping[$linkArray['id_nodo']];
                     $linkArray['id_nodo_to'] = $this->courseNodeIDMapping[$linkArray['id_nodo_to']];
 
-                    $res = $this->dh->add_link($linkArray);
+                    $res = $this->dh->addLink($linkArray);
 
-                    if (!AMA_DB::isError($res)) {
+                    if (!AMADB::isError($res)) {
                         if (!isset($this->recapArray[$courseNewID]['links'])) {
                             $this->recapArray[$courseNewID]['links'] = 1;
                         } else {
@@ -1200,7 +1214,7 @@ class ImportHelper
      *
      * @param string $tableName the 2 chars ADA language table identifier
      *
-     * @return int 0 if empty string passed|AMA_Error on error|int retrieved id on success
+     * @return int 0 if empty string passed|AMAError on error|int retrieved id on success
      *
      * @access public
      */
@@ -1209,8 +1223,8 @@ class ImportHelper
         if ($tableName == '') {
             return 0;
         }
-        $res = $GLOBALS['common_dh']->find_language_id_by_langauge_table_identifier($tableName);
-        return (AMA_DB::isError($res)) ? 0 : $res;
+        $res = $GLOBALS['common_dh']->findLanguageIdByLangaugeTableIdentifier($tableName);
+        return (AMADB::isError($res)) ? 0 : $res;
     }
 
     /**

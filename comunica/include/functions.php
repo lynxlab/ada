@@ -1,5 +1,7 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
 namespace Lynxlab\ADA\Comunica\Functions;
 
 use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
@@ -12,7 +14,7 @@ use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
  * @return void
  * @author vito
  */
-function exitWith_JSON_Error($error_msg, $error_code = 1)
+function exitWithJSONError($error_msg, $error_code = 1)
 {
     $json_string = '{"error":' . $error_code . ',"message":"' . $error_msg . '"}';
     print $json_string;

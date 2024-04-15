@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Service\Service;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * SUBSCRIBE
  *
@@ -99,9 +121,9 @@ $isRegistration = false; // user is asking  for subscription just after registra
 $isSubscription = false; // user is already registered ?
 
 
-$id_course = DataValidator::is_uinteger($_GET['id_course']);
-$r_id_user = DataValidator::is_uinteger($_GET['id_user']);
-$token     = DataValidator::validate_action_token($_GET['token']);
+$id_course = DataValidator::isUinteger($_GET['id_course']);
+$r_id_user = DataValidator::isUinteger($_GET['id_user']);
+$token     = DataValidator::validateActionToken($_GET['token']);
 /*
  * If a valid course id was not given, do not proceed.
  * (Note: we are not checking $id_course !== false,
@@ -154,8 +176,8 @@ if ($id_course != false) {
 
     $testersAr = []; // serve anche a adduser();
 
-    $tester_infoHa = $common_dh->get_tester_info_from_id_course($id_course);
-    if (AMA_DataHandler::isError($tester_infoHa)) {
+    $tester_infoHa = $common_dh->getTesterInfoFromIdCourse($id_course);
+    if (AMADataHandler::isError($tester_infoHa)) {
         $message = urlencode(translateFN('Impossibile richiedere il servizio'));
         $errObj = new ADA_Error($tester_infoHa, $message, null, null, null, $error_page . '?message=' . $message);
         exit();
@@ -164,23 +186,23 @@ if ($id_course != false) {
     $testersAr[0] = $tester; // it is a pointer (string)
     $testerId = $tester_infoHa['id_tester']; // it is an integer
     // find tester DH from tester pointer
-    $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
+    $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester));
 
     $serviceObj = Service::findServiceFromImplementor($id_course);
-    $serviceAr = $serviceObj->get_service_info();
+    $serviceAr = $serviceObj->getServiceInfo();
     $service_name = $serviceAr[0];
 
 
     //  get service from course
-    $serviceinfoAr = $common_dh->get_service_info_from_course($id_course);
-    if (AMA_DataHandler::isError($serviceinfoAr)) {
+    $serviceinfoAr = $common_dh->getServiceInfoFromCourse($id_course);
+    if (AMADataHandler::isError($serviceinfoAr)) {
         $message = urlencode(translateFN('Impossibile richiedere il servizio'));
         $errObj = new ADA_Error($serviceinfoAr, $message, null, null, null, $error_page . '?message=' . $message);
         exit();
     }
 
     $start_date1 = 0;
-    $start_date2 = AMA_DataHandler::date_to_ts("now");
+    $start_date2 = AMADataHandler::dateToTs("now");
     $days = $serviceinfoAr[4];
 
     $istanza_ha = [
@@ -200,33 +222,33 @@ if ($id_course != false) {
     }
 
     // add an instance to tester db
-    $res_inst_add = $tester_dh->course_instance_add($id_course, $istanza_ha);
+    $res_inst_add = $tester_dh->courseInstanceAdd($id_course, $istanza_ha);
 
-    if ((!AMA_DataHandler::isError($res_inst_add)) or ($res_inst_add->code == AMA_ERR_UNIQUE_KEY)) {
+    if ((!AMADataHandler::isError($res_inst_add)) or ($res_inst_add->code == AMA_ERR_UNIQUE_KEY)) {
         // we add an instance OR there already was one with same data
 
         // get an instance
         $clause = "id_corso = $id_course AND data_inizio_previsto = $start_date2 AND durata  = $days";
-        $course_instanceAr = $tester_dh->course_instance_find_list(null, $clause);
+        $course_instanceAr = $tester_dh->courseInstanceFindList(null, $clause);
         $id_instance = $course_instanceAr[0][0];
 
         // presubscribe user to the instance
-        $res_presub = $tester_dh->course_instance_student_presubscribe_add($id_instance, $id_user);
+        $res_presub = $tester_dh->courseInstanceStudentPresubscribeAdd($id_instance, $id_user);
     } else {
         $message = urlencode(translateFN("Errore nella richiesta di servizio: 1"));
         $errorObj = new ADA_Error($res_inst_add, $message, null, null, null, $error_page . '?message=' . $message);
     }
 
     $admtypeAr = [AMA_TYPE_ADMIN];
-    $admList = $common_dh->get_users_by_type($admtypeAr);
-    // $admList = $tester_dh-> get_users_by_type($admtypeAr); ???
+    $admList = $common_dh->getUsersByType($admtypeAr);
+    // $admList = $tester_dh-> getUsersByType($admtypeAr); ???
 
-    if (!AMA_DataHandler::isError($admList)) {
+    if (!AMADataHandler::isError($admList)) {
         $adm_uname = $admList[0]['username'];
     } else {
         $adm_uname = ""; // ??? FIXME: serve un superadmin nel file di config?
     }
-    if ((!AMA_DataHandler::isError($res_presub))  or   ($res_presub->code == AMA_ERR_UNIQUE_KEY)) {
+    if ((!AMADataHandler::isError($res_presub))  or   ($res_presub->code == AMA_ERR_UNIQUE_KEY)) {
         // we presubscribed the user to an instance OR there already was one with same data
         // we have to send message to:
         //   the admin (for monitoring purposes)
@@ -253,8 +275,8 @@ if ($id_course != false) {
         $message_ha['data_ora'] = "now";
         $message_ha['tipo'] = ADA_MSG_SIMPLE; // oppure mail?
         $message_ha['mittente'] = $adm_uname;
-        $res = $mh->send_message($message_ha);
-        if (AMA_DataHandler::isError($res)) {
+        $res = $mh->sendMessage($message_ha);
+        if (AMADataHandler::isError($res)) {
             //  $errObj = new ADA_Error($res,translateFN('Impossibile spedire il messaggio'),
             // NULL,NULL,NULL,$error_page.'?err_msg='.urlencode(translateFN('Impossibile spedire il messaggio')));
         }
@@ -262,8 +284,8 @@ if ($id_course != false) {
 
         //  2. send a message to the switcher  if any
         $swtypeAr = [AMA_TYPE_SWITCHER];
-        $switcherList = $tester_dh->get_users_by_type($swtypeAr);
-        if (!AMA_DataHandler::isError($switcherList)) {
+        $switcherList = $tester_dh->getUsersByType($swtypeAr);
+        if (!AMADataHandler::isError($switcherList)) {
             $switcher_uname = $switcherList[0]['username']; // FIXME: there should be only one sw per tester
             $titolo = translateFN("Richiesta di assegnazione");
             $destinatari = [$switcher_uname];
@@ -287,8 +309,8 @@ if ($id_course != false) {
             $message2_ha['tipo'] = ADA_MSG_MAIL;
             $message2_ha['mittente'] = $adm_uname;
 
-            $res2 = $mh->send_message($message2_ha);
-            if (AMA_DataHandler::isError($res2)) {
+            $res2 = $mh->sendMessage($message2_ha);
+            if (AMADataHandler::isError($res2)) {
                 //  $errObj = new ADA_Error($res,translateFN('Impossibile spedire il messaggio'),
                 // NULL,NULL,NULL,$error_page.'?err_msg='.urlencode(translateFN('Impossibile spedire il messaggio')));
             }
@@ -321,9 +343,9 @@ if ($id_course != false) {
         $message3_ha['mittente'] = $adm_uname;
 
         // delegate sending to the message handler
-        $res3 = $mh->send_message($message3_ha);
+        $res3 = $mh->sendMessage($message3_ha);
 
-        if (AMA_DataHandler::isError($res3)) {
+        if (AMADataHandler::isError($res3)) {
             // $errObj = new ADA_Error($res,translateFN('Impossibile spedire il messaggio'),
             //NULL,NULL,NULL,$error_page.'?err_msg='.urlencode(translateFN('Impossibile spedire il messaggio')));
         }

@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAUser;
+
+use Lynxlab\ADA\Main\User\ADALoggableUser;
+
+use Lynxlab\ADA\Main\User\ADAAbstractUser;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\CORE\html4\CI;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class ADAAbstractUser was declared with namespace Lynxlab\ADA\Main\User. //
+
 /**
  * User classes
  *
@@ -76,7 +94,7 @@ abstract class ADAAbstractUser extends ADALoggableUser
     public function setUserId($id_user)
     {
         parent::setUserId($id_user);
-        $this->setwhatsnew(MultiPort::get_new_nodes($this));
+        $this->setwhatsnew(MultiPort::getNewNodes($this));
     }
 
     /**
@@ -110,7 +128,7 @@ abstract class ADAAbstractUser extends ADALoggableUser
      */
     public function updateWhatsNew()
     {
-        $this->whatsnew = MultiPort::update_new_nodes_in_session($this);
+        $this->whatsnew = MultiPort::updateNewNodesInSession($this);
     }
 
     /**
@@ -118,7 +136,7 @@ abstract class ADAAbstractUser extends ADALoggableUser
      * @param $id_course_instance
      * @return void
      */
-    public function set_course_instance_for_history($id_course_instance)
+    public function setCourseInstanceForHistory($id_course_instance)
     {
         $historyObj = new History($id_course_instance, $this->id_user);
         // se non e' un errore, allora
@@ -148,12 +166,12 @@ abstract class ADAAbstractUser extends ADALoggableUser
      * @param $id_course_instance
      * @return integer
      */
-    public function get_student_level($id_user, $id_course_instance)
+    public function getStudentLevel($id_user, $id_course_instance)
     {
         $dh = $GLOBALS['dh'];
         // FIXME: _get_student_level was a private method, now it is public.
-        $user_level = $dh->get_student_level($id_user, $id_course_instance);
-        if (AMA_DataHandler::isError($user_level)) {
+        $user_level = $dh->getStudentLevel($id_user, $id_course_instance);
+        if (AMADataHandler::isError($user_level)) {
             $this->livello = 0;
         } else {
             $this->livello = $user_level;
@@ -167,7 +185,7 @@ abstract class ADAAbstractUser extends ADALoggableUser
      * @param $id_course_instance
      * @return void
      */
-    public function get_student_score($id_user, $id_course_instance)
+    public function getStudentScore($id_user, $id_course_instance)
     {
         // NON CI SONO ESERCIZI, NON DOVREBBE ESSERCI PUNTEGGIO
     }
@@ -178,13 +196,13 @@ abstract class ADAAbstractUser extends ADALoggableUser
      * @param $id_course_instance
      * @return integer
      */
-    public function get_student_status($id_student, $id_course_instance)
+    public function getStudentStatus($id_student, $id_course_instance)
     {
         $dh = $GLOBALS['dh'];
 
         $this->status = 0;
         if ($this->tipo == AMA_TYPE_STUDENT) {
-            $student_courses_subscribe_statusHa = $dh->course_instance_student_presubscribe_get_status($id_student);
+            $student_courses_subscribe_statusHa = $dh->courseInstanceStudentPresubscribeGetStatus($id_student);
             if (is_object($student_courses_subscribe_statusHa)) {
                 return $student_courses_subscribe_statusHa->error;
             }
@@ -206,7 +224,7 @@ abstract class ADAAbstractUser extends ADALoggableUser
      * @param $id_student
      * @return string
      */
-    public function get_student_family($id_student)
+    public function getStudentFamily($id_student)
     {
         if (isset($this->template_family)) {
             return $this->template_family;
@@ -221,11 +239,11 @@ abstract class ADAAbstractUser extends ADALoggableUser
      * @param $node_type
      * @return integer
      */
-    public function total_visited_nodesFN($id_student, $node_type = "")
+    public function totalVisitedNodesFN($id_student, $node_type = "")
     {
         //  returns 0 or the number of nodes visited by this student
         if (is_object($this->history)) {
-            return $this->history->get_total_visited_nodes($node_type);
+            return $this->history->getTotalVisitedNodes($node_type);
         }
         return 0;
     }
@@ -235,9 +253,9 @@ abstract class ADAAbstractUser extends ADALoggableUser
      * @param $id_student
      * @return integer
      */
-    public function total_visited_notesFN($id_student)
+    public function totalVisitedNotesFN($id_student)
     {
-        $visited_nodes_count = $this->total_visited_nodesFN($id_student, ADA_NOTE_TYPE);
+        $visited_nodes_count = $this->totalVisitedNodesFN($id_student, ADA_NOTE_TYPE);
         return $visited_nodes_count;
     }
 
@@ -246,13 +264,13 @@ abstract class ADAAbstractUser extends ADALoggableUser
         return null;
     }
 
-    public function get_exercise_dataFN($id_course_instance, $id_student = "")
+    public function getExerciseDataFN($id_course_instance, $id_student = "")
     {
         $dh = $GLOBALS['dh'];
         $out_fields_ar = ['ID_NODO','ID_ISTANZA_CORSO','DATA_VISITA','PUNTEGGIO','COMMENTO','CORREZIONE_RISPOSTA_LIBERA'];
-        $dataHa = $dh->find_ex_history_list($out_fields_ar, $this->id_user, $id_course_instance);
+        $dataHa = $dh->findExHistoryList($out_fields_ar, $this->id_user, $id_course_instance);
 
-        if (AMA_DataHandler::isError($dataHa) || empty($dataHa)) {
+        if (AMADataHandler::isError($dataHa) || empty($dataHa)) {
             $this->user_ex_historyAr = '';
         } else {
             aasort($dataHa, ["-1"]) ;
@@ -260,7 +278,7 @@ abstract class ADAAbstractUser extends ADALoggableUser
         }
     }
 
-    public function history_ex_done_FN($id_student, $id_profile = "", $id_course_instance = "")
+    public function historyExDoneFN($id_student, $id_profile = "", $id_course_instance = "")
     {
         /*
             Esercizi svolti
@@ -295,7 +313,7 @@ abstract class ADAAbstractUser extends ADALoggableUser
             }
 
             if (!empty($ids_nodi_padri)) {
-                $nodi_padri = $dh->get_nodes($ids_nodi_padri, ['nome','titolo']);
+                $nodi_padri = $dh->getNodes($ids_nodi_padri, ['nome','titolo']);
             }
 
             $label1 = translateFN('Esercizio');
@@ -361,7 +379,7 @@ abstract class ADAAbstractUser extends ADALoggableUser
      *
      * @return boolean
      */
-    public static function Check_Requirements_Certificate($userId, $instanceStatus)
+    public static function CheckRequirementsCertificate($userId, $instanceStatus)
     {
         /* be implemented according to the use cases */
         return true;

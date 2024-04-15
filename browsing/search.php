@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\Node\Media;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * SEARCH.
  *
@@ -155,7 +177,7 @@ if (!is_null($submit)) {
 
         if (empty($s_node_name) && empty($s_node_title)  && empty($s_node_text)) {
             $clause = '((tipo <> ' . ADA_PRIVATE_NOTE_TYPE . ') OR (tipo =' . ADA_PRIVATE_NOTE_TYPE . ' AND id_utente = ' . $sess_id_user . '))';
-            $resHa = $dh->find_course_nodes_list($out_fields_ar, $clause, $_SESSION['sess_id_course']);
+            $resHa = $dh->findCourseNodesList($out_fields_ar, $clause, $_SESSION['sess_id_course']);
         } else {
             if (!empty($s_node_name)) {
                 $count++;
@@ -171,14 +193,14 @@ if (!is_null($submit)) {
         }
     } elseif (empty($resHa)) {
         $clause = '(' . $clause . ')' . $and . ' ((tipo <> ' . ADA_PRIVATE_NOTE_TYPE . ') OR (tipo =' . ADA_PRIVATE_NOTE_TYPE . ' AND id_utente = ' . $sess_id_user . '))';
-        $resHa = $dh->find_course_nodes_list($out_fields_ar, $clause, $_SESSION['sess_id_course']);
+        $resHa = $dh->findCourseNodesList($out_fields_ar, $clause, $_SESSION['sess_id_course']);
     }
 
 
-    if (!AMA_DataHandler::isError($resHa)) {
+    if (!AMADataHandler::isError($resHa)) {
         // se studente, filtra i nodi con livello > di quello dello studente
         if (isset($userObj) && $userObj->getType() == AMA_TYPE_STUDENT) {
-            $studenLevel = (int) $userObj->get_student_level($userObj->getId(), $courseInstanceObj->getId());
+            $studenLevel = (int) $userObj->getStudentLevel($userObj->getId(), $courseInstanceObj->getId());
             $resHa = array_filter($resHa, function ($row) use ($studenLevel) {
                 // livello is row[6]
                 return (int) $row[6] <= $studenLevel;
@@ -186,7 +208,7 @@ if (!is_null($submit)) {
         }
     }
 
-    if (!AMA_DataHandler::isError($resHa) and is_array($resHa) and !empty($resHa)) {
+    if (!AMADataHandler::isError($resHa) and is_array($resHa) and !empty($resHa)) {
         $total_results = [];
         $group_count = 0;
         $node_count = 0;
@@ -334,7 +356,7 @@ if (isset($_GET['s_AdvancedForm'])) {
     $advancedSearch_form = $form_AdvancedSearch->getHtml();
 }
 $online_users_listing_mode = 2;
-$online_users = ADALoggableUser::get_online_usersFN($sess_id_course_instance, $online_users_listing_mode);
+$online_users = ADALoggableUser::getOnlineUsersFN($sess_id_course_instance, $online_users_listing_mode);
 
 // CHAT, BANNER etc
 $SimpleSearchlabel = translateFN('Ricerca semplice');
@@ -357,11 +379,11 @@ $spanAdvanced_search->setAttribute('style', 'display:none');
 $spanAdvanced_search->addChild(new CText("<strong>" . translateFN('Ricerca avanzata') . "</strong>"));
 
 if (isset($_SESSION['sess_id_course_instance'])) {
-    $last_access = $userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']), "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(($_SESSION['sess_id_course_instance']), "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 } else {
-    $last_access = $userObj->get_last_accessFN(null, "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(null, "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 }
 if ($last_access == '' || is_null($last_access)) {
     $last_access = '-';

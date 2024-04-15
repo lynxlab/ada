@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * NEWSLETTER MODULE.
  *
@@ -59,10 +69,10 @@ $containerDIV = CDOMElement::create('div', 'id:moduleContent');
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET'  && !empty($_GET) && isset($_GET['id']) && intval($_GET['id']) > 0) {
     $idNewsletter = intval($_GET['id']);
-    $newsletterAr = $dh->get_newsletter($idNewsletter);
+    $newsletterAr = $dh->getNewsletter($idNewsletter);
 
-    if (!AMA_DB::isError($newsletterAr) && $newsletterAr !== false) {
-        $historyAr = $dh->get_newsletter_history($idNewsletter);
+    if (!AMADB::isError($newsletterAr) && $newsletterAr !== false) {
+        $historyAr = $dh->getNewsletterHistory($idNewsletter);
 
         $labels =  [ translateFN('filtro'), translateFN('data di invio'), translateFN('n. utenti') ];
 
@@ -84,7 +94,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET'  &&
         $containerDIV->addChild(new CText($histData));
     } else {
         $containerDIV->addChild(new CText(translateFN('Newsletter non trovata, id= ') . $idNewsletter));
-    } // if (!AMA_DB::isError($newsletterAr))
+    } // if (!AMADB::isError($newsletterAr))
 } else {
     $containerDIV->addChild(new CText(translateFN('Nessuna newsletter da inviare')));
 }

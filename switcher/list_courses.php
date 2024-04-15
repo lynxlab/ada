@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use function \translateFN;
+
 /**
  * List courses - this module provides list courses functionality
  *
@@ -81,7 +97,7 @@ SwitcherHelper::init($neededObjAr);
  * YOUR CODE HERE
  */
 
-$coursesAr = $dh->get_courses_list(['nome', 'titolo', 'descrizione', 'tipo_servizio']);
+$coursesAr = $dh->getCoursesList(['nome', 'titolo', 'descrizione', 'tipo_servizio']);
 if (is_array($coursesAr) && count($coursesAr) > 0) {
     $thead_data = [
         null,

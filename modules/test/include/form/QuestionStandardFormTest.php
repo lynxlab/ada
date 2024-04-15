@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Module\Test\QuestionStandardFormTest;
+
+use Lynxlab\ADA\Module\Test\QuestionFormTest;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class QuestionStandardFormTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  *
  * @package
@@ -18,7 +28,7 @@ class QuestionStandardFormTest extends QuestionFormTest
 {
     protected function content()
     {
-        $this->common_elements();
+        $this->commonElements();
 
         //variante
         $variant = 'variant';

@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\NodeEditing;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class NodeEditing was declared with namespace Lynxlab\ADA\Services\NodeEditing. //
+
 /**
  * NodeEditing class.
  *
@@ -77,30 +87,30 @@ class NodeEditing
             foreach ($media_to_remove as $media => $type) {
                 switch ($type) {
                     case 'INTERNAL':
-                        //    $internal_links[] = $dh->get_link_id($edited_node_id, $media);
+                        //    $internal_links[] = $dh->getLinkId($edited_node_id, $media);
                         //$internal_links[] = $media;
 
                         // vito, 27 mar 2009
                         $linked_node = $sess_id_course . '_' . $media;
                         // vito, 27 mar 2009
-                        //$internal_link = $dh->get_link_id($dh->sql_prepared($edited_node_id), $dh->sql_prepared($media));
-                        $internal_link = $dh->get_link_id($dh->sql_prepared($edited_node_id), $dh->sql_prepared($linked_node));
-                        if (AMA_DataHandler::isError($internal_link)) {
+                        //$internal_link = $dh->getLinkId($dh->sqlPrepared($edited_node_id), $dh->sqlPrepared($media));
+                        $internal_link = $dh->getLinkId($dh->sqlPrepared($edited_node_id), $dh->sqlPrepared($linked_node));
+                        if (AMADataHandler::isError($internal_link)) {
                             return $internal_link;
                         }
-                        $result = $dh->remove_link($internal_link);
-                        if (AMA_DataHandler::isError($result)) {
+                        $result = $dh->removeLink($internal_link);
+                        if (AMADataHandler::isError($result)) {
                             return $result;
                         }
                         break;
                     default:
-                        // $external_resources[] = $dh->get_risorsa_esterna_id($media);
-                        $external_resource = $dh->get_risorsa_esterna_id($media);
-                        if (AMA_DataHandler::isError($external_resource)) {
+                        // $external_resources[] = $dh->getRisorsaEsternaId($media);
+                        $external_resource = $dh->getRisorsaEsternaId($media);
+                        if (AMADataHandler::isError($external_resource)) {
                             return $external_resource;
                         }
-                        $result = $dh->del_risorse_nodi($dh->sql_prepared($edited_node_id), $external_resource);
-                        if (AMA_DataHandler::isError($result)) {
+                        $result = $dh->delRisorseNodi($dh->sqlPrepared($edited_node_id), $external_resource);
+                        if (AMADataHandler::isError($result)) {
                             return $result;
                         }
                         break;
@@ -132,8 +142,8 @@ class NodeEditing
                             'posizione'      => [100, 100, 200, 200],
                         ];
 
-                        $result = $dh->add_link($link_ha);
-                        //if (AMA_DataHandler::isError($result)) return $result;
+                        $result = $dh->addLink($link_ha);
+                        //if (AMADataHandler::isError($result)) return $result;
                         break;
                     case _LINK:
                         $res_ha = [
@@ -143,13 +153,13 @@ class NodeEditing
                             'id_nodo'   => $edited_node_id,
                             'id_utente' => $user_id,
                         ];
-                        $id_ext_res = $dh->add_risorsa_esterna($res_ha);
-                        if (AMA_DataHandler::isError($id_ext_res)) {
+                        $id_ext_res = $dh->addRisorsaEsterna($res_ha);
+                        if (AMADataHandler::isError($id_ext_res)) {
                             return $id_ext_res;
                         }
                         if ($id_ext_res < 0) { // il media e' gia' in risorsa_esterna
-                            $result_ext = $dh->add_risorse_nodi("'$edited_node_id'", abs($id_ext_res));
-                            if (AMA_DataHandler::isError($result_ext)) {
+                            $result_ext = $dh->addRisorseNodi("'$edited_node_id'", abs($id_ext_res));
+                            if (AMADataHandler::isError($result_ext)) {
                                 return $result_ext;
                             }
                         }
@@ -162,14 +172,14 @@ class NodeEditing
                             'id_nodo'   => $edited_node_id,
                             'id_utente' => $user_id,
                         ];
-                        //                        $id_ext_res = $dh->add_risorsa_esterna($res_ha);
-                        //                        if (AMA_DataHandler::isError($id_ext_res)) return $id_ext_res;
-                        $external_resource = $dh->get_risorsa_esterna_id($media);
-                        if (AMA_DataHandler::isError($external_resource)) {
+                        //                        $id_ext_res = $dh->addRisorsaEsterna($res_ha);
+                        //                        if (AMADataHandler::isError($id_ext_res)) return $id_ext_res;
+                        $external_resource = $dh->getRisorsaEsternaId($media);
+                        if (AMADataHandler::isError($external_resource)) {
                             return $external_resource;
                         }
-                        $result_ext = $dh->add_risorse_nodi("'$edited_node_id'", $external_resource);
-                        if (AMA_DataHandler::isError($result_ext)) {
+                        $result_ext = $dh->addRisorseNodi("'$edited_node_id'", $external_resource);
+                        if (AMADataHandler::isError($result_ext)) {
                             return $result_ext;
                         }
                         break;
@@ -212,8 +222,8 @@ class NodeEditing
             }
         }
 
-        $result = $dh->set_node_position($node_data);
-        if (AMA_DataHandler::isError($result)) {
+        $result = $dh->setNodePosition($node_data);
+        if (AMADataHandler::isError($result)) {
             return $result;
         }
 
@@ -299,7 +309,7 @@ class NodeEditing
             ], $node_data, ['isUpdate' => true]);
         }
 
-        $result = $dh->doEdit_node($node_data);
+        $result = $dh->doEditNode($node_data);
 
         if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
             ADAEventDispatcher::buildEventAndDispatch([
@@ -308,7 +318,7 @@ class NodeEditing
             ], $node_data, ['isUpdate' => true, 'saveResult' => $result]);
         }
 
-        if (AMA_DataHandler::isError($result)) {
+        if (AMADataHandler::isError($result)) {
             return $result;
         }
 
@@ -372,7 +382,7 @@ class NodeEditing
             ], $node_data, ['isUpdate' => false]);
         }
 
-        $result = $dh->add_node($node_data);
+        $result = $dh->addNode($node_data);
 
         if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
             ADAEventDispatcher::buildEventAndDispatch([
@@ -381,7 +391,7 @@ class NodeEditing
             ], $node_data, ['isUpdate' => false, 'saveResult' => $result]);
         }
 
-        if (AMA_DataHandler::isError($result)) {
+        if (AMADataHandler::isError($result)) {
             return $result;
         } else {
             $node_id = $result;
@@ -394,13 +404,13 @@ class NodeEditing
     public static function getAuthorMedia($id_course, $media_type = [])
     {
         $dh = $GLOBALS['dh'];
-        $course_ha = $dh->get_course($id_course);
-        if (AMA_DataHandler::isError($course_ha)) {
+        $course_ha = $dh->getCourse($id_course);
+        if (AMADataHandler::isError($course_ha)) {
             return $course_ha;
         }
         $id_author = $course_ha['id_autore'];
 
-        $author_media = $dh->get_risorse_autore($id_author, $media_type);
+        $author_media = $dh->getRisorseAutore($id_author, $media_type);
         return $author_media;
     }
 }

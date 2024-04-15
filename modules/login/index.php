@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * LOGIN MODULE - module config main page
  *
@@ -65,7 +75,7 @@ if (!is_null($loginProviders) && is_array($loginProviders)) {
     $configIndexDIV->addChild(CDOMElement::create('div', 'class:clearfix'));
     $tableOutData = [];
 
-    if (!AMA_DB::isError($loginProviders)) {
+    if (!AMADB::isError($loginProviders)) {
         $labels =  [translateFN('id'), translateFN('ordine'), translateFN('className'),  translateFN('Nome'),
                 translateFN('Abilitato'), translateFN('Bottone'),
                 translateFN('azioni')];
@@ -165,7 +175,7 @@ if (!is_null($loginProviders) && is_array($loginProviders)) {
             $bottomButton->setAttribute('class', 'newButton bottom tooltip');
             $configIndexDIV->addChild($bottomButton);
         }
-    } // if (!AMA_DB::isError($optionSetList))
+    } // if (!AMADB::isError($optionSetList))
     $data = $configIndexDIV->getHtml();
     $title = translateFN('Configurazione Login Provider');
     $optionsAr['onload_func'] = 'initDoc();';

@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Module\EventDispatcher\Events\CourseEvent;
+
+// Trigger: ClassWithNameSpace. The class CourseEvent was declared with namespace Lynxlab\ADA\Module\EventDispatcher\Events. //
+
 /**
  * @package     event-dispatcher module
  * @author      giorgio <g.consorti@lynxlab.com>

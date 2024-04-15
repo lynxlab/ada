@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use function \translateFN;
+
 /**
  * Add exercise
  *
@@ -17,9 +33,9 @@ use Lynxlab\ADA\Main\HtmlLibrary\ServicesModuleHtmlLib;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 use Lynxlab\ADA\Services\Exercise\ExerciseViewerFactory;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\get_max_idFN;
+use function Lynxlab\ADA\Main\AMA\DBRead\getMaxIdFN;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\today_dateFN;
+use function Lynxlab\ADA\Main\Utilities\todayDateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -96,7 +112,7 @@ $online_users_listing_mode = 2;
 if (!isset($id_course_instance)) {
     $id_course_instance = null;
 }
-$online_users = ADAGenericUser::get_online_usersFN($id_course_instance, $online_users_listing_mode);
+$online_users = ADAGenericUser::getOnlineUsersFN($id_course_instance, $online_users_listing_mode);
 
 
 $break_error = ''; // system var, indica eventuali errori
@@ -208,12 +224,12 @@ if (isset($step) && !isset($verify)) {
             */
             $id_course = explode("_", $_SESSION['add_exercise']['parent_node']);
 
-            $last_node = get_max_idFN($id_course[0]);
+            $last_node = getMaxIdFN($id_course[0]);
             $tempAr = explode("_", $last_node);
             $new_id = $tempAr[1]; // get only the part of node
             $new_id = $new_id + 1;
             $node_exercise = $id_course[0] . "_" . $new_id;
-            $order = $dh->get_ordine_max_val($_SESSION['add_exercise']['parent_node']);
+            $order = $dh->getOrdineMaxVal($_SESSION['add_exercise']['parent_node']);
             //controllo errori su $order
 
             $esercizio['id'] = $node_exercise;
@@ -225,18 +241,18 @@ if (isset($step) && !isset($verify)) {
             $esercizio['type']           = $_SESSION['add_exercise']['exercise_family'] . $_SESSION['add_exercise']['exercise_interaction'] . $_SESSION['add_exercise']['test_mode'] . $_SESSION['add_exercise']['test_simplification'] . $_SESSION['add_exercise']['test_barrier'];
             $esercizio['parent_id']      = $_SESSION['add_exercise']['parent_node'];
             $esercizio['order']          = $order + 1;
-            $esercizio['creation_date']  = today_dateFN();
+            $esercizio['creation_date']  = todayDateFN();
             $esercizio['pos_x0']         = 0;
             $esercizio['pos_y0']         = 0;
             $esercizio['pos_x1']         = 0;
             $esercizio['pos_y1']         = 0;
 
-            $result = $dh->add_node($esercizio); // esercizio
+            $result = $dh->addNode($esercizio); // esercizio
 
             ##### eventuali risposte
             if (sizeof($_SESSION['add_exercise']['answers']) > 0) {
                 foreach ($_SESSION['add_exercise']['answers'] as $answer) {
-                    $last_node = get_max_idFN($id_course[0]);
+                    $last_node = getMaxIdFN($id_course[0]);
                     $tempAr = explode("_", $last_node);
                     $new_id = $tempAr[1]; // get only the part of node
                     $new_id = $new_id + 1;
@@ -258,7 +274,7 @@ if (isset($step) && !isset($verify)) {
                     $risp['type']           = 1;
                     $risp['parent_id']      = $node_exercise;
                     $risp['correctness']    = $answer['correctness'];
-                    $risp['creation_date']  = today_dateFN();
+                    $risp['creation_date']  = todayDateFN();
                     $risp['pos_x0']         = 0;
                     $risp['pos_y0']         = 0;
                     $risp['pos_x1']         = 0;
@@ -268,7 +284,7 @@ if (isset($step) && !isset($verify)) {
                     if ($_SESSION['add_exercise']['exercise_family'] == ADA_CLOZE_EXERCISE_TYPE) {
                         $risp['order'] = $answer['hide'];
                     }
-                    $dh->add_node($risp); // risposta
+                    $dh->addNode($risp); // risposta
                 }
             }
 

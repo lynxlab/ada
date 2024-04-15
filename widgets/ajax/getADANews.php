@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * ADA last course's node reader
  * will dysplay the newest nodes content from the passed course id
@@ -100,14 +108,14 @@ if (!MULTIPROVIDER) {
         $errsmsg = translateFN('Nessun fornitore di servizi &egrave; stato configurato');
     }
 } else {
-    $testerInfo = $GLOBALS['common_dh']->get_tester_info_from_id_course($course_id);
-    if (!AMA_DB::isError($testerInfo) && is_array($testerInfo) && isset($testerInfo['puntatore'])) {
+    $testerInfo = $GLOBALS['common_dh']->getTesterInfoFromIdCourse($course_id);
+    if (!AMADB::isError($testerInfo) && is_array($testerInfo) && isset($testerInfo['puntatore'])) {
         $testerName = $testerInfo['puntatore'];
     }
 } // end if (!MULTIPROVIDER)
 
 if (isset($testerName)) {
-    $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($testerName));
+    $tester_dh = AMADataHandler::instance(MultiPort::getDSN($testerName));
     // setting of the global is needed to load the course object
     $GLOBALS['dh'] = $tester_dh;
 
@@ -119,8 +127,8 @@ if (isset($testerName)) {
         $courseOK = $courseObj->getIsPublic();
         if (!$courseOK && isset($_SESSION['sess_userObj']) && $_SESSION['sess_userObj'] instanceof ADALoggableUser) {
             // if it's not public, check if user is subscribed to course
-            $instanceCheck = $tester_dh->get_course_instance_for_this_student_and_course_model($_SESSION['sess_userObj']->getId(), $courseObj->getId(), true);
-            if (!AMA_DB::isError($instanceCheck) && is_array($instanceCheck) && count($instanceCheck) > 0) {
+            $instanceCheck = $tester_dh->getCourseInstanceForThisStudentAndCourseModel($_SESSION['sess_userObj']->getId(), $courseObj->getId(), true);
+            if (!AMADB::isError($instanceCheck) && is_array($instanceCheck) && count($instanceCheck) > 0) {
                 $goodStatuses = [ADA_STATUS_SUBSCRIBED, ADA_STATUS_COMPLETED, ADA_STATUS_TERMINATED];
                 $instance = reset($instanceCheck);
                 do {
@@ -132,7 +140,7 @@ if (isset($testerName)) {
     // courseOK is true either if course is public or the user is subscribed to it
     if ($courseOK) {
         // select nome or empty string (whoever is not null) as title to diplay for the news
-        $newscontent = $tester_dh->find_course_nodes_list(
+        $newscontent = $tester_dh->findCourseNodesList(
             ["COALESCE(if(nome='NULL' OR ISNULL(nome ),NULL, nome), '')", "testo"],
             "tipo IN (" . ADA_LEAF_TYPE . "," . ADA_GROUP_TYPE . ") ORDER BY $orderby LIMIT " . $count,
             $course_id
@@ -141,7 +149,7 @@ if (isset($testerName)) {
         // watch out: $newscontent is NOT associative
         $output = '';
         $maxLength = 600;
-        if (!AMA_DB::isError($newscontent) && count($newscontent) > 0) {
+        if (!AMADB::isError($newscontent) && count($newscontent) > 0) {
             $newsContainer = CDOMElement::create('div', 'class:ui three column divided stackable grid');
             $newsContainer->setAttribute('data-courseID', $course_id);
             $newsRow = CDOMElement::create('div', 'class:equal height row');

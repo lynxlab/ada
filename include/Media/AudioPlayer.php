@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Node\Media;
+
+use Lynxlab\ADA\Main\Media\AudioPlayer;
+
+// Trigger: ClassWithNameSpace. The class AudioPlayer was declared with namespace Lynxlab\ADA\Main\Media. //
+
 /**
  * Media Viewers
  *

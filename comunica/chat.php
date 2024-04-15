@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * adachat
  *
@@ -23,7 +39,7 @@ use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\get_timezone_offset;
+use function Lynxlab\ADA\Main\Utilities\getTimezoneOffset;
 use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -126,7 +142,7 @@ ComunicaHelper::init($neededObjAr);
  *   [sess_id_course_instance]
  */
 if ($exit_reason == NO_EXIT_REASON) {
-    $chatroom_ha = $chatroomObj->get_info_chatroomFN($id_chatroom);
+    $chatroom_ha = $chatroomObj->getInfoChatroomFN($id_chatroom);
     // CONTROLLARE EVENTUALE ERRORE
 
     if (is_array($chatroom_ha)) {
@@ -135,19 +151,19 @@ if ($exit_reason == NO_EXIT_REASON) {
         // check if the current user is the owner of the room
         if ($id_owner == $sess_id_user || $userObj->getType() == AMA_TYPE_TUTOR) {
             // gives him moderator access
-            $operator = $chatroomObj->set_user_statusFN($sess_id_user, $sess_id_user, $id_chatroom, ACTION_SET_OPERATOR);
+            $operator = $chatroomObj->setUserStatusFN($sess_id_user, $sess_id_user, $id_chatroom, ACTION_SET_OPERATOR);
             // restituire l'errore via JSON
         }
-        $started = $chatroomObj->is_chatroom_startedFN($id_chatroom);
+        $started = $chatroomObj->isChatroomStartedFN($id_chatroom);
         // restituire l'errore via JSON
 
-        $still_running = $chatroomObj->is_chatroom_not_expiredFN($id_chatroom);
+        $still_running = $chatroomObj->isChatroomNotExpiredFN($id_chatroom);
         // restituire l'errore via JSON
 
-        $status = $chatroomObj->get_user_statusFN($sess_id_user, $id_chatroom);
+        $status = $chatroomObj->getUserStatusFN($sess_id_user, $id_chatroom);
         // restituire l'errore via JSON
 
-        $complete = $chatroomObj->is_chatroom_fullFN($id_chatroom);
+        $complete = $chatroomObj->isChatroomFullFN($id_chatroom);
 
         $exit_reason = NO_EXIT_REASON;
 
@@ -181,7 +197,7 @@ if ($exit_reason == NO_EXIT_REASON) {
             $message_ha['id_group'] = $id_chatroom;
             $message_ha['testo']    = "<span class=user_name>$user_name</span> " . translateFN("&egrave; entrato nella stanza");
 
-            $result = $mh->send_message($message_ha);
+            $result = $mh->sendMessage($message_ha);
             // GESTIONE ERRORE
         }
     }
@@ -194,7 +210,7 @@ if ($exit_reason != NO_EXIT_REASON) {
         $tester_TimeZone = SERVER_TIMEZONE;
     } else {
         $tester_TimeZone = MultiPort::getTesterTimeZone($_SESSION['sess_selected_tester']);
-        $offset = get_timezone_offset($tester_TimeZone, SERVER_TIMEZONE);
+        $offset = getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
     }
     $current_time = ts2tmFN(time() + $offset);
 
@@ -237,11 +253,11 @@ if ($userObj instanceof ADAPractitioner) {
 */
 
 if (isset($_SESSION['sess_id_course_instance'])) {
-    $last_access = $userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']), "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(($_SESSION['sess_id_course_instance']), "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 } else {
-    $last_access = $userObj->get_last_accessFN(null, "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(null, "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 }
 
 if ($last_access == '' || is_null($last_access)) {

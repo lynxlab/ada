@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\Login\LdapManagement;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * LOGIN MODULE
  *
@@ -96,7 +104,7 @@ if (!is_null($optionsClassName)) {
             $editElement = 'Chiave'; // translatedFN delayed when building msg
         }
 
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             // if it's an error display the error message
             $retArray['status'] = "ERROR";
             $retArray['msg'] = $res->getMessage();
@@ -119,7 +127,7 @@ if (!is_null($optionsClassName)) {
         // try to load it
         $res = $GLOBALS['dh']->getOptionSet($option_id);
 
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             // if it's an error display the error message without the form
             $retArray['status'] = "ERROR";
             $retArray['msg'] = $res->getMessage();

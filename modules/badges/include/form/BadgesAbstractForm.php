@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Module\Badges\BadgesAbstractForm;
+
+// Trigger: ClassWithNameSpace. The class BadgesAbstractForm was declared with namespace Lynxlab\ADA\Module\Badges. //
+
 /**
  * @package     badges module
  * @author      giorgio <g.consorti@lynxlab.com>

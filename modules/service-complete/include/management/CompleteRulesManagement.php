@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Module\Servicecomplete\CompleteRulesManagement;
+
+use Lynxlab\ADA\Module\Servicecomplete\FormCompleteRules;
+
+// Trigger: ClassWithNameSpace. The class CompleteRulesManagement was declared with namespace Lynxlab\ADA\Module\Servicecomplete. //
+
 /**
  * SERVICE-COMPLETE MODULE.
  *

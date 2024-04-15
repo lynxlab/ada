@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * File edit_course.php
  *
@@ -94,10 +110,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($_POST['delete'] == 1) {
                 $courseInstanceId = $courseInstanceObj->getId();
                 if (Subscription::deleteAllSubscriptionsToClassRoom($courseInstanceId)) {
-                    $result = $dh->course_instance_tutors_unsubscribe($courseInstanceId);
+                    $result = $dh->courseInstanceTutorsUnsubscribe($courseInstanceId);
                     if ($result === true) {
-                        $result = $dh->course_instance_remove($courseInstanceId);
-                        if (!AMA_DataHandler::isError($result)) {
+                        $result = $dh->courseInstanceRemove($courseInstanceId);
+                        if (!AMADataHandler::isError($result)) {
                             // fare unset di sess_courseInstanceObj se c'è
                             header('Location: list_instances.php?id_course=' . $courseObj->getId());
                             exit();

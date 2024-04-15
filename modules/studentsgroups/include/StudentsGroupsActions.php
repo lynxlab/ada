@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Module\StudentsGroups\StudentsGroupsActions;
+
+// Trigger: ClassWithNameSpace. The class StudentsGroupsActions was declared with namespace Lynxlab\ADA\Module\StudentsGroups. //
+
 /**
  * @package     studentsgroups module
  * @author      giorgio <g.consorti@lynxlab.com>

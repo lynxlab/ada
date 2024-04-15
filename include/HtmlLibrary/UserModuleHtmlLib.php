@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\Layout;
+
+use Lynxlab\ADA\Main\HtmlLibrary\UserModuleHtmlLib;
+
+use Lynxlab\ADA\Main\HtmlLibrary\FormElementCreator;
+
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class UserModuleHtmlLib was declared with namespace Lynxlab\ADA\Main\HtmlLibrary. //
+
 /**
  *
  * @package
@@ -89,7 +105,7 @@ class UserModuleHtmlLib
             $loginProviders = null;
         }
 
-        if (!AMA_DB::isError($loginProviders) && is_array($loginProviders) && count($loginProviders) > 0) {
+        if (!AMADB::isError($loginProviders) && is_array($loginProviders) && count($loginProviders) > 0) {
             $submit = CDOMElement::create('div', 'id:loginProviders');
             $form->addChild(CDOMElement::create('hidden', 'id:selectedLoginProvider, name:selectedLoginProvider'));
             $form->addChild(CDOMElement::create('hidden', 'id:selectedLoginProviderID, name:selectedLoginProviderID'));
@@ -321,7 +337,7 @@ class UserModuleHtmlLib
         $span_language_select->addChild($select);
 
         $div_upload = CDOMElement::create('div', 'id:translation_import_select, class:form_input');
-        $label_select = CDOMElement::create('label', 'for:upload_file');
+        $label_select = CDOMElement::create('label', 'for:uploadFile');
         $label_select->addChild(new CText(translateFN('Scegli il file contenente la traduzione:')));
         $fileinput = CDOMElement::create('file', 'id:post_translation_import_file, name:post_translation_import_file');
 
@@ -519,8 +535,8 @@ class UserModuleHtmlLib
             } else {
                 // build the tutors list
                 $users = array_map(function ($tutor_id) {
-                    return ['id' => $tutor_id, 'granted' => false ] + $GLOBALS['dh']->get_tutor($tutor_id);
-                }, $GLOBALS['dh']->course_instance_tutor_get($id_course_instance, 'ALL'));
+                    return ['id' => $tutor_id, 'granted' => false ] + $GLOBALS['dh']->getTutor($tutor_id);
+                }, $GLOBALS['dh']->courseInstanceTutorGet($id_course_instance, 'ALL'));
             }
             // sort by lastname asc
             usort($users, function ($a, $b) {

@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * SEND EVENT PROPOSAL.
  *
@@ -111,7 +131,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
      */
     $errors = [];
 
-    if (DataValidator::validate_not_empty_string($subject) === false) {
+    if (DataValidator::validateNotEmptyString($subject) === false) {
         $errors['subject'] = ADA_EVENT_PROPOSAL_ERROR_SUBJECT;
     }
 
@@ -163,10 +183,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         'testo'       => $message_content,
         ];
 
-        $res = $mh->send_message($message_ha);
+        $res = $mh->sendMessage($message_ha);
 
-        if (AMA_DataHandler::isError($res)) {
-            $errObj = new ADA_Error(
+        if (AMADataHandler::isError($res)) {
+            $errObj = new ADAError(
                 $res,
                 translateFN('Impossibile spedire il messaggio'),
                 null,
@@ -193,8 +213,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
          * practitioner ha inviato delle nuove proposte
          */
         $admtypeAr = [AMA_TYPE_ADMIN];
-        $admList = $common_dh->get_users_by_type($admtypeAr);
-        if (!AMA_DataHandler::isError($admList)) {
+        $admList = $common_dh->getUsersByType($admtypeAr);
+        if (!AMADataHandler::isError($admList)) {
             $adm_uname = $admList[0]['username'];
         } else {
             $adm_uname = ""; // ??? FIXME: serve un superadmin nel file di config?
@@ -209,9 +229,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         'titolo'      => 'ADA: ' . translateFN('new event proposal dates'),
         'testo'       => $message_content,
         ];
-        $res = $mh->send_message($message_ha);
-        if (AMA_DataHandler::isError($res)) {
-            $errObj = new ADA_Error(
+        $res = $mh->sendMessage($message_ha);
+        if (AMADataHandler::isError($res)) {
+            $errObj = new ADAError(
                 $res,
                 translateFN('Impossibile spedire il messaggio'),
                 null,

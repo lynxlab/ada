@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * @package     badges module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -56,7 +62,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     // try to save it
     $res = $GLOBALS['dh']->saveBadge($_POST);
 
-    if (AMA_DB::isError($res)) {
+    if (AMADB::isError($res)) {
         // if it's an error display the error message
         $retArray['status'] = "ERROR";
         $retArray['msg'] = $res->getMessage();
@@ -69,7 +75,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_GET['uuid']) && Uuid::isValid($_GET['uuid'])) {
         // try to load
         $res = $GLOBALS['dh']->findBy('Badge', [ 'uuid' => trim($_GET['uuid']) ]);
-        if (!AMA_DB::isError($res) && is_array($res) && count($res) === 1) {
+        if (!AMADB::isError($res) && is_array($res) && count($res) === 1) {
             $badge = reset($res);
             // display the form with loaded data
             $form = new BadgeForm($badge, 'editbadge', null);
@@ -79,7 +85,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             // if it's an error display the error message without the form
             $retArray['status'] = "ERROR";
-            $retArray['msg'] = AMA_DB::isError($res) ? $res->getMessage() : translateFN('Errore caricamento badge');
+            $retArray['msg'] = AMADB::isError($res) ? $res->getMessage() : translateFN('Errore caricamento badge');
         }
     } else {
         /**

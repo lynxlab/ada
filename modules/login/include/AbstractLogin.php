@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Module\Login\ILogin;
+
+use Lynxlab\ADA\Module\Login\AMALoginDataHandler;
+
+use Lynxlab\ADA\Module\Login\AbstractLogin;
+
+use Lynxlab\ADA\Main\User\ADALoggableUser;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class AbstractLogin was declared with namespace Lynxlab\ADA\Module\Login. //
+
 /**
  * LOGIN MODULE
  *
@@ -162,7 +178,7 @@ abstract class AbstractLogin implements ILogin
 
         $res = AMALoginDataHandler::instance($dsn)->getLoginProviders($enabled, ' `displayOrder` ASC');
 
-        if (!AMA_DB::isError($res) && is_array($res) && count($res) > 0) {
+        if (!AMADB::isError($res) && is_array($res) && count($res) > 0) {
             foreach ($res as $provider) {
                 if ($getData === false) {
                     $retArr[$provider[AMALoginDataHandler::$PREFIX . 'providers_id']] = $provider['className'];

@@ -1,5 +1,31 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Forms\lib\classes\FForm;
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\CORE\HtmlElements\Form;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * Edit user - this module provides edit user functionality
  *
@@ -113,7 +139,7 @@ switch ($userObj->getType()) {
         $editUserObj = clone $userObj;
         break;
     case AMA_TYPE_SWITCHER:
-        $userId = DataValidator::is_uinteger($_GET['id_user']);
+        $userId = DataValidator::isUinteger($_GET['id_user']);
         if ($userId !== false) {
             $editUserObj = MultiPort::findUser($userId);
         } else {
@@ -127,7 +153,7 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
     $form->fillWithPostData();
     $password = trim($_POST['password']);
     $passwordcheck = trim($_POST['passwordcheck']);
-    if (DataValidator::validate_password_modified($password, $passwordcheck) === false) {
+    if (DataValidator::validatePasswordModified($password, $passwordcheck) === false) {
         $message = translateFN('Le password digitate non corrispondono o contengono caratteri non validi.');
         header("Location: edit_user.php?message=$message");
         exit();
@@ -429,11 +455,11 @@ if (isset($_GET['message'])) {
 }
 
 if (isset($_SESSION['sess_id_course_instance'])) {
-    $last_access = $userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']), "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(($_SESSION['sess_id_course_instance']), "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 } else {
-    $last_access = $userObj->get_last_accessFN(null, "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(null, "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
     $user_level = translateFN('Nd');
 }
 if ($last_access == '' || is_null($last_access)) {

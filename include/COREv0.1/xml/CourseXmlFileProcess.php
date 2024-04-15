@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\CORE\xml\CourseXmlFileProcess;
+
+use Lynxlab\ADA\Main\Bookmark\Tag;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class CourseXmlFileProcess was declared with namespace Lynxlab\ADA\CORE\xml. //
+
 /*
   Classe course_xml_file_process per l'estrazione dei dati corso da file xml e
   inserimento nel database di ADA.
@@ -11,8 +23,8 @@
       nome file xml, ...)
     - lettura del file xml e conseguente parsing
     - invocazione nodo per nodo della funzione di aggiunta nodi al database
-      viene preparato l'array per passare idati alla funzione add_node secondo
-      il formato richiesto dalla funzione add_node di ama.inc.php
+      viene preparato l'array per passare idati alla funzione addNode secondo
+      il formato richiesto dalla funzione addNode di ama.inc.php
     - copia i media file dalla directory di upload a quella di "produzione"
       (directory dell'autore con root definita di default o, se presente, viene
       utilizzato il mediapath presente nel database)
@@ -45,7 +57,7 @@ namespace Lynxlab\ADA\CORE\xml;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Upload\Functions\searchdir;
 
-class course_xml_file_process
+class CourseXmlFileProcess
 {
     // dichiarazione variabili
 
@@ -69,13 +81,13 @@ class course_xml_file_process
     //vito, 26 may 2009
     public $need_to_call_addslashes = false;
     // vito, 26 may 2009
-    public function course_xml_file_process()
+    public function CourseXmlFileProcess()
     {
         $this->need_to_call_addslashes = false;
     }
 
     // Setting iniziale
-    public function set_init($set_ha)
+    public function setInit($set_ha)
     {
         global $debug;
         $add_or_upgrade_ok = false;
@@ -99,10 +111,10 @@ class course_xml_file_process
 
         $id_course = $this->set_ha['id_course'];
 
-        $dh = new AMA_DataHandler();
+        $dh = new AMADataHandler();
 
         // inserimento dati nel database
-        $instances = $dh->course_has_instances($id_course);
+        $instances = $dh->courseHasInstances($id_course);
         if ($instances) {
             $field_list_ar = [
                 'data_inizio_previsto',
@@ -110,16 +122,16 @@ class course_xml_file_process
             ];
             $today = time();
             $clause = "id_corso = $id_course and data_inizio >= $today";
-            $course_instancesAr = $dh->course_instance_find_list($field_list_ar, $clause);
+            $course_instancesAr = $dh->courseInstanceFindList($field_list_ar, $clause);
 
-            //      or else a loop on   course_instance_get($id) ...
+            //      or else a loop on   courseInstanceGet($id) ...
             //  mydebug(__LINE__,__FILE__,$course_instancesAr);
             if (count($course_instancesAr)) {
                 // AND (UPGRADE_COURSE_MODE = 1)   ???
                 // Removing all course data
-                $res = $dh->remove_course_content($id_course);
+                $res = $dh->removeCourseContent($id_course);
                 // $debug=1; mydebug(__LINE__,__FILE__,$res);$debug=0;
-                if (AMA_DataHandler::isError($res)) {
+                if (AMADataHandler::isError($res)) {
                     // ch'aggi'a fa'?
                     $this->initerror = translateFN("Impossibile rimuovere il corso con id:") . $id_course;
                     $add_or_upgrade_ok = false;
@@ -247,7 +259,7 @@ class course_xml_file_process
                 */
 
                 // add node
-                $this->data_send_node();
+                $this->dataSendNode();
 
                 // vuota l'array dai valori presenti
                 @$this->dati_nodo_ar[$this->livello]['TYPE'] = "";
@@ -445,7 +457,7 @@ class course_xml_file_process
 
 
 
-    public function course_xml_file_parse()
+    public function courseXmlFileParse()
     {
         // inizializza il parser, codifica ISO-8859-1 (alternativa UTF-8 o US-ASCII)
         $this->parser = xml_parser_create("ISO-8859-1");
@@ -504,7 +516,7 @@ class course_xml_file_process
             $this->set_ha['media_path'] = MEDIA_PATH_DEFAULT;
         }
         // chiamata alla funzione di copia media file
-        if ($this->media_transfer()) {
+        if ($this->mediaTransfer()) {
             $media_path_result = translateFN("OK");
         } else {
             $media_path_result = translateFN("errore nella copia dei media");
@@ -536,7 +548,7 @@ class course_xml_file_process
 
 
     // svuota l'array dei dati
-    public function data_void()
+    public function dataVoid()
     {
         $this->dati_nodo_ar = "";
         $this->dati_media_ar = "";
@@ -545,7 +557,7 @@ class course_xml_file_process
 
 
     // Funzione per copia dei media file nella directory filepath
-    public function media_transfer()
+    public function mediaTransfer()
     {
         global $root_dir;
         global $debug;
@@ -596,7 +608,7 @@ class course_xml_file_process
 
 
     // Funzione inserimento dati nodo nel DB
-    public function data_send_node()
+    public function dataSendNode()
     {
         // inizializzazione variabili
         global $debug;
@@ -622,15 +634,15 @@ class course_xml_file_process
         }
 
 
-        $data_ha['title'] = $this->html_prepare($this->dati_nodo_ar['TITLE']);
+        $data_ha['title'] = $this->htmlPrepare($this->dati_nodo_ar['TITLE']);
         $data_ha['creation_date'] = $this->dati_nodo_ar['DATE'];
 
         $data_ha['type'] = $this->dati_nodo_ar[$this->livello]['TYPE'];
-        $data_ha['name'] = $this->html_prepare($this->dati_nodo_ar[$this->livello]['NAME']);
+        $data_ha['name'] = $this->htmlPrepare($this->dati_nodo_ar[$this->livello]['NAME']);
 
         //vito, 27 mar 2009: here we need to parse the text of the node in order to convert internal links
         //$data_ha['text'] = $this->html_prepare($this->dati_nodo_ar[$this->livello]['TEXT']) ;
-        $prepared_text = $data_ha['text'] = $this->html_prepare($this->dati_nodo_ar[$this->livello]['TEXT']);
+        $prepared_text = $data_ha['text'] = $this->htmlPrepare($this->dati_nodo_ar[$this->livello]['TEXT']);
 
         // vito, 26 may 2009
         if ($this->need_to_call_addslashes) {
@@ -657,8 +669,8 @@ class course_xml_file_process
         $data_ha['version'] = $this->dati_nodo_ar[$this->livello]['VERSION'];
         $data_ha['n_contacts'] = "0";
         $data_ha['icon'] = "node.gif"; // DEFAULT
-        $data_ha['bgcolor'] = $this->html_prepare($this->dati_nodo_ar[$this->livello]['BGCOLOR']);
-        $data_ha['color'] = $this->html_prepare($this->dati_nodo_ar[$this->livello]['COLOR']);
+        $data_ha['bgcolor'] = $this->htmlPrepare($this->dati_nodo_ar[$this->livello]['BGCOLOR']);
+        $data_ha['color'] = $this->htmlPrepare($this->dati_nodo_ar[$this->livello]['COLOR']);
         $data_ha['correctness'] = $this->dati_nodo_ar[$this->livello]['CORRECTNESS'];
         $data_ha['copyright'] = $this->dati_nodo_ar[$this->livello]['COPYRIGHT'];
         //         $data_ha['family'] = $this->dati_nodo_ar[$this->livello]['FAMILY'];
@@ -721,11 +733,11 @@ class course_xml_file_process
         $data_ha['actions_ar'] = "";
 
         // creazione nuova istanza della classe AMA
-        $dh = new AMA_DataHandler();
+        $dh = new AMADataHandler();
 
         // inserimento dati nel database
 
-        $res = $dh->add_node($data_ha);
+        $res = $dh->addNode($data_ha);
 
         // gestione errori nell'inserimento dei dati del nodo nel database
         if (is_object($res) && stristr($res->message, 'Error')) {
@@ -736,7 +748,7 @@ class course_xml_file_process
 
 
     // Funzione per la preparazione delle stringhe
-    public function html_prepare($stringa)
+    public function htmlPrepare($stringa)
     {
         // return addslashes(htmlentities($stringa), ENT_COMPAT | ENT_HTML401, ADA_CHARSET);
         /*

@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Module\Slideimport\AMASlideimportDataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+// Trigger: ClassWithNameSpace. The class AMASlideimportDataHandler was declared with namespace Lynxlab\ADA\Module\Slideimport. //
+
 /**
  * SLIDEIMPORT MODULE.
  *
@@ -13,7 +23,7 @@
 
 namespace Lynxlab\ADA\Module\Slideimport;
 
-class AMASlideimportDataHandler extends AMA_DataHandler
+class AMASlideimportDataHandler extends AMADataHandler
 {
     /**
      * module's own data tables prefix
@@ -47,15 +57,15 @@ class AMASlideimportDataHandler extends AMA_DataHandler
         }
 
         // first get all passed node data
-        $nodeInfo = $dh->get_node_info($rootNode);
+        $nodeInfo = $dh->getNodeInfo($rootNode);
 
-        if (!AMA_DB::isError($nodeInfo)) {
+        if (!AMADB::isError($nodeInfo)) {
             $retarray =  ['id' => $rootNode, 'label' => $nodeInfo['name']];
 
             if ($mustRecur) {
                 // get node children only having instance=0
-                $childNodesArray = $dh->get_node_children($rootNode, 0);
-                if (!empty($childNodesArray) && !AMA_DB::isError($childNodesArray)) {
+                $childNodesArray = $dh->getNodeChildren($rootNode, 0);
+                if (!empty($childNodesArray) && !AMADB::isError($childNodesArray)) {
                     $i = 0;
                     $children = [];
                     foreach ($childNodesArray as &$childNodeId) {
@@ -84,16 +94,16 @@ class AMASlideimportDataHandler extends AMA_DataHandler
      *
      * @return an array of ids containing all the id's of the children of a given node
      *
-     * @see get_node_info
+     * @see getNodeInfo
      *
      */
-    public function &get_node_children($node_id, $id_course_instance = "")
+    public function &getNodeChildren($node_id, $id_course_instance = "")
     {
         $db = & $this->getConnection();
 
         $excludeNodeTypes =  [ ADA_NOTE_TYPE, ADA_PRIVATE_NOTE_TYPE ];
 
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -110,12 +120,12 @@ class AMASlideimportDataHandler extends AMA_DataHandler
         $sql .= " ORDER BY ordine ASC";
 
         $res_ar = & $db->getCol($sql);
-        if (AMA_DB::isError($res_ar)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($res_ar)) {
+            return new AMAError(AMA_ERR_GET);
         }
         // return an error in case of an empty recordset
         if (!$res_ar) {
-            $retErr = new AMA_Error(AMA_ERR_NOT_FOUND);
+            $retErr = new AMAError(AMA_ERR_NOT_FOUND);
             return $retErr;
         }
         // return nested array

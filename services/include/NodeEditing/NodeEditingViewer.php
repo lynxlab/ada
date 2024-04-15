@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Services\NodeEditing\NodeEditingViewer;
+
+use Lynxlab\ADA\Services\NodeEditing\NodeEditing;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Media;
+
+use Lynxlab\ADA\CORE\html4\CBase;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class NodeEditingViewer was declared with namespace Lynxlab\ADA\Services\NodeEditing. //
+
 /**
  * NodeEditingViewer class.
  *
@@ -406,8 +422,8 @@ class NodeEditingViewer
 
             //  $head_form .= "<b>$parentNodeObj->creation_date {$parentNodeObj->author['username']} </b><br><cite>". strip_tags($parentNodeObj->text,"<br>")."</cite><br><hr>";
             $replied_text = CDOMElement::create('div', 'id:replied_text');
-            //$replied_text->addChild(new CText($parentNodeObj->get_textFN($user_level,'')));
-            $node_data = $parentNodeObj->filter_nodeFN($user_level, null, $user_type, '');
+            //$replied_text->addChild(new CText($parentNodeObj->getTextFN($user_level,'')));
+            $node_data = $parentNodeObj->filterNodeFN($user_level, null, $user_type, '');
             $replied_text->addChild(new CText($parentNodeObj->text));
             //            $replied_text->addChild(new CText($node_data['text']));
             $replied_node_data->addChild($replied_text);

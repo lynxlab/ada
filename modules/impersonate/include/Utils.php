@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Module\Impersonate\LinkedUsers;
+
+use Lynxlab\ADA\Module\Impersonate\ImpersonateActions;
+
+use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class Utils was declared with namespace Lynxlab\ADA\Module\Impersonate. //
+
 /**
  * @package     impersonate module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -49,11 +61,11 @@ class Utils
             }
             if (count($impersonateObj) > 0) {
                 foreach ($impersonateObj as $iObj) {
-                    $link = CDOMElement::create('a', 'class:ui tiny button impersonatelink, href:' . MODULES_IMPERSONATE_HTTP . '/impersonate.php?t=' . $iObj->getLinked_type());
+                    $link = CDOMElement::create('a', 'class:ui tiny button impersonatelink, href:' . MODULES_IMPERSONATE_HTTP . '/impersonate.php?t=' . $iObj->getLinkedType());
                     // create a user object to have getTypeAsString
                     $tmpUser = new ADAUser();
                     // $tmpUser->isSuper = false;
-                    $tmpUser->setType($iObj->getLinked_type());
+                    $tmpUser->setType($iObj->getLinkedType());
                     $link->addChild(new CText(sprintf(translateFN('Diventa %s'), $tmpUser->getTypeAsString())));
                     $div->addChild($link);
                 }
@@ -94,7 +106,7 @@ class Utils
 
             // filter the passed array to get only needed values
             $filteredUsers = array_filter($linkedUsers, function ($el) use ($userId, $userType, $linkedType) {
-                return $el->getSource_id() == $userId && $el->getSource_type() == $userType && $el->getLinked_type() == $linkedType;
+                return $el->getSourceId() == $userId && $el->getSourceType() == $userType && $el->getLinkedType() == $linkedType;
             });
 
             $addLink = false;

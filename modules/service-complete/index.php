@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * SERVICE-COMPLETE MODULE.
  *
@@ -67,9 +75,9 @@ $newButton->addChild(new CText(translateFN('Nuova Regola')));
 
 $rulesData = [];
 
-$rulesList = $dh->get_completeConditionSetList();
+$rulesList = $dh->getCompleteConditionSetList();
 
-if (!AMA_DB::isError($rulesList)) {
+if (!AMADB::isError($rulesList)) {
     $labels =  [translateFN('descrizione'), translateFN('azioni')];
 
     foreach ($rulesList as $i => $ruleAr) {
@@ -138,7 +146,7 @@ if (!AMA_DB::isError($rulesList)) {
         $bottomButton->setAttribute('class', 'newButton bottom');
         $rulesIndexDIV->addChild($bottomButton);
     }
-    // if (!AMA_DB::isError($rulesList))
+    // if (!AMADB::isError($rulesList))
 } else {
     $rulesIndexDIV->addChild(new CText(translateFN('Errore nella lettura dell\'elenco delle regole')));
 }

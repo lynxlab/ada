@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Layout;
+
+use Lynxlab\ADA\Admin\HtmlAdmOutput;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class HtmlAdmOutput was declared with namespace Lynxlab\ADA\Admin. //
+
 //
 // +----------------------------------------------------------------------+
 // | ADA version 1.8                                                              |
@@ -24,8 +34,8 @@ namespace Lynxlab\ADA\Admin;
 use Lynxlab\ADA\Main\form\PhpOpenFormGen;
 
 use function Lynxlab\ADA\Main\Utilities\dirTree;
-use function Lynxlab\ADA\Main\Utilities\read_dir;
-use function Lynxlab\ADA\Main\Utilities\today_dateFN;
+use function Lynxlab\ADA\Main\Utilities\readDir;
+use function Lynxlab\ADA\Main\Utilities\todayDateFN;
 
 class HtmlAdmOutput
 {
@@ -114,7 +124,7 @@ class HtmlAdmOutput
 
         // data creazione
         if ($is_author) {
-            $gma = today_dateFN();
+            $gma = todayDateFN();
             $fields["add"][] = "course[d_create]";
             $names["add"][] = "data creazione (GG/MM/AAAA)";
             $edittypes["add"][] = "hidden";
@@ -196,7 +206,7 @@ class HtmlAdmOutput
         // vito, 15 giugno 2009
         $message = "";
         if ($is_author && (int)$_GET['modello'] == 1) {
-            $course_models = read_dir(AUTHOR_COURSE_PATH_DEFAULT, 'xml');
+            $course_models = readDir(AUTHOR_COURSE_PATH_DEFAULT, 'xml');
 
             /*
              * vito, 30 mar 2009
@@ -222,7 +232,7 @@ class HtmlAdmOutput
             //        }
             //        if ($is_author) {
             //        $authors_uploaded_files = UPLOAD_PATH.$authors_ha[0][0];
-            //        $authors_course_models  = read_dir($authors_uploaded_files, 'xml');
+            //        $authors_course_models  = readDir($authors_uploaded_files, 'xml');
             //        $course_models = array_merge($course_models, $authors_course_models);
             //        }
 

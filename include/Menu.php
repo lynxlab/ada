@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\CORE\html4\CBaseElement;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\Menu;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class Menu was declared with namespace Lynxlab\ADA\Main. //
+
 /**
  * menu_class.inc.php
  *
@@ -99,9 +111,9 @@ class Menu
         $getAllMenuItems = false;
 
         // get tree_id, isVertical and db where menu is stored
-        $res = $dh->get_menutree_id($module, $script, $user_type, $self_instruction);
+        $res = $dh->getMenutreeId($module, $script, $user_type, $self_instruction);
 
-        if (!AMA_DB::isError($res) && is_array($res) && count($res) > 0) {
+        if (!AMADB::isError($res) && is_array($res) && count($res) > 0) {
             // set found object properties
             $this->tree_id = $res['tree_id'];
             $this->isVertical = $res['isVertical'];
@@ -110,8 +122,8 @@ class Menu
             }
 
             // get menu items
-            $resItems = $dh->get_menu_children($this->tree_id, $res['dbToUse'], $getAllMenuItems);
-            if (!AMA_DB::isError($resItems) && count($resItems) > 0) {
+            $resItems = $dh->getMenuChildren($this->tree_id, $res['dbToUse'], $getAllMenuItems);
+            if (!AMADB::isError($resItems) && count($resItems) > 0) {
                 $this->leftItemsArray  = $resItems['left']  ?? null;
                 $this->rightItemsArray = $resItems['right'] ?? null;
             }
@@ -663,7 +675,7 @@ class Menu
      *
      * @return  array
      */
-    public function get_leftItemsArray()
+    public function getLeftItemsArray()
     {
         return $this->leftItemsArray;
     }
@@ -675,7 +687,7 @@ class Menu
      *
      * @return  self
      */
-    public function set_leftItemsArray(array $_leftItemsArray)
+    public function setLeftItemsArray(array $_leftItemsArray)
     {
         $this->leftItemsArray = $_leftItemsArray;
 
@@ -687,7 +699,7 @@ class Menu
      *
      * @return  array
      */
-    public function get_rightItemsArray()
+    public function getRightItemsArray()
     {
         return $this->rightItemsArray;
     }
@@ -699,7 +711,7 @@ class Menu
      *
      * @return  self
      */
-    public function set_rightItemsArray(array $_rightItemsArray)
+    public function setRightItemsArray(array $_rightItemsArray)
     {
         $this->rightItemsArray = $_rightItemsArray;
 

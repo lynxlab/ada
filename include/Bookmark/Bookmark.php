@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Bookmark\Bookmark;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class Bookmark was declared with namespace Lynxlab\ADA\Main\Bookmark. //
+
 //
 // +----------------------------------------------------------------------+
 // | ADA version 1.8                                                      |
@@ -51,19 +63,19 @@ class Bookmark
         // finds out information about a bookmark
         $dh = $GLOBALS['dh'];
         if (!empty($id_bk)) {
-            $dataHa = $dh->get_bookmark_info($id_bk);
-            if (AMA_DataHandler::isError($dataHa)) {
+            $dataHa = $dh->getBookmarkInfo($id_bk);
+            if (AMADataHandler::isError($dataHa)) {
                 $this->error_msg = $dataHa->getMessage();
                 $this->full = 0;
             } else {
                 $this->bookmark_id = $id_bk;
                 $this->node_id =  $dataHa['node_id'];
                 $course_instance_id = $dataHa['course_id'];
-                $course_instanceHa = $dh->course_instance_get($course_instance_id);
+                $course_instanceHa = $dh->courseInstanceGet($course_instance_id);
                 $course_id = $course_instanceHa['id_corso'];
-                $courseHa = $dh->get_course($course_id);
+                $courseHa = $dh->getCourse($course_id);
                 $this->corso = $courseHa['titolo'];
-                $node = $dh->get_node_info($this->node_id);
+                $node = $dh->getNodeInfo($this->node_id);
                 $node_title = $node['name'];
                 $this->titolo =  $node_title;
                 $this->data = $dataHa['date'];
@@ -75,7 +87,7 @@ class Bookmark
         }
     }
 
-    public static function get_bookmarks($id_user, $id_tutor = "", $id_node = '')
+    public static function getBookmarks($id_user, $id_tutor = "", $id_node = '')
     {
         // ritorna la lista di bookmark dell'utente ed eventualmente (se passato) per il nodo
 
@@ -85,14 +97,14 @@ class Bookmark
         $debug = $GLOBALS['debug'] ?? null;
 
         $out_fields_ar = ['id_nodo', 'data', 'descrizione', 'id_utente_studente'];
-        $data_studentHa = $dh->find_bookmarks_list($out_fields_ar, $id_user, $sess_id_course_instance, $id_node);
-        if (AMA_DataHandler::isError($data_studentHa)) {
+        $data_studentHa = $dh->findBookmarksList($out_fields_ar, $id_user, $sess_id_course_instance, $id_node);
+        if (AMADataHandler::isError($data_studentHa)) {
             $msg = $data_studentHa->getMessage();
             return $msg;
             // header("Location: $error?err_msg=$msg");
         }
         if (!empty($id_tutor)) {
-            $data_tutorHa = $dh->find_bookmarks_list($out_fields_ar, $id_tutor, $sess_id_course_instance, $id_node);
+            $data_tutorHa = $dh->findBookmarksList($out_fields_ar, $id_tutor, $sess_id_course_instance, $id_node);
             $dataHa = array_merge($data_studentHa, $data_tutorHa);
         } else {
             $dataHa = $data_studentHa;
@@ -100,7 +112,7 @@ class Bookmark
         return  $dataHa;
     }
 
-    public function get_node_bookmarks($id_node)
+    public function getNodeBookmarks($id_node)
     {
         // ritorna la lista di bookmarks  per questo nodo per tutti gli utenti
 
@@ -110,8 +122,8 @@ class Bookmark
         $debug = $GLOBALS['debug'];
 
         $out_fields_ar = ['id_nodo', 'data', 'descrizione', 'id_utente_studente'];
-        $dataHa = $dh->find_bookmarks_list($out_fields_ar, 0, $sess_id_course_instance, $id_node);
-        if (AMA_DataHandler::isError($dataHa)) {
+        $dataHa = $dh->findBookmarksList($out_fields_ar, 0, $sess_id_course_instance, $id_node);
+        if (AMADataHandler::isError($dataHa)) {
             $msg = $dataHa->getMessage();
             return $msg;
             // header("Location: $error?err_msg=$msg");
@@ -119,10 +131,10 @@ class Bookmark
         return  $dataHa;
     }
 
-    public static function is_node_bookmarkedFN($id_user, $id_node)
+    public static function isNodeBookmarkedFN($id_user, $id_node)
     {
         // cerca un nodo nella lista di bookmark dell'utente
-        $dataHa = Bookmark::get_bookmarks($id_user, $id_tutor = "", $id_node);
+        $dataHa = Bookmark::getBookmarks($id_user, $id_tutor = "", $id_node);
 
         /* foreach ($dataHa as $bkm){
            $id_bk = $bkm[0];
@@ -138,7 +150,7 @@ class Bookmark
         }
     }
 
-    public function get_bookmark_info($id_bk = "")
+    public function getBookmarkInfo($id_bk = "")
     {
         if ($id_bk != "") {
             //???
@@ -155,7 +167,7 @@ class Bookmark
         return $res_ar;
     }
 
-    public function set_bookmark($id_user, $id_node, $node_title, $node_description = "")
+    public function setBookmark($id_user, $id_node, $node_title, $node_description = "")
     {
         $dh = $GLOBALS['dh'];
         $error = $GLOBALS['error'];
@@ -163,8 +175,8 @@ class Bookmark
         $debug = $GLOBALS['debug'];
 
         $date = ""; //init date
-        $dataHa = $dh->add_bookmark($id_node, $id_user, $sess_id_course_instance, $date, $node_title);
-        if (AMA_DataHandler::isError($dataHa)) {
+        $dataHa = $dh->addBookmark($id_node, $id_user, $sess_id_course_instance, $date, $node_title);
+        if (AMADataHandler::isError($dataHa)) {
             $msg = $dataHa->getMessage();
             // VA gestito l'errore !
             return $msg;
@@ -175,7 +187,7 @@ class Bookmark
         }
     }
 
-    public function update_bookmark($id_user, $id_bk, $node_description)
+    public function updateBookmark($id_user, $id_bk, $node_description)
     {
         // aggiorna il bookmark
         $dh = $GLOBALS['dh'];
@@ -194,20 +206,20 @@ class Bookmark
         }
 
         // verifica
-        $res_ha = $dh->get_bookmark_info($id_bk);
+        $res_ha = $dh->getBookmarkInfo($id_bk);
         if ($res_ha['student_id'] == $id_user) {
-            $dataHa = $dh->set_bookmark_description($id_bk, $node_description);
-            if (AMA_DataHandler::isError($dataHa)) {
+            $dataHa = $dh->setBookmarkDescription($id_bk, $node_description);
+            if (AMADataHandler::isError($dataHa)) {
                 $msg = $dataHa->getMessage();
                 return $msg;
                 // header("Location: $error?err_msg=$msg");
             } else {
-                return $this->get_bookmark_info($id_bk);
+                return $this->getBookmarkInfo($id_bk);
             }
         }
     }
 
-    public function remove_bookmark($id_user, $id_bk)
+    public function removeBookmark($id_user, $id_bk)
     {
 
         $dh = $GLOBALS['dh'];
@@ -226,10 +238,10 @@ class Bookmark
         }
 
         // verifica
-        $res_ha = $dh->get_bookmark_info($id_bk);
+        $res_ha = $dh->getBookmarkInfo($id_bk);
         if ($res_ha['student_id'] == $id_user) {
-            $dataHa = $dh->remove_bookmark($id_bk);
-            if (AMA_DataHandler::isError($dataHa)) {
+            $dataHa = $dh->removeBookmark($id_bk);
+            if (AMADataHandler::isError($dataHa)) {
                 $msg = $dataHa->getMessage();
                 return "<strong>$msg</strong><br />";
                 // header("Location: $error?err_msg=$msg");
@@ -237,7 +249,7 @@ class Bookmark
         }
     }
 
-    public function format_bookmarks($dataAr)
+    public function formatBookmarks($dataAr)
     {
         $dh = $GLOBALS['dh'];
         $debug = $GLOBALS['debug'];
@@ -254,13 +266,13 @@ class Bookmark
                 $id_node = $bookmark[1];
                 $date =   $bookmark[2];
                 $user =   $bookmark[4];
-                $node = $dh->get_node_info($id_node);
+                $node = $dh->getNodeInfo($id_node);
                 $title = $node['name'];
                 $description =   $bookmark[3];
 
                 $k++;
                 $formatted_dataHa[$k]['data'] =  ts2dFN($date);
-                if (is_array($dh->get_tutor($user))) { // bookmarks del tutor
+                if (is_array($dh->getTutor($user))) { // bookmarks del tutor
                     $formatted_dataHa[$k]['id_nodo'] = "<a href=\"view.php?id_node=$id_node\"><img src=\"img/check.png\" border=0> $title</a> (" . translateFN("Tutor") . ")";
                     if ($id_profile == AMA_TYPE_TUTOR) {
                         $formatted_dataHa[$k]['del'] =  "<a href=\"bookmarks.php?op=delete&id_bk=$id_bk\">
@@ -300,7 +312,7 @@ class Bookmark
         return $res;
     }
 
-    public function export_bookmarks($dataAr, $mode = 'ada')
+    public function exportBookmarks($dataAr, $mode = 'ada')
     {
 
         $dh = $GLOBALS['dh'];
@@ -325,7 +337,7 @@ class Bookmark
                 $id_bk = $bookmark[0];
                 $id_node = $bookmark[1];
                 $date =   $bookmark[2];
-                $node = $dh->get_node_info($id_node);
+                $node = $dh->getNodeInfo($id_node);
                 $title = $node['name'];
                 $description =   $bookmark[3];
                 if ($mode == 'standard') {
@@ -352,7 +364,7 @@ class Bookmark
         return $formatted_data;
     }
 
-    public function edit_bookmark($dataHa)
+    public function editBookmark($dataHa)
     {
 
         $sess_id_user = $GLOBALS['sess_id_user'];
@@ -416,7 +428,7 @@ class Bookmark
         return $formatted_data;
     }
 
-    public function add_bookmark()
+    public function addBookmark()
     {
 
 
@@ -477,7 +489,7 @@ class Bookmark
         return $formatted_data;
     }
 
-    public function format_bookmark($dataHa)
+    public function formatBookmark($dataHa)
     {
         $id_bk = $dataHa[0]['id'];
 

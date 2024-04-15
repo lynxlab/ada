@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * File add_instance.php
  *
@@ -101,8 +117,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             'duration_hours' => $_POST['duration_hours'],
             'service_level' => $_POST['service_level'],
         ];
-        $result = $dh->course_instance_add($_POST['id_course'], $course_instanceAr);
-        if (AMA_DataHandler::isError($result)) {
+        $result = $dh->courseInstanceAdd($_POST['id_course'], $course_instanceAr);
+        if (AMADataHandler::isError($result)) {
             $form = new CText(translateFN('Si è verificato un errore durante la creazione della nuova istanza'));
         } else {
             /*
@@ -110,7 +126,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
              */
             $data_inizio_previsto = dt2tsFN($_POST['data_inizio_previsto']);
             $durata = $_POST['durata'];
-            $data_fine = $dh->add_number_of_days($durata, $data_inizio ?? null);
+            $data_fine = $dh->addNumberOfDays($durata, $data_inizio ?? null);
             /**
              * giorgio 13/01/2021: force data_fine to have time set to 23:59:59
              */
@@ -127,7 +143,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $chatroom_ha['id_course_instance'] = $id_istanza_corso;
 
             // add chatroom_ha to the database
-            $chatroom = ChatRoom::add_chatroomFN($chatroom_ha);
+            $chatroom = ChatRoom::addChatroomFN($chatroom_ha);
 
             header('Location: list_instances.php?id_course=' . $_POST['id_course']);
             exit();

@@ -1,5 +1,31 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Service\Service;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+
+use Lynxlab\ADA\CORE\html4\CText;
+
+use Lynxlab\ADA\Main\AMA\MultiPort;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class MultiPort was declared with namespace Lynxlab\ADA\Main\AMA. //
+
 /**
  * MultiPort
  *
@@ -32,8 +58,8 @@ use PDOException;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Service\Functions\subscriptionType2stringFN;
-use function Lynxlab\ADA\Main\Utilities\today_dateFN;
-use function Lynxlab\ADA\Main\Utilities\today_timeFN;
+use function Lynxlab\ADA\Main\Utilities\todayDateFN;
+use function Lynxlab\ADA\Main\Utilities\todayTimeFN;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 class MultiPort
@@ -56,9 +82,9 @@ class MultiPort
             ADALogger::log("MultiPort::$DHfunction for tester: $tester");
             $tester_dsn = self::getDSN($tester);
             if ($tester_dsn != null) {
-                $tester_dataHa = $common_dh->get_tester_info_from_pointer($tester);
+                $tester_dataHa = $common_dh->getTesterInfoFromPointer($tester);
 
-                $tester_dh = AMA_DataHandler::instance($tester_dsn);
+                $tester_dh = AMADataHandler::instance($tester_dsn);
                 $dataHa[] = $tester_dh->$DHfunction($field_ar, $clause);
             }
         }
@@ -72,7 +98,7 @@ class MultiPort
      */
     public static function getDSN($tester)
     {
-        if (DataValidator::validate_testername($tester, MULTIPROVIDER) === false) {
+        if (DataValidator::validateTestername($tester, MULTIPROVIDER) === false) {
             return null;
         }
         // FIXME:usare require_once?
@@ -104,7 +130,7 @@ class MultiPort
      */
     public static function getTesterTimeZone($tester)
     {
-        if (DataValidator::validate_testername($tester, MULTIPROVIDER) === false) {
+        if (DataValidator::validateTestername($tester, MULTIPROVIDER) === false) {
             return null;
         }
         // FIXME:usare require_once?
@@ -133,7 +159,7 @@ class MultiPort
                 return null;
             }
 
-            $tester_dh = AMA_DataHandler::instance($tester_dsn);
+            $tester_dh = AMADataHandler::instance($tester_dsn);
         }
     }
 
@@ -147,7 +173,7 @@ class MultiPort
      *
      * @return true if instance exists
      */
-    public function course_instance_status_get_on_tester($id_course_instance, $client)
+    public function courseInstanceStatusGetOnTester($id_course_instance, $client)
     {
 
 
@@ -155,7 +181,7 @@ class MultiPort
         if ($tester_dsn == null) {
             return ADA_ERROR_ID_CONNECTING_TO_DB;
         }
-        $tester_dh = AMA_DataHandler::instance($tester_dsn);
+        $tester_dh = AMADataHandler::instance($tester_dsn);
         $result = $tester_dh->course_instance_status_get($id_course_instance);
         return $result;
         /*
@@ -179,13 +205,13 @@ class MultiPort
      *
      * @return true if $code already exists in $id_course_instance
      */
-    public function get_cod_subscribed_on_tester($code, $id_course_instance, $client)
+    public function getCodSubscribedOnTester($code, $id_course_instance, $client)
     {
         $tester_dsn = self::getDSN($client);
         if ($tester_dsn == null) {
             return ADA_ERROR_ID_CONNECTING_TO_DB;
         }
-        $tester_dh = AMA_DataHandler::instance($tester_dsn);
+        $tester_dh = AMADataHandler::instance($tester_dsn);
         $result = $tester_dh->get_cod_subscribed($code, $id_course_instance);
         return $result;
     }
@@ -200,17 +226,17 @@ class MultiPort
      * @param $livello     - level of subscription (0=beginner, 1=intermediate, 2=advanced)
      * @param $client      - name of provider (es: client1)
      *
-     * @return true on success, an AMA_Error object if something goes wrong
+     * @return true on success, an AMAError object if something goes wrong
      */
-    public function course_instance_presubscribe_to_tester($id_istanza_corso, $id_studente, $livello = 0, $client = null, $code = null)
+    public function courseInstancePresubscribeToTester($id_istanza_corso, $id_studente, $livello = 0, $client = null, $code = null)
     {
         if (!is_null($client) && !is_null($code)) {
             $tester_dsn = self::getDSN($client);
             if ($tester_dsn == null) {
                 return ADA_ADD_USER_ERROR_TESTER;
             }
-            $tester_dh = AMA_DataHandler::instance($tester_dsn);
-            $result = $tester_dh->course_instance_student_presubscribe_add($id_istanza_corso, $id_studente, $livello, $code);
+            $tester_dh = AMADataHandler::instance($tester_dsn);
+            $result = $tester_dh->courseInstanceStudentPresubscribeAdd($id_istanza_corso, $id_studente, $livello, $code);
             return $result;
         }
     }
@@ -225,17 +251,17 @@ class MultiPort
      * @param $livello     - level of subscription (0=beginner, 1=intermediate, 2=advanced)
      * @param $client      - name of provider (es: client1)
      *
-     * @return true on success, an AMA_Error object if something goes wrong
+     * @return true on success, an AMAError object if something goes wrong
      */
-    public function course_instance_subscribe_to_tester($id_istanza_corso, $id_studente, $livello = 1, $client = null)
+    public function courseInstanceSubscribeToTester($id_istanza_corso, $id_studente, $livello = 1, $client = null)
     {
         if (!is_null($client)) {
             $tester_dsn = self::getDSN($client);
             if ($tester_dsn == null) {
                 return ADA_ADD_USER_ERROR_TESTER;
             }
-            $tester_dh = AMA_DataHandler::instance($tester_dsn);
-            $result = $tester_dh->course_instance_student_subscribe($id_istanza_corso, $id_studente, ADA_STATUS_SUBSCRIBED, $livello);
+            $tester_dh = AMADataHandler::instance($tester_dsn);
+            $result = $tester_dh->courseInstanceStudentSubscribe($id_istanza_corso, $id_studente, ADA_STATUS_SUBSCRIBED, $livello);
             return $result;
         }
     }
@@ -266,16 +292,16 @@ class MultiPort
          *
          */
         if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && strlen($GLOBALS['user_provider']) > 0) {
-            $tester_dh = AMA_DataHandler::instance(self::getDSN($GLOBALS['user_provider']));
+            $tester_dh = AMADataHandler::instance(self::getDSN($GLOBALS['user_provider']));
             if (!is_null($tester_dh)) {
                 /**
                  * check if a user with the passed username
                  * already exists in the selected provider
                  */
-                $user_id = $tester_dh->find_students_list(null, 'username =\'' . $userObj->getUserName() . '\'');
+                $user_id = $tester_dh->findStudentsList(null, 'username =\'' . $userObj->getUserName() . '\'');
                 //              var_dump($user_id);
                 //              var_dump(count($user_id)); die();
-                if (AMA_DB::isError($user_id)) {
+                if (AMADB::isError($user_id)) {
                     return ADA_ADD_USER_ERROR;
                 } else {
                     if (count($user_id) > 0) {
@@ -295,7 +321,7 @@ class MultiPort
                          */
                         unset($tester_dh);
                     } // if (count($user_id)>0)
-                } // if (AMA_DB::isError($user_id))
+                } // if (AMADB::isError($user_id))
             } else {
                 return ADA_ADD_USER_ERROR_TESTER;
             } // if (!is_null($tester_dh))
@@ -307,7 +333,7 @@ class MultiPort
             $tester_dh = null;
         } // if (!MULTIPROVIDER &&.....)
 
-        $common_dh = AMA_Common_DataHandler::instance();
+        $common_dh = AMACommonDataHandler::instance();
 
         if ($user_id == 0) {
             /* If the user isn't in common DB yet
@@ -321,7 +347,7 @@ class MultiPort
              * sia già presente un utente con lo stesso username (email)
              * o restituisce un errore AMA_ERR_ADD o AMA_ERR_GET
              */
-            if (AMA_DataHandler::isError($user_id)) {
+            if (AMADataHandler::isError($user_id)) {
                 if ($user_id->code == AMA_ERR_UNIQUE_KEY) {
                     /*
                      * Esiste gia' un utente con questa mail.
@@ -352,14 +378,14 @@ class MultiPort
         foreach ($testers as $tester) {
             if ($tester != null) {
                 ADALogger::log("MultiPort::add:user_to_tester on tester: $tester");
-                $testerHa = $common_dh->get_tester_info_from_pointer($tester);
+                $testerHa = $common_dh->getTesterInfoFromPointer($tester);
                 //var_dump($testerHa);
                 $tester_id = $testerHa[0];
-                $res = $common_dh->add_user_to_tester($user_id, $tester_id);
+                $res = $common_dh->addUserToTester($user_id, $tester_id);
 
-                if (AMA_DataHandler::isError($res)) {
+                if (AMADataHandler::isError($res)) {
                     /*
-                     * add_user_to_tester raises AMA_ERR_ADD
+                     * addUserToTester raises AMA_ERR_ADD
                      */
                     //        // gestione errore
                     //        if (($res->code != AMA_ERR_ADD) AND ($res->code!= AMA_ERR_UNIQUE_KEY)) {
@@ -395,20 +421,20 @@ class MultiPort
                     return ADA_ADD_USER_ERROR_TESTER;
                 }
 
-                $tester_dh = AMA_DataHandler::instance($tester_dsn);
+                $tester_dh = AMADataHandler::instance($tester_dsn);
 
                 switch ($userObj->getType()) {
                     case AMA_TYPE_STUDENT:
-                        $result = $tester_dh->add_student($user_dataAr);
+                        $result = $tester_dh->addStudent($user_dataAr);
                         break;
 
                     case AMA_TYPE_AUTHOR:
-                        $result = $tester_dh->add_author($user_dataAr);
+                        $result = $tester_dh->addAuthor($user_dataAr);
                         break;
 
                     case AMA_TYPE_SUPERTUTOR:
                     case AMA_TYPE_TUTOR:
-                        $result = $tester_dh->add_tutor($user_dataAr);
+                        $result = $tester_dh->addTutor($user_dataAr);
                         break;
 
                     case AMA_TYPE_SWITCHER:
@@ -419,7 +445,7 @@ class MultiPort
                         $result = $tester_dh->add_user($user_dataAr);
                         break;
                 }
-                if (AMA_DataHandler::isError($result)) {
+                if (AMADataHandler::isError($result)) {
                     if ($result->code == AMA_ERR_UNIQUE_KEY) {
                         /*
                         * Esiste gia' un utente con questa mail.
@@ -433,7 +459,7 @@ class MultiPort
                 }
             }
             /*
-                  if(AMA_DataHandler::isError($result)) {
+                  if(AMADataHandler::isError($result)) {
                   if (($result->code != AMA_ERR_ADD) AND ($result->code!= AMA_ERR_UNIQUE_KEY)) {
                   $errorType = "d1";
                   return $errorType;
@@ -469,12 +495,12 @@ class MultiPort
             return false;
         }
 
-        $common_dh = AMA_Common_DataHandler::instance();
+        $common_dh = AMACommonDataHandler::instance();
         $user_dataAr = $userObj->toArray();
 
         if ($update_user_data) {
             $result = $common_dh->set_user($user_id, $user_dataAr);
-            if (AMA_Common_DataHandler::isError($result)) {
+            if (AMACommonDataHandler::isError($result)) {
                 //return ADA_SET_USER_ERROR;
             }
         }
@@ -483,25 +509,25 @@ class MultiPort
             $idFromPublicTester = 0;
 
             foreach ($testers as $tester) {
-                $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
+                $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester));
                 //
                 switch ($userObj->getType()) {
                     case AMA_TYPE_STUDENT:
                         /**
                          * @author giorgio
-                         * if it's an extraTable I need set_student to return me the id of the inserted
+                         * if it's an extraTable I need setStudent to return me the id of the inserted
                          * record in the table on DEFAULT that will be used as an id for all other providers
                          */
-                        $result = $tester_dh->set_student($user_id, $user_dataAr, $extraTableName, $userObj, $idFromPublicTester);
+                        $result = $tester_dh->setStudent($user_id, $user_dataAr, $extraTableName, $userObj, $idFromPublicTester);
                         break;
 
                     case AMA_TYPE_AUTHOR:
-                        $result = $tester_dh->set_author($user_id, $user_dataAr);
+                        $result = $tester_dh->setAuthor($user_id, $user_dataAr);
                         break;
 
                     case AMA_TYPE_SUPERTUTOR:
                     case AMA_TYPE_TUTOR:
-                        $result = $tester_dh->set_tutor($user_id, $user_dataAr);
+                        $result = $tester_dh->setTutor($user_id, $user_dataAr);
                         break;
 
                     case AMA_TYPE_SWITCHER:
@@ -512,7 +538,7 @@ class MultiPort
                         $result = $tester_dh->set_user($user_id, $user_dataAr);
                         break;
                 }
-                if (AMA_DataHandler::isError($result)) {
+                if (AMADataHandler::isError($result)) {
                     if (!($result instanceof PDOException) && $result->code == AMA_ERR_NOT_FOUND) {
                         $testers_to_add[] = $tester;
                     }
@@ -549,8 +575,8 @@ class MultiPort
 
         $testers_to_add = array_merge($testers_to_add, array_diff($new_testers, $testers));
 
-        $pwd = $common_dh->get_user_pwd($user_id);
-        if (AMA_DataHandler::isError($pwd)) {
+        $pwd = $common_dh->getUserPwd($user_id);
+        if (AMADataHandler::isError($pwd)) {
             // if there is an error, we MUST insert a fake password in provider DB
             $pwd = sha1($user_id);
         }
@@ -558,19 +584,19 @@ class MultiPort
         $user_dataAr['password'] = $pwd;
         foreach ($testers_to_add as $tester_to_add) {
             // aggiungi utente nella tabella utente del tester
-            $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester_to_add));
+            $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester_to_add));
 
             // we have to use different functions for different user types
             switch ($userObj->getType()) {
                 case AMA_TYPE_STUDENT:
-                    $result = $tester_dh->add_student($user_dataAr);
-                    $result = $tester_dh->set_student($user_id, $user_dataAr, $extraTableName, $userObj);
+                    $result = $tester_dh->addStudent($user_dataAr);
+                    $result = $tester_dh->setStudent($user_id, $user_dataAr, $extraTableName, $userObj);
 
                     if ($userObj->hasExtra()) {
                         if (method_exists('ADAUser', 'getExtraTableName')) {
                             $tableName = ADAUser::getExtraTableName();
                             if (strlen($tableName) > 0) {
-                                $tester_dh->set_student($user_id, $user_dataAr, $tableName, $userObj);
+                                $tester_dh->setStudent($user_id, $user_dataAr, $tableName, $userObj);
                             }
                         }
 
@@ -584,12 +610,12 @@ class MultiPort
                                             $storedID = $user_dataAr[$tableName][$i][$tableName::getKeyProperty()];
                                             $user_dataAr[$tableName][$i][$tableName::getKeyProperty()] = 0;
                                             $user_dataAr[$tableName][$i]['_isSaved'] = 0;
-                                            $result = $tester_dh->set_student($user_id, $user_dataAr, $tableName, $userObj, $storedID);
-                                            if (!AMA_DB::isError($result)) {
+                                            $result = $tester_dh->setStudent($user_id, $user_dataAr, $tableName, $userObj, $storedID);
+                                            if (!AMADB::isError($result)) {
                                                 $user_dataAr[$tableName][$i]['_isSaved'] = 1;
                                             }
                                         }
-                                        //$result = $tester_dh->set_student($user_id,$user_dataAr, $tableName, $userObj, $storedID);
+                                        //$result = $tester_dh->setStudent($user_id,$user_dataAr, $tableName, $userObj, $storedID);
                                     }
                                 }
                             }
@@ -598,12 +624,12 @@ class MultiPort
                     break;
 
                 case AMA_TYPE_AUTHOR:
-                    $result = $tester_dh->add_author($user_dataAr);
+                    $result = $tester_dh->addAuthor($user_dataAr);
                     break;
 
                 case AMA_TYPE_SUPERTUTOR:
                 case AMA_TYPE_TUTOR:
-                    $result = $tester_dh->add_tutor($user_dataAr);
+                    $result = $tester_dh->addTutor($user_dataAr);
                     break;
 
                 case AMA_TYPE_SWITCHER:
@@ -614,7 +640,7 @@ class MultiPort
                     $result = $tester_dh->add_user($user_dataAr);
                     break;
             }
-            if (AMA_DataHandler::isError($result)) {
+            if (AMADataHandler::isError($result)) {
                 //return ADA_SET_USER_ERROR_TESTER_ASSOCIATION;
             }
         }
@@ -624,10 +650,10 @@ class MultiPort
          * to the utente_tester table in common database.
          */
         foreach ($testers_to_add as $tester_to_add) {
-            $testerHa = $common_dh->get_tester_info_from_pointer($tester_to_add);
+            $testerHa = $common_dh->getTesterInfoFromPointer($tester_to_add);
             $tester_id = $testerHa[0];
-            $res = $common_dh->add_user_to_tester($user_id, $tester_id);
-            if (AMA_DataHandler::isError($res)) {
+            $res = $common_dh->addUserToTester($user_id, $tester_id);
+            if (AMADataHandler::isError($res)) {
                 if (($res->code != AMA_ERR_ADD) and ($res->code != AMA_ERR_UNIQUE_KEY)) {
                     //return ADA_SET_USER_ERROR_TESTER;
                     return false;
@@ -649,16 +675,16 @@ class MultiPort
 
 
         /*
-         $user_dataAr = $common_dh->get_user_info($id_user);
-         if(AMA_Common_DataHandler::isError($user_dataAr)) {
-         $errObj = new ADA_Error();
+         $user_dataAr = $common_dh->getUserInfo($id_user);
+         if(AMACommonDataHandler::isError($user_dataAr)) {
+         $errObj = new ADAError();
          return NULL;
          }
          $user_type = $user_dataAr['tipo'];
          */
-        $user_type = $common_dh->get_user_type($id_user);
-        if (AMA_Common_DataHandler::isError($user_type)) {
-            $errObj = new ADA_Error($user_type, 'An error occurred while retrieving user type in MultiPort::findUser');
+        $user_type = $common_dh->getUserType($id_user);
+        if (AMACommonDataHandler::isError($user_type)) {
+            $errObj = new ADAError($user_type, 'An error occurred while retrieving user type in MultiPort::findUser');
         }
         //$user_dataAr['id_utente'] = $user_dataAr['id'];
         //unset($user_dataAr['id']);
@@ -666,42 +692,42 @@ class MultiPort
         * Tipi di utenti e cosa fare:
         *
         * utente di tipo autore:
-        * ottieni i dati dalla tabella COMUNE.utente richiamando get_user_info()
+        * ottieni i dati dalla tabella COMUNE.utente richiamando getUserInfo()
         *
         */
         switch ($user_type) {
             case AMA_TYPE_AUTHOR:
-                $user_dataAr = $common_dh->get_author($id_user);
-                if (AMA_Common_DataHandler::isError($user_dataAr)) {
-                    $errObj = new ADA_Error($user_dataAr, 'An error occurred while retrieving author data in MultiPort::finduser');
+                $user_dataAr = $common_dh->getAuthor($id_user);
+                if (AMACommonDataHandler::isError($user_dataAr)) {
+                    $errObj = new ADAError($user_dataAr, 'An error occurred while retrieving author data in MultiPort::finduser');
                 }
 
                 $userObj = new ADAAuthor($user_dataAr);
                 $userObj->setUserId($id_user);
-                $user_testersAr = $common_dh->get_testers_for_user($userObj->getId());
-                if (AMA_Common_DataHandler::isError($user_testersAr)) {
-                    $errObj = new ADA_Error($user_testersAr, 'An error occurred while retrieving user testers in MultiPort::finduser');
+                $user_testersAr = $common_dh->getTestersForUser($userObj->getId());
+                if (AMACommonDataHandler::isError($user_testersAr)) {
+                    $errObj = new ADAError($user_testersAr, 'An error occurred while retrieving user testers in MultiPort::finduser');
                 }
                 $userObj->setTesters($user_testersAr);
                 $return = $userObj;
                 break;
 
             case AMA_TYPE_ADMIN:
-                $user_dataAr = $common_dh->get_user_info($id_user);
-                if (AMA_Common_DataHandler::isError($user_dataAr)) {
-                    $errObj = new ADA_Error($user_dataAr, 'An error occurred while retrieving admin data in MultiPort::finduser');
+                $user_dataAr = $common_dh->getUserInfo($id_user);
+                if (AMACommonDataHandler::isError($user_dataAr)) {
+                    $errObj = new ADAError($user_dataAr, 'An error occurred while retrieving admin data in MultiPort::finduser');
                 }
                 $userObj = new ADAAdmin($user_dataAr);
                 $userObj->setUserId($id_user);
                 // @author giorgio 09/set/2015
                 // admin user gets listed on all testers
-                $allPointers = $common_dh->get_all_testers(['puntatore']);
-                if (!AMA_DB::isError($allPointers) && is_array($allPointers) && count($allPointers) > 0) {
+                $allPointers = $common_dh->getAllTesters(['puntatore']);
+                if (!AMADB::isError($allPointers) && is_array($allPointers) && count($allPointers) > 0) {
                     foreach ($allPointers as $aPointer) {
                         $user_testersAr[] = $aPointer['puntatore'];
                     }
                 } else {
-                    $errObj = new ADA_Error($user_testersAr, 'An error occurred while retrieving admin testers in MultiPort::finduser');
+                    $errObj = new ADAError($user_testersAr, 'An error occurred while retrieving admin testers in MultiPort::finduser');
                 }
                 $userObj->setTesters($user_testersAr);
                 $return = $userObj;
@@ -709,27 +735,27 @@ class MultiPort
 
             case AMA_TYPE_STUDENT:
                 $user_dataAr = $common_dh->get_student($id_user);
-                if (AMA_Common_DataHandler::isError($user_dataAr)) {
-                    $errObj = new ADA_Error($user_dataAr, 'An error occurred while retrieving user data in MultiPort::finduser');
+                if (AMACommonDataHandler::isError($user_dataAr)) {
+                    $errObj = new ADAError($user_dataAr, 'An error occurred while retrieving user data in MultiPort::finduser');
                 }
                 $userObj = new ADAUser($user_dataAr);
                 $userObj->setUserId($id_user);
 
-                if (DataValidator::is_uinteger($id_course_instance) !== false) {
-                    $userObj->set_course_instance_for_history($id_course_instance);
+                if (DataValidator::isUinteger($id_course_instance) !== false) {
+                    $userObj->setCourseInstanceForHistory($id_course_instance);
                 } elseif (
                     isset($_SESSION['sess_id_course_instance']) &&
-                    DataValidator::is_uinteger($_SESSION['sess_id_course_instance']) !== false
+                    DataValidator::isUinteger($_SESSION['sess_id_course_instance']) !== false
                 ) {
-                    $userObj->set_course_instance_for_history($_SESSION['sess_id_course_instance']);
+                    $userObj->setCourseInstanceForHistory($_SESSION['sess_id_course_instance']);
                 }
 
                 //return $userObj;
 
                 // QUI DEVO VEDERE QUALI SONO I TESTER ASSOCIATI A QUESTO UTENTE.
-                $user_testersAr = $common_dh->get_testers_for_user($userObj->getId());
-                if (AMA_Common_DataHandler::isError($user_testersAr)) {
-                    $errObj = new ADA_Error($user_testersAr, 'An error occurred while retrieving user testers in MultiPort::finduser');
+                $user_testersAr = $common_dh->getTestersForUser($userObj->getId());
+                if (AMACommonDataHandler::isError($user_testersAr)) {
+                    $errObj = new ADAError($user_testersAr, 'An error occurred while retrieving user testers in MultiPort::finduser');
                 }
                 $userObj->setTesters($user_testersAr);
                 $return = $userObj;
@@ -737,25 +763,25 @@ class MultiPort
 
             case AMA_TYPE_SUPERTUTOR:
             case AMA_TYPE_TUTOR:
-                $user_dataAr = $common_dh->get_tutor($id_user);
-                if (AMA_Common_DataHandler::isError($user_dataAr)) {
-                    $errObj = new ADA_Error($user_dataAr, 'An error occurred while retrieving practitioner data in MultiPort::finduser');
+                $user_dataAr = $common_dh->getTutor($id_user);
+                if (AMACommonDataHandler::isError($user_dataAr)) {
+                    $errObj = new ADAError($user_dataAr, 'An error occurred while retrieving practitioner data in MultiPort::finduser');
                 }
                 $userObj = new ADAPractitioner($user_dataAr);
                 $userObj->setUserId($id_user);
-                $user_testersAr = $common_dh->get_testers_for_user($userObj->getId());
+                $user_testersAr = $common_dh->getTestersForUser($userObj->getId());
                 // TODO: here we have to read user's profile from the tester database
-                if (AMA_Common_DataHandler::isError($user_testersAr)) {
-                    $errObj = new ADA_Error($user_testersAr, 'An error occurred while retrieving user testers in MultiPort::finduser');
+                if (AMACommonDataHandler::isError($user_testersAr)) {
+                    $errObj = new ADAError($user_testersAr, 'An error occurred while retrieving user testers in MultiPort::finduser');
                 }
                 $userObj->setTesters($user_testersAr);
                 //Load user profile info from default tester
                 $tester = $userObj->getDefaultTester();
                 $tester_dsn = self::getDSN($tester);
                 if ($tester_dsn != null) {
-                    $tester_dh = AMA_DataHandler::instance($tester_dsn);
-                    $user_info = $tester_dh->get_tutor($id_user);
-                    if (!AMA_DataHandler::isError($user_info)) {
+                    $tester_dh = AMADataHandler::instance($tester_dsn);
+                    $user_info = $tester_dh->getTutor($id_user);
+                    if (!AMADataHandler::isError($user_info)) {
                         $userObj->setProfile($user_info['profilo']);
                         $userObj->setFee($user_info['tariffa']);
                     }
@@ -765,15 +791,15 @@ class MultiPort
                 break;
 
             case AMA_TYPE_SWITCHER:
-                $user_dataAr = $common_dh->get_user_info($id_user);
-                if (AMA_Common_DataHandler::isError($user_dataAr)) {
-                    $errObj = new ADA_Error($user_dataAr, 'An error occurred while retrieving author data in MultiPort::finduser');
+                $user_dataAr = $common_dh->getUserInfo($id_user);
+                if (AMACommonDataHandler::isError($user_dataAr)) {
+                    $errObj = new ADAError($user_dataAr, 'An error occurred while retrieving author data in MultiPort::finduser');
                 }
                 $userObj = new ADASwitcher($user_dataAr);
                 $userObj->setUserId($id_user);
-                $user_testersAr = $common_dh->get_testers_for_user($userObj->getId());
-                if (AMA_Common_DataHandler::isError($user_testersAr)) {
-                    $errObj = new ADA_Error($user_testersAr, 'An error occurred while retrieving user testers in MultiPort::finduser');
+                $user_testersAr = $common_dh->getTestersForUser($userObj->getId());
+                if (AMACommonDataHandler::isError($user_testersAr)) {
+                    $errObj = new ADAError($user_testersAr, 'An error occurred while retrieving user testers in MultiPort::finduser');
                 }
                 $userObj->setTesters($user_testersAr);
                 $return = $userObj;
@@ -794,9 +820,9 @@ class MultiPort
              *
              */
             if ($userObj->hasExtra()) {
-                $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($user_testersAr[0]));
+                $tester_dh = AMADataHandler::instance(MultiPort::getDSN($user_testersAr[0]));
                 $extraAr = $tester_dh->getExtraData($userObj);
-                if (!AMA_DB::isError($extraAr)) {
+                if (!AMADB::isError($extraAr)) {
                     $userObj->setExtras($extraAr);
                     $return = $userObj;
                 }
@@ -813,18 +839,18 @@ class MultiPort
     {
         $common_dh = $GLOBALS['common_dh'];
 
-        $id_user = $common_dh->find_user_from_username($username);
-        if (AMA_Common_DataHandler::isError($id_user)) {
+        $id_user = $common_dh->findUserFromUsername($username);
+        if (AMACommonDataHandler::isError($id_user)) {
             if ($id_user->code == AMA_ERR_GET) {
                 return null;
             }
-            $errObj = new ADA_Error($user_type, 'An error occurred while retrieving user id in MultiPort::findUser');
+            $errObj = new ADAError($user_type, 'An error occurred while retrieving user id in MultiPort::findUser');
             return null;
         }
 
-        $user_type = $common_dh->get_user_type($id_user);
-        if (AMA_Common_DataHandler::isError($user_type)) {
-            $errObj = new ADA_Error($user_type, 'An error occurred while retrieving user type in MultiPort::findUser');
+        $user_type = $common_dh->getUserType($id_user);
+        if (AMACommonDataHandler::isError($user_type)) {
+            $errObj = new ADAError($user_type, 'An error occurred while retrieving user type in MultiPort::findUser');
             return null;
         }
 
@@ -832,31 +858,31 @@ class MultiPort
         * Tipi di utenti e cosa fare:
         *
         * utente di tipo autore:
-        * ottieni i dati dalla tabella COMUNE.utente richiamando get_user_info()
+        * ottieni i dati dalla tabella COMUNE.utente richiamando getUserInfo()
         *
         */
         switch ($user_type) {
             case AMA_TYPE_AUTHOR:
-                $user_dataAr = $common_dh->get_author($id_user);
-                if (AMA_Common_DataHandler::isError($user_dataAr)) {
-                    $errObj = new ADA_Error($user_dataAr, 'An error occurred while retrieving author data in MultiPort::finduser');
+                $user_dataAr = $common_dh->getAuthor($id_user);
+                if (AMACommonDataHandler::isError($user_dataAr)) {
+                    $errObj = new ADAError($user_dataAr, 'An error occurred while retrieving author data in MultiPort::finduser');
                     return null;
                 }
 
                 $userObj = new ADAAuthor($user_dataAr);
                 $userObj->setUserId($id_user);
-                $user_testersAr = $common_dh->get_testers_for_user($userObj->getId());
-                if (AMA_Common_DataHandler::isError($user_testersAr)) {
-                    $errObj = new ADA_Error($user_testersAr, 'An error occurred while retrieving user testers in MultiPort::finduser');
+                $user_testersAr = $common_dh->getTestersForUser($userObj->getId());
+                if (AMACommonDataHandler::isError($user_testersAr)) {
+                    $errObj = new ADAError($user_testersAr, 'An error occurred while retrieving user testers in MultiPort::finduser');
                 }
                 $userObj->setTesters($user_testersAr);
                 return $userObj;
                 break;
 
             case AMA_TYPE_ADMIN:
-                $user_dataAr = $common_dh->get_user_info($id_user);
-                if (AMA_Common_DataHandler::isError($user_dataAr)) {
-                    $errObj = new ADA_Error($user_dataAr, 'An error occurred while retrieving admin data in MultiPort::finduser');
+                $user_dataAr = $common_dh->getUserInfo($id_user);
+                if (AMACommonDataHandler::isError($user_dataAr)) {
+                    $errObj = new ADAError($user_dataAr, 'An error occurred while retrieving admin data in MultiPort::finduser');
                     return null;
                 }
                 $userObj = new ADAAdmin($user_dataAr);
@@ -866,25 +892,25 @@ class MultiPort
 
             case AMA_TYPE_STUDENT:
                 $user_dataAr = $common_dh->get_student($id_user);
-                if (AMA_Common_DataHandler::isError($user_dataAr)) {
-                    $errObj = new ADA_Error($user_dataAr, 'An error occurred while retrieving user data in MultiPort::finduser');
+                if (AMACommonDataHandler::isError($user_dataAr)) {
+                    $errObj = new ADAError($user_dataAr, 'An error occurred while retrieving user data in MultiPort::finduser');
                     return null;
                 }
                 $userObj = new ADAUser($user_dataAr);
                 $userObj->setUserId($id_user);
 
-                if (isset($id_course_instance) && DataValidator::is_uinteger($id_course_instance) !== false) {
-                    $userObj->set_course_instance_for_history($id_course_instance);
-                } elseif (isset($_SESSION['sess_id_course_instance']) && DataValidator::is_uinteger($_SESSION['sess_id_course_instance']) !== false) {
-                    $userObj->set_course_instance_for_history($_SESSION['sess_id_course_instance']);
+                if (isset($id_course_instance) && DataValidator::isUinteger($id_course_instance) !== false) {
+                    $userObj->setCourseInstanceForHistory($id_course_instance);
+                } elseif (isset($_SESSION['sess_id_course_instance']) && DataValidator::isUinteger($_SESSION['sess_id_course_instance']) !== false) {
+                    $userObj->setCourseInstanceForHistory($_SESSION['sess_id_course_instance']);
                 }
 
                 //return $userObj;
 
                 // QUI DEVO VEDERE QUALI SONO I TESTER ASSOCIATI A QUESTO UTENTE.
-                $user_testersAr = $common_dh->get_testers_for_user($userObj->getId());
-                if (AMA_Common_DataHandler::isError($user_testersAr)) {
-                    $errObj = new ADA_Error($user_testersAr, 'An error occurred while retrieving user testers in MultiPort::finduser');
+                $user_testersAr = $common_dh->getTestersForUser($userObj->getId());
+                if (AMACommonDataHandler::isError($user_testersAr)) {
+                    $errObj = new ADAError($user_testersAr, 'An error occurred while retrieving user testers in MultiPort::finduser');
                 }
                 $userObj->setTesters($user_testersAr);
                 /**
@@ -899,9 +925,9 @@ class MultiPort
                      *
                      */
                     if ($userObj->hasExtra()) {
-                        $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($user_testersAr[0]));
+                        $tester_dh = AMADataHandler::instance(MultiPort::getDSN($user_testersAr[0]));
                         $extraAr = $tester_dh->getExtraData($userObj);
-                        if (!AMA_DB::isError($extraAr)) {
+                        if (!AMADB::isError($extraAr)) {
                             $userObj->setExtras($extraAr);
                         }
                         $tester_dh->disconnect();
@@ -912,26 +938,26 @@ class MultiPort
 
             case AMA_TYPE_SUPERTUTOR:
             case AMA_TYPE_TUTOR:
-                $user_dataAr = $common_dh->get_tutor($id_user);
-                if (AMA_Common_DataHandler::isError($user_dataAr)) {
-                    $errObj = new ADA_Error($user_dataAr, 'An error occurred while retrieving practitioner data in MultiPort::finduser');
+                $user_dataAr = $common_dh->getTutor($id_user);
+                if (AMACommonDataHandler::isError($user_dataAr)) {
+                    $errObj = new ADAError($user_dataAr, 'An error occurred while retrieving practitioner data in MultiPort::finduser');
                     return null;
                 }
                 $userObj = new ADAPractitioner($user_dataAr);
                 $userObj->setUserId($id_user);
-                $user_testersAr = $common_dh->get_testers_for_user($userObj->getId());
+                $user_testersAr = $common_dh->getTestersForUser($userObj->getId());
                 // TODO: here we have to read user's profile from the tester database
-                if (AMA_Common_DataHandler::isError($user_testersAr)) {
-                    $errObj = new ADA_Error($user_testersAr, 'An error occurred while retrieving user testers in MultiPort::finduser');
+                if (AMACommonDataHandler::isError($user_testersAr)) {
+                    $errObj = new ADAError($user_testersAr, 'An error occurred while retrieving user testers in MultiPort::finduser');
                 }
                 $userObj->setTesters($user_testersAr);
                 //Load user profile info from default tester
                 $tester = $userObj->getDefaultTester();
                 $tester_dsn = self::getDSN($tester);
                 if ($tester_dsn != null) {
-                    $tester_dh = AMA_DataHandler::instance($tester_dsn);
-                    $user_info = $tester_dh->get_tutor($id_user);
-                    if (!AMA_DataHandler::isError($user_info)) {
+                    $tester_dh = AMADataHandler::instance($tester_dsn);
+                    $user_info = $tester_dh->getTutor($id_user);
+                    if (!AMADataHandler::isError($user_info)) {
                         $userObj->setProfile($user_info['profilo']);
                         $userObj->setFee($user_info['tariffa']);
                     }
@@ -941,16 +967,16 @@ class MultiPort
                 break;
 
             case AMA_TYPE_SWITCHER:
-                $user_dataAr = $common_dh->get_user_info($id_user);
-                if (AMA_Common_DataHandler::isError($user_dataAr)) {
-                    $errObj = new ADA_Error($user_dataAr, 'An error occurred while retrieving author data in MultiPort::finduser');
+                $user_dataAr = $common_dh->getUserInfo($id_user);
+                if (AMACommonDataHandler::isError($user_dataAr)) {
+                    $errObj = new ADAError($user_dataAr, 'An error occurred while retrieving author data in MultiPort::finduser');
                     return null;
                 }
                 $userObj = new ADASwitcher($user_dataAr);
                 $userObj->setUserId($id_user);
-                $user_testersAr = $common_dh->get_testers_for_user($userObj->getId());
-                if (AMA_Common_DataHandler::isError($user_testersAr)) {
-                    $errObj = new ADA_Error($user_testersAr, 'An error occurred while retrieving user testers in MultiPort::finduser');
+                $user_testersAr = $common_dh->getTestersForUser($userObj->getId());
+                if (AMACommonDataHandler::isError($user_testersAr)) {
+                    $errObj = new ADAError($user_testersAr, 'An error occurred while retrieving user testers in MultiPort::finduser');
                 }
                 $userObj->setTesters($user_testersAr);
                 return $userObj;
@@ -974,8 +1000,8 @@ class MultiPort
     {
         $common_dh = $GLOBALS['common_dh'];
 
-        $result = $common_dh->check_identity($username, $password);
-        if (AMA_Common_DataHandler::isError($result)) {
+        $result = $common_dh->checkIdentity($username, $password);
+        if (AMACommonDataHandler::isError($result)) {
             return false;
         }
         $userObj = self::findUser($result['id_utente']);
@@ -990,7 +1016,7 @@ class MultiPort
      * @return $servicesAr array
      */
 
-    public static function find_services_list($field_list_ar, $clause, $for_registration = false, $max_level = 4, $min_level = 1)
+    public static function findServicesList($field_list_ar, $clause, $for_registration = false, $max_level = 4, $min_level = 1)
     {
 
         /*NOTE: old version was restricted to user's tester and required $userObj as parameter:
@@ -1012,7 +1038,7 @@ class MultiPort
         $to_sub_course_dataHa = [];
         $course_instances = [];
         $common_dh = $GLOBALS['common_dh'];
-        $testers_list = $common_dh->get_all_testers();
+        $testers_list = $common_dh->getAllTesters();
 
 
 
@@ -1036,16 +1062,16 @@ class MultiPort
             if ($tester_dsn != null) {
                 // FIXME: deve escludere i PUBLIC o, no?
 
-                //        $tester_dataHa = $common_dh->get_tester_info_from_pointer($tester);
-                if (AMA_DataHandler::isError($tester_dataHa)) {
-                    // FIXME: rimuovere e gestire con ADA_Error
+                //        $tester_dataHa = $common_dh->getTesterInfoFromPointer($tester);
+                if (AMADataHandler::isError($tester_dataHa)) {
+                    // FIXME: rimuovere e gestire con ADAError
                 }
                 //        $tester_name = $tester_dataHa[1];
-                $tester_dh = AMA_DataHandler::instance($tester_dsn);
+                $tester_dh = AMADataHandler::instance($tester_dsn);
                 // FIXME:  questa versione prende le implementazioni dei servizi, non i servizi !!!!!
-                $all_instance = $tester_dh->find_courses_list($field_list_ar, $clause);
-                if (AMA_DataHandler::isError($all_instance)) {
-                    // FIXME: rimuovere e gestire con ADA_Error
+                $all_instance = $tester_dh->findCoursesList($field_list_ar, $clause);
+                if (AMADataHandler::isError($all_instance)) {
+                    // FIXME: rimuovere e gestire con ADAError
                 }
                 if (is_array($all_instance)) {
                     foreach ($all_instance as $one_instance) {
@@ -1062,8 +1088,8 @@ class MultiPort
          */
         $services_info = [];
         foreach ($course_instances as $id_course => $course_data) {
-            $service_info = $common_dh->get_service_info_from_course($id_course);
-            $tester_info  = $common_dh->get_tester_info_from_id_course($id_course);
+            $service_info = $common_dh->getServiceInfoFromCourse($id_course);
+            $tester_info  = $common_dh->getTesterInfoFromIdCourse($id_course);
 
             // FIXME
             /*
@@ -1072,7 +1098,7 @@ class MultiPort
             * e quindi non lo mostriamo tra quelli a cui l'utente puo' fare richiesta
             * di iscrizione.
             */
-            if ($service_info == null || AMA_Common_DataHandler::isError($tester_info)) {
+            if ($service_info == null || AMACommonDataHandler::isError($tester_info)) {
                 continue;
             }
 
@@ -1081,7 +1107,7 @@ class MultiPort
             $servizio = $service_info[1];
             $descrizione = $course_data[5];
 
-            if (AMA_DataHandler::isError($service_info)) {
+            if (AMADataHandler::isError($service_info)) {
                 // echo 'get service info from course <br />';
                 continue;
             } else {
@@ -1149,7 +1175,7 @@ class MultiPort
      * @param  $clause string
      * @return $sub_course_dataHa array
      */
-    public static function find_sub_services_data(ADAGenericUser $userObj, $field_ar, $clause, $orderBy = 'service')
+    public static function findSubServicesData(ADAGenericUser $userObj, $field_ar, $clause, $orderBy = 'service')
     {
         $common_dh = $GLOBALS['common_dh'];
 
@@ -1161,38 +1187,38 @@ class MultiPort
          */
         $tester_names = [];
         /*    foreach ($userObj->getTesters() as $tester) {
-              $tester_dataHa = $common_dh->get_tester_info_from_pointer($tester);
+              $tester_dataHa = $common_dh->getTesterInfoFromPointer($tester);
               $tester_names[$tester] = $tester_dataHa[1];
             }
         */
 
         // foreach($userObj->getTesters() as $tester) { // only providers in which user is subscribed
 
-        /*  $testers = $common_dh->get_all_testers(); // all providers
+        /*  $testers = $common_dh->getAllTesters(); // all providers
           foreach($testers as $testerItem){
             $tester = $testerItem['puntatore'];
   */
-        $testerPointersAr = $common_dh->get_testers_for_user($user_id); // providers assigned to the user
+        $testerPointersAr = $common_dh->getTestersForUser($user_id); // providers assigned to the user
         foreach ($testerPointersAr as $tester) {
             // ADALogger::log("MultiPort::find_sub_services_data for tester: $tester");
-            $tester_dataHa = $common_dh->get_tester_info_from_pointer($tester);
+            $tester_dataHa = $common_dh->getTesterInfoFromPointer($tester);
 
             $tester_city = $tester_dataHa[5];
             $tester_country = $tester_dataHa[6];
             $tester_names[$tester] = $tester_dataHa[1];
             $tester_dsn = self::getDSN($tester);
             if ($tester_dsn != null) {
-                //$tester_dataHa = $common_dh->get_tester_info_from_pointer($tester);
+                //$tester_dataHa = $common_dh->getTesterInfoFromPointer($tester);
                 //$tester_name = 'NOME TESTER';//$tester_dataHa[1];
-                $tester_dh = AMA_DataHandler::instance($tester_dsn);
+                $tester_dh = AMADataHandler::instance($tester_dsn);
 
-                if (!AMA_DataHandler::isError($tester_dh)) {
+                if (!AMADataHandler::isError($tester_dh)) {
                     // versioneche cicla solo sulle istanze cui è pre/iscritto
-                    $all_instance = $tester_dh->course_instance_student_presubscribe_get_status($user_id);
+                    $all_instance = $tester_dh->courseInstanceStudentPresubscribeGetStatus($user_id);
 
                     //  versioneche cicla su tutte le istanze
                     /* FIXME: bisogna fare una JOIN su iscrizione e istanze_corso !
-                    $all_instance = $tester_dh->course_instance_find_list($field_ar,$clause);
+                    $all_instance = $tester_dh->courseInstanceFindList($field_ar,$clause);
                     var_dump($all_instance);
                     */
                 } else {
@@ -1208,11 +1234,11 @@ class MultiPort
                         $info = "- ";
                         $tutor = translateFN("Not assigned");
                         $tutor_link = $tutor;
-                        $now = AMA_DataHandler::date_to_ts("now");
+                        $now = AMADataHandler::dateToTs("now");
 
                         $id_course_instance = $one_instance['istanza_corso'];
                         $status =  $one_instance['status'];
-                        $one_course_instance = $tester_dh->course_instance_get($id_course_instance, true);
+                        $one_course_instance = $tester_dh->courseInstanceGet($id_course_instance, true);
                         // GESTIRE ERRORE
                         $id_course          = $one_course_instance['id_corso'];
                         $data_inizio        = $one_course_instance['data_inizio'];
@@ -1223,7 +1249,7 @@ class MultiPort
 
 
                         $service_completed = $data_fine < $now;
-                        $sub_courses = $tester_dh->get_subscription($user_id, $id_course_instance);
+                        $sub_courses = $tester_dh->getSubscription($user_id, $id_course_instance);
                         //      if ($sub_courses['tipo'] == 2) { introducing status 3 (removed) and 4 (visitors)
 
                         if (!AMA_dataHandler::isError($sub_courses)) {
@@ -1237,16 +1263,16 @@ class MultiPort
 
                             // filtering on completed services if $clause paratemer is passed
                             if ((!$clause) or  ($tipo != ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED)) { //FIXME: we have to parse the clause !!!
-                                $tutor_Id = $tester_dh->course_instance_tutor_get($id_course_instance);
+                                $tutor_Id = $tester_dh->courseInstanceTutorGet($id_course_instance);
 
                                 if ($tutor_Id) {
-                                    $tutorInfoHa = $tester_dh->get_tutor($tutor_Id);
+                                    $tutorInfoHa = $tester_dh->getTutor($tutor_Id);
                                     $tutor_link = '<a href="' . HTTP_ROOT_DIR . '/browsing/practitionerProfile.php?id='
                                         . $tutor_Id . '">' . $tutorInfoHa['nome'] . ' ' . $tutorInfoHa['cognome']
                                         . '</a>';
                                 }
 
-                                $course = $tester_dh->get_course($id_course);
+                                $course = $tester_dh->getCourse($id_course);
                                 if (is_array($course)) {
                                     $id_start = $id_course . "_" . $course['id_nodo_iniziale'];
                                     $home_label = translateFN("home");
@@ -1319,7 +1345,7 @@ class MultiPort
         return $sub_course_dataHa;
     }
 
-    public static function get_service_max_level($user_id)
+    public static function getServiceMaxLevel($user_id)
     {
         /**
          * get_service_max_level
@@ -1329,19 +1355,19 @@ class MultiPort
          * @return $level_ha array
          */
         $common_dh = $GLOBALS['common_dh'];
-        $testers = $common_dh->get_all_testers();
+        $testers = $common_dh->getAllTesters();
         $level_ha = [];
         foreach ($testers as $testerPointer) {
             $tester_dsn = self::getDSN($testerPointer['puntatore']);
             $level_ha[$testerPointer['puntatore']]['max_level'] = 0; // default;
             if ($tester_dsn != null) {
-                $tester_dh = AMA_DataHandler::instance($tester_dsn);
+                $tester_dh = AMADataHandler::instance($tester_dsn);
                 //  versioneche cicla su tutte le istanze di quel tester
-                $all_instance = $tester_dh->course_instance_find_list($field_ar, $clause);
+                $all_instance = $tester_dh->courseInstanceFindList($field_ar, $clause);
                 foreach ($all_instance as $one_instance) {
                     $id_course_instance = $one_instance[0];
-                    $level = $tester_dh->get_student_level($user_id, $id_course_instance);
-                    if (!AMA_DataHandler::isError($level)) {
+                    $level = $tester_dh->getStudentLevel($user_id, $id_course_instance);
+                    if (!AMADataHandler::isError($level)) {
                         $max_level = $level_ha[$testerPointer['puntatore']]['max_level'];
                         $level_ha[$testerPointer['puntatore']]['max_level'] = max((int)$level, $max_level);
                     }
@@ -1362,7 +1388,7 @@ class MultiPort
      * @param  $ADAUser $userObj
      * @return $msgs_ha array
      */
-    private static function get_sent_messages(ADALoggableUser $userObj, $msgType = ADA_MSG_SIMPLE, $msgFlags = [])
+    private static function getSentMessages(ADALoggableUser $userObj, $msgType = ADA_MSG_SIMPLE, $msgFlags = [])
     {
         //,$field_ar,$clause) {
 
@@ -1390,17 +1416,17 @@ class MultiPort
                 if ($tester_dsn != null) {
                     $mh = MessageHandler::instance($tester_dsn);
 
-                    $msgs_ha = $mh->get_sent_messages($user_id, $msgType, $fields_list_Ar, $sort_field);
+                    $msgs_ha = $mh->getSentMessages($user_id, $msgType, $fields_list_Ar, $sort_field);
 
-                    if (!AMA_DataHandler::isError($msgs_ha)) {
+                    if (!AMADataHandler::isError($msgs_ha)) {
                         if (is_array($msgs_ha) && !empty($msgs_ha)) {
                             $messages_Ar[$tester] = $msgs_ha;
                         }
                     } else {
                         /*
-                         * Return a ADA_Error with delayed error handling.
+                         * Return a ADAError with delayed error handling.
                          */
-                        return new ADA_Error($msgs_ha, translateFN('Errore in ottenimento messaggi'), null, null, null, null, true);
+                        return new ADAError($msgs_ha, translateFN('Errore in ottenimento messaggi'), null, null, null, null, true);
                     }
                 }
             }
@@ -1413,16 +1439,16 @@ class MultiPort
             if ($tester_dsn != null) {
                 $mh = MessageHandler::instance($tester_dsn);
 
-                $msgs_ha = $mh->get_sent_messages($user_id, $msgType, $fields_list_Ar, $sort_field);
-                if (!AMA_DataHandler::isError($msgs_ha)) {
+                $msgs_ha = $mh->getSentMessages($user_id, $msgType, $fields_list_Ar, $sort_field);
+                if (!AMADataHandler::isError($msgs_ha)) {
                     if (is_array($msgs_ha) && !empty($msgs_ha)) {
                         $messages_Ar[$sess_selected_tester] = $msgs_ha;
                     }
                 } else {
                     /*
-                     * Return a ADA_Error with delayed error handling.
+                     * Return a ADAError with delayed error handling.
                      */
-                    return new ADA_Error($msgs_ha, translateFN('Errore in ottenimento messaggi'), null, null, null, null, true);
+                    return new ADAError($msgs_ha, translateFN('Errore in ottenimento messaggi'), null, null, null, null, true);
                 }
             }
         }
@@ -1436,7 +1462,7 @@ class MultiPort
      * @param  $ADAUser $userObj
      * @return $msgs_ha array
      */
-    private static function get_messages(ADALoggableUser $userObj, $msgType = ADA_MSG_SIMPLE, $msgFlags = [], $retrieve_only_unread_events = false)
+    private static function getMessages(ADALoggableUser $userObj, $msgType = ADA_MSG_SIMPLE, $msgFlags = [], $retrieve_only_unread_events = false)
     {
         //,$field_ar,$clause) {
 
@@ -1506,17 +1532,17 @@ class MultiPort
                     $mh = MessageHandler::instance($tester_dsn);
 
                     $clause ??= null;
-                    $msgs_ha = $mh->find_messages($user_id, $msgType, $fields_list_Ar, $clause, $sort_field);
+                    $msgs_ha = $mh->findMessages($user_id, $msgType, $fields_list_Ar, $clause, $sort_field);
 
-                    if (!AMA_DataHandler::isError($msgs_ha)) {
+                    if (!AMADataHandler::isError($msgs_ha)) {
                         if (is_array($msgs_ha) && !empty($msgs_ha)) {
                             $messages_Ar[$tester] = $msgs_ha;
                         }
                     } else {
                         /*
-                         * Return a ADA_Error with delayed error handling.
+                         * Return a ADAError with delayed error handling.
                          */
-                        return new ADA_Error($msgs_ha, translateFN('Errore in ottenimento messaggi'), null, null, null, null, true);
+                        return new ADAError($msgs_ha, translateFN('Errore in ottenimento messaggi'), null, null, null, null, true);
                     }
                 }
             }
@@ -1530,17 +1556,17 @@ class MultiPort
                 $mh = MessageHandler::instance($tester_dsn);
 
                 $clause ??= null;
-                $msgs_ha = $mh->find_messages($user_id, $msgType, $fields_list_Ar, $clause, $sort_field);
+                $msgs_ha = $mh->findMessages($user_id, $msgType, $fields_list_Ar, $clause, $sort_field);
 
-                if (!AMA_DataHandler::isError($msgs_ha)) {
+                if (!AMADataHandler::isError($msgs_ha)) {
                     if (is_array($msgs_ha) && !empty($msgs_ha)) {
                         $messages_Ar[$sess_selected_tester] = $msgs_ha;
                     }
                 } else {
                     /*
-                     * Return a ADA_Error with delayed error handling.
+                     * Return a ADAError with delayed error handling.
                      */
-                    return new ADA_Error($msgs_ha, translateFN('Errore in ottenimento messaggi'), null, null, null, null, true);
+                    return new ADAError($msgs_ha, translateFN('Errore in ottenimento messaggi'), null, null, null, null, true);
                 }
             }
         }
@@ -1557,7 +1583,7 @@ class MultiPort
             return [];
         }
 
-        $result_Ar = self::get_sent_messages($userObj, ADA_MSG_SIMPLE);
+        $result_Ar = self::getSentMessages($userObj, ADA_MSG_SIMPLE);
 
         return $result_Ar;
     }
@@ -1578,7 +1604,7 @@ class MultiPort
             return [];
         }
 
-        $result_Ar = self::get_messages($userObj, ADA_MSG_SIMPLE, [], $unread);
+        $result_Ar = self::getMessages($userObj, ADA_MSG_SIMPLE, [], $unread);
 
         return $result_Ar;
     }
@@ -1597,7 +1623,7 @@ class MultiPort
             //return new CText(translateFN('Non sono presenti appuntamenti'));
             return  [];
         }
-        $result_Ar = self::get_messages($userObj, ADA_MSG_AGENDA);
+        $result_Ar = self::getMessages($userObj, ADA_MSG_AGENDA);
 
         return $result_Ar;
     }
@@ -1615,7 +1641,7 @@ class MultiPort
         } else {
             $msgFlags = ADA_EVENT_PROPOSED;
         }
-        $result_Ar = self::get_messages($userObj, ADA_MSG_AGENDA, $msgFlags);
+        $result_Ar = self::getMessages($userObj, ADA_MSG_AGENDA, $msgFlags);
 
         return $result_Ar;
         //return self::getEventsAsTable($userObj, $result_Ar);
@@ -1641,7 +1667,7 @@ class MultiPort
         $retrieve_only_unread_events = true;
 
         $msgFlags ??= null;
-        $result_Ar = self::get_messages($userObj, ADA_MSG_AGENDA, $msgFlags, $retrieve_only_unread_events);
+        $result_Ar = self::getMessages($userObj, ADA_MSG_AGENDA, $msgFlags, $retrieve_only_unread_events);
 
         return $result_Ar;
         //return self::getEventsAsTable($userObj, $result_Ar);
@@ -1652,8 +1678,8 @@ class MultiPort
     {
         $common_dh = $GLOBALS['common_dh'];
         $field_data_Ar = ['id_tester'];
-        $result_Ar = $common_dh->get_all_testers($field_data_Ar);
-        if (AMA_Common_DataHandler::isError($result_Ar)) {
+        $result_Ar = $common_dh->getAllTesters($field_data_Ar);
+        if (AMACommonDataHandler::isError($result_Ar)) {
             return [];
         }
 
@@ -1667,7 +1693,7 @@ class MultiPort
 
     public static function hasThisUserAChatAppointment(ADALoggableUser $userObj)
     {
-        $id_course_instance = DataValidator::is_uinteger($_SESSION['sess_id_course_instance']);
+        $id_course_instance = DataValidator::isUinteger($_SESSION['sess_id_course_instance']);
         if ($id_course_instance === false) {
             return false;
         }
@@ -1677,10 +1703,10 @@ class MultiPort
         $sort_field     = 'data_ora desc';
         $mh = MessageHandler::instance(self::getDSN($_SESSION['sess_selected_tester']));
 
-        $msgs_ha = $mh->find_messages($userObj->getId(), ADA_MSG_AGENDA, $fields_list_Ar, $clause, $sort_field);
-        if (!AMA_DataHandler::isError($msgs_ha)) {
-            $today_time = today_timeFN();
-            $today_date = today_dateFN();
+        $msgs_ha = $mh->findMessages($userObj->getId(), ADA_MSG_AGENDA, $fields_list_Ar, $clause, $sort_field);
+        if (!AMADataHandler::isError($msgs_ha)) {
+            $today_time = todayTimeFN();
+            $today_date = todayDateFN();
             $today_time_date = date(ADA_DATE_FORMAT);
             foreach ($msgs_ha as $one_date) {
                 $time_2_add = 30 * 60; // 30 minuti di arrotondamento.
@@ -1694,8 +1720,8 @@ class MultiPort
                     $event_token = ADAEventProposal::extractEventToken($one_date[2]);
 
                     $cdh = ChatDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
-                    $id_chatroom = $cdh->get_chatroom_with_title_prefixFN($event_token);
-                    if (AMA_DataHandler::isError($id_chatroom)) {
+                    $id_chatroom = $cdh->getChatroomWithTitlePrefixFN($event_token);
+                    if (AMADataHandler::isError($id_chatroom)) {
                         return false;
                     }
                     return $id_chatroom;
@@ -1708,7 +1734,7 @@ class MultiPort
 
     public static function hasThisUserAVideochatAppointment(ADALoggableUser $userObj)
     {
-        $id_course_instance = DataValidator::is_uinteger($_SESSION['sess_id_course_instance']);
+        $id_course_instance = DataValidator::isUinteger($_SESSION['sess_id_course_instance']);
         if ($id_course_instance === false) {
             return false;
         }
@@ -1718,10 +1744,10 @@ class MultiPort
         $sort_field     = 'data_ora desc';
         $mh = MessageHandler::instance(self::getDSN($_SESSION['sess_selected_tester']));
 
-        $msgs_ha = $mh->find_messages($userObj->getId(), ADA_MSG_AGENDA, $fields_list_Ar, $clause, $sort_field);
-        if (!AMA_DataHandler::isError($msgs_ha)) {
-            $today_time = today_timeFN();
-            $today_date = today_dateFN();
+        $msgs_ha = $mh->findMessages($userObj->getId(), ADA_MSG_AGENDA, $fields_list_Ar, $clause, $sort_field);
+        if (!AMADataHandler::isError($msgs_ha)) {
+            $today_time = todayTimeFN();
+            $today_date = todayDateFN();
             $today_time_date = date(ADA_DATE_FORMAT);
             foreach ($msgs_ha as $one_date) {
                 $time_2_add = 30 * 60; // 30 minuti di arrotondamento.
@@ -1749,7 +1775,7 @@ class MultiPort
              $tester_dsn = self::getDSN($sess_selected_tester);
              if($tester_dsn != null) {
              $mh = MessageHandler::instance($tester_dsn);
-             $msgs_ha = $mh->find_messages($userObj->getId(),ADA_MSG_AGENDA,$fields_list_Ar,$clause,$sort_field);
+             $msgs_ha = $mh->findMessages($userObj->getId(),ADA_MSG_AGENDA,$fields_list_Ar,$clause,$sort_field);
              }
            }
 
@@ -1759,7 +1785,7 @@ class MultiPort
             $tester_dsn = self::getDSN($tester);
             if ($tester_dsn != null) {
                 $mh = MessageHandler::instance($tester_dsn);
-                $msgs_ha = $mh->find_messages($userObj->getId(), ADA_MSG_AGENDA, $fields_list_Ar, $clause, $sort_field);
+                $msgs_ha = $mh->findMessages($userObj->getId(), ADA_MSG_AGENDA, $fields_list_Ar, $clause, $sort_field);
                 if (count($msgs_ha) > 0) {
                     return true;
                 }
@@ -1785,7 +1811,7 @@ class MultiPort
             $data_Ar = self::geTesterAndMessageId($appointment_id);
 
             $mh = MessageHandler::instance(self::getDSN($data_Ar['tester']));
-            $result = $mh->set_messages($user_id, [$data_Ar['message_id']], 'R');
+            $result = $mh->setMessages($user_id, [$data_Ar['message_id']], 'R');
             // FIXME: gestione errore?
         }
     }
@@ -1805,7 +1831,7 @@ class MultiPort
             $data_Ar = self::geTesterAndMessageId($appointment_id);
 
             $mh = MessageHandler::instance(self::getDSN($data_Ar['tester']));
-            $result = $mh->set_messages($user_id, [$data_Ar['message_id']], 'N');
+            $result = $mh->setMessages($user_id, [$data_Ar['message_id']], 'N');
             // FIXME: gestione errore?
         }
     }
@@ -1847,7 +1873,7 @@ class MultiPort
             $data_Ar = self::geTesterAndMessageId($appointment_id);
 
             $mh = MessageHandler::instance(self::getDSN($data_Ar['tester']));
-            $result = $mh->remove_messages($user_id, [$data_Ar['message_id']]);
+            $result = $mh->removeMessages($user_id, [$data_Ar['message_id']]);
             // FIXME: gestione errore?
         }
     }
@@ -1882,11 +1908,11 @@ class MultiPort
         $mh = MessageHandler::instance(self::getDSN($data_Ar['tester']));
 
         $msg_ha = $mh->get_message($userObj->getId(), $data_Ar['message_id']);
-        if (AMA_DataHandler::isError($msg_ha)) {
+        if (AMADataHandler::isError($msg_ha)) {
             /*
-             * Return a ADA_Error object with delayed error handling
+             * Return a ADAError object with delayed error handling
              */
-            return new ADA_Error(
+            return new ADAError(
                 $msg_ha,
                 translateFN('Errore durante lettura appuntamento'),
                 null,
@@ -1949,12 +1975,12 @@ class MultiPort
             $message_id = $matches[2];
 
             $common_dh = $GLOBALS['common_dh'];
-            $tester_infoAr = $common_dh->get_tester_info_from_id($tester_id);
-            if (AMA_Common_DataHandler::isError($tester_infoAr)) {
+            $tester_infoAr = $common_dh->getTesterInfoFromId($tester_id);
+            if (AMACommonDataHandler::isError($tester_infoAr)) {
                 /*
-                 * Return a ADA_Error object with delayed error handling
+                 * Return a ADAError object with delayed error handling
                  */
-                return new ADA_Error(
+                return new ADAError(
                     $tester_infoAr,
                     translateFN('Errore in ottenimento informazioni tester'),
                     null,
@@ -1982,22 +2008,22 @@ class MultiPort
         $common_dh = $GLOBALS['common_dh'];
 
         $testers_activity_dataAr = [];
-        $testers_infoAr = $common_dh->get_all_testers(['id_tester', 'nome']);
+        $testers_infoAr = $common_dh->getAllTesters(['id_tester', 'nome']);
 
-        if (AMA_Common_DataHandler::isError($testers_infoAr)) {
+        if (AMACommonDataHandler::isError($testers_infoAr)) {
             return [];
         }
         $current_timestamp = time();
         foreach ($testers_infoAr as $tester_infoAr) {
             $tester_dsn = self::getDSN($tester_infoAr['puntatore']);
             if ($tester_dsn != null) {
-                $tester_dh = AMA_DataHandler::instance($tester_dsn);
-                $users_count = $tester_dh->count_users_by_type([AMA_TYPE_STUDENT]);
-                if (AMA_DataHandler::isError($users_count)) {
+                $tester_dh = AMADataHandler::instance($tester_dsn);
+                $users_count = $tester_dh->countUsersByType([AMA_TYPE_STUDENT]);
+                if (AMADataHandler::isError($users_count)) {
                     $users_count = 0;
                 }
-                $active_eguidance_sessions = $tester_dh->count_active_course_instances($current_timestamp);
-                if (AMA_DataHandler::isError($active_eguidance_sessions)) {
+                $active_eguidance_sessions = $tester_dh->countActiveCourseInstances($current_timestamp);
+                if (AMADataHandler::isError($active_eguidance_sessions)) {
                     $active_eguidance_sessions = 0;
                 }
                 $testers_activity_dataAr[] = [
@@ -2025,7 +2051,7 @@ class MultiPort
      */
 
 
-    public static function count_new_notes(ADALoggableUser $userObj, $courseInstanceId)
+    public static function countNewNotes(ADALoggableUser $userObj, $courseInstanceId)
     {
 
         if ($userObj instanceof ADAGuest) {
@@ -2034,7 +2060,7 @@ class MultiPort
         $common_dh = $GLOBALS['common_dh'];
 
         $testers_activity_dataAr = [];
-        $testers_infoAr = $common_dh->get_all_testers(['id_tester', 'nome']);
+        $testers_infoAr = $common_dh->getAllTesters(['id_tester', 'nome']);
 
         if (!MULTIPROVIDER) {
             $testers_infoAr = array_values(array_filter($testers_infoAr, function ($el) {
@@ -2042,7 +2068,7 @@ class MultiPort
             }));
         }
 
-        if (AMA_Common_DataHandler::isError($testers_infoAr)) {
+        if (AMACommonDataHandler::isError($testers_infoAr)) {
             return [];
         }
         $userId = $userObj->getId();
@@ -2052,8 +2078,8 @@ class MultiPort
         foreach ($testers_infoAr as $tester_infoAr) {
             $tester_dsn = self::getDSN($tester_infoAr['puntatore']);
             if ($tester_dsn != null) {
-                $tester_dh = AMA_DataHandler::instance($tester_dsn);
-                $result +=  $tester_dh->count_new_notes_in_course_instances($courseInstanceId, $userId);
+                $tester_dh = AMADataHandler::instance($tester_dsn);
+                $result +=  $tester_dh->countNewNotesInCourseInstances($courseInstanceId, $userId);
             }
         }
         return $result;
@@ -2070,7 +2096,7 @@ class MultiPort
      *
      * @author giorgio 30/apr/2013
      */
-    public static function update_new_nodes_in_session($userObj)
+    public static function updateNewNodesInSession($userObj)
     {
 
 
@@ -2080,9 +2106,9 @@ class MultiPort
         $common_dh = $GLOBALS['common_dh'];
 
         $testers_activity_dataAr = [];
-        $testers_infoAr = $common_dh->get_all_testers(['id_tester', 'nome']);
+        $testers_infoAr = $common_dh->getAllTesters(['id_tester', 'nome']);
 
-        if (AMA_Common_DataHandler::isError($testers_infoAr)) {
+        if (AMACommonDataHandler::isError($testers_infoAr)) {
             return [];
         }
 
@@ -2100,8 +2126,8 @@ class MultiPort
         foreach ($testers_infoAr as $tester_infoAr) {
             $tester_dsn = self::getDSN($tester_infoAr['puntatore']);
             if ($tester_dsn != null) {
-                $tester_dh = AMA_DataHandler::instance($tester_dsn);
-                $todel = $tester_dh->get_updates_nodes($userObj, $tester_infoAr['puntatore']);
+                $tester_dh = AMADataHandler::instance($tester_dsn);
+                $todel = $tester_dh->getUpdatesNodes($userObj, $tester_infoAr['puntatore']);
                 // unset proper array keys
                 foreach ($whatsnew[$tester_infoAr['puntatore']] as $key => $whatsnewItem) {
                     foreach ($todel as $todelitem) {
@@ -2132,7 +2158,7 @@ class MultiPort
      * @author giorgio 29/apr/2013
      */
 
-    public static function get_new_nodes($userObj)
+    public static function getNewNodes($userObj)
     {
         if ($userObj instanceof ADAGuest) {
             return  0;
@@ -2140,14 +2166,14 @@ class MultiPort
         $common_dh = $GLOBALS['common_dh'];
 
         $testers_activity_dataAr = [];
-        $testers_infoAr = $common_dh->get_all_testers(['id_tester', 'nome']);
+        $testers_infoAr = $common_dh->getAllTesters(['id_tester', 'nome']);
         if (!MULTIPROVIDER) {
             $testers_infoAr = array_values(array_filter($testers_infoAr, function ($el) {
                 return strcmp($el['puntatore'], $GLOBALS['user_provider']) === 0;
             }));
         }
 
-        if (AMA_Common_DataHandler::isError($testers_infoAr)) {
+        if (AMACommonDataHandler::isError($testers_infoAr)) {
             return [];
         }
         $userId = $userObj->getId();
@@ -2160,10 +2186,10 @@ class MultiPort
             }
             $tester_dsn = self::getDSN($tester_infoAr['puntatore']);
             if ($tester_dsn != null) {
-                $tester_dh = AMA_DataHandler::instance($tester_dsn);
+                $tester_dh = AMADataHandler::instance($tester_dsn);
                 $result[$tester_infoAr['puntatore']] = array_merge(
                     $result[$tester_infoAr['puntatore']],
-                    $tester_dh->get_new_nodes($userId)
+                    $tester_dh->getNewNodes($userId)
                 );
             }
         }
@@ -2196,7 +2222,7 @@ class MultiPort
             }
         }
         // new messages in forum, AKA NOTES!!!
-        $msg_forum_count = MultiPort::count_new_notes($userObj, $courseInstanceId);
+        $msg_forum_count = MultiPort::countNewNotes($userObj, $courseInstanceId);
 
         return (($count_new_nodes > 0) || ($msg_forum_count > 0));
     }
@@ -2230,8 +2256,8 @@ class MultiPort
             }
 
             foreach ($testers as $tester) {
-                $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
-                $result = $tester_dh->remove_user_extraRow($user_id, $extraTableId, $extraTableClass);
+                $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester));
+                $result = $tester_dh->removeUserExtraRow($user_id, $extraTableId, $extraTableClass);
             }
             return $result;
         } else {
@@ -2242,21 +2268,21 @@ class MultiPort
     /*
      * Used by admin/log_report.php
      */
-    public static function log_report($pointer = null, $Services_Type = null)
+    public static function logReport($pointer = null, $Services_Type = null)
     {
         $log_dataAr = [];
         $common_dh = $GLOBALS['common_dh'];
         $filedArray = ['nome', 'ragione_sociale', 'id_tester'];
         if (isset($pointer)) {
-            $testers_list = $common_dh->get_tester_info_from_pointer($pointer);
-            if (!AMA_DB::isError($testers_list)) {
+            $testers_list = $common_dh->getTesterInfoFromPointer($pointer);
+            if (!AMADB::isError($testers_list)) {
                 $tester_name = $testers_list[1];
                 $tester = $pointer;
                 $tester_dsn = self::getDSN($tester);
                 if ($tester_dsn != null) {
-                    $tester_dh = AMA_DataHandler::instance($tester_dsn);
-                    $result = $tester_dh->tester_log_report($tester_name, null);
-                    if (!AMA_DB::isError($result)) {
+                    $tester_dh = AMADataHandler::instance($tester_dsn);
+                    $result = $tester_dh->testerLogReport($tester_name, null);
+                    if (!AMADB::isError($result)) {
                         $result['provider'] = $tester_name;
                         $result['provider_id'] = (int) $testers_list[0];
                         $log_dataAr[$tester] = $result;
@@ -2264,16 +2290,16 @@ class MultiPort
                 }
             }
         } else {
-            $testers_list = $common_dh->get_all_testers($filedArray);
-            if (!AMA_DB::isError($testers_list)) {
+            $testers_list = $common_dh->getAllTesters($filedArray);
+            if (!AMADB::isError($testers_list)) {
                 foreach ($testers_list as $testerAr) {
                     $tester_name = $testerAr['nome'];
                     $tester = $testerAr['puntatore'];
                     $tester_dsn = self::getDSN($tester);
                     if ($tester_dsn != null) {
-                        $tester_dh = AMA_DataHandler::instance($tester_dsn);
-                        $result = $tester_dh->tester_log_report($tester_name, $Services_Type);
-                        if (!AMA_DB::isError($result)) {
+                        $tester_dh = AMADataHandler::instance($tester_dsn);
+                        $result = $tester_dh->testerLogReport($tester_name, $Services_Type);
+                        if (!AMADB::isError($result)) {
                             $result['provider'] = $tester_name;
                             $result['provider_id'] = (int) $testerAr['id_tester'];
                             $log_dataAr[$tester] = $result;

@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Module\GDPR\GdprPolicy;
+
+use Lynxlab\ADA\Module\GDPR\GdprBase;
+
+use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\CORE\html4\CBaseElement;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class GdprPolicy was declared with namespace Lynxlab\ADA\Module\GDPR. //
+
 /**
  * @package     gdpr module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -65,7 +79,7 @@ class GdprPolicy extends GdprBase
     {
         $button = CDOMElement::create('a', 'class:ui tiny button');
         $button->addChild(new CText(translateFN(self::EDITBUTTONLABEL)));
-        $button->setAttribute('href', 'editPolicy.php?id=' . $this->getPolicy_content_id());
+        $button->setAttribute('href', 'editPolicy.php?id=' . $this->getPolicyContentId());
         return $button;
     }
 
@@ -96,7 +110,7 @@ class GdprPolicy extends GdprBase
     /**
      * @return mixed
      */
-    public function getPolicy_content_id()
+    public function getPolicyContentId()
     {
         return $this->policy_content_id;
     }
@@ -120,7 +134,7 @@ class GdprPolicy extends GdprBase
     /**
      * @return mixed
      */
-    public function getTester_pointer()
+    public function getTesterPointer()
     {
         return $this->tester_pointer;
     }
@@ -160,7 +174,7 @@ class GdprPolicy extends GdprBase
     /**
      * @param mixed $policy_content_id
      */
-    public function setPolicy_content_id($policy_content_id)
+    public function setPolicyContentId($policy_content_id)
     {
         $this->policy_content_id = $policy_content_id;
         return $this;
@@ -187,7 +201,7 @@ class GdprPolicy extends GdprBase
     /**
      * @param mixed $tester_pointer
      */
-    public function setTester_pointer($tester_pointer)
+    public function setTesterPointer($tester_pointer)
     {
         $this->tester_pointer = $tester_pointer;
         return $this;

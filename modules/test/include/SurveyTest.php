@@ -1,5 +1,31 @@
 <?php
 
+use Lynxlab\ADA\Module\Test\TopicTest;
+
+use Lynxlab\ADA\Module\Test\SurveyTest;
+
+use Lynxlab\ADA\Module\Test\RootTest;
+
+use Lynxlab\ADA\Module\Test\NodeTest;
+
+use Lynxlab\ADA\Module\Test\AMATestDataHandler;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\CORE\html4\CBaseElement;
+
+use Lynxlab\ADA\CORE\HtmlElements\Table;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class SurveyTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -121,7 +147,7 @@ class SurveyTest extends RootTest
          'titolo' => string 'Valutazione della Formazione' (length=28)
          'data_creazione' => string '1462974190' (length=10)
          */
-        $test_list = $dh->test_getCourseSurveys(['id_corso' => $course_instanceObj->getCourseId()]);
+        $test_list = $dh->testGetCourseSurveys(['id_corso' => $course_instanceObj->getCourseId()]);
         $reportData = [];
         if (!empty($test_list)) {
             $reportData['surveys'] = [];
@@ -130,16 +156,16 @@ class SurveyTest extends RootTest
                 $reportData['surveys'] += $survey->toArray();
 
                 // survey loop ended, do current survey computations
-                $historyArr = $dh->test_getHistoryTest([
+                $historyArr = $dh->testGetHistoryTest([
                         'id_corso' => $course_instanceObj->getCourseId(),
                         'id_istanza_corso' => $course_instanceObj->getId(),
                         'id_nodo' => $survey->id_nodo,
                         'consegnato' => 1,
                 ]);
 
-                if (!AMA_DB::isError($historyArr) && count($historyArr) > 0) {
+                if (!AMADB::isError($historyArr) && count($historyArr) > 0) {
                     foreach ($historyArr as $historyEl) {
-                        $givenAnswers = $dh->test_getGivenAnswers($historyEl['id_history_test']);
+                        $givenAnswers = $dh->testGetGivenAnswers($historyEl['id_history_test']);
                         foreach ($givenAnswers as $givenAnswer) {
                             // get a reference to the answers array to add report data
                             $targetArr = &$reportData['surveys'][$survey->id_nodo]['topics'][$givenAnswer['id_topic']]['questions'][$givenAnswer['id_nodo']]['answers'];

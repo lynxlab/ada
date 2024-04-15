@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\Html;
+
+use Lynxlab\ADA\Main\Output\GenericHtml;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\ADAError;
+
+// Trigger: ClassWithNameSpace. The class Html was declared with namespace Lynxlab\ADA\Main\Output. //
+
 /**
  * NEW Output classes
  *
@@ -134,9 +148,9 @@ class Html extends GenericHtml
      * @param string $widgetsConfFilename xml configuration filename for the widgets
      * @param arrayn $optionsArray array of option to be passed to the widget loader
      *
-     * @return array|AMA_Error
+     * @return array|AMAError
      */
-    public function fillin_widgetsFN($widgetsConfFilename = '', $optionsArray = [])
+    public function fillinWidgetsFN($widgetsConfFilename = '', $optionsArray = [])
     {
 
         if (is_file($widgetsConfFilename)) {
@@ -147,7 +161,7 @@ class Html extends GenericHtml
                    * see config_errors.inc.php line 167 and following.
                    * depending on the erorr phase / severity something will happen...
                    */
-                return new ADA_Error(null, 'Widget configuration XML is not valid', __METHOD__, ADA_ERROR_ID_XML_PARSING);
+                return new ADAError(null, 'Widget configuration XML is not valid', __METHOD__, ADA_ERROR_ID_XML_PARSING);
             }
         }
 

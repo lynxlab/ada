@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * IMPORT MODULE
  *
@@ -63,10 +71,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'  &
     $importHelper = new ImportHelper($_POST);
     $result = $importHelper->runImport();
 
-    if (AMA_DB::isError($result)) {
+    if (AMADB::isError($result)) {
         $data = translateFN("ERRORE NELL'IMPORTAZIONE: ") . $result->errorMessage();
 
-        /* only a call to the add_course data handler method should
+        /* only a call to the addCourse data handler method should
          * generate a duplicate record error. Shall give out a 'special' error for it
         */
         if ($result->code == AMA_ERR_ADD || $result->code == AMA_ERR_UNIQUE_KEY) {
@@ -98,7 +106,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'  &
     /**
      * load authors list from the DB
      */
-    $providerAuthors = $dh->find_authors_list(['username'], '');
+    $providerAuthors = $dh->findAuthorsList(['username'], '');
     $authors = [];
     foreach ($providerAuthors as $author) {
         $authors[$author[0]] = $author[1];
@@ -110,7 +118,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'  &
     /**
      * load course list from the DB
      */
-    $providerCourses = $dh->get_courses_list(['nome','titolo']);
+    $providerCourses = $dh->getCoursesList(['nome','titolo']);
 
     $courses = [];
     foreach ($providerCourses as $course) {

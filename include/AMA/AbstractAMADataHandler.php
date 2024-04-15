@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Main\Stack\Stack;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class AbstractAMADataHandler was declared with namespace Lynxlab\ADA\Main\AMA. //
+
 /**
  * AMA_DataHandler implements a class to handle complex DB read/write operations
  * for the ADA project.
@@ -17,7 +29,7 @@ use PDO;
 use PDOException;
 use PDOStatement;
 
-abstract class Abstract_AMA_DataHandler
+abstract class AbstractAMADataHandler
 {
     /**
      * database connection string
@@ -82,38 +94,38 @@ abstract class Abstract_AMA_DataHandler
      * function getConnection
      *
      * Used to handle database connection.
-     * Calls AMA_DB::connect() method and returns a reference to
-     * the AMA_DB connection object created.
+     * Calls AMADB::connect() method and returns a reference to
+     * the AMADB connection object created.
      * If $this->db already stores a connection object, then simply
      * return a reference to it.
      *
-     * @return mixed $db - an AMA_DB connection object on success,
-     *                  an AMA_Error object on failure.
+     * @return mixed $db - an AMADB connection object on success,
+     *                  an AMAError object on failure.
      */
     protected function &getConnection()
     {
 
         if ($this->db === AMA_DB_NOT_CONNECTED) {
-            //            ADALogger::log_db('Creating a new database connection '. $this->dsn);
-            $db = &AMA_DB::connect($this->dsn);
-            if (AMA_DB::isError($db)) {
-                $retval = new AMA_Error(AMA_ERR_DB_CONNECTION);
+            //            ADALogger::logDb('Creating a new database connection '. $this->dsn);
+            $db = &AMADB::connect($this->dsn);
+            if (AMADB::isError($db)) {
+                $retval = new AMAError(AMA_ERR_DB_CONNECTION);
                 return $retval;
             }
             $this->db = &$db;
         } else {
-            //           ADALogger::log_db('Db già connesso '. $this->dsn . ' ' .$this->db->getDSN());
+            //           ADALogger::logDb('Db già connesso '. $this->dsn . ' ' .$this->db->getDSN());
             if ($this->dsn !== $this->db->getDSN()) {
-                ADALogger::log_db('dsn diverso chiusura DB ' . $this->dsn . ' ' . $this->db->getDSN());
+                ADALogger::logDb('dsn diverso chiusura DB ' . $this->dsn . ' ' . $this->db->getDSN());
                 // Close existing datababse connection
                 if (is_object($this->db) && method_exists($this->db, 'disconnect')) {
-                    ADALogger::log_db('Closing open connection to database ' .  $this->db->getDSN());
+                    ADALogger::logDb('Closing open connection to database ' .  $this->db->getDSN());
                     $this->db->disconnect();
                 }
                 // Open a new database connection
-                $db = &AMA_DB::connect($this->dsn);
-                if (AMA_DB::isError($db)) {
-                    return new AMA_Error(AMA_ERR_DB_CONNECTION);
+                $db = &AMADB::connect($this->dsn);
+                if (AMADB::isError($db)) {
+                    return new AMAError(AMA_ERR_DB_CONNECTION);
                 }
                 $this->db = &$db;
             }
@@ -124,10 +136,10 @@ abstract class Abstract_AMA_DataHandler
     /**
      * function executeCritical
      *
-     * Execute a query and return the number of affected rows (>0) or an AMA_Error
+     * Execute a query and return the number of affected rows (>0) or an AMAError
      *
      * @param string $query the INSER, UPDATE or DELETE sql query
-     * @return mixed int number of affected rows or AMA_Error object
+     * @return mixed int number of affected rows or AMAError object
      */
     protected function executeCritical($query)
     {
@@ -153,7 +165,7 @@ abstract class Abstract_AMA_DataHandler
         switch (DB_ABS_LAYER) {
             case PDO_DB:
             default:
-                $res = $this->DB_execute_critical($query);
+                $res = $this->DBExecuteCritical($query);
                 break;
                 /**
                  * Pls handle other databases connection here by adding more cases
@@ -162,13 +174,13 @@ abstract class Abstract_AMA_DataHandler
         // $res is the number of affected rows or an error
         // if $res is an error, return an AMA Error with error message as
         // additional debug info
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             // get debug info (this works from php 4.3.0)
             $deb_bac = debug_backtrace();
             // create debuginfo
             $error_msg = "while in {$deb_bac[1]['function']} in file {$deb_bac[1]['file']} on line {$deb_bac[1]['line']} " . $res->getMessage();
             // create a new AMA error with error code $ERROR and additional debug info $error_msg
-            return new AMA_Error($ERROR, $error_msg);
+            return new AMAError($ERROR, $error_msg);
         }
         // if $res is not an error, it's the number of rows affected by $query
         if ($res == 0) {
@@ -177,7 +189,7 @@ abstract class Abstract_AMA_DataHandler
             // create debuginfo referring to the function that called executeCritical
             $error_msg = "while in {$deb_bac[1]['function']} in file {$deb_bac[1]['file']} on line {$deb_bac[1]['line']}: unknown error!";
             // create a new AMA error with error code $ERROR and additional debug info $error_msg
-            return new AMA_Error($ERROR, $error_msg);
+            return new AMAError($ERROR, $error_msg);
         }
         // if $res > 0, query succeeded. we return number of affected rows.
         return $res;
@@ -189,18 +201,18 @@ abstract class Abstract_AMA_DataHandler
      * @param string $query
      * @return mixed number of affected rows or an error
      */
-    protected function DB_execute_critical($query)
+    protected function DBExecuteCritical($query)
     {
 
-        //ADALogger::log_db('Call to DB_execute_critical');
+        //ADALogger::logDb('Call to DB_execute_critical');
         // connect to db if not connected
         $db = &$this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
         // execute query, and if there's an error return it
         $res = $db->exec($query);
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             return $res;
         }
         // if $res is not an error, return the number of affected rows
@@ -221,7 +233,7 @@ abstract class Abstract_AMA_DataHandler
      *
      * @return the prepared string
      */
-    public function sql_prepared($s)
+    public function sqlPrepared($s)
     {
         $s =  addslashes($s);
         return "'$s'";
@@ -236,7 +248,7 @@ abstract class Abstract_AMA_DataHandler
      *
      * @return the transformed string
      */
-    public function sql_deprepared($s)
+    public function sqlDeprepared($s)
     {
         // function used to remove backslashes
         // and other stuff like \', ...
@@ -253,7 +265,7 @@ abstract class Abstract_AMA_DataHandler
      *
      * @return the value or "NULL"
      */
-    protected function or_null($s)
+    protected function orNull($s)
     {
         if (!$s || $s == "''") {
             return "NULL";
@@ -271,7 +283,7 @@ abstract class Abstract_AMA_DataHandler
      *
      * @return the value or ZERO (0)
      */
-    protected function or_zero($s)
+    protected function orZero($s)
     {
         if (!isset($s) || $s == "''" || $s == "") {
             return "0";
@@ -290,7 +302,7 @@ abstract class Abstract_AMA_DataHandler
      *
      * @return the string representing the timestamp as a date, according to the format
      */
-    public static function ts_to_date($timestamp, $format = ADA_DATE_FORMAT)
+    public static function tsToDate($timestamp, $format = ADA_DATE_FORMAT)
     {
         if ($timestamp == "") {
             return "";
@@ -308,7 +320,7 @@ abstract class Abstract_AMA_DataHandler
      *
      * @return the timestamp as an integer
      */
-    public static function date_to_ts($date, $time = null)
+    public static function dateToTs($date, $time = null)
     {
         if ($date == "NULL") {
             return $date;
@@ -358,7 +370,7 @@ abstract class Abstract_AMA_DataHandler
      * @param
      * @return
      */
-    public function add_number_of_days($number_of_days, $timestamp = null)
+    public function addNumberOfDays($number_of_days, $timestamp = null)
     {
 
         if (!is_null($timestamp)) {
@@ -383,9 +395,9 @@ abstract class Abstract_AMA_DataHandler
      */
     public static function isError($value)
     {
-        return (is_object($value) && AMA_DB::isError($value));
-        //         ($value instanceof  AMA_Error)
-        // (get_class($value) == 'AMA_Error' || is_subclass_of($value, 'PEAR_Error')));
+        return (is_object($value) && AMADB::isError($value));
+        //         ($value instanceof  AMAError)
+        // (get_class($value) == 'AMAError' || is_subclass_of($value, 'PEAR_Error')));
     }
 
     /**
@@ -419,11 +431,11 @@ abstract class Abstract_AMA_DataHandler
      * @access private
      *
      */
-    protected function begin_transaction()
+    protected function beginTransaction()
     {
         // if the rollback stack is not empty, then set up a marker
         if (!$this->rbStack->isEmpty()) {
-            $this->rbStack->insert_marker();
+            $this->rbStack->insertMarker();
         }
     }
 
@@ -433,7 +445,7 @@ abstract class Abstract_AMA_DataHandler
      * @access private
      *
      */
-    protected function rs_add()
+    protected function rsAdd()
     {
 
         // nuber of arguments
@@ -441,7 +453,7 @@ abstract class Abstract_AMA_DataHandler
 
         // generate an error if less than two arguments
         if ($numargs < 2) {
-            return new AMA_Error(AMA_ERR_TOO_FEW_ARGS);
+            return new AMAError(AMA_ERR_TOO_FEW_ARGS);
         }
         // get all the arguments as an array
         $arg_list = func_get_args();
@@ -479,12 +491,12 @@ abstract class Abstract_AMA_DataHandler
         $err_msg = '';
 
         // get last marker
-        $marker = $this->rbStack->remove_marker();
+        $marker = $this->rbStack->removeMarker();
 
-        ADALogger::log_db("entered _rollback (size: " . $this->rbStack->get_size() . ", marker: $marker)");
+        ADALogger::logDb("entered _rollback (size: " . $this->rbStack->getSize() . ", marker: $marker)");
 
         // loop on the stack untill the last marker is reached
-        while ($this->rbStack->get_size() > $marker) {
+        while ($this->rbStack->getSize() > $marker) {
             // get the element from the rollback stack
             $element_ha = $this->rbStack->pop();
 
@@ -516,7 +528,7 @@ abstract class Abstract_AMA_DataHandler
 
             // evaluate the function
 
-            ADALogger::log_db("_rollback calls: $e_str");
+            ADALogger::logDb("_rollback calls: $e_str");
             eval($e_str);
 
             // add to error message if the instruction in the stack fails, somehow
@@ -545,10 +557,10 @@ abstract class Abstract_AMA_DataHandler
     protected function commit()
     {
         // get last marker
-        $marker = $this->rbStack->remove_marker();
+        $marker = $this->rbStack->removeMarker();
 
         // loop on the stack untill the last marker is reached
-        while ($this->rbStack->get_size() > $marker) {
+        while ($this->rbStack->getSize() > $marker) {
             // delete the rollback stack statement
             // by assigning it to a dummy variable
             $a = $this->rbStack->pop();
@@ -564,14 +576,14 @@ abstract class Abstract_AMA_DataHandler
      *
      * @param  string $sql       - the sql query with placeholders
      * @param  array  $values    - the values to bind with the prepared statement
-     * @return object $resultObj - the result object as returned by the AMA_DB layer
+     * @return object $resultObj - the result object as returned by the AMADB layer
      *
      * @access private
      */
     private function prepareAndExecute($sql, $values = [])
     {
         $db = &$this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -603,7 +615,7 @@ abstract class Abstract_AMA_DataHandler
             if ($resultObj) {
                 return $stmt;
             } else {
-                return new AMA_Error();
+                return new AMAError();
             }
         } catch (PDOException $e) {
             return $e;
@@ -617,7 +629,7 @@ abstract class Abstract_AMA_DataHandler
     }
 
     /**
-     * This is the prepared version of the AMA_DB getRow() method.
+     * This is the prepared version of the AMADB getRow() method.
      *
      * @param  string $sql       - the sql query with placeholders
      * @param  array  $values    - the values to bind with the prepared statement
@@ -636,7 +648,7 @@ abstract class Abstract_AMA_DataHandler
 
         $resultObj = $this->prepareAndExecute($sql, $values);
 
-        if (AMA_DB::isError($resultObj)) {
+        if (AMADB::isError($resultObj)) {
             return $resultObj;
         }
 
@@ -646,7 +658,7 @@ abstract class Abstract_AMA_DataHandler
     }
 
     /**
-     * This is the prepared version of the AMA_DB getAll() method.
+     * This is the prepared version of the AMADB getAll() method.
      *
      * @param  string $sql       - the sql query with placeholders
      * @param  array  $values    - the values to bind with the prepared statement
@@ -665,7 +677,7 @@ abstract class Abstract_AMA_DataHandler
 
         $resultObj = $this->prepareAndExecute($sql, $values);
 
-        if (AMA_DB::isError($resultObj)) {
+        if (AMADB::isError($resultObj)) {
             return $resultObj;
         }
 
@@ -680,7 +692,7 @@ abstract class Abstract_AMA_DataHandler
     }
 
     /**
-     * This is the prepared version of the AMA_DB getOne() method.
+     * This is the prepared version of the AMADB getOne() method.
      *
      * @param  string $sql       - the sql query with placeholders
      * @param  array  $values    - the values to bind with the prepared statement
@@ -694,7 +706,7 @@ abstract class Abstract_AMA_DataHandler
     }
 
     /**
-     * This is the prepared version of the AMA_DB getCol() method.
+     * This is the prepared version of the AMADB getCol() method.
      *
      * @param  string $sql       - the sql query with placeholders
      * @param  array  $values    - the values to bind with the prepared statement
@@ -708,7 +720,7 @@ abstract class Abstract_AMA_DataHandler
     }
 
     /**
-     * This is the prepared version of the AMA_DB query() method.
+     * This is the prepared version of the AMADB query() method.
      *
      * @param  string $sql       - the sql query with placeholders
      * @param  array  $values    - the values to bind with the prepared statement
@@ -727,7 +739,7 @@ abstract class Abstract_AMA_DataHandler
 
         $resultObj = $this->prepareAndExecute($sql, $values);
 
-        if (!AMA_DB::isError($resultObj) && $resultObj === AMA_DB_OK) {
+        if (!AMADB::isError($resultObj) && $resultObj === AMA_DB_OK) {
             return true;
         }
 
@@ -744,7 +756,7 @@ abstract class Abstract_AMA_DataHandler
     protected function execPrepared($stmt, $values = [])
     {
         $db = &$this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -760,7 +772,7 @@ abstract class Abstract_AMA_DataHandler
             if ($resultObj) {
                 return $db->affectedRows($stmt);
             } else {
-                return new AMA_Error();
+                return new AMAError();
             }
         } catch (PDOException $e) {
             return $e;
@@ -796,7 +808,7 @@ abstract class Abstract_AMA_DataHandler
         switch (DB_ABS_LAYER) {
             case PDO_DB:
             default:
-                $res = $this->DB_execute_critical_prepared($sql, $values);
+                $res = $this->DBExecuteCriticalPrepared($sql, $values);
                 break;
                 /**
                  * Pls handle other databases connection here by adding more cases
@@ -805,13 +817,13 @@ abstract class Abstract_AMA_DataHandler
         // $res is the number of affected rows or an error
         // if $res is an error, return an AMA Error with error message as
         // additional debug info
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             // get debug info (this works from php 4.3.0)
             $deb_bac = debug_backtrace();
             // create debuginfo
             $error_msg = "while in {$deb_bac[1]['function']} in file {$deb_bac[1]['file']} on line {$deb_bac[1]['line']} " . $res->getMessage();
             // create a new AMA error with error code $ERROR and additional debug info $error_msg
-            return new AMA_Error($ERROR, $error_msg);
+            return new AMAError($ERROR, $error_msg);
         }
         // if $res is not an error, it's the number of rows affected by $query
         if ($res == 0) {
@@ -820,7 +832,7 @@ abstract class Abstract_AMA_DataHandler
             // create debuginfo referring to the function that called executeCritical
             $error_msg = "while in {$deb_bac[1]['function']} in file {$deb_bac[1]['file']} on line {$deb_bac[1]['line']}: unknown error!";
             // create a new AMA error with error code $ERROR and additional debug info $error_msg
-            return new AMA_Error($ERROR, $error_msg);
+            return new AMAError($ERROR, $error_msg);
         }
         // if $res > 0, query succeeded. we return number of affected rows.
         return $res;
@@ -833,14 +845,14 @@ abstract class Abstract_AMA_DataHandler
      * @param string $query
      * @return mixed number of affected rows or an error
      */
-    protected function DB_execute_critical_prepared($sql, $values = [])
+    protected function DBExecuteCriticalPrepared($sql, $values = [])
     {
 
-        //ADALogger::log_db('Call to DB_execute_critical_prepared');
+        //ADALogger::logDb('Call to DB_execute_critical_prepared');
 
         // connect to db if not connected
         $db = &$this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
         /**
@@ -852,7 +864,7 @@ abstract class Abstract_AMA_DataHandler
 
         // execute query, and if there's an error return it
         $result = $this->queryPrepared($stmt, $values);
-        if (AMA_DB::isError($result)) {
+        if (AMADB::isError($result)) {
             return $result;
         }
         /**
@@ -874,18 +886,18 @@ abstract class Abstract_AMA_DataHandler
     {
         // FIXME: verificare se e' ok chiudere cosi' una connessione al database.
 
-        //ADALogger::log_db('Call to Abstract_AMA_DataHandler destructor');
+        //ADALogger::logDb('Call to Abstract_AMA_DataHandler destructor');
         if (is_object($this->db) && method_exists($this->db, 'disconnect')) {
-            //ADALogger::log_db('Closing open connection to database');
+            //ADALogger::logDb('Closing open connection to database');
             $this->disconnect();
         }
     }
 
     public function disconnect()
     {
-        //ADALogger::log_db('Call to disconnect');
+        //ADALogger::logDb('Call to disconnect');
         if (is_object($this->db) && method_exists($this->db, 'disconnect')) {
-            //ADALogger::log_db('Closing open connection to database');
+            //ADALogger::logDb('Closing open connection to database');
             $this->db->disconnect();
             $this->db = AMA_DB_NOT_CONNECTED;
         }

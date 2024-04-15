@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * subscriptions file
  *
@@ -106,8 +124,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $subscriberObj = MultiPort::findUserByUsername($_POST['username']);
             $canSubscribeUser = false;
             if ($subscriberObj instanceof ADAUser) {
-                $result = $dh->student_can_subscribe_to_course_instance($subscriberObj->getId(), $courseInstanceId);
-                if (!AMA_DataHandler::isError($result) && $result !== false) {
+                $result = $dh->studentCanSubscribeToCourseInstance($subscriberObj->getId(), $courseInstanceId);
+                if (!AMADataHandler::isError($result) && $result !== false) {
                     $canSubscribeUser = $courseInstanceObj instanceof CourseInstance &&
                         $courseInstanceObj->isFull() &&
                         $courseInstanceObj->getServiceLevel() != ADA_SERVICE_TUTORCOMMUNITY;
@@ -127,8 +145,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 $canSubscribeUser = false;
             }
             if ($canSubscribeUser) {
-                $courseProviderAr = $common_dh->get_tester_info_from_id_course($courseObj->getId());
-                if (!AMA_DB::isError($courseProviderAr) && is_array($courseProviderAr) && isset($courseProviderAr['puntatore'])) {
+                $courseProviderAr = $common_dh->getTesterInfoFromIdCourse($courseObj->getId());
+                if (!AMADB::isError($courseProviderAr) && is_array($courseProviderAr) && isset($courseProviderAr['puntatore'])) {
                     if (!in_array($courseProviderAr['puntatore'], $subscriberObj->getTesters())) {
                         // subscribe user to course provider
                         $canSubscribeUser = Multiport::setUser($subscriberObj, [$courseProviderAr['puntatore']]);

@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+
+use Lynxlab\ADA\Comunica\DataHandler\UserDataHandler;
+
+// Trigger: ClassWithNameSpace. The class UserDataHandler was declared with namespace Lynxlab\ADA\Comunica\DataHandler. //
+
 /**
  * UserDataHandler
  *
@@ -21,7 +31,7 @@ namespace Lynxlab\ADA\Comunica\DataHandler;
  *
  * @author Guglielmo Celata <guglielmo@celata.com>
  */
-class UserDataHandler extends Abstract_AMA_DataHandler
+class UserDataHandler extends AbstractAMADataHandler
 {
     private static $instance = null;
 
@@ -61,14 +71,14 @@ class UserDataHandler extends Abstract_AMA_DataHandler
      * @return  a refrerence to a 2-dim array,
      *           each row will have id_utente in the 0 element
      *           and the fields specified in the list in the others
-     *          an AMA_Error object if something goes wrong
+     *          an AMAError object if something goes wrong
      *
      **/
-    public function &find_users_list($fields_list_ar, $clause = "")
+    public function &findUsersList($fields_list_ar, $clause = "")
     {
         // logger("UserDataHandler::find_users_list entered", 3);
         $db = & parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -92,9 +102,9 @@ class UserDataHandler extends Abstract_AMA_DataHandler
         $sql = "select id_utente$more_fields from utente $clause";
         // logger("performing query: $sql", 4);
         $users_ar = $db->getAll($sql);
-        if (AMA_DB::isError($users_ar)) {
+        if (AMADB::isError($users_ar)) {
             //return $db;
-            return new AMA_Error(AMA_ERR_GET);
+            return new AMAError(AMA_ERR_GET);
         }
         // logger("query succeeded", 4);
         // return nested array in the form
@@ -111,11 +121,11 @@ class UserDataHandler extends Abstract_AMA_DataHandler
      * @return  a refrerence to a 2-dim array,
      *           each row will have id_utente in the 0 element
      *           and the fields specified in the list in the others
-     *          an AMA_Error object if something goes wrong
+     *          an AMAError object if something goes wrong
      *
      **/
-    public function &get_users_list($fields_list_ar)
+    public function &getUsersList($fields_list_ar)
     {
-        return $this->find_users_list($fields_list_ar);
+        return $this->findUsersList($fields_list_ar);
     }
 }

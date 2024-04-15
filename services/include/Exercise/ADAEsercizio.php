@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Services\Exercise\ADAEsercizio;
+
+// Trigger: ClassWithNameSpace. The class ADAEsercizio was declared with namespace Lynxlab\ADA\Services\Exercise. //
+
 namespace Lynxlab\ADA\Services\Exercise;
 
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
@@ -196,7 +202,7 @@ class ADAEsercizio
     {
         if (isset($this->risposta['allegato'])) {
             return $this->risposta['allegato'];
-        } else {   // dovrebbe restituire null o false, ma il metodo $dh->add_ex_history
+        } else {   // dovrebbe restituire null o false, ma il metodo $dh->addExHistory
             //si aspetta una cosa del genere.
             return " ";
         }

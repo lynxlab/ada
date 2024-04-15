@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\GenericXML;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class GenericXML was declared with namespace Lynxlab\ADA\Main\Output. //
+
 /**
  * NEW Output classes
  *

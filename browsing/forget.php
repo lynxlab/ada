@@ -1,5 +1,31 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /*
  * Created on 06/ott/2009
  * FORGET
@@ -133,22 +159,22 @@ switch ($op) {
     case "check_username":
         $username = $_POST['username'];
         if ($username != null) {
-            $user_id = $common_dh->find_user_from_username($username);
-            if (AMA_Common_DataHandler::isError($user_id)) {
+            $user_id = $common_dh->findUserFromUsername($username);
+            if (AMACommonDataHandler::isError($user_id)) {
                 // Utente non esistente o non loggable
                 /*
                  * Verifico se esiste un utente che ha come email  il contenuto del
                  * campo $username
                  */
-                //        $user_id = $common_dh->find_user_from_email($username);
-                //        if(AMA_Common_DataHandler::isError($user_id)) {
+                //        $user_id = $common_dh->findUserFromEmail($username);
+                //        if(AMACommonDataHandler::isError($user_id)) {
                 $message = translateFN("Username is not valid");
                 $redirect_to = HTTP_ROOT_DIR . "/browsing/forget.php?message=$message";
                 header('Location:' . $redirect_to);
                 exit();
                 //        }
             }
-            $userObj =   MultiPort::findUser($user_id);//read_user($user_id);  // ?
+            $userObj =   MultiPort::findUser($user_id);//readUser($user_id);  // ?
             if ((is_object($userObj)) && ($userObj instanceof ADALoggableUser)) {
                 // user is recognized as loggable
                 $userStatus = $userObj->getStatus();
@@ -194,10 +220,10 @@ switch ($op) {
             redirect(MODULES_SECRETQUESTION_HTTP . '/askQuestion.php?userId=' . $user_id);
         } else {
             $admtypeAr = [AMA_TYPE_ADMIN];
-            $admList = $common_dh-> get_users_by_type($admtypeAr);
-            // $admList = $tester_dh-> get_users_by_type($admtypeAr); ???
+            $admList = $common_dh-> getUsersByType($admtypeAr);
+            // $admList = $tester_dh-> getUsersByType($admtypeAr); ???
 
-            if (!AMA_DataHandler::isError($admList)) {
+            if (!AMADataHandler::isError($admList)) {
                 $adm_uname = $admList[0]['username'];
             } else {
                 $adm_uname = ""; // ??? FIXME: serve un superadmin nel file di config?
@@ -236,10 +262,10 @@ switch ($op) {
             $message_ha['mittente'] = $adm_uname;
 
             // delegate sending to the message handler
-            $res = $mh->send_message($message_ha);
+            $res = $mh->sendMessage($message_ha);
 
-            if (AMA_DataHandler::isError($res)) {
-                //    $errObj = new ADA_Error($res,translateFN('Impossibile spedire il messaggio'),
+            if (AMADataHandler::isError($res)) {
+                //    $errObj = new ADAError($res,translateFN('Impossibile spedire il messaggio'),
                 //    NULL,NULL,NULL,$error_page.'?err_msg='.urlencode(translateFN('Impossibile spedire il messaggio')));
             }
             //    } else {
@@ -263,7 +289,7 @@ switch ($op) {
         $tokenObj = TokenFinder::findTokenForPasswordChange($userid, $token);
         if ($tokenObj == false) {
             $error_page = HTTP_ROOT_DIR . "/browsing/forget.php";
-            $errObj = new ADA_Error(
+            $errObj = new ADAError(
                 $userType,
                 translateFN('It was impossible to confirm the password change: token not valid'),
                 null,
@@ -276,9 +302,9 @@ switch ($op) {
 
         $userObj = MultiPort::findUser($userid);
         $userStatus = $userObj->getStatus();
-        if (AMA_DataHandler::isError($userObj)) {
+        if (AMADataHandler::isError($userObj)) {
             $error_page = HTTP_ROOT_DIR . "/browsing/forget.php";
-            $errObj = new ADA_Error(
+            $errObj = new ADAError(
                 $userType,
                 translateFN('It was impossible to confirm the password change: user unknown'),
                 null,
@@ -296,7 +322,7 @@ switch ($op) {
             /**
              * Check that the user entered a valid password and confirmed it correctly
              */
-            if (DataValidator::validate_password($password, $passwordcheck) === false) {
+            if (DataValidator::validatePassword($password, $passwordcheck) === false) {
                 $errors = true;
                 $message .= translateFN('Le password digitate non corrispondo o contengono caratteri non validi.') . '<br />';
                 header("Location: " . HTTP_ROOT_DIR . "/browsing/forget.php?message=$message&uid=$userid&tok=$token");
@@ -307,10 +333,10 @@ switch ($op) {
                 $new_testers = [];
                 $resPass = MultiPort::setUser($userObj, $new_testers, true); // TRUE to modify user data
 
-                if (AMA_DataHandler::isError($resPass)) {
+                if (AMADataHandler::isError($resPass)) {
                     $msg = $result->getMessage();
                     $error_page = HTTP_ROOT_DIR . "/browsing/forget.php";
-                    $errObj = new ADA_Error(
+                    $errObj = new ADAError(
                         $requestInfo,
                         translateFN('It was impossible to confirm the password change'),
                         null,
@@ -327,8 +353,8 @@ switch ($op) {
 
                             $resSet = MultiPort::setUser($userObj, $new_testers, true);
                             /*
-                             $adh->set_user_status(ADA_STATUS_REGISTERED);
-                             $common_dh->set_user_status(ADA_STATUS_REGISTERED);
+                             $adh->setUserStatus(ADA_STATUS_REGISTERED);
+                             $common_dh->setUserStatus(ADA_STATUS_REGISTERED);
                              */
                             break;
                         case ADA_STATUS_REGISTERED:
@@ -336,7 +362,7 @@ switch ($op) {
                         case ADA_STATUS_REMOVED:
                         default:
                             $error_page = HTTP_ROOT_DIR . "/browsing/forget.php";
-                            $errObj = new ADA_Error(
+                            $errObj = new ADAError(
                                 $requestInfo,
                                 translateFN('It was impossible to confirm the password change: user unknown'),
                                 null,
@@ -368,15 +394,15 @@ switch ($op) {
          * Show the password change form.
          */
 
-        $token  = DataValidator::validate_action_token($_GET['tok']);
-        $userid = DataValidator::is_uinteger($_GET['uid']);
+        $token  = DataValidator::validateActionToken($_GET['tok']);
+        $userid = DataValidator::isUinteger($_GET['uid']);
 
         if ($token == false || $userid == false) {
             /*
              * Invalid data in input
              */
             $error_page = HTTP_ROOT_DIR . "/browsing/forget.php";
-            $errObj = new ADA_Error(
+            $errObj = new ADAError(
                 $requestInfo,
                 translateFN('It was impossible to confirm the password change'),
                 null,
@@ -393,7 +419,7 @@ switch ($op) {
              * There isn't a token corresponding to input data, do not proceed.
              */
             $error_page = HTTP_ROOT_DIR . "/browsing/forget.php";
-            $errObj = new ADA_Error(
+            $errObj = new ADAError(
                 $requestInfo,
                 translateFN('It was impossible to confirm the password change'),
                 null,
@@ -405,9 +431,9 @@ switch ($op) {
         }
 
         $userObj = MultiPort::findUser($userid);
-        if (AMA_DataHandler::isError($userObj)) {
+        if (AMADataHandler::isError($userObj)) {
             $error_page = HTTP_ROOT_DIR . "/browsing/forget.php";
-            $errObj = new ADA_Error(
+            $errObj = new ADAError(
                 $userType,
                 translateFN('It was impossible to confirm the password change: user unknown'),
                 null,

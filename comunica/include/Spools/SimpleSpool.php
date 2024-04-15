@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Comunica\Spools\Spool;
+
+use Lynxlab\ADA\Comunica\Spools\SimpleSpool;
+
+// Trigger: ClassWithNameSpace. The class SimpleSpool was declared with namespace Lynxlab\ADA\Comunica\Spools. //
+
 /**
  * SimpleSpool extends Spool and implements some peculiarities
  * related to the Simple message.
@@ -42,7 +54,7 @@ class SimpleSpool extends Spool
      * @param   $message_ha        - message data as an hash
      * @param   $recipients_ids_ar - list of recipients ids
      *
-     * @return  an AMA_Error object if something goes wrong
+     * @return  an AMAError object if something goes wrong
      *
      * (non-PHPdoc)
      * @see Spool::add_message()
@@ -53,16 +65,16 @@ class SimpleSpool extends Spool
      * definition compatible with Spool::add_message()
      *
      */
-    public function add_message($message_ha, $recipients_ids_ar, $check_on_uniqueness = false)
+    public function addMessage($message_ha, $recipients_ids_ar, $check_on_uniqueness = false)
     {
 
         // logger("entered SimpleSpool::add_message", 3);
 
         $this->clean();
 
-        $res = parent::add_message($message_ha, $recipients_ids_ar, $check_on_uniqueness);
-        if (AMA_DataHandler::isError($res)) {
-            // $res is an AMA_Error object
+        $res = parent::addMessage($message_ha, $recipients_ids_ar, $check_on_uniqueness);
+        if (AMADataHandler::isError($res)) {
+            // $res is an AMAError object
             return $res;
         }
     }
@@ -85,10 +97,10 @@ class SimpleSpool extends Spool
      * @return  a reference to a hash, if more than one fields are required
      *           res_ha[ID_MESSAGGIO] contains an array with all the values
      *          a reference to a linear array if only one field is required
-     *          an AMA_Error object if something goes wrong
+     *          an AMAError object if something goes wrong
      *
      */
-    public function &find_messages($fields_list = "", $clause = "", $ordering = "")
+    public function &findMessages($fields_list = "", $clause = "", $ordering = "")
     {
 
         /* logger("entered SimpleSpool::find_messages - ".
@@ -105,13 +117,13 @@ class SimpleSpool extends Spool
             $clause .= " and $basic_clause";
         }
         // call the parent's find_messages (without clean)
-        $res = parent::find_messages($fields_list, $clause, $ordering);
+        $res = parent::findMessages($fields_list, $clause, $ordering);
 
-        //    if (AMA_DataHandler::isError($res)) {
-        //      // $res is an AMA_Error object
+        //    if (AMADataHandler::isError($res)) {
+        //      // $res is an AMAError object
         //      return $res;
         //    }
-        // $res can ba an AMA_Error object or the messages found
+        // $res can ba an AMAError object or the messages found
         return $res;
     }
 
@@ -124,7 +136,7 @@ class SimpleSpool extends Spool
      *
      * @access  public
      *
-     * @return  an AMA_Error object if something goes wrong
+     * @return  an AMAError object if something goes wrong
      *          it is recommended that the error is not treated
      *
      */
@@ -141,7 +153,7 @@ class SimpleSpool extends Spool
         }
 
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -151,7 +163,7 @@ class SimpleSpool extends Spool
         $type    = $this->type;
         $rtc     = $this->rtc;
         $ntc     = $this->ntc;
-        $now     = $this->date_to_ts("now");
+        $now     = $this->dateToTs("now");
 
 
         // removing deleted_messages
@@ -162,17 +174,17 @@ class SimpleSpool extends Spool
         "       deleted='Y'";
         */
         // logger("SimpleSpool::clean: removing deleted", 2);
-        $res_ar = parent::find_messages("", "deleted='Y'");
-        if (AMA_DataHandler::isError($res_ar)) {
-            $retval = new AMA_Error(AMA_ERR_GET);
+        $res_ar = parent::findMessages("", "deleted='Y'");
+        if (AMADataHandler::isError($res_ar)) {
+            $retval = new AMAError(AMA_ERR_GET);
             return $retval;
         }
 
         if (count($res_ar)) {
             // FIXME: self::_clean_messages al posto della riga di sotto
-            $res = parent::clean_messages($res_ar);
-            if (AMA_DataHandler::isError($res)) {
-                $retval = new AMA_Error(AMA_ERR_REMOVE);
+            $res = parent::cleanMessages($res_ar);
+            if (AMADataHandler::isError($res)) {
+                $retval = new AMAError(AMA_ERR_REMOVE);
                 return $retval;
             }
         }
@@ -185,17 +197,17 @@ class SimpleSpool extends Spool
         "       read_timestamp = 0 and data_ora < $now-$ntc";
         */
         // logger("SimpleSpool::clean: removing not read", 2);
-        $res_ar = parent::find_messages("", "read_timestamp=0 and data_ora<$now-$ntc");
-        if (AMA_DataHandler::isError($res_ar)) {
-            $retval = new AMA_Error(AMA_ERR_GET);
+        $res_ar = parent::findMessages("", "read_timestamp=0 and data_ora<$now-$ntc");
+        if (AMADataHandler::isError($res_ar)) {
+            $retval = new AMAError(AMA_ERR_GET);
             return $retval;
         }
 
         if (count($res_ar)) {
             // FIXME: self::_clean_messages al posto della riga di sotto
-            $res = parent::clean_messages($res_ar);
-            if (AMA_DataHandler::isError($res)) {
-                $retval = new AMA_Error(AMA_ERR_REMOVE);
+            $res = parent::cleanMessages($res_ar);
+            if (AMADataHandler::isError($res)) {
+                $retval = new AMAError(AMA_ERR_REMOVE);
                 return $retval;
             }
         }
@@ -209,17 +221,17 @@ class SimpleSpool extends Spool
         "       read_timestamp > 0 and read_timestamp < $now-$rtc";
         */
         // logger("SimpleSpool::clean: removing read", 2);
-        $res_ar = parent::find_messages("", "read_timestamp>0 and read_timestamp<$now-$rtc");
-        if (AMA_DataHandler::isError($res_ar)) {
-            $retval = new AMA_Error(AMA_ERR_GET);
+        $res_ar = parent::findMessages("", "read_timestamp>0 and read_timestamp<$now-$rtc");
+        if (AMADataHandler::isError($res_ar)) {
+            $retval = new AMAError(AMA_ERR_GET);
             return $retval;
         }
 
         if (count($res_ar)) {
             // FIXME: self::_clean_messages al posto della riga di sotto
-            $res = parent::clean_messages($res_ar);
-            if (AMA_DataHandler::isError($res)) {
-                $retval = new AMA_Error(AMA_ERR_REMOVE);
+            $res = parent::cleanMessages($res_ar);
+            if (AMADataHandler::isError($res)) {
+                $retval = new AMAError(AMA_ERR_REMOVE);
                 return $retval;
             }
         }

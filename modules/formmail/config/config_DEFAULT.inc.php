@@ -1,5 +1,7 @@
 <?php
 
+use function \menuEnableFormMail;
+
 /**
  * FORMMAIL MODULE.
  *

@@ -1,5 +1,45 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Module\Test\QuestionManagementTest;
+
+use Lynxlab\ADA\Module\Test\ManagementTest;
+
+use Lynxlab\ADA\Module\Test\QuestionStandardFormTest;
+
+use Lynxlab\ADA\Module\Test\QuestionSelectClozeFormTest;
+
+use Lynxlab\ADA\Module\Test\QuestionOpenFormTest;
+
+use Lynxlab\ADA\Module\Test\QuestionMultipleClozeFormTest;
+
+use Lynxlab\ADA\Module\Test\QuestionFormTest;
+
+use Lynxlab\ADA\Module\Test\QuestionEraseClozeFormTest;
+
+use Lynxlab\ADA\Module\Test\QuestionEmptyFormTest;
+
+use Lynxlab\ADA\Module\Test\QuestionDragDropClozeFormTest;
+
+use Lynxlab\ADA\Module\Test\DeleteFormTest;
+
+use Lynxlab\ADA\Module\Test\QuestionSlotClozeTest;
+
+use Lynxlab\ADA\Module\Test\QuestionMultipleClozeTest;
+
+use Lynxlab\ADA\Module\Test\QuestionEraseClozeTest;
+
+use Lynxlab\ADA\Module\Test\QuestionClozeTest;
+
+use Lynxlab\ADA\Module\Test\AMATestDataHandler;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class QuestionManagementTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -39,13 +79,13 @@ class QuestionManagementTest extends ManagementTest
         $this->what = translateFN('domanda');
 
         if (is_null($id_test)) {
-            $q = $dh->test_getNode($id);
+            $q = $dh->testGetNode($id);
             if (AMATestDataHandler::isError($q) || empty($q)) {
                 return;
             }
             $id_test = $q['id_nodo_radice'];
         }
-        $test = $dh->test_getNode($id_test);
+        $test = $dh->testGetNode($id_test);
         if (AMATestDataHandler::isError($test) || empty($test)) {
             return;
         }
@@ -171,7 +211,7 @@ class QuestionManagementTest extends ManagementTest
                 $new_q = &$_SESSION['new_question'][$_GET['id_nodo_parent']];
                 $form = $this->instantiateObject($this->test['id_nodo'], $_POST, $_POST['id_nodo_parent'], $new_q['tipologia'], $new_q['cloze']);
                 if ($form->isValid()) {
-                    $siblings = $dh->test_getNodesByParent($_POST['id_nodo_parent']);
+                    $siblings = $dh->testGetNodesByParent($_POST['id_nodo_parent']);
                     $ordine = count($siblings) + 1;
 
                     //crea nuova domanda con i dati del form
@@ -333,7 +373,7 @@ class QuestionManagementTest extends ManagementTest
 
         if (isset($_POST['delete'])) {
             if ($_POST['delete'] == 1) {
-                if (AMATestDataHandler::isError($dh->test_deleteNodeTest($this->id))) {
+                if (AMATestDataHandler::isError($dh->testDeleteNodeTest($this->id))) {
                     $html = sprintf(translateFN('Errore durante la cancellazione della %s'), $this->what);
                 } else {
                     $get_topic = (isset($_GET['topic']) ? '&topic=' . $_GET['topic'] : '');
@@ -437,10 +477,10 @@ class QuestionManagementTest extends ManagementTest
         $data['testo'] =  preg_replace(['#<p[^>]*>#','#</p>#'], ['','<br />'], $data['testo']);
 
         if (is_null($question_id)) {
-            $question_res = $dh->test_addNode($data);
+            $question_res = $dh->testAddNode($data);
             $question_id = $question_res;
         } else {
-            $question_res = $dh->test_updateNode($question_id, $data);
+            $question_res = $dh->testUpdateNode($question_id, $data);
         }
 
         if ($data['tipo'][1] == ADA_CLOZE_TEST_TYPE && $question_res) {

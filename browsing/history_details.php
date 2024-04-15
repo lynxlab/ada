@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\Menu;
+
+use function \translateFN;
+
 //
 // +----------------------------------------------------------------------+
 // | ADA version 1.8                                                      |
@@ -30,11 +38,11 @@ Initializating variables and including modules
 use Lynxlab\ADA\Main\Output\Html;
 use Lynxlab\ADA\Main\User\ADAUser;
 
-use function Lynxlab\ADA\Browsing\Functions\menu_detailsFN;
-use function Lynxlab\ADA\Main\AMA\DBRead\read_course_from_DB;
-use function Lynxlab\ADA\Main\AMA\DBRead\read_layout_from_DB;
-use function Lynxlab\ADA\Main\AMA\DBRead\read_user_from_DB;
-use function Lynxlab\ADA\Main\ModuleInit\session_controlFN;
+use function Lynxlab\ADA\Browsing\Functions\menuDetailsFN;
+use function Lynxlab\ADA\Main\AMA\DBRead\readCourseFromDB;
+use function Lynxlab\ADA\Main\AMA\DBRead\readLayoutFromDB;
+use function Lynxlab\ADA\Main\AMA\DBRead\readUserFromDB;
+use function Lynxlab\ADA\Main\ModuleInit\sessionControlFN;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 $ada_config_path = realpath(dirname(__FILE__) . '/..');
@@ -42,7 +50,7 @@ $ada_config_path = realpath(dirname(__FILE__) . '/..');
 $history = "" ;
 $self = "history";
 
-session_controlFN();
+sessionControlFN();
 
 // ******************************************************
 // Clear node and layout variable
@@ -54,7 +62,7 @@ array_push($whatAR, 'course');
 /**
  * Giorgio
  * commented out 2024/03/26.
- * Function does not exist. Did de author meant to call clear_dataFN ?
+ * Function does not exist. Did de author meant to call clearDataFN ?
  */
 // clear_data($whatAR);
 
@@ -69,7 +77,7 @@ extract($_POST, EXTR_OVERWRITE, ADA_GP_VARIABLES_PREFIX);
 // ******************************************************
 if ($sess_id_course) {
     // get object course
-    $courseObj = read_course_from_DB($sess_id_course);
+    $courseObj = readCourseFromDB($sess_id_course);
     if ($dh->isError($courseObj)) {
         $errObj = $courseObj;
         $msg =   $errObj->errorMessage();
@@ -89,13 +97,13 @@ if ($sess_id_course) {
 
 // ******************************************************
 // get user object
-$userObj = read_user_from_DB($sess_id_user);
+$userObj = readUserFromDB($sess_id_user);
 if ((is_object($userObj)) && (!AMA_dataHandler::isError($userObj))) {
     $id_profile = $userObj->tipo;
     $user_name =  $userObj->username;
     $user_type = $userObj->convertUserTypeFN($id_profile);
     $user_historyObj = $userObj->history;
-    $user_level = $userObj->get_student_level($sess_id_user, $sess_id_course_instance);
+    $user_level = $userObj->getStudentLevel($sess_id_user, $sess_id_course_instance);
     $user_family = $userObj->template_family;
 } else {
     $errObj = new ADA_error(translateFN("Utente non trovato"), translateFN("Impossibile proseguire."));
@@ -116,7 +124,7 @@ if ((isset($family))  and (!empty($family))) { // from GET parameters
     $template_family = ADA_TEMPLATE_FAMILY; // default template famliy
 }
 
-$layoutObj = read_layout_from_DB($id_profile, $template_family);
+$layoutObj = readLayoutFromDB($id_profile, $template_family);
 $layout_CSS = $layoutObj->CSS_filename;
 $layout_template = $layoutObj->template;
 
@@ -138,13 +146,13 @@ if ($period != "all") {
     // Nodi visitati negli ultimi n giorni. Periodo in giorni.
     $history .= "<p>";
     //    $history .= translateFN("Nodi visitati negli ultimi $period giorni:") ;
-    $history .= $user_historyObj->history_nodes_list_filtered_FN($period) ;
+    $history .= $user_historyObj->historyNodesListFilteredFN($period) ;
     $history .= "</p>";
 } else {
     // Full history
     $history .= "<p>";
     //    $history .= translateFN("Cronologia completa:") ;
-    $history .= $user_historyObj->get_historyFN() ;
+    $history .= $user_historyObj->getHistoryFN() ;
     $history .= "</p>";
 }
 
@@ -155,12 +163,12 @@ if ($period != "all") {
 // $online_users_listing_mode = 2  : username and email of users
 
 $online_users_listing_mode = 2;
-$online_users = ADAUser::get_online_usersFN($id_course_instance, $online_users_listing_mode);
+$online_users = ADAUser::getOnlineUsersFN($id_course_instance, $online_users_listing_mode);
 
 
-$last_visited_node_id = $userObj->get_last_accessFN($sess_id_course_instance, 'N');
+$last_visited_node_id = $userObj->getLastAccessFN($sess_id_course_instance, 'N');
 if (!empty($last_visited_node_id)) {
-    $last_node = $dh->get_node_info($last_visited_node_id);
+    $last_node = $dh->getNodeInfo($last_visited_node_id);
     $last_visited_node_name = $last_node['name'];
     $last_node_visited = "<a href=view.php?id_node=$last_visited_node_id>" . translateFN("torna") . "</a>";
 } else {
@@ -168,7 +176,7 @@ if (!empty($last_visited_node_id)) {
 }
 
 // Menu nodi visitati per periodo
-$menu = menu_detailsFN();
+$menu = menuDetailsFN();
 $menu .= "<a href=history.php>" . translateFN("cronologia") . "</a><br>";
 $menu .= $last_node_visited;
 
@@ -180,8 +188,8 @@ MESSAGES adn EVENTS
 
 if (is_object($userObj)) {
     if (empty($userObj->error_msg)) {
-        $user_messages = $userObj->get_messagesFN($sess_id_user);
-        $user_agenda =  $userObj->get_agendaFN($sess_id_user);
+        $user_messages = $userObj->getMessagesFN($sess_id_user);
+        $user_agenda =  $userObj->getAgendaFN($sess_id_user);
     } else {
         $user_messages =  $userObj->error_msg;
         $user_agenda = translateFN("Nessun'informazione");
@@ -212,11 +220,11 @@ $chat_link = "<a href=\"$http_root_dir/chat/chat/index.php3?L=italian&Ver=H&U=" 
  */
 
 if (isset($_SESSION['sess_id_course_instance'])) {
-    $last_access = $userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']), "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(($_SESSION['sess_id_course_instance']), "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 } else {
-    $last_access = $userObj->get_last_accessFN(null, "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(null, "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 }
 if ($last_access == '' || is_null($last_access)) {
     $last_access = '-';
@@ -249,11 +257,11 @@ $node_data = [
                   ];
 
 
-$htmlObj->fillin_templateFN($node_data);
+$htmlObj->fillinTemplateFN($node_data);
 
 $imgpath = (dirname($layout_template));
 $htmlObj-> resetImgSrcFN($imgpath);
-$htmlObj->apply_styleFN();
+$htmlObj->applyStyleFN();
 
 /* 5.
 sending all the stuff to the  browser

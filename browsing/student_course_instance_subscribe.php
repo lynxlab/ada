@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use function \translateFN;
+
 /**
  *
  * @package     subscription
@@ -20,7 +42,7 @@ use Lynxlab\ADA\Main\Forms\InstanceTransferForm;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\today_dateFN;
+use function Lynxlab\ADA\Main\Utilities\todayDateFN;
 
 /**
  * Base config file
@@ -87,22 +109,22 @@ if (file_exists(ROOT_DIR . '/browsing/paypal/paypal_conf.inc.php')) {
     $paypal_allowed = true;
 }
 
-$today_date = today_dateFN();
+$today_date = todayDateFN();
 
 //$id_course_instance = $_REQUEST['id_instance'];
 //$id_studente = $_REQUEST['id_student'];
 
-$providerId = DataValidator::is_uinteger($_GET['provider']);
-$courseId = DataValidator::is_uinteger($_GET['id_course']);
-$instanceId = DataValidator::is_uinteger($_GET['id_course_instance']);
+$providerId = DataValidator::isUinteger($_GET['provider']);
+$courseId = DataValidator::isUinteger($_GET['id_course']);
+$instanceId = DataValidator::isUinteger($_GET['id_course_instance']);
 
 
-$testerInfoAr = $common_dh->get_tester_info_from_id($providerId, AMA_FETCH_ASSOC);
+$testerInfoAr = $common_dh->getTesterInfoFromId($providerId, AMA_FETCH_ASSOC);
 //var_dump($testerInfoAr);
-if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
+if (!AMACommonDataHandler::isError($testerInfoAr)) {
     $provider_name = $testerInfoAr['nome'];
     $tester = $testerInfoAr['puntatore'];
-    $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
+    $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester));
     //  var_dump($newTesterId);die();
     $GLOBALS['dh'] = $tester_dh;
     /*

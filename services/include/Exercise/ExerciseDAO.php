@@ -1,8 +1,18 @@
 <?php
 
+use Lynxlab\ADA\Services\Exercise\ExerciseDAO;
+
+use Lynxlab\ADA\Services\Exercise\ADAEsercizio;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+// Trigger: ClassWithNameSpace. The class ExerciseDAO was declared with namespace Lynxlab\ADA\Services\Exercise. //
+
 namespace Lynxlab\ADA\Services\Exercise;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\get_max_idFN;
+use function Lynxlab\ADA\Main\AMA\DBRead\getMaxIdFN;
 
 /**
  * @name ExerciseDAO
@@ -23,8 +33,8 @@ class ExerciseDAO
     {
         $dh = $GLOBALS['dh'];
         $exercise_nodes = $dh->get_exercise($id_node);
-        if (AMA_DataHandler::isError($exercise_nodes)) {
-            $errObj = new ADA_Error($exercise_nodes, 'Error while loading exercise');
+        if (AMADataHandler::isError($exercise_nodes)) {
+            $errObj = new ADAError($exercise_nodes, 'Error while loading exercise');
         }
 
         $nodes = [];
@@ -41,9 +51,9 @@ class ExerciseDAO
 
         if ($id_answer != null) {
             $student_answer = $dh->get_student_answer($id_answer);
-            if (AMA_DataHandler::isError($student_answer)) {
+            if (AMADataHandler::isError($student_answer)) {
                 //return $student_answer;
-                $errObj = new ADA_Error($student_answer, 'Error while loading student answer');
+                $errObj = new ADAError($student_answer, 'Error while loading student answer');
             }
         }
         return new ADAEsercizio($id_node, $exercise_text, $nodes, $student_answer);
@@ -68,15 +78,15 @@ class ExerciseDAO
                 return $next_exercise_id;
                 break;
             case ADA_SEQUENCE_EXERCISE_MODE:
-                $exercises = $dh->get_other_exercises($exercise->getParentId(), $exercise->getOrder(), $id_student);
-                if (AMA_DataHandler::isError($exercises)) {
+                $exercises = $dh->getOtherExercises($exercise->getParentId(), $exercise->getOrder(), $id_student);
+                if (AMADataHandler::isError($exercises)) {
                     return $exercises;
                 }
                 break;
             case ADA_RANDOM_EXERCISE_MODE:
                 // get all of the exercises for parent_id node and shuffle them.
-                $exercises = $dh->get_other_exercises($exercise->getParentId(), 0, $id_student);
-                if (AMA_DataHandler::isError($exercises)) {
+                $exercises = $dh->getOtherExercises($exercise->getParentId(), 0, $id_student);
+                if (AMADataHandler::isError($exercises)) {
                     return $exercises;
                 }
                 shuffle($exercises);
@@ -126,8 +136,8 @@ class ExerciseDAO
                         $data['parent_id'] = $exercise->getParentId();
                         $data['order']     = $exercise->getOrder();
 
-                        $result = $dh->doEdit_node($data);
-                        if (AMA_DataHandler::isError($result)) {
+                        $result = $dh->doEditNode($data);
+                        if (AMADataHandler::isError($result)) {
                             return false;
                         }
                     } else {
@@ -140,13 +150,13 @@ class ExerciseDAO
                             $data['order']     = $exercise->getExerciseDataOrderForItem($updated_node);
                             $data['correctness'] = $exercise->getExerciseDataCorrectnessForItem($updated_node);
 
-                            $result = $dh->doEdit_node($data);
-                            if (AMA_DataHandler::isError($result)) {
+                            $result = $dh->doEditNode($data);
+                            if (AMADataHandler::isError($result)) {
                                 return false;
                             }
                         } elseif ($operation_on_node == ADA_EXERCISE_DELETED_ITEM) {
-                            $result = $dh->remove_node($updated_node);
-                            if (AMA_DataHandler::isError($result)) {
+                            $result = $dh->removeNode($updated_node);
+                            if (AMADataHandler::isError($result)) {
                                 return false;
                             }
                         }
@@ -162,8 +172,8 @@ class ExerciseDAO
                 //              $data['parent_id'] = $exercise->getParentId();
                 //              $data['order']     = $exercise->getOrder();
                 //
-                //              $result = $dh->doEdit_node($data);
-                //                if (AMA_DataHandler::isError($result)) {
+                //              $result = $dh->doEditNode($data);
+                //                if (AMADataHandler::isError($result)) {
                 //                  return FALSE;
                 //                }
                 //
@@ -177,8 +187,8 @@ class ExerciseDAO
                 //                $data['order']     = $ex_data['ordine'];
                 //                $data['correctness'] = $ex_data['correttezza'];
                 //
-                //                  $result = $dh->doEdit_node($data);
-                //                  if (AMA_DataHandler::isError($result)) {
+                //                  $result = $dh->doEditNode($data);
+                //                  if (AMADataHandler::isError($result)) {
                 //                    return FALSE;
                 //                  }
                 //                }
@@ -192,7 +202,7 @@ class ExerciseDAO
                 break;
             case 1:
                 // save
-                $result = $dh->add_ex_history(
+                $result = $dh->addExHistory(
                     $exercise->getStudentId(),
                     $exercise->getCourseInstanceId(),
                     $exercise->getId(),
@@ -204,7 +214,7 @@ class ExerciseDAO
                     $exercise->getAttachment()
                 );
                 //print_r($result);
-                if (AMA_DataHandler::isError($result)) {
+                if (AMADataHandler::isError($result)) {
                     return false;
                 }
                 return true;
@@ -214,8 +224,8 @@ class ExerciseDAO
                 $data =  [ 'commento' => $exercise->getTutorComment(),
                         'da_ripetere' => $exercise->getRepeatable(),
                         'punteggio' => $exercise->getRating() ];
-                $result = $dh->set_ex_history($exercise->getStudentAnswerId(), $data);
-                if (AMA_DataHandler::isError($result)) {
+                $result = $dh->setExHistory($exercise->getStudentAnswerId(), $data);
+                if (AMADataHandler::isError($result)) {
                     return false;
                 }
                 return true;
@@ -231,11 +241,11 @@ class ExerciseDAO
         $exercise = self::getExercise($exercise_id);
         $exercise_data = $exercise->getExerciseData();
         foreach ($exercise_data as $node_id => $node_data) {
-            $result = $dh->remove_node($node_id);
+            $result = $dh->removeNode($node_id);
             //            print_r($result);
         }
 
-        $result = $dh->remove_node($exercise_id);
+        $result = $dh->removeNode($exercise_id);
     }
 
     public static function canEditExercise($exercise_id)
@@ -245,8 +255,8 @@ class ExerciseDAO
         $tokens = explode('_', $exercise_id);
         $course_id = $tokens[0];
 
-        $result = $dh->course_instance_get_list(null, $course_id);
-        if (AMA_DataHandler::isError($result)) {
+        $result = $dh->courseInstanceGetList(null, $course_id);
+        if (AMADataHandler::isError($result)) {
             return false;
         }
         /*
@@ -262,9 +272,9 @@ class ExerciseDAO
         */
         foreach ($result as $course_instance_data) {
             $course_instance_id = $course_instance_data[0];
-            $ex_history = $dh->find_exercise_history_for_course_instance($exercise_id, $course_instance_id);
+            $ex_history = $dh->findExerciseHistoryForCourseInstance($exercise_id, $course_instance_id);
 
-            if (AMA_DataHandler::isError($ex_history)) {
+            if (AMADataHandler::isError($ex_history)) {
                 return false;
             }
 
@@ -282,7 +292,7 @@ class ExerciseDAO
         $tmpAr = [];
         $tmpAr = explode('_', $exercise->getId());
         $id_course = $tmpAr[0];
-        $last_node = get_max_idFN($id_course);
+        $last_node = getMaxIdFN($id_course);
 
         $tmpAr = [];
         $tempAr = explode('_', $last_node);
@@ -311,9 +321,9 @@ class ExerciseDAO
                 'correctness'    => $answer_data['correctness'],
                 'copyright'      => '',
         ];
-        $result = $dh->add_node($node_to_add);
-        if (AMA_DataHandler::isError($result)) {
-            $errObj = new ADA_Error($result, 'Error while adding a new answer');
+        $result = $dh->addNode($node_to_add);
+        if (AMADataHandler::isError($result)) {
+            $errObj = new ADAError($result, 'Error while adding a new answer');
         }
         return true;
     }
@@ -325,7 +335,7 @@ class ExerciseDAO
        * qui inserire uno switch che in base al tipo di esercizio
        * richiama un metodo opportuno di dh
         */
-        $result = $dh->get_ex_report($exerciseObj->getId(), $id_course_instance);
+        $result = $dh->getExReport($exerciseObj->getId(), $id_course_instance);
         return $result;
     }
 }

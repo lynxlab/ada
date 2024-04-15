@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
 /**
  * SLIDEIMPORT MODULE.
  *

@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Module\Test\TutorManagementTest;
+
+use Lynxlab\ADA\Module\Test\NodeTest;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\CORE\html4\CBase;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class TutorManagementTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -65,7 +79,7 @@ class TutorManagementTest
         switch (true) {
             case (!is_null($id_student) && !is_null($id_test) && !is_null($id_history_test)):
                 $where = ['id_history_test' => $id_history_test];
-                $history_test = $dh->test_getHistoryTestJoined($where);
+                $history_test = $dh->testGetHistoryTestJoined($where);
                 if ($dh->isError($history_test)) {
                     $this->returnError = true;
                 }
@@ -73,7 +87,7 @@ class TutorManagementTest
 
                 // no break
             case (!is_null($id_student) && !is_null($id_test)):
-                $test = $dh->test_getNode($id_test);
+                $test = $dh->testGetNode($id_test);
                 if ($dh->isError($test) || empty($test)) {
                     $this->returnError = true;
                 }
@@ -81,7 +95,7 @@ class TutorManagementTest
 
                 // no break
             case (!is_null($id_student)):
-                $student = $dh->get_student($id_student);
+                $student = $dh->getStudent($id_student);
                 if ($dh->isError($student) || empty($student)) {
                     $this->returnError = true;
                 }
@@ -109,11 +123,11 @@ class TutorManagementTest
      *
      * @return array an array composed of 'html', 'path' and 'title' keys
      */
-    protected function list_students()
+    protected function listStudents()
     {
         $dh = $GLOBALS['dh'];
 
-        $historyTest = $dh->test_getHistoryTestJoined(['id_corso' => $this->courseObj->id,'id_istanza_corso' => $this->course_instanceObj->id], $this->tipo);
+        $historyTest = $dh->testGetHistoryTestJoined(['id_corso' => $this->courseObj->id,'id_istanza_corso' => $this->course_instanceObj->id], $this->tipo);
         if ($dh->isError($historyTest)) {
             $this->returnError = true;
             return;
@@ -174,7 +188,7 @@ class TutorManagementTest
      *
      * @return array an array composed of 'html', 'path' and 'title' keys
      */
-    protected function list_tests($student = false)
+    protected function listTests($student = false)
     {
         $dh = $GLOBALS['dh'];
 
@@ -183,7 +197,7 @@ class TutorManagementTest
             $params['id_utente'] = $this->id_student;
         }
 
-        $historyTest = $dh->test_getHistoryTestJoined($params, $this->tipo);
+        $historyTest = $dh->testGetHistoryTestJoined($params, $this->tipo);
         if ($dh->isError($historyTest)) {
             $this->returnError = true;
             return;
@@ -280,7 +294,7 @@ class TutorManagementTest
      *
      * @return array an array composed of 'html', 'path' and 'title' keys
      */
-    protected function list_history_tests($student = false)
+    protected function listHistoryTests($student = false)
     {
         $dh = $GLOBALS['dh'];
 
@@ -289,7 +303,7 @@ class TutorManagementTest
             $params['id_utente'] = $this->id_student;
         }
 
-        $historyTest = $dh->test_getHistoryTestJoined($params, $this->tipo);
+        $historyTest = $dh->testGetHistoryTestJoined($params, $this->tipo);
         if ($dh->isError($historyTest)) {
             $this->returnError = true;
             return;
@@ -320,8 +334,8 @@ class TutorManagementTest
                 $tbody[$k][] = ($r['consegnato']) ? translateFN('Si') : translateFN('No');
                 $tbody[$k][] = ($r['tempo_scaduto']) ? translateFN('Si') : translateFN('No');
                 $tbody[$k][] = ($r['ripetibile']) ? translateFN('Si') : translateFN('No');
-                $tbody[$k][] = AMA_DataHandler::ts_to_date($r['data_inizio'], "%d/%m/%Y %H:%M:%S");
-                $tbody[$k][] = ($r['data_fine'] > 0) ? AMA_DataHandler::ts_to_date($r['data_fine'], "%d/%m/%Y %H:%M:%S") : '---';
+                $tbody[$k][] = AMADataHandler::tsToDate($r['data_inizio'], "%d/%m/%Y %H:%M:%S");
+                $tbody[$k][] = ($r['data_fine'] > 0) ? AMADataHandler::tsToDate($r['data_fine'], "%d/%m/%Y %H:%M:%S") : '---';
                 $tbody[$k][] = '<a href="' . $this->filepath . '?op=' . $this->what . '&id_course=' . $r['id_corso'] . '&id_course_instance=' . $r['id_istanza_corso'] . '&id_student=' . $r['id_utente'] . '&id_test=' . $r['id_nodo'] . '&id_history_test=' . $r['id_history_test'] . '"><img src="img/magnify.png" /></a>';
             }
 
@@ -353,7 +367,7 @@ class TutorManagementTest
      *
      * @return array an array composed of 'html', 'path' and 'title' keys
      */
-    protected function view_history_tests()
+    protected function viewHistoryTests()
     {
         $dh = $GLOBALS['dh'];
 

@@ -1,5 +1,105 @@
 <?php
 
+use Lynxlab\ADA\CORE\html4\CUl;
+
+use Lynxlab\ADA\CORE\html4\CTr;
+
+use Lynxlab\ADA\CORE\html4\CTObject;
+
+use Lynxlab\ADA\CORE\html4\CTHead;
+
+use Lynxlab\ADA\CORE\html4\CTh;
+
+use Lynxlab\ADA\CORE\html4\CTFoot;
+
+use Lynxlab\ADA\CORE\html4\CTextarea;
+
+use Lynxlab\ADA\CORE\html4\CTd;
+
+use Lynxlab\ADA\CORE\html4\CTBody;
+
+use Lynxlab\ADA\CORE\html4\CTable;
+
+use Lynxlab\ADA\CORE\html4\CSubmitInput;
+
+use Lynxlab\ADA\CORE\html4\CSpan;
+
+use Lynxlab\ADA\CORE\html4\CSelect;
+
+use Lynxlab\ADA\CORE\html4\CResetInput;
+
+use Lynxlab\ADA\CORE\html4\CRadio;
+
+use Lynxlab\ADA\CORE\html4\COption;
+
+use Lynxlab\ADA\CORE\html4\COptgroup;
+
+use Lynxlab\ADA\CORE\html4\COl;
+
+use Lynxlab\ADA\CORE\html4\CMap;
+
+use Lynxlab\ADA\CORE\html4\CLink;
+
+use Lynxlab\ADA\CORE\html4\CLi;
+
+use Lynxlab\ADA\CORE\html4\CLegend;
+
+use Lynxlab\ADA\CORE\html4\CLabel;
+
+use Lynxlab\ADA\CORE\html4\CInputText;
+
+use Lynxlab\ADA\CORE\html4\CInputPassword;
+
+use Lynxlab\ADA\CORE\html4\CImg;
+
+use Lynxlab\ADA\CORE\html4\CIFrame;
+
+use Lynxlab\ADA\CORE\html4\CI;
+
+use Lynxlab\ADA\CORE\html4\CHtmlTags;
+
+use Lynxlab\ADA\CORE\html4\CHiddenInput;
+
+use Lynxlab\ADA\CORE\html4\CH4;
+
+use Lynxlab\ADA\CORE\html4\CH3;
+
+use Lynxlab\ADA\CORE\html4\CH2;
+
+use Lynxlab\ADA\CORE\html4\CH1;
+
+use Lynxlab\ADA\CORE\html4\CForm;
+
+use Lynxlab\ADA\CORE\html4\CFileInput;
+
+use Lynxlab\ADA\CORE\html4\CFieldset;
+
+use Lynxlab\ADA\CORE\html4\CDt;
+
+use Lynxlab\ADA\CORE\html4\CDl;
+
+use Lynxlab\ADA\CORE\html4\CDiv;
+
+use Lynxlab\ADA\CORE\html4\CDd;
+
+use Lynxlab\ADA\CORE\html4\CColgroup;
+
+use Lynxlab\ADA\CORE\html4\CCol;
+
+use Lynxlab\ADA\CORE\html4\CCheckbox;
+
+use Lynxlab\ADA\CORE\html4\CCaption;
+
+use Lynxlab\ADA\CORE\html4\CButtonInput;
+
+use Lynxlab\ADA\CORE\html4\CButton;
+
+use Lynxlab\ADA\CORE\html4\CArea;
+
+use Lynxlab\ADA\CORE\html4\CA;
+
+// Trigger: ClassWithNameSpace. The class CHtmlTags was declared with namespace Lynxlab\ADA\CORE\html4. //
+
 /**
  *
  * @author vito

@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Module\CollaboraACL\FileACL;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use function \translateFN;
+
 /**
  * delete_uploadedFile.php - delete a file from browsing/download page
  *

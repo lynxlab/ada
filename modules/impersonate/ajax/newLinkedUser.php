@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * @package     impersonate module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -19,7 +27,7 @@ use Lynxlab\ADA\Module\Impersonate\ImpersonateActions;
 use Lynxlab\ADA\Module\Impersonate\ImpersonateException;
 use Lynxlab\ADA\Module\Impersonate\LinkedUsers;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_user;
+use function Lynxlab\ADA\Main\AMA\DBRead\readUser;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
@@ -84,7 +92,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
      * it's a POST, save the passed data
      */
     if (array_key_exists('sess_userObj', $_SESSION)) {
-        $sourceUser = read_user($passedData['sourceId']);
+        $sourceUser = readUser($passedData['sourceId']);
         if ($passedData['linkedType'] > 0) {
             // if the session user has an inactive link, activate it
             $linkedObj = $impDH->findBy('LinkedUsers', [
@@ -95,7 +103,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             ]);
             if (is_array($linkedObj) && count($linkedObj) > 0) {
                 $linkedObj = reset($linkedObj);
-                $linkedObj->setIs_active(true);
+                $linkedObj->setIsActive(true);
                 $linkUpdate = true;
             } else {
                 // create a new user
@@ -136,8 +144,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 if ($sourceUser->getId() > 0 && $targetUser->getId() > 0) {
                     $linkedObj = new LinkedUsers();
                     $linkUpdate = false;
-                    $linkedObj->setSource_id($sourceUser->getId())->setLinked_id($targetUser->getId())
-                              ->setSource_type($sourceUser->getType())->setLinked_type($targetUser->getType())->setIs_active(true);
+                    $linkedObj->setSourceId($sourceUser->getId())->setLinkedId($targetUser->getId())
+                              ->setSourceType($sourceUser->getType())->setLinkedType($targetUser->getType())->setIsActive(true);
                 }
             }
 
@@ -152,7 +160,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-if (AMA_DB::isError($res) || $res instanceof ImpersonateException) {
+if (AMADB::isError($res) || $res instanceof ImpersonateException) {
     // if it's an error display the error message
     $retArray['status'] = "ERROR";
     $retArray['msg'] = $res->getMessage();

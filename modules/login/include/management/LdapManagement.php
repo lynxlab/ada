@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Module\Login\LdapManagement;
+
+use Lynxlab\ADA\Module\Login\Constants;
+
+use Lynxlab\ADA\Module\Login\FormLDAP;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class LdapManagement was declared with namespace Lynxlab\ADA\Module\Login. //
+
 /**
  * LOGIN MODULE
  *

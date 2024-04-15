@@ -1,5 +1,7 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
 /**
  * Actions perfomed at the start of each ADA module.
  *
@@ -18,9 +20,9 @@
  * @version     0.1
  */
 
-use function Lynxlab\ADA\Main\ModuleInit\clear_dataFN;
-use function Lynxlab\ADA\Main\ModuleInit\session_controlFN;
-use function Lynxlab\ADA\Main\Utilities\today_dateFN;
+use function Lynxlab\ADA\Main\ModuleInit\clearDataFN;
+use function Lynxlab\ADA\Main\ModuleInit\sessionControlFN;
+use function Lynxlab\ADA\Main\Utilities\todayDateFN;
 
 /**
  * Imports $_GET and $_POST variables
@@ -48,12 +50,12 @@ if (!isset($allowedUsersAr) || !is_array($allowedUsersAr)) {
 if (!isset($trackPageToNavigationHistory)) {
     $trackPageToNavigationHistory = true;
 }
-session_controlFN($neededObjAr, $allowedUsersAr, $trackPageToNavigationHistory);
+sessionControlFN($neededObjAr, $allowedUsersAr, $trackPageToNavigationHistory);
 /**
  * Clears variables specified in $whatAR
  */
 if (isset($variableToClearAR) && is_array($variableToClearAR)) {
-    clear_dataFN($variableToClearAR);
+    clearDataFN($variableToClearAR);
 }
 
-$ymdhms = today_dateFN();
+$ymdhms = todayDateFN();

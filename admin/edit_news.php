@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use function \translateFN;
+
 /**
  * File edit_news.php
  *
@@ -21,7 +35,7 @@ use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Translator;
 
-use function Lynxlab\ADA\Main\Utilities\read_dir;
+use function Lynxlab\ADA\Main\Utilities\readDir;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -84,7 +98,7 @@ AdminHelper::init($neededObjAr);
  */
 $options = '';
 $languages = Translator::getSupportedLanguages();
-$files_news = read_dir(ROOT_DIR . '/docs/news', 'txt');
+$files_news = readDir(ROOT_DIR . '/docs/news', 'txt');
 //print_r($files_news);
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {

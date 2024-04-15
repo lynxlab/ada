@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * EXPORT TEST.
  *
@@ -131,7 +137,7 @@ try {
 
         $course_data = $dh->get_course($course_id);
 
-        if (!empty($course_data) && !AMA_DB::isError($course_data)) {
+        if (!empty($course_data) && !AMADB::isError($course_data)) {
             // create node for current course
             $XMLcourse = $domtree->createElement('modello_corso');
             $XMLcourse->setAttribute('exportedId', $course_id);
@@ -192,14 +198,14 @@ try {
 
                 if ($exportSurvey) {
                     // get surveys
-                    $surveysArr = $dh_test->test_getCourseSurveys(['id_corso' => $course_id]);
+                    $surveysArr = $dh_test->testGetCourseSurveys(['id_corso' => $course_id]);
                 } else {
                     $surveysArr = [];
                 }
                 // build an array of test root nodes id that MUST be exported
                 $surveyRootNodes = [];
 
-                if (!empty($surveysArr) && !AMA_DB::isError($surveysArr)) {
+                if (!empty($surveysArr) && !AMADB::isError($surveysArr)) {
                     $XMLAllSurveys = $domtree->createElement('surveys');
                     foreach ($surveysArr as &$surveyElement) {
                         $XMLSurvey = $domtree->createElement('survey');
@@ -231,7 +237,7 @@ try {
                  * test_course_survey.id_test and test_nodes.id_nodo !!!
                  */
                 // get tests
-                $testsArr = $dh_test->test_getNodes(['id_corso' => $course_id,'id_nodo_parent' => null,'id_nodo_radice' => null,
+                $testsArr = $dh_test->testGetNodes(['id_corso' => $course_id,'id_nodo_parent' => null,'id_nodo_radice' => null,
                         'id_nodo_riferimento' => $exportHelper->exportedNONTestNodeArray,'id_istanza' => 0]);
 
                 if (!$exportSurvey) {
@@ -242,7 +248,7 @@ try {
                     });
                 }
 
-                if (!empty($testsArr) && !AMA_DB::isError($testsArr)) {
+                if (!empty($testsArr) && !AMADB::isError($testsArr)) {
                     // $XMLAllTests =& $domtree->createElement('tests');
                     $exportHelper->testNodeXMLElement = $domtree->createElement('tests');
 

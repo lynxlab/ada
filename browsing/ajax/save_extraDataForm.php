@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * save_extraDataForm.php - save user extended 1:1 data in the DB
  *
@@ -98,7 +118,7 @@ switch ($userObj->getType()) {
         $editUserObj = & $userObj;
         break;
     case AMA_TYPE_SWITCHER:
-        $userId = DataValidator::is_uinteger($_POST['id_utente']);
+        $userId = DataValidator::isUinteger($_POST['id_utente']);
         if ($userId !== false) {
             $editUserObj = MultiPort::findUser($userId);
         }
@@ -112,7 +132,7 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
     if ($form->isValid()) {
         $editUserObj->setExtras($_POST);
         $result = MultiPort::setUser($editUserObj, [], true, ADAUser::getExtraTableName());
-        if (!AMA_DB::isError($result)) {
+        if (!AMADB::isError($result)) {
             /**
              * Set the session user to the saved one if it's not
              * a switcher, that is not saving its own profile

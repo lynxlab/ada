@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\AMA\AMAPDOWrapper;
+
+use Lynxlab\ADA\Main\AMA\AMAPDO;
+
+// Trigger: ClassWithNameSpace. The class AMAPDOWrapper was declared with namespace Lynxlab\ADA\Main\AMA. //
+
 /**
  *
  * PDO wrapper
@@ -567,7 +577,7 @@ class AMAPDOWrapper
         /**
          * Probably log the error somewhere and return it in the connection_object itself
          */
-        ADALogger::log_db("[PDOException] : " . $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
+        ADALogger::logDb("[PDOException] : " . $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
         return $e;
     }
 }

@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\CORE\html4\CBase;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Browsing\CourseViewer;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class CourseViewer was declared with namespace Lynxlab\ADA\Browsing. //
+
 namespace Lynxlab\ADA\Browsing;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
@@ -11,7 +25,7 @@ use Lynxlab\ADA\Module\EventDispatcher\Events\ForumEvent;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\substr_gentle;
+use function Lynxlab\ADA\Main\Utilities\substrGentle;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 
@@ -34,20 +48,20 @@ class CourseViewer
     {
         $dh = $GLOBALS['dh'];
         if (isset($callback_params['id_edited_node'])) {
-            $info_node = $dh->get_node_info($callback_params['id_edited_node']);
-            if (!AMA_DataHandler::isError($info_node)) {
+            $info_node = $dh->getNodeInfo($callback_params['id_edited_node']);
+            if (!AMADataHandler::isError($info_node)) {
                 if ($info_node['type'] == ADA_GROUP_WORD_TYPE || $info_node['type'] == ADA_LEAF_WORD_TYPE) {
-                    $course_data = $dh->get_glossary_data($id_course);
+                    $course_data = $dh->getGlossaryData($id_course);
                 } else {
-                    $course_data = $dh->get_course_data($id_course);
+                    $course_data = $dh->getCourseData($id_course);
                 }
             } else {
                 return new CText('');
             }
         } else {
-            $course_data = $dh->get_course_data($id_course);
+            $course_data = $dh->getCourseData($id_course);
         }
-        if (AMA_DataHandler::isError($course_data)) {
+        if (AMADataHandler::isError($course_data)) {
             return $course_data;
         }
 
@@ -108,19 +122,19 @@ class CourseViewer
             case AMA_TYPE_AUTHOR:
             case AMA_TYPE_VISITOR:
                 $callback = 'authorCallback';
-                $course_data = $dh->get_course_data($id_course, 1, $order_by_name);
+                $course_data = $dh->getCourseData($id_course, 1, $order_by_name);
                 break;
 
             case AMA_TYPE_TUTOR:
                 $callback    = 'tutorCallback';
-                $course_data = $dh->get_course_data($id_course, 2, $order_by_name, $id_course_instance);
+                $course_data = $dh->getCourseData($id_course, 2, $order_by_name, $id_course_instance);
                 $callback_params['id_course_instance'] = $id_course_instance;
                 $callback_params['user_id'] = $userObj->id_user;
                 break;
 
             case AMA_TYPE_STUDENT:
                 $callback    = 'studentCallback';
-                $course_data = $dh->get_course_data($id_course, 3, $order_by_name, $id_course_instance, $userObj->id_user, $userObj->livello); //sarebbe meglio $userObj->getId()
+                $course_data = $dh->getCourseData($id_course, 3, $order_by_name, $id_course_instance, $userObj->id_user, $userObj->livello); //sarebbe meglio $userObj->getId()
                 if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS) {
                     $course_data = ForkedPathsNode::removeForkedPathsChildrenFromIndex($course_data);
                 }
@@ -132,12 +146,12 @@ class CourseViewer
         }
 
 
-        if (AMA_DataHandler::isError($course_data)) {
+        if (AMADataHandler::isError($course_data)) {
             return $course_data;
         } else { //retrieving data about nodes' visits
             //first: retrieve visits data about all nodes of selected course and arrange them into an associative array
             $someone_there_data = [];
-            $tmp_someone_there_data = ADALoggableUser::is_someone_there_courseFN($id_course_instance);
+            $tmp_someone_there_data = ADALoggableUser::isSomeoneThereCourseFN($id_course_instance);
             if (!empty($tmp_someone_there_data)) {
                 foreach ($tmp_someone_there_data as $v) {
                     $someone_there_data[$v['id_nodo']][] = $v;
@@ -214,26 +228,26 @@ class CourseViewer
             case AMA_TYPE_AUTHOR:
             case AMA_TYPE_VISITOR:
                 $callback = 'authorCallback';
-                $course_data = $dh->get_glossary_data($id_course, 1, $order_by_name);
+                $course_data = $dh->getGlossaryData($id_course, 1, $order_by_name);
                 break;
 
             case AMA_TYPE_TUTOR:
                 $callback    = 'tutorCallback';
-                $course_data = $dh->get_glossary_data($id_course, 2, $order_by_name, $id_course_instance);
+                $course_data = $dh->getGlossaryData($id_course, 2, $order_by_name, $id_course_instance);
                 $callback_params['id_course_instance'] = $id_course_instance;
                 $callback_params['user_id'] = $userObj->id_user;
                 break;
 
             case AMA_TYPE_STUDENT:
                 $callback    = 'studentCallback';
-                $course_data = $dh->get_glossary_data($id_course, 3, $order_by_name, $id_course_instance, $userObj->id_user); //sarebbe meglio $userObj->getId()
+                $course_data = $dh->getGlossaryData($id_course, 3, $order_by_name, $id_course_instance, $userObj->id_user); //sarebbe meglio $userObj->getId()
                 $callback_params['user_level'] = $userObj->livello;
                 $callback_params['user_id'] = $userObj->id_user;
                 break;
         }
 
 
-        if (AMA_DataHandler::isError($course_data)) {
+        if (AMADataHandler::isError($course_data)) {
             return $course_data;
         }
 
@@ -297,15 +311,15 @@ class CourseViewer
         /*
          * Get tutor id for this course instance
          */
-        $class_tutor_id = $dh->course_instance_tutor_get($id_course_instance);
-        if (AMA_DataHandler::isError($class_tutor_id)) {
+        $class_tutor_id = $dh->courseInstanceTutorGet($id_course_instance);
+        if (AMADataHandler::isError($class_tutor_id)) {
             return $class_tutor_id;
         }
 
         $callback_params['user_id'] = $userObj->getId();
         $callback_params['class_tutors_ids'] = $class_tutor_id;
         $callback_params['show_icons'] = $show_icons;
-        $forum_data = $dh->get_notes_for_this_course_instance($id_course_instance, $userObj->id_user, $order_by_date, $show_visits);
+        $forum_data = $dh->getNotesForThisCourseInstance($id_course_instance, $userObj->id_user, $order_by_date, $show_visits);
         switch ($userObj->tipo) { // sarebbe meglio $userObj->getType()
             case AMA_TYPE_AUTHOR:
                 $callback = 'forumAuthorCallback';
@@ -322,12 +336,12 @@ class CourseViewer
                 break;
         }
 
-        if (AMA_DataHandler::isError($forum_data)) {
+        if (AMADataHandler::isError($forum_data)) {
             return $forum_data;
         } else { //retrieving data about nodes' visits
             //first: retrieve visits data about all nodes of selected course and arrange them into an associative array
             $someone_there_data = [];
-            $tmp_someone_there_data = ADALoggableUser::is_someone_there_courseFN($id_course_instance);
+            $tmp_someone_there_data = ADALoggableUser::isSomeoneThereCourseFN($id_course_instance);
             if (!empty($tmp_someone_there_data)) {
                 foreach ($tmp_someone_there_data as $v) {
                     $someone_there_data[$v['id_nodo']][] = $v;
@@ -401,8 +415,8 @@ class CourseViewer
             } else {
                 $dh = $GLOBALS['dh'];
             }
-            $node_info = $dh->get_node_info($id_toc);
-            if (!AMA_DataHandler::isError($node_info)) {
+            $node_info = $dh->getNodeInfo($id_toc);
+            if (!AMADataHandler::isError($node_info)) {
                 $principale = ['id_nodo' => $id_toc, 'id_nodo_parent' => $id_toc, 'nome' => $node_info['name']/*translateFN('Principale')*/, 'tipo' => ADA_GROUP_TYPE, 'icona' => $node_info['icon']/*'group.png'*/, 'livello' => $node_info['level']];
             } else {
                 $principale = ['id_nodo' => $id_toc, 'id_nodo_parent' => $id_toc, 'nome' => translateFN('Principale'), 'tipo' => ADA_GROUP_TYPE, 'icona' => 'group.png', 'livello' => 0];
@@ -455,16 +469,16 @@ class CourseViewer
         if (!array_key_exists('id_course_instance', $callback_params)) {
             $callback_params['id_course_instance'] = null;
         }
-        $node_info = $dh->get_node_info($id_toc);
+        $node_info = $dh->getNodeInfo($id_toc);
         $node_visits = array_reduce(
-            $dh->find_nodes_history_list(['data_visita', 'data_uscita'], $callback_params['user_id'], $callback_params['id_course_instance'], $id_toc),
+            $dh->findNodesHistoryList(['data_visita', 'data_uscita'], $callback_params['user_id'], $callback_params['id_course_instance'], $id_toc),
             function ($carry, $item) {
                 $carry += (intval($item[2]) - intval($item[1])) > 0 ? 1 : 0;
                 return $carry;
             },
             0
         );
-        if (!AMA_DataHandler::isError($node_info)) {
+        if (!AMADataHandler::isError($node_info)) {
             $principale = ['numero_visite' => $node_visits, 'id_nodo' => $id_toc, 'id_nodo_parent' => $id_toc, 'nome' => $node_info['name']/*translateFN('Principale')*/, 'tipo' => ADA_GROUP_TYPE, 'icona' => $node_info['icon']/*'group.png'*/, 'root' => true, 'livello' => $node_info['level']];
         } else {
             $principale = ['numero_visite' => $node_visits, 'id_nodo' => $id_toc, 'id_nodo_parent' => $id_toc, 'nome' => translateFN('Principale'), 'tipo' => ADA_GROUP_TYPE, 'icona' => 'group.png', 'root' => true, 'livello' => 0];
@@ -792,7 +806,7 @@ class CourseViewer
             $list_item->addChild(new CText(translateFN("Visite") . " $visits"));
         }
 
-        $id_bk = Bookmark::is_node_bookmarkedFN($external_params['user_id'], $params['node']['id_nodo']);
+        $id_bk = Bookmark::isNodeBookmarkedFN($external_params['user_id'], $params['node']['id_nodo']);
 
         if ($id_bk) {
             // vito 13 gennaio 2009
@@ -1007,14 +1021,14 @@ class CourseViewer
             $char_limit = 525;
             $text = strip_tags($params['node']['testo']);
             if (strlen($text) > $char_limit) {
-                $add_link = true;
-                $text = substr_gentle($text, $char_limit);
+                $addLink = true;
+                $text = substrGentle($text, $char_limit);
             } else {
-                $add_link = false;
+                $addLink = false;
             }
             $div_text->addChild(new CText($text));
 
-            if ($add_link) {
+            if ($addLink) {
                 $link_to_note = CDOMElement::create('a', "href:$http_root_dir/browsing/view.php?id_node={$params['node']['id_nodo']}");
                 $link_to_note->setAttribute('title', translateFN('Visualizza messaggio completo'));
                 $link_to_note->addChild(new CText(translateFN('(leggi tutto)')));

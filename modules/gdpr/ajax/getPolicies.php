@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
 /**
  * @package     gdpr module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -57,7 +63,7 @@ try {
             /** @var GdprPolicy $el */
             function (GdprPolicy $el) {
                 $retArr = [];
-                $retArr['id'] = $el->getPolicy_content_id();
+                $retArr['id'] = $el->getPolicyContentId();
                 $retArr['title'] = $el->getTitle();
                 $retArr['lastEditTS'] = is_null($el->getLastEditTS()) ? null : ts2dFN($el->getLastEditTS()) . ' ' . ts2tmFN($el->getLastEditTS());
                 $retArr['mandatory'] = $el->getMandatory() ? true : false;

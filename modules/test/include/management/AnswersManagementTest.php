@@ -1,5 +1,29 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Module\Test\AnswersManagementTest;
+
+use Lynxlab\ADA\Module\Test\AnswersStandardFormTest;
+
+use Lynxlab\ADA\Module\Test\AnswersMultipleClozeFormTest;
+
+use Lynxlab\ADA\Module\Test\AnswersClozeFormTest;
+
+use Lynxlab\ADA\Module\Test\QuestionMultipleClozeTest;
+
+use Lynxlab\ADA\Module\Test\NodeTest;
+
+use Lynxlab\ADA\Module\Test\AMATestDataHandler;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\CORE\html4\CBase;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class AnswersManagementTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -32,13 +56,13 @@ class AnswersManagementTest
     {
         $dh = $GLOBALS['dh'];
 
-        $question = $dh->test_getNode($id_question);
+        $question = $dh->testGetNode($id_question);
         if (AMATestDataHandler::isError($question) || empty($question)) {
             return;
         }
         $this->question = $question;
 
-        $test = $dh->test_getNode($question['id_nodo_radice']);
+        $test = $dh->testGetNode($question['id_nodo_radice']);
         if (AMATestDataHandler::isError($test) || empty($test)) {
             return;
         }
@@ -100,7 +124,7 @@ class AnswersManagementTest
     {
         $dh = $GLOBALS['dh'];
 
-        $tmp = $dh->test_getNodesByParent($this->question['id_nodo']);
+        $tmp = $dh->testGetNodesByParent($this->question['id_nodo']);
         $risposte = [];
         if (!empty($tmp)) {
             foreach ($tmp as $k => $v) {
@@ -173,9 +197,9 @@ class AnswersManagementTest
                     ];
 
                     if (intval($v['record']) > 0) {
-                        $res = $dh->test_updateNode(intval($v['record']), $data);
+                        $res = $dh->testUpdateNode(intval($v['record']), $data);
                     } else {
-                        $res = $dh->test_addNode($data);
+                        $res = $dh->testAddNode($data);
                     }
                     if (AMATestDataHandler::isError($res)) {
                         $result = false;

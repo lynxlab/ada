@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Module\Impexport\AMAImpExportDataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMATesterDataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+// Trigger: ClassWithNameSpace. The class AMAImpExportDataHandler was declared with namespace Lynxlab\ADA\Module\Impexport. //
+
 /**
  * @package     import/export course
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -10,7 +22,7 @@
 
 namespace Lynxlab\ADA\Module\Impexport;
 
-class AMAImpExportDataHandler extends AMA_DataHandler
+class AMAImpExportDataHandler extends AMADataHandler
 {
     /**
      * Get the children of a given node.
@@ -25,16 +37,16 @@ class AMAImpExportDataHandler extends AMA_DataHandler
      *
      * @return an array of ids containing all the id's of the children of a given node
      *
-     * @see get_node_info
+     * @see getNodeInfo
      *
      */
-    public function &export_get_node_children($node_id, $id_course_instance = "")
+    public function &exportGetNodeChildren($node_id, $id_course_instance = "")
     {
         $db = & $this->getConnection();
 
         $excludeNodeTypes =  [ ADA_NOTE_TYPE, ADA_PRIVATE_NOTE_TYPE ];
 
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -51,12 +63,12 @@ class AMAImpExportDataHandler extends AMA_DataHandler
         $sql .= " ORDER BY ordine ASC";
 
         $res_ar = & $db->getCol($sql);
-        if (AMA_DB::isError($res_ar)) {
-            return new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($res_ar)) {
+            return new AMAError(AMA_ERR_GET);
         }
         // return an error in case of an empty recordset
         if (!$res_ar) {
-            $retErr = new AMA_Error(AMA_ERR_NOT_FOUND);
+            $retErr = new AMAError(AMA_ERR_NOT_FOUND);
             return $retErr;
         }
         // return nested array
@@ -65,19 +77,19 @@ class AMAImpExportDataHandler extends AMA_DataHandler
 
     /**
      * Need to promote this method to public
-     * @see AMA_Tester_DataHandler::doGet_id_position
+     * @see AMATesterDataHandler::doGetIdPosition
      */
-    public function get_id_position($pos_ar)
+    public function getIdPosition($pos_ar)
     {
-        return parent::doGet_id_position($pos_ar);
+        return parent::doGetIdPosition($pos_ar);
     }
     /**
      * Need to promote this method to public
-     * @see AMA_Tester_DataHandler::doAdd_position
+     * @see AMATesterDataHandler::doAddPosition
      */
-    public function add_position($pos_ar)
+    public function addPosition($pos_ar)
     {
-        return parent::doAdd_position($pos_ar);
+        return parent::doAddPosition($pos_ar);
     }
 
     /**
@@ -89,7 +101,7 @@ class AMAImpExportDataHandler extends AMA_DataHandler
      *
      * @access public
      */
-    public function get_nodes_with_internal_link_for_course($course_id, $start_import_time = null)
+    public function getNodesWithInternalLinkForCourse($course_id, $start_import_time = null)
     {
         $sql = 'SELECT `id_nodo`  FROM `nodo` WHERE UPPER(`testo`) LIKE ? AND `id_nodo` LIKE ?';
 
@@ -112,7 +124,7 @@ class AMAImpExportDataHandler extends AMA_DataHandler
      *
      * @access public
      */
-    public function get_nodes_with_test_link_for_course($course_id, $start_import_time = null)
+    public function getNodesWithTestLinkForCourse($course_id, $start_import_time = null)
     {
         $sql = 'SELECT N.`id_nodo`FROM `nodo` N
 				JOIN

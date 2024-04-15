@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use function \translateFN;
+
 /**
  * Practitioner's profile
  *
@@ -78,7 +96,7 @@ BrowsingHelper::init($neededObjAr);
 
 $self =  whoami();
 
-if (isset($_GET['id']) && DataValidator::is_uinteger($_GET['id'])) {
+if (isset($_GET['id']) && DataValidator::isUinteger($_GET['id'])) {
     $tutorObj = MultiPort::findUser($_GET['id']);
     if ($tutorObj instanceof ADAPractitioner) {
         $dati = CDOMElement::create('div');

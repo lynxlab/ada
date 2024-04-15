@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * uploads a course attachment file
  *
@@ -79,9 +91,9 @@ $error = true;
 $data = '';
 if (isset($_FILES) && count($_FILES) > 0) {
     $fileUploader = new FileUploader(Course::MEDIA_PATH_DEFAULT . $courseID . '/', $fieldUploadName);
-    $checkFileArr = $GLOBALS['dh']->get_risorsa_esterna_info_from_filename($fileUploader->getFileName(), $courseID);
+    $checkFileArr = $GLOBALS['dh']->getRisorsaEsternaInfoFromFilename($fileUploader->getFileName(), $courseID);
 
-    if (!AMA_DB::isError($checkFileArr) && $checkFileArr !== false && count($checkFileArr) > 0) {
+    if (!AMADB::isError($checkFileArr) && $checkFileArr !== false && count($checkFileArr) > 0) {
         $data = sprintf(translateFN('Il file %s già esiste per questo corso'), $checkFileArr['nome_file']);
     } else {
         // file not found for the passed course, add it
@@ -99,11 +111,11 @@ if (isset($_FILES) && count($_FILES) > 0) {
             'id_utente' => $userID,
         ];
         // 2nd param forces duplicate filename insertion (if the same file is found linked to a different node/course)
-        $res = $GLOBALS['dh']->add_risorsa_esterna($extRes, true);
-        if (!AMA_DB::isError($res)) {
+        $res = $GLOBALS['dh']->addRisorsaEsterna($extRes, true);
+        if (!AMADB::isError($res)) {
             if ($fileUploader->upload() == false) {
-                $GLOBALS['dh']->del_risorse_nodi($courseID, $extRes);
-                $GLOBALS['dh']->remove_risorsa_esterna($extRes);
+                $GLOBALS['dh']->delRisorseNodi($courseID, $extRes);
+                $GLOBALS['dh']->removeRisorsaEsterna($extRes);
                 $data = $fileUploader->getErrorMessage();
             } else {
                 $data = sprintf(translateFN('File %s caricato correttamente'), $fileUploader->getFileName());

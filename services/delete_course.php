@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  *
  * @package
@@ -82,10 +98,10 @@ $success = 'author.php';
 $menu = 'author.php';
 $error = 'author.php';
 
-$course_has_istance = $dh->course_has_instances($id_course);
+$course_has_istance = $dh->courseHasInstances($id_course);
 if (!$course_has_istance) {
-    $res = $dh->remove_course($id_course);
-    if (AMA_DataHandler::isError($res)) {
+    $res = $dh->removeCourse($id_course);
+    if (AMADataHandler::isError($res)) {
         $msg = $res->getMessage();
     } else {
         $msg = translateFN('Cancellazione modello corso riuscita');

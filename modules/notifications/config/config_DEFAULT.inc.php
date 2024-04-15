@@ -1,5 +1,7 @@
 <?php
 
+use Lynxlab\ADA\Module\CloneInstance\EventSubscriber;
+
 /**
  * @package     notifications module
  * @author      giorgio <g.consorti@lynxlab.com>

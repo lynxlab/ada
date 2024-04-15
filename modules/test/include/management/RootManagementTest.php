@@ -1,5 +1,29 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Module\Test\TestManagementTest;
+
+use Lynxlab\ADA\Module\Test\SurveyManagementTest;
+
+use Lynxlab\ADA\Module\Test\RootManagementTest;
+
+use Lynxlab\ADA\Module\Test\ManagementTest;
+
+use Lynxlab\ADA\Module\Test\TestFormTest;
+
+use Lynxlab\ADA\Module\Test\SurveyFormTest;
+
+use Lynxlab\ADA\Module\Test\DeleteFormTest;
+
+use Lynxlab\ADA\Module\Test\AMATestDataHandler;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class RootManagementTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -14,10 +38,10 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Node\Node;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\get_max_idFN;
+use function Lynxlab\ADA\Main\AMA\DBRead\getMaxIdFN;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\redirect;
-use function Lynxlab\ADA\Main\Utilities\today_dateFN;
+use function Lynxlab\ADA\Main\Utilities\todayDateFN;
 
 class RootManagementTest extends ManagementTest
 {
@@ -96,15 +120,15 @@ class RootManagementTest extends ManagementTest
                     'durata' => $_POST['min_level'],
                     'correttezza' => $_POST['correttezza'],
                 ];
-                $id_test = $dh->test_addNode($data);
+                $id_test = $dh->testAddNode($data);
                 unset($data);
 
                 if (!AMATestDataHandler::isError($id_test)) {
                     //crea nuovo nodo contenente link al test
-                    $last_node = explode('_', get_max_idFN($id_corso));
+                    $last_node = explode('_', getMaxIdFN($id_corso));
                     $new_id = $last_node[1] + 1;
                     $new_node_id = $id_corso . '_' . $new_id;
-                    $order = $dh->get_ordine_max_val($nodo->id);
+                    $order = $dh->getOrdineMaxVal($nodo->id);
 
                     $url = MODULES_TEST_HTTP . '/index.php?id_test=' . $id_test;
                     $link = CDOMElement::create('a');
@@ -122,7 +146,7 @@ class RootManagementTest extends ManagementTest
                     $nodo_test['type']              = ADA_CUSTOM_EXERCISE_TEST;
                     $nodo_test['parent_id']         = $nodo->id;
                     $nodo_test['order']             = $order + 1;
-                    $nodo_test['creation_date']     = today_dateFN();
+                    $nodo_test['creation_date']     = todayDateFN();
                     $nodo_test['pos_x0']            = 0;
                     $nodo_test['pos_y0']            = 0;
                     $nodo_test['pos_x1']            = 0;
@@ -136,10 +160,10 @@ class RootManagementTest extends ManagementTest
 
                         $res = true;
                         if ($this->mode == ADA_TYPE_SURVEY) { //aggiungo record nella tabella dei sondaggi-corsi per lo switcher
-                            $res = $dh->test_addCourseTest($id_corso, $id_test, $id_nodo_riferimento);
+                            $res = $dh->testAddCourseTest($id_corso, $id_test, $id_nodo_riferimento);
                         }
 
-                        if ($res && $dh->test_updateNode($id_test, $data)) {
+                        if ($res && $dh->testUpdateNode($id_test, $data)) {
                             redirect(MODULES_TEST_HTTP . '/index.php?id_test=' . $id_test);
                         } else {
                             $html = sprintf(translateFN('Errore durante la creazione del %s'), $this->what);
@@ -222,7 +246,7 @@ class RootManagementTest extends ManagementTest
                     'durata' => $_POST['min_level'],
                     'correttezza' => $_POST['correttezza'],
                 ];
-                if ($dh->test_updateNode($test['id_nodo'], $data)) {
+                if ($dh->testUpdateNode($test['id_nodo'], $data)) {
                     redirect(MODULES_TEST_HTTP . '/index.php?id_test=' . $test['id_nodo']);
                 } else {
                     $html = sprintf(translateFN('Errore durante la modifica del %s'), $this->what);
@@ -263,10 +287,10 @@ class RootManagementTest extends ManagementTest
                 if ($this->mode == ADA_TYPE_SURVEY) {
                     $courseId = explode('_', $nodo->id);
                     $courseId = $courseId[0];
-                    $res = $dh->test_removeCourseTest($courseId, $this->id);
+                    $res = $dh->testRemoveCourseTest($courseId, $this->id);
                 }
 
-                if (AMATestDataHandler::isError($dh->test_deleteNodeTest($this->id))) {
+                if (AMATestDataHandler::isError($dh->testDeleteNodeTest($this->id))) {
                     $html = sprintf(translateFN('Errore durante la cancellazione del %s'), $this->what);
                 } else {
                     redirect(HTTP_ROOT_DIR . '/browsing/view.php?id_node=' . $nodo->parent_id);

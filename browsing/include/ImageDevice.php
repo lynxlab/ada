@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Browsing\ImageDevice;
+
+// Trigger: ClassWithNameSpace. The class ImageDevice was declared with namespace Lynxlab\ADA\Browsing. //
+
 /**
  *
  * @author

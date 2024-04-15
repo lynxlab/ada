@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Module\FormMail\AMAFormmailDataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+// Trigger: ClassWithNameSpace. The class AMAFormmailDataHandler was declared with namespace Lynxlab\ADA\Module\FormMail. //
+
 /**
  * FORMMAIL MODULE.
  *
@@ -13,7 +23,7 @@
 
 namespace Lynxlab\ADA\Module\FormMail;
 
-class AMAFormmailDataHandler extends AMA_DataHandler
+class AMAFormmailDataHandler extends AMADataHandler
 {
     /**
      * module's own data tables prefix
@@ -27,10 +37,10 @@ class AMAFormmailDataHandler extends AMA_DataHandler
         $sql = 'INSERT INTO `' . self::$PREFIX . 'history` (`id_utente`,`' . self::$PREFIX . 'helptype_id`, ' .
         '`subject`,`msgbody`,`attachments`,`selfSent`,`sentOK`,`sentTimestamp`) VALUES (?,?,?,?,?,?,?,?);';
 
-        $res = $GLOBALS['dh']->queryPrepared($sql, [$userID, $helpTypeID, $subject, $msgbody, $attachmentsStr, $selfSent, $sentOK, AMA_DataHandler::date_to_ts('now')]);
+        $res = $GLOBALS['dh']->queryPrepared($sql, [$userID, $helpTypeID, $subject, $msgbody, $attachmentsStr, $selfSent, $sentOK, AMADataHandler::dateToTs('now')]);
 
-        if (AMA_DB::isError($res)) {
-            $err = new AMA_Error(AMA_ERR_ADD);
+        if (AMADB::isError($res)) {
+            $err = new AMAError(AMA_ERR_ADD);
             return $err;
         }
 

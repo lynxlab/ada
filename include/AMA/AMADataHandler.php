@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\AMA\MultiPort;
+
+use Lynxlab\ADA\Main\AMA\AMATesterDataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+// Trigger: ClassWithNameSpace. The class AMADataHandler was declared with namespace Lynxlab\ADA\Main\AMA. //
+
 /**
  * AMA_DataHandler class
  *
@@ -22,7 +36,7 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link        AMA_DataHandler
  * @version     0.1
- * @see         AMA_Tester_DataHandler
+ * @see         AMATesterDataHandler
  */
 
 namespace Lynxlab\ADA\Main\AMA;
@@ -35,10 +49,10 @@ use function Lynxlab\ADA\Main\Utilities\ts2dFN;
  * AMA_DataHandler.
  *
  */
-class AMA_DataHandler extends AMA_Tester_DataHandler
+class AMADataHandler extends AMATesterDataHandler
 {
     /**
-     * AMA_DataHandler constructor is inherited from AMA_Tester_DataHandler
+     * AMA_DataHandler constructor is inherited from AMATesterDataHandler
      * for time being there's no need to implement a new one.
      */
 
@@ -54,15 +68,15 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
      * @param number id_student id of the student whose datas are to be updated
      * @param array datas to be saved
      *
-     * @return id of saved student on success, AMA_Error on ErrorException
+     * @return id of saved student on success, AMAError on ErrorException
      * @access public
      *
-     * @see AMA_Tester_DataHandler::set_student()
+     * @see AMATesterDataHandler::set_student()
      */
-    public function set_student($id_student, $user_dataAr, $extraTableName = false, $userObj = null, &$idFromPublicTester = null)
+    public function setStudent($id_student, $user_dataAr, $extraTableName = false, $userObj = null, &$idFromPublicTester = null)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -73,7 +87,7 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
          */
         //      $retval = false;
         //      if (!$extraTableName) $retval = parent::set_student($id_student, $user_dataAr);
-        $retval = parent::set_student($id_student, $user_dataAr);
+        $retval = parent::setStudent($id_student, $user_dataAr);
         if ($extraTableName) {
             if ($extraTableName == ADAUser::getExtraTableName()) {
                 // aka Extra, stored in ADAUser::getExtraTableKeyProperty() table
@@ -84,12 +98,12 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
                 $user_id = $this->getOnePrepared($user_id_sql, [$id_student]);
 
                 // if it's an error return it right away
-                if (AMA_DB::isError($user_id)) {
+                if (AMADB::isError($user_id)) {
                     $retval = $user_id;
                 } else {
                     // get ExtraFields array
                     $extraFields = $userObj->getExtraFields();
-                    if (!AMA_DB::isError($extraFields) && is_array($extraFields) && count($extraFields) > 0) {
+                    if (!AMADB::isError($extraFields) && is_array($extraFields) && count($extraFields) > 0) {
                         // if $user_id not found, build an insert into else an update
                         if ($user_id === false) {
                             $saveQry = "INSERT INTO " . $extraTableName . " ( " . ADAUser::getExtraTableKeyProperty() . ", ";
@@ -111,7 +125,7 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
                             if (isset($user_dataAr[$field])) {
                                 // check if it's a date and convert it to timestamp
                                 if (stripos($field, "date") !== false) {
-                                    $valuesAr[] = $this->date_to_ts($user_dataAr[$field]);
+                                    $valuesAr[] = $this->dateToTs($user_dataAr[$field]);
                                 } else {
                                     $valuesAr[] = $user_dataAr[$field];
                                 }
@@ -120,7 +134,7 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
                             }
                         }
                         $result = $this->queryPrepared($saveQry, $valuesAr);
-                        if (AMA_DB::isError($result)) {
+                        if (AMADB::isError($result)) {
                             $retval = $result;
                         } else {
                             $retval = true;
@@ -182,7 +196,7 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
                         if (isset($rowToSave[$field])) {
                             // check if it's a date and convert it to timestamp
                             if (stripos($field, "date") !== false) {
-                                $valuesArr[] = $this->date_to_ts($rowToSave[$field]);
+                                $valuesArr[] = $this->dateToTs($rowToSave[$field]);
                             } else {
                                 $valuesArr[] = $rowToSave[$field];
                             }
@@ -192,7 +206,7 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
                     }
 
                     $result = $this->queryPrepared($saveQry, $valuesArr);
-                    if (AMA_DB::isError($result)) {
+                    if (AMADB::isError($result)) {
                         $retval = $result;
                     } else {
                         if (is_null($nextID) || intval($nextID) === 0) {
@@ -228,7 +242,7 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
     public function getExtraData(ADAUser $userObj)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -260,7 +274,7 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
                     " ORDER BY " . $table::getKeyProperty() . " ASC";
 
                     $extraArr = $this->getAllPrepared($selQry, [$userObj->getId()], AMA_FETCH_ASSOC);
-                    if (!AMA_DB::isError($extraArr) && is_array($extraArr) && count($extraArr) > 0) {
+                    if (!AMADB::isError($extraArr) && is_array($extraArr) && count($extraArr) > 0) {
                         foreach ($extraArr as $extraKey => $extraElement) {
                             foreach ($extraElement as $key => $val) {
                                 if (stripos($key, "date") !== false) {
@@ -290,10 +304,10 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
      *
      * @access public
      */
-    public function remove_user_extraRow($user_id, $extraTableId, $extraTableClass)
+    public function removeUserExtraRow($user_id, $extraTableId, $extraTableClass)
     {
         $db = & $this->getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 

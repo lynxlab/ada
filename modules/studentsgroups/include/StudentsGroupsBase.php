@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Module\StudentsGroups\StudentsGroupsBase;
+
+use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsBase;
+
+// Trigger: ClassWithNameSpace. The class StudentsGroupsBase was declared with namespace Lynxlab\ADA\Module\StudentsGroups. //
+
 /**
  * @package     studentsgroups module
  * @author      giorgio <g.consorti@lynxlab.com>

@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\Badges\BadgesBase;
+
+use Lynxlab\ADA\Module\Badges\Badge;
+
+use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
+
+// Trigger: ClassWithNameSpace. The class Badge was declared with namespace Lynxlab\ADA\Module\Badges. //
+
 /**
  * @package     badges module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -108,7 +116,7 @@ class Badge extends BadgesBase
      *
      * @return self
      */
-    public function setUuid_bin($uuid)
+    public function setUuidBin($uuid)
     {
         $tmpuuid = Uuid::fromBytes($uuid);
         return $this->setUuid($tmpuuid->toString());

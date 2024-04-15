@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Comunica\DataHandler\UserDataHandler;
+
+use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
+
+// Trigger: ClassWithNameSpace. The class MessageHandler was declared with namespace Lynxlab\ADA\Comunica\DataHandler. //
+
 /**
  * MessageHandler, list messages
  *
@@ -83,10 +93,10 @@ class MessageHandler
      *                        *mittente is a username
      *                       **destinatari is a CVS list of usernames
      *
-     * @return    an AMA_Error object if something goes wrong
+     * @return    an AMAError object if something goes wrong
      *
      **/
-    public function send_message($message_ha)
+    public function sendMessage($message_ha)
     {
         $root_dir = $GLOBALS['root_dir'];
 
@@ -129,12 +139,12 @@ class MessageHandler
             } // logger("recipients_list: $recipients_list", 4);
 
             // get the list of e-mail addresses of the recipients
-            $res_ar = $udh->find_users_list(["e_mail"], $clause);
+            $res_ar = $udh->findUsersList(["e_mail"], $clause);
 
             // echo "array: " . (!is_array($res_ar)) . "!";
-            if (AMA_DataHandler::isError($res_ar) or (!is_array($res_ar))) {
+            if (AMADataHandler::isError($res_ar) or (!is_array($res_ar))) {
                 // echo "array: " . (!is_array($res_ar));
-                $retval = new AMA_Error(AMA_ERR_SEND_MSG);
+                $retval = new AMAError(AMA_ERR_SEND_MSG);
                 return $retval;
             }
 
@@ -148,10 +158,10 @@ class MessageHandler
         } // end of exctracting recipients
 
         // get the sender's ID and email address
-        $res_ar = $udh->find_users_list(["e_mail"], "username='$sender'");
+        $res_ar = $udh->findUsersList(["e_mail"], "username='$sender'");
 
-        if (AMA_DataHandler::isError($res_ar) || (!is_array($res_ar)) || count($res_ar) <= 0) {
-            $retval = new AMA_Error(AMA_ERR_SEND_MSG);
+        if (AMADataHandler::isError($res_ar) || (!is_array($res_ar)) || count($res_ar) <= 0) {
+            $retval = new AMAError(AMA_ERR_SEND_MSG);
             return $retval;
         }
 
@@ -165,11 +175,11 @@ class MessageHandler
         if ($type == ADA_MSG_MAIL || $type == ADA_MSG_MAIL_ONLY) {
             // delegate sending the e-mail to the mailer
             $mailer = new Mailer();
-            $res = $mailer->send_mail($message_ha, $sender_email, $recipients_emails_ar);
+            $res = $mailer->sendMail($message_ha, $sender_email, $recipients_emails_ar);
 
-            if (AMA_DataHandler::isError($res)) {
+            if (AMADataHandler::isError($res)) {
                 //  return $res; ???
-                $retval = new AMA_Error(AMA_ERR_SEND_MSG);
+                $retval = new AMAError(AMA_ERR_SEND_MSG);
                 return $retval;
             }
             if ($type == ADA_MSG_MAIL_ONLY) {
@@ -207,10 +217,10 @@ class MessageHandler
         // Common chat message, no need to access destinatari_messaggi table.
         if ($type == ADA_MSG_CHAT) {
             // add the message to the spool
-            $res = $spool->add_message($message_ha);
-            if (AMA_DataHandler::isError($res)) {
+            $res = $spool->addMessage($message_ha);
+            if (AMADataHandler::isError($res)) {
                 return $res;
-                // return new AMA_Error(AMA_ERR_SEND_MSG);
+                // return new AMAError(AMA_ERR_SEND_MSG);
             } // logger("Message successfully sent", 2);
             return $res;
             // end public chat message
@@ -218,17 +228,17 @@ class MessageHandler
             // all other cases
             // we have to verify that the field $recipients it is not empty
             if (!isset($recipients_ids_ar)) {
-                $retval = new AMA_Error(AMA_ERR_SEND_MSG);
+                $retval = new AMAError(AMA_ERR_SEND_MSG);
                 return $retval;
             }
             // add the message to the spool
             // e se non è inizializzato?
-            $res = $spool->add_message($message_ha, $recipients_ids_ar);
+            $res = $spool->addMessage($message_ha, $recipients_ids_ar);
 
-            if (AMA_DataHandler::isError($res)) {
+            if (AMADataHandler::isError($res)) {
                 //             echo "spooler error (type $type)";
                 return $res;
-                //return new AMA_Error(AMA_ERR_SEND_MSG);
+                //return new AMAError(AMA_ERR_SEND_MSG);
             } // logger("Message successfully sent", 2);
             return $res;
         }
@@ -250,10 +260,10 @@ class MessageHandler
      * @return  array a list of messages as an array of hashes
    }          keys are among these possible values:
      *           id_messaggio, data_ora, tipo, titolo, id_mittente, priorita, testo
-     *          an AMA_Error object if something goes wrong
+     *          an AMAError object if something goes wrong
      *
      **/
-    public function &get_messages($user_id, $type, $fields_list = "", $ordering = "")
+    public function &getMessages($user_id, $type, $fields_list = "", $ordering = "")
     {
 
         /* logger("entered MessageHandler::get_messages - ".
@@ -282,9 +292,9 @@ class MessageHandler
         } // end of switch
 
         // calling the appropriate spool
-        $res_ar_ha = $spool->find_messages($fields_list, "", $ordering);
-        if (AMA_DataHandler::isError($res_ar_ha)) {
-            $retval = new AMA_Error(AMA_ERR_READ_MSG);
+        $res_ar_ha = $spool->findMessages($fields_list, "", $ordering);
+        if (AMADataHandler::isError($res_ar_ha)) {
+            $retval = new AMAError(AMA_ERR_READ_MSG);
             return $retval;
         }
 
@@ -307,10 +317,10 @@ class MessageHandler
      * @return  array a list of messages as an array of hashes
    }          keys are among these possible values:
      *           id_messaggio, data_ora, tipo, titolo, id_mittente, priorita, testo
-     *          an AMA_Error object if something goes wrong
+     *          an AMAError object if something goes wrong
      *
      **/
-    public function &get_sent_messages($user_id, $type, $fields_list = "", $ordering = "")
+    public function &getSentMessages($user_id, $type, $fields_list = "", $ordering = "")
     {
 
         /* logger("entered MessageHandler::get_messages - ".
@@ -340,9 +350,9 @@ class MessageHandler
                 break;
         } // end of switch
 
-        $res_ar_ha = $spool->find_sent_messages($fields_list, "", $ordering);
-        if (AMA_DataHandler::isError($res_ar_ha)) {
-            $retval = new AMA_Error(AMA_ERR_READ_MSG);
+        $res_ar_ha = $spool->findSentMessages($fields_list, "", $ordering);
+        if (AMADataHandler::isError($res_ar_ha)) {
+            $retval = new AMAError(AMA_ERR_READ_MSG);
             return $retval;
         }
 
@@ -366,10 +376,10 @@ class MessageHandler
      * @return  a reference to a 2-dim array,
      *           each row will have id_utente in the 0 element
      *           and the fields specified in the list in the others
-     *          an AMA_Error object if something goes wrong
+     *          an AMAError object if something goes wrong
      *
      **/
-    public function &find_messages(
+    public function &findMessages(
         $user_id,
         $type,
         $fields_list = "",
@@ -406,23 +416,23 @@ class MessageHandler
         } // end of switch
 
         // calling the appropriate spool
-        $res_ar_ha = $spool->find_messages($fields_list, $clause, $ordering);
-        if (AMA_DataHandler::isError($res_ar_ha)) {
-            $retval = new AMA_Error(AMA_ERR_READ_MSG);
+        $res_ar_ha = $spool->findMessages($fields_list, $clause, $ordering);
+        if (AMADataHandler::isError($res_ar_ha)) {
+            $retval = new AMAError(AMA_ERR_READ_MSG);
             return $retval;
         }
 
         return $res_ar_ha;
     }
 
-    public function &find_chat_messages($user_id, $type, $id_chatroom, $fields_list = "", $clause = "", $ordering = "")
+    public function &findChatMessages($user_id, $type, $id_chatroom, $fields_list = "", $clause = "", $ordering = "")
     {
 
         $spool = new ChatSpool($user_id, $type, $id_chatroom, $this->dsn);
         // calling the appropriate spool
-        $res_ar_ha = $spool->find_chat_messages($fields_list, $clause, $ordering);
-        if (AMA_DataHandler::isError($res_ar_ha)) {
-            $retval = new AMA_Error(AMA_ERR_READ_MSG);
+        $res_ar_ha = $spool->findChatMessages($fields_list, $clause, $ordering);
+        if (AMADataHandler::isError($res_ar_ha)) {
+            $retval = new AMAError(AMA_ERR_READ_MSG);
             return $retval;
         }
 
@@ -451,7 +461,7 @@ class MessageHandler
      *           **destinatari is a CVS list of usernames
      *
      **/
-    public function get_message($user_id, $msg_id)
+    public function getMessage($user_id, $msg_id)
     {
 
         // logger("entered MessageHandler::get_message - ".
@@ -461,13 +471,13 @@ class MessageHandler
         $spool = new Spool($user_id, $this->dsn);
 
         // get message content and recipients' ids list
-        $res_ar = $spool->get_message_info($msg_id);
+        $res_ar = $spool->getMessageInfo($msg_id);
 
         //vito, 2 feb 2009: qui potrebbe non aver trovato il messaggio
 
 
-        if (AMA_DataHandler::isError($res_ar)) {
-            $retval = new AMA_Error(AMA_ERR_READ_MSG);
+        if (AMADataHandler::isError($res_ar)) {
+            $retval = new AMAError(AMA_ERR_READ_MSG);
             return $retval;
         }
 
@@ -480,12 +490,12 @@ class MessageHandler
 
         // transform sender id into sender username
         $sender_id = $message_ha['id_mittente'];
-        $res_ar = $udh->find_users_list(
+        $res_ar = $udh->findUsersList(
             ["username"],
             "id_utente=$sender_id"
         );
-        if (AMA_DataHandler::isError($res_ar)) {
-            $retval = new AMA_Error(AMA_ERR_READ_MSG);
+        if (AMADataHandler::isError($res_ar)) {
+            $retval = new AMAError(AMA_ERR_READ_MSG);
             return $retval;
         }
 
@@ -495,12 +505,12 @@ class MessageHandler
         $recipients_usernames_ar = [];
         foreach ($recipients_ids_ar as $rid) {
             // get username of the current id ($rid)
-            $res_ar = $udh->find_users_list(
+            $res_ar = $udh->findUsersList(
                 ["username"],
                 "id_utente=$rid"
             );
-            if (AMA_DataHandler::isError($res_ar)) {
-                $retval = new AMA_Error(AMA_ERR_READ_MSG);
+            if (AMADataHandler::isError($res_ar)) {
+                $retval = new AMAError(AMA_ERR_READ_MSG);
                 return $retval;
             }
             if (array_key_exists(0, $res_ar)) {
@@ -517,8 +527,8 @@ class MessageHandler
 
         // set message as read
         $res = $spool->set_message($msg_id, "read", 'R');
-        if (AMA_DataHandler::isError($res)) {
-            $retval = new AMA_Error(AMA_ERR_UPDATE);
+        if (AMADataHandler::isError($res)) {
+            $retval = new AMAError(AMA_ERR_UPDATE);
             return $retval;
         }
 
@@ -538,22 +548,22 @@ class MessageHandler
      * @param   $type    - type of message
      *
      * @return  an hash having the same structure of what get_message returns
-     *          an AMA_Error object if something goes wrong
+     *          an AMAError object if something goes wrong
      *
      **/
-    public function get_next_message($msg_id, $user_id, $type)
+    public function getNextMessage($msg_id, $user_id, $type)
     {
 
         // find current message's index
-        $res = $this->get_ids_list($user_id, $type, $msg_id);
-        if (AMA_DataHandler::isError($res)) {
-            // $res is an AMA_Error object
+        $res = $this->getIdsList($user_id, $type, $msg_id);
+        if (AMADataHandler::isError($res)) {
+            // $res is an AMAError object
             return $res;
         }
         [$current, $msgs_ar] = $res;
 
         // return content of next message
-        return get_message_info($msgs_ar[$current + 1]);
+        return getMessageInfo($msgs_ar[$current + 1]);
     }
 
     /**
@@ -568,22 +578,22 @@ class MessageHandler
      * @param   $type    - type of message
      *
      * @return  an hash having the same structure of what get_message returns
-     *          an AMA_Error object if something goes wrong
+     *          an AMAError object if something goes wrong
      *
      **/
-    public function get_previous_message($id, $user_id, $type)
+    public function getPreviousMessage($id, $user_id, $type)
     {
 
         // find current message's index
-        $res = $this->get_ids_list($user_id, $type, $msg_id);
-        if (AMA_DataHandler::isError($res)) {
-            // $res is an AMA_Error object
+        $res = $this->getIdsList($user_id, $type, $msg_id);
+        if (AMADataHandler::isError($res)) {
+            // $res is an AMAError object
             return $res;
         }
         [$current, $msgs_ar] = $res;
 
         // return content of next message
-        return get_message_info($msgs_ar[$current + 1]);
+        return getMessageInfo($msgs_ar[$current + 1]);
     }
 
     /**
@@ -598,22 +608,22 @@ class MessageHandler
      * @param   $type    - type of message
      *
      * @return  an hash having the same structure of what get_message returns
-     *          an AMA_Error object if something goes wrong
+     *          an AMAError object if something goes wrong
      *
      **/
-    public function get_first_message($user_id, $type)
+    public function getFirstMessage($user_id, $type)
     {
 
         // find current message's index
-        $res = $this->get_ids_list($user_id, $type);
-        if (AMA_DataHandler::isError($res)) {
-            //$res is an AMA_Error object
+        $res = $this->getIdsList($user_id, $type);
+        if (AMADataHandler::isError($res)) {
+            //$res is an AMAError object
             return $res;
         }
         $msgs_ar = $res;
 
         // return content of next message
-        return get_message_info($msgs_ar[0]);
+        return getMessageInfo($msgs_ar[0]);
     }
 
     /**
@@ -628,23 +638,23 @@ class MessageHandler
      * @param   $type    - type of message
      *
      * @return  an hash having the same structure of what get_message returns
-     *          an AMA_Error object if something goes wrong
+     *          an AMAError object if something goes wrong
      *
      **/
-    public function get_last_message($user_id, $type)
+    public function getLastMessage($user_id, $type)
     {
 
         // find current message's index
-        $res = $this->get_ids_list($user_id, $type);
-        if (AMA_DataHandler::isError($res)) {
-            // $res is an AMA_Error object
+        $res = $this->getIdsList($user_id, $type);
+        if (AMADataHandler::isError($res)) {
+            // $res is an AMAError object
             return $res;
         }
         $msgs_ar = $res;
         $n = count($msgs_ar);
 
         // return content of next message
-        return get_message_info($msgs_ar[$n - 1]);
+        return getMessageInfo($msgs_ar[$n - 1]);
     }
 
     /**
@@ -656,10 +666,10 @@ class MessageHandler
      * @param   $msgs_ar - array of messages id to change
      * @param   $value   - new status (R or N)
      *
-     * @return  an AMA_Error object if something goes wrong
+     * @return  an AMAError object if something goes wrong
      *
      **/
-    public function set_messages($user_id, $msgs_ar, $value)
+    public function setMessages($user_id, $msgs_ar, $value)
     {
 
         // logger("entered MessageHandler::set_messages - ".
@@ -669,9 +679,9 @@ class MessageHandler
 
         // only do something if there is something to do!
         if (count($msgs_ar)) {
-            $res = $spool->set_messages($msgs_ar, $value);
-            if (AMA_DataHandler::isError($res)) {
-                $retval = new AMA_Error(AMA_ERR_REMOVE);
+            $res = $spool->setMessages($msgs_ar, $value);
+            if (AMADataHandler::isError($res)) {
+                $retval = new AMAError(AMA_ERR_REMOVE);
                 return $retval;
             }
         }
@@ -685,10 +695,10 @@ class MessageHandler
      * @param   $user_id - id of the owner of the spool
      * @param   $msgs_ar - array of messages id to change
      *
-     * @return  an AMA_Error object if something goes wrong
+     * @return  an AMAError object if something goes wrong
      *
      **/
-    public function remove_messages($user_id, $msgs_ar)
+    public function removeMessages($user_id, $msgs_ar)
     {
 
         // logger("entered MessageHandler::remove_messages - ".
@@ -698,9 +708,9 @@ class MessageHandler
         //$spool = new Spool($user_id);
         $spool = new SimpleSpool($user_id, $this->dsn);
         if (count($msgs_ar)) {
-            $res = $spool->remove_messages($msgs_ar);
-            if (AMA_DataHandler::isError($res)) {
-                $retval = new AMA_Error(AMA_ERR_REMOVE);
+            $res = $spool->removeMessages($msgs_ar);
+            if (AMADataHandler::isError($res)) {
+                $retval = new AMAError(AMA_ERR_REMOVE);
                 return $retval;
             }
         }
@@ -723,10 +733,10 @@ class MessageHandler
      *          an integer representing the index
      *          the messages' ids array
      *         only the array if the msg_id is not passed
-     *         an AMA_Error object if something goes wrong
+     *         an AMAError object if something goes wrong
      *
      **/
-    private function get_ids_list($user_id, $type, $msg_id = 0)
+    private function getIdsList($user_id, $type, $msg_id = 0)
     {
 
         /* logger("entered MessageHandler::_get_current_index - ".
@@ -755,9 +765,9 @@ class MessageHandler
                 break;
         } // end of switch
 
-        $res_ar = $spool->find_messages();
-        if (AMA_DataHandler::isError($res_ar)) {
-            // $res_ar is an AMA_Error object
+        $res_ar = $spool->findMessages();
+        if (AMADataHandler::isError($res_ar)) {
+            // $res_ar is an AMAError object
             return $res_ar;
         }
 
@@ -780,10 +790,10 @@ class MessageHandler
      * @param   $user_id - id of the owner of the spool
      * @param   $msgs_ar - array of messages id to log
      *
-     * @return  an AMA_Error object if something goes wrong
+     * @return  an AMAError object if something goes wrong
      *
      **/
-    public function log_messages($user_id, $msgs_ar)
+    public function logMessages($user_id, $msgs_ar)
     {
 
         // logger("entered MessageHandler::log_messages - ".
@@ -793,12 +803,12 @@ class MessageHandler
         $spool = new Spool($user_id, $this->dsn);
         if (count($msgs_ar)) {
             foreach ($msgs_ar as $message_id) {
-                $msg_Ha = get_message_info($message_id);
+                $msg_Ha = getMessageInfo($message_id);
                 $res = $spool->log_message($msg_Ha);
             }
             // FIXME: qui gestione errore non e' a posto.
-            if (AMA_DataHandler::isError($res)) {
-                $retval = new AMA_Error(AMA_ERR_ADD);
+            if (AMADataHandler::isError($res)) {
+                $retval = new AMAError(AMA_ERR_ADD);
                 return $retval;
             }
         }
@@ -820,10 +830,10 @@ class MessageHandler
      * @return  a list of messages as an array of hashes
    }          keys are among these possible values:
      *           id_messaggio, data_ora, tipo, titolo, id_mittente, priorita, testo
-     *          an AMA_Error object if something goes wrong
+     *          an AMAError object if something goes wrong
      *
      **/
-    public function &get_logged_messages($user_id, $type, $fields_list = "", $ordering = "")
+    public function &getLoggedMessages($user_id, $type, $fields_list = "", $ordering = "")
     {
 
         /* logger("entered MessageHandler::get_messages - ".
@@ -844,9 +854,9 @@ class MessageHandler
                 break;
         } // end of switch
 
-        $res_ar_ha = $spool->find_logged_messages($fields_list, "", $ordering);
-        if (AMA_DataHandler::isError($res_ar_ha)) {
-            $retval = new AMA_Error(AMA_ERR_READ_MSG);
+        $res_ar_ha = $spool->findLoggedMessages($fields_list, "", $ordering);
+        if (AMADataHandler::isError($res_ar_ha)) {
+            $retval = new AMAError(AMA_ERR_READ_MSG);
             return $retval;
         }
 
@@ -864,7 +874,7 @@ class MessageHandler
      *
      **/
 
-    public function render_message_textFN($string)
+    public function renderMessageTextFN($string)
     {
         $sess_id_course = $GLOBALS['sess_id_course'];
         $user_level = $GLOBALS['user_level'];

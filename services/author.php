@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\User\ADAAuthor;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * AUTHOR.
  *
@@ -98,20 +120,20 @@ $help = translateFN("Da qui l'autore pu&ograve; vedere vedere un report generale
 
 // FIXME: servono gli utenti online in questo modulo?
 //$online_users_listing_mode = 2;
-//$online_users = ADAAuthor::get_online_usersFN($id_course_instance,$online_users_listing_mode);
+//$online_users = ADAAuthor::getOnlineUsersFN($id_course_instance,$online_users_listing_mode);
 
 // find all course available
 
 $field_list_ar = ['nome','titolo','data_creazione','media_path','id_nodo_iniziale'];
 $key = $sess_id_user;
 $search_fields_ar = ['id_utente_autore'];
-$dataHa = $dh->find_courses_list($field_list_ar, 'id_utente_autore=' . $key);
+$dataHa = $dh->findCoursesList($field_list_ar, 'id_utente_autore=' . $key);
 
-if (AMA_DataHandler::isError($dataHa)) {
+if (AMADataHandler::isError($dataHa)) {
     /*
      * Qui, se codice di errore == AMA_ERR_NOT_FOUND, tutto ok, semplicemente non
      * ci sono corsi.
-     * Altrimenti ADA_Error
+     * Altrimenti ADAError
      */
     $err_msg = $dataHa->getMessage();
     //header("Location: $error?err_msg=$msg");

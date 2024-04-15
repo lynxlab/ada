@@ -1,5 +1,29 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * SERVICE_INFO.
  *
@@ -22,7 +46,7 @@ use Lynxlab\ADA\Main\Service\ServiceImplementor;
 use Lynxlab\ADA\Main\User\ADAGuest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Service\Functions\get_course_instance_info;
+use function Lynxlab\ADA\Main\Service\Functions\getCourseInstanceInfo;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /* Questa versione è diversa dalla versione ADA;
@@ -108,7 +132,7 @@ include_once ROOT_DIR . '/include/services_functions.inc.php';
 
 $self = whoami();   // serve per scegliere il template
 
-//$dh = AMA_DataHandler::instance(); // init AMA
+//$dh = AMADataHandler::instance(); // init AMA
 
 $sess_id_user = $_SESSION['sess_id_user'];
 
@@ -160,7 +184,7 @@ if (
 
         $serviceObj = Service::findServiceFromImplementor($id_course);
 
-        $serviceAr = $serviceObj->get_service_info();
+        $serviceAr = $serviceObj->getServiceInfo();
 
         // Deve essere mostrato comunque?
 
@@ -173,13 +197,13 @@ if (
 
         // $serviceImplementationObj = new ServiceImplementor($id_course);
 
-        $serviceImplementationAr = $serviceImplementationObj->get_implementor_info();
+        $serviceImplementationAr = $serviceImplementationObj->getImplementorInfo();
 
 
         $impl_service_data = GuestHtmlLib::displayImplementationServiceData($userObj, $serviceImplementationAr, $optionsAr);
 
         /*
-        $courseAr = $serviceObj->get_implementor($id_course);
+        $courseAr = $serviceObj->getImplementor($id_course);
         $course_dataList = BaseHtmlLib::plainListElement("",$courseAr);
         $impl_service_data = $course_dataList->getHtml();
         */
@@ -211,16 +235,16 @@ if (
         if (
             (isset($_REQUEST['id_course_instance'])) and (isset($_REQUEST['id_course']))
         ) {
-            $requested_service_data = get_course_instance_info($_REQUEST['id_course'], $_REQUEST['id_course_instance']); // from services_functions
+            $requested_service_data = getCourseInstanceInfo($_REQUEST['id_course'], $_REQUEST['id_course_instance']); // from services_functions
         } // id_course_instance
         // end if id_course
     } elseif (isset($_REQUEST['id_service'])) { // get general info about a service
         /* 3. info only about a service  */
-        $service_dataHa = $common_dh->get_service_info($_REQUEST['id_service']); //var_dump($service_dataHa);
+        $service_dataHa = $common_dh->getServiceInfo($_REQUEST['id_service']); //var_dump($service_dataHa);
         $serviceObj = new Service($service_dataHa); // var_dump($serviceObj);
 
         //$serviceObj = new Service($_REQUEST['id_service']);
-        $serviceAr = $serviceObj->get_service_info();
+        $serviceAr = $serviceObj->getServiceInfo();
         $service_data = GuestHtmlLib::displayServiceData($userObj, $serviceAr, $optionsAr);
 
 

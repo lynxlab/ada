@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * save_traslation.php
  *
@@ -96,10 +110,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $result = $result_table->getHtml();
             $retArray = ["status" => "ERROR", "msg" =>  translateFN("Nessun input sottomesso"), "html" => $result];
         } else {
-            //$result = $common_dh->find_translation_for_message($search_text, $language_code, ADA_SYSTEM_MESSAGES_SHOW_SEARCH_RESULT_NUM);
-            $result = $common_dh->find_translation_for_message($search_text, $language_code, null);
+            //$result = $common_dh->findTranslationForMessage($search_text, $language_code, ADA_SYSTEM_MESSAGES_SHOW_SEARCH_RESULT_NUM);
+            $result = $common_dh->findTranslationForMessage($search_text, $language_code, null);
 
-            if (AMA_DataHandler::isError($result)) {
+            if (AMADataHandler::isError($result)) {
                 $total_results = [];
                 $msgEr = translateFN("Errore nella ricerca dei messaggi");
                 $temp_results = [translateFN("") => $msgEr];

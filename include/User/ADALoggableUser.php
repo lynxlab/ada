@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAUser;
+
+use Lynxlab\ADA\Main\User\ADALoggableUser;
+
+use Lynxlab\ADA\Main\User\ADAGenericUser;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\CORE\HtmlElements\Table;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class ADALoggableUser was declared with namespace Lynxlab\ADA\Main\User. //
+
 /**
  * User classes
  *
@@ -39,7 +61,7 @@ abstract class ADALoggableUser extends ADAGenericUser
    * provincia, nazione, codice_fiscale, sesso,
    * telefono, stato
         */
-        if (isset($user_dataHa['id']) && DataValidator::is_uinteger($user_dataHa['id'])) {
+        if (isset($user_dataHa['id']) && DataValidator::isUinteger($user_dataHa['id'])) {
             $this->id_user = $user_dataHa['id'];
         } else {
             $this->id_user = 0;
@@ -146,20 +168,20 @@ abstract class ADALoggableUser extends ADAGenericUser
     }
 
     // MARK: USARE MultiPort::getUserMessages
-    public function get_messagesFN($id_user)
+    public function getMessagesFN($id_user)
     {
         return '';
     }
 
     // MARK: usare MultiPort::getUserAgenda
-    public function get_agendaFN($id_user)
+    public function getAgendaFN($id_user)
     {
         return '';
     }
 
-    public static function get_online_usersFN($id_course_instance, $mode)
+    public static function getOnlineUsersFN($id_course_instance, $mode)
     {
-        $data =  self::online_usersFN($id_course_instance, $mode);
+        $data =  self::onlineUsersFN($id_course_instance, $mode);
         if (gettype($data) == 'string' || $data == 'null') {
             return $data;
         } else {
@@ -177,7 +199,7 @@ abstract class ADALoggableUser extends ADAGenericUser
         }
     }
 
-    private static function online_usersFN($id_course_instance, $mode = 0)
+    private static function onlineUsersFN($id_course_instance, $mode = 0)
     {
         $dh = $GLOBALS['dh'];
         $error = $GLOBALS['error'];
@@ -213,8 +235,8 @@ abstract class ADALoggableUser extends ADAGenericUser
         $limit = $now - $tolerance;
         $out_fields_ar = ['data_visita', 'id_utente_studente', 'session_id'];
         $clause = "data_visita > $limit and id_istanza_corso ='$id_course_instance'";
-        $dataHa = $dh->doFind_nodes_history_list($out_fields_ar, $clause);
-        if (AMA_DataHandler::isError($dataHa) || empty($dataHa)) {
+        $dataHa = $dh->doFindNodesHistoryList($out_fields_ar, $clause);
+        if (AMADataHandler::isError($dataHa) || empty($dataHa)) {
             if (gettype($dataHa) == "object") {
                 $msg = $dataHa->getMessage();
                 return $msg;
@@ -266,15 +288,15 @@ abstract class ADALoggableUser extends ADAGenericUser
                                         $online_users_idAr[] = $user_id;
                                         $id_profile = $userObj->getType(); //$userObj->tipo;
                                         if ($id_profile == AMA_TYPE_TUTOR) {
-                                            $online_usersAr[] = $userObj->username . " |<a href=\"$http_root_dir/comunica/send_message.php?destinatari=" . $userObj->username . "\"  target=\"_blank\">" . translateFN("scrivi un messaggio") . "</a> |"
+                                            $online_usersAr[] = $userObj->username . " |<a href=\"$http_root_dir/comunica/sendMessage.php?destinatari=" . $userObj->username . "\"  target=\"_blank\">" . translateFN("scrivi un messaggio") . "</a> |"
                                                 . " <a href=\"view.php?id_node=$sess_id_node&guide_user_id=" . $userObj->getId() . "\"> " . translateFN("segui") . "</a> |";
-                                            //$online_usersAr[$user_id]['user']= "<img src=\"img/_tutor.png\" border=\"0\"> ".$userObj->username. " |<a href=\"$http_root_dir/comunica/send_message.php?destinatari=". $userObj->username."\"  target=\"_blank\">".translateFN("scrivi un messaggio")."</a> |";
+                                            //$online_usersAr[$user_id]['user']= "<img src=\"img/_tutor.png\" border=\"0\"> ".$userObj->username. " |<a href=\"$http_root_dir/comunica/sendMessage.php?destinatari=". $userObj->username."\"  target=\"_blank\">".translateFN("scrivi un messaggio")."</a> |";
                                             //$online_usersAr[$user_id]['user'].= " <a href=\"view.php?id_node=$sess_id_node&guide_user_id=".$userObj->id."\"> ".translateFN("segui")."</a> |";
                                         } else {    // STUDENT
-                                            // $online_usersAr[$user_id]['user']= "<a href=\"student.php?op=list_students&id_course_instance=$sess_id_course_instance&id_course=$sess_id_course\"><img src=\"img/_student.png\" border=0></a> ";
-                                            $online_usersAr[] = $userObj->username . " |<a href=\"$http_root_dir/comunica/send_message.php?destinatari=" . $userObj->username . "\"  target=\"_blank\">" . translateFN("scrivi un messaggio") . "</a> |";
+                                            // $online_usersAr[$user_id]['user']= "<a href=\"student.php?op=listStudents&id_course_instance=$sess_id_course_instance&id_course=$sess_id_course\"><img src=\"img/_student.png\" border=0></a> ";
+                                            $online_usersAr[] = $userObj->username . " |<a href=\"$http_root_dir/comunica/sendMessage.php?destinatari=" . $userObj->username . "\"  target=\"_blank\">" . translateFN("scrivi un messaggio") . "</a> |";
                                             //                                            $online_usersAr[$user_id]['user']= "<img src=\"img/_student.png\" border=\"0\"> ";
-                                            //                                            $online_usersAr[$user_id]['user'].= $userObj->username. " |<a href=\"$http_root_dir/comunica/send_message.php?destinatari=". $userObj->username."\"  target=\"_blank\">".translateFN("scrivi un messaggio")."</a> |";
+                                            //                                            $online_usersAr[$user_id]['user'].= $userObj->username. " |<a href=\"$http_root_dir/comunica/sendMessage.php?destinatari=". $userObj->username."\"  target=\"_blank\">".translateFN("scrivi un messaggio")."</a> |";
                                         }
                                     }
                                 }
@@ -324,7 +346,7 @@ abstract class ADALoggableUser extends ADAGenericUser
         }
     }
 
-    public static function is_someone_there_courseFN($id_course_instance)
+    public static function isSomeoneThereCourseFN($id_course_instance)
     {
         $dh = $GLOBALS['dh'];
         $error = $GLOBALS['error'];
@@ -345,8 +367,8 @@ abstract class ADALoggableUser extends ADAGenericUser
         $limit = $now - $tolerance;
         $out_fields_ar = ['id_nodo', 'data_uscita', 'id_utente_studente'];
         $clause = "data_uscita > $limit and id_istanza_corso ='$id_course_instance'";
-        $dataHa = $dh->doFind_nodes_history_list($out_fields_ar, $clause, true);
-        if (AMA_DataHandler::isError($dataHa) || empty($dataHa)) {
+        $dataHa = $dh->doFindNodesHistoryList($out_fields_ar, $clause, true);
+        if (AMADataHandler::isError($dataHa) || empty($dataHa)) {
             if (gettype($dataHa) == "object") {
                 $msg = $dataHa->getMessage();
                 return $msg;
@@ -357,7 +379,7 @@ abstract class ADALoggableUser extends ADAGenericUser
         }
     }
 
-    public static function is_someone_thereFN($id_course_instance, $id_node)
+    public static function isSomeoneThereFN($id_course_instance, $id_node)
     {
         $dh = $GLOBALS['dh'];
         $error = $GLOBALS['error'];
@@ -378,8 +400,8 @@ abstract class ADALoggableUser extends ADAGenericUser
         $limit = $now - $tolerance;
         $out_fields_ar = ['data_uscita', 'id_utente_studente'];
         $clause = "data_uscita > $limit and id_istanza_corso ='$id_course_instance' and id_nodo ='$id_node'";
-        $dataHa = $dh->doFind_nodes_history_list($out_fields_ar, $clause);
-        if (AMA_DataHandler::isError($dataHa) || empty($dataHa)) {
+        $dataHa = $dh->doFindNodesHistoryList($out_fields_ar, $clause);
+        if (AMADataHandler::isError($dataHa) || empty($dataHa)) {
             if (gettype($dataHa) == "object") {
                 $msg = $dataHa->getMessage();
                 return $msg;
@@ -391,7 +413,7 @@ abstract class ADALoggableUser extends ADAGenericUser
     }
 
 
-    public function get_last_accessFN($id_course_instance = "", $type = "T", $dh = null)
+    public function getLastAccessFN($id_course_instance = "", $type = "T", $dh = null)
     {
         if (is_null($dh)) {
             $dh = $GLOBALS['dh'];
@@ -399,9 +421,9 @@ abstract class ADALoggableUser extends ADAGenericUser
         // called by browsing/student.php
 
         if ($type == "UT") {
-            $last_accessAr = $this->do_get_last_accessFN($id_course_instance, $dh, false);
+            $last_accessAr = $this->doGetLastAccessFN($id_course_instance, $dh, false);
         } else {
-            $last_accessAr = $this->do_get_last_accessFN($id_course_instance, $dh);
+            $last_accessAr = $this->doGetLastAccessFN($id_course_instance, $dh);
         }
         if (is_array($last_accessAr)) {
             switch ($type) {
@@ -427,7 +449,7 @@ abstract class ADALoggableUser extends ADAGenericUser
      * @param  $id_course_instance
      * @return array
      */
-    private function do_get_last_accessFN($id_course_instance = "", $provider_dh = null, $return_dateonly = true)
+    private function doGetLastAccessFN($id_course_instance = "", $provider_dh = null, $return_dateonly = true)
     {
         // if used by student before entering a course, we must pass the DataHandler
         if ($provider_dh == null) {
@@ -444,12 +466,12 @@ abstract class ADALoggableUser extends ADAGenericUser
         }
 
         if ($id_course_instance) {
-            $last_visited_node = $provider_dh->get_last_visited_nodes($id_user, $id_course_instance, 10);
+            $last_visited_node = $provider_dh->getLastVisitedNodes($id_user, $id_course_instance, 10);
             /*
             * vito, 10 ottobre 2008: $last_visited_node è Array([0]=>Array([id_nodo], ...))
             */
-            if (!AMA_DB::isError($last_visited_node) && is_array($last_visited_node) && isset($last_visited_node[0])) {
-                $last_visited_time =  ($return_dateonly) ? AMA_DataHandler::ts_to_date($last_visited_node[0]['data_uscita']) : $last_visited_node[0]['data_uscita'];
+            if (!AMADB::isError($last_visited_node) && is_array($last_visited_node) && isset($last_visited_node[0])) {
+                $last_visited_time =  ($return_dateonly) ? AMADataHandler::tsToDate($last_visited_node[0]['data_uscita']) : $last_visited_node[0]['data_uscita'];
 
                 return [$last_visited_node[0]['id_nodo'], $last_visited_time];
             } else {
@@ -464,10 +486,10 @@ abstract class ADALoggableUser extends ADAGenericUser
             if (!empty($serviceProviders) && is_array($serviceProviders)) {
                 $i = 0;
                 foreach ($serviceProviders as $Provider) {
-                    $provider_dh = AMA_DataHandler::instance(MultiPort::getDSN($Provider));
-                    $courseInstances_provider = $provider_dh->get_course_instances_for_this_student($this->getId());
-                    if (AMA_DataHandler::isError($courseInstances_provider)) {
-                        $courseInstances_provider = new ADA_Error($courseInstances_provider);
+                    $provider_dh = AMADataHandler::instance(MultiPort::getDSN($Provider));
+                    $courseInstances_provider = $provider_dh->getCourseInstancesForThisStudent($this->getId());
+                    if (AMADataHandler::isError($courseInstances_provider)) {
+                        $courseInstances_provider = new ADAError($courseInstances_provider);
                     } else {
                         $istance_testerAr[$i] = ['istances' => $courseInstances_provider, 'provider' => $Provider];
                     }
@@ -480,11 +502,11 @@ abstract class ADALoggableUser extends ADAGenericUser
                 foreach ($istance_testerAr as $istanceTs) {
                     $courseInstancesAr = $istanceTs['istances'];
                     $pointer = $istanceTs['provider'];
-                    $tester = AMA_DataHandler::instance(MultiPort::getDSN($pointer));
+                    $tester = AMADataHandler::instance(MultiPort::getDSN($pointer));
                     foreach ($courseInstancesAr as $courseInstance) {
                         $id_instance = $courseInstance['id_istanza_corso'];
-                        $last_access = $tester->get_last_visited_nodes($id_user, $id_instance, 10);
-                        if (!AMA_DB::isError($last_access) && is_array($last_access) && count($last_access)) {
+                        $last_access = $tester->getLastVisitedNodes($id_user, $id_instance, 10);
+                        if (!AMADB::isError($last_access) && is_array($last_access) && count($last_access)) {
                             $last_accessAr = [$last_access[0]['id_nodo'], $last_access[0]['data_uscita']];
 
                             if ($last_accessAr[1] > $Max) {
@@ -502,7 +524,7 @@ abstract class ADALoggableUser extends ADAGenericUser
         }
     }
 
-    public static function is_visited_by_userFN($node_id, $course_instance_id, $user_id)
+    public static function isVisitedByUserFN($node_id, $course_instance_id, $user_id)
     {
         //  returns  the number of visits for this node
 
@@ -524,7 +546,7 @@ abstract class ADALoggableUser extends ADAGenericUser
         return $visit_count;
     }
 
-    public static function is_visited_by_classFN($node_id, $course_instance_id, $course_id)
+    public static function isVisitedByClassFN($node_id, $course_instance_id, $course_id)
     {
         //  returns  the number of visits for this node for instance $course_instance_id
 
@@ -544,7 +566,7 @@ abstract class ADALoggableUser extends ADAGenericUser
         return $visit_count;
     }
 
-    public static function is_visitedFN($node_id)
+    public static function isVisitedFN($node_id)
     {
         //  returns  the number of global visits for this node
 
@@ -553,9 +575,9 @@ abstract class ADALoggableUser extends ADAGenericUser
         $visit_count = 0;
         $out_fields_ar = ['n_contatti'];
         //$search_fields_ar = array('id_nodo');
-        //$history = $dh->find_nodes_list_by_key($out_fields_ar, $node_id, $search_fields_ar); ???
+        //$history = $dh->findNodesListByKey($out_fields_ar, $node_id, $search_fields_ar); ???
         $clause = "id_nodo = '$node_id'";
-        $history = $dh->doFind_nodes_list($out_fields_ar, $clause);
+        $history = $dh->doFindNodesList($out_fields_ar, $clause);
         $visit_count = sizeof($history) - 1;
         return $visit_count;
     }
@@ -568,20 +590,20 @@ abstract class ADALoggableUser extends ADAGenericUser
      *
      * @return array if success|null if no file exists or on error
      */
-    public function get_new_files($id_course_instance, $maxFiles = 3)
+    public function getNewFiles($id_course_instance, $maxFiles = 3)
     {
         $dh        = $GLOBALS['dh'];
         $common_dh = $GLOBALS['common_dh'];
 
         $retval = null;
 
-        $lastAccessArr = $this->do_get_last_accessFN($id_course_instance, null, false);
+        $lastAccessArr = $this->doGetLastAccessFN($id_course_instance, null, false);
         $lastAccess = (!is_array($lastAccessArr)) ? time() : intval($lastAccessArr[1]);
 
-        $id_course = $dh->get_course_id_for_course_instance($id_course_instance);
+        $id_course = $dh->getCourseIdForCourseInstance($id_course_instance);
         $course_ha = $dh->get_course($id_course);
 
-        if (!AMA_DataHandler::isError($course_ha)) {
+        if (!AMADataHandler::isError($course_ha)) {
             $author_id = $course_ha['id_autore'];
             //il percorso in cui caricare deve essere dato dal media path del corso, e se non presente da quello di default
             if ($course_ha['media_path'] != "") {
@@ -603,7 +625,7 @@ abstract class ADALoggableUser extends ADAGenericUser
                     // index 0 is the course instance id
                     $file_id_course = $filesPart[0];
                     // index 1 is the file sender, get her info
-                    $file_senderArray = $common_dh->get_user_info($filesPart[1]);
+                    $file_senderArray = $common_dh->getUserInfo($filesPart[1]);
                     /*
                      *  add files only if:
                      *  + they belong to the passed instance OR
@@ -611,7 +633,7 @@ abstract class ADALoggableUser extends ADAGenericUser
                      *  + they've been modified after user last access
                      */
                     if (
-                        !AMA_DB::isError($file_senderArray) &&
+                        !AMADB::isError($file_senderArray) &&
                         ($file_id_course == $id_course_instance ||
                             ($file_senderArray['tipo'] == AMA_TYPE_AUTHOR && $file_id_course == $id_course)) &&
                         $ctime >= $lastAccess

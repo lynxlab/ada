@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Main\Token\ActionToken;
+
+// Trigger: ClassWithNameSpace. The class ActionToken was declared with namespace Lynxlab\ADA\Main\Token. //
+
 namespace Lynxlab\ADA\Main\Token;
 
 abstract class ActionToken

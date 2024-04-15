@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * Add exercise
  *
@@ -49,7 +57,7 @@ ServiceHelper::init($neededObjAr);
 $layout_dataAr['node_type'] = $self;
 
 $online_users_listing_mode = 2;
-$online_users = ADAGenericUser::get_online_usersFN($id_course_instance, $online_users_listing_mode);
+$online_users = ADAGenericUser::getOnlineUsersFN($id_course_instance, $online_users_listing_mode);
 
 //needed to promote AMADataHandler to AMATestDataHandler. $sess_selected_tester is already present in session
 $GLOBALS['dh'] = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
@@ -81,9 +89,9 @@ $content_dataAr['notes'] = $other_node_data['notes'];
 $content_dataAr['personal'] = $other_node_data['private_notes'];
 
 if ($reg_enabled) {
-    $content_dataAr['add_bookmark'] = $add_bookmark;
+    $content_dataAr['addBookmark'] = $addBookmark;
 } else {
-    $content_dataAr['add_bookmark'] = "";
+    $content_dataAr['addBookmark'] = "";
 }
 
 $content_dataAr['bookmark'] = $bookmark;

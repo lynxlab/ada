@@ -1,5 +1,7 @@
 <?php
 
+use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
+
 /**
  * @package     impersonate module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -18,7 +20,7 @@ use Lynxlab\ADA\Module\Impersonate\ImpersonateException;
 use Lynxlab\ADA\Module\Impersonate\LinkedUsers;
 use Lynxlab\ADA\Module\Impersonate\Utils;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_user;
+use function Lynxlab\ADA\Main\AMA\DBRead\readUser;
 
 /**
  * Base config file
@@ -60,11 +62,11 @@ if (isset($_SESSION[Utils::MODULES_IMPERSONATE_SESSBACKDATA])) {
             if (isset($_GET['t']) && intval($_GET['t']) > 0) {
                 $t = intval($_GET['t']);
                 $impObj = array_filter($impObj, function ($el) use ($t) {
-                    return $el->getLinked_type() == $t;
+                    return $el->getLinkedType() == $t;
                 });
             }
             $impObj = reset($impObj);
-            $impersonateId = $impObj->getLinked_id();
+            $impersonateId = $impObj->getLinkedId();
             $_SESSION[Utils::MODULES_IMPERSONATE_SESSBACKDATA] = $_SESSION['sess_userObj'];
         } else {
             throw new ImpersonateException('Error loading LinkedUsers object');
@@ -78,7 +80,7 @@ if (isset($_SESSION[Utils::MODULES_IMPERSONATE_SESSBACKDATA])) {
 }
 
 if (!isset($impersonateObj)) {
-    $impersonateObj = $impersonateId > 0 ? read_user($impersonateId) : $userObj;
+    $impersonateObj = $impersonateId > 0 ? readUser($impersonateId) : $userObj;
 }
 
 if ($impersonateObj instanceof ADALoggableUser) {

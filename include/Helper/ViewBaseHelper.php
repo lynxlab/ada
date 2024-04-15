@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Main\User\ADAAbstractUser;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\Helper\ViewBaseHelper;
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class ViewBaseHelper was declared with namespace Lynxlab\ADA\Main\Helper. //
+
 /**
  * @package     view
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -16,10 +34,10 @@ use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_course;
-use function Lynxlab\ADA\Main\AMA\DBRead\read_course_instance_from_DB;
-use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
-use function Lynxlab\ADA\Main\AMA\DBRead\read_user;
+use function Lynxlab\ADA\Main\AMA\DBRead\readCourse;
+use function Lynxlab\ADA\Main\AMA\DBRead\readCourseInstanceFromDB;
+use function Lynxlab\ADA\Main\AMA\DBRead\readNodeFromDB;
+use function Lynxlab\ADA\Main\AMA\DBRead\readUser;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
@@ -144,8 +162,8 @@ abstract class ViewBaseHelper
             return $_SESSION['sess_userObj'];
         } else {
             /** @var ADAGenericUser $userObj */
-            $userObj = read_user($sess_id_user);
-            if (ADA_Error::isError($userObj)) {
+            $userObj = readUser($sess_id_user);
+            if (ADAError::isError($userObj)) {
                 $userObj->handleError();
                 return null;
             } else {
@@ -170,7 +188,7 @@ abstract class ViewBaseHelper
                 $user_level = "0";
                 $user_score = "0";
                 $user_history = "";
-                $user_status = $userObj->get_student_status($sess_id_user, $sess_id_course_instance);
+                $user_status = $userObj->getStudentStatus($sess_id_user, $sess_id_course_instance);
                 break;
             case AMA_TYPE_TUTOR:
                 $user_level = ADA_MAX_USER_LEVEL;
@@ -205,8 +223,8 @@ abstract class ViewBaseHelper
         }
 
         if ($userObj->getType() == AMA_TYPE_STUDENT && $log_enabled) {
-            $user_level = (string)$userObj->get_student_level($sess_id_user, $sess_id_course_instance);
-            $user_score = (string)$userObj->get_student_score($sess_id_user, $sess_id_course_instance);
+            $user_level = (string)$userObj->getStudentLevel($sess_id_user, $sess_id_course_instance);
+            $user_score = (string)$userObj->getStudentScore($sess_id_user, $sess_id_course_instance);
             $user_history = $userObj->history;
         }
 
@@ -242,8 +260,8 @@ abstract class ViewBaseHelper
             /**
              * @var Course $courseObj
              */
-            $courseObj = read_course($sess_id_course);
-            if (ADA_Error::isError($courseObj)) {
+            $courseObj = readCourse($sess_id_course);
+            if (ADAError::isError($courseObj)) {
                 $courseObj->handleError();
             } else {
                 // $course_title = $courseObj->titolo; //title
@@ -264,13 +282,13 @@ abstract class ViewBaseHelper
         }
 
         if (in_array('course_instance', $thisUserNeededObjAr)) {
-            if (!ADA_Error::isError($courseObj) && !$courseObj->getIsPublic()) {
+            if (!ADAError::isError($courseObj) && !$courseObj->getIsPublic()) {
                 if (in_array($userObj->getType(), [AMA_TYPE_STUDENT, AMA_TYPE_TUTOR, AMA_TYPE_SWITCHER])) {
                     /**
                      *    @var Course_Instance $courseInstanceObj
                      */
-                    $courseInstanceObj = read_course_instance_from_DB($sess_id_course_instance);
-                    if (ADA_Error::isError($courseInstanceObj)) {
+                    $courseInstanceObj = readCourseInstanceFromDB($sess_id_course_instance);
+                    if (ADAError::isError($courseInstanceObj)) {
                         $courseInstanceObj->handleError();
                     } else {
                         // $course_instance_family = $courseInstanceObj->template_family;
@@ -290,15 +308,15 @@ abstract class ViewBaseHelper
             $calledClass = get_called_class();
 
             if (isset($sess_id_course_instance)) {
-                if (method_exists($userObj, 'get_student_status')) {
-                    $user_status = $userObj->get_student_status($userObj->getId(), $sess_id_course_instance);
+                if (method_exists($userObj, 'getStudentStatus')) {
+                    $user_status = $userObj->getStudentStatus($userObj->getId(), $sess_id_course_instance);
                 } else {
                     $user_status = ADA_STATUS_VISITOR;
                 }
                 if ($user_status != ADA_STATUS_VISITOR) {
-                    $tutor_id = $dh->course_instance_tutor_get($sess_id_course_instance);
+                    $tutor_id = $dh->courseInstanceTutorGet($sess_id_course_instance);
                     if (!empty($tutor_id) && !AMA_DataHandler::isError($tutor_id)) {
-                        $tutorAr = $dh->get_tutor($tutor_id);
+                        $tutorAr = $dh->getTutor($tutor_id);
                         if (!AMA_dataHandler::isError($tutorAr)) {
                             if (isset($tutorAr['username'])) {
                                 $calledClass::$tutor_uname = $tutorAr['username'];
@@ -315,8 +333,8 @@ abstract class ViewBaseHelper
             /**
              * @var Node $nodeObj
              */
-            $nodeObj = read_node_from_DB($id_node ?? null);
-            if (ADA_Error::isError($nodeObj)) {
+            $nodeObj = readNodeFromDB($id_node ?? null);
+            if (ADAError::isError($nodeObj)) {
                 $nodeObj->handleError();
             }
             $retArr['nodeObj'] = $nodeObj;
@@ -334,7 +352,7 @@ abstract class ViewBaseHelper
              */
             $retArr['exit_reason'] = NO_EXIT_REASON;
             if (!isset($id_chatroom) && isset($_SESSION['sess_id_course_instance'])) {
-                $id_chatroom = ChatRoom::get_class_chatroomFN($_SESSION['sess_id_course_instance']);
+                $id_chatroom = ChatRoom::getClassChatroomFN($_SESSION['sess_id_course_instance']);
                 if (AMA_DataHandler::isError($id_chatroom)) {
                     $id_chatroom = 0;
                 }
@@ -364,7 +382,7 @@ abstract class ViewBaseHelper
                          */
                         $videoroomObj = videoroom::getVideoObj();
                         $tempo_attuale = time();
-                        $videoroomObj->videoroom_info($sess_id_course_instance, $tempo_attuale);
+                        $videoroomObj->videoroomInfo($sess_id_course_instance, $tempo_attuale);
                         if ($videoroomObj->full) {
                             $videoroomObj->serverLogin();
                             if ($videoroomObj->login >= 0) {
@@ -386,8 +404,8 @@ abstract class ViewBaseHelper
                     case AMA_TYPE_TUTOR:
                         $videoroomObj = videoroom::getVideoObj();
                         $tempo_attuale = time();
-                        $creationDate = Abstract_AMA_DataHandler::ts_to_date($tempo_attuale);
-                        $videoroomObj->videoroom_info($sess_id_course_instance, $tempo_attuale);
+                        $creationDate = AbstractAMADataHandler::tsToDate($tempo_attuale);
+                        $videoroomObj->videoroomInfo($sess_id_course_instance, $tempo_attuale);
                         $videoroomObj->serverLogin();
                         if ($videoroomObj->full) {
                             if ($videoroomObj->login >= 0) {

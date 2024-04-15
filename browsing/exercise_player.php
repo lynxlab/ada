@@ -1,5 +1,29 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * Exercise
  *
@@ -109,30 +133,30 @@ switch ($op) {
              */
             if ($id_profile == AMA_TYPE_STUDENT) {
                 if (!ExerciseDAO::save($exercise)) {
-                    $errObj = new ADA_Error(null, translateFN('Errore nel salvataggio della risposta utente'));
+                    $errObj = new ADAError(null, translateFN('Errore nel salvataggio della risposta utente'));
                 }
 
                 // se l'esercizio appena corretto è un esercizio di sbarramento e lo studente lo ha superato,
                 // aumenta di uno il livello dello studente
                 if ($correttore->raiseUserLevel($exercise)) {
-                    $result = $dh->raise_student_level($sess_id_user, $sess_id_course_instance, 1);
-                    if (AMA_DataHandler::isError($result)) {
-                        $errObj = new ADA_Error($result, translateFN("Errore nell'aggiornamento dati utente"));
+                    $result = $dh->raiseStudentLevel($sess_id_user, $sess_id_course_instance, 1);
+                    if (AMADataHandler::isError($result)) {
+                        $errObj = new ADAError($result, translateFN("Errore nell'aggiornamento dati utente"));
                     }
                     //$new_user_level = $user_level + 1;
-                    $new_user_level = $userObj->get_student_level($sess_id_user, $sess_id_course_instance);
+                    $new_user_level = $userObj->getStudentLevel($sess_id_user, $sess_id_course_instance);
                     //$max_level = ADA_MAX_USER_LEVEL; // da config_install.inc.php
-                    $max_level = $dh->get_course_max_level($sess_id_course);
+                    $max_level = $dh->getCourseMaxLevel($sess_id_course);
                     if ($new_user_level >= $max_level) {
                         // se è l'ultimo esercizio (ovvero se il livello dello studente è il massimo possibile)
                         // e l'esercizio è di tipo sbarramento?
                         // genera il messaggio da inviare allo switcher
                         $tester = $userObj->getDefaultTester();
-                        $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
-                        $tester_info_Ar = $dh->get_tester_info_from_pointer($tester); // common?
+                        $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester));
+                        $tester_info_Ar = $dh->getTesterInfoFromPointer($tester); // common?
                         $tester_name = $tester_info_Ar[1];
-                        $switchers_Ar = $tester_dh->get_users_by_type([AMA_TYPE_SWITCHER]);
-                        if (AMA_DataHandler::isError($switchers_Ar) || !is_array($switchers_Ar)) {
+                        $switchers_Ar = $tester_dh->getUsersByType([AMA_TYPE_SWITCHER]);
+                        if (AMADataHandler::isError($switchers_Ar) || !is_array($switchers_Ar)) {
                             // ??
                         } else {
                             $switcher_id = $switchers_Ar[0];
@@ -142,7 +166,7 @@ switch ($op) {
                              */
                             if ($switcher_id) {
                                 $switcher = $dh->get_switcher($switcher_id);
-                                if (!AMA_DataHandler::isError($switcher)) {
+                                if (!AMADataHandler::isError($switcher)) {
                                     // prepare message to send
                                     $message_ha['destinatari'] = $switcher['username'];
                                     $message_ha['titolo'] = translateFN("Completamento corso") . "<br>";
@@ -157,21 +181,21 @@ switch ($op) {
                                     $message_ha['priorita'] = 1;
                                     $message_ha['mittente'] = $user_name;
                                     $mh = new MessageHandler();
-                                    $mh->send_message($message_ha);
+                                    $mh->sendMessage($message_ha);
                                 }
                             }
                         }
 
                         // genera il messaggio da inviare al tutor
                         // codice precedente
-                        $tutor_id = $dh->course_instance_tutor_get($sess_id_course_instance);
-                        if (AMA_DataHandler::isError($tutor_id)) {
+                        $tutor_id = $dh->courseInstanceTutorGet($sess_id_course_instance);
+                        if (AMADataHandler::isError($tutor_id)) {
                             //?
                         }
                         // only one tutor per class
                         if ($tutor_id) {
-                            $tutor = $dh->get_tutor($tutor_id);
-                            if (!AMA_DataHandler::isError($tutor)) {
+                            $tutor = $dh->getTutor($tutor_id);
+                            if (!AMADataHandler::isError($tutor)) {
                                 // prepare message to send
                                 $message_ha['destinatari'] = $tutor['username'];
                                 $message_ha['titolo'] = translateFN("Esercizio svolto da ") . $user_name . "<br>";
@@ -183,7 +207,7 @@ switch ($op) {
                                 $message_ha['priorita'] = 1;
                                 $message_ha['mittente'] = $user_name;
                                 $mh = new MessageHandler();
-                                $mh->send_message($message_ha);
+                                $mh->sendMessage($message_ha);
                             }
                         }
                     } // max level attained
@@ -198,8 +222,8 @@ switch ($op) {
 
             // ottiene il prossimo esercizio da svolgere, se previsto.
             $next_exercise_id = ExerciseDAO::getNextExerciseId($exercise, $sess_id_user);
-            if (AMA_DataHandler::isError($next_exercise_id)) {
-                $errObj = new ADA_Error($next_exercise_id, translateFN('Errore nel caricamento del prossimo esercizio'));
+            if (AMADataHandler::isError($next_exercise_id)) {
+                $errObj = new ADAError($next_exercise_id, translateFN('Errore nel caricamento del prossimo esercizio'));
             } elseif ($next_exercise_id) {
                 $dataHa['exercise'] .= "<a href=\"$http_root_dir/browsing/exercise.php?id_node=$next_exercise_id\">";
                 $dataHa['exercise'] .= translateFN('Prossimo esercizio') . '</a>';
@@ -264,11 +288,11 @@ if ($id_profile == AMA_TYPE_AUTHOR) {
  */
 
 if (isset($_SESSION['sess_id_course_instance'])) {
-    $last_access = $userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']), "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(($_SESSION['sess_id_course_instance']), "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 } else {
-    $last_access = $userObj->get_last_accessFN(null, "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(null, "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 }
 if ($last_access == '' || is_null($last_access)) {
     $last_access = '-';

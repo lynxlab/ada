@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class History was declared with namespace Lynxlab\ADA\Main\History. //
+
 /**
  * History class
  *
@@ -66,10 +82,10 @@ class History
      * @param int $node_type - ADA node type, as defined in ada_config.inc.php
      * @return int - number of visited nodes
      */
-    public function get_total_visited_nodes($node_type = null)
+    public function getTotalVisitedNodes($node_type = null)
     {
         if (!isset($this->course_data)) {
-            $this->get_course_data();
+            $this->getCourseData();
         }
 
         if (!is_null($node_type) && strlen($node_type) > 0) {
@@ -91,23 +107,23 @@ class History
      * @param int $id_course - optional
      * @return string $html_string
      */
-    public function history_summary_FN()
+    public function historySummaryFN()
     {
         if (!isset($this->course_data)) {
-            $this->get_course_data();
+            $this->getCourseData();
         }
 
         $html_string  = '<p>';
         $html_string .= translateFN('Nodi diversi visitati:') . "<b> $this->visited_nodes_count </b>";
         $html_string .= translateFN('su un totale di:') . "<b> $this->nodes_count </b><br>";
-        $html_string .= translateFN('Totale visite:') . "<b>" . $this->get_total_visited_nodes() . " </b><br>";
+        $html_string .= translateFN('Totale visite:') . "<b>" . $this->getTotalVisitedNodes() . " </b><br>";
         $html_string .= translateFN('Visite per nodo:') . "<b> $this->node_visits_ratio </b><br>";
         return $html_string;
     }
 
-    public function history_nodes_visitedpercent_FN($node_types = null)
+    public function historyNodesVisitedpercentFN($node_types = null)
     {
-        return number_format($this->history_nodes_visitedpercent_float_FN($node_types), 0, '.', '');
+        return number_format($this->historyNodesVisitedpercentFloatFN($node_types), 0, '.', '');
     }
     /**
      * history_nodes_visitedpercent_float_FN
@@ -115,11 +131,11 @@ class History
      * @param int|array $node_types - ADA node typeor array of node types, as defined in ada_config.inc.php
      * @return int - number of visited nodes
      */
-    public function history_nodes_visitedpercent_float_FN($node_types = null)
+    public function historyNodesVisitedpercentFloatFN($node_types = null)
     {
         $nodes_percent = $visited = $total = 0;
         if (!isset($this->course_data)) {
-            $this->get_course_data();
+            $this->getCourseData();
         }
         if (!is_null($node_types)) {
             if (!is_array($node_types)) {
@@ -147,13 +163,13 @@ class History
         return floatval($nodes_percent);
     }
 
-    public function get_last_nodes($num)
+    public function getLastNodes($num)
     {
         $dh = $GLOBALS['dh'];
         $result = $dh->get_last_visited_nodes($this->id_student, $this->id_course_instance, $num);
         //verificare il controllo degli errori
-        if (AMA_DataHandler::isError($result)) {
-            $errObj = new ADA_Error($result, translateFN('Errore nella lettura dei dati'));
+        if (AMADataHandler::isError($result)) {
+            $errObj = new ADAError($result, translateFN('Errore nella lettura dei dati'));
         }
         return $result;
     }
@@ -169,10 +185,10 @@ class History
      * @author giorgio 15/mag/2013
      * added $returnHTML parameter
      */
-    public function history_last_nodes_FN($nodes_num, $returnHTML = true)
+    public function historyLastNodesFN($nodes_num, $returnHTML = true)
     {
-        $result = $this->get_last_nodes($nodes_num);
-        $formatted_data = $this->format_history_dataFN($result, $returnHTML);
+        $result = $this->getLastNodes($nodes_num);
+        $formatted_data = $this->formatHistoryDataFN($result, $returnHTML);
 
         if ($returnHTML) {
             $t = new Table();
@@ -188,10 +204,10 @@ class History
     /*
      * controllare bene i metodi time, c'è qualcosa che non quadra nel calcolo del tempo.
      */
-    public function history_nodes_time_FN()
+    public function historyNodesTimeFN()
     {
         if (!isset($this->total_time)) {
-            $this->get_visit_time();
+            $this->getVisitTime();
         }
 
         // conversione del valore da secondi ad ore e formattazione
@@ -204,13 +220,13 @@ class History
         return $res;
     }
 
-    public function history_nodes_average_FN()
+    public function historyNodesAverageFN()
     {
         if (!isset($this->course_data)) {
-            $this->get_course_data();
+            $this->getCourseData();
         }
         if (!isset($this->total_time)) {
-            $this->get_visit_time();
+            $this->getVisitTime();
         }
         $average = $this->total_time / $this->nodes_count;
 
@@ -237,12 +253,12 @@ class History
      * @author giorgio 15/mag/2013
      * added $returnHTML parameter
      */
-    public function history_nodes_visited_FN($returnHTML = true)
+    public function historyNodesVisitedFN($returnHTML = true)
     {
         $http_root_dir = $GLOBALS['http_root_dir'];
 
         if (!isset($this->course_data)) {
-            $this->get_course_data();
+            $this->getCourseData();
         }
 
         // visualizzazione
@@ -289,16 +305,16 @@ class History
      * @author giorgio 16/mag/2013
      * added $returnHTML parameter
      */
-    public function history_nodes_list_filtered_FN($period, $returnHTML = true)
+    public function historyNodesListFilteredFN($period, $returnHTML = true)
     {
         $dh = $GLOBALS['dh'];
 
         $start = ($period > 0) ? (time() - $period * 86400) : 0;
 
-        $result = $dh->get_last_visited_nodes_in_period($this->id_student, $this->id_course_instance, $start);
+        $result = $dh->getLastVisitedNodesInPeriod($this->id_student, $this->id_course_instance, $start);
         //verificare il controllo degli errori
-        if (AMA_DataHandler::isError($this->course_data)) {
-            $errObj = new ADA_Error($this->course_data, translateFN("Errore nella lettura dei dati"));
+        if (AMADataHandler::isError($this->course_data)) {
+            $errObj = new ADAError($this->course_data, translateFN("Errore nella lettura dei dati"));
         }
 
         if ($period != 0) {
@@ -307,7 +323,7 @@ class History
             $caption = translateFN("Tutti i nodi visitati");
         }
 
-        $formatted_data = $this->format_history_dataFN($result);
+        $formatted_data = $this->formatHistoryDataFN($result);
 
         if ($returnHTML) {
             $t = new Table();
@@ -335,9 +351,9 @@ class History
      * @author giorgio 16/mag/2013
      * added $returnHTML parameter
      */
-    public function get_historyFN($returnHTML = true)
+    public function getHistoryFN($returnHTML = true)
     {
-        return $this->history_nodes_list_filtered_FN(0, $returnHTML);
+        return $this->historyNodesListFilteredFN(0, $returnHTML);
     }
 
     /**
@@ -353,22 +369,22 @@ class History
      * @param int $id_course - optional
      * Sets $this->nodes_count, $this->node_visits_count, $this->node_visits_ratio.
      */
-    public function get_course_data()
+    public function getCourseData()
     {
         $dh = $GLOBALS['dh'];
 
         if (!isset($this->id_course) || (isset($this->id_course) && is_null($this->id_course))) {
             //print("<BR>query su id_corso<BR>");
-            $this->id_course = $dh->get_course_id_for_course_instance($this->id_course_instance);
-            if (AMA_DataHandler::isError($this->id_course)) {
-                $errObj = new ADA_Error($this->id_course, translateFN("Errore nella lettura dei dati"));
+            $this->id_course = $dh->getCourseIdForCourseInstance($this->id_course_instance);
+            if (AMADataHandler::isError($this->id_course)) {
+                $errObj = new ADAError($this->id_course, translateFN("Errore nella lettura dei dati"));
             }
         }
 
-        $this->course_data = $dh->get_student_visits_for_course_instance($this->id_student, $this->id_course, $this->id_course_instance);
+        $this->course_data = $dh->getStudentVisitsForCourseInstance($this->id_student, $this->id_course, $this->id_course_instance);
         //verificare il controllo degli errori
-        if (AMA_DataHandler::isError($this->course_data)) {
-            $errObj = new ADA_Error($this->course_data, translateFN("Errore nella lettura dei dati"));
+        if (AMADataHandler::isError($this->course_data)) {
+            $errObj = new ADAError($this->course_data, translateFN("Errore nella lettura dei dati"));
         }
         // in this case, for counting nodes we are taking in account notes too.
         $this->nodes_count = count($this->course_data);
@@ -384,7 +400,7 @@ class History
             //}
         }
         if ($this->visited_nodes_count > 0) {
-            $this->node_visits_ratio = round($this->get_total_visited_nodes() / $this->visited_nodes_count, 2);
+            $this->node_visits_ratio = round($this->getTotalVisitedNodes() / $this->visited_nodes_count, 2);
         } else {
             $this->node_visits_ratio = 0;
         }
@@ -397,13 +413,13 @@ class History
      * Uses the fetched array to calculate $this->total_time time spent by student visiting
      * the course instance.
      */
-    public function get_visit_time()
+    public function getVisitTime()
     {
         $dh = $GLOBALS['dh'];
-        $visit_time = $dh->get_student_visit_time($this->id_student, $this->id_course_instance);
+        $visit_time = $dh->getStudentVisitTime($this->id_student, $this->id_course_instance);
         //verificare il controllo degli errori
-        if (AMA_DataHandler::isError($visit_time)) {
-            $errObj = new ADA_Error($visit_time, translateFN("Errore nella lettura dei dati"));
+        if (AMADataHandler::isError($visit_time)) {
+            $errObj = new ADAError($visit_time, translateFN("Errore nella lettura dei dati"));
         }
 
         $nodes_time = 0 ;
@@ -440,7 +456,7 @@ class History
      * @author giorgio 15/mag/2013
      * added $returnHTML parameter
      */
-    public function format_history_dataFN($user_historyAr, $returnHTML = true)
+    public function formatHistoryDataFN($user_historyAr, $returnHTML = true)
     {
         //global $dh, $http_root_dir;
         $dh = $GLOBALS['dh'];
@@ -474,8 +490,8 @@ class History
             $date = ts2dFN($visit_date);
             $time = ts2tmFN($visit_date);
             // $dh = new Node($id_visited_node);
-            //$dataHa = $dh->get_node_info($id_visited_node);
-            // $dataHa = Node::get_node_info($id_visited_node);
+            //$dataHa = $dh->getNodeInfo($id_visited_node);
+            // $dataHa = Node::getNodeInfo($id_visited_node);
 
 
             $name = $historyHa['nome'];

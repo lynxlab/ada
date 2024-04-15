@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\EtherpadIntegration\Groups;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * @package     studentsgroups module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -55,7 +63,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     // try to save it
     $res = $GLOBALS['dh']->saveSubscribeGroup($_POST);
 
-    if (AMA_DB::isError($res) || $res instanceof StudentsGroupsException) {
+    if (AMADB::isError($res) || $res instanceof StudentsGroupsException) {
         // if it's an error display the error message
         $retArray['status'] = "ERROR";
         $retArray['msg'] = $res->getMessage();
@@ -73,7 +81,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 } elseif (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
     $res = $GLOBALS['dh']->findAll('Groups', ['label' => 'ASC']);
-    if (!AMA_DB::isError($res)) {
+    if (!AMADB::isError($res)) {
         if (is_array($res) && count($res) > 0) {
             // display the form with loaded data
             $form = new SubscribeGroupForm('subscribegroups', null, $res);
@@ -82,12 +90,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $retArray['dialogTitle'] = translateFN('Iscrivi Gruppo');
         } else {
             $retArray['status'] = "ERROR";
-            $retArray['msg'] = AMA_DB::isError($res) ? $res->getMessage() : translateFN('Nessun gruppo trovato');
+            $retArray['msg'] = AMADB::isError($res) ? $res->getMessage() : translateFN('Nessun gruppo trovato');
         }
     } else {
         // if it's an error display the error message without the form
         $retArray['status'] = "ERROR";
-        $retArray['msg'] = AMA_DB::isError($res) ? $res->getMessage() : translateFN('Errore caricamento gruppi');
+        $retArray['msg'] = AMADB::isError($res) ? $res->getMessage() : translateFN('Errore caricamento gruppi');
     }
 }
 

@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Module\Impersonate\LinkedUsers;
+
+use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use function \translateFN;
+
 /**
  * List users - this module provides list users functionality
  *
@@ -86,19 +106,19 @@ SwitcherHelper::init($neededObjAr);
  * YOUR CODE HERE
  */
 
-$usersType = DataValidator::validate_not_empty_string($_GET['list']);
+$usersType = DataValidator::validateNotEmptyString($_GET['list']);
 $fieldsAr = ['nome', 'cognome', 'username', 'tipo', 'stato'];
 $amaUserType = AMA_TYPE_VISITOR;
 switch ($usersType) {
     case 'authors':
-        $usersAr = $dh->get_authors_list($fieldsAr);
+        $usersAr = $dh->getAuthorsList($fieldsAr);
         $profilelist = translateFN('lista degli autori');
         $amaUserType = AMA_TYPE_AUTHOR;
         break;
     case 'tutors':
-        $usersAr = $dh->get_tutors_list($fieldsAr);
+        $usersAr = $dh->getTutorsList($fieldsAr);
         if (defined('AMA_TYPE_SUPERTUTOR')) {
-            $usersAr = array_merge($usersAr, $dh->get_supertutors_list($fieldsAr));
+            $usersAr = array_merge($usersAr, $dh->getSupertutorsList($fieldsAr));
         }
         $profilelist = translateFN('lista dei tutors');
         /**
@@ -118,7 +138,7 @@ switch ($usersType) {
          *
          * if we're listing students, let's add the stato field as well
          */
-        $usersAr = $dh->get_students_list($fieldsAr);
+        $usersAr = $dh->getStudentsList($fieldsAr);
         $profilelist = translateFN('lista degli studenti');
         $amaUserType = AMA_TYPE_STUDENT;
         break;

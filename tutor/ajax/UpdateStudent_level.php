@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * 22/10/2014
  * UpdateStudent_level.php -
@@ -55,12 +63,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $id_course = $_POST['id_course'];
 
     $studenti_ar = [$id_student];
-    $info_course = $dh->get_course($id_course);
-    if (AMA_DataHandler::isError($info_course)) {
+    $info_course = $dh->getCourse($id_course);
+    if (AMADataHandler::isError($info_course)) {
         $retArray = ["status" => "ERROR","msg" =>  translateFN("Problemi nell'aggiornamento del livello") . '<br/>' . translateFN('Provare ad aggiornare il report e ripetere l\'operazione'),"title" =>  translateFN('Notifica')];
     } else {
-        $updated = $dh->set_student_level($id_instance, $studenti_ar, $level);
-        if (AMA_DataHandler::isError($updated)) {
+        $updated = $dh->setStudentLevel($id_instance, $studenti_ar, $level);
+        if (AMADataHandler::isError($updated)) {
             $retArray = ["status" => "ERROR","msg" =>  translateFN("Problemi nell'aggiornamento del livello") . '<br/>' . translateFN('Provare ad aggiornare il report e ripetere l\'operazione'),"title" =>  translateFN('Notifica')];
         } else {
             $retArray = ["status" => "OK","msg" =>  translateFN("Hai aggiornato correttamente il livello dello studente") . '<br />' . translateFN('Ricordarsi di aggiornare il report dopo aver finito le modifiche ai livelli degli studenti.'),"title" =>  translateFN('Notifica')];

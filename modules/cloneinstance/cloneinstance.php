@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * @package     cloneinstance module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -86,9 +100,9 @@ if (count($subscriptions) > 0) {
     ];
 }
 
-$tutors = $dh->course_instance_tutor_info_get($courseInstanceObj->getId(), 'ALL');
+$tutors = $dh->courseInstanceTutorInfoGet($courseInstanceObj->getId(), 'ALL');
 
-if (!AMA_DB::isError($tutors) && $tutors !== false && count($tutors) > 0) {
+if (!AMADB::isError($tutors) && $tutors !== false && count($tutors) > 0) {
     $summaryArr['tutors'] = [
         'text' => (count($tutors) == 1 ?
                     (translateFN('Un tutor assegnato')) : (sprintf(translateFN('%d tutor assegnati'), count($tutors)))),
@@ -153,9 +167,9 @@ $publicServiceLevels = array_keys(
 );
 $clause = (count($publicServiceLevels) > 0) ? '`tipo_servizio` NOT IN (' . implode(',', $publicServiceLevels) . ')' : '';
 /** @var array $courses */
-$courses = $dh->find_courses_list(['nome', 'titolo'], $clause);
+$courses = $dh->findCoursesList(['nome', 'titolo'], $clause);
 
-if (!AMA_DB::isError($courses) && $courses !== false && count($courses) > 0) {
+if (!AMADB::isError($courses) && $courses !== false && count($courses) > 0) {
     $form = new CloneInstanceForm($courses, $courseInstanceObj, 'cloneinstance', null);
     $form->withSubmit()->toSemanticUI();
 } else {

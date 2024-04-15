@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Token\UserRegistrationToken;
+
+use Lynxlab\ADA\Main\Token\ActionToken;
+
+// Trigger: ClassWithNameSpace. The class UserRegistrationToken was declared with namespace Lynxlab\ADA\Main\Token. //
+
 namespace Lynxlab\ADA\Main\Token;
 
 class UserRegistrationToken extends ActionToken

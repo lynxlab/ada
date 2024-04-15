@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Comunica\AddressBook\EventsAddressBook;
+
+use Lynxlab\ADA\Comunica\AddressBook\ADAAddressBook;
+
+// Trigger: ClassWithNameSpace. The class EventsAddressBook was declared with namespace Lynxlab\ADA\Comunica\AddressBook. //
+
 namespace Lynxlab\ADA\Comunica\AddressBook;
 
 use Lynxlab\ADA\CORE\html4\CText;

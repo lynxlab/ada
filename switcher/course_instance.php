@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use function \translateFN;
+
 /**
  * course_instance file
  *
@@ -128,7 +142,7 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
         }
         // retrieve data for subscription and add it to preexistent array
         if (!empty($ids_student)) {
-            foreach ($dh->get_students_subscribed_course_instance($ids_student) as $k => $v) {
+            foreach ($dh->getStudentsSubscribedCourseInstance($ids_student) as $k => $v) {
                 $student_subscribed_course_instance[$k] = $v;
             }
         }
@@ -233,7 +247,7 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
             }
             $select->setAttribute('onchange', 'saveStatus(this)');
 
-            $livello = $dh->get_student_level($user->getSubscriberId(), $instanceId);
+            $livello = $dh->getStudentLevel($user->getSubscriberId(), $instanceId);
 
             if (is_int($user->getSubscriptionDate())) { //if getSubscriptionDate() return an int, means that it is setted in Subscription costructor to time()
                 $data_iscrizione = '-';
@@ -272,7 +286,7 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
             }
 
             if (!$isTutorCommunity && defined('ADA_PRINT_CERTIFICATE') && (ADA_PRINT_CERTIFICATE)) {
-                $certificate = !$isTutorCommunity && ADAUser::Check_Requirements_Certificate($user->getSubscriberId(), $user->getSubscriptionStatus());
+                $certificate = !$isTutorCommunity && ADAUser::CheckRequirementsCertificate($user->getSubscriberId(), $user->getSubscriptionStatus());
                 if ($certificate) {
                     $linkCertificate = CDOMElement::create('a', 'href:../browsing/userCertificate.php?id_user=' . $user->getSubscriberId() . '&id_instance=' . $instanceId);
                     $linkCertificate->setAttribute('class', 'linkCertificate');

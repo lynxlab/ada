@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\PDF;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use function \translateFN;
+
 /**
  * Outputs user's credits as PDF (HTML, JSON etc)
  *
@@ -154,9 +172,9 @@ if (!is_null($courseObj->getTitle()) && stripos($courseObj->getTitle(), 'NULL') 
     $courseDurationSentence = translateFN('Monte ore maturato: ') . '<strong>' . $courseObj->getDurationHours() . translateFN(' ore </strong>');
 }
 
-$UserCertificateObj->set_course_instance_for_history($id_instance);
+$UserCertificateObj->setCourseInstanceForHistory($id_instance);
 $user_historyObj = $UserCertificateObj->history;
-$time = $user_historyObj->history_nodes_time_FN();
+$time = $user_historyObj->historyNodesTimeFN();
 $timeSentence = translateFN('Monte ore frequentato: ') . '<strong>' . $time . translateFN(' ore </strong>');
 
 $data_inizio = $courseInstanceObj->getStartDate();
@@ -165,7 +183,7 @@ if ($data_inizio != '') {
     $data_Sentence = translateFN('Data inizio corso: ') . '<strong>' . $data_inizio . '</strong>';
 }
 
-$testerAr = $common_dh->get_tester_info_from_id_course($courseObj->getId());
+$testerAr = $common_dh->getTesterInfoFromIdCourse($courseObj->getId());
 
 if (!is_null($testerAr['nome']) && stripos($testerAr['nome'], 'NULL') === false && strlen($testerAr['nome'])) {
     $providerSentence = translateFN('Provider che ha organizzato il corso: ') . '<strong>' . $testerAr['nome'] . '</strong>';

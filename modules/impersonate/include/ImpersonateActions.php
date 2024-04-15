@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Module\Impersonate\ImpersonateActions;
+
+// Trigger: ClassWithNameSpace. The class ImpersonateActions was declared with namespace Lynxlab\ADA\Module\Impersonate. //
+
 /**
  * @package     impersonate module
  * @author      giorgio <g.consorti@lynxlab.com>

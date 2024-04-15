@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\CORE\HtmlElements\Form;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * save_multiRow.php - save user extended 1:n data in the DB
  *
@@ -112,7 +134,7 @@ switch ($userObj->getType()) {
         $editUserObj = & $userObj;
         break;
     case AMA_TYPE_SWITCHER:
-        $userId = DataValidator::is_uinteger($_POST[$extraTableClass::getForeignKeyProperty()]);
+        $userId = DataValidator::isUinteger($_POST[$extraTableClass::getForeignKeyProperty()]);
         if ($userId !== false) {
             $editUserObj = MultiPort::findUser($userId);
         }
@@ -131,7 +153,7 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
         // setUser returns last insert id, or empty on update
         $result = MultiPort::setUser($editUserObj, [], true, $extraTableClass);
 
-        if (!AMA_DB::isError($result)) {
+        if (!AMADB::isError($result)) {
             /**
              * need to set the added extra arr
              * state to saved and to give it the returned id

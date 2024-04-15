@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\GenericHtml;
+
+use Lynxlab\ADA\Main\Output\CSS;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class GenericHtml was declared with namespace Lynxlab\ADA\Main\Output. //
+
 /**
  * NEW Output classes
  *
@@ -77,7 +89,7 @@ class GenericHtml extends Output
         $this->replace_microtemplate_field_code = $GLOBALS['replace_microtemplate_field_code'];
     }
 
-    public function fillin_templateFN($dataHa)
+    public function fillinTemplateFN($dataHa)
     {
         /* Riempie i campi del template
 
@@ -118,7 +130,7 @@ class GenericHtml extends Output
         $tpl = substr($bodytpl, strpos($bodytpl, ">", 5) + 1, $n - strpos($bodytpl, ">", 5) - 1);
         $this->htmlbody .= $tpl;
         if (USE_MICROTEMPLATES) {
-            $tpl = $this->include_microtemplates();
+            $tpl = $this->includeMicrotemplates();
         }
         // $tpl = $this->include_microtemplates_tree();
         /**
@@ -183,7 +195,7 @@ class GenericHtml extends Output
         $this->htmlbody = $tpl;
     }
 
-    public function include_microtemplates()
+    public function includeMicrotemplates()
     {
         // trying to include microtemplates (from files)
         // parses template row by row
@@ -246,7 +258,7 @@ class GenericHtml extends Output
         $tpl = implode("\n", $tpl_new_ar);
         return $tpl;
     }
-    public function include_microtemplates_tree()
+    public function includeMicrotemplatesTree()
     {
         // mod  steve 26/03/09:
         // this version tries to find microtemplates navigating the folders tree
@@ -303,7 +315,7 @@ class GenericHtml extends Output
         return $tpl;
     }
 
-    public function verify_templateFN($dataHa)
+    public function verifyTemplateFN($dataHa)
     {
         global $root_dir;
 
@@ -385,7 +397,7 @@ class GenericHtml extends Output
         }
     }
 
-    public function ignore_templateFN($dataHa)
+    public function ignoreTemplateFN($dataHa)
     {
         /*
          ignora il template e restituisce solo il contenuto dei campi
@@ -411,7 +423,7 @@ class GenericHtml extends Output
         $this->htmlbody .= $tpl;
     }
 
-    public function apply_styleFN($stylesheetpath = '')
+    public function applyStyleFN($stylesheetpath = '')
     {
         $this->doApplyCSSFN($stylesheetpath);
         $this->doApplyJSFN($stylesheetpath);
@@ -421,7 +433,7 @@ class GenericHtml extends Output
      * @deprecated use apply_styleFN instead
      * @param $stylesheetpath
      */
-    public function apply_CSSFN($stylesheetpath = "")
+    public function applyCSSFN($stylesheetpath = "")
     {
         // wrapper for applyCSS and apply_JS
         $this->doApplyCSSFN($stylesheetpath);
@@ -771,30 +783,30 @@ class GenericHtml extends Output
         }
     }
 
-    public function print_pageFN($node_data, $template, $imgpath, $stylesheetpath, $use_template = 1)
+    public function printPageFN($node_data, $template, $imgpath, $stylesheetpath, $use_template = 1)
     {
         if ($use_template) {
             $this->template =  $template;
-            $this->verify_templateFN($node_data);
+            $this->verifyTemplateFN($node_data);
             if (!empty($this->error)) {
                 // echo $this->errorCode;
                 switch ($this->errorCode) {
                     case 1: //template doesn't exist !
-                        $this->ignore_templateFN($node_data);
+                        $this->ignoreTemplateFN($node_data);
                         break;
                     case 2: // some template's fields are empty: ok
-                        $this->fillin_templateFN($node_data);
+                        $this->fillinTemplateFN($node_data);
                         break;
                     case 3: //template's fields don't suffice: ok
-                        $this->fillin_templateFN($node_data);
+                        $this->fillinTemplateFN($node_data);
                         break;
                 }
-                $this->apply_styleFN($stylesheetpath);
+                $this->applyStyleFN($stylesheetpath);
             } else {
-                $this->fillin_templateFN($node_data);
+                $this->fillinTemplateFN($node_data);
             }
         } else {
-            $this->ignore_templateFN($node_data);
+            $this->ignoreTemplateFN($node_data);
         }
         $this->resetImgSrcFN($imgpath);
         $this->outputFN('page');

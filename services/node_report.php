@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  *
  *
@@ -89,15 +107,15 @@ $help = translateFN('Da qui ogni autore di un nodo  può vederne  in dettaglio l
 $out_fields_ar = ['data_visita','id_utente_studente','id_istanza_corso'];
 $clause = "id_nodo = '$id_node'";
 
-$visits_ar = $dh->find_nodes_history_list($out_fields_ar, $clause);
-if (AMA_DataHandler::isError($visits_ar)) {
+$visits_ar = $dh->findNodesHistoryList($out_fields_ar, $clause);
+if (AMADataHandler::isError($visits_ar)) {
     $msg = $visits_ar->getMessage();
 }
 $visits_dataHa = [];
 $count_visits = count($visits_ar);
 if ($count_visits) {
     foreach ($visits_ar as $visit) {
-        $student = $dh->get_user_info($visit[2]);
+        $student = $dh->getUserInfo($visit[2]);
         $studentname = $student['username'];
         $visits_dataHa[] = [
                 translateFN('Data') => ts2dFN($visit[1]),

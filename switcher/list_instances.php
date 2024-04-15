@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\DataValidator;
+
+use function \translateFN;
+
 /**
  * List instances - this module provides list instances functionality
  *
@@ -84,7 +102,7 @@ SwitcherHelper::init($neededObjAr);
  * YOUR CODE HERE
  */
 
-//$courseId = DataValidator::is_uinteger($_GET['course']);
+//$courseId = DataValidator::isUinteger($_GET['course']);
 //if($courseId !== false && $courseId > 0) {
 
 
@@ -95,7 +113,7 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
 
 
     $fieldsAr = ['data_inizio', 'data_inizio_previsto', 'durata', 'data_fine', 'title'];
-    $instancesAr = $dh->course_instance_get_list($fieldsAr, $courseId);
+    $instancesAr = $dh->courseInstanceGetList($fieldsAr, $courseId);
     if (is_array($instancesAr) && count($instancesAr) > 0) {
         $thead_data = [
             translateFN('id'),
@@ -122,12 +140,12 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
 
             /*
              * Da migliorare, spostare l'ottenimento dei dati necessari in un'unica query
-             * per ogni istanza corso (qualcosa che vada a sostituire course_instance_get_list solo in questo caso.
+             * per ogni istanza corso (qualcosa che vada a sostituire courseInstanceGetList solo in questo caso.
              */
-            $tutorId = $dh->course_instance_tutor_get($instanceId);
-            if (!AMA_DataHandler::isError($tutorId) && $tutorId !== false) {
-                $tutor_infoAr = $dh->get_tutor($tutorId);
-                if (!AMA_DataHandler::isError($tutor_infoAr)) {
+            $tutorId = $dh->courseInstanceTutorGet($instanceId);
+            if (!AMADataHandler::isError($tutorId) && $tutorId !== false) {
+                $tutor_infoAr = $dh->getTutor($tutorId);
+                if (!AMADataHandler::isError($tutor_infoAr)) {
                     $tutorFullName = $tutor_infoAr['nome'] . ' ' . $tutor_infoAr['cognome'];
                 } else {
                     $tutorFullName = translateFN('Utente non trovato');
@@ -177,13 +195,13 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
             $actions = BaseHtmlLib::plainListElement('class:actions inline_menu', $actionsArr);
 
             if ($instance[1] > 0) {
-                $start_date = AMA_DataHandler::ts_to_date($instance[1]);
+                $start_date = AMADataHandler::tsToDate($instance[1]);
             } else {
                 $start_date = translateFN('Non iniziato');
             }
             $duration = sprintf("%d giorni", $instance[3]);
-            $scheduled = AMA_DataHandler::ts_to_date($instance[2]);
-            $end_date =  AMA_DataHandler::ts_to_date($instance[4]);
+            $scheduled = AMADataHandler::tsToDate($instance[2]);
+            $end_date =  AMADataHandler::tsToDate($instance[4]);
             $title = $instance[5];
 
             $assign_tutor_link = BaseHtmlLib::link("assign_tutor.php?id_course=$courseId&id_course_instance=$instanceId", $tutorFullName);

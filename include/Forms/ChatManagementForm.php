@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Forms\ChatManagementForm;
+
+use Lynxlab\ADA\Comunica\ChatRoom;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class ChatManagementForm was declared with namespace Lynxlab\ADA\Main\Forms. //
+
 /**
  * ChatManagementForm file
  *

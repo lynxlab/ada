@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * MAIN INDEX.
  *
@@ -19,7 +37,7 @@ use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_user;
+use function Lynxlab\ADA\Main\AMA\DBRead\readUser;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
@@ -128,15 +146,15 @@ $with_icons = 1; // 0 or 1; valid only for forum display
 //}
 // ******************************************************
 // get user object
-$userObj = read_user($sess_id_user);
-if (is_object($userObj) && (!AMA_DataHandler::isError($userObj))) {
+$userObj = readUser($sess_id_user);
+if (is_object($userObj) && (!AMADataHandler::isError($userObj))) {
     if (isset($_POST['s_node_name'])) {
         header("Location: search.php?submit=1&s_node_text=$s_node_name&l_search=$l_search");
         exit;
     } else {
         // FIXME: verificare se compare in browsing_init.inc.php
         //    if ($id_profile == AMA_TYPE_STUDENT_STUDENT) {
-        //      $user_level = $userObj->get_student_level($sess_id_user,$sess_id_course_instance);
+        //      $user_level = $userObj->getStudentLevel($sess_id_user,$sess_id_course_instance);
         //    }
         //    else {
         //      $user_level = ADA_MAX_USER_LEVEL;
@@ -192,7 +210,7 @@ if (is_object($userObj) && (!AMA_DataHandler::isError($userObj))) {
             if (!isset($list_mode) or ($list_mode == "")) {
                 $list_mode = "standard";
             } else { // export_all , export_single
-                $node_index = $course_instance_Obj->forum_main_indexFN('', 1, $id_profile, $order, $id_student, $list_mode);
+                $node_index = $course_instance_Obj->forumMainIndexFN('', 1, $id_profile, $order, $id_student, $list_mode);
                 $node_index = strip_tags($node_index);
 
                 //  $node_index = unhtmlentities($node_index);
@@ -388,7 +406,7 @@ if (is_object($userObj) && (!AMA_DataHandler::isError($userObj))) {
             $node_type = 'standard_node';
             $node_index  = $exp_link;
             $glossary_index = CourseViewer::displayGlossaryIndex($userObj, $sess_id_course, $expand, $order, $sess_id_course_instance, 'courseIndex');
-            if (!AMA_DataHandler::isError($glossary_index)) {
+            if (!AMADataHandler::isError($glossary_index)) {
                 $node_index .= $glossary_index->getHtml();
             }
 
@@ -476,7 +494,7 @@ if (is_object($userObj) && (!AMA_DataHandler::isError($userObj))) {
             // vito, 26 nov 2008: $main_index is a CORE object
 
             $main_index = CourseViewer::displayMainIndex($userObj, $sess_id_course, $expand, $order, $sess_id_course_instance, 'structIndex');
-            if (!AMA_DataHandler::isError($main_index)) {
+            if (!AMADataHandler::isError($main_index)) {
                 $node_index .= $main_index->getHtml();
             }
 
@@ -495,8 +513,8 @@ if (is_object($userObj) && (!AMA_DataHandler::isError($userObj))) {
          */
         //    if (empty($userObj->error_msg)){
         //      // FIXME: MULTIPORTARE
-        //      //$user_messages = $userObj->get_messagesFN($sess_id_user);
-        //      //$user_agenda =  $userObj->get_agendaFN($sess_id_user);
+        //      //$user_messages = $userObj->getMessagesFN($sess_id_user);
+        //      //$user_agenda =  $userObj->getAgendaFN($sess_id_user);
         //    } else {
         //      $user_messages =  $userObj->error_msg;
         //      $user_agenda   = translateFN("Nessun'informazione");
@@ -517,7 +535,7 @@ if (is_object($userObj) && (!AMA_DataHandler::isError($userObj))) {
 // $online_users_listing_mode = 2  : username and email of users
 $online_users_listing_mode = 2;
 $id_course_instance ??= null;
-$online_users = ADALoggableUser::get_online_usersFN($id_course_instance, $online_users_listing_mode);
+$online_users = ADALoggableUser::getOnlineUsersFN($id_course_instance, $online_users_listing_mode);
 
 /*
  * Search form (redirects to search.php)
@@ -567,11 +585,11 @@ if ($userObj->tipo == AMA_TYPE_STUDENT && ($self_instruction)) {
 */
 
 if (isset($_SESSION['sess_id_course_instance'])) {
-    $last_access = $userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']), "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(($_SESSION['sess_id_course_instance']), "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 } else {
-    $last_access = $userObj->get_last_accessFN(null, "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(null, "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 }
 
 if ($last_access == '' || is_null($last_access)) {

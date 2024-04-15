@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+
+use Lynxlab\ADA\Comunica\Spools\Spool;
+
+use Lynxlab\ADA\Comunica\Spools\SimpleSpool;
+
+use Lynxlab\ADA\Comunica\Spools\ChatSpool;
+
+use Lynxlab\ADA\Comunica\Spools\AgendaSpool;
+
+// Trigger: ClassWithNameSpace. The class Spool was declared with namespace Lynxlab\ADA\Comunica\Spools. //
+
 /**
  * Spool
  *
@@ -37,7 +53,7 @@ namespace Lynxlab\ADA\Comunica\Spools;
  *
  * @author Guglielmo Celata <guglielmo@celata.com>
  */
-class Spool extends Abstract_AMA_DataHandler
+class Spool extends AbstractAMADataHandler
 {
     public $ntc;       // characteristic time for non-read messages
     public $rtc;       // characteristic time for read messages
@@ -65,33 +81,33 @@ class Spool extends Abstract_AMA_DataHandler
      *                               ID, data_ora, titolo, priorita, testo
      * @param   $recipients_ids_ar - list of recipients ids
      *
-     * @return  an AMA_Error object if something goes wrong
+     * @return  an AMAError object if something goes wrong
      *
      */
-    public function add_message($message_ha, $recipients_ids_ar, $check_on_uniqueness = true)
+    public function addMessage($message_ha, $recipients_ids_ar, $check_on_uniqueness = true)
     {
 
         // 28/12/01 Graffio
         // Modifica per differenziare il trattamento delle date
-        // che provengono da send_event e send_message
+        // che provengono da send_event e sendMessage
         // Andra' corretto in send_event
         if ($message_ha['data_ora'] == "now") {
-            $timestamp = $this->date_to_ts($message_ha['data_ora']);
+            $timestamp = $this->dateToTs($message_ha['data_ora']);
         } else {
             $timestamp = $message_ha['data_ora'];
         }
         // Fine modifica
 
-        $title     = $this->or_null(/*$this->sql_prepared(*/$message_ha['titolo'] ?? ''/*)*/);
-        $id_group  = $this->or_zero($message_ha['id_group'] ?? '');
-        $priority  = $this->or_zero($message_ha['priorita'] ?? '');
-        $body      = $this->or_null(/*$this->sql_prepared(*/$message_ha['testo']/*)*/);
+        $title     = $this->orNull(/*$this->sqlPrepared(*/$message_ha['titolo'] ?? ''/*)*/);
+        $id_group  = $this->orZero($message_ha['id_group'] ?? '');
+        $priority  = $this->orZero($message_ha['priorita'] ?? '');
+        $body      = $this->orNull(/*$this->sqlPrepared(*/$message_ha['testo']/*)*/);
         $type      = /*"'".*/ $this->type/*."'"*/;
         $sender_id = $this->user_id;
-        $flags     = $this->or_zero($message_ha['flags'] ?? '');
+        $flags     = $this->orZero($message_ha['flags'] ?? '');
 
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -113,11 +129,11 @@ class Spool extends Abstract_AMA_DataHandler
             $id = parent::getOnePrepared($sql, [$timestamp, $type, $id_group, $title, $sender_id]);
 
             if (AMA_DataHandler::isError($id)) {
-                $retval = new AMA_Error(AMA_ERR_GET);
+                $retval = new AMAError(AMA_ERR_GET);
                 return $retval;
             }
             if ($id) {
-                $retval = new AMA_Error(AMA_ERR_UNIQUE_KEY);
+                $retval = new AMAError(AMA_ERR_UNIQUE_KEY);
                 return $retval;
             }
         }
@@ -132,8 +148,8 @@ class Spool extends Abstract_AMA_DataHandler
 
         //$res = parent::executeCritical( $sql );
         $res = parent::executeCriticalPrepared($sql, [$timestamp, $type, $id_group, $title, $sender_id, $priority, $body, $flags]);
-        if (AMA_DB::isError($res)) {
-            // $res is an AMA_Error object
+        if (AMADB::isError($res)) {
+            // $res is an AMAError object
             return $res;
         }
 
@@ -156,8 +172,8 @@ class Spool extends Abstract_AMA_DataHandler
             $sql = 'SELECT id_messaggio FROM messaggi WHERE data_ora=? AND tipo=? AND id_group=? AND id_mittente=?';
             //$id = $db->getOne($sql);
             $id = parent::getOnePrepared($sql, [$timestamp, $type, $id_group, $sender_id]);
-            if (AMA_DB::isError($id) || !$id) {
-                $retval = new AMA_Error(AMA_ERR_NOT_FOUND);
+            if (AMADB::isError($id) || !$id) {
+                $retval = new AMAError(AMA_ERR_NOT_FOUND);
                 return $retval;
             }
 
@@ -176,8 +192,8 @@ class Spool extends Abstract_AMA_DataHandler
             $sql = 'SELECT id_messaggio FROM messaggi WHERE data_ora=? AND tipo=? AND id_group=? AND id_mittente=?';
             //$id = $db->getOne($sql);
             $id = parent::getOnePrepared($sql, [$timestamp, $type, $id_group, $sender_id]);
-            if (AMA_DB::isError($id) || !$id) {
-                $retval = new AMA_Error(AMA_ERR_NOT_FOUND);
+            if (AMADB::isError($id) || !$id) {
+                $retval = new AMAError(AMA_ERR_NOT_FOUND);
                 return $retval;
             }
             //end ADA_MSG_PRV_CHAT
@@ -194,18 +210,18 @@ class Spool extends Abstract_AMA_DataHandler
             //$id = $db->getOne($sql);
             $id = parent::getOnePrepared($sql, [$timestamp, $type, $title, $sender_id]);
 
-            if (AMA_DB::isError($id) || !$id) {
+            if (AMADB::isError($id) || !$id) {
                 // logger("query failed", 4);
-                $retval = new AMA_Error(AMA_ERR_NOT_FOUND);
+                $retval = new AMAError(AMA_ERR_NOT_FOUND);
                 return $retval;
             }
         } // end type control
 
         // start the transaction
-        $this->begin_transaction();
+        $this->beginTransaction();
 
         // push instruction to remove the record into rollback segment
-        $this->rs_add("_remove_message", $id);
+        $this->rsAdd("_remove_message", $id);
 
 
         // insert references of the message related to all recipients
@@ -217,18 +233,18 @@ class Spool extends Abstract_AMA_DataHandler
 
             // logger("performing query: $sql", 4);
             $res = $db->query($sql);
-            if (AMA_DB::isError($res)) {
+            if (AMADB::isError($res)) {
                 // logger("query failed", 4);
 
                 // rollback in case of error
                 $this->rollback();
-                $retval = new AMA_Error(AMA_ERR_ADD);
+                $retval = new AMAError(AMA_ERR_ADD);
                 return $retval;
             }
             // logger("query succeeded", 4);
 
             // insert instruction into rollback segment
-            $this->rs_add("_clean_message", $id, $rid);
+            $this->rsAdd("_clean_message", $id, $rid);
         }
 
         // final success
@@ -246,10 +262,10 @@ class Spool extends Abstract_AMA_DataHandler
      *                               tempo, mittente, id_corso, id_istanza_corso, titolo, testo, lingua
      * @param   $recipients_ids_ar - list of recipients ids
      *
-     * @return  an AMA_Error object if something goes wrong
+     * @return  an AMAError object if something goes wrong
      *
      */
-    public function log_message($message_ha, $recipients_ids_ar)
+    public function logMessage($message_ha, $recipients_ids_ar)
     {
 
         // logger("entered Spool::log_message", 3);
@@ -258,10 +274,10 @@ class Spool extends Abstract_AMA_DataHandler
 
         // 28/12/01 Graffio
         // Modifica per differenziare il trattamento delle date
-        // che provengono da send_event e send_message
+        // che provengono da send_event e sendMessage
         // Andra' corretto in send_event
         if ($message_ha['data_ora'] == "now") {
-            $timestamp = $this->date_to_ts($message_ha['data_ora']);
+            $timestamp = $this->dateToTs($message_ha['data_ora']);
         } else {
             $timestamp = $message_ha['data_ora'];
         }
@@ -290,12 +306,12 @@ class Spool extends Abstract_AMA_DataHandler
         }
 
         //vito 4 feb 2009
-        $language = $this->sql_prepared($language);
+        $language = $this->sqlPrepared($language);
 
-        $title = $this->or_null($this->sql_prepared($message_ha['titolo']));
+        $title = $this->orNull($this->sqlPrepared($message_ha['titolo']));
         // vito 19 gennaio 2009
-        //       $text = sql_prepared($message_ha['testo']);
-        $text = $this->sql_prepared($message_ha['testo']);
+        //       $text = sqlPrepared($message_ha['testo']);
+        $text = $this->sqlPrepared($message_ha['testo']);
 
         $type = "'" . $this->type . "'";
 
@@ -309,10 +325,10 @@ class Spool extends Abstract_AMA_DataHandler
 
         $status = "1"; // 0: non initialized; 1: logged in DB; 2: logged in DB and removed from message tables; 3 logged to file
 
-        $flags = $this->or_zero($message_ha['flags']);
+        $flags = $this->orZero($message_ha['flags']);
 
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -324,14 +340,14 @@ class Spool extends Abstract_AMA_DataHandler
 
         /*
          $res = $db->query($sql);
-         if (AMA_DB::isError($res) || $db->affectedRows()==0){
+         if (AMADB::isError($res) || $db->affectedRows()==0){
          // logger("query failed", 4);
-         return new AMA_Error(AMA_ERR_ADD);
+         return new AMAError(AMA_ERR_ADD);
          }// logger("query succeeded", 4);
          */
         $res = parent::executeCritical($sql);
-        if (AMA_DB::isError($res)) {
-            // $res is an AMA_Error object
+        if (AMADB::isError($res)) {
+            // $res is an AMAError object
             return $res;
         }
     }
@@ -351,10 +367,10 @@ class Spool extends Abstract_AMA_DataHandler
      * @return  a reference to a hash, if more than one fields are required
      *           res_ha[ID_MESSAGGIO] contains an array with all the values
      *          a reference to a linear array if only one field is required
-     *          an AMA_Error object if something goes wrong
+     *          an AMAError object if something goes wrong
      *
      */
-    public function &find_logged_messages($fields_list = "", $clause = "", $ordering = "")
+    public function &findLoggedMessages($fields_list = "", $clause = "", $ordering = "")
     {
 
         /* logger("entered Spool::find_logged_messages - ".
@@ -366,7 +382,7 @@ class Spool extends Abstract_AMA_DataHandler
         $type = $this->type;
 
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -408,8 +424,8 @@ class Spool extends Abstract_AMA_DataHandler
 
         //  }
 
-        if (AMA_DB::isError($res_ar)) {
-            $retval = new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($res_ar)) {
+            $retval = new AMAError(AMA_ERR_GET);
             return $retval;
         }
         // logger("query succeeded", 4);
@@ -433,17 +449,17 @@ class Spool extends Abstract_AMA_DataHandler
      * @return  a reference to a hash, if more than one fields are required
      *           res_ha[ID_MESSAGGIO] contains an array with all the values
      *          a reference to a linear array if only one field is required
-     *          an AMA_Error object if something goes wrong
+     *          an AMAError object if something goes wrong
      *
      */
-    public function &find_messages($fields_list = "", $clause = "", $ordering = "")
+    public function &findMessages($fields_list = "", $clause = "", $ordering = "")
     {
 
         $user_id = $this->user_id;
         $type    = $this->type;
 
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -518,8 +534,8 @@ class Spool extends Abstract_AMA_DataHandler
             $res_ar = $db->getCol($sql);
         }
 
-        if (AMA_DB::isError($res_ar)) {
-            $retval = new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($res_ar)) {
+            $retval = new AMAError(AMA_ERR_GET);
             return $retval;
         }
         // logger("query succeeded", 4);
@@ -527,7 +543,7 @@ class Spool extends Abstract_AMA_DataHandler
         return $res_ar;
     }
 
-    public function &find_chat_messages($fields_list = "", $clause = "", $ordering = "")
+    public function &findChatMessages($fields_list = "", $clause = "", $ordering = "")
     {
 
         /* logger("entered Spool::find_chat_messages - ".
@@ -538,7 +554,7 @@ class Spool extends Abstract_AMA_DataHandler
         $id_group = $this->id_chatroom;
 
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -572,8 +588,8 @@ class Spool extends Abstract_AMA_DataHandler
 
         $res_ar = $db->getAll($sql);
 
-        if (AMA_DB::isError($res_ar)) {
-            $retval = new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($res_ar)) {
+            $retval = new AMAError(AMA_ERR_GET);
             return $retval;
         }
         // logger("query succeeded", 4);
@@ -597,10 +613,10 @@ class Spool extends Abstract_AMA_DataHandler
      * @return  a reference to a hash, if more than one fields are required
      *           res_ha[ID_MESSAGGIO] contains an array with all the values
      *          a reference to a linear array if only one field is required
-     *          an AMA_Error object if something goes wrong
+     *          an AMAError object if something goes wrong
      *
      */
-    public function &find_sent_messages($fields_list = "", $clause = "", $ordering = "")
+    public function &findSentMessages($fields_list = "", $clause = "", $ordering = "")
     {
 
         /* logger("entered Spool::find_sent_messages - ".
@@ -612,7 +628,7 @@ class Spool extends Abstract_AMA_DataHandler
         $type = $this->type;
 
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -666,8 +682,8 @@ class Spool extends Abstract_AMA_DataHandler
         }
         //  }
 
-        if (AMA_DB::isError($res_ar)) {
-            $retval = new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($res_ar)) {
+            $retval = new AMAError(AMA_ERR_GET);
             return $retval;
         }
 
@@ -687,16 +703,16 @@ class Spool extends Abstract_AMA_DataHandler
      * @return  a refrerence to a 2 elements array,
      *           the first element is a hash with data of the message
      *           the second element is an array of recipients' ids
-     *          an AMA_Error object if something goes wrong
+     *          an AMAError object if something goes wrong
      *
      */
-    public function &get_message_info($id)
+    public function &getMessageInfo($id)
     {
 
         // logger("entered Spool::get_message_info - [id=$id]", 3);
 
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -706,8 +722,8 @@ class Spool extends Abstract_AMA_DataHandler
 
         // logger("performing query: $sql", 4);
         $res_ar = $db->getRow($sql);
-        if (AMA_DB::isError($res_ar) || !is_array($res_ar)) {
-            $retval = new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($res_ar) || !is_array($res_ar)) {
+            $retval = new AMAError(AMA_ERR_GET);
             return $retval;
         }
         // logger("query succeeded", 4);
@@ -726,8 +742,8 @@ class Spool extends Abstract_AMA_DataHandler
             " where id_messaggio=$id";
         // logger("performing query: $sql", 4);
         $res_ar = $db->getAll($sql);
-        if (AMA_DB::isError($res_ar)) {
-            $retval = new AMA_Error(AMA_ERR_GET);
+        if (AMADB::isError($res_ar)) {
+            $retval = new AMAError(AMA_ERR_GET);
             return $retval;
         }
         // logger("query succeeded", 4);
@@ -751,10 +767,10 @@ class Spool extends Abstract_AMA_DataHandler
      * @param   $msgs_ar - array of messages id to change
      * @param   $value   - new status ('R' or 'N')
      *
-     * @return  an AMA_Error object if something goes wrong
+     * @return  an AMAError object if something goes wrong
      *
      */
-    public function set_messages($msgs_ar, $value)
+    public function setMessages($msgs_ar, $value)
     {
 
         // logger("entered Spool::set_messages - ".
@@ -762,7 +778,7 @@ class Spool extends Abstract_AMA_DataHandler
 
 
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -776,19 +792,19 @@ class Spool extends Abstract_AMA_DataHandler
 
         if (strstr("RN", $value)) {
             // begin a transaction
-            $this->begin_transaction();
+            $this->beginTransaction();
 
             foreach ($msgs_ar as $msg_id) {
                 // update message
-                $res = $this->set_message($msg_id, "read", $value);
+                $res = $this->setMessage($msg_id, "read", $value);
                 if (AMA_DataHandler::isError($res)) {
                     $this->rollback();
-                    $retval = new AMA_Error(AMA_ERR_UPDATE);
+                    $retval = new AMAError(AMA_ERR_UPDATE);
                     return $retval;
                 }
 
                 // add instruction to rollback segment
-                $this->rs_add("_set_message", $msg_id, "read", $inverse_value);
+                $this->rsAdd("_set_message", $msg_id, "read", $inverse_value);
             } // end foreach
 
 
@@ -808,17 +824,17 @@ class Spool extends Abstract_AMA_DataHandler
      *                        'R' | 'N' for read
      *                        'Y' | 'N' for deleted
      *
-     * @return  an AMA_Error object if something goes wrong
+     * @return  an AMAError object if something goes wrong
      *
      */
-    public function set_message($msg_id, $field, $value)
+    public function setMessage($msg_id, $field, $value)
     {
 
         // logger("entered Spool::_set_message - ".
         //        "[msg_id=$msg_id, field=$field, value=$value]", 3);
 
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -826,7 +842,7 @@ class Spool extends Abstract_AMA_DataHandler
             case 'read':
                 $field_name = "read_timestamp";
                 if ($value == 'R') {
-                    $value = $this->date_to_ts("now");
+                    $value = $this->dateToTs("now");
                 } elseif ($value == 'N') {
                     $value = 0;
                 }
@@ -837,7 +853,7 @@ class Spool extends Abstract_AMA_DataHandler
                 break;
 
             default:
-                $retval = new AMA_Error(AMA_ERR_WRONG_ARGUMENTS);
+                $retval = new AMAError(AMA_ERR_WRONG_ARGUMENTS);
                 return $retval;
         }
 
@@ -850,8 +866,8 @@ class Spool extends Abstract_AMA_DataHandler
 
         $res =  $db->query($sql);
 
-        if (AMA_DB::isError($res)) {
-            $retval = new AMA_Error(AMA_ERR_UPDATE);
+        if (AMADB::isError($res)) {
+            $retval = new AMAError(AMA_ERR_UPDATE);
             return $retval;
         }
         // logger("query succeeded", 4);
@@ -871,16 +887,16 @@ class Spool extends Abstract_AMA_DataHandler
      *
      * @param   $msgs_ar - array of messages id to change
      *
-     * @return  an AMA_Error object if something goes wrong
+     * @return  an AMAError object if something goes wrong
      *
      */
-    public function remove_messages($msgs_ar)
+    public function removeMessages($msgs_ar)
     {
         // logger("entered Spool::_remove_messages - ".
         //       "[msgs_ar=".serialize($msgs_ar)."]", 3);
 
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -889,28 +905,28 @@ class Spool extends Abstract_AMA_DataHandler
         foreach ($msgs_ar as $msg_id) {
             // remove message from user's spool means
             // the field deleted is set to 'Y'
-            $res = $this->set_message($msg_id, "deleted", "Y");
+            $res = $this->setMessage($msg_id, "deleted", "Y");
 
             if (AMA_DataHandler::isError($res)) {
-                $retval = new AMA_Error(AMA_ERR_REMOVE);
+                $retval = new AMAError(AMA_ERR_REMOVE);
                 return $retval;
             }
             // 5 dec 2008
-            $msg_Ha = $this->get_message_info($msg_id);
+            $msg_Ha = $this->getMessageInfo($msg_id);
 
             //vito 19 gennaio 2009
             //       $res = $this->log_message($msg_Ha);
 
-            $res = $this->log_message($msg_Ha[0], $msg_Ha[1]);
+            $res = $this->logMessage($msg_Ha[0], $msg_Ha[1]);
 
             if (AMA_DataHandler::isError($res)) {
-                $retval = new AMA_Error(AMA_ERR_ADD);
+                $retval = new AMAError(AMA_ERR_ADD);
                 return $retval;
             }
         }
     }
 
-    protected function remove_message($id)
+    protected function removeMessage($id)
     {
         //FIXME: richiamare remove_messages?
     }
@@ -926,25 +942,25 @@ class Spool extends Abstract_AMA_DataHandler
      * @param   $user_id - id of the owner of the spool
      * @param   $msgs_ar - array of messages id to change
      *
-     * @return  an AMA_Error object if something goes wrong
+     * @return  an AMAError object if something goes wrong
      *
      */
-    protected function clean_messages($msgs_ar)
+    protected function cleanMessages($msgs_ar)
     {
 
         // logger("entered Spool::_clean_messages - ".
         //       "[msgs_ar=".serialize($msgs_ar)."]", 3);
 
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         foreach ($msgs_ar as $msg_id) {
             // remove message from user's spool
-            $res = $this->clean_message($msg_id, $this->user_id);
+            $res = $this->cleanMessage($msg_id, $this->user_id);
             if (AMA_DataHandler::isError($res)) {
-                $retval = new AMA_Error(AMA_ERR_REMOVE);
+                $retval = new AMAError(AMA_ERR_REMOVE);
                 return $retval;
             }
 
@@ -952,8 +968,8 @@ class Spool extends Abstract_AMA_DataHandler
             $sql = "select count(*) from destinatari_messaggi where id_messaggio=$msg_id";
             // logger("performing query: $sql", 4);
             $n_refs =  $db->getOne($sql);
-            if (AMA_DB::isError($n_refs)) {
-                $retval = new AMA_Error(AMA_ERR_REMOVE);
+            if (AMADB::isError($n_refs)) {
+                $retval = new AMAError(AMA_ERR_REMOVE);
                 return $retval;
             }
 
@@ -961,9 +977,9 @@ class Spool extends Abstract_AMA_DataHandler
 
             // if it is not, then remove the message from the 'messaggi' table
             if ($n_refs == 0) {
-                $res =  $this->clean_message($msg_id);
+                $res =  $this->cleanMessage($msg_id);
                 if (AMA_DataHandler::isError($res)) {
-                    $retval = new AMA_Error(AMA_ERR_REMOVE);
+                    $retval = new AMAError(AMA_ERR_REMOVE);
                     return $retval;
                 }
             }
@@ -983,16 +999,16 @@ class Spool extends Abstract_AMA_DataHandler
      *                 if the parameter is passed and not null, then
      *                 a row is removed from 'destinatari_messaggi' table
      *
-     * @return  an AMA_Error object if something goes wrong
+     * @return  an AMAError object if something goes wrong
      *
      */
-    protected function clean_message($id, $rid = 0)
+    protected function cleanMessage($id, $rid = 0)
     {
 
         // logger("entered Spool::_remove_message", 3);
 
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -1002,14 +1018,14 @@ class Spool extends Abstract_AMA_DataHandler
             // logger("performing query: $sql", 4);
             /*
             $res = $db->query($sql);
-            //           if (AMA_DB::isError($res) || $db->affectedRows()==0)  ??
+            //           if (AMADB::isError($res) || $db->affectedRows()==0)  ??
 
-            if (AMA_DB::isError($res) || $db->numCols()==0)
-            return new AMA_Error(AMA_ERR_REMOVE);
+            if (AMADB::isError($res) || $db->numCols()==0)
+            return new AMAError(AMA_ERR_REMOVE);
             */
             $res = parent::executeCritical($sql);
-            if (AMA_DB::isError($res)) {
-                // $res is an AMA_Error object
+            if (AMADB::isError($res)) {
+                // $res is an AMAError object
                 return $res;
             }
             // logger("query succeeded", 4);
@@ -1020,12 +1036,12 @@ class Spool extends Abstract_AMA_DataHandler
             // logger("performing query: $sql", 4);
             /*
             $res = $db->query($sql);
-            if (AMA_DB::isError($res) || $db->affectedRows()==0)
-            return new AMA_Error(AMA_ERR_REMOVE);
+            if (AMADB::isError($res) || $db->affectedRows()==0)
+            return new AMAError(AMA_ERR_REMOVE);
             */
             $res = parent::executeCritical($sql);
-            if (AMA_DB::isError($res)) {
-                // $res is an AMA_Error object
+            if (AMADB::isError($res)) {
+                // $res is an AMAError object
                 return $res;
             }
 

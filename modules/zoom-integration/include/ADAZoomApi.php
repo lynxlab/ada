@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\ZoomIntegration\ZoomAPIWrapper;
+
+use Lynxlab\ADA\Module\ZoomIntegration\AMAZoomIntegrationDataHandler;
+
+use Lynxlab\ADA\Module\ZoomIntegration\ADAZoomApi;
+
+// Trigger: ClassWithNameSpace. The class ADAZoomApi was declared with namespace Lynxlab\ADA\Module\ZoomIntegration. //
+
 /**
  * @package     ADA Zoom Meeting Integration
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -65,7 +73,7 @@ class ADAZoomApi
 
             if ($response != false) {
                 $meetingData['meetingID'] = $response['id'];
-                $meetingData = $this->dh->add_videoroom($meetingData);
+                $meetingData = $this->dh->addVideoroom($meetingData);
             } else {
                 return false;
             }
@@ -89,7 +97,7 @@ class ADAZoomApi
                     if (isset($meetingData['meetingPWD'])) {
                         unset($meetingData['meetingPWD']);
                     }
-                    // $this->dh->delete_videoroom($roomId);
+                    // $this->dh->deleteVideoroom($roomId);
                     return [];
                 }
             } else {

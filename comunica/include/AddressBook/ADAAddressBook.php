@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use Lynxlab\ADA\Comunica\AddressBook\ADAAddressBook;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class ADAAddressBook was declared with namespace Lynxlab\ADA\Comunica\AddressBook. //
+
 namespace Lynxlab\ADA\Comunica\AddressBook;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
@@ -17,7 +29,7 @@ class ADAAddressBook
         $common_dh = $GLOBALS['common_dh'];
         $dh = $GLOBALS['dh'];
 
-        // this tells get_users_by_type method to get nome, cognome....
+        // this tells getUsersByType method to get nome, cognome....
         $retrieve_extended_data = true;
 
         if (!is_array($user_types_Ar[$user_type]) || empty($user_types_Ar[$user_type])) {
@@ -32,8 +44,8 @@ class ADAAddressBook
                  * tester
                  */
                 // FIXME: differisce dagli altri casi !!!
-                $users[] = $common_dh->get_users_by_type($user_types_Ar[AMA_TYPE_ADMIN], $retrieve_extended_data);
-                if (AMA_Common_DataHandler::isError($users)) {
+                $users[] = $common_dh->getUsersByType($user_types_Ar[AMA_TYPE_ADMIN], $retrieve_extended_data);
+                if (AMACommonDataHandler::isError($users)) {
                     // Gestione errore
                 }
 
@@ -44,27 +56,27 @@ class ADAAddressBook
                  * Ottieni tutti i practitioner e gli utenti dal suo tester
                  */
                 $tester = $userObj->getDefaultTester();
-                $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
-                $tester_info_Ar = $common_dh->get_tester_info_from_pointer($tester);
+                $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester));
+                $tester_info_Ar = $common_dh->getTesterInfoFromPointer($tester);
                 $tester_name = $tester_info_Ar[1];
 
-                $users[$tester_name] = $tester_dh->get_users_by_type($user_types_Ar[AMA_TYPE_SWITCHER], $retrieve_extended_data);
-                if (AMA_Common_DataHandler::isError($users)) {
+                $users[$tester_name] = $tester_dh->getUsersByType($user_types_Ar[AMA_TYPE_SWITCHER], $retrieve_extended_data);
+                if (AMACommonDataHandler::isError($users)) {
                     $users[$tester_name] = [];
                 }
                 /*
                  * Ottiene tutti i practitioner presenti sul tester
                  */
-                //         $practitioners_Ar = $tester_dh->get_users_by_type(array(AMA_TYPE_TUTOR), $retrieve_extended_data);
-                //         if(AMA_DataHandler::isError($practitioners_Ar) || !is_array($practitioners_Ar)) {
+                //         $practitioners_Ar = $tester_dh->getUsersByType(array(AMA_TYPE_TUTOR), $retrieve_extended_data);
+                //         if(AMADataHandler::isError($practitioners_Ar) || !is_array($practitioners_Ar)) {
                 //           $practitioners_Ar = array();
                 //         }
                 /*
                  * Ottiene tutti gli utenti che hanno richiesto un servizio sul tester
                  * e che sono in attesa di assegnamento ad un practitioner
                  */
-                // $users_Ar = $tester_dh->get_registered_students_without_tutor();
-                //         if(AMA_DataHandler::isError($users_Ar) || !is_array($users_Ar)) {
+                // $users_Ar = $tester_dh->getRegisteredStudentsWithoutTutor();
+                //         if(AMADataHandler::isError($users_Ar) || !is_array($users_Ar)) {
                 //           $users_Ar = array();
                 //         }
                 //         $users[$tester_name] = array_merge($practitioners_Ar, $users_Ar);
@@ -76,8 +88,8 @@ class ADAAddressBook
                  * eventualmente gli altri practitioner sul suo tester
                  */
                 $tester = $userObj->getDefaultTester();
-                $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
-                $tester_info_Ar = $common_dh->get_tester_info_from_pointer($tester);
+                $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester));
+                $tester_info_Ar = $common_dh->getTesterInfoFromPointer($tester);
                 $tester_name = $tester_info_Ar[1];
 
                 if (in_array(AMA_TYPE_STUDENT, $user_types_Ar[$user_type])) {
@@ -85,14 +97,14 @@ class ADAAddressBook
                      * STUDENTS
                      */
 
-                    //        $users[$tester_name] = $tester_dh->get_list_of_tutored_users($userObj->id_user);
+                    //        $users[$tester_name] = $tester_dh->getListOfTutoredUsers($userObj->id_user);
                     if (!$userObj->isSuper()) {
-                        $students_Ar = $tester_dh->get_list_of_tutored_unique_users($userObj->id_user);
+                        $students_Ar = $tester_dh->getListOfTutoredUniqueUsers($userObj->id_user);
                     } else {
-                        $students_Ar = $tester_dh->get_users_by_type([AMA_TYPE_STUDENT], $retrieve_extended_data);
+                        $students_Ar = $tester_dh->getUsersByType([AMA_TYPE_STUDENT], $retrieve_extended_data);
                     }
-                    //        $users[$tester_name] = $tester_dh->get_users_by_type($user_types_Ar[AMA_TYPE_TUTOR], $retrieve_extended_data);
-                    if (AMA_DataHandler::isError($students_Ar) || !is_array($students_Ar)) {
+                    //        $users[$tester_name] = $tester_dh->getUsersByType($user_types_Ar[AMA_TYPE_TUTOR], $retrieve_extended_data);
+                    if (AMADataHandler::isError($students_Ar) || !is_array($students_Ar)) {
                         $students_Ar = [];
                     }
                 } else {
@@ -104,8 +116,8 @@ class ADAAddressBook
                      * TUTORS
                      */
 
-                    $tutors_Ar =  $tester_dh->get_users_by_type([AMA_TYPE_TUTOR], $retrieve_extended_data);
-                    if (AMA_DataHandler::isError($tutors_Ar) || !is_array($tutors_Ar)) {
+                    $tutors_Ar =  $tester_dh->getUsersByType([AMA_TYPE_TUTOR], $retrieve_extended_data);
+                    if (AMADataHandler::isError($tutors_Ar) || !is_array($tutors_Ar)) {
                         $tutors_Ar = [];
                     }
                 } else {
@@ -117,8 +129,8 @@ class ADAAddressBook
                      * SWITCHERS
                      */
 
-                    $switchers_Ar =  $tester_dh->get_users_by_type([AMA_TYPE_SWITCHER], $retrieve_extended_data);
-                    if (AMA_DataHandler::isError($switchers_Ar) || !is_array($switchers_Ar)) {
+                    $switchers_Ar =  $tester_dh->getUsersByType([AMA_TYPE_SWITCHER], $retrieve_extended_data);
+                    if (AMADataHandler::isError($switchers_Ar) || !is_array($switchers_Ar)) {
                         $switchers_Ar = [];
                     }
                 } else {
@@ -145,34 +157,34 @@ class ADAAddressBook
                     $testers = $userObj->getTesters();
                     foreach ($userObj->getTesters() as $tester) {
                         if (($tester != ADA_PUBLIC_TESTER) or count($testers) == 1) {
-                            $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
-                            $tester_info_Ar = $common_dh->get_tester_info_from_pointer($tester);
+                            $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester));
+                            $tester_info_Ar = $common_dh->getTesterInfoFromPointer($tester);
                             $tester_name = $tester_info_Ar[1];
 
-                            $tutors_Ar = $tester_dh->get_tutors_for_student($userObj->getId());
-                            if (AMA_DataHandler::isError($tutors_Ar) || !is_array($tutors_Ar)) {
+                            $tutors_Ar = $tester_dh->getTutorsForStudent($userObj->getId());
+                            if (AMADataHandler::isError($tutors_Ar) || !is_array($tutors_Ar)) {
                                 $tutors_Ar = [];
                             }
                             $tutors_Ar = array_unique($tutors_Ar, SORT_REGULAR);
 
-                            $switcher_Ar =  $tester_dh->get_users_by_type([AMA_TYPE_SWITCHER], $retrieve_extended_data);
-                            if (AMA_DataHandler::isError($switcher_Ar) || !is_array($switcher_Ar)) {
+                            $switcher_Ar =  $tester_dh->getUsersByType([AMA_TYPE_SWITCHER], $retrieve_extended_data);
+                            if (AMADataHandler::isError($switcher_Ar) || !is_array($switcher_Ar)) {
                                 $switcher_Ar = [];
                             }
 
                             /*
                              * OTHER STUDENTS RELATED TO USER
                              */
-                            $subscribed_instances = $tester_dh->get_id_course_instances_for_this_student($userObj->getId());
-                            $students_Ar = $tester_dh->get_unique_students_for_course_instances($subscribed_instances);
-                            if (AMA_DataHandler::isError($students_Ar) || !is_array($students_Ar)) {
+                            $subscribed_instances = $tester_dh->getIdCourseInstancesForThisStudent($userObj->getId());
+                            $students_Ar = $tester_dh->getUniqueStudentsForCourseInstances($subscribed_instances);
+                            if (AMADataHandler::isError($students_Ar) || !is_array($students_Ar)) {
                                 $students_Ar = [];
                             }
 
                             /*
                                       foreach ($subscribed_instances as $subscribed_instance) {
                                           $subscribed_instance_id = $subscribed_instance['id_istanza_corso'];
-                                          $students_Ar = array_merge($tester_dh->get_students_for_course_instance($subscribed_instance_id));
+                                          $students_Ar = array_merge($tester_dh->getStudentsForCourseInstance($subscribed_instance_id));
                                       }
                              *
                              */
@@ -181,17 +193,17 @@ class ADAAddressBook
                     }
                 } else {
                     $tester = $_SESSION['sess_selected_tester'];
-                    $tester_info_Ar = $common_dh->get_tester_info_from_pointer($tester);
+                    $tester_info_Ar = $common_dh->getTesterInfoFromPointer($tester);
                     $tester_name = $tester_info_Ar[1];
-                    $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
+                    $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester));
 
 
                     /*
                      * GET TUTORS OF TESTER
                      */
 
-                    $tutors_Ar = $tester_dh->get_tutors_for_student($userObj->getId());
-                    if (AMA_DataHandler::isError($tutors_Ar) || !is_array($tutors_Ar)) {
+                    $tutors_Ar = $tester_dh->getTutorsForStudent($userObj->getId());
+                    if (AMADataHandler::isError($tutors_Ar) || !is_array($tutors_Ar)) {
                         $tutors_Ar = [];
                     }
 
@@ -201,17 +213,17 @@ class ADAAddressBook
                      * GET SWITCHER OF TESTER
                      */
 
-                    $switcher_Ar =  $tester_dh->get_users_by_type([AMA_TYPE_SWITCHER], $retrieve_extended_data);
-                    if (AMA_DataHandler::isError($switcher_Ar) || !is_array($switcher_Ar)) {
+                    $switcher_Ar =  $tester_dh->getUsersByType([AMA_TYPE_SWITCHER], $retrieve_extended_data);
+                    if (AMADataHandler::isError($switcher_Ar) || !is_array($switcher_Ar)) {
                         $switcher_Ar = [];
                     }
 
                     /*
                      * OTHER STUDENTS RELATED TO USER
                      */
-                    $subscribed_instances = $tester_dh->get_id_course_instances_for_this_student($userObj->getId());
-                    $students_Ar = $tester_dh->get_unique_students_for_course_instances($subscribed_instances);
-                    if (AMA_DataHandler::isError($students_Ar) || !is_array($students_Ar)) {
+                    $subscribed_instances = $tester_dh->getIdCourseInstancesForThisStudent($userObj->getId());
+                    $students_Ar = $tester_dh->getUniqueStudentsForCourseInstances($subscribed_instances);
+                    if (AMADataHandler::isError($students_Ar) || !is_array($students_Ar)) {
                         $students_Ar = [];
                     }
 

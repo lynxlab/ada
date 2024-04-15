@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * NEWSLETTER MODULE.
  *
@@ -54,9 +60,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!isset($_POST['id'])) {
         $retArray = ["status" => "ERROR", "msg" => translateFN("Non so cosa cancellare")];
     } else {
-        $result = $dh->delete_newsletter(intval($_POST['id']));
+        $result = $dh->deleteNewsletter(intval($_POST['id']));
 
-        if (!AMA_DB::isError($result)) {
+        if (!AMADB::isError($result)) {
             $retArray =  ["status" => "OK", "msg" => translateFN("Newsletter cancellata")];
         } else {
             $retArray =  ["status" => "ERROR", "msg" => translateFN("Errore di cancellazione") ];

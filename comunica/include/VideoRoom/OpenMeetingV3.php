@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
+
+use Lynxlab\ADA\Comunica\VideoRoom\IVideoRoom;
+
 /**
  * Openmeetings V3.X specific class
  *
@@ -82,16 +88,16 @@ class OpenMeetingV3 extends VideoRoom implements IVideoRoom
         $videoroom_dataAr['tempo_avvio'] = time();
         $videoroom_dataAr['tempo_fine'] = time() + $interval;
 
-        $videoroom_data = $dh->add_videoroom($videoroom_dataAr);
+        $videoroom_data = $dh->addVideoroom($videoroom_dataAr);
 
-        if (AMA_DB::isError($videoroom_data)) {
+        if (AMADB::isError($videoroom_data)) {
             return false;
         }
 
         return $this->id_room;
     }
 
-    public function list_rooms()
+    public function listRooms()
     {
     }
 
@@ -197,7 +203,7 @@ class OpenMeetingV3 extends VideoRoom implements IVideoRoom
         }
     }
 
-    public function delete_room($id_room)
+    public function deleteRoom($id_room)
     {
 
         $dh = $GLOBALS['dh'];
@@ -215,7 +221,7 @@ class OpenMeetingV3 extends VideoRoom implements IVideoRoom
 
         $result_openmeetings = $this->client_room->delete($params);
         if ($result_openmeetings->return->code == $id_room) { // if deleted ok in openmeetings delete in DB too
-            $result = $dh->delete_videoroom($id_room);
+            $result = $dh->deleteVideoroom($id_room);
         }
     }
 }

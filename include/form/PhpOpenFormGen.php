@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Main\form\PhpOpenFormGen;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class PhpOpenFormGen was declared with namespace Lynxlab\ADA\Main\form. //
+
 // *******************************************************************************************
 //
 // Funzione per la generazione di form.

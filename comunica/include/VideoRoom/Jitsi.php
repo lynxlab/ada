@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Module\JitsiIntegration\ADAJitsiApi;
+
+use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
+
+use Lynxlab\ADA\Comunica\VideoRoom\IVideoRoom;
+
 namespace Lynxlab\ADA\Comunica\VideoRoom;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
@@ -66,13 +72,13 @@ class Jitsi extends VideoRoom implements IVideoRoom
      * @param [type] $interval
      * @return void
      */
-    public function videoroom_info($id_course_instance, $tempo_avvio = null, $interval = null, $more_query = null)
+    public function videoroomInfo($id_course_instance, $tempo_avvio = null, $interval = null, $more_query = null)
     {
         // load parent info
         if (is_null($more_query)) {
             $more_query = 'AND `tipo_videochat`="' . self::VIDEOCHATTYPE . '" ORDER BY `tempo_avvio` DESC';
         }
-        parent::videoroom_info($id_course_instance, $tempo_avvio, $interval, $more_query);
+        parent::videoroomInfo($id_course_instance, $tempo_avvio, $interval, $more_query);
         // load Jitsi own info
         $video_roomAr = $this->jitsiAPI->getInfo($this->id);
         $this->meetingID = null;

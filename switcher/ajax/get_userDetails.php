@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * get_userDetails.php - return table with user details
  *
@@ -79,7 +95,7 @@ $retArray = [];
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
     $id_user = $_GET['id_user'];
-    $user_type = $dh->get_user_type($id_user);
+    $user_type = $dh->getUserType($id_user);
     $DetailsAr = [];
     switch ($user_type) {
         case AMA_TYPE_STUDENT:
@@ -92,7 +108,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                 translateFN('Ultimo accesso'),
                 translateFN('Ultimo nodo'),
             ];
-            $DetailsAr = $dh->get_course_instances_for_this_student($id_user, true);
+            $DetailsAr = $dh->getCourseInstancesForThisStudent($id_user, true);
 
             break;
         case AMA_TYPE_AUTHOR:
@@ -111,7 +127,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             $field_list_ar = ['titolo', 'data_creazione', 'data_pubblicazione', 'tipo_servizio', 'duration_hours', 'crediti'];
             $key = $id_user;
             $search_fields_ar = ['id_utente_autore'];
-            $DetailsAr = $dh->find_courses_list($field_list_ar, 'id_utente_autore=' . $key);
+            $DetailsAr = $dh->findCoursesList($field_list_ar, 'id_utente_autore=' . $key);
             break;
         case AMA_TYPE_TUTOR:
             $thead_data = [
@@ -126,8 +142,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                 translateFN('Autoistruzione'),
             ];
 
-            $DetailsAr = $dh->get_tutors_assigned_course_instance($id_user, false);
-            if (isset($DetailsAr) && !empty($DetailsAr) && !AMA_DB::isError($DetailsAr)) {
+            $DetailsAr = $dh->getTutorsAssignedCourseInstance($id_user, false);
+            if (isset($DetailsAr) && !empty($DetailsAr) && !AMADB::isError($DetailsAr)) {
                 $DetailsAr = $DetailsAr[$id_user];
             }
 
@@ -135,7 +151,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
     }
 
     $total_results = [];
-    if (!empty($DetailsAr) && !AMA_DB::isError($DetailsAr)) {
+    if (!empty($DetailsAr) && !AMADB::isError($DetailsAr)) {
         foreach ($DetailsAr as $course) {
             /*
              * course data
@@ -191,7 +207,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 
             if ($user_type == AMA_TYPE_STUDENT) {
                 $limit = 1;
-                $last_access = $dh->get_last_visited_nodes($id_user, $course['id_istanza_corso'], $limit);
+                $last_access = $dh->getLastVisitedNodes($id_user, $course['id_istanza_corso'], $limit);
                 $last_node = ' - ';
                 $last_date = ' - ';
                 if (count($last_access) > 0) {
@@ -271,7 +287,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                     $id_instance = $course['id_istanza_corso'];
 
                     /* count student for course_instance */
-                    $studentsAr = $dh->get_students_for_course_instance($id_instance);
+                    $studentsAr = $dh->getStudentsForCourseInstance($id_instance);
                     $inscription = 0;
                     foreach ($studentsAr as $student) {
                         $status = $student['status'];
@@ -363,15 +379,15 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             } elseif ($user_type == AMA_TYPE_AUTHOR) {
                 if (isset($course['id_corso'])) {
                     $id_course = $course['id_corso'];
-                    $InstanceAr = $dh->course_instance_get_list(null, $id_course);
-                    if (!AMA_DB::isError($InstanceAr)) {
+                    $InstanceAr = $dh->courseInstanceGetList(null, $id_course);
+                    if (!AMADB::isError($InstanceAr)) {
                         $instanceNumber = count($InstanceAr);
                     }
                     $field_list_ar = ['tipo'];
                     $clause = '(tipo =' . ADA_LEAF_TYPE . ' OR  tipo =' . ADA_GROUP_TYPE . ' OR  tipo =' . ADA_PERSONAL_EXERCISE_TYPE . ')';
                     $clause .= " AND id_nodo LIKE '%$id_course%'";
-                    $NodesAr = $dh->doFind_nodes_list($field_list_ar, $clause);
-                    if (!AMA_DB::isError($NodesAr)) {
+                    $NodesAr = $dh->doFindNodesList($field_list_ar, $clause);
+                    if (!AMADB::isError($NodesAr)) {
                         $countActivity = 0;
                         if (!empty($NodesAr)) {
                             foreach ($NodesAr as $node => $type) {

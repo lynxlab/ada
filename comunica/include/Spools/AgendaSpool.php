@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Comunica\Spools\Spool;
+
+use Lynxlab\ADA\Comunica\Spools\AgendaSpool;
+
+// Trigger: ClassWithNameSpace. The class AgendaSpool was declared with namespace Lynxlab\ADA\Comunica\Spools. //
+
 /**
  * AgendaSpool extends Spool and implements some peculiarities
  * related to the Agenda event.
@@ -50,10 +60,10 @@ class AgendaSpool extends Spool
      * @return  a reference to a hash, if more than one fields are required
      *           res_ha[ID_MESSAGGIO] contains an array with all the values
      *          a reference to a linear array if only one field is required
-     *          an AMA_Error object if something goes wrong
+     *          an AMAError object if something goes wrong
      *
      */
-    public function &find_messages($fields_list = "", $clause = "", $ordering = "")
+    public function &findMessages($fields_list = "", $clause = "", $ordering = "")
     {
 
         /* logger("entered AgendaSpool::find_messages - ".
@@ -72,12 +82,12 @@ class AgendaSpool extends Spool
             $clause .= " and $basic_clause";
         }
         // call the parent's find_messages (without clean)
-        $res = parent::find_messages($fields_list, $clause, $ordering);
-        //    if (AMA_DataHandler::isError($res)) {
-        //      // $res is an AMA_Error object
+        $res = parent::findMessages($fields_list, $clause, $ordering);
+        //    if (AMADataHandler::isError($res)) {
+        //      // $res is an AMAError object
         //      return $res;
         //    }
-        // $res can be an AMA_Error object or the messages list
+        // $res can be an AMAError object or the messages list
         return $res;
     }
 
@@ -91,7 +101,7 @@ class AgendaSpool extends Spool
      * @param   $message_ha        - message data as an hash
      * @param   $recipients_ids_ar - list of recipients ids
      *
-     * @return  an AMA_Error object if something goes wrong
+     * @return  an AMAError object if something goes wrong
      *
      * (non-PHPdoc)
      * @see Spool::add_message()
@@ -102,13 +112,13 @@ class AgendaSpool extends Spool
      * definition compatible with Spool::add_message()
      *
      */
-    public function add_message($message_ha, $recipients_ids_ar, $check_on_uniqueness = false)
+    public function addMessage($message_ha, $recipients_ids_ar, $check_on_uniqueness = false)
     {
 
         // logger("entered AgendaSpool::add_message", 3);
         $this->clean();
 
-        return parent::add_message($message_ha, $recipients_ids_ar, $check_on_uniqueness);
+        return parent::addMessage($message_ha, $recipients_ids_ar, $check_on_uniqueness);
     }
 
 

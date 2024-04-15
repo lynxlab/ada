@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * SEND EVENT.
  *
@@ -21,10 +41,10 @@ use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\get_timezone_offset;
+use function Lynxlab\ADA\Main\Utilities\getTimezoneOffset;
 use function Lynxlab\ADA\Main\Utilities\sumDateTimeFN;
-use function Lynxlab\ADA\Main\Utilities\today_dateFN;
-use function Lynxlab\ADA\Main\Utilities\today_timeFN;
+use function Lynxlab\ADA\Main\Utilities\todayDateFN;
+use function Lynxlab\ADA\Main\Utilities\todayTimeFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -130,11 +150,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
 
-        if (!isset($destinatari) || DataValidator::validate_not_empty_string($destinatari) === false) {
+        if (!isset($destinatari) || DataValidator::validateNotEmptyString($destinatari) === false) {
             $errors['destinatari'] = ADA_EVENT_PROPOSAL_ERROR_RECIPIENT;
         }
 
-        if (!isset($titolo) || DataValidator::validate_not_empty_string($titolo) === false) {
+        if (!isset($titolo) || DataValidator::validateNotEmptyString($titolo) === false) {
             $errors['titolo'] = ADA_EVENT_PROPOSAL_ERROR_SUBJECT;
         }
 
@@ -154,9 +174,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
               $sort_field = "data_ora desc";
 
-              $msgs_ha = $mh->get_messages($sess_id_user, ADA_MSG_AGENDA, array("id_mittente", "data_ora", "titolo", "priorita", "read_timestamp"),$sort_field);
-              if(AMA_DataHandler::isError($msgs_ha)) {
-                $errObj = new ADA_Error($res, translateFN('Errore in ottenimento appuntamenti'),
+              $msgs_ha = $mh->getMessages($sess_id_user, ADA_MSG_AGENDA, array("id_mittente", "data_ora", "titolo", "priorita", "read_timestamp"),$sort_field);
+              if(AMADataHandler::isError($msgs_ha)) {
+                $errObj = new ADAError($res, translateFN('Errore in ottenimento appuntamenti'),
                                NULL, NULL, NULL,
                                $error_page.'?err_msg='.urlencode(translateFN('Errore in ottenimento appuntamenti'))
                                );
@@ -183,7 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
               $tester_TimeZone = SERVER_TIMEZONE;
             } else {
               $tester_TimeZone = MultiPort::getTesterTimeZone($tester);
-        $offset = get_timezone_offset($tester_TimeZone,SERVER_TIMEZONE);
+        $offset = getTimezoneOffset($tester_TimeZone,SERVER_TIMEZONE);
             }
             $data_ora = sumDateTimeFN(array($date,$time)) - $offset;
             */
@@ -195,7 +215,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $tester_TimeZone = SERVER_TIMEZONE;
             } else {
                 $tester_TimeZone = MultiPort::getTesterTimeZone($sess_selected_tester);
-                $offset = get_timezone_offset($tester_TimeZone, SERVER_TIMEZONE);
+                $offset = getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
             }
             $data_ora = sumDateTimeFN([$data_evento,$ora_evento]) - $offset;
             $message_ha['data_ora'] = $data_ora; //"now";
@@ -204,9 +224,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $message_ha['mittente'] = $user_uname;
 
             // delegate sending to the message handler
-            $res = $mh->send_message($message_ha);
-            if (AMA_DataHandler::isError($res)) {
-                $errObj = new ADA_Error(
+            $res = $mh->sendMessage($message_ha);
+            if (AMADataHandler::isError($res)) {
+                $errObj = new ADAError(
                     $res,
                     translateFN('Errore in inserimento appuntamento'),
                     null,
@@ -271,35 +291,35 @@ if ((empty($err_msg)) or (!isset($err_msg))) {
 }
 
 if (!isset($ora_evento)) {
-    $event_time = today_timeFN();
+    $event_time = todayTimeFN();
 } else {
     $event_time = $ora_evento;
 }
 if (!isset($data_evento)) {
-    $event_date = today_dateFN();
+    $event_date = todayDateFN();
 } else {
     $event_date = $data_evento;
 }
 /*
-$event_time = today_timeFN();
-$event_date = today_dateFN();
+$event_time = todayTimeFN();
+$event_date = todayDateFN();
 */
 
 $ada_address_book = EventsAddressBook::create($userObj);
 
 $tester_TimeZone = MultiPort::getTesterTimeZone($sess_selected_tester);
-$time = time() + get_timezone_offset($tester_TimeZone, SERVER_TIMEZONE);
+$time = time() + getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
 
 /*
 * Last access link
 */
 
 if (isset($_SESSION['sess_id_course_instance'])) {
-    $last_access = $userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']), "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(($_SESSION['sess_id_course_instance']), "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 } else {
-    $last_access = $userObj->get_last_accessFN(null, "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(null, "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 }
 
 if ($last_access == '' || is_null($last_access)) {

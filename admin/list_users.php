@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * List users
  *
@@ -82,37 +100,37 @@ AdminHelper::init($neededObjAr);
 /*
  * YOUR CODE HERE
  */
-$id_tester = DataValidator::is_uinteger($_GET['id_tester']);
-if (!isset($_GET['page']) || DataValidator::is_uinteger($_GET['page']) === false) {
+$id_tester = DataValidator::isUinteger($_GET['id_tester']);
+if (!isset($_GET['page']) || DataValidator::isUinteger($_GET['page']) === false) {
     $page = 1;
 } else {
     $page = $_GET['page'];
 }
-$userTypeToFilter = isset($_GET['user_type']) ? DataValidator::is_uinteger($_GET['user_type']) : false;
+$userTypeToFilter = isset($_GET['user_type']) ? DataValidator::isUinteger($_GET['user_type']) : false;
 
 $users_per_page = 20;
 
 if ($id_tester !== false) {
-    $tester_info = $common_dh->get_tester_info_from_id($id_tester);
+    $tester_info = $common_dh->getTesterInfoFromId($id_tester);
     $tester_dsn = MultiPort::getDSN($tester_info[10]);
     if ($tester_dsn != null) {
-        $tester_dh = AMA_DataHandler::instance($tester_dsn);
+        $tester_dh = AMADataHandler::instance($tester_dsn);
 
         if ($userTypeToFilter !== false) {
             $user_typesAr = [$userTypeToFilter];
         } else {
             $user_typesAr = [AMA_TYPE_STUDENT,AMA_TYPE_AUTHOR,AMA_TYPE_TUTOR,AMA_TYPE_SWITCHER,AMA_TYPE_ADMIN,AMA_TYPE_SUPERTUTOR];
         }
-        $users_count = $tester_dh->count_users_by_type($user_typesAr);
-        if (AMA_DataHandler::isError($users_count)) {
-            $errObj = new ADA_Error($users_count);
+        $users_count = $tester_dh->countUsersByType($user_typesAr);
+        if (AMADataHandler::isError($users_count)) {
+            $errObj = new ADAError($users_count);
         } else {
-            $users_dataAr = $tester_dh->get_users_by_type($user_typesAr, true);
-            if (AMA_DataHandler::isError($users_dataAr)) {
+            $users_dataAr = $tester_dh->getUsersByType($user_typesAr, true);
+            if (AMADataHandler::isError($users_dataAr)) {
                 $user_type = ADAGenericUser::convertUserTypeFN($userTypeToFilter);
                 $data = CDOMElement::create('div');
                 $data->addChild(new CText(translateFN('No user of type ') . $user_type));
-                //        $errObj = new ADA_Error($users_dataAr);
+                //        $errObj = new ADAError($users_dataAr);
             } else {
                 $data = AdminModuleHtmlLib::displayUsersOnThisTester($id_tester, null, null, $users_dataAr, false);
             }

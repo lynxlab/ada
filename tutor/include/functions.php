@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\Menu;
+
+use function \translateFN;
+
 namespace Lynxlab\ADA\Tutor\Functions;
 
 use Lynxlab\ADA\CORE\HtmlElements\Table;
@@ -9,7 +21,7 @@ use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
-function get_courses_tutorFN($id_user, $isSuper = false)
+function getCoursesTutorFN($id_user, $isSuper = false)
 {
     $dh = $GLOBALS['dh'];
     $ymdhms = $GLOBALS['ymdhms'];
@@ -18,8 +30,8 @@ function get_courses_tutorFN($id_user, $isSuper = false)
     $all_instance = [];
     $sub_course_dataHa = [];
     $dati_corso = [];
-    $today_date = $dh->date_to_ts("now");
-    $all_instance = $dh->course_tutor_instance_get($id_user, $isSuper); // Get the instance courses monitorated by the tutor
+    $today_date = $dh->dateToTs("now");
+    $all_instance = $dh->courseTutorInstanceGet($id_user, $isSuper); // Get the instance courses monitorated by the tutor
 
     $num_courses = 0;
     $id_corso_key    = translateFN('Corso');
@@ -34,17 +46,17 @@ function get_courses_tutorFN($id_user, $isSuper = false)
         foreach ($all_instance as $one_instance) {
             $num_courses++;
             $id_instance = $one_instance[0];
-            $instance_course_ha = $dh->course_instance_get($id_instance); // Get the instance courses data
-            if (AMA_DataHandler::isError($instance_course_ha)) {
+            $instance_course_ha = $dh->courseInstanceGet($id_instance); // Get the instance courses data
+            if (AMADataHandler::isError($instance_course_ha)) {
                 $msg .= $instance_course_ha->getMessage() . "<br />";
             } else {
                 $id_course = $instance_course_ha['id_corso'];
                 if (!empty($id_course)) {
                     $info_course = $dh->get_course($id_course); // Get title course
-                    if (AMA_DataHandler::isError($dh)) {
+                    if (AMADataHandler::isError($dh)) {
                         $msg .= $dh->getMessage() . "<br />";
                     }
-                    if (!AMA_DB::isError($info_course)) {
+                    if (!AMADB::isError($info_course)) {
                         $titolo = $info_course['titolo'];
                         $id_toc = $info_course['id_nodo_toc'];
                         $durata_corso = sprintf(translateFN('%d giorni'), $instance_course_ha['durata']);
@@ -52,7 +64,7 @@ function get_courses_tutorFN($id_user, $isSuper = false)
                             '<img src="img/timon.png"  alt="' . translateFN('naviga') . '" title="' . translateFN('naviga') . '" class="tooltip" border="0"></a>';
                         $valuta = '<a href="' . $http_root_dir . '/tutor/tutor.php?op=student&id_instance=' . $id_instance . '&id_course=' . $id_course . '">' .
                             '<img src="img/magnify.png"  alt="' . translateFN('valuta') . '" title="' . translateFN('valuta') . '" class="tooltip" border="0"></a>';
-                        $data_inizio = AMA_DataHandler::ts_to_date($instance_course_ha['data_inizio'], "%d/%m/%Y");
+                        $data_inizio = AMADataHandler::tsToDate($instance_course_ha['data_inizio'], "%d/%m/%Y");
 
                         $dati_corso[$num_courses][$id_corso_key] = $instance_course_ha['id_corso'];
                         $dati_corso[$num_courses][$titolo_key] = $titolo;
@@ -121,36 +133,36 @@ function get_courses_tutorFN($id_user, $isSuper = false)
 
 // @author giorgio 14/mag/2013
 // added type parameter that defaults to 'xls'
-function get_student_coursesFN($id_course_instance, $id_course, $order = "", $type = 'HTML', $speed_mode = true)
+function getStudentCoursesFN($id_course_instance, $id_course, $order = "", $type = 'HTML', $speed_mode = true)
 {
     // wrapper for Class \Lynxlab\ADA\Main\Course\Student
     // 2nd parameter empty string means get all students
     $student_classObj = new Student($id_course_instance, '');
-    return $student_classObj->get_class_reportFN($id_course, $order, '', $type, $speed_mode);
+    return $student_classObj->getClassReportFN($id_course, $order, '', $type, $speed_mode);
 }
 
-function get_student_dataFN($id_student, $id_instance)
+function getStudentDataFN($id_student, $id_instance)
 {
     $dh = $GLOBALS['dh'];
     $http_root_dir = $GLOBALS['http_root_dir'];
 
-    $student_info_ha = $dh->get_user_info($id_student); // Get info of each student
-    if (AMA_DataHandler::isError($student_info_ha)) {
+    $student_info_ha = $dh->getUserInfo($id_student); // Get info of each student
+    if (AMADataHandler::isError($student_info_ha)) {
         $msg = $student_info_ha->getMessage();
         return $msg;
     }
 
-    $instance_course_ha = $dh->course_instance_get($id_instance); // Get the instance courses data
-    if (AMA_DataHandler::isError($instance_course_ha)) {
+    $instance_course_ha = $dh->courseInstanceGet($id_instance); // Get the instance courses data
+    if (AMADataHandler::isError($instance_course_ha)) {
         $msg = $instance_course_ha->getMessage();
         return $msg;
     }
 
     $id_course = $instance_course_ha['id_corso'];
-    $start_date =  AMA_DataHandler::ts_to_date($instance_course_ha['data_inizio'], ADA_DATE_FORMAT);
+    $start_date =  AMADataHandler::tsToDate($instance_course_ha['data_inizio'], ADA_DATE_FORMAT);
 
     $info_course = $dh->get_course($id_course); // Get title course
-    if (AMA_DataHandler::isError($info_course)) {
+    if (AMADataHandler::isError($info_course)) {
         $msg = $info_course->getMessage();
         return $msg;
     }
@@ -198,7 +210,7 @@ function get_student_dataFN($id_student, $id_instance)
     return $student_info;
 }
 
-function menu_detailsFN($id_student, $id_course_instance, $id_course)
+function menuDetailsFN($id_student, $id_course_instance, $id_course)
 {
     // Menu nodi visitati per periodo
     $menu_history = translateFN("Nodi visitati recentemente:") . "<br>\n" ;

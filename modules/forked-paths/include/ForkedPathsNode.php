@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
+
+use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsBase;
+
+use Lynxlab\ADA\CORE\html4\CDiv;
+
+use Lynxlab\ADA\CORE\html4\CBase;
+
+// Trigger: ClassWithNameSpace. The class ForkedPathsNode was declared with namespace Lynxlab\ADA\Module\ForkedPaths. //
+
 /**
  * @package     forked-paths module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -149,7 +159,7 @@ class ForkedPathsNode extends ForkedPathsBase
     /**
      * Removes the children of any forked paths node from the index array
      *
-     * @param array $courseData index array, as returned by $dh->get_course_data
+     * @param array $courseData index array, as returned by $dh->getCourseData
      * @return array
      */
     public static function removeForkedPathsChildrenFromIndex($courseData)

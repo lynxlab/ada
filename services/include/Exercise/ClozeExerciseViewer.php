@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Services\Exercise\ExerciseViewer;
+
+use Lynxlab\ADA\Services\Exercise\ExerciseUtils;
+
+use Lynxlab\ADA\Services\Exercise\ClozeExerciseViewer;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class ClozeExerciseViewer was declared with namespace Lynxlab\ADA\Services\Exercise. //
+
 namespace Lynxlab\ADA\Services\Exercise;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
@@ -136,12 +148,12 @@ class ClozeExerciseViewer extends ExerciseViewer
         $error_msg = "";
         if (isset($data['empty_field']) && $data['empty_field'] == true) {
             $error_msg   = translateFN("Attenzione: campo non compilato!") . "<br />";
-            $answer      = parent::fill_field_with_data('last_answer', $data);
-            $comment     = parent::fill_field_with_data('last_comment', $data);
-            $hide        = parent::fill_field_with_data('last_hide', $data);
-            $correctness = parent::fill_field_with_data('last_correctness', $data);
+            $answer      = parent::fillFieldWithData('last_answer', $data);
+            $comment     = parent::fillFieldWithData('last_comment', $data);
+            $hide        = parent::fillFieldWithData('last_hide', $data);
+            $correctness = parent::fillFieldWithData('last_correctness', $data);
         }
-        $question    = parent::fill_field_with_data('question', $data);
+        $question    = parent::fillFieldWithData('question', $data);
 
         $div = CDOMElement::create('div');
 

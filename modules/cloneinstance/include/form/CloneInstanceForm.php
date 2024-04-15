@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\CloneInstance\CloneInstanceForm;
+
+use Lynxlab\ADA\Module\CloneInstance\CloneInstanceAbstractForm;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+// Trigger: ClassWithNameSpace. The class CloneInstanceForm was declared with namespace Lynxlab\ADA\Module\CloneInstance. //
+
 /**
  * @package     cloneinstance module
  * @author      giorgio <g.consorti@lynxlab.com>

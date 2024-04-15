@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * TUTOR.
  *
@@ -23,8 +39,8 @@ use Lynxlab\ADA\Services\Exercise\ADAEsercizio;
 use Lynxlab\ADA\Services\Exercise\ExerciseDAO;
 use Lynxlab\ADA\Services\Exercise\ExerciseViewerFactory;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
-use function Lynxlab\ADA\Main\AMA\DBRead\read_user_from_DB;
+use function Lynxlab\ADA\Main\AMA\DBRead\readNodeFromDB;
+use function Lynxlab\ADA\Main\AMA\DBRead\readUserFromDB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -90,7 +106,7 @@ TutorHelper::init($neededObjAr);
 
 $history = '';
 
-$studentObj = read_user_from_DB($id_student);
+$studentObj = readUserFromDB($id_student);
 if ((is_object($studentObj)) && (!AMA_dataHandler::isError($studentObj))) {
     if ($studentObj instanceof ADAPractitioner) {
         /**
@@ -116,13 +132,13 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (!isset($_SESSION['exercise_object'])) {
         //print("errore");
-        $errObj = new ADA_Error(null, translateFN('Esercizio non in sessione'));
+        $errObj = new ADAError(null, translateFN('Esercizio non in sessione'));
     }
 
     $exercise = unserialize($_SESSION['exercise_object']);
 
     if (!($exercise instanceof ADAEsercizio)) {
-        $errObj = new ADA_Error(null, translateFN("L'oggetto in sessione non è un esercizio ADA"));
+        $errObj = new ADAError(null, translateFN("L'oggetto in sessione non è un esercizio ADA"));
     }
 
     if (isset($ripetibile)) {
@@ -137,13 +153,13 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (!ExerciseDAO::save($exercise)) {
         //print("Errore nel salvataggio dell'esercizio<BR>");
-        $errObj = new ADA_Error(null, translateFN("Errore nel salvataggio dell'esercizio"));
+        $errObj = new ADAError(null, translateFN("Errore nel salvataggio dell'esercizio"));
     }
 
     unset($_SESSION['exercise_object']);
 
     if (isset($messaggio)) {
-        $studentObj = read_user_from_DB($exercise->getStudentId());
+        $studentObj = readUserFromDB($exercise->getStudentId());
         // controllo errore
         $subject = translateFN('Esercizio: ') . $exercise->getTitle() . "\n";
 
@@ -161,8 +177,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             'priorita' => 2,
         ];
         $mh = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
-        $result = $mh->send_message($message_ha);
-        if (AMA_DataHandler::isError($result)) {
+        $result = $mh->sendMessage($message_ha);
+        if (AMADataHandler::isError($result)) {
             // GESTIRE ERRORE
         }
     }
@@ -178,10 +194,10 @@ if (!isset($op)) {
 
 switch ($op) {
     case 'exe':
-        $user_answer = $dh->get_ex_history_info($id_exe);
-        if (AMA_DataHandler::isError($user_answer)) {
+        $user_answer = $dh->getExHistoryInfo($id_exe);
+        if (AMADataHandler::isError($user_answer)) {
             //print("errore");
-            $errObj = new ADA_Error($user_answer, translateFN("Errore nell'ottenimento della risposta utente"));
+            $errObj = new ADAError($user_answer, translateFN("Errore nell'ottenimento della risposta utente"));
         }
 
         $node            = $user_answer['node_id'];
@@ -194,9 +210,9 @@ switch ($op) {
 
         $_SESSION['exercise_object'] = serialize($exercise);
 
-        if (AMA_DataHandler::isError($exercise)) {
+        if (AMADataHandler::isError($exercise)) {
             //print("errore");
-            $errObj = new ADA_Error($exercise, translateFN("Errore nella lettura dell'esercizio"));
+            $errObj = new ADAError($exercise, translateFN("Errore nella lettura dell'esercizio"));
         }
         $viewer  = ExerciseViewerFactory::create($exercise->getExerciseFamily());
         $history = $viewer->getTutorForm("$self.php", $exercise);
@@ -211,11 +227,11 @@ switch ($op) {
         // lettura dei dati dal database
         // Seleziona gli esercizi dello studente selezionato nel corso selezionato
 
-        $studentObj->get_exercise_dataFN($id_course_instance, $id_student);
+        $studentObj->getExerciseDataFN($id_course_instance, $id_student);
 
         // Esercizi svolti e relativi punteggi
         $history .= '<p>';
-        $history .= $studentObj->history_ex_done_FN($id_student, null, $id_course_instance);
+        $history .= $studentObj->historyExDoneFN($id_student, null, $id_course_instance);
         $history .= '</p>';
         $status = translateFN('Esercizi dello studente');
         $layout_dataAr['JS_filename'] = [
@@ -257,9 +273,9 @@ if (!isset($nodeObj) || !is_object($nodeObj)) {
     if (!isset($node)) {
         $node = null;
     }
-    $nodeObj = read_node_from_DB($node);
+    $nodeObj = readNodeFromDB($node);
 }
-if (!ADA_Error::isError($nodeObj) and isset($courseObj->id)) {
+if (!ADAError::isError($nodeObj) and isset($courseObj->id)) {
     $_SESSION['sess_id_course'] = $courseObj->id;
     $node_path = $nodeObj->findPathFN();
 }

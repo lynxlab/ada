@@ -124,7 +124,7 @@ $i = 0;
 $clearfix = CDOMElement::create('div', 'class:clearfix')->getHtml();
 
 foreach ($spObj->get_items() as $item) {
-    $title = $item->get_title() ;
+    $title = $item->getTitle() ;
     if ($title == '' && !$showDescription) {
         continue;
     }
@@ -137,7 +137,7 @@ foreach ($spObj->get_items() as $item) {
 
     if ($showDescription) {
         $rssCONTENT->addChild(new CText($clearfix));
-        $rssCONTENT->addChild(new CText($item->get_description()));
+        $rssCONTENT->addChild(new CText($item->getDescription()));
     }
 
     //  $rssDIV->addChild($rssCONTENT);

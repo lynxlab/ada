@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Module\GDPR\GdprUserType;
+
+use Lynxlab\ADA\Module\GDPR\GdprUser;
+
+use Lynxlab\ADA\Module\GDPR\GdprBase;
+
+use Lynxlab\ADA\Module\GDPR\GdprAPI;
+
+use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
+
+// Trigger: ClassWithNameSpace. The class GdprUser was declared with namespace Lynxlab\ADA\Module\GDPR. //
+
 /**
  * @package     gdpr module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -168,7 +180,7 @@ class GdprUser extends GdprBase
     /**
      * @return mixed
      */
-    public function getId_utente()
+    public function getIdUtente()
     {
         return $this->id_utente;
     }
@@ -176,7 +188,7 @@ class GdprUser extends GdprBase
     /**
      * @param mixed $id_utente
      */
-    public function setId_utente($id_utente)
+    public function setIdUtente($id_utente)
     {
         $this->id_utente = $id_utente;
         return $this;

@@ -1,5 +1,29 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Module\Test\TopicTest;
+
+use Lynxlab\ADA\Module\Test\TestTest;
+
+use Lynxlab\ADA\Module\Test\RootTest;
+
+use Lynxlab\ADA\Module\Test\QuestionTest;
+
+use Lynxlab\ADA\Module\Test\NodeTest;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class RootTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -120,8 +144,8 @@ abstract class RootTest extends NodeTest
                             $attachment = null;
                         }
                         $answer_data = $question->serializeAnswers($answer_data);
-                        $obj = $dh->test_saveAnswer($this->id_history_test, $_SESSION['sess_id_user'], $topic_id, $question_id, $_SESSION['sess_id_course'], $_SESSION['sess_id_course_instance'], $answer_data, $points, $attachment);
-                        if (is_object($obj) && (get_class($obj) == 'AMA_Error' || is_subclass_of($obj, 'PEAR_Error'))) {
+                        $obj = $dh->testSaveAnswer($this->id_history_test, $_SESSION['sess_id_user'], $topic_id, $question_id, $_SESSION['sess_id_course'], $_SESSION['sess_id_course_instance'], $answer_data, $points, $attachment);
+                        if (is_object($obj) && (get_class($obj) == 'AMAError' || is_subclass_of($obj, 'PEAR_Error'))) {
                             $result = false;
                             break 2;
                         }
@@ -135,7 +159,7 @@ abstract class RootTest extends NodeTest
             if (!$result) {
                 $this->onSaveError = true;
                 if (!empty($ids)) {
-                    $dh->test_removeTestAnswerNode($ids);
+                    $dh->testRemoveTestAnswerNode($ids);
                 }
                 $this->rollBack();
             } else {
@@ -172,7 +196,7 @@ abstract class RootTest extends NodeTest
     {
         $dh = $GLOBALS['dh'];
 
-        $points = $dh->test_retrieveTestPoints($this->id_history_test);
+        $points = $dh->testRetrieveTestPoints($this->id_history_test);
         $repeatable = ($this->repeatable) ? 1 : 0;
 
         $min_barrier_points = $this->correttezza;
@@ -184,10 +208,10 @@ abstract class RootTest extends NodeTest
         } else {
             $tempo_scaduto = 0;
         }
-        $res = $dh->test_saveTest($this->id_history_test, $tempo_scaduto, $points, $repeatable, $min_barrier_points, $level_gained);
+        $res = $dh->testSaveTest($this->id_history_test, $tempo_scaduto, $points, $repeatable, $min_barrier_points, $level_gained);
 
         //checking if we got errors
-        if (is_object($res) && (get_class($res) == 'AMA_Error' || is_subclass_of($res, 'PEAR_Error'))) {
+        if (is_object($res) && (get_class($res) == 'AMAError' || is_subclass_of($res, 'PEAR_Error'))) {
             $this->onSaveError = true;
             $this->rollBack();
             return false;
@@ -274,19 +298,19 @@ abstract class RootTest extends NodeTest
 
         if (isset($_GET['unload']) && $_SESSION['sess_id_user_type'] == AMA_TYPE_STUDENT) {
             if (!empty($this->id_history_test) && intval($this->id_history_test) > 0) {
-                $dh->test_updateEndTestDate($this->id_history_test);
+                $dh->testUpdateEndTestDate($this->id_history_test);
             }
         } elseif (intval($this->id_history_test) > 0) {
-            $res = $dh->test_getHistoryTest($this->id_history_test);
+            $res = $dh->testGetHistoryTest($this->id_history_test);
             if ($dh->isError($res) || $res[0]['id_history_test'] != $this->id_history_test) {
                 $this->id_history_test = null;
                 $this->recordAttempt();
             }
         } else {
             $questions = serialize($this->randomQuestion);
-            $id = $dh->test_recordAttempt($this->id_nodo, $_SESSION['sess_id_course_instance'], $_SESSION['sess_id_course'], $_SESSION['sess_id_user'], $questions);
+            $id = $dh->testRecordAttempt($this->id_nodo, $_SESSION['sess_id_course_instance'], $_SESSION['sess_id_course'], $_SESSION['sess_id_user'], $questions);
             $this->id_history_test = $id;
-            $dh->test_countVisit($this->id_nodo);
+            $dh->testCountVisit($this->id_nodo);
         }
     }
 
@@ -356,7 +380,7 @@ abstract class RootTest extends NodeTest
         if ($_SESSION['sess_id_user_type'] == AMA_TYPE_STUDENT) {
             $changeState = true;
             if (!is_array($this->randomQuestion) || empty($this->randomQuestion)) {
-                $res = $dh->test_getHistoryTest(['id_utente ' => $_SESSION['sess_id_user'],'id_nodo' => $this->id_nodo,'consegnato' => 0,'tempo_scaduto' => 0]);
+                $res = $dh->testGetHistoryTest(['id_utente ' => $_SESSION['sess_id_user'],'id_nodo' => $this->id_nodo,'consegnato' => 0,'tempo_scaduto' => 0]);
                 if (!$dh->isError($res) && !empty($res[count($res) - 1]['domande'])) {
                     $this->randomQuestion = unserialize($res[count($res) - 1]['domande']);
                 } else {
@@ -621,9 +645,9 @@ abstract class RootTest extends NodeTest
 
             $div->addChild(new CText('[ '));
             $get_topic = (isset($_GET['topic']) ? '&topic=' . $_GET['topic'] : '');
-            $add_link = CDOMElement::create('a', 'href:' . MODULES_TEST_HTTP . '/edit_topic.php?action=add&id_test=' . $this->id_nodo . $get_topic);
-            $add_link->addChild(new CText(translateFN('Aggiungi sessione')));
-            $div->addChild($add_link);
+            $addLink = CDOMElement::create('a', 'href:' . MODULES_TEST_HTTP . '/edit_topic.php?action=add&id_test=' . $this->id_nodo . $get_topic);
+            $addLink->addChild(new CText(translateFN('Aggiungi sessione')));
+            $div->addChild($addLink);
             $div->addChild(new CText(' ]'));
 
             $out->addChild($div);
@@ -723,10 +747,10 @@ abstract class RootTest extends NodeTest
                 $html->addChild(new CText(translateFN('Test non valido!')));
             } else {
                 $id_history_test = intval($id_history_test);
-                $givenTest = $dh->test_getHistoryTest($id_history_test);
+                $givenTest = $dh->testGetHistoryTest($id_history_test);
                 $givenTest = $givenTest[0];
-                $givenAnswers = $dh->test_getGivenAnswers($id_history_test);
-                if (AMA_DataHandler::isError($givenTest) || AMA_DataHandler::isError($givenAnswers)) {
+                $givenAnswers = $dh->testGetGivenAnswers($id_history_test);
+                if (AMADataHandler::isError($givenTest) || AMADataHandler::isError($givenAnswers)) {
                     $html = CDOMElement::create('div');
                     $html->addChild(new CText(translateFN('Si è verificato un errore durante il recupero delle informazioni!')));
                 } else {
@@ -847,8 +871,8 @@ abstract class RootTest extends NodeTest
                 if (!is_null($this->id_nodo_riferimento)) {
                     $node_obj = new Node($this->id_nodo_riferimento);
                 } else {
-                    $survey = $dh->test_getCourseSurveys(['id_test' => $this->id_nodo,'id_corso' => $this->id_corso]);
-                    if (!AMA_DB::isError($survey) && is_array($survey) && count($survey) == 1) {
+                    $survey = $dh->testGetCourseSurveys(['id_test' => $this->id_nodo,'id_corso' => $this->id_corso]);
+                    if (!AMADB::isError($survey) && is_array($survey) && count($survey) == 1) {
                         $survey = array_shift($survey);
                         $node_obj = new Node($survey['id_nodo']);
                     }
@@ -1135,9 +1159,9 @@ abstract class RootTest extends NodeTest
             return true;
         }
 
-        $res = $dh->test_getHistoryTest(['id_nodo' => $this->id_nodo, 'id_utente' => $_SESSION['sess_id_user'], 'consegnato' => 1]);
+        $res = $dh->testGetHistoryTest(['id_nodo' => $this->id_nodo, 'id_utente' => $_SESSION['sess_id_user'], 'consegnato' => 1]);
         if ($dh->isError($res) || empty($res)) {
-            $res = $dh->test_getHistoryTest(['id_nodo' => $this->id_nodo, 'id_utente' => $_SESSION['sess_id_user'], 'tempo_scaduto' => 1]);
+            $res = $dh->testGetHistoryTest(['id_nodo' => $this->id_nodo, 'id_utente' => $_SESSION['sess_id_user'], 'tempo_scaduto' => 1]);
         }
         if (!$dh->isError($res)) {
             if (empty($res)) {

@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\InstancesReport\InstancesReportActions;
+
+use Lynxlab\ADA\Module\CloneInstance\EventSubscriber;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
 /**
  * @package     instancesreport module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -67,7 +75,7 @@ class EventSubscriber implements EventSubscriberInterface, ADAScriptSubscriberIn
             ];
 
             $menu = $event->getSubject();
-            $left = $menu->get_leftItemsArray();
+            $left = $menu->getLeftItemsArray();
             $item = array_filter($left, fn ($el) => 0 === strcasecmp($el['label'], 'agisci'));
             $itemkey = key($item);
 
@@ -92,7 +100,7 @@ class EventSubscriber implements EventSubscriberInterface, ADAScriptSubscriberIn
             // Insert additem as item child.
             array_push($left[$itemkey]['children'], $additem);
             usort($left[$itemkey]['children'], fn ($a, $b) => (int)$a['order'] - (int)$b['order']);
-            $menu->set_leftItemsArray($left);
+            $menu->setLeftItemsArray($left);
         }
     }
 }

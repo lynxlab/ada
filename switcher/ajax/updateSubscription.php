@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * updateSubscription.php - update user status in th DB
  *
@@ -50,7 +56,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $s->setStartStudentLevel(null); // null means no level update
     $result = Subscription::updateSubscription($s);
 
-    if (AMA_DataHandler::isError($result)) {
+    if (AMADataHandler::isError($result)) {
         $retArray = ["status" => "ERROR", "msg" =>  translateFN("Problemi nell'aggiornamento dello stato dell'iscrizione"), "title" =>  translateFN('Notifica')];
     } else {
         $retArray = ["status" => "OK", "msg" =>  translateFN("Hai aggiornato correttamente lo stato dell'iscrizione"), "title" =>  translateFN('Notifica')];

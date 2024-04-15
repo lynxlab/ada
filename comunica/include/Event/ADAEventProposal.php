@@ -1,12 +1,18 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Comunica\Event\ADAEventProposal;
+
+// Trigger: ClassWithNameSpace. The class ADAEventProposal was declared with namespace Lynxlab\ADA\Comunica\Event. //
+
 namespace Lynxlab\ADA\Comunica\Event;
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
-use function Lynxlab\ADA\Main\Utilities\get_timezone_offset;
+use function Lynxlab\ADA\Main\Utilities\getTimezoneOffset;
 use function Lynxlab\ADA\Main\Utilities\sumDateTimeFN;
 
 /**
@@ -189,7 +195,7 @@ class ADAEventProposal
     public static function canProposeThisDateTime(ADALoggableUser $userObj, $date, $time, $tester = null)
     {
 
-        $date = DataValidator::validate_date_format($date);
+        $date = DataValidator::validateDateFormat($date);
         if ($date === false) {
             return ADA_EVENT_PROPOSAL_ERROR_DATE_FORMAT;
         } else {
@@ -203,7 +209,7 @@ class ADAEventProposal
                 $tester_TimeZone = SERVER_TIMEZONE;
             } else {
                 $tester_TimeZone = MultiPort::getTesterTimeZone($tester);
-                $offset = get_timezone_offset($tester_TimeZone, SERVER_TIMEZONE);
+                $offset = getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
             }
 
             $timestamp_time_zone = sumDateTimeFN([$date, "$time:00"]);

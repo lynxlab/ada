@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * NEWSLETTER MODULE.
  *
@@ -58,7 +68,7 @@ $containerDIV = CDOMElement::create('div', 'id:moduleContent');
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'  && !empty($_POST)) {
     // saves the newsletter
-    $newsletterHa['date'] = (isset($_POST['subject']) && trim($_POST['subject']) !== '') ? $dh->date_to_ts(trim($_POST['date'])) : $dh->date_to_ts(date("d/m/Y"));
+    $newsletterHa['date'] = (isset($_POST['subject']) && trim($_POST['subject']) !== '') ? $dh->dateToTs(trim($_POST['date'])) : $dh->dateToTs(date("d/m/Y"));
     $newsletterHa['subject'] = (isset($_POST['subject']) && trim($_POST['subject']) !== '') ? trim($_POST['subject']) : null;
     $newsletterHa['sender'] = (isset($_POST['sender']) && trim($_POST['sender']) !== '') ? trim($_POST['sender']) : null;
     $newsletterHa['htmltext'] = (isset($_POST['htmltext']) && trim($_POST['htmltext']) !== '') ? trim($_POST['htmltext']) : null;
@@ -66,9 +76,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'  &
     $newsletterHa['draft'] = intval($_POST['draft']);
     $newsletterHa['id'] = (isset($_POST['id']) && intval($_POST['id']) > 0) ? intval($_POST['id']) : 0;
 
-    $retval = $dh->save_newsletter($newsletterHa);
+    $retval = $dh->saveNewsletter($newsletterHa);
 
-    if (AMA_DB::isError($retval)) {
+    if (AMADB::isError($retval)) {
         $msg = new CText(translateFN('Errore nel salvataggio della newsletter'));
     } else {
         $msg = new CText(translateFN('Newsletter salvata'));
@@ -99,8 +109,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'  &
     $newsletterId = (isset($_GET['id']) && intval($_GET['id']) > 0) ? intval($_GET['id']) : 0;
 
     if ($newsletterId > 0) {
-        $loadedNewsletter = $dh->get_newsletter($newsletterId);
-        if (!AMA_DB::isError($loadedNewsletter)) {
+        $loadedNewsletter = $dh->getNewsletter($newsletterId);
+        if (!AMADB::isError($loadedNewsletter)) {
             $containedElement->fillWithArrayData($loadedNewsletter);
         }
     }

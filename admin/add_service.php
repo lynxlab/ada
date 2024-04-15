@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * Add service - this module provides add service functionality
  *
@@ -93,31 +111,31 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
      */
     $errorsAr = [];
 
-    if (DataValidator::validate_not_empty_string($_POST['service_name']) === false) {
+    if (DataValidator::validateNotEmptyString($_POST['service_name']) === false) {
         $errorsAr['service_name'] = true;
     }
 
-    if (DataValidator::validate_not_empty_string($_POST['service_description']) === false) {
+    if (DataValidator::validateNotEmptyString($_POST['service_description']) === false) {
         $errorsAr['service_description'] = true;
     }
 
-    if (DataValidator::is_uinteger($_POST['service_level']) === false) {
+    if (DataValidator::isUinteger($_POST['service_level']) === false) {
         $errorsAr['service_level'] = true;
     }
 
-    if (DataValidator::is_uinteger($_POST['service_duration']) === false) {
+    if (DataValidator::isUinteger($_POST['service_duration']) === false) {
         $errorsAr['service_duration'] = true;
     }
 
-    if (DataValidator::is_uinteger($_POST['service_min_meetings']) === false) {
+    if (DataValidator::isUinteger($_POST['service_min_meetings']) === false) {
         $errorsAr['service_min_meetings'] = true;
     }
 
-    if (DataValidator::is_uinteger($_POST['service_max_meetings']) === false) {
+    if (DataValidator::isUinteger($_POST['service_max_meetings']) === false) {
         $errorsAr['service_max_meetings'] = true;
     }
 
-    if (DataValidator::is_uinteger($_POST['service_meeting_duration']) === false) {
+    if (DataValidator::isUinteger($_POST['service_meeting_duration']) === false) {
         $errorsAr['service_meeting_duration'] = true;
     }
 
@@ -132,16 +150,16 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             header('Location: ' . $userObj->getHomePage());
             exit();
         } else {
-            $errObj = new ADA_Error();
+            $errObj = new ADAError();
         }
     }
 } else {
     /*
      * Display the add user form
      */
-    //  $testersAr = $common_dh->get_all_testers(array('nome'));
-    //  if(AMA_Common_DataHandler::isError($testersAr)) {
-    //    $errObj = new ADA_Error($testersAr);
+    //  $testersAr = $common_dh->getAllTesters(array('nome'));
+    //  if(AMACommonDataHandler::isError($testersAr)) {
+    //    $errObj = new ADAError($testersAr);
     //  }
     //  else {
     $testersAr = [];

@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Browsing\DFSNavigationBar;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class DFSNavigationBar was declared with namespace Lynxlab\ADA\Browsing. //
+
 /**
  * DFSNavigationBar.inc.php
  *
@@ -53,14 +67,14 @@ class DFSNavigationBar
             $params['nextId'] = null;
         }
 
-        $prevId = DataValidator::validate_node_id($params['prevId']);
+        $prevId = DataValidator::validateNodeId($params['prevId']);
         if ($prevId !== false) {
             $this->previousNode = $prevId;
         } else {
             $this->findPreviousNode($n, $params['userLevel']);
         }
 
-        $nextId = DataValidator::validate_node_id($params['nextId']);
+        $nextId = DataValidator::validateNodeId($params['nextId']);
         if ($nextId !== false) {
             $this->nextNode = $nextId;
         } else {
@@ -76,7 +90,7 @@ class DFSNavigationBar
         /**
          * ...unless a testerToUse params has been passed, in which case force that
          */
-        if (isset($params['testerToUse']) && DataValidator::validate_testername($params['testerToUse'], MULTIPROVIDER)) {
+        if (isset($params['testerToUse']) && DataValidator::validateTestername($params['testerToUse'], MULTIPROVIDER)) {
             $this->testerToUse = $params['testerToUse'];
         }
 
@@ -93,12 +107,12 @@ class DFSNavigationBar
             }
             $test_db = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
             if (!is_null($n->id)) {
-                $res = $test_db->test_getNodes(['id_nodo_riferimento' => $n->id]);
+                $res = $test_db->testGetNodes(['id_nodo_riferimento' => $n->id]);
             } else {
                 $res = [];
             }
 
-            if (!empty($res) && count($res) == 1 && !AMA_DB::isError($res)) {
+            if (!empty($res) && count($res) == 1 && !AMADB::isError($res)) {
                 $node = array_shift($res);
                 $this->nextTestNode = $node['id_nodo'];
             }
@@ -109,12 +123,12 @@ class DFSNavigationBar
              * and get last topic if it does.
              */
             if (!is_null($this->previousNode)) {
-                $res = $test_db->test_getNodes(['id_nodo_riferimento' => $this->previousNode]);
+                $res = $test_db->testGetNodes(['id_nodo_riferimento' => $this->previousNode]);
             } else {
                 $res = [];
             }
 
-            if (!empty($res) && count($res) == 1 && !AMA_DB::isError($res)) {
+            if (!empty($res) && count($res) == 1 && !AMADB::isError($res)) {
                 $node = array_shift($res);
                 $test = NodeTest::readTest($node['id_nodo'], $test_db);
                 $this->prevTestTopic = count($test->_children);
@@ -141,13 +155,13 @@ class DFSNavigationBar
          * Esiste fratello con ordine n-1?
          */
         if ($n->order >= 1) {
-            $result = $dh->child_exists($n->parent_id, $n->order - 1, $userLevel, '<=');
-            if (!AMA_DataHandler::isError($result) && $result != null) {
+            $result = $dh->childExists($n->parent_id, $n->order - 1, $userLevel, '<=');
+            if (!AMADataHandler::isError($result) && $result != null) {
                 $found = false;
                 $id = $result;
                 while (!$found) {
-                    $result = $dh->last_child_exists($id, $userLevel);
-                    if (!AMA_DataHandler::isError($result)) {
+                    $result = $dh->lastChildExists($id, $userLevel);
+                    if (!AMADataHandler::isError($result)) {
                         if ($result != null) {
                             $id = $result;
                         } else {
@@ -174,14 +188,14 @@ class DFSNavigationBar
         $dh = $GLOBALS['dh'];
 
         if ($n->type == ADA_GROUP_TYPE) {
-            $result = $dh->child_exists($n->id, 0, $userLevel, '>=');
-            if (!AMA_DataHandler::isError($result) && $result !== false) {
+            $result = $dh->childExists($n->id, 0, $userLevel, '>=');
+            if (!AMADataHandler::isError($result) && $result !== false) {
                 $this->nextNode = $result;
                 return;
             }
         } else {
-            $result = $dh->child_exists($n->parent_id, $n->order + 1, $userLevel, '>=');
-            if (!AMA_DataHandler::isError($result) && $result != null) {
+            $result = $dh->childExists($n->parent_id, $n->order + 1, $userLevel, '>=');
+            if (!AMADataHandler::isError($result) && $result != null) {
                 $this->nextNode = $result;
                 return;
             }
@@ -189,8 +203,8 @@ class DFSNavigationBar
         $found = false;
         $id = $n->id;
         while (!$found) {
-            $node_info = $dh->get_node_info($id);
-            if (!AMA_DataHandler::isError($node_info)) {
+            $node_info = $dh->getNodeInfo($id);
+            if (!AMADataHandler::isError($node_info)) {
                 $parentId = $node_info['parent_id'];
                 $order = $node_info['ordine'];
 
@@ -198,8 +212,8 @@ class DFSNavigationBar
                     return;
                 }
 
-                $result = $dh->child_exists($parentId, $order + 1, $userLevel, '>=');
-                if (!AMA_DataHandler::isError($result) && $result != null) {
+                $result = $dh->childExists($parentId, $order + 1, $userLevel, '>=');
+                if (!AMADataHandler::isError($result) && $result != null) {
                     $this->nextNode = $result;
                     $found = true;
                 } else {
@@ -373,8 +387,8 @@ class DFSNavigationBar
         $dh = $GLOBALS['dh'];
 
         $retLink = 'view.php';
-        $nodeAr =  $dh->get_node_info($node_id);
-        if (!AMA_DB::isError($nodeAr) && Node::isNodeExercise($nodeAr['type'])) {
+        $nodeAr =  $dh->getNodeInfo($node_id);
+        if (!AMADB::isError($nodeAr) && Node::isNodeExercise($nodeAr['type'])) {
             $retLink = 'exercise.php';
         }
         return $retLink;

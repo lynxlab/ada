@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\EtherpadIntegration\Groups;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * @package     etherpad module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -107,12 +115,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             $passedData['nodeId'] = Pads::INSTANCEPADID;
             $padName = Pads::INSTANCEPADNAME;
         } else {
-            if (false === DataValidator::validate_node_id($passedData['nodeId'])) {
+            if (false === DataValidator::validateNodeId($passedData['nodeId'])) {
                 throw new EtherpadException(translateFN('ID nodo non valido'));
             } else {
                 // check that passed node exists
-                $nodeData = $etDH->get_node_info($passedData['nodeId']);
-                if (AMA_DB::isError($nodeData)) {
+                $nodeData = $etDH->getNodeInfo($passedData['nodeId']);
+                if (AMADB::isError($nodeData)) {
                     throw new EtherpadException(sprintf(translateFN('Il nodo %s non esiste'), $passedData['nodeId']));
                 }
                 if (is_array($nodeData) && count($nodeData) > 0) {
@@ -165,7 +173,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
         $res = $e;
     }
 
-    if (AMA_DB::isError($res) || $res instanceof \Exception) {
+    if (AMADB::isError($res) || $res instanceof \Exception) {
         // if it's an error display the error message
         $retArray['status'] = "ERROR";
         $retArray['msg'] = $res->getMessage();

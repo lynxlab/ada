@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Main\AMA\AMAPDOWrapper;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\ADAError;
+
+// Trigger: ClassWithNameSpace. The class AMADB was declared with namespace Lynxlab\ADA\Main\AMA. //
+
 /**
  * AMA_DB DB abstraction layer.
  *
@@ -28,7 +38,7 @@ use PDOException;
 /**
  * Provides an abstraction layer for the db
  */
-class AMA_DB
+class AMADB
 {
     /**
      * check if passed object is an instance of PDOException and returns true if success
@@ -41,7 +51,7 @@ class AMA_DB
      */
     public static function isError($data, $code = null)
     {
-        return ($data instanceof PDOException || $data instanceof AMA_Error || $data instanceof ADA_Error);
+        return ($data instanceof PDOException || $data instanceof AMAError || $data instanceof ADAError);
     }
 
     /**

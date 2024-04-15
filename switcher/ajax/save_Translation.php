@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * save_traslation.php - save traslation data in the DB
  *
@@ -86,8 +100,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         if (is_null($message) || $message == "") {
             $retArray = ["status" => "ERROR", "msg" =>  translateFN("Nessun input sottomesso"), "title" =>  translateFN('Notifica')];
         } else {
-            $result = $common_dh->update_message_translation_for_language_code($id_message, $message, $cod_lang);
-            if (AMA_DataHandler::isError($result)) {
+            $result = $common_dh->updateMessageTranslationForLanguageCode($id_message, $message, $cod_lang);
+            if (AMADataHandler::isError($result)) {
                 $retArray = ["status" => "ERROR", "msg" =>  translateFN("Attenzione: si &egrave; verificato un errore nell\'aggiornamento della traduzione."), "title" =>  translateFN('Notifica')];
             } else {
                 $retArray = ["status" => "OK", "msg" =>  translateFN("Traduzione salvata con successo"), "text" => $message, "title" =>  translateFN('Notifica')];

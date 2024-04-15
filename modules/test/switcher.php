@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * TEST.
  *
@@ -18,7 +30,7 @@ use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 use Lynxlab\ADA\Module\Test\SwitcherManagementTest;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_course_from_DB;
+use function Lynxlab\ADA\Main\AMA\DBRead\readCourseFromDB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -55,7 +67,7 @@ $GLOBALS['dh'] = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_
 $self = whoami();
 
 if (!is_a($courseObj, 'Course')) {
-    $courseObj = read_course_from_DB($_GET['id_course']);
+    $courseObj = readCourseFromDB($_GET['id_course']);
 }
 
 $management = new SwitcherManagementTest($courseObj);
@@ -97,9 +109,9 @@ if (isset($other_node_data['private_notes'])) {
 }
 
 if ($reg_enabled) {
-    $content_dataAr['add_bookmark'] = $add_bookmark;
+    $content_dataAr['addBookmark'] = $addBookmark;
 } else {
-    $content_dataAr['add_bookmark'] = "";
+    $content_dataAr['addBookmark'] = "";
 }
 
 if (isset($bookmark)) {

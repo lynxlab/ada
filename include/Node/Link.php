@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\Node\Media;
+
+use Lynxlab\ADA\Main\Node\ADAResource;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * Node, Media, Link classes
  *
@@ -38,8 +50,8 @@ class Link extends ADAResource
         $error =   $GLOBALS['error'];
         $debug =   $GLOBALS['debug'] ?? null;
 
-        $dataHa = $dh->get_link_info($id_link);
-        if (AMA_DataHandler::isError($dataHa) || (!is_array($dataHa))) {
+        $dataHa = $dh->getLinkInfo($id_link);
+        if (AMADataHandler::isError($dataHa) || (!is_array($dataHa))) {
             $msg = $dataHa->getMessage();
             if (!strstr($msg, 'record not found')) {
                 header("Location: $error?err_msg=$msg");

@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\Node\Media;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  *
  * @package     Default
@@ -11,7 +33,7 @@
  * @version     0.1
  */
 
-use Lynxlab\ADA\CORE\xml\course_xml_file_process;
+use Lynxlab\ADA\CORE\xml\CourseXmlFileProcess;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -86,13 +108,13 @@ $set_ha = [];
 $xp = '';
 $xml_file = $xml;
 
-$course_ha = $dh->get_course($id);
-if (AMA_DataHandler::isError($course_ha)) {
-    $errObj = new ADA_Error($course_ha);
+$course_ha = $dh->getCourse($id);
+if (AMADataHandler::isError($course_ha)) {
+    $errObj = new ADAError($course_ha);
 }
 
 $author_id = $course_ha['id_autore'];
-//$author_ha = $dh->get_author($author_id);
+//$author_ha = $dh->getAuthor($author_id);
 
 
 /* Controlla la presenza del mediapath ed eventualmente crea la directory
@@ -123,7 +145,7 @@ if (!@is_dir($mediapath)) {
 
 // XML file process
 // utilizzo classe processa XML
-$xp = new course_xml_file_process();
+$xp = new CourseXmlFileProcess();
 
 $set_ha = [
     'id_author' => $author_id,
@@ -134,11 +156,11 @@ $set_ha = [
 
 
 // inizializzazione
-if ($xp->set_init($set_ha)) {
+if ($xp->setInit($set_ha)) {
     // parsing file xml
-    $ris_ar = $xp->course_xml_file_parse();
+    $ris_ar = $xp->courseXmlFileParse();
 
-    $xp->data_void();
+    $xp->dataVoid();
 
     if ($ris_ar['0'] != 'errore') {
         $dati =  translateFN('Risultato: ') . $ris_ar[0] . '<br>' ;

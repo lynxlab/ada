@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Module\Test\QuestionTest;
+
+use Lynxlab\ADA\Module\Test\QuestionClozeTest;
+
+use Lynxlab\ADA\Module\Test\AnswerTest;
+
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+
+// Trigger: ClassWithNameSpace. The class QuestionClozeTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -174,7 +184,7 @@ abstract class QuestionClozeTest extends QuestionTest
     {
         $dh = $GLOBALS['dh'];
 
-        $tmp = $dh->test_getNodesByParent($question_id);
+        $tmp = $dh->testGetNodesByParent($question_id);
         $old_answers = [];
         if (!empty($tmp)) {
             foreach ($tmp as $v) {
@@ -213,7 +223,7 @@ abstract class QuestionClozeTest extends QuestionTest
 
                 if ($delete) {
                     foreach ($old_answers[$ordine] as $k => $v) {
-                        $dh->test_deleteNodeTest($k);
+                        $dh->testDeleteNodeTest($k);
                     }
                 }
 
@@ -230,7 +240,7 @@ abstract class QuestionClozeTest extends QuestionTest
                         'id_nodo_radice' => $test['id_nodo'],
                         'ordine' => $ordine,
                     ];
-                    $dh->test_addNode($data);
+                    $dh->testAddNode($data);
                 }
             }
         }
@@ -238,7 +248,7 @@ abstract class QuestionClozeTest extends QuestionTest
         foreach ($old_answers as $k => $v) {
             if (!in_array($k, $ordini)) {
                 foreach ($v as $id => $t) {
-                    $dh->test_deleteNodeTest($id);
+                    $dh->testDeleteNodeTest($id);
                 }
             }
         }

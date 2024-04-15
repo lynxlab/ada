@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * ADD NODE.
  *
@@ -23,7 +41,7 @@ use Lynxlab\ADA\Services\NodeEditing\NodeEditingViewer;
 use Lynxlab\ADA\Services\NodeEditing\PreferenceSelector;
 use Lynxlab\ADA\Services\NodeEditing\Utilities;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
+use function Lynxlab\ADA\Main\AMA\DBRead\readNodeFromDB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\redirect;
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -124,10 +142,10 @@ switch ($op) {
 }
 
 if (($id_profile != AMA_TYPE_AUTHOR) && ($id_profile != AMA_TYPE_STUDENT) && ($id_profile != AMA_TYPE_TUTOR)) {
-    $errObj = new ADA_Error(null, translateFN('Utente non autorizzato, impossibile proseguire.'));
+    $errObj = new ADAError(null, translateFN('Utente non autorizzato, impossibile proseguire.'));
 } elseif (
     $id_profile == AMA_TYPE_STUDENT && isset($id_course_instance) && intval($id_course_instance) > 0 &&
-        $userObj->get_student_status($userObj->getId(), $id_course_instance) == ADA_STATUS_TERMINATED
+        $userObj->getStudentStatus($userObj->getId(), $id_course_instance) == ADA_STATUS_TERMINATED
 ) {
     /**
      * @author giorgio 03/apr/2015
@@ -166,7 +184,7 @@ if ($op == 'add_node') {
         }
         $node_type = Utilities::getAdaNodeTypeFromString($type);
 
-        $nodeObj = read_node_from_DB($id_parent);
+        $nodeObj = readNodeFromDB($id_parent);
         // gestione errore !!!
         // vito, 20 feb 2009
         if ($node_type == ADA_NOTE_TYPE || $node_type == ADA_PRIVATE_NOTE_TYPE) {
@@ -180,7 +198,7 @@ if ($op == 'add_node') {
         /*
          * determina l'id del nodo da inserire
          */
-        //    $last_node = get_max_idFN($id_course);
+        //    $last_node = getMaxIdFN($id_course);
         //    $tempAr = explode ("_", $last_node);
         //    $new_id =$tempAr[1] + 1;
         $new_node = $id_course . "_" . '999999999';// $new_id;
@@ -219,13 +237,13 @@ if ($op == 'add_node') {
 
         $default_parent_node = $id_course . "_" . ADA_DEFAULT_NODE;
 
-        $nodeObj = & read_node_from_DB($default_parent_node);
+        $nodeObj = & readNodeFromDB($default_parent_node);
         // gestione errore !!!
 
         /*
          * determina l'id del nodo da inserire
          */
-        //    $last_node = get_max_idFN($id_course);
+        //    $last_node = getMaxIdFN($id_course);
         //    $tempAr = explode ("_", $last_node);
         //    $new_id =$tempAr[1] + 1;
         $new_node = $id_course . "_" . '999999999';// $new_id;
@@ -434,8 +452,8 @@ elseif ($op == 'save') {
 
     $nodePath = '';
     $result = NodeEditing::createNode($node_data);
-    if (AMA_DataHandler::isError($result)) {
-        $errObj = new ADA_Error($result, translateFN('Errore nella creazione del nodo'));
+    if (AMADataHandler::isError($result)) {
+        $errObj = new ADAError($result, translateFN('Errore nella creazione del nodo'));
     } else {
         $node_data['id'] = $result;
     }
@@ -444,8 +462,8 @@ elseif ($op == 'save') {
      * possono essere aggiunti eventuali media
      */
     $result = NodeEditing::updateMediaAssociationsWithNode($node_data['id'], $node_data['id_node_author'], null, $current_media);
-    if (AMA_DataHandler::isError($result)) {
-        $errObj = new ADA_Error($result, translateFN("Errore nell'associazione dei media al nodo"));
+    if (AMADataHandler::isError($result)) {
+        $errObj = new ADAError($result, translateFN("Errore nell'associazione dei media al nodo"));
     }
 
     unset($_SESSION['sess_node_editing']);

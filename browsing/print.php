@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Browsing\CourseViewer;
+
+use function \translateFN;
+
 /**
  * VIEW.
  *
@@ -141,7 +163,7 @@ $node_index = $nodeObj->indexFN('', 1, $user_level, $user_history, $id_profile);
 $node_family = $nodeObj->template_family;
 $next_node_id = $nodeObj->next_id;
 $sess_id_node = $id_node;
-$data = $nodeObj->filter_nodeFN($user_level, $user_history, $id_profile, '');
+$data = $nodeObj->filterNodeFN($user_level, $user_history, $id_profile, '');
 
 
 // info on author and tutor
@@ -195,7 +217,7 @@ $content_dataAr = [
     'tutor' => $tutor_info_link, //'tutor'=>$tutor_uname,
 ];
 
-//dynamic data from $nodeObj->filter_nodeFN
+//dynamic data from $nodeObj->filterNodeFN
 
 $content_dataAr['text'] = $data['text'];
 /* @FIXME
@@ -229,7 +251,7 @@ if ($node_type == ADA_GROUP_WORD_TYPE or $node_type == ADA_LEAF_WORD_TYPE) {
     $img_dir = $root_dir.'/browsing/dattilo/img';
     $url_dir = $http_root_dir.'/browsing/dattilo/img';
     if (file_exists($img_dir.'/a.jpg')) {
-        $dattilo = converti_dattiloFN($node_title,$url_dir);
+        $dattilo = convertiDattiloFN($node_title,$url_dir);
         $content_dataAr['dattilo'] = $dattilo;
     }
     * */

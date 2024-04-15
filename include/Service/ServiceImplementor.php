@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Main\Service\ServiceImplementor;
+
+use Lynxlab\ADA\Main\Service\Service;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class ServiceImplementor was declared with namespace Lynxlab\ADA\Main\Service. //
+
 /**
  * SERVICE.
  *
@@ -57,20 +69,20 @@ class ServiceImplementor
     {
         $common_dh = $GLOBALS['common_dh'];
 
-        //$provider_dataHa = $common_dh->get_tester_info_from_id($id_provider);
-        $provider_dataHa = $common_dh->get_tester_info_from_id_course($implementorId);
-        if (AMA_DataHandler::isError($provider_dataHa)) {
+        //$provider_dataHa = $common_dh->getTesterInfoFromId($id_provider);
+        $provider_dataHa = $common_dh->getTesterInfoFromIdCourse($implementorId);
+        if (AMADataHandler::isError($provider_dataHa)) {
             // ?
         } else {
             $provider_dsn = MultiPort::getDSN($provider_dataHa['puntatore']);
             if ($provider_dsn != null) {
-                $provider_dh = AMA_DataHandler::instance($provider_dsn);
-                if (AMA_DataHandler::isError($provider_dh)) {
+                $provider_dh = AMADataHandler::instance($provider_dsn);
+                if (AMADataHandler::isError($provider_dh)) {
                     return $provider_dh;
                 } else {
-                    $courseAr = $provider_dh->get_course($implementorId);
+                    $courseAr = $provider_dh->getCourse($implementorId);
 
-                    if (AMA_DataHandler::isError($courseAr)) {
+                    if (AMADataHandler::isError($courseAr)) {
                         // continue
                         $courseAr = [];
                         $courseAr['id_course'] = $implementorId;
@@ -83,8 +95,8 @@ class ServiceImplementor
                         $id_desc = $implementorId . "_" . $id_start_node;
                         $user_level = "999";
 
-                        $nodeHa = $provider_dh->get_node_info($id_desc);
-                        if (AMA_DataHandler::isError($nodeHa)) {
+                        $nodeHa = $provider_dh->getNodeInfo($id_desc);
+                        if (AMADataHandler::isError($nodeHa)) {
                             // continue
                             $nodeHa = [];
                             $nodeHa['text'] = null;
@@ -142,92 +154,92 @@ class ServiceImplementor
 
     /* Getters */
 
-    public function get_title()
+    public function getTitle()
     {
         return $this->title;
     }
 
-    public function get_description()
+    public function getDescription()
     {
         return $this->description;
     }
 
-    public function get_descr()
+    public function getDescr()
     {
         return $this->descr;
     }
 
-    public function get_name()
+    public function getName()
     {
         return $this->name;
     }
 
-    public function get_creation_date()
+    public function getCreationDate()
     {
         return $this->d_create;
     }
 
-    public function get_publish_date()
+    public function getPublishDate()
     {
         return $this->d_publish;
     }
 
-    public function get_start_node()
+    public function getStartNode()
     {
         return $this->id_start_node;
     }
 
-    public function get_provider_pointer()
+    public function getProviderPointer()
     {
         return $this->provider_pointer;
     }
 
-    public function get_provider_name()
+    public function getProviderName()
     {
         return $this->provider_name;
     }
 
-    public function get_provider_country()
+    public function getProviderCountry()
     {
         return $this->provider_country;
     }
 
-    public function get_provider_department()
+    public function getProviderDepartment()
     {
         return $this->provider_department;
     }
 
-    public function get_provider_city()
+    public function getProviderCity()
     {
         return $this->provider_city;
     }
 
-    public function get_provider_desc()
+    public function getProviderDesc()
     {
         return $this->provider_desc;
     }
 
-    public function get_provider_address()
+    public function getProviderAddress()
     {
         return $this->provider_address;
     }
 
-    public function get_provider_e_mail()
+    public function getProviderEMail()
     {
         return $this->provider_email;
     }
 
-    public function get_provider_phone()
+    public function getProviderPhone()
     {
         return $this->provider_phone;
     }
 
-    public function get_provider_ragsoc()
+    public function getProviderRagsoc()
     {
         return $this->provider_ragsoc;
     }
 
-    public function get_provider_responsible()
+    public function getProviderResponsible()
     {
         return $this->provider_responsible;
     }
@@ -236,26 +248,26 @@ class ServiceImplementor
      *
      * @return an associative array containing the information about provider and course
      */
-    public function get_implementor_info()
+    public function getImplementorInfo()
     {
         $courseAr = [
-            $this->get_title(),
-            $this->get_description(),
-            $this->get_name(),
-            $this->get_creation_date(),
-            $this->get_publish_date(),
-            $this->get_start_node(),
-            $this->get_provider_name(),
-            $this->get_provider_country(),
-            $this->get_provider_department(),
-            $this->get_provider_city(),
-            $this->get_descr(),
-            $this->get_provider_desc(),
-            $this->get_provider_e_mail(),
-            $this->get_provider_phone(),
-            $this->get_provider_ragsoc(),
-            $this->get_provider_address(),
-            $this->get_provider_responsible(),
+            $this->getTitle(),
+            $this->getDescription(),
+            $this->getName(),
+            $this->getCreationDate(),
+            $this->getPublishDate(),
+            $this->getStartNode(),
+            $this->getProviderName(),
+            $this->getProviderCountry(),
+            $this->getProviderDepartment(),
+            $this->getProviderCity(),
+            $this->getDescr(),
+            $this->getProviderDesc(),
+            $this->getProviderEMail(),
+            $this->getProviderPhone(),
+            $this->getProviderRagsoc(),
+            $this->getProviderAddress(),
+            $this->getProviderResponsible(),
         ];
         return $courseAr;
     }

@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Module\Login\Constants;
+
+// Trigger: ClassWithNameSpace. The class Constants was declared with namespace Lynxlab\ADA\Module\Login. //
+
 /**
  * LOGIN MODULE
  *

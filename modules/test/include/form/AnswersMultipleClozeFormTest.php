@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Module\Test\AnswerHeaderControlTest;
+
+use Lynxlab\ADA\Module\Test\AnswerFooterControlTest;
+
+use Lynxlab\ADA\Module\Test\AnswerClozeControlTest;
+
+use Lynxlab\ADA\Module\Test\FormTest;
+
+use Lynxlab\ADA\Module\Test\AnswersMultipleClozeFormTest;
+
+use Lynxlab\ADA\Module\Test\QuestionMultipleClozeTest;
+
+use Lynxlab\ADA\Module\Test\QuestionClozeTest;
+
+use Lynxlab\ADA\Module\Test\NodeTest;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class AnswersMultipleClozeFormTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  *
  * @package
@@ -39,7 +61,7 @@ class AnswersMultipleClozeFormTest extends FormTest
         $this->modifiable = $modifiable;
 
         $this->questionObj = NodeTest::readNode($this->question);
-        $res = $dh->test_getNodesByParent($this->questionObj->id_nodo);
+        $res = $dh->testGetNodesByParent($this->questionObj->id_nodo);
         foreach ($res as $k => $v) {
             $this->questionObj->addChild(NodeTest::readNode($v, $this->questionObj));
         }

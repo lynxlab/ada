@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Main\Logger\ADALogger;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+
+use Lynxlab\ADA\Comunica\DataHandler\ChatDataHandler;
+
+// Trigger: ClassWithNameSpace. The class ChatDataHandler was declared with namespace Lynxlab\ADA\Comunica\DataHandler. //
+
 // +----------------------------------------------------------------------+
 // | PHP version 4.0                                                      |
 // +----------------------------------------------------------------------+
@@ -29,7 +41,7 @@
 
 namespace Lynxlab\ADA\Comunica\DataHandler;
 
-class ChatDataHandler extends Abstract_AMA_DataHandler
+class ChatDataHandler extends AbstractAMADataHandler
 {
     public $id_chatroom; //the id_chatroom variable
 
@@ -68,14 +80,14 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      */
     public function __construct($dsn = null)
     {
-        //ADALogger::log_db('ChatDataHandler constructor');
+        //ADALogger::logDb('ChatDataHandler constructor');
         parent::__construct($dsn);
     }
 
 
     /**
      * (non-PHPdoc)
-     * @see include/Abstract_AMA_DataHandler#__destruct()
+     * @see include/AbstractAMADataHandler#__destruct()
      */
     public function __destruct()
     {
@@ -117,24 +129,24 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      *
      * @access public
      * @param  $chatroom_ha an associative array containing all the chatroom's data
-     * @return an AMA_Error object or a DB_Error object if something goes wrong
+     * @return an AMAError object or a DB_Error object if something goes wrong
      *****************************************************************************/
-    public function add_chatroom($chatroom_ha)
+    public function addChatroom($chatroom_ha)
     {
-        $chat_type          = $this->sql_prepared($chatroom_ha['chat_type']);
-        $chat_title         = $this->sql_prepared($chatroom_ha['chat_title']);
+        $chat_type          = $this->sqlPrepared($chatroom_ha['chat_type']);
+        $chat_title         = $this->sqlPrepared($chatroom_ha['chat_title']);
         //vito, 29 mar 2009
-        //$chat_topic = $this->or_null($this->sql_prepared($chatroom_ha['chat_topic']));
-        $chat_topic         = $this->sql_prepared($chatroom_ha['chat_topic']);
-        $id_chat_owner      = $this->or_zero($chatroom_ha['id_chat_owner']);
-        $welcome_msg        = $this->or_null($this->sql_prepared($chatroom_ha['welcome_msg']));
-        $start_time         = $this->or_zero($chatroom_ha['start_time']);
-        $end_time           = $this->or_zero($chatroom_ha['end_time']);
-        $max_users          = $this->or_zero($chatroom_ha['max_users']);
-        $id_course_instance = $this->or_zero($chatroom_ha['id_course_instance']);
+        //$chat_topic = $this->orNull($this->sqlPrepared($chatroom_ha['chat_topic']));
+        $chat_topic         = $this->sqlPrepared($chatroom_ha['chat_topic']);
+        $id_chat_owner      = $this->orZero($chatroom_ha['id_chat_owner']);
+        $welcome_msg        = $this->orNull($this->sqlPrepared($chatroom_ha['welcome_msg']));
+        $start_time         = $this->orZero($chatroom_ha['start_time']);
+        $end_time           = $this->orZero($chatroom_ha['end_time']);
+        $max_users          = $this->orZero($chatroom_ha['max_users']);
+        $id_course_instance = $this->orZero($chatroom_ha['id_course_instance']);
 
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -142,11 +154,11 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
         $sql = "select id_chatroom from chatroom where id_istanza_corso=$id_course_instance and tipo_chat=$chat_type and titolo_chat=$chat_title and tempo_avvio=$start_time";
         $res_id = $db->getOne($sql);
 
-        if (AMA_DB::isError($res_id)) {
+        if (AMADB::isError($res_id)) {
             return $res_id;
         }
         if ($res_id) {
-            return new AMA_Error(AMA_ERR_UNIQUE_KEY);
+            return new AMAError(AMA_ERR_UNIQUE_KEY);
         }
 
         // insert a row into table chatroom
@@ -156,7 +168,7 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
     $end_time,$welcome_msg,$max_users);";
 
         $res = parent::executeCritical($sql1);
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             return $res;
         }
 
@@ -170,35 +182,35 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      *
      * @access public
      * @param  $id_chatroom
-     * @return an AMA_Error object or a DB_Error object if something goes wrong
+     * @return an AMAError object or a DB_Error object if something goes wrong
      *****************************************************************************/
-    public function remove_unused_chatroom($id_chatroom)
+    public function removeUnusedChatroom($id_chatroom)
     {
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         // checks if the chatroom exists
         $ri_id = $db->getOne("select id_chatroom from chatroom where id_chatroom=$id_chatroom");
         if (!$ri_id) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
         // referential integrity checks
         $ri_id = $db->getOne("select id_utente from utente_chatroom where id_chatroom=$id");
         if ($ri_id) {
-            return new AMA_Error(AMA_ERR_REF_INT_KEY);
+            return new AMAError(AMA_ERR_REF_INT_KEY);
         }
         // referential integrity checks
         $ri_id = $db->getOne("select id_messaggio from messaggi where id_chatroom=$id");
         if ($ri_id) {
-            return new AMA_Error(AMA_ERR_REF_INT_KEY);
+            return new AMAError(AMA_ERR_REF_INT_KEY);
         }
 
         $sql = "delete from chatroom where id_chatroom=$id";
 
         $res = parent::executeCritical($sql);
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             return $res;
         }
 
@@ -210,19 +222,19 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      *
      * @access public
      * @param  $id_chatroom
-     * @return an AMA_Error object or a DB_Error object if something goes wrong
+     * @return an AMAError object or a DB_Error object if something goes wrong
      ******************************************************************************/
-    public function remove_chatroom($id_chatroom)
+    public function removeChatroom($id_chatroom)
     {
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         // checks if the chatroom exists
         $ri_id = $db->getOne("select id_chatroom from chatroom where id_chatroom=$id_chatroom");
         if (!$ri_id) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
 
         // we should provide at this point a BACK UP option before proceed with removing the chatroom
@@ -231,19 +243,19 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
         $ri_id = $db->getOne("select id_utente from utente_chatroom where id_chatroom=$id_chatroom");
         if ($ri_id) {
             // removes all the users from the specific chatroom
-            $this->remove_allusers_chatroom($id_chatroom);
+            $this->removeAllusersChatroom($id_chatroom);
         }
         // referential integrity checks
         $ri_id = $db->getOne("select id_messaggio from messaggi where id_chatroom=$id_chatroom");
         if ($ri_id) {
             // removes all messages from the specific chatroom
-            $this->remove_allmessages_chatroom($id_chatroom);
+            $this->removeAllmessagesChatroom($id_chatroom);
         }
 
         $sql = "delete from chatroom where id_chatroom=$id_chatroom";
 
         $res = parent::executeCritical($sql);
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             return $res;
         }
 
@@ -259,32 +271,32 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      *                                  empty fields are not updated.
      * @return an error if something goes wrong
      *****************************************************************************/
-    public function set_chatroom($id_chatroom, $chatroom_ha)
+    public function setChatroom($id_chatroom, $chatroom_ha)
     {
-        $chat_type = $this->sql_prepared($chatroom_ha['chat_type']);
-        $chat_title = $this->sql_prepared($chatroom_ha['chat_title']);
-        $chat_topic = $this->sql_prepared($chatroom_ha['chat_topic']);
-        $id_chat_owner = $this->sql_prepared($chatroom_ha['id_chat_owner']);
-        $start_time = $this->sql_prepared($chatroom_ha['start_time']);
-        $end_time = $this->sql_prepared($chatroom_ha['end_time']);
-        $welcome_msg = $this->sql_prepared($chatroom_ha['welcome_msg']);
-        $max_users = $this->sql_prepared($chatroom_ha['max_users']);
-        $id_course_instance = $this->sql_prepared($chatroom_ha['id_course_instance']);
+        $chat_type = $this->sqlPrepared($chatroom_ha['chat_type']);
+        $chat_title = $this->sqlPrepared($chatroom_ha['chat_title']);
+        $chat_topic = $this->sqlPrepared($chatroom_ha['chat_topic']);
+        $id_chat_owner = $this->sqlPrepared($chatroom_ha['id_chat_owner']);
+        $start_time = $this->sqlPrepared($chatroom_ha['start_time']);
+        $end_time = $this->sqlPrepared($chatroom_ha['end_time']);
+        $welcome_msg = $this->sqlPrepared($chatroom_ha['welcome_msg']);
+        $max_users = $this->sqlPrepared($chatroom_ha['max_users']);
+        $id_course_instance = $this->sqlPrepared($chatroom_ha['id_course_instance']);
 
         $res_id = 0;
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         // verify that the record exists and store old values for rollback
         $res_id = $db->getRow("select id_chatroom from chatroom where id_chatroom=$id_chatroom");
-        if (AMA_DB::isError($res_id)) {
+        if (AMADB::isError($res_id)) {
             return $res_id;
         }
         if ($res_id == 0) {
             $db->free();
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
 
         // verify unique constraint once updated
@@ -299,7 +311,7 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
         $new_id_course_instance = $chatroom_ha['id_course_instance'];
 
         // backup old values
-        $old_values_ha = $this->get_info_chatroom($id_chatroom);
+        $old_values_ha = $this->getInfoChatroom($id_chatroom);
 
         $old_chat_type = $old_values_ha['tipo_chat'];
         $old_chat_title = $old_values_ha['titolo_chat'];
@@ -318,11 +330,11 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
     		   tempo_avvio=$start_time and tempo_fine=$end_time and msg_benvenuto=$welcome_msg and max_utenti=$max_users
 		       and id_istanza_corso=$id_course_instance");
 
-            if (AMA_DB::isError($res_id)) {
+            if (AMADB::isError($res_id)) {
                 return $res_id;
             }
             if ($res_id) {
-                return new AMA_Error(AMA_ERR_UNIQUE_KEY);
+                return new AMAError(AMA_ERR_UNIQUE_KEY);
             }
         }
 
@@ -332,17 +344,17 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
                    tempo_avvio=$start_time, tempo_fine=$end_time, msg_benvenuto=$welcome_msg,
                    max_utenti=$max_users where id_chatroom=$id_chatroom";
         $res = $db->query($sql1);
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             // try manual rollback in case problems arise
-            $old_chat_type = $this->sql_prepared($old_values_ha['tipo_chat']);
-            $old_chat_title = $this->sql_prepared($old_values_ha['titolo_chat']);
-            $old_chat_topic = $this->sql_prepared($old_values_ha['argomento_chat']);
-            $old_id_chat_owner = $this->sql_prepared($old_values_ha['id_proprietario_chat']);
-            $old_start_time = $this->sql_prepared($old_values_ha['tempo_avvio']);
-            $old_end_time = $this->sql_prepared($old_values_ha['tempo_fine']);
-            $old_welcome_msg = $this->sql_prepared($old_values_ha['msg_benvenuto']);
-            $old_max_users = $this->sql_prepared($old_values_ha['max_utenti']);
-            $old_id_course_instance = $this->sql_prepared($old_values_ha['id_istanza_corso']);
+            $old_chat_type = $this->sqlPrepared($old_values_ha['tipo_chat']);
+            $old_chat_title = $this->sqlPrepared($old_values_ha['titolo_chat']);
+            $old_chat_topic = $this->sqlPrepared($old_values_ha['argomento_chat']);
+            $old_id_chat_owner = $this->sqlPrepared($old_values_ha['id_proprietario_chat']);
+            $old_start_time = $this->sqlPrepared($old_values_ha['tempo_avvio']);
+            $old_end_time = $this->sqlPrepared($old_values_ha['tempo_fine']);
+            $old_welcome_msg = $this->sqlPrepared($old_values_ha['msg_benvenuto']);
+            $old_max_users = $this->sqlPrepared($old_values_ha['max_utenti']);
+            $old_id_course_instance = $this->sqlPrepared($old_values_ha['id_istanza_corso']);
 
             $sql2 = "update chatroom set id_istanza_corso=$old_id_course_instance, tipo_chat=$old_chat_type,
                    titolo_chat=$old_chat_title, argomento_chat=$old_chat_topic, id_proprietario_chat=$old_id_chat_owner,
@@ -350,12 +362,12 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
                    max_utenti=$old_max_users where id_chatroom=$id_chatroom";
 
             $res = parent::executeCritical($sql2);
-            if (AMA_DB::isError($res)) {
+            if (AMADB::isError($res)) {
                 return $res;
             }
 
             // in case manual rollback works return an update error
-            return new AMA_Error(AMA_ERR_UPDATE);
+            return new AMAError(AMA_ERR_UPDATE);
         }
     }
 
@@ -376,21 +388,21 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      *          res_ha['msg_benvenuto']
      *          res_ha['max_utenti']
      ******************************************************************************/
-    public function get_info_chatroom($id_chatroom)
+    public function getInfoChatroom($id_chatroom)
     {
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         // get a row from table chatroom
         $chatroom_ar = $db->getRow("select id_istanza_corso,tipo_chat,titolo_chat,argomento_chat,id_proprietario_chat,
                           tempo_avvio,tempo_fine,msg_benvenuto,max_utenti from chatroom where id_chatroom=$id_chatroom");
-        if (AMA_DB::isError($chatroom_ar)) {
+        if (AMADB::isError($chatroom_ar)) {
             return $chatroom_ar;
         }
         if (!$chatroom_ar) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
 
         $chatroom_ha['id_chatroom'] = $id_chatroom;
@@ -412,20 +424,20 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      *
      * @return an array containing the ids of all active chatrooms
      *****************************************************************************/
-    public function get_all_chatrooms()
+    public function getAllChatrooms()
     {
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         // get a row from table chatroom
         $chatrooms_ha = $db->getCol("select id_chatroom from chatroom");
-        if (AMA_DB::isError($chatrooms_ha)) {
+        if (AMADB::isError($chatrooms_ha)) {
             return $chatrooms_ha;
         }
         if (!$chatrooms_ha) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
 
         return $chatrooms_ha;
@@ -437,21 +449,21 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      * @param id $id_class
      * @return the id of the chatroom corresponding to the selected classroom
      ******************************************************************************/
-    public function get_class_chatroom($id_course_instance, $actual_time)
+    public function getClassChatroom($id_course_instance, $actual_time)
     {
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         // get a row from table chatroom
         $class_chatroom = $db->getOne("select id_chatroom from chatroom where id_istanza_corso=$id_course_instance and tipo_chat='C' and (tempo_avvio<=$actual_time) and ((tempo_fine = 0) or (tempo_fine>$actual_time))");
 
-        if (AMA_DB::isError($class_chatroom)) {
+        if (AMADB::isError($class_chatroom)) {
             return $class_chatroom;
         }
         if (!$class_chatroom) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
         return $class_chatroom;
     }
@@ -463,21 +475,21 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      * @param id $type
      * @return the id of the chatroom corresponding to the selected classroom
      ******************************************************************************/
-    public function get_class_chatroom_for_instance($id_course_instance, $type)
+    public function getClassChatroomForInstance($id_course_instance, $type)
     {
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         // get a row from table chatroom
         $class_chatroom = $db->getOne("select id_chatroom from chatroom where id_istanza_corso=$id_course_instance and tipo_chat='$type'");
 
-        if (AMA_DB::isError($class_chatroom)) {
+        if (AMADB::isError($class_chatroom)) {
             return $class_chatroom;
         }
         if (!$class_chatroom) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
         return $class_chatroom;
     }
@@ -488,40 +500,40 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      * @param id $id_class
      * @return the id of the chatroom corresponding to the selected classroom
      ******************************************************************************/
-    public function get_class_chatroom_with_durationFN($id_course_instance, $start_time, $end_time)
+    public function getClassChatroomWithDurationFN($id_course_instance, $start_time, $end_time)
     {
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         // get a row from table chatroom
         $class_chatroom = $db->getOne("select id_chatroom from chatroom where id_istanza_corso=$id_course_instance and tipo_chat='C' and tempo_avvio=$start_time and tempo_fine = $end_time");
 
-        if (AMA_DB::isError($class_chatroom)) {
+        if (AMADB::isError($class_chatroom)) {
             return $class_chatroom;
         }
         if (!$class_chatroom) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
         return $class_chatroom;
     }
 
-    public function get_chatroom_with_title_prefixFN($title_prefix)
+    public function getChatroomWithTitlePrefixFN($title_prefix)
     {
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         // get a row from table chatroom
         $id_chatroom = $db->getOne("select id_chatroom from chatroom where titolo_chat like '$title_prefix%'");
 
-        if (AMA_DB::isError($id_chatroom)) {
+        if (AMADB::isError($id_chatroom)) {
             return $id_chatroom;
         }
         if (!$id_chatroom) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
         return $id_chatroom;
     }
@@ -532,21 +544,21 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      * @param id $id_class
      * @return an array contaning with the ids
      ******************************************************************************/
-    public function get_all_class_chatrooms($id_course_instance)
+    public function getAllClassChatrooms($id_course_instance)
     {
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         // get a col from table chatroom
         $class_chatrooms = $db->getCol("select id_chatroom from chatroom where id_istanza_corso=$id_course_instance and tipo_chat='C'");
 
-        if (AMA_DB::isError($class_chatrooms)) {
+        if (AMADB::isError($class_chatrooms)) {
             return $class_chatrooms;
         }
         if (!$class_chatrooms) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
         return $class_chatrooms;
     }
@@ -556,10 +568,10 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      * @param
      * @return an array with all the id's of the private rooms available for the user
      ******************************************************************************/
-    public function get_all_private_chatrooms($user_id)
+    public function getAllPrivateChatrooms($user_id)
     {
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -579,11 +591,11 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
 	(u.stato_utente='$act' or u.stato_utente='$op' or u.stato_utente='$inv' or u.stato_utente='$mu'
 	or u.stato_utente='$ex' or u.stato_utente='$bn')");
 
-        if (AMA_DB::isError($private_chatrooms)) {
+        if (AMADB::isError($private_chatrooms)) {
             return $private_chatrooms;
         }
         if (!$private_chatrooms) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
         return $private_chatrooms;
     }
@@ -593,10 +605,10 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      * @param
      * @return the id of the public chatroom
      ******************************************************************************/
-    public function find_public_chatroom()
+    public function findPublicChatroom()
     {
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -605,12 +617,12 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
 
         // get a row from table chatroom
         $public_chatroom = $db->getOne("select id_chatroom from chatroom where tipo_chat='$public'");
-        if (AMA_DB::isError($public_chatroom)) {
+        if (AMADB::isError($public_chatroom)) {
             return $public_chatroom;
         }
 
         if (!$public_chatroom) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
 
         return $public_chatroom;
@@ -626,16 +638,16 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      *
      * @access public
      * @param  $operator_id ,$user_id,$id_chatroom,$entrance_time,$action,$status
-     * @return an AMA_Error object or a DB_Error object if something goes wrong
+     * @return an AMAError object or a DB_Error object if something goes wrong
      **********************************************************************************/
-    public function add_user_chatroom($operator_id, $user_id, $id_chatroom, $entrance_time, $action, $status)
+    public function addUserChatroom($operator_id, $user_id, $id_chatroom, $entrance_time, $action, $status)
     {
-        $status = $this->sql_prepared($status);
-        $action = $this->sql_prepared($action);
+        $status = $this->sqlPrepared($status);
+        $action = $this->sqlPrepared($action);
         $res_id = 0;
 
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -644,7 +656,7 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
         // ///////////////////////////////////////////////////
         // checks if the user allready exists into the chatroom
         $res_user = $db->getOne("select id_utente from utente_chatroom where id_utente=$user_id and id_chatroom=$id_chatroom");
-        if (AMA_DB::isError($res_user)) {
+        if (AMADB::isError($res_user)) {
             return $res_user;
         }
 
@@ -652,43 +664,43 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
             // updates the existing record
 
             // backup old values
-            $old_status_value = $this->get_user_status($user_id, $id_chatroom);
+            $old_status_value = $this->getUserStatus($user_id, $id_chatroom);
             $old_time_value = $db->getOne("select tempo_entrata from utente_chatroom where id_chatroom=$id_chatroom and id_utente=$user_id");
             // verify unique constraint once updated
             $new_status = $status;
             $new_entrance_time = $entrance_time;
 
-            $old_status = $this->sql_prepared($old_status_value);
+            $old_status = $this->sqlPrepared($old_status_value);
             $old_entrance_time = $old_time_value;
 
             // make sure that the record is not allready updated
             if ($new_status != $old_status || $new_entrance_time != $old_entrance_time) {
                 $res_id = $db->getOne("select id_chatroom from utente_chatroom where tempo_entrata=$entrance_time and stato_utente=$status");
-                if (AMA_DB::isError($db)) {
+                if (AMADB::isError($db)) {
                     return $db;
                 }
                 if ($res_id) {
-                    return new AMA_Error(AMA_ERR_UNIQUE_KEY);
+                    return new AMAError(AMA_ERR_UNIQUE_KEY);
                 }
             }
             // update the rows in the tables
             $sql1 = "update utente_chatroom set stato_utente=$status, tempo_entrata=$entrance_time where id_chatroom=$id_chatroom and id_utente=$user_id";
             $res = $db->query($sql1);
 
-            if (AMA_DB::isError($res)) {
+            if (AMADB::isError($res)) {
                 // try manual rollback in case problems arise
-                $old_status = $this->sql_prepared($old_status_value);
+                $old_status = $this->sqlPrepared($old_status_value);
                 $old_entrance_time = $old_time_value;
                 $sql2 = "update utente_chatroom set stato_utente=$old_status, tempo_entrata=$old_entrance_time where id_chatroom=$id_chatroom and id_utente=$user_id";
 
 
                 $res = parent::executeCritical($sql2);
-                if (AMA_DB::isError($res)) {
+                if (AMADB::isError($res)) {
                     return $res;
                 }
 
                 // in case manual rollback works return an update error
-                return new AMA_Error(AMA_ERR_UPDATE);
+                return new AMAError(AMA_ERR_UPDATE);
             }
             // end case of updating
         } else {
@@ -697,7 +709,7 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
             $sql .= "values ($user_id,$id_chatroom,$status,$entrance_time)";
 
             $res = parent::executeCritical($sql);
-            if (AMA_DB::isError($res)) {
+            if (AMADB::isError($res)) {
                 return $res;
             }
         }
@@ -706,19 +718,19 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
         // /////////////////////////////////////////////
         // checks if the record exists into the table utente_chatroom_log
         $res = $db->getOne("select id_utente from utente_chatroom_log where id_utente=$user_id and tempo=$entrance_time and azione=$action");
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             return $res;
         }
 
         if ($res) {
-            return new AMA_Error(AMA_ERR_UNIQUE_KEY);
+            return new AMAError(AMA_ERR_UNIQUE_KEY);
         }
 
         $sql = "insert into utente_chatroom_log (id_utente,azione,id_operatore,id_chatroom,tempo)";
         $sql .= "values ($user_id,$action,$operator_id,$id_chatroom,$entrance_time)";
 
         $res = parent::executeCritical($sql);
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             return $res;
         }
         // get the inserted user
@@ -731,14 +743,14 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      *
      * @access public
      * @param  $user_id , $id_chatroom,$exit_time,$user_status
-     * @return an AMA_Error object or a DB_Error object if something goes wrong
+     * @return an AMAError object or a DB_Error object if something goes wrong
      ***************************************************************************************/
-    public function quit_chatroom($operator_id, $user_id, $id_chatroom, $exit_time, $action)
+    public function quitChatroom($operator_id, $user_id, $id_chatroom, $exit_time, $action)
     {
-        $action = $this->sql_prepared($action);
+        $action = $this->sqlPrepared($action);
 
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -749,12 +761,12 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
         // checks if the user exists into the chatroom
         $res_id = $db->getOne("select id_utente from utente_chatroom where id_chatroom=$id_chatroom and id_utente=$user_id");
         if (!$res_id) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
 
         $sql = "delete from utente_chatroom where id_utente=$user_id and id_chatroom=$id_chatroom";
         $res = parent::executeCritical($sql);
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             return $res;
         }
 
@@ -766,13 +778,13 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
         $res = $db->getOne("select id_utente from utente_chatroom_log where id_utente=$user_id and tempo=$exit_time and azione=$action");
 
         if ($res) {
-            return new AMA_Error(AMA_ERR_UNIQUE_KEY);
+            return new AMAError(AMA_ERR_UNIQUE_KEY);
         }
 
         $sql = "insert into utente_chatroom_log (id_utente,azione,id_operatore,id_chatroom,tempo)";
         $sql .= "values ($user_id,$action,$operator_id,$id_chatroom,$exit_time)";
         $res = parent::executeCritical($sql);
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             return $res;
         }
 
@@ -784,24 +796,24 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      *
      * @access public
      * @param  $user_id , $id_chatroom
-     * @return an AMA_Error object or a DB_Error object if something goes wrong
+     * @return an AMAError object or a DB_Error object if something goes wrong
      **************************************************************************************/
-    public function remove_user_chatroom($user_id, $id_chatroom)
+    public function removeUserChatroom($user_id, $id_chatroom)
     {
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         // checks if the user exists into the chatroom
         $ri_id = $db->getOne("select id_utente from utente_chatroom where id_utente=$user_id");
         if (!$ri_id) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
 
         $sql = "delete from utente_chatroom where id_utente=$user_id and id_chatroom=$id_chatroom";
         $res = parent::executeCritical($sql);
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             return $res;
         }
         return true;
@@ -813,24 +825,24 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      *
      * @access public
      * @param  $id_chatroom
-     * @return an AMA_Error object or a DB_Error object if something goes wrong
+     * @return an AMAError object or a DB_Error object if something goes wrong
      **************************************************************************************/
-    public function remove_allusers_chatroom($id_chatroom)
+    public function removeAllusersChatroom($id_chatroom)
     {
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         // checks if exist any user into the chatroom
         $ri_id = $db->getOne("select id_chatroom from utente_chatroom where id_chatroom=$id_chatroom");
         if (!$ri_id) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
 
         $sql = "delete from utente_chatroom where id_chatroom=$id_chatroom";
         $res = parent::executeCritical($sql);
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             return $res;
         }
 
@@ -844,10 +856,10 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      * @param  $id_chatroom
      * @return an error if something goes wrong
      **************************************************************************************/
-    public function list_users_chatroom($id_chatroom)
+    public function listUsersChatroom($id_chatroom)
     {
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -866,7 +878,7 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
         //$res = $db -> getCol($sql);
         $res = $db->getAll($sql, null, AMA_FETCH_ASSOC);
 
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             return $db;
         }
         if (!empty($res)) {
@@ -877,10 +889,10 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
         }
     }
 
-    public function list_users_invited_to_chatroom($id_chatroom)
+    public function listUsersInvitedToChatroom($id_chatroom)
     {
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -892,7 +904,7 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
                    and U.id_utente = UC.id_utente ORDER BY U.username ASC";
         $res = $db->getAll($sql, null, AMA_FETCH_ASSOC);
 
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             return $db;
         }
         if (!empty($res)) {
@@ -911,10 +923,10 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      * @param  $id_chatroom
      * @return an error if something goes wrong
      **************************************************************************************/
-    public function list_banned_users_chatroom($id_chatroom)
+    public function listBannedUsersChatroom($id_chatroom)
     {
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -933,7 +945,7 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
         //$res = $db -> getCol($sql);
         $res = $db->getAll($sql, null, AMA_FETCH_ASSOC);
 
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             return $res;
         }
         if (!empty($res)) {
@@ -951,17 +963,17 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      * @param  $user_id
      * @return an error if something goes wrong
      **************************************************************************************/
-    public function list_chatrooms_user($user_id)
+    public function listChatroomsUser($user_id)
     {
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         // select a row from table utente_chatroom
         $sql = "select id_chatroom from utente_chatroom where id_utente=$user_id";
         $res = $db->getCol($sql);
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             return $res;
         }
         if (!empty($res)) {
@@ -978,14 +990,14 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      * @param  $user_id ,$id_chatroom,$status
      * @return an error if something goes wrong
      **************************************************************************************/
-    public function set_user_status($operator_id, $user_id, $id_chatroom, $action, $status, $time)
+    public function setUserStatus($operator_id, $user_id, $id_chatroom, $action, $status, $time)
     {
-        $status = $this->sql_prepared($status);
-        $action = $this->sql_prepared($action);
+        $status = $this->sqlPrepared($status);
+        $action = $this->sqlPrepared($action);
         $res_id = 0;
 
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
@@ -994,42 +1006,42 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
         // //////////////////////////////////////
         // verify that the record exists and store old values for rollback
         $res_id = $db->getOne("select id_utente from utente_chatroom where id_chatroom=$id_chatroom and id_utente=$user_id");
-        if (AMA_DB::isError($res_id)) {
+        if (AMADB::isError($res_id)) {
             return $db;
         }
         if ($res_id == 0) {
             $db->free();
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
         // backup old values
-        $old_value = $this->get_user_status($user_id, $id_chatroom);
+        $old_value = $this->getUserStatus($user_id, $id_chatroom);
         // verify unique constraint once updated
         $new_status = $status;
-        $old_status = $this->sql_prepared($old_value);
+        $old_status = $this->sqlPrepared($old_value);
         // make sure that the record is not allready updated
         if ($new_status != $old_status) {
             $res_id = $db->getOne("select id_chatroom from utente_chatroom where id_chatroom=$id_chatroom and id_utente=$user_id and stato_utente=$status");
-            if (AMA_DB::isError($res_id)) {
+            if (AMADB::isError($res_id)) {
                 return $res_id;
             }
             if ($res_id) {
-                return new AMA_Error(AMA_ERR_UNIQUE_KEY);
+                return new AMAError(AMA_ERR_UNIQUE_KEY);
             }
         }
         // update the rows in the tables
         $sql1 = "update utente_chatroom set stato_utente=$status where id_chatroom=$id_chatroom and id_utente=$user_id";
         $res = $db->query($sql1);
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             // try manual rollback in case problems arise
-            $old_status = $this->sql_prepared($old_value);
+            $old_status = $this->sqlPrepared($old_value);
             $sql2 = "update utente_chatroom set stato_utente=$old_status where id_chatroom=$id_chatroom and id_utente=$user_id";
             $res = parent::executeCritical($sql2);
-            if (AMA_DB::isError($res)) {
+            if (AMADB::isError($res)) {
                 return $res;
             }
 
             // in case manual rollback works return an update error
-            return new AMA_Error(AMA_ERR_UPDATE);
+            return new AMAError(AMA_ERR_UPDATE);
         }
         // /////////////////////////////////////////////
         // INSERT INTO THE TABLE UTENTE_CHATROOM_LOG //
@@ -1038,14 +1050,14 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
         $res = $db->getOne("select id_utente from utente_chatroom_log where id_utente=$user_id and tempo=$time and azione=$action");
         // update user entrance into the chatroom
         if ($res) {
-            return new AMA_Error(AMA_ERR_UNIQUE_KEY);
+            return new AMAError(AMA_ERR_UNIQUE_KEY);
         }
 
         $sql = "insert into utente_chatroom_log (id_utente,azione,id_operatore,id_chatroom,tempo)";
         $sql .= "values ($user_id,$action,$operator_id,$id_chatroom,$time)";
 
         $res = parent::executeCritical($sql);
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             return $res;
         }
 
@@ -1059,21 +1071,21 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      * @param  $user_id , $id_chatroom
      * @return an error if something goes wrong
      **************************************************************************************/
-    public function get_user_status($user_id, $id_chatroom)
+    public function getUserStatus($user_id, $id_chatroom)
     {
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         // get a status row from table utente_chatroom
         $res = $db->getOne("select stato_utente from utente_chatroom where id_chatroom=$id_chatroom and id_utente=$user_id");
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             return $res;
         }
 
         if (!$res) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
 
         return $res;
@@ -1085,56 +1097,56 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      * @param  $user_id ,$id_chatroom,$status,$last_event_time
      * @return an error if something goes wrong
      ******************************************************************************/
-    public function set_last_event_time($user_id, $id_chatroom, $last_event_time)
+    public function setLastEventTime($user_id, $id_chatroom, $last_event_time)
     {
         $res_id = 0;
 
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         // verify that the record exists and store old values for rollback
         $res_id = $db->getOne("select id_utente from utente_chatroom where id_chatroom=$id_chatroom and id_utente=$user_id");
-        if (AMA_DB::isError($res_id)) {
+        if (AMADB::isError($res_id)) {
             return $res_id;
         }
         if ($res_id == 0) {
             $db->free();
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
         // backup old values
         $old_value = $db->getOne("select tempo_ultimo_evento from utente_chatroom where id_chatroom=$id_chatroom and id_utente=$user_id");
 
         // verify unique constraint once updated
         $new_time = $last_event_time;
-        $old_time = $this->sql_prepared($old_value);
+        $old_time = $this->sqlPrepared($old_value);
 
         // make sure that the record is not allready updated
         if ($new_time != $old_time) {
             $res_id = $db->getOne("select id_chatroom from utente_chatroom where id_chatroom=$id_chatroom and id_utente=$user_id and tempo_ultimo_evento=$last_event_time");
-            if (AMA_DB::isError($res_id)) {
+            if (AMADB::isError($res_id)) {
                 return $res_id;
             }
             if ($res_id) {
-                return new AMA_Error(AMA_ERR_UNIQUE_KEY);
+                return new AMAError(AMA_ERR_UNIQUE_KEY);
             }
         }
 
         // update the rows in the tables
         $sql1 = "update utente_chatroom set tempo_ultimo_evento=$last_event_time where id_chatroom=$id_chatroom and id_utente=$user_id";
         $res = $db->query($sql1);
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             // try manual rollback in case problems arise
-            $old_time = $this->sql_prepared($old_value);
+            $old_time = $this->sqlPrepared($old_value);
             $sql2 = "update utente_chatroom set tempo_ultimo_evento=$old_time where id_chatroom=$id_chatroom and id_utente=$user_id";
             $res = parent::executeCritical($sql2);
-            if (AMA_DB::isError($res)) {
+            if (AMADB::isError($res)) {
                 return $res;
             }
 
             // in case manual rollback works return an update error
-            return new AMA_Error(AMA_ERR_UPDATE);
+            return new AMAError(AMA_ERR_UPDATE);
         }
 
         return true;
@@ -1145,21 +1157,21 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      *
      * @return the last_time_event of the user
      *****************************************************************************/
-    public function get_last_event_time($user_id, $id_chatroom)
+    public function getLastEventTime($user_id, $id_chatroom)
     {
 
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         // get an entry from table utente_chatroom
         $event_time = $db->getOne("select tempo_ultimo_evento from utente_chatroom where id_utente=$user_id and id_chatroom=$id_chatroom");
-        if (AMA_DB::isError($event_time)) {
+        if (AMADB::isError($event_time)) {
             return $event_time;
         }
         if (!$event_time) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            return new AMAError(AMA_ERR_NOT_FOUND);
         }
 
         return $event_time;
@@ -1174,18 +1186,18 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
      *
      * @access public
      * @param  $id_chatroom
-     * @return an AMA_Error object or a DB_Error object if something goes wrong
+     * @return an AMAError object or a DB_Error object if something goes wrong
      */
-    public function remove_allmessages_chatroom($id_chatroom)
+    public function removeAllmessagesChatroom($id_chatroom)
     {
         $db = &parent::getConnection();
-        if (AMA_DB::isError($db)) {
+        if (AMADB::isError($db)) {
             return $db;
         }
 
         $sql1 = "delete from messaggi where id_chatroom=$id_chatroom";
         $res = parent::executeCritical($sql1);
-        if (AMA_DB::isError($res)) {
+        if (AMADB::isError($res)) {
             return $res;
         }
     }

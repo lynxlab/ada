@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * SERVICE-COMPLETE MODULE.
 *
@@ -112,8 +122,8 @@ try {
             $conditionSetToEdit = $GLOBALS['dh']->getCompleteConditionSet($conditionSetId);
             $helpmsg = translateFN('Regola selezionata per il collegamento') . ': ' . $conditionSetToEdit->description;
 
-            $linkedCoursesArr = $GLOBALS['dh']->get_linked_courses_for_conditionset($conditionSetId);
-            if (!AMA_DB::isError($linkedCoursesArr) && !empty($linkedCoursesArr)) {
+            $linkedCoursesArr = $GLOBALS['dh']->getLinkedCoursesForConditionset($conditionSetId);
+            if (!AMADB::isError($linkedCoursesArr) && !empty($linkedCoursesArr)) {
                 foreach ($linkedCoursesArr as $linkedCourse) {
                     $formData['linkedCourses'][] = $linkedCourse[0];
                 }

@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
+
+use Lynxlab\ADA\Module\EtherpadIntegration\Pads;
+
+use Lynxlab\ADA\Module\EtherpadIntegration\Groups;
+
+use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadActions;
+
+use Lynxlab\ADA\Module\EtherpadIntegration\AMAEtherpadDataHandler;
+
+// Trigger: ClassWithNameSpace. The class Utils was declared with namespace Lynxlab\ADA\Module\EtherpadIntegration. //
+
 /**
  * @package     Etherpad module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -48,7 +60,7 @@ class Utils
              * it should be safe to assume that $params is [ 'nodeId' => id_node|Pads::instancePadId ]
              */
             if (array_key_exists('nodeId', $params)) {
-                $nodeId = ($params['nodeId'] === Pads::INSTANCEPADID) ? Pads::INSTANCEPADID : DataValidator::validate_node_id($params['nodeId']);
+                $nodeId = ($params['nodeId'] === Pads::INSTANCEPADID) ? Pads::INSTANCEPADID : DataValidator::validateNodeId($params['nodeId']);
             } elseif (array_key_exists('sess_id_node', $_SESSION)) {
                 // if no $params['nodeId'] then use session node
                 $nodeId = $_SESSION['sess_id_node'];

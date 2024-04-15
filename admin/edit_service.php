@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * edit service - this module provides service editing functionality
  *
@@ -94,31 +112,31 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
      */
     $errorsAr = [];
 
-    if (DataValidator::validate_not_empty_string($_POST['service_name']) === false) {
+    if (DataValidator::validateNotEmptyString($_POST['service_name']) === false) {
         $errorsAr['service_name'] = true;
     }
 
-    if (DataValidator::validate_not_empty_string($_POST['service_description']) === false) {
+    if (DataValidator::validateNotEmptyString($_POST['service_description']) === false) {
         $errorsAr['service_description'] = true;
     }
 
-    if (DataValidator::is_uinteger($_POST['service_level']) === false) {
+    if (DataValidator::isUinteger($_POST['service_level']) === false) {
         $errorsAr['service_level'] = true;
     }
 
-    if (DataValidator::is_uinteger($_POST['service_duration']) === false) {
+    if (DataValidator::isUinteger($_POST['service_duration']) === false) {
         $errorsAr['service_duration'] = true;
     }
 
-    if (DataValidator::is_uinteger($_POST['service_min_meetings']) === false) {
+    if (DataValidator::isUinteger($_POST['service_min_meetings']) === false) {
         $errorsAr['service_min_meetings'] = true;
     }
 
-    if (DataValidator::is_uinteger($_POST['service_max_meetings']) === false) {
+    if (DataValidator::isUinteger($_POST['service_max_meetings']) === false) {
         $errorsAr['service_max_meetings'] = true;
     }
 
-    if (DataValidator::is_uinteger($_POST['service_meeting_duration']) === false) {
+    if (DataValidator::isUinteger($_POST['service_meeting_duration']) === false) {
         $errorsAr['service_meeting_duration'] = true;
     }
 
@@ -128,9 +146,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         unset($_POST['submit']);
         $service_dataAr = $_POST;
-        $result = $common_dh->set_service($_POST['service_id'], $service_dataAr);
-        if (AMA_Common_DataHandler::isError($result)) {
-            $errObj = new ADA_Error($result);
+        $result = $common_dh->setService($_POST['service_id'], $service_dataAr);
+        if (AMACommonDataHandler::isError($result)) {
+            $errObj = new ADAError($result);
         } else {
             header('Location: ' . $userObj->getHomePage());
             exit();
@@ -140,11 +158,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     /*
      * Display the add user form
      */
-    $id_service = DataValidator::is_uinteger($_GET['id_service']);
+    $id_service = DataValidator::isUinteger($_GET['id_service']);
     if ($id_service !== false) {
-        $service_infoAr = $common_dh->get_service_info($id_service);
-        if (AMA_Common_DataHandler::isError($service_infoAr)) {
-            $errObj = new ADA_Error($service_infoAr);
+        $service_infoAr = $common_dh->getServiceInfo($id_service);
+        if (AMACommonDataHandler::isError($service_infoAr)) {
+            $errObj = new ADAError($service_infoAr);
         } else {
             $testersAr = [];
             $service_dataAr = [

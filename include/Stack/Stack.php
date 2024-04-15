@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Main\Stack\Stack;
+
+// Trigger: ClassWithNameSpace. The class Stack was declared with namespace Lynxlab\ADA\Main\Stack. //
+
 /**
  *
  * @author Guglielmo Celata <guglielmo@celata.com>
@@ -65,7 +69,7 @@ class Stack
      * @return the number of element in the stack
      *
      */
-    public function get_size()
+    public function getSize()
     {
         return sizeof($this->stack_ar);
     }

@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Module\Notifications\QueueManager;
+
+use Lynxlab\ADA\Module\Notifications\NotificationActions;
+
+use Lynxlab\ADA\Module\Notifications\Notification;
+
+use Lynxlab\ADA\Module\Notifications\EmailQueueItem;
+
+use Lynxlab\ADA\Module\Notifications\AMANotificationsDataHandler;
+
+use Lynxlab\ADA\Module\CloneInstance\EventSubscriber;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\CORE\html4\CBase;
+
+use Lynxlab\ADA\Main\AMA\AMATesterDataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * @package     notifications module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -42,7 +64,7 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
     public static function getSubscribedMethods()
     {
         return [
-            'AMA_Tester_DataHandler::get_notes_for_this_course_instance' => [
+            'AMATesterDataHandler::getNotesForThisCourseInstance' => [
                 CoreEvent::AMAPDOPREGETALL => 'preGetNotes',
                 CoreEvent::AMAPDOPOSTGETALL => 'postGetNotes',
             ],
@@ -331,8 +353,8 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
             if (in_array($nodeData['type'], [ADA_NOTE_TYPE])) {
                 $ntDH = AMANotificationsDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
                 // load all students and tutors of the course instance
-                $students =  $ntDH->get_students_for_course_instance($instanceId);
-                if (!AMA_DB::isError($students)) {
+                $students =  $ntDH->getStudentsForCourseInstance($instanceId);
+                if (!AMADB::isError($students)) {
                     $instanceSubscribedList = array_merge($instanceSubscribedList, array_map(function ($el) {
                         return [
                             'id_utente' => intval($el['id_utente']),
@@ -344,8 +366,8 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
                     }, $students));
                 }
 
-                $tutors = $ntDH->course_instance_tutor_info_get($instanceId);
-                if (!AMA_DB::isError($tutors)) {
+                $tutors = $ntDH->courseInstanceTutorInfoGet($instanceId);
+                if (!AMADB::isError($tutors)) {
                     $instanceSubscribedList = array_merge($instanceSubscribedList, array_map(function ($el) {
                         return [
                             'id_utente' => intval($el['id_utente_tutor']),

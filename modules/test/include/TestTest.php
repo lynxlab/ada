@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\Exercise\ExerciseCorrectionFactory;
+
+use Lynxlab\ADA\Module\Test\TopicTest;
+
+use Lynxlab\ADA\Module\Test\TestTest;
+
+use Lynxlab\ADA\Module\Test\RootTest;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\MultiPort;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class TestTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -14,7 +36,7 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_user;
+use function Lynxlab\ADA\Main\AMA\DBRead\readUser;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 class TestTest extends RootTest
@@ -85,14 +107,14 @@ class TestTest extends RootTest
             if ($this->barrier) {
                 $level_gained = null;
                 if (!is_null($r['min_barrier_points']) && $r['points'] >= $r['min_barrier_points']) {
-                    $level = $dh->get_student_level($_SESSION['sess_id_user'], $this->id_istanza);
+                    $level = $dh->getStudentLevel($_SESSION['sess_id_user'], $this->id_istanza);
                     if ($level < $this->livello) {
                         $level = $this->livello;
                     }
-                    if ($dh->set_student_level($this->id_istanza, [$_SESSION['sess_id_user']], $level)) {
+                    if ($dh->setStudentLevel($this->id_istanza, [$_SESSION['sess_id_user']], $level)) {
                         $level_gained = $level;
-                        $res = $dh->test_saveTest($r['id_history_test'], $r['tempo_scaduto'], $r['points'], $r['repeatable'], $r['min_barrier_points'], $level_gained);
-                        if (is_object($res) && (get_class($res) == 'AMA_Error')) {
+                        $res = $dh->testSaveTest($r['id_history_test'], $r['tempo_scaduto'], $r['points'], $r['repeatable'], $r['min_barrier_points'], $level_gained);
+                        if (is_object($res) && (get_class($res) == 'AMAError')) {
                             $this->onSaveError = true;
                             $this->rollBack();
                             return false;
@@ -100,8 +122,8 @@ class TestTest extends RootTest
 
                         //Send message to switcher and tutor when the user reaches max course's level
                         //Set course subscription to complete
-                        $userObj = read_user($_SESSION['sess_id_user']);
-                        $max_level = $dh->get_course_max_level($sess_id_course);
+                        $userObj = readUser($_SESSION['sess_id_user']);
+                        $max_level = $dh->getCourseMaxLevel($sess_id_course);
                         if ($level >= $max_level) {
                             // se è l'ultimo esercizio (ovvero se il livello dello studente è il massimo possibile)
                             // e l'esercizio è di tipo sbarramento
@@ -110,15 +132,15 @@ class TestTest extends RootTest
                              * @author giorgio disabled on 12/nov/2014 completion is now
                              * handled using modules/service-complete module
                              */
-                            // $dh->course_instance_student_subscribe($_SESSION['sess_id_course_instance'], $_SESSION['sess_id_user'], ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, $level);
+                            // $dh->courseInstanceStudentSubscribe($_SESSION['sess_id_course_instance'], $_SESSION['sess_id_user'], ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, $level);
                             /*
                             // 2. genera il messaggio da inviare allo switcher
                             $tester = $userObj->getDefaultTester();
-                            $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
-                            $tester_info_Ar = $dh->get_tester_info_from_pointer($tester); // common?
+                            $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester));
+                            $tester_info_Ar = $dh->getTesterInfoFromPointer($tester); // common?
                             $tester_name = $tester_info_Ar[1];
-                            $switchers_Ar = $tester_dh->get_users_by_type(array(AMA_TYPE_SWITCHER));
-                            if (AMA_DataHandler::isError($switchers_Ar) || !is_array($switchers_Ar)) {
+                            $switchers_Ar = $tester_dh->getUsersByType(array(AMA_TYPE_SWITCHER));
+                            if (AMADataHandler::isError($switchers_Ar) || !is_array($switchers_Ar)) {
                                 // ??
                             }
                             else {
@@ -127,7 +149,7 @@ class TestTest extends RootTest
                                 // FIXME: only the first switcher per provider !
                                 if ($switcher_id) {
                                     $switcher = $dh->get_switcher($switcher_id);
-                                    if (!AMA_DataHandler::isError($switcher)) {
+                                    if (!AMADataHandler::isError($switcher)) {
                                         // prepare message to send
                                         $message_ha['destinatari'] = $switcher['username'];
                                         $message_ha['titolo'] = translateFN("Completamento corso") . "<br>";
@@ -140,21 +162,21 @@ class TestTest extends RootTest
                                         $message_ha['priorita'] = 1;
                                         $message_ha['mittente'] = $user_name;
                                         $mh = new MessageHandler();
-                                        $mh->send_message($message_ha);
+                                        $mh->sendMessage($message_ha);
                                     }
                                 }
                             }
 
                             // genera il messaggio da inviare al tutor
                             // codice precedente
-                            $tutor_id = $dh->course_instance_tutor_get($sess_id_course_instance);
-                            if (AMA_DataHandler::isError($tutor_id)) {
+                            $tutor_id = $dh->courseInstanceTutorGet($sess_id_course_instance);
+                            if (AMADataHandler::isError($tutor_id)) {
                                 //?
                             }
                             // only one tutor per class
                             if ($tutor_id) {
-                                $tutor = $dh->get_tutor($tutor_id);
-                                if (!AMA_DataHandler::isError($tutor)) {
+                                $tutor = $dh->getTutor($tutor_id);
+                                if (!AMADataHandler::isError($tutor)) {
                                     // prepare message to send
                                     $message_ha['destinatari'] = $tutor['username'];
                                     $message_ha['titolo'] = translateFN("Esercizio svolto da ") . $user_name . "<br>";
@@ -168,7 +190,7 @@ class TestTest extends RootTest
                                     $message_ha['priorita'] = 1;
                                     $message_ha['mittente'] = $user_name;
                                     $mh = new MessageHandler();
-                                    $mh->send_message($message_ha);
+                                    $mh->sendMessage($message_ha);
                                 }
                             }
                             */
@@ -179,7 +201,7 @@ class TestTest extends RootTest
         }
 
         // call helper function to check service completeness using modules/service-complete
-        $userObj = read_user($_SESSION['sess_id_user']);
+        $userObj = readUser($_SESSION['sess_id_user']);
         BrowsingHelper::checkServiceComplete($userObj, $sess_id_course, $sess_id_course_instance);
 
         return true;

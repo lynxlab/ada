@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\HtmlLibrary\ServicesModuleHtmlLib;
+
+use Lynxlab\ADA\Main\AMA\MultiPort;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
 /**
  * Add exercise
  *
@@ -40,7 +46,7 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
 //needed to promote AMADataHandler to AMATestDataHandler. $sess_selected_tester is already present in session
 $GLOBALS['dh'] = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
-if ($dh->test_moveNode($_GET['id_nodo'], $_GET['direction'])) {
+if ($dh->testMoveNode($_GET['id_nodo'], $_GET['direction'])) {
     echo 1;
 } else {
     echo 0;

@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Module\GDPR\GdprAcceptPoliciesForm;
+
+use Lynxlab\ADA\Module\GDPR\GdprAbstractForm;
+
+use Lynxlab\ADA\Module\GDPR\GdprPolicy;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Forms\lib\classes\FForm;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class GdprAcceptPoliciesForm was declared with namespace Lynxlab\ADA\Module\GDPR. //
+
 /**
  * @package     gdpr module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -65,7 +81,7 @@ class GdprAcceptPoliciesForm extends GdprAbstractForm
                     $accordion->setAttribute('class', $accordion->getAttribute('class') . ' ' . $dataAr['extraclass']);
                 }
                 foreach ($dataAr['policies'] as $i => $policy) {
-                    $acceptedPolicies[$policy->getPolicy_content_id()] = false;
+                    $acceptedPolicies[$policy->getPolicyContentId()] = false;
                     $title = CDOMElement::create('div', 'class:' . (($i == 0) ? $firstElClass . ' ' : '') . 'title');
                     $title->addChild(CDOMElement::create('i', 'class:dropdown icon'));
                     // policy title, left side
@@ -74,12 +90,12 @@ class GdprAcceptPoliciesForm extends GdprAbstractForm
                     $title->addChild($spanTitle);
                     // policy accepted labels, right side
                     $labelColor = 'black';
-                    if (array_key_exists($policy->getPolicy_content_id(), $dataAr['userAccepted'])) {
+                    if (array_key_exists($policy->getPolicyContentId(), $dataAr['userAccepted'])) {
                         $labelTitle = sprintf(
                             translateFN('Accettata in versione %d il %s, %s'),
-                            $dataAr['userAccepted'][$policy->getPolicy_content_id()]['acceptedVersion'],
-                            ts2dFN($dataAr['userAccepted'][$policy->getPolicy_content_id()]['lastmodTS']),
-                            ts2tmFN($dataAr['userAccepted'][$policy->getPolicy_content_id()]['lastmodTS'])
+                            $dataAr['userAccepted'][$policy->getPolicyContentId()]['acceptedVersion'],
+                            ts2dFN($dataAr['userAccepted'][$policy->getPolicyContentId()]['lastmodTS']),
+                            ts2tmFN($dataAr['userAccepted'][$policy->getPolicyContentId()]['lastmodTS'])
                         );
                         $isAccepted = true;
                     } else {
@@ -88,11 +104,11 @@ class GdprAcceptPoliciesForm extends GdprAbstractForm
                     }
 
                     if ($isAccepted) {
-                        if ($dataAr['userAccepted'][$policy->getPolicy_content_id()]['acceptedVersion'] == $policy->getVersion()) {
+                        if ($dataAr['userAccepted'][$policy->getPolicyContentId()]['acceptedVersion'] == $policy->getVersion()) {
                             $status = "ACCETTATA";
                             $labelColor = 'green';
                             $icon = 'ok sign';
-                            $acceptedPolicies[$policy->getPolicy_content_id()] = true;
+                            $acceptedPolicies[$policy->getPolicyContentId()] = true;
                         } else {
                             $status = "NUOVA VERSIONE";
                             $labelColor = 'blue';
@@ -151,14 +167,14 @@ class GdprAcceptPoliciesForm extends GdprAbstractForm
                     ];
                     foreach ($radios as $value => $rData) {
                         $radioContainer = CDOMElement::create('div', 'class:field');
-                        $radio = CDOMElement::create('radio', 'value:' . $value . ',name:acceptPolicy[' . $policy->getPolicy_content_id() . '],id:' . $rData['type'] . '_' . $policy->getPolicy_content_id());
+                        $radio = CDOMElement::create('radio', 'value:' . $value . ',name:acceptPolicy[' . $policy->getPolicyContentId() . '],id:' . $rData['type'] . '_' . $policy->getPolicyContentId());
                         if (
-                            !$isRegistration && (($value === 1 && $acceptedPolicies[$policy->getPolicy_content_id()] === true) ||
-                            ($value === 0 && $acceptedPolicies[$policy->getPolicy_content_id()] === false))
+                            !$isRegistration && (($value === 1 && $acceptedPolicies[$policy->getPolicyContentId()] === true) ||
+                            ($value === 0 && $acceptedPolicies[$policy->getPolicyContentId()] === false))
                         ) {
                             $radio->setAttribute('checked', 'checked');
                         }
-                        $label = CDOMElement::create('label', 'class:' . $rData['type'] . ',for:' . $rData['type'] . '_' . $policy->getPolicy_content_id());
+                        $label = CDOMElement::create('label', 'class:' . $rData['type'] . ',for:' . $rData['type'] . '_' . $policy->getPolicyContentId());
                         $label->addChild(new CText(translateFN($rData['label'])));
                         $radioContainer->addChild($radio);
                         $radioContainer->addChild($label);

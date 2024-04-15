@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Module\GDPR\GdprPolicy;
+
+use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsHistory;
+
+use Lynxlab\ADA\Module\ForkedPaths\AMAForkedPathsDataHandler;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\MultiPort;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class AMAForkedPathsDataHandler was declared with namespace Lynxlab\ADA\Module\ForkedPaths. //
+
 /**
  * @package     forked-paths module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -39,11 +59,11 @@ class AMAForkedPathsDataHandler extends AMA_DataHandler
      * @param string $className to use a class from your namespace, this string must start with "\"
      * @param array $whereArr
      * @param array $orderByArr
-     * @param Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
+     * @param AbstractAMADataHandler $dbToUse object used to run the queries. If null, use 'this'
      * @throws ForkedPathsException
      * @return array
      */
-    public function findBy($className, array $whereArr = null, array $orderByArr = null, Abstract_AMA_DataHandler $dbToUse = null)
+    public function findBy($className, array $whereArr = null, array $orderByArr = null, AbstractAMADataHandler $dbToUse = null)
     {
         if (
             stripos($className, '\\') !== 0 &&
@@ -125,7 +145,7 @@ class AMAForkedPathsDataHandler extends AMA_DataHandler
         }
 
         $result = $dbToUse->getAllPrepared($sql, (!is_null($whereArr) && count($whereArr) > 0) ? array_values($whereArr) : [], AMA_FETCH_ASSOC);
-        if (AMA_DB::isError($result)) {
+        if (AMADB::isError($result)) {
             throw new ForkedPathsException($result->getMessage(), (int)$result->getCode());
         } else {
             $retArr = array_map(function ($el) use ($className, $dbToUse) {
@@ -136,7 +156,7 @@ class AMAForkedPathsDataHandler extends AMA_DataHandler
                 foreach ($joined as $joinKey) {
                     $sql = sprintf("SELECT `%s` FROM `%s` WHERE `%s`=?", $joinKey, $retObj::table, $retObj::key);
                     $res = $dbToUse->getAllPrepared($sql, $retObj->{$retObj::GETTERPREFIX . ucfirst($retObj::key)}(), AMA_FETCH_ASSOC);
-                    if (!AMA_DB::isError($res)) {
+                    if (!AMADB::isError($res)) {
                         foreach ($res as $row) {
                             $retObj->{$retObj::ADDERPREFIX . ucfirst($joinKey)}($row[$joinKey], $dbToUse);
                         }
@@ -153,10 +173,10 @@ class AMAForkedPathsDataHandler extends AMA_DataHandler
      *
      * @param string $className
      * @param array $orderBy
-     * @param Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
+     * @param AbstractAMADataHandler $dbToUse object used to run the queries. If null, use 'this'
      * @return array
      */
-    public function findAll($className, array $orderBy = null, Abstract_AMA_DataHandler $dbToUse = null)
+    public function findAll($className, array $orderBy = null, AbstractAMADataHandler $dbToUse = null)
     {
         return $this->findBy($className, null, $orderBy, $dbToUse);
     }
@@ -171,12 +191,12 @@ class AMAForkedPathsDataHandler extends AMA_DataHandler
     {
 
         $historyObj = new ForkedPathsHistory($saveData);
-        $historyObj->setSaveTS($this->date_to_ts('now'))->setSessionId(session_id());
+        $historyObj->setSaveTS($this->dateToTs('now'))->setSessionId(session_id());
 
         $fields = $historyObj->toArray();
         $result = $this->executeCriticalPrepared($this->sqlInsert($historyObj::TABLE, $fields), array_values($fields));
 
-        if (AMA_DB::isError($result)) {
+        if (AMADB::isError($result)) {
             throw new ForkedPathsException($result->getMessage(), is_numeric($result->getCode()) ? $result->getCode() : null);
         }
 
@@ -238,7 +258,7 @@ class AMAForkedPathsDataHandler extends AMA_DataHandler
         $theInstance = parent::instance($dsn);
 
         if (is_null(self::$policiesDB)) {
-            self::$policiesDB = \AMA_Common_DataHandler::instance();
+            self::$policiesDB = \AMACommonDataHandler::instance();
             if (!MULTIPROVIDER && !is_null($dsn)) {
                 // must check if passed $dsn has the module login tables
                 // execute this dummy query, if result is not an error table is there
@@ -246,7 +266,7 @@ class AMAForkedPathsDataHandler extends AMA_DataHandler
                 // must use AMA_DataHandler because we are not able to
                 // query AMALoginDataHandelr in this method!
                 $ok = \AMA_DataHandler::instance($dsn)->getOnePrepared($sql);
-                if (!AMA_DB::isError($ok)) self::$policiesDB = $theInstance;
+                if (!AMADB::isError($ok)) self::$policiesDB = $theInstance;
             }
         }
         return $theInstance;

@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Module\EtherpadIntegration\Authors;
+
+use Lynxlab\ADA\Module\Badges\CourseBadge;
+
+use Lynxlab\ADA\Main\User\ADAAbstractUser;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Helper\ViewBaseHelper;
+
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class BrowsingHelper was declared with namespace Lynxlab\ADA\Main\Helper. //
+
 /**
  * Browsing functions
  *
@@ -116,8 +134,8 @@ class BrowsingHelper extends ViewBaseHelper
         /**
          * CONTROLLARE DA DOVE VIENE $sess_id_course_instance
          */
-        if (method_exists($userObj, 'get_student_status')) {
-            $user_status = $userObj->get_student_status($sess_id_user, $sess_id_course_instance);
+        if (method_exists($userObj, 'getStudentStatus')) {
+            $user_status = $userObj->getStudentStatus($sess_id_user, $sess_id_course_instance);
         } else {
             $user_status = ADA_STATUS_VISITOR;
         }
@@ -162,7 +180,7 @@ class BrowsingHelper extends ViewBaseHelper
                 if ($user_status != ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED) {
                     $mydh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
                     // load the conditionset for this course
-                    $conditionSet = $mydh->get_linked_conditionset_for_course($courseId);
+                    $conditionSet = $mydh->getLinkedConditionsetForCourse($courseId);
                     $mydh->disconnect();
 
                     if ($conditionSet instanceof CompleteConditionSet) {
@@ -213,15 +231,15 @@ class BrowsingHelper extends ViewBaseHelper
                 $cdh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
                 // load the badges linked to this course
                 $badgesList = $bdh->findBy('CourseBadge', ['id_corso' => $courseId]);
-                if (!AMA_DB::isError($badgesList) && is_array($badgesList) && count($badgesList) > 0) {
+                if (!AMADB::isError($badgesList) && is_array($badgesList) && count($badgesList) > 0) {
                     /**
                      * @var \Lynxlab\ADA\Module\Badges\CourseBadges $cb
                      */
                     foreach ($badgesList as $cb) {
-                        $badge = $bdh->findBy('Badge', ['uuid' => $cb->getBadge_uuid()]);
+                        $badge = $bdh->findBy('Badge', ['uuid' => $cb->getBadgeUuid()]);
                         if (is_array($badge) && count($badge) == 1) {
                             $badge = reset($badge);
-                            $cs = $cdh->getCompleteConditionSet($cb->getId_conditionset());
+                            $cs = $cdh->getCompleteConditionSet($cb->getIdConditionset());
                             if ($badge instanceof Badge && $cs instanceof CompleteConditionSet) {
                                 if ($cs->evaluateSet([$courseInstanceId, $userObj->getId()])) {
                                     // student is rewarded with the badge
@@ -255,7 +273,7 @@ class BrowsingHelper extends ViewBaseHelper
     {
         global $sess_selected_tester, $sess_id_course;
 
-        $last_access_date = $userObj->get_last_accessFN($courseInstanceId, 'T');
+        $last_access_date = $userObj->getLastAccessFN($courseInstanceId, 'T');
         if ($last_access_date == translateFN("Nessun'informazione")) {
             $user_name = $userObj->username;
             $destAr = [$user_name];
@@ -273,18 +291,18 @@ class BrowsingHelper extends ViewBaseHelper
                 fclose($fp);
             } else {
                 $message_ha['testo'] = translateFN("Benvenuto in ADA!");
-                $message_ha['testo'] .= translateFN("Se hai problemi, dubbi o domande, puoi inviare un messaggio al tuo") . "<a href=\"" . HTTP_ROOT_DIR . "/comunica/send_message.php?destinatari=" . self::$tutor_uname . "\">" . translateFN("E-practitioner") . "</a>.";
+                $message_ha['testo'] .= translateFN("Se hai problemi, dubbi o domande, puoi inviare un messaggio al tuo") . "<a href=\"" . HTTP_ROOT_DIR . "/comunica/sendMessage.php?destinatari=" . self::$tutor_uname . "\">" . translateFN("E-practitioner") . "</a>.";
             }
             $message_ha['data_ora'] = "now";
             $message_ha['mittente'] = self::$tutor_uname;
             // e-mail
             $message_ha['tipo'] = ADA_MSG_MAIL;
-            $res = $mh->send_message($message_ha);
+            $res = $mh->sendMessage($message_ha);
             // messaggio interno
             $message_ha['tipo'] = ADA_MSG_SIMPLE;
-            //$res = $mh->send_message($message_ha);
+            //$res = $mh->sendMessage($message_ha);
             // reload messages to show this one !
-            // $user_messages = $userObj->get_messagesFN($sess_id_user);
+            // $user_messages = $userObj->getMessagesFN($sess_id_user);
         }
     }
 

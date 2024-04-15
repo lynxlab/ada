@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\MultiPort;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Comunica\DataHandler\UserDataHandler;
+
+use Lynxlab\ADA\Comunica\DataHandler\ChatDataHandler;
+
+use function \translateFN;
+
 /**
  * control chat
  *
@@ -18,7 +40,7 @@ use Lynxlab\ADA\Comunica\ChatRoom;
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 
-use function Lynxlab\ADA\Comunica\Functions\exitWith_JSON_Error;
+use function Lynxlab\ADA\Comunica\Functions\exitWithJSONError;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -101,7 +123,7 @@ ComunicaHelper::init($neededObjAr);
  * If not, stop script execution and report an error to the caller.
  */
 if (!isset($_POST['chatroom'])/*!isset($_GET['chatroom'])*/) {
-    exitWith_JSON_Error(translateFN("Errore: parametri passati allo script PHP non corretti"));
+    exitWithJSONError(translateFN("Errore: parametri passati allo script PHP non corretti"));
 }
 
 $id_chatroom = $_POST['chatroom'];//$_GET['chatroom'];
@@ -111,9 +133,9 @@ $json_data = [];
  * Get an instance of the UserDataHandler class.
  */
 //$udh = UserDataHandler::instance(MultiPort::getDSN($sess_selected_tester));
-//if (AMA_DataHandler::isError($udh))
+//if (AMADataHandler::isError($udh))
 //{
-//    exitWith_JSON_Error(translateFN("Errore nella creazione dell'oggetto UserDataHandler"));
+//    exitWithJSONError(translateFN("Errore nella creazione dell'oggetto UserDataHandler"));
 //}
 
 /*
@@ -122,21 +144,21 @@ $json_data = [];
 //$mh = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
 $mh = MessageHandler::instance($_SESSION['sess_selected_tester_dsn']);
 
-if (AMA_DataHandler::isError($mh)) {
-    exitWith_JSON_Error(translateFN("Errore nella creazione dell'oggetto MessageHandler"));
+if (AMADataHandler::isError($mh)) {
+    exitWithJSONError(translateFN("Errore nella creazione dell'oggetto MessageHandler"));
 }
 
 /*
  * Get chatroom data
  */
 $chatroomObj = new ChatRoom($id_chatroom, $_SESSION['sess_selected_tester_dsn']);
-if (AMA_DataHandler::isError($chatroomObj)) {
-    exitWith_JSON_Error(translateFN("Errore nella creazione della chatroom"));
+if (AMADataHandler::isError($chatroomObj)) {
+    exitWithJSONError(translateFN("Errore nella creazione della chatroom"));
 }
 
-$chatroom_ha = $chatroomObj->get_info_chatroomFN($id_chatroom);
-if (AMA_DataHandler::isError($chatroom_ha)) {
-    exitWith_JSON_Error(translateFN("Errore nell'ottenimento dei dati sulla chatroom"));
+$chatroom_ha = $chatroomObj->getInfoChatroomFN($id_chatroom);
+if (AMADataHandler::isError($chatroom_ha)) {
+    exitWithJSONError(translateFN("Errore nell'ottenimento dei dati sulla chatroom"));
 }
 
 $actual_time = time();
@@ -146,19 +168,19 @@ $chat_type       = $chatroom_ha['tipo_chat'];
 
 // gets an array containing all the ids of the users present in the chat
 /* 21 settembre 2008
- * modifica di vito in ChatDataHandler->list_users_chatroom(richiamato da $chatroomObj->list_users_chatroomFN)
+ * modifica di vito in ChatDataHandler->list_users_chatroom(richiamato da $chatroomObj->listUsersChatroomFN)
  * ora restituisce id utente e username
  */
-$userslist_ar = $chatroomObj->list_users_chatroomFN($id_chatroom);
+$userslist_ar = $chatroomObj->listUsersChatroomFN($id_chatroom);
 
-$invited_userslist_ar = $chatroomObj->list_users_invited_to_chatroomFN($id_chatroom);
+$invited_userslist_ar = $chatroomObj->listUsersInvitedToChatroomFN($id_chatroom);
 
-if (AMA_DataHandler::isError($userslist_ar)) {
-    exitWith_JSON_Error(translateFN("Errore nell'ottenimento dei dati relativi agli utenti presenti nella chatroom"));
+if (AMADataHandler::isError($userslist_ar)) {
+    exitWithJSONError(translateFN("Errore nell'ottenimento dei dati relativi agli utenti presenti nella chatroom"));
 }
 
-if (AMA_DataHandler::isError($invited_userslist_ar)) {
-    exitWith_JSON_Error(translateFN("Errore nell'ottenimento dei dati relativi agli utenti invitati alla chatroom"));
+if (AMADataHandler::isError($invited_userslist_ar)) {
+    exitWithJSONError(translateFN("Errore nell'ottenimento dei dati relativi agli utenti invitati alla chatroom"));
 }
 
 /*
@@ -180,9 +202,9 @@ if ($expiration_time != 0) {
             $chatroom_new['welcome_msg'] = addslashes($welcome_msg);
 
             //extend the time of this chat session
-            $result = $chatroomObj->set_chatroomFN($id_chatroom, $chatroom_new);
-            if (AMA_DataHandler::isError($result)) {
-                exitWith_JSON_Error(translateFN("Errore nel tentativo di estendere la durata della chatroom"));
+            $result = $chatroomObj->setChatroomFN($id_chatroom, $chatroom_new);
+            if (AMADataHandler::isError($result)) {
+                exitWithJSONError(translateFN("Errore nel tentativo di estendere la durata della chatroom"));
             }
         }
     }
@@ -191,9 +213,9 @@ if ($expiration_time != 0) {
 /*
  *
  */
-$still_running = $chatroomObj->is_chatroom_not_expiredFN($id_chatroom);
-if (AMA_DataHandler::isError($still_running)) {
-    exitWith_JSON_Error(translateFN("Errore nella verifica della validit&agrave; della chatroom"));
+$still_running = $chatroomObj->isChatroomNotExpiredFN($id_chatroom);
+if (AMADataHandler::isError($still_running)) {
+    exitWithJSONError(translateFN("Errore nella verifica della validit&agrave; della chatroom"));
 }
 
 // verify if the closing chatroom time has arrived
@@ -210,9 +232,9 @@ if (!$still_running) {
 /*
  *
  */
-$user_status = $chatroomObj->get_user_statusFN($sess_id_user, $id_chatroom);
-if (AMA_DataHandler::isError($user_status)) {
-    exitWith_JSON_Error(translateFN("Errore nell'ottenimento dello stato dell'utente all'interno della chatroom"));
+$user_status = $chatroomObj->getUserStatusFN($sess_id_user, $id_chatroom);
+if (AMADataHandler::isError($user_status)) {
+    exitWithJSONError(translateFN("Errore nell'ottenimento dello stato dell'utente all'interno della chatroom"));
 }
 
 // ******************************************************
@@ -328,10 +350,10 @@ else {
 //{
 //    // get's an array containing all the ids of the banned users into that chatroom
 //    // vito, 21 settembre 2008, modifica a ChatDataHandler->list_banned_users: ottiene anche lo username , oltre allo user id
-//    $bannedusers_ar = $chatroomObj->list_banned_users_chatroomFN($id_chatroom);
-//    if (AMA_DataHandler::isError($bannedusers_ar))
+//    $bannedusers_ar = $chatroomObj->listBannedUsersChatroomFN($id_chatroom);
+//    if (AMADataHandler::isError($bannedusers_ar))
 //    {
-//        exitWith_JSON_Error(translateFN("Errore nell'ottenimento della lista degli utenti bannati"));
+//        exitWithJSONError(translateFN("Errore nell'ottenimento della lista degli utenti bannati"));
 //    }
 //
 //  // we will tranform ids in usernames only in the case that the array it is not empty
@@ -358,9 +380,9 @@ else {
 //}// end of banned list
 
 // write the time of the event into the utente_chatroom table
-$last_event = $chatroomObj->set_last_event_timeFN($sess_id_user, $id_chatroom);
-if (isset($bannedusers_ar) && AMA_DataHandler::isError($bannedusers_ar)) {
-    exitWith_JSON_Error(translateFN("Errore nell'aggiornamento del tempo relativo all'utlimo evento"));
+$last_event = $chatroomObj->setLastEventTimeFN($sess_id_user, $id_chatroom);
+if (isset($bannedusers_ar) && AMADataHandler::isError($bannedusers_ar)) {
+    exitWithJSONError(translateFN("Errore nell'aggiornamento del tempo relativo all'utlimo evento"));
 }
 
 /*

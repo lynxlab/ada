@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Module\Secretquestion\AMASecretQuestionDataHandler;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class AMASecretQuestionDataHandler was declared with namespace Lynxlab\ADA\Module\Secretquestion. //
+
 /**
  * @package     secretquestion module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -15,7 +29,7 @@ use Lynxlab\ADA\Main\Token\TokenManager;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
-class AMASecretQuestionDataHandler extends AMA_Common_DataHandler
+class AMASecretQuestionDataHandler extends AMACommonDataHandler
 {
     /**
      * module's own data tables prefix
@@ -82,7 +96,7 @@ class AMASecretQuestionDataHandler extends AMA_Common_DataHandler
         // use queryPrepared because executeCriticalPrepared will return
         // an error if no deleted rows
         $result = $this->queryPrepared($sql, [intval($userId)]);
-        if (!AMA_DB::isError($result)) {
+        if (!AMADB::isError($result)) {
             $saveArr = [
                 'id_utente' => $userId,
                 'question' => trim($question),

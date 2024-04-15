@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\HtmlLibrary\ServicesModuleHtmlLib;
+
+use Lynxlab\ADA\Main\HtmlLibrary\FormElementCreator;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class ServicesModuleHtmlLib was declared with namespace Lynxlab\ADA\Main\HtmlLibrary. //
+
 /**
  *
  * @package

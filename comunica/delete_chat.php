@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * Add chat - this module provides add chat functionality
  *
@@ -88,15 +106,15 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         header("Location: $list_chatrooms");
         exit();
     }
-    $chatId = DataValidator::is_uinteger($_POST['id_room']);
+    $chatId = DataValidator::isUinteger($_POST['id_room']);
     if ($chatId !== false) {
-        $chatRoomHa = ChatRoom::get_info_chatroomFN($chatId);
-        if (!AMA_DataHandler::isError($chatRoomHa)) {
+        $chatRoomHa = ChatRoom::getInfoChatroomFN($chatId);
+        if (!AMADataHandler::isError($chatRoomHa)) {
             // check to see if the chatromm is started, in that case we disable some fields
-            // $chatroom_started = $chatroomObj->is_chatroom_startedFN($chatId);
+            // $chatroom_started = $chatroomObj->isChatroomStartedFN($chatId);
             $classId = $chatRoomHa['id_istanza_corso'];
             $chatTitle = $chatRoomHa['titolo_chat'];
-            $chat_deleted = ChatRoom::remove_chatroomFN($chatId);
+            $chat_deleted = ChatRoom::removeChatroomFN($chatId);
             if ($chat_deleted) {
                 $data = new CText(translateFN('Chat cancellata'));
             } else {
@@ -109,13 +127,13 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $data = new CText(translateFN('Id chat non valido'));
     }
 } else {
-    $chatId = DataValidator::is_uinteger($_GET['id_room']);
+    $chatId = DataValidator::isUinteger($_GET['id_room']);
     if ($chatId === false) {
         $data = new CText(translateFN('Id chat non valido') . '(1)');
     } else {
         //         $chatroomObj = new ChatRoom($chatId);
-        $chatRoomHa = ChatRoom::get_info_chatroomFN($chatId);
-        if (!AMA_DataHandler::isError($chatRoomHa)) {
+        $chatRoomHa = ChatRoom::getInfoChatroomFN($chatId);
+        if (!AMADataHandler::isError($chatRoomHa)) {
             $classId = $chatRoomHa['id_istanza_corso'];
             $chatTitle = $chatRoomHa['titolo_chat'];
             $formData = [

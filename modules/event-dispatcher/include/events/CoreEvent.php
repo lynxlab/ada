@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\AMA\AMAPDOWrapper;
+
+// Trigger: ClassWithNameSpace. The class CoreEvent was declared with namespace Lynxlab\ADA\Module\EventDispatcher\Events. //
+
 /**
  * @package     event-dispatcher module
  * @author      giorgio <g.consorti@lynxlab.com>

@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Module\Notifications\NotificationBase;
+
+use Lynxlab\ADA\Module\Notifications\Notification;
+
+use Lynxlab\ADA\Module\Notifications\AMANotificationsDataHandler;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\Layout;
+
+// Trigger: ClassWithNameSpace. The class Notification was declared with namespace Lynxlab\ADA\Module\Notifications. //
+
 /**
  * @package     notifications module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -13,7 +25,7 @@ namespace Lynxlab\ADA\Module\Notifications;
 use Lynxlab\ADA\Main\Output\GenericHtml;
 use Lynxlab\ADA\Main\Output\Html;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_layout_from_DB;
+use function Lynxlab\ADA\Main\AMA\DBRead\readLayoutFromDB;
 
 class Notification extends NotificationBase
 {
@@ -81,9 +93,9 @@ class Notification extends NotificationBase
             $template = $layoutObj->template;
         }
 
-        $html_renderer->fillin_templateFN($content_dataAr);
+        $html_renderer->fillinTemplateFN($content_dataAr);
         $html_renderer->resetImgSrcFN(dirname($template), $layoutObj->family);
-        $html_renderer->apply_styleFN();
+        $html_renderer->applyStyleFN();
 
         return $html_renderer->htmlheader . $html_renderer->htmlbody . $html_renderer->htmlfooter;
     }
@@ -99,7 +111,7 @@ class Notification extends NotificationBase
     {
         $oldSelf = $GLOBALS['self'] ?? null;
         $GLOBALS['self'] = pathinfo($fileName, PATHINFO_FILENAME);
-        $layoutObj = read_layout_from_DB(666, ADA_TEMPLATE_FAMILY);
+        $layoutObj = readLayoutFromDB(666, ADA_TEMPLATE_FAMILY);
         $GLOBALS['self'] = $oldSelf;
         return $layoutObj;
     }

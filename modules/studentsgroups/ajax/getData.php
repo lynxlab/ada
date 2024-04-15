@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Module\EtherpadIntegration\Groups;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Bookmark\Tag;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * @package     studentsgroups module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -68,7 +78,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                 $withGroupDetails = true;
                 $groupsList = $GLOBALS['dh']->findAll($params['object']);
             }
-            if (!AMA_DB::isError($groupsList)) {
+            if (!AMADB::isError($groupsList)) {
                 /**
                  * @var \Lynxlab\ADA\Module\StudentsGroups\Groups $group
                  */
@@ -142,7 +152,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                     }
                     array_push($groupsData, $tmpData);
                 }
-            } // if (!AMA_DB::isError($groupsList))
+            } // if (!AMADB::isError($groupsList))
             $data = [ 'data' => $groupsData ];
         }
     } else {

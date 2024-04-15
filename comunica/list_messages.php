@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * list_messages.php
  *
@@ -108,7 +128,7 @@ $title = translateFN('ADA - Lista messaggi');
 
 $online_users_listing_mode = 2;
 if (isset($sess_id_course_instance) && !empty($sess_id_course_instance)) {
-    $online_users = ADALoggableUser::get_online_usersFN($sess_id_course_instance, $online_users_listing_mode);
+    $online_users = ADALoggableUser::getOnlineUsersFN($sess_id_course_instance, $online_users_listing_mode);
 } else {
     $online_users = '';
 }
@@ -126,27 +146,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // set all read messages
-    //$res = $mh->set_messages($user_id, $to_set_as_read_ar, 'R');
+    //$res = $mh->setMessages($user_id, $to_set_as_read_ar, 'R');
     $res = MultiPort::markUserMessagesAsRead($userObj, $to_set_as_read_ar);
-    if (AMA_DataHandler::isError($res)) {
-        $errObj = new ADA_Error($res, translateFN('Errore'));
+    if (AMADataHandler::isError($res)) {
+        $errObj = new ADAError($res, translateFN('Errore'));
     }
 
     // set all unread messages
     // first, get all the messages in the user's spool
-    //$msgs_ha = $mh->get_messages($user_id, ADA_MSG_SIMPLE, array('read_timestamp'));
+    //$msgs_ha = $mh->getMessages($user_id, ADA_MSG_SIMPLE, array('read_timestamp'));
     $msgs_ha = MultiPort::getUserMessages($userObj);
-    if (AMA_DataHandler::isError($msgs_ha)) {
-        $errObj = new ADA_Error($msgs_ha, translateFN('Errore in lettura messaggi utente'));
+    if (AMADataHandler::isError($msgs_ha)) {
+        $errObj = new ADAError($msgs_ha, translateFN('Errore in lettura messaggi utente'));
     }
 
     // then fill the array of ids to set as unread
 
     $to_set_as_unread_ar = [];
     foreach ($msgs_ha as $pointer => $msgs_tester_Ar) {
-        $id_tester_Ar = $common_dh->get_tester_info_from_pointer($pointer);
-        if (AMA_DataHandler::isError($id_tester_Ar)) {
-            $errObj = new ADA_Error($id_tester_Ar, translateFN('Errore'));
+        $id_tester_Ar = $common_dh->getTesterInfoFromPointer($pointer);
+        if (AMADataHandler::isError($id_tester_Ar)) {
+            $errObj = new ADAError($id_tester_Ar, translateFN('Errore'));
         } else {
             foreach ($msgs_tester_Ar as $msg_id => $msg_ar) {
                 $msg_id_tester = $id_tester_Ar[0] . '_' . $msg_id;
@@ -157,11 +177,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    // last, invoke, the set_messages method
-    //$res = $mh->set_messages($user_id, $to_set_as_unread_ar, 'N');
+    // last, invoke, the setMessages method
+    //$res = $mh->setMessages($user_id, $to_set_as_unread_ar, 'N');
     $res = MultiPort::markUserMessagesAsUnread($userObj, $to_set_as_unread_ar);
-    if (AMA_DataHandler::isError($res)) {
-        $errObj = new ADA_Error($res, translateFN('Errore'));
+    if (AMADataHandler::isError($res)) {
+        $errObj = new ADAError($res, translateFN('Errore'));
     }
 
     // build array of messages ids to be removed
@@ -172,20 +192,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // manage messages removal
-    //$res = $mh->remove_messages($user_id, $to_remove_ar);
+    //$res = $mh->removeMessages($user_id, $to_remove_ar);
     $res = MultiPort::removeUserMessages($userObj, $to_remove_ar);
-    if (AMA_DataHandler::isError($res)) {
-        $errObj = new ADA_Error($res, translateFN('Errore durante la cancellazione dei messaggi'));
+    if (AMADataHandler::isError($res)) {
+        $errObj = new ADAError($res, translateFN('Errore durante la cancellazione dei messaggi'));
     }
 }
 
 
 // remove single message if requested
 if (isset($del_msg_id) and !empty($del_msg_id)) {
-    //$res = $mh->remove_messages($user_id, array($del_msg_id));
+    //$res = $mh->removeMessages($user_id, array($del_msg_id));
     $res = MultiPort::removeUserMessages($userObj, [$del_msg_id]);
-    if (AMA_DataHandler::isError($res)) {
-        $errObj = new ADA_Error($res, translateFN('Errore durante la cancellazione del messaggio'));
+    if (AMADataHandler::isError($res)) {
+        $errObj = new ADAError($res, translateFN('Errore durante la cancellazione del messaggio'));
     }
 }
 
@@ -233,11 +253,11 @@ if (!isset($status)) {
 */
 
 if (isset($_SESSION['sess_id_course_instance'])) {
-    $last_access = $userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']), "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(($_SESSION['sess_id_course_instance']), "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 } else {
-    $last_access = $userObj->get_last_accessFN(null, "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(null, "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 }
 
 if ($last_access == '' || is_null($last_access)) {

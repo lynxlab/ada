@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Module\Test\AMATestDataHandler;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\JS;
+
+use Lynxlab\ADA\Main\Node\Media;
+
+use Lynxlab\ADA\Main\Course\Student;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class Student was declared with namespace Lynxlab\ADA\Main\Course. //
+
 /**
  * Student class
  *
@@ -28,7 +48,7 @@ use Lynxlab\ADA\Switcher\Subscription;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\dt2tsFN;
 use function Lynxlab\ADA\Main\Utilities\masort;
-use function Lynxlab\ADA\Main\Utilities\today_dateFN;
+use function Lynxlab\ADA\Main\Utilities\todayDateFN;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 class Student
@@ -46,9 +66,9 @@ class Student
         if (is_null($status)) {
             $status = ADA_STATUS_SUBSCRIBED; // we want only subscribed students
         }
-        $dataHa = $dh->course_instance_students_presubscribe_get_list($id_course_instance, $status); // Get student list of selected course
+        $dataHa = $dh->courseInstanceStudentsPresubscribeGetList($id_course_instance, $status); // Get student list of selected course
 
-        if (AMA_DataHandler::isError($dataHa)) { // || (!is_array($dataHa))){ ** Se non e' un array non deve chiamare getMessage 12/05/2004
+        if (AMADataHandler::isError($dataHa)) { // || (!is_array($dataHa))){ ** Se non e' un array non deve chiamare getMessage 12/05/2004
             $msg = $dataHa->getMessage();
             // header("Location: $error?err_msg=$msg");
         } else {
@@ -60,28 +80,28 @@ class Student
         }
     }
 
-    public function get_student_coursesFN($id_course, $order = "", $speed_mode = true)
+    public function getStudentCoursesFN($id_course, $order = "", $speed_mode = true)
     {
-        return $this->get_class_reportFN($id_course, $order, $speed_mode);
+        return $this->getClassReportFN($id_course, $order, $speed_mode);
     }
 
 
-    public function get_class_report_from_dbFN($id_course, $id_course_instance)
+    public function getClassReportFromDbFN($id_course, $id_course_instance)
     {
         // last data from db tble
         $dh = $GLOBALS['dh'];
-        $info_course = $dh->get_course($id_course); // Get title course
-        if (AMA_DataHandler::isError($info_course)) {
+        $info_course = $dh->getCourse($id_course); // Get title course
+        if (AMADataHandler::isError($info_course)) {
             $msg = $info_course->getMessage();
             return $msg;
         }
         $course_title = $info_course['titolo'];
-        $instance_course_ha = $dh->course_instance_get($id_course_instance); // Get the instance courses data
-        if (AMA_DataHandler::isError($instance_course_ha)) {
+        $instance_course_ha = $dh->courseInstanceGet($id_course_instance); // Get the instance courses data
+        if (AMADataHandler::isError($instance_course_ha)) {
             $msg = $instance_course_ha->getMessage();
             return $msg;
         }
-        $start_date =  AMA_DataHandler::ts_to_date($instance_course_ha['data_inizio'], ADA_DATE_FORMAT);
+        $start_date =  AMADataHandler::tsToDate($instance_course_ha['data_inizio'], ADA_DATE_FORMAT);
 
         /**
          * @author giorgio 27/ott/2014
@@ -90,13 +110,13 @@ class Student
          * safe to get rid of the following 2 lines of code
          *
          */
-        //         $ymdhms = today_dateFN();
+        //         $ymdhms = todayDateFN();
         //         $utime = dt2tsFN($ymdhms);
 
         $utime = null;
-        $report_dataHa = $this->read_class_data($id_course, $id_course_instance, $utime);
+        $report_dataHa = $this->readClassData($id_course, $id_course_instance, $utime);
         // vito, 16 luglio 2008, gestione dell'errore relativo alla chiamata a read_class_data
-        if (AMA_DataHandler::isError($report_dataHa)) {
+        if (AMADataHandler::isError($report_dataHa)) {
             $msg = $report_dataHa->getMessage();
             return $msg;
         }
@@ -227,7 +247,7 @@ class Student
 
             // TABLE LABELS
 
-            $table_labels[0] = $this->generate_class_report_header();
+            $table_labels[0] = $this->generateClassReportHeader();
 
             /**
              * @author giorgio 27/ott/2014
@@ -236,7 +256,7 @@ class Student
              */
 
             $arrayToUse = 'reportHTMLColArray';
-            $this->clean_class_reportFN($arrayToUse, $table_labels, $returnArray);
+            $this->cleanClassReportFN($arrayToUse, $table_labels, $returnArray);
 
             return ['report_generation_date' => $report_generation_TS] + array_merge($table_labels, $returnArray);
         }
@@ -245,7 +265,7 @@ class Student
 
     // @author giorgio 14/mag/2013
     // added type parameter that defaults to 'xls'
-    public function get_class_reportFN($id_course, $order = "", $index_att = "", $type = 'HTML', $speed_mode = true)
+    public function getClassReportFN($id_course, $order = "", $index_att = "", $type = 'HTML', $speed_mode = true)
     {
         $dh = $GLOBALS['dh'];
         $http_root_dir = $GLOBALS['http_root_dir'];
@@ -284,20 +304,20 @@ class Student
         $student_list_ar = $this->student_list;
         $id_instance = $this->id;
         if ($student_list_ar != 0) {
-            $info_course = $dh->get_course($id_course); // Get title course
-            if (AMA_DataHandler::isError($info_course)) {
+            $info_course = $dh->getCourse($id_course); // Get title course
+            if (AMADataHandler::isError($info_course)) {
                 $msg = $info_course->getMessage();
                 return $msg;
             }
             $course_title = $info_course['titolo'];
 
-            $instance_course_ha = $dh->course_instance_get($id_instance); // Get the instance courses data
-            if (AMA_DataHandler::isError($instance_course_ha)) {
+            $instance_course_ha = $dh->courseInstanceGet($id_instance); // Get the instance courses data
+            if (AMADataHandler::isError($instance_course_ha)) {
                 $msg = $instance_course_ha->getMessage();
                 return $msg;
             }
 
-            $start_date =  AMA_DataHandler::ts_to_date($instance_course_ha['data_inizio'], ADA_DATE_FORMAT);
+            $start_date =  AMADataHandler::tsToDate($instance_course_ha['data_inizio'], ADA_DATE_FORMAT);
             $tot_history_count = 0;
             $tot_time_in_course = 0;
             $tot_exercises_score = 0;
@@ -324,7 +344,7 @@ class Student
              * to have full date & time generation of report
              * but be warned that table log_classi may grow A LOT!
              */
-            $report_generation_TS = dt2tsFN(today_dateFN());
+            $report_generation_TS = dt2tsFN(todayDateFN());
             if ($speed_mode === true) {
                 // in  $data_to_get we choose what fields to get back and the order of fields
                 $columns = [
@@ -399,13 +419,13 @@ class Student
                     // need the service-complete module data handler
                     $mydh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
                     // load the conditionset for this course
-                    $conditionSet = $mydh->get_linked_conditionset_for_course($id_course);
+                    $conditionSet = $mydh->getLinkedConditionsetForCourse($id_course);
                     $stausIsButton = $conditionSet instanceof CompleteConditionSet;
                     $mydh->disconnect();
                 }
 
 
-                $dati_stude = $dh->get_students_report($id_instance, $id_course, $columns, $weights);
+                $dati_stude = $dh->getStudentsReport($id_instance, $id_course, $columns, $weights);
 
                 foreach ($dati_stude as $key => $user) {
                     // counters for statistics
@@ -425,7 +445,7 @@ class Student
                         if (is_numeric($id_course)) {
                             $history->setCourse($id_course);
                         }
-                        $history->get_visit_time();
+                        $history->getVisitTime();
                         $tic = ($history->total_time > 0) ? $history->total_time : 0;
                         $dati_stude[$key] = array_merge(
                             array_slice($dati_stude[$key], 0, $ticIndex),
@@ -639,7 +659,7 @@ class Student
                     $status_student = $one_student['status'];
                     $dati['id'] = $id_student;
                     $dati['level'] = $student_level;
-                    $ymdhms = today_dateFN();
+                    $ymdhms = todayDateFN();
                     $utime = dt2tsFN($ymdhms);
                     $dati['date'] = $report_generation_TS;
 
@@ -665,11 +685,11 @@ class Student
                             $student_lastname = $studentObj->getLastName();
 
                             // vito
-                            $studentObj->set_course_instance_for_history($id_instance);
+                            $studentObj->setCourseInstanceForHistory($id_instance);
                             //$studentObj->history->setCourseInstance($id_instance);
                             $studentObj->history->setCourse($id_course);
 
-                            $studentObj->get_exercise_dataFN($id_instance, $id_student);
+                            $studentObj->getExerciseDataFN($id_instance, $id_student);
                             $st_exercise_dataAr = $studentObj->user_ex_historyAr;
                             $st_score = 0;
                             $st_exer_number = 0;
@@ -694,12 +714,12 @@ class Student
                                 $dati['score_survey'] = $st_score_survey;
                             }
 
-                            $sub_courses = $dh->get_subscription($id_student, $id_instance);
+                            $sub_courses = $dh->getSubscription($id_student, $id_instance);
 
                             if ($sub_courses['tipo'] == ADA_STATUS_SUBSCRIBED) {
                                 $out_fields_ar = ['nome', 'titolo', 'id_istanza', 'data_creazione'];
                                 $clause = "tipo = '" . ADA_NOTE_TYPE . "' AND id_utente = '$id_student'";
-                                $nodes = $dh->find_course_nodes_list($out_fields_ar, $clause, $id_course);
+                                $nodes = $dh->findCourseNodesList($out_fields_ar, $clause, $id_course);
                                 $added_nodes_count = count($nodes);
                                 $added_nodes_count_norm = str_pad($added_nodes_count, 5, "0", STR_PAD_LEFT);
 
@@ -708,7 +728,7 @@ class Student
                             } else {
                                 $added_notes = "<!-- 0 -->-";
                             }
-                            $read_notes_count = $studentObj->total_visited_notesFN($id_student, $id_course);
+                            $read_notes_count = $studentObj->totalVisitedNotesFN($id_student, $id_course);
                             if ($read_notes_count > 0) {
                                 $read_nodes_count_norm = str_pad($read_notes_count, 5, "0", STR_PAD_LEFT);
                                 $read_notes = "<!-- $read_nodes_count_norm -->$read_notes_count";
@@ -718,10 +738,10 @@ class Student
 
                             $st_history_count = "0";
                             $debug = 0;
-                            $st_history_count = $studentObj->total_visited_nodesFN($id_student, ADA_LEAF_TYPE);
+                            $st_history_count = $studentObj->totalVisitedNodesFN($id_student, ADA_LEAF_TYPE);
                             // vito, 11 mar 2009. Ottiene solo il numero di visite a nodi di tipo foglia.
                             // vogliamo anche il numero di visite a nodi di tipo gruppo.
-                            $st_history_count += $studentObj->total_visited_nodesFN($id_student, ADA_GROUP_TYPE);
+                            $st_history_count += $studentObj->totalVisitedNodesFN($id_student, ADA_GROUP_TYPE);
 
                             $dati['visits'] = $st_history_count;
 
@@ -740,7 +760,7 @@ class Student
                             $st_history .= "&id_course=" . $id_course . "&id_course_instance=" . $id_instance . ">";
                             $st_history .=  $st_history_count . "</a>";
 
-                            $st_history_last_access = $studentObj->get_last_accessFN($id_instance, "T");
+                            $st_history_last_access = $studentObj->getLastAccessFN($id_instance, "T");
                             //$dati['date'] = $st_history_last_access;
 
                             $st_score_norm = str_pad($st_score, 5, "0", STR_PAD_LEFT);
@@ -766,14 +786,14 @@ class Student
                             $tot_history_count += $st_history_count;
 
                             // time in course
-                            $studentObj->history->get_visit_time();
+                            $studentObj->history->getVisitTime();
                             $tic = ($studentObj->history->total_time > 0) ? $studentObj->history->total_time : 0;
                             $tot_time_in_course += $tic;
                             $dati_stude[$num_student]['time_in_course'] = sprintf("%02d:%02d", floor($tic / 3600), floor(($tic / 60) % 60));
 
                             if ($st_history_last_access != "-") {
                                 $dati_stude[$num_student]['last_access'] = "<a href=\"$http_root_dir/tutor/tutor_history_details.php?period=1&id_student=$id_student&id_course_instance=$id_instance&id_course=$id_course\">" . $st_history_last_access . "</a>";
-                                $dati['last_access'] = $studentObj->get_last_accessFN($id_instance, 'UT');
+                                $dati['last_access'] = $studentObj->getLastAccessFN($id_instance, 'UT');
                             } else {
                                 $dati_stude[$num_student]['last_access'] = $st_history_last_access;
                                 $dati['last_access'] = null;
@@ -813,13 +833,13 @@ class Student
 
                             // messages received
 
-                            $msgs_ha = $mh->get_messages(
+                            $msgs_ha = $mh->getMessages(
                                 $id_student,
                                 ADA_MSG_SIMPLE,
                                 ["id_mittente", "data_ora"],
                                 $sort_field
                             );
-                            if (AMA_DataHandler::isError($msgs_ha)) {
+                            if (AMADataHandler::isError($msgs_ha)) {
                                 $err_code = $msgs_ha->code;
                                 $dati_stude[$num_student]['message_count_in'] = "-";
                             } else {
@@ -835,13 +855,13 @@ class Student
 
                             // messages sent
 
-                            $msgs_ha = $mh->get_sent_messages(
+                            $msgs_ha = $mh->getSentMessages(
                                 $id_student,
                                 ADA_MSG_SIMPLE,
                                 ["id_mittente", "data_ora"],
                                 $sort_field
                             );
-                            if (AMA_DataHandler::isError($msgs_ha)) {
+                            if (AMADataHandler::isError($msgs_ha)) {
                                 $err_code = $msgs_ha->code;
                                 $dati_stude[$num_student]['message_count_out'] = "-";
                             } else {
@@ -853,13 +873,13 @@ class Student
                             $dati['msg_out'] = $user_message_count;
 
                             //chat..
-                            $msgs_ha = $mh->get_sent_messages(
+                            $msgs_ha = $mh->getSentMessages(
                                 $id_student,
                                 ADA_MSG_CHAT,
                                 ["id_mittente", "data_ora"],
                                 $sort_field
                             );
-                            if (AMA_DataHandler::isError($msgs_ha)) {
+                            if (AMADataHandler::isError($msgs_ha)) {
                                 $err_code = $msgs_ha->code;
                                 $dati_stude[$num_student]['chat'] = "-";
                             } else {
@@ -871,7 +891,7 @@ class Student
                             $dati['chat'] = $chatlines_count_out;
 
                             //bookmarks..
-                            $bookmarks_count = count(Bookmark::get_bookmarks($id_student));
+                            $bookmarks_count = count(Bookmark::getBookmarks($id_student));
                             $dati_stude[$num_student]['bookmarks'] = $bookmarks_count;
                             $tot_bookmarks_count += $bookmarks_count;
                             $dati['bookmarks']  = $bookmarks_count;
@@ -914,7 +934,7 @@ class Student
 
                             // inserting a row in table log_classi
 
-                            $this->log_class_data($id_course, $id_instance, $dati);
+                            $this->logClassData($id_course, $id_instance, $dati);
                         }
                     }
                 }
@@ -978,7 +998,7 @@ class Student
                 }
 
                 // TABLE LABELS
-                $table_labels[0] = $this->generate_class_report_header();
+                $table_labels[0] = $this->generateClassReportHeader();
 
                 /**
                  * @author giorgio 16/mag/2013
@@ -987,7 +1007,7 @@ class Student
                  */
 
                 $arrayToUse = 'report' . $type . 'ColArray';
-                $this->clean_class_reportFN($arrayToUse, $table_labels, $dati_stude);
+                $this->cleanClassReportFN($arrayToUse, $table_labels, $dati_stude);
             }
 
             return ['report_generation_date' => $report_generation_TS] + array_merge($table_labels, $dati_stude);
@@ -1041,7 +1061,7 @@ class Student
      *
      * @access private
      */
-    private function generate_class_report_header()
+    private function generateClassReportHeader()
     {
 
         $tableHeader['id'] = translateFN("Id");
@@ -1087,7 +1107,7 @@ class Student
      *
      * @access private
      */
-    private function clean_class_reportFN($arrayToUse, &$table_labels, &$dati_stude)
+    private function cleanClassReportFN($arrayToUse, &$table_labels, &$dati_stude)
     {
 
         if (CONFIG_CLASS_REPORT && is_array($GLOBALS[$arrayToUse]) && count($GLOBALS[$arrayToUse])) {
@@ -1105,12 +1125,12 @@ class Student
         }
     }
 
-    public function log_class_data($id_course, $id_course_instance, $dati_stude)
+    public function logClassData($id_course, $id_course_instance, $dati_stude)
     {
         $dh = $GLOBALS['dh'];
         $debug  = $GLOBALS['debug'] ?? null;
-        $dataHa = $dh->add_class_report($id_course, $id_course_instance, $dati_stude);
-        if (AMA_DataHandler::isError($dataHa)) {
+        $dataHa = $dh->addClassReport($id_course, $id_course_instance, $dati_stude);
+        if (AMADataHandler::isError($dataHa)) {
             $msg = $dataHa->getMessage();
             // header("Location: $error?err_msg=$msg");
         } else {
@@ -1119,7 +1139,7 @@ class Student
         return $msg;
     }
 
-    public function read_class_data($id_course, $id_course_instance, $date)
+    public function readClassData($id_course, $id_course_instance, $date)
     {
         $dh     = $GLOBALS['dh'];
         $debug  = $GLOBALS['debug'] ?? '';
@@ -1128,19 +1148,19 @@ class Student
         return $dataHa;
     }
 
-    public function read_student_data($id_course, $id_course_instance, $id_student)
+    public function readStudentData($id_course, $id_course_instance, $id_student)
     {
         $dh = $GLOBALS['dh'];
         $debug  = $GLOBALS['debug'];
         $dataHa = $dh->get_class_report($id_course, $id_course_instance, $id_student);
-        if (AMA_DataHandler::isError($dataHa) || (!is_array($dataHa))) {
+        if (AMADataHandler::isError($dataHa) || (!is_array($dataHa))) {
             $msg = $dataHa->getMessage();
             // header("Location: $error?err_msg=$msg");
         } else {
             return $dataHa;
         }
     }
-    public function find_student_index_att($id_course, $id_course_instance, $id_student)
+    public function findStudentIndexAtt($id_course, $id_course_instance, $id_student)
     {
         // returns an array
         // last element is index
@@ -1148,8 +1168,8 @@ class Student
         $debug  = $GLOBALS['debug'];
         $clause = "";
         $out_fields_ar = ['indice_att'];
-        $dataHa = $dh->find_student_report($id_student, $id_course_instance, $clause, $out_fields_ar);
-        if (AMA_DataHandler::isError($dataHa)) {
+        $dataHa = $dh->findStudentReport($id_student, $id_course_instance, $clause, $out_fields_ar);
+        if (AMADataHandler::isError($dataHa)) {
             $msg = $dataHa->getMessage();
             // header("Location: $error?err_msg=$msg");
         } else {

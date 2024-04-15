@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\MultiPort;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Comunica\ChatRoom;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class ChatRoom was declared with namespace Lynxlab\ADA\Comunica. //
+
 namespace Lynxlab\ADA\Comunica;
 
 use Lynxlab\ADA\Comunica\DataHandler\ChatDataHandler;
@@ -38,7 +52,7 @@ class ChatRoom
      *                        start_time
      *                        end_time
      *
-     * @return    an AMA_Error object if something goes wrong
+     * @return    an AMAError object if something goes wrong
      ****************************************************************************** */
 
 
@@ -82,12 +96,12 @@ class ChatRoom
         //case id_chatroom is provided
         if ((isset($id_chatroom)) && (!is_object($id_chatroom))) {
             // search for a chatroom into the DB with such id_chatroom
-            $chatroom_ha = $this->get_info_chatroomFN($id_chatroom);
+            $chatroom_ha = $this->getInfoChatroomFN($id_chatroom);
             //            print_r($chatroom_ha);
             // the chatroom with such id allready exists;
             if (is_array($chatroom_ha)) {
                 // check the user status into the chatroom
-                $present = $this->find_userFN($sess_id_user, $id_chatroom);
+                $present = $this->findUserFN($sess_id_user, $id_chatroom);
                 //get course instance assigned to the chatroom
                 $id_course_instance = $chatroom_ha['id_istanza_corso'];
 
@@ -145,7 +159,7 @@ class ChatRoom
                             switch ($_SESSION['sess_id_user_type']) {
                                 case AMA_TYPE_STUDENT:
                                     //case student: does the student is subscribed into the course?
-                                    $res_Ha = $dh->get_subscription($sess_id_user, $id_course_instance);
+                                    $res_Ha = $dh->getSubscription($sess_id_user, $id_course_instance);
                                     if ($res_Ha['tipo'] == 2) {
                                         switch ($present) {
                                             case STATUS_ACTIVE:
@@ -169,7 +183,7 @@ class ChatRoom
                                     break;
                                 case AMA_TYPE_TUTOR:
                                     //case tutor: does the user is the tutor of the course_instance?
-                                    $id_tutor = $dh->course_instance_tutor_get($id_course_instance);
+                                    $id_tutor = $dh->courseInstanceTutorGet($id_course_instance);
                                     if ($id_tutor == $sess_id_user) {
                                         switch ($present) {
                                             case STATUS_OPERATOR:
@@ -245,15 +259,15 @@ class ChatRoom
                 //verify that a course_instance exists
                 if (!empty($sess_id_course_instance)) {
                     // search into the DB for a chatroom assosciated to the course_instance
-                    $id_chatroom = $this->get_class_chatroomFN($sess_id_course_instance);
+                    $id_chatroom = $this->getClassChatroomFN($sess_id_course_instance);
                     // there is a chatroom for that course_instance
                     if ($id_chatroom) {
                         // search for a chatroom into the DB with such id_chatroom
-                        $chatroom_ha = $this->get_info_chatroomFN($id_chatroom);
+                        $chatroom_ha = $this->getInfoChatroomFN($id_chatroom);
                         // the chatroom with such id allready exists;
                         if (is_array($chatroom_ha)) {
                             // check the user status into the chatroom
-                            $present = $this->find_userFN($sess_id_user, $id_chatroom);
+                            $present = $this->findUserFN($sess_id_user, $id_chatroom);
                             //get course instance assigned to the chatroom
                             $id_course_instance = $chatroom_ha['id_istanza_corso'];
                             if ($sess_id_course_instance == $id_course_instance) {
@@ -307,7 +321,7 @@ class ChatRoom
                         } //end of (is_array($chatroom_ha))
                     } else { //error. no chatroom where found for the classroom, but $sess_id_course_instance isset
                         //if does not exist create a new chatroom for the class
-                        $id_chatroom = $this->add_chatroomFN($chatroom_ha, self::$tester_dsn);
+                        $id_chatroom = $this->addChatroomFN($chatroom_ha, self::$tester_dsn);
                         $this->error = 2;
                         $this->error_msg = translateFN("Utente non presente"); // non presente
                     } // end of case that the provided id does not exist
@@ -316,10 +330,10 @@ class ChatRoom
                     // $this->error = 1;
                     // $this->error_msg = translateFN("Chatroom non trovata. Impossibile proseguire");
                     // give access to user for the public chatroom
-                    $id_chatroom = $this->find_public_chatroomFN();
-                    $chatroom_ha = $this->get_info_chatroomFN($id_chatroom);
+                    $id_chatroom = $this->findPublicChatroomFN();
+                    $chatroom_ha = $this->getInfoChatroomFN($id_chatroom);
                     // check the user status into the chatroom
-                    $present = $this->find_userFN($sess_id_user, $id_chatroom);
+                    $present = $this->findUserFN($sess_id_user, $id_chatroom);
                     switch ($present) {
                         case STATUS_ACTIVE:
                         case STATUS_OPERATOR:
@@ -349,7 +363,7 @@ class ChatRoom
             case 2:
                 if ($this->error == 2) {
                     // try to add user into that chatroom
-                    $add_user = $this->add_user_chatroomFN($sess_id_user, $sess_id_user, $id_chatroom, ACTION_ENTER, STATUS_ACTIVE);
+                    $add_user = $this->addUserChatroomFN($sess_id_user, $sess_id_user, $id_chatroom, ACTION_ENTER, STATUS_ACTIVE);
                 }
                 $this->chat_type = $chatroom_ha['tipo_chat'];
                 $this->id_chat_owner = $chatroom_ha['id_proprietario_chat'];
@@ -373,7 +387,7 @@ class ChatRoom
     //*******************************************************************************/
     //adds a chatroom into table chatroom
     //*******************************************************************************/
-    public static function add_chatroomFN($chatroom_ha, $tester_dsn = null)
+    public static function addChatroomFN($chatroom_ha, $tester_dsn = null)
     {
         $dh = $GLOBALS['dh'];
 
@@ -406,8 +420,8 @@ class ChatRoom
          * and set him as chat owner
          */
         if (!isset($chatroom_ha['id_chat_owner']) || empty($chatroom_ha['id_chat_owner'])) {
-            $id_tutor = $dh->course_instance_tutor_get($chatroom_ha['id_course_instance']);
-            if (!AMA_DataHandler::isError($id_tutor)) {
+            $id_tutor = $dh->courseInstanceTutorGet($chatroom_ha['id_course_instance']);
+            if (!AMADataHandler::isError($id_tutor)) {
                 $chatroom_ha['id_chat_owner'] = $id_tutor;
             }
         }
@@ -502,8 +516,8 @@ class ChatRoom
     //     * create the chatroom_ha based on the content of $course_instance_ha
     //     */
     //    // get a tutor from this course instance and set him as the chatroom owner.
-    //    $id_chatroom_owner = $cdh->course_tutor_instance_get($course_instance_ha['id_istanza_corso'],1);
-    //    if (AMA_DataHandler::isError($id_chatroom_owner) || $id_chatroom_owner === false) {
+    //    $id_chatroom_owner = $cdh->courseTutorInstanceGet($course_instance_ha['id_istanza_corso'],1);
+    //    if (AMADataHandler::isError($id_chatroom_owner) || $id_chatroom_owner === false) {
     //        // passare l'id dell'amministratore?
     //      $id_chatroom_owner = 0;
     //    }
@@ -514,7 +528,7 @@ class ChatRoom
     //      'chat_topic'         => translateFN('Chat pubblica'),
     //      'id_chatroom_owner'  => $id_chatroom_owner,
     //      'start_time'         => $course_instance_ha['data_inizio'],
-    //      'end_time'           => $cdh->add_number_of_days($course_instance_ha['durata'],$course_instance_ha['data_inizio']),
+    //      'end_time'           => $cdh->addNumberOfDays($course_instance_ha['durata'],$course_instance_ha['data_inizio']),
     //      'welcome_msg'        => sprintf(translateFN('Benvenuto nella chat pubblica del corso %s'),$course_ha['titolo']),
     //      'max_users'          => DEFAULT_MAX_USERS,
     //      'id_course_instance' => $course_instance_ha['id_istanza_corso']
@@ -527,7 +541,7 @@ class ChatRoom
     //removes an unused chatroom, if any integrity violation is presented,
     //the process is aborted.
     //*******************************************************************************/
-    public function remove_unused_chatroomFN($id_chatroom)
+    public function removeUnusedChatroomFN($id_chatroom)
     {
         self::$id_chatroom = $id_chatroom;
         $cdh = self::obtainChatDataHandlerInstance();
@@ -539,11 +553,11 @@ class ChatRoom
     //removes all the unused chatrooms, if any integrity violation is presented,
     //the proccess is aborted.
     //*******************************************************************************/
-    public function remove_all_unused_chatroomsFN()
+    public function removeAllUnusedChatroomsFN()
     {
-        $chatrooms_ha = $this->get_all_chatroomsFN();
+        $chatrooms_ha = $this->getAllChatroomsFN();
         foreach ($chatrooms_ha as $key => $id) {
-            $this->remove_unused_chatroomFN($id);
+            $this->removeUnusedChatroomFN($id);
         }
     }
 
@@ -552,7 +566,7 @@ class ChatRoom
     //users will be removed automatically from the table utente_chatroom
     //messages also will be removed automatically from the table messaggi
     //*******************************************************************************/
-    public static function remove_chatroomFN($id_chatroom)
+    public static function removeChatroomFN($id_chatroom)
     {
         if (!self::isInStaticContext()) {
             self::$id_chatroom = $id_chatroom;
@@ -565,18 +579,18 @@ class ChatRoom
     //*******************************************************************************/
     //removes all the unused chatrooms
     //*******************************************************************************/
-    public function remove_all_chatroomsFN()
+    public function removeAllChatroomsFN()
     {
-        $chatrooms_ha = $this->get_all_chatroomsFN();
+        $chatrooms_ha = $this->getAllChatroomsFN();
         foreach ($chatrooms_ha as $key => $id) {
-            $this->remove_chatroomFN($id);
+            $this->removeChatroomFN($id);
         }
     }
 
     //*******************************************************************************/
     //gets all the information about a specific chatroom
     //*******************************************************************************/
-    public static function get_info_chatroomFN($id_chatroom)
+    public static function getInfoChatroomFN($id_chatroom)
     {
         if (!self::isInStaticContext()) {
             self::$id_chatroom = $id_chatroom;
@@ -589,7 +603,7 @@ class ChatRoom
     //*******************************************************************************/
     //gets the list of all the active chatrooms
     //*******************************************************************************/
-    public static function get_all_chatroomsFN()
+    public static function getAllChatroomsFN()
     {
         $cdh = self::obtainChatDataHandlerInstance();
         $result = $cdh->get_all_chatrooms();
@@ -599,7 +613,7 @@ class ChatRoom
     //*******************************************************************************/
     //gets the id of the active public chatroom
     //*******************************************************************************/
-    public static function find_public_chatroomFN()
+    public static function findPublicChatroomFN()
     {
         $cdh = self::obtainChatDataHandlerInstance();
         $result = $cdh->find_public_chatroom();
@@ -609,7 +623,7 @@ class ChatRoom
     //*******************************************************************************/
     //gets the id of the active chatroom, relative to a specific class
     //*******************************************************************************/
-    public static function get_class_chatroomFN($id_course_instance)
+    public static function getClassChatroomFN($id_course_instance)
     {
         if (!self::isInStaticContext()) {
             self::$id_course_instance = $id_course_instance;
@@ -627,31 +641,31 @@ class ChatRoom
     /*
     /* @return
      */
-    public static function get_class_chatroom_for_instance($id_course_instance, $type)
+    public static function getClassChatroomForInstance($id_course_instance, $type)
     {
         if (!self::isInStaticContext()) {
             self::$id_course_instance = $id_course_instance;
         }
         $cdh = self::obtainChatDataHandlerInstance();
-        $result = $cdh->get_class_chatroom_for_instance($id_course_instance, $type);
+        $result = $cdh->getClassChatroomForInstance($id_course_instance, $type);
         return $result;
     }
 
     // vito, 20 apr 2009
-    public function get_class_chatroom_with_durationFN($id_course_instance, $start_time, $end_time)
+    public function getClassChatroomWithDurationFN($id_course_instance, $start_time, $end_time)
     {
         if (!self::isInStaticContext()) {
             self::$id_course_instance = $id_course_instance;
         }
         $cdh = self::obtainChatDataHandlerInstance();
-        $result = $cdh->get_class_chatroom_with_durationFN($id_course_instance, $start_time, $end_time);
+        $result = $cdh->getClassChatroomWithDurationFN($id_course_instance, $start_time, $end_time);
         return $result;
     }
 
     //*******************************************************************************/
     // returns an array contaning the ids of the chatrooms relative to a specific class
     //*******************************************************************************/
-    public static function get_all_class_chatroomsFN($id_course_instance)
+    public static function getAllClassChatroomsFN($id_course_instance)
     {
         if (!self::isInStaticContext()) {
             self::$id_course_instance = $id_course_instance;
@@ -664,7 +678,7 @@ class ChatRoom
     //*******************************************************************************/
     //gets all the private chatrooms taht a user could have access
     //*******************************************************************************/
-    public static function get_all_private_chatroomsFN($user_id)
+    public static function getAllPrivateChatroomsFN($user_id)
     {
         $cdh = self::obtainChatDataHandlerInstance();
         $result = $cdh->get_all_private_chatrooms($user_id);
@@ -676,7 +690,7 @@ class ChatRoom
     // sets the user_status by default as active
     // sets the entrance_time equal to the actual time
     //*******************************************************************************/
-    public function add_user_chatroomFN($operator_id, $user_id, $id_chatroom, $action, $status)
+    public function addUserChatroomFN($operator_id, $user_id, $id_chatroom, $action, $status)
     {
         if (!self::isInStaticContext()) {
             $this->operator_id = $operator_id;
@@ -695,7 +709,7 @@ class ChatRoom
     //deletes permanently a row of the table utente_chatroom
     //where id_utente=$user_id and id_chatroom=$id_chatroom
     //*******************************************************************************/
-    public function remove_user_chatroomFN($user_id, $id_chatroom)
+    public function removeUserChatroomFN($user_id, $id_chatroom)
     {
         $this->user_id = $user_id;
         self::$id_chatroom = $id_chatroom;
@@ -708,7 +722,7 @@ class ChatRoom
     //deletes permanently all the rows of the table utente_chatroom
     //where id_chatroom=$id_chatroom
     //*******************************************************************************/
-    public function remove_allusers_chatroomFN($id_chatroom)
+    public function removeAllusersChatroomFN($id_chatroom)
     {
         self::$id_chatroom = $id_chatroom;
         $cdh = self::obtainChatDataHandlerInstance();
@@ -720,7 +734,7 @@ class ChatRoom
     // the users quits the chatroom, do not appears anymore into the users_list
     // the row inclunding his id_user will be removed from the table utente_chatroom
     //*******************************************************************************/
-    public function quit_chatroomFN($operator_id, $user_id, $id_chatroom)
+    public function quitChatroomFN($operator_id, $user_id, $id_chatroom)
     {
         $this->user_id = $user_id;
         self::$id_chatroom = $id_chatroom;
@@ -734,7 +748,7 @@ class ChatRoom
     //*******************************************************************************/
     // sets the status of the user in a specific chatroom
     //*******************************************************************************/
-    public function set_user_statusFN($operator_id, $user_id, $id_chatroom, $action)
+    public function setUserStatusFN($operator_id, $user_id, $id_chatroom, $action)
     {
         $this->operator_id = $operator_id;
         $this->user_id = $user_id;
@@ -790,7 +804,7 @@ class ChatRoom
     //*******************************************************************************/
     //fuction in order to check the user status(es. active, kicked, mute ecc)
     //*******************************************************************************/
-    public function get_user_statusFN($user_id, $id_chatroom)
+    public function getUserStatusFN($user_id, $id_chatroom)
     {
         $this->user_id = $user_id;
         self::$id_chatroom = $id_chatroom;
@@ -802,7 +816,7 @@ class ChatRoom
     //*******************************************************************************/
     //fuction in order to find a user connected to the chatroom
     //*******************************************************************************/
-    public function find_userFN($user_id, $id_chatroom)
+    public function findUserFN($user_id, $id_chatroom)
     {
         $this->user_id = $user_id;
         self::$id_chatroom = $id_chatroom;
@@ -814,7 +828,7 @@ class ChatRoom
     //*******************************************************************************/
     //gets the list of the users, present into the chosen chatroom
     //*******************************************************************************/
-    public function list_users_chatroomFN($id_chatroom)
+    public function listUsersChatroomFN($id_chatroom)
     {
         //returns an array contaning the id of the users connected
         if (!self::isInStaticContext()) {
@@ -828,7 +842,7 @@ class ChatRoom
     //*******************************************************************************/
     //gets the list of the users, invited but not present into the chosen chatroom
     //*******************************************************************************/
-    public function list_users_invited_to_chatroomFN($id_chatroom)
+    public function listUsersInvitedToChatroomFN($id_chatroom)
     {
         self::$id_chatroom = $id_chatroom;
         $cdh = self::obtainChatDataHandlerInstance();
@@ -840,7 +854,7 @@ class ChatRoom
     //*******************************************************************************/
     //gets the list of the users, been banned into the chosen chatroom
     //*******************************************************************************/
-    public function list_banned_users_chatroomFN($id_chatroom)
+    public function listBannedUsersChatroomFN($id_chatroom)
     {
         //returns an array contaning the id of the users connected
         self::$id_chatroom = $id_chatroom;
@@ -855,7 +869,7 @@ class ChatRoom
     //gets the list of all the chatrooms that a user could have access or
     // he is allready present
     //*******************************************************************************/
-    public function list_chatrooms_userFN($user_id)
+    public function listChatroomsUserFN($user_id)
     {
         // vito, 22 apr 2009
         if (!self::isInStaticContext()) {
@@ -869,11 +883,11 @@ class ChatRoom
     //*******************************************************************************/
     //updates all or some information relative to the chosen chatroom
     //*******************************************************************************/
-    public function set_chatroomFN($id_chatroom, $chatroom_ha)
+    public function setChatroomFN($id_chatroom, $chatroom_ha)
     {
         //first we read and get all the information from the DB, relative to the selected
         // chatroom, assining all the values into the variable $old_chatroom_ha
-        $old_chatroom_ha = $this->get_info_chatroomFN($id_chatroom);
+        $old_chatroom_ha = $this->getInfoChatroomFN($id_chatroom);
 
         if (!empty($chatroom_ha['chat_type'])) {
             $chatroom_ha['chat_type'] = $chatroom_ha['chat_type'];
@@ -942,7 +956,7 @@ class ChatRoom
     //*******************************************************************************/
     // inserts the time of the last event done by the user on a specific chatroom
     //*******************************************************************************/
-    public function set_last_event_timeFN($user_id, $id_chatroom)
+    public function setLastEventTimeFN($user_id, $id_chatroom)
     {
         $this->user_id = $user_id;
         self::$id_chatroom = $id_chatroom;
@@ -957,7 +971,7 @@ class ChatRoom
     //*******************************************************************************/
     // gets the time of the last event done by the user on a specific chatroom
     //*******************************************************************************/
-    public function get_last_event_timeFN($user_id, $id_chatroom)
+    public function getLastEventTimeFN($user_id, $id_chatroom)
     {
         $this->user_id = $user_id;
         self::$id_chatroom = $id_chatroom;
@@ -971,11 +985,11 @@ class ChatRoom
     //*******************************************************************************/
     // verify if a chatroom is still active
     //*******************************************************************************/
-    public function is_chatroom_activeFN($id_chatroom)
+    public function isChatroomActiveFN($id_chatroom)
     {
         self::$id_chatroom = $id_chatroom;
         $actual_time = time();
-        $chatroom_ha = $this->get_info_chatroomFN($id_chatroom);
+        $chatroom_ha = $this->getInfoChatroomFN($id_chatroom);
         $starting_time = $chatroom_ha['tempo_avvio'];
         $expiration_time = $chatroom_ha['tempo_fine'];
         if (($actual_time >= $starting_time) and (($expiration_time == 0) or ($actual_time < $expiration_time))) {
@@ -988,11 +1002,11 @@ class ChatRoom
     //*******************************************************************************/
     // verify if a chatroom is started or not
     //*******************************************************************************/
-    public function is_chatroom_startedFN($id_chatroom)
+    public function isChatroomStartedFN($id_chatroom)
     {
         self::$id_chatroom = $id_chatroom;
         $actual_time = time();
-        $chatroom_ha = $this->get_info_chatroomFN($id_chatroom);
+        $chatroom_ha = $this->getInfoChatroomFN($id_chatroom);
         if (is_array($chatroom_ha)) {
             $starting_time = $chatroom_ha['tempo_avvio'];
             if ($actual_time >= $starting_time) {
@@ -1008,11 +1022,11 @@ class ChatRoom
     //*******************************************************************************/
     // verify if a chatroom is expired or not
     //*******************************************************************************/
-    public function is_chatroom_not_expiredFN($id_chatroom)
+    public function isChatroomNotExpiredFN($id_chatroom)
     {
         self::$id_chatroom = $id_chatroom;
         $actual_time = time();
-        $chatroom_ha = $this->get_info_chatroomFN($id_chatroom);
+        $chatroom_ha = $this->getInfoChatroomFN($id_chatroom);
         if (is_array($chatroom_ha)) {
             $expiration_time = $chatroom_ha['tempo_fine'];
             if (($expiration_time == 0) or ($actual_time < $expiration_time)) {
@@ -1028,11 +1042,11 @@ class ChatRoom
     //*******************************************************************************/
     // verify if a user is a moderator or not
     //*******************************************************************************/
-    public function is_user_moderatorFN($user_id, $id_chatroom)
+    public function isUserModeratorFN($user_id, $id_chatroom)
     {
         self::$id_chatroom = $id_chatroom;
         $this->user_id = $user_id;
-        $status = $this->get_user_statusFN($user_id, $id_chatroom);
+        $status = $this->getUserStatusFN($user_id, $id_chatroom);
         if ($status == STATUS_OPERATOR) {
             return true;
         } else {
@@ -1043,13 +1057,13 @@ class ChatRoom
     //*******************************************************************************/
     // verify if a chatroom is full
     //*******************************************************************************/
-    public function is_chatroom_fullFN($id_chatroom)
+    public function isChatroomFullFN($id_chatroom)
     {
         self::$id_chatroom = $id_chatroom;
-        $chatroom_ha = $this->get_info_chatroomFN($id_chatroom);
+        $chatroom_ha = $this->getInfoChatroomFN($id_chatroom);
         if (is_array($chatroom_ha)) {
             $max_users = $chatroom_ha['max_utenti'];
-            $list = $this->list_users_chatroomFN($id_chatroom);
+            $list = $this->listUsersChatroomFN($id_chatroom);
             $how_many = is_array($list) ? count($list) : 0;
             if ($how_many > $max_users) {
                 return true;
@@ -1064,23 +1078,23 @@ class ChatRoom
     //*******************************************************************************/
     // removes all the users from the chatroom that they are idle for a certain period
     //*******************************************************************************/
-    public function remove_inactive_usersFN($id_chatroom)
+    public function removeInactiveUsersFN($id_chatroom)
     {
         self::$id_chatroom = $id_chatroom;
         //get the actual time
         $actual_time = time();
         // get the list of the users into the chatroom
-        $users_list_ar = $this->list_users_chatroomFN($id_chatroom);
+        $users_list_ar = $this->listUsersChatroomFN($id_chatroom);
 
         foreach ($users_list_ar as $key => $id) {
             $this->id = $id;
             //check user status
-            $user_status = $this->get_user_statusFN($id, $id_chatroom);
+            $user_status = $this->getUserStatusFN($id, $id_chatroom);
             //get last event time of user
-            $user_last_event = $this->get_last_event_timeFN($id, $id_chatroom);
+            $user_last_event = $this->getLastEventTimeFN($id, $id_chatroom);
 
             if (($user_status != STATUS_BAN) and ($actual_time - $user_last_event > MAX_INACTIVE_TIME)) {
-                $this->remove_user_chatroomFN($id, $id_chatroom);
+                $this->removeUserChatroomFN($id, $id_chatroom);
             }
         }
     }

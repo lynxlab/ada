@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * IMPORT MODULE
  *
@@ -81,7 +87,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             }
             $list = $rdh->getRepositoryList($whereArr);
 
-            if (!AMA_DB::isError($list) && is_array($list) && count($list) > 0) {
+            if (!AMADB::isError($list) && is_array($list) && count($list) > 0) {
                 $result['data'] = array_map(function ($el) use ($canDo, $userObj, $courseObj, $nodeObj, $isAuthorImporting) {
                     if ($userObj->getType() == AMA_TYPE_AUTHOR) {
                         $canDo['trash'] =  $isAuthorImporting ? false : $userObj->getId() == $el['exporter_userid'];

@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Module\Notifications\QueueManager;
+
+use Lynxlab\ADA\Module\Notifications\NotificationBase;
+
+use Lynxlab\ADA\Module\Notifications\EmailQueueItem;
+
+use Lynxlab\ADA\Module\Notifications\AMANotificationsDataHandler;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+use function \sendToBrowser;
+
+// Trigger: ClassWithNameSpace. The class QueueManager was declared with namespace Lynxlab\ADA\Module\Notifications. //
+
 /**
  * @package     notifications module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -129,7 +145,7 @@ class QueueManager extends NotificationBase
                         } else {
                             $sendResult = constant($this->itemsClassName . '::STATUS_PROCESSED_ERROR');
                         }
-                        $item->setProcessTS($this->dh->date_to_ts('now'))->setStatus($sendResult)->setSendResult($sentOK);
+                        $item->setProcessTS($this->dh->dateToTs('now'))->setStatus($sendResult)->setSendResult($sentOK);
                         $this->dh->saveEmailQueueItem($item->toArray());
                     } catch (\Exception $e) {
                         $this->logMessage("Exception when persisting item:");
@@ -168,7 +184,7 @@ class QueueManager extends NotificationBase
                 ];
                 break;
         }
-        $this->lastGetTS = $this->dh->date_to_ts('now');
+        $this->lastGetTS = $this->dh->dateToTs('now');
         return  $this->dh->findBy($this->itemsClassName, $whereArr);
     }
 

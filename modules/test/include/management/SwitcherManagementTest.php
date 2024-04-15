@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Module\Test\SwitcherManagementTest;
+
+use Lynxlab\ADA\Module\Test\SwitcherFormTest;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class SwitcherManagementTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -14,10 +26,10 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Course\Course;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\get_max_idFN;
+use function Lynxlab\ADA\Main\AMA\DBRead\getMaxIdFN;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\redirect;
-use function Lynxlab\ADA\Main\Utilities\today_dateFN;
+use function Lynxlab\ADA\Main\Utilities\todayDateFN;
 
 class SwitcherManagementTest
 {
@@ -47,13 +59,13 @@ class SwitcherManagementTest
     {
         $dh = $GLOBALS['dh'];
 
-        $test = $dh->test_getNode($id_test);
+        $test = $dh->testGetNode($id_test);
         if ($dh->isError($test)) {
             return false;
         }
 
         //creo nodo di riferimento
-        $last_node = explode('_', get_max_idFN($this->courseObj->id));
+        $last_node = explode('_', getMaxIdFN($this->courseObj->id));
         $new_id = $last_node[1] + 1;
         $new_node_id = $this->courseObj->id . '_' . $new_id;
 
@@ -70,18 +82,18 @@ class SwitcherManagementTest
         $nodo_test['type']              = ADA_CUSTOM_EXERCISE_TEST;
         $nodo_test['parent_id']         = $this->courseObj->id . '_0';
         $nodo_test['order']             = 999;
-        $nodo_test['creation_date']     = today_dateFN();
+        $nodo_test['creation_date']     = todayDateFN();
         $nodo_test['pos_x0']            = 0;
         $nodo_test['pos_y0']            = 0;
         $nodo_test['pos_x1']            = 0;
         $nodo_test['pos_y1']            = 0;
-        $id_node = $dh->add_node($nodo_test);
+        $id_node = $dh->addNode($nodo_test);
 
         if (empty($id_node) || $dh->isError($id_node)) {
             return false;
         }
 
-        $res = $dh->test_addCourseTest($this->courseObj->id, $id_test, $id_node);
+        $res = $dh->testAddCourseTest($this->courseObj->id, $id_test, $id_node);
         if (!$dh->isError($res)) {
             return false;
         } else {
@@ -103,19 +115,19 @@ class SwitcherManagementTest
     {
         $dh = $GLOBALS['dh'];
 
-        $coursetest = $dh->test_getCourseSurveys(['id_corso' => $this->courseObj->id,'id_test' => $id_test]);
+        $coursetest = $dh->testGetCourseSurveys(['id_corso' => $this->courseObj->id,'id_test' => $id_test]);
         if ($dh->isError($coursetest) || empty($coursetest[0])) {
             return false;
         }
         $id_nodo = $coursetest[0]['id_nodo'];
 
-        $res = $dh->test_removeCourseTest($this->courseObj->id, $id_test);
+        $res = $dh->testRemoveCourseTest($this->courseObj->id, $id_test);
 
         if ($dh->isError($res)) {
             return false;
         }
 
-        $res = $dh->remove_node($id_nodo);
+        $res = $dh->removeNode($id_nodo);
         //don't mind the return of this last remove..
         //this node can be non existent because removed by an author!
         return true;

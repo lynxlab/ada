@@ -1,5 +1,29 @@
 <?php
 
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\MultiPort;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * EDIT NODE.
  *
@@ -25,11 +49,11 @@ use Lynxlab\ADA\Services\NodeEditing\NodeEditingViewer;
 use Lynxlab\ADA\Services\NodeEditing\PreferenceSelector;
 use Lynxlab\ADA\Services\NodeEditing\Utilities;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_node_from_DB;
+use function Lynxlab\ADA\Main\AMA\DBRead\readNodeFromDB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\redirect;
-use function Lynxlab\ADA\Services\Functions\copy_nodeFN;
-use function Lynxlab\ADA\Services\Functions\delete_nodeFN;
+use function Lynxlab\ADA\Services\Functions\copyNodeFN;
+use function Lynxlab\ADA\Services\Functions\deleteNodeFN;
 use function Lynxlab\ADA\Services\Functions\getNodeData;
 
 /**
@@ -92,10 +116,10 @@ ServiceHelper::init($neededObjAr);
  * YOUR CODE HERE
 */
 if ($id_profile == 0 || ($id_profile != AMA_TYPE_TUTOR && $id_profile != AMA_TYPE_AUTHOR && $id_profile != AMA_TYPE_STUDENT)) {
-    $errObj = new ADA_Error(null, translateFN('Utente non autorizzato, impossibile proseguire.'));
+    $errObj = new ADAError(null, translateFN('Utente non autorizzato, impossibile proseguire.'));
 } elseif (
     $id_profile == AMA_TYPE_STUDENT && isset($id_course_instance) && intval($id_course_instance) > 0 &&
-        $userObj->get_student_status($userObj->getId(), $id_course_instance) == ADA_STATUS_TERMINATED
+        $userObj->getStudentStatus($userObj->getId(), $id_course_instance) == ADA_STATUS_TERMINATED
 ) {
     /**
      * @author giorgio 03/apr/2015
@@ -114,7 +138,7 @@ $online_users_listing_mode = 2;
 if (!isset($id_course_instance)) {
     $id_course_instance = null;
 }
-$online_users = ADALoggableUser::get_online_usersFN($id_course_instance, $online_users_listing_mode);
+$online_users = ADALoggableUser::getOnlineUsersFN($id_course_instance, $online_users_listing_mode);
 
 if (!isset($op)) {
     $op = 'edit';
@@ -137,7 +161,7 @@ switch ($op) {
                 and isset($id_node) and isset($parent_id)
         ) {
             // vito 16 gennaio 2009
-            $result = $dh->remove_node($id_node); //$id_user);  passare anche lo userid perch�se ne tenga traccia ?
+            $result = $dh->removeNode($id_node); //$id_user);  passare anche lo userid perch�se ne tenga traccia ?
             $message = urlencode(translateFN("Nodo eliminato"));
             // vito, 9 mar 2009, $parent_id
             header("Location: " . $http_root_dir . "/browsing/view.php?id_node=$parent_id&msg=$message");
@@ -145,7 +169,7 @@ switch ($op) {
         } else {
             $self = "author"; // per il templates
             $action = "edit_node";
-            $data = delete_nodeFN($id_node, $id_course, $action);
+            $data = deleteNodeFN($id_node, $id_course, $action);
         }
         break;
     case 'copy':
@@ -153,10 +177,10 @@ switch ($op) {
             isset($_SERVER['REQUEST_METHOD']) and $_SERVER['REQUEST_METHOD'] == 'POST'
                 and isset($new_id_node)
         ) {
-            $nodeObj = read_node_from_DB($sess_id_node);
+            $nodeObj = readNodeFromDB($sess_id_node);
             if (is_object($nodeObj)) {
                 $nodeObj->copy($new_id_node);
-                $new_nodeObj = read_node_from_DB($new_id_node);
+                $new_nodeObj = readNodeFromDB($new_id_node);
                 if (is_object($new_nodeObj)) {
                     $message = urlencode(translateFN("Nodo copiato"));
                     header("Location: " . $http_root_dir . "/browsing/view.php?id_node=$new_id_node&msg=$message");
@@ -166,7 +190,7 @@ switch ($op) {
             $self = "author"; // per il templates
             $action = "edit_node";
             $status = translateFN("Copia del nodo");
-            $data = copy_nodeFN($id_node, $id_course, $action);
+            $data = copyNodeFN($id_node, $id_course, $action);
         }
         break;
 
@@ -192,23 +216,23 @@ switch ($op) {
         /*
      * Obtain info about the course author
         */
-        $course_data = $dh->get_course($id_course);
-        if (AMA_DataHandler::isError($course_data)) {
-            $errObj = new ADA_Error($course_data, translateFN("Errore nell'ottenimento delle informazioni sul corso."));
+        $course_data = $dh->getCourse($id_course);
+        if (AMADataHandler::isError($course_data)) {
+            $errObj = new ADAError($course_data, translateFN("Errore nell'ottenimento delle informazioni sul corso."));
         }
         $course_author_id = $course_data['id_autore'];
 
-        $author_data = $dh->get_author($course_author_id);
-        if (AMA_DataHandler::isError($author_data)) {
-            $errObj = new ADA_Error($author_data, translateFN("Errore nell'ottenimento delle informazioni sull'autore del corso."));
+        $author_data = $dh->getAuthor($course_author_id);
+        if (AMADataHandler::isError($author_data)) {
+            $errObj = new ADAError($author_data, translateFN("Errore nell'ottenimento delle informazioni sull'autore del corso."));
         }
 
         /*
      * Obtain note data
         */
-        $note_data = $dh->get_node_info($id_node);
-        if (AMA_DataHandler::isError($note_data)) {
-            $errObj = new ADA_Error($note_data, translateFN("Errore nell'ottenimento dei dati relativi alla nota da promuovere"));
+        $note_data = $dh->getNodeInfo($id_node);
+        if (AMADataHandler::isError($note_data)) {
+            $errObj = new ADAError($note_data, translateFN("Errore nell'ottenimento dei dati relativi alla nota da promuovere"));
         }
         $note_title = $note_data['name'];
         /*
@@ -232,9 +256,9 @@ switch ($op) {
         $message_ha['titolo']      = translateFN("Promozione di una nota a nodo");
         $message_ha['priorita']    = 2;
 
-        $result = $message_handler->send_message($message_ha);
-        if (AMA_DataHandler::isError($result)) {
-            $errObj = new ADA_Error($result, translateFN("Errore nell'invio del messaggio di suggerimento promozione nota."));
+        $result = $message_handler->sendMessage($message_ha);
+        if (AMADataHandler::isError($result)) {
+            $errObj = new ADAError($result, translateFN("Errore nell'invio del messaggio di suggerimento promozione nota."));
         }
         $status = translateFN("Proposta di promozione inviata all'autore del corso");
         header("Location: $http_root_dir/browsing/view.php?status=$status");
@@ -245,7 +269,7 @@ switch ($op) {
     case 'publish': // promote a noTe to noDe (only Tutors) or a private note to a public note (student/tutor)
         // if (isset($submit)){
 
-        $nodeObj = read_node_from_DB($id_node);
+        $nodeObj = readNodeFromDB($id_node);
 
         if (is_object($nodeObj) and (!AMA_datahandler::isError($nodeObject))) {
             $node_type = $nodeObj->type;
@@ -255,7 +279,7 @@ switch ($op) {
             switch ($type) {
                 case ADA_PRIVATE_NOTE_TYPE: //  private notes  to forum notes
                     $node_ha['type'] = ADA_NOTE_TYPE;
-                    $res = $dh->doEdit_node($node_ha);
+                    $res = $dh->doEditNode($node_ha);
                     $message = urlencode(translateFN("Nota pubblicata nel forum"));
                     header("Location: " . $http_root_dir . "/browsing/view.php?id_node=$id_node&msg=$message");
                     exit();
@@ -273,7 +297,7 @@ switch ($op) {
                         ) {
                             $path_element = array_shift($pathAr);
                             $parent_node_id = $path_element[0];
-                            $nodeObjTmp = read_node_from_DB($parent_node_id);
+                            $nodeObjTmp = readNodeFromDB($parent_node_id);
                             $parent_node_type = $nodeObjTmp->type;
                         }
                     }
@@ -285,7 +309,7 @@ switch ($op) {
                     $node_ha['type'] = ADA_LEAF_TYPE;
                     $node_ha['id_instance'] = "";
 
-                    $res = $dh->doEdit_node($node_ha);
+                    $res = $dh->doEditNode($node_ha);
                     //$GLOBALS['debug']=1; mydebug(__LINE__,__FILE__,$res); $GLOBALS['debug']=0;
                     if (!AMA_datahandler::isError($res)) {
                         $message = urlencode(translateFN("Nota pubblicata nel corso"));
@@ -294,8 +318,8 @@ switch ($op) {
                         $authoObj = new ADAAuthor($course_author_id);
                         $author_name = $authoObj->username;
                         $destAr =  [$user_name];
-                        /*$tutor_id = $dh->course_instance_tutor_get($sess_id_course_instance);
-                         $tutor = $dh->get_author($tutor_id);
+                        /*$tutor_id = $dh->courseInstanceTutorGet($sess_id_course_instance);
+                         $tutor = $dh->getAuthor($tutor_id);
                          $tutor_uname = $tutor['username'];*/
                         $mh = new MessageHandler();
                         $message_ha['destinatari'] = $destAr;
@@ -311,10 +335,10 @@ switch ($op) {
                         // e-mail
                         // vito, 20 apr 2009
                         //                               $message_ha['tipo'] = ADA_MSG_MAIL;
-                        //                               $res = $mh->send_message($message_ha);
+                        //                               $res = $mh->sendMessage($message_ha);
                         // messaggio interno
                         $message_ha['tipo'] = ADA_MSG_SIMPLE;
-                        $res = $mh->send_message($message_ha);
+                        $res = $mh->sendMessage($message_ha);
                     }
                     break;
             }
@@ -323,7 +347,7 @@ switch ($op) {
         //$self="author"; // per il templates
         //$action = "edit_node";
         //$status = translateFN("Pubblicazione del nodo");
-        //$data = copy_nodeFN($id_node,$id_course,$action);
+        //$data = copyNodeFN($id_node,$id_course,$action);
 
         //}
         break;
@@ -448,16 +472,16 @@ switch ($op) {
             $previous_media,
             $current_media
         );
-        if (AMA_DB::isError($result)) {
-            $errObj = new ADA_Error($result, translateFN("Errore nell'associazione dei media con il nodo"));
+        if (AMADB::isError($result)) {
+            $errObj = new ADAError($result, translateFN("Errore nell'associazione dei media con il nodo"));
         }
         /*
                * salvo le modifiche fatte al nodo
         */
         unset($content_dataAr['DataFCKeditor']);
         $result = NodeEditing::saveNode($content_dataAr);
-        if (AMA_DB::isError($result)) {
-            $errObj = new ADA_Error($result, translateFN('Errore durante il salvataggio delle modifiche al nodo'));
+        if (AMADB::isError($result)) {
+            $errObj = new ADAError($result, translateFN('Errore durante il salvataggio delle modifiche al nodo'));
         }
 
         unset($_SESSION['sess_node_editing']);
@@ -508,19 +532,19 @@ switch ($op) {
             /* get the students subscribed to this course instance
                *
                * this is userful if we want use ths snippet of code form outside
-               *  here we use AMA get_students_for_course_instance() instead
+               *  here we use AMA getStudentsForCourseInstance() instead
                */
             /*
               $tester = $_SESSION['sess_selected_tester'];
-              $tester_info_Ar = $common_dh->get_tester_info_from_pointer($tester);
+              $tester_info_Ar = $common_dh->getTesterInfoFromPointer($tester);
               $tester_name = $tester_info_Ar[1];
-              $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
-              $students_Ar = $tester_dh->get_unique_students_for_course_instances($sess_id_course_instance);
+              $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester));
+              $students_Ar = $tester_dh->getUniqueStudentsForCourseInstances($sess_id_course_instance);
 
              */
-            if ($dh->course_has_instances($sess_id_course)) {
+            if ($dh->courseHasInstances($sess_id_course)) {
                 $field_list_ar = [];
-                $course_instanceAr = $dh->course_instance_started_get_list($field_list_ar, $sess_id_course);
+                $course_instanceAr = $dh->courseInstanceStartedGetList($field_list_ar, $sess_id_course);
                 $students_Ar = [];
                 $res_course_instanceAr = [];
                 foreach ($course_instanceAr as $course_instance) {
@@ -529,7 +553,7 @@ switch ($op) {
                         $res_course_instanceAr[] = $id_course_instance;
                     }
                 }
-                $course_instance_students_Ar =  $dh->get_unique_students_for_course_instances($res_course_instanceAr);
+                $course_instance_students_Ar =  $dh->getUniqueStudentsForCourseInstances($res_course_instanceAr);
                 foreach ($course_instance_students_Ar as $course_instance_student) {
                     $students_Ar[] = $course_instance_student['username'];
                 }
@@ -539,10 +563,10 @@ switch ($op) {
                   //get the sender: the admin???
 
                   $admtypeAr = array(AMA_TYPE_ADMIN);
-                  $admList = $dh->get_users_by_type($admtypeAr);
-                  // $admList = $tester_dh-> get_users_by_type($admtypeAr); ???
+                  $admList = $dh->getUsersByType($admtypeAr);
+                  // $admList = $tester_dh-> getUsersByType($admtypeAr); ???
 
-                  if (!AMA_DataHandler::isError($admList)){
+                  if (!AMADataHandler::isError($admList)){
                                 $adm_uname = $admList[0]['username'];
                   } else {
                                 $adm_uname = ""; // ??? FIXME: serve un superadmin nel file di config?
@@ -608,7 +632,7 @@ switch ($op) {
                          *       29/apr/2014 this feature is not supported and every student
                          *       shall receive the notification by email only.
                          */
-                        if (DataValidator::validate_email($destinatario)) {
+                        if (DataValidator::validateEmail($destinatario)) {
                             $phpmailer->AddBCC($destinatario);
                         }
                     }
@@ -616,7 +640,7 @@ switch ($op) {
                     $phpmailer->Body = $message_html;
                     $phpmailer->AltBody = $message_text;
                     if (!$phpmailer->Send()) {
-                        $result = new AMA_Error(AMA_ERR_SEND_MSG);
+                        $result = new AMAError(AMA_ERR_SEND_MSG);
                     } else {
                         $result = true;
                     }
@@ -632,10 +656,10 @@ switch ($op) {
                     //                           $message_ha['titolo']      = translateFN("Aggiornamento dei contenuti del corso");
                     //                           $message_ha['priorita']    = 2;
 
-                    //                           $result = $message_handler->send_message($message_ha);
+                    //                           $result = $message_handler->sendMessage($message_ha);
 
-                    if (AMA_DataHandler::isError($result)) {
-                        $errObj = new ADA_Error($result, translateFN("Errore nell'invio del messaggio di notifica dell'aggiornamento."));
+                    if (AMADataHandler::isError($result)) {
+                        $errObj = new ADAError($result, translateFN("Errore nell'invio del messaggio di notifica dell'aggiornamento."));
                     }
                 } else {
                     // we should add to a list of programmed notifications, create a module that is called by CRON, ... etc
@@ -741,7 +765,7 @@ if (isset($data) && is_object($data)) {
 }
 // vito, 20 apr 2009, commentate le righe seguenti
 /*
- $course_dataHa = $dh->get_course($id_course);
+ $course_dataHa = $dh->getCourse($id_course);
  if ((is_array($course_dataHa) && count($course_dataHa)>0)){
  $course_title = $course_dataHa['titolo'];
  }
@@ -753,8 +777,8 @@ $chat_link = "<a href=\"$http_root_dir/comunica/ada_chat.php target=\"Chat\">" .
  // find all course available
  $field_list_ar = array('nome','titolo','data_pubblicazione');
  $clause = "ID_UTENTE_AUTORE = '$sess_id_user'";   // matching conditions: ...
- $courses_dataHa = $dh->find_courses_list($field_list_ar, $clause);
- if (AMA_DataHandler::isError($courses_dataHa)){
+ $courses_dataHa = $dh->findCoursesList($field_list_ar, $clause);
+ if (AMADataHandler::isError($courses_dataHa)){
  $msg = $courses_dataHa->getMessage();
 
  }

@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadBase;
+
+// Trigger: ClassWithNameSpace. The class EtherpadBase was declared with namespace Lynxlab\ADA\Module\EtherpadIntegration. //
+
 /**
  * @package     etherpad module
  * @author      giorgio <g.consorti@lynxlab.com>

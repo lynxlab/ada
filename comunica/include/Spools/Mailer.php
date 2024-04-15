@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMAError;
+
+use Lynxlab\ADA\Comunica\Spools\Mailer;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class Mailer was declared with namespace Lynxlab\ADA\Comunica\Spools. //
+
 namespace Lynxlab\ADA\Comunica\Spools;
 
 use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
@@ -28,10 +38,10 @@ class Mailer
      *            $sender_email -
      *            $recipients_emails_ar - an array of all recipients
      *
-     * @return    an AMA_Error object if something goes wrong
+     * @return    an AMAError object if something goes wrong
      *
      */
-    public function send_mail($message_ha, $sender_email, $recipients_emails_ar)
+    public function sendMail($message_ha, $sender_email, $recipients_emails_ar)
     {
         // logger("entered Mailer::send_mail", 3);
 

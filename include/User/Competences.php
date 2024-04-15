@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Main\User\UserExtraTables;
+
+use Lynxlab\ADA\Main\User\OneToManyDataSample;
+
+use Lynxlab\ADA\Main\User\Competences;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\HtmlLibrary\UserExtraModuleHtmlLib;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class Competences was declared with namespace Lynxlab\ADA\Main\User. //
+
 /**
  * class OneToManyDataSample for storing corresponding table data
  *

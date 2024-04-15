@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Module\Test\ManagementTest;
+
+use Lynxlab\ADA\Module\Test\AMATestDataHandler;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class ManagementTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -98,7 +108,7 @@ abstract class ManagementTest
     {
         $dh = $GLOBALS['dh'];
         if (!is_null($this->id)) {
-            $this->r = $dh->test_getNode($this->id);
+            $this->r = $dh->testGetNode($this->id);
             $this->setTipo();
 
             if (empty($this->r) || AMATestDataHandler::isError($this->r)) {

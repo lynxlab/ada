@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Switcher\Subscription;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class Subscription was declared with namespace Lynxlab\ADA\Switcher. //
+
 /**
  * Subscription class
  *
@@ -40,9 +50,9 @@ class Subscription
     public static function findPresubscriptionsToClassRoom($classRoomId)
     {
         $dh = $GLOBALS['dh'];
-        $result = $dh->get_presubscribed_students_for_course_instance($classRoomId);
+        $result = $dh->getPresubscribedStudentsForCourseInstance($classRoomId);
 
-        if (AMA_DataHandler::isError($result)) {
+        if (AMADataHandler::isError($result)) {
             return [];
         } else {
             $subscriptionsAr = [];
@@ -73,9 +83,9 @@ class Subscription
     public static function findSubscriptionsToClassRoom($classRoomId, $all = false)
     {
         $dh = $GLOBALS['dh'];
-        $result = $dh->get_students_for_course_instance($classRoomId, $all);
+        $result = $dh->getStudentsForCourseInstance($classRoomId, $all);
 
-        if (AMA_DataHandler::isError($result)) {
+        if (AMADataHandler::isError($result)) {
             return [];
         } else {
             $subscriptionsAr = [];
@@ -103,14 +113,14 @@ class Subscription
     {
         $dh = $GLOBALS['dh'];
         if ($s->getSubscriptionStatus() == ADA_STATUS_SUBSCRIBED) {
-            $result = $dh->course_instance_student_presubscribe_add(
+            $result = $dh->courseInstanceStudentPresubscribeAdd(
                 $s->getClassRoomId(),
                 $s->getSubscriberId(),
                 $s->getStartStudentLevel()
             );
 
-            if (!AMA_DataHandler::isError($result)) {
-                $result = $dh->course_instance_student_subscribe(
+            if (!AMADataHandler::isError($result)) {
+                $result = $dh->courseInstanceStudentSubscribe(
                     $s->getClassRoomId(),
                     $s->getSubscriberId(),
                     ADA_STATUS_SUBSCRIBED,
@@ -119,7 +129,7 @@ class Subscription
                 );
             }
 
-            if (AMA_DataHandler::isError($result)) {
+            if (AMADataHandler::isError($result)) {
                 //print_r($result);
             }
         } else {
@@ -130,12 +140,12 @@ class Subscription
     {
         $dh = $GLOBALS['dh'];
         if ($s->getSubscriptionStatus() == ADA_STATUS_REMOVED) {
-            $result = $dh->course_instance_student_presubscribe_remove(
+            $result = $dh->courseInstanceStudentPresubscribeRemove(
                 $s->getClassRoomId(),
                 $s->getSubscriberId()
             );
         } else {
-            $result = $dh->course_instance_student_subscribe(
+            $result = $dh->courseInstanceStudentSubscribe(
                 $s->getClassRoomId(),
                 $s->getSubscriberId(),
                 $s->getSubscriptionStatus(),
@@ -143,7 +153,7 @@ class Subscription
                 $s->getLastStatusUpdate()
             );
         }
-        if (AMA_DataHandler::isError($result)) {
+        if (AMADataHandler::isError($result)) {
         }
 
         return $result;
@@ -155,8 +165,8 @@ class Subscription
     public static function deleteAllSubscriptionsToClassRoom($classRoomId)
     {
         $dh = $GLOBALS['dh'];
-        $result = $dh->course_instance_students_subscriptions_remove_all($classRoomId);
-        if (AMA_DataHandler::isError($result)) {
+        $result = $dh->courseInstanceStudentsSubscriptionsRemoveAll($classRoomId);
+        if (AMADataHandler::isError($result)) {
             return false;
         }
         return true;

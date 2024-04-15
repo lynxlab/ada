@@ -1,5 +1,17 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
 /**
  * VIDEOCHAT.
  *
@@ -94,11 +106,11 @@ if ($_REQUEST['id_room']) {
 $id_profile = $userObj->getType();
   if ($id_profile==AMA_TYPE_TUTOR){
     $videoroomObj = new videoroom();
-    //$videoroomObj->videoroom_info($sess_id_course_instance);
+    //$videoroomObj->videoroomInfo($sess_id_course_instance);
     //if ($videoroomObj->full) {
     //  $id_room = $videoroomObj->id_room;
     $videoroomObj->server_login();
-    $videoroomObj->delete_room($id_room);
+    $videoroomObj->deleteRoom($id_room);
     header('Location:'. HTTP_ROOT_DIR . '/tutor/eguidance_tutor_form.php?event_token='.$_GET['event_token']);
     exit();
   } else {

@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\Html;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\ADAError;
+
+use function \translateFN;
+
 /**
  * SEND MESSAGE.
  *
@@ -89,7 +111,7 @@ ComunicaHelper::init($neededObjAr);
  */
 
 $success    = HTTP_ROOT_DIR . '/comunica/list_messages.php';
-$error_page = HTTP_ROOT_DIR . '/comunica/send_message.php';
+$error_page = HTTP_ROOT_DIR . '/comunica/sendMessage.php';
 
 if (!isset($op)) {
     $op = 'default';
@@ -149,13 +171,13 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             if (MultiPort::isUserBrowsingThePublicTester()) {
                 $common_dh = $GLOBALS['common_dh'];
                 foreach ($destinatari as $username) {
-                    $user_tester_Ar = $common_dh->get_testers_for_username($username);
+                    $user_tester_Ar = $common_dh->getTestersForUsername($username);
                     /*
                      * Now we are sending the message to the first tester found.
                      * In future, we may want to send this message to all the tester.
                      */
                     $user_tester = $user_tester_Ar[0];
-                    if (AMA_DataHandler::isError($user_tester)) {
+                    if (AMADataHandler::isError($user_tester)) {
                     } else {
                         $mh = MessageHandler::instance(MultiPort::getDSN($user_tester));
 
@@ -172,11 +194,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                         $message_ha['mittente'] = $user_uname;
 
                         // delegate sending to the message handler
-                        $res = $mh->send_message($message_ha);
+                        $res = $mh->sendMessage($message_ha);
 
-                        if (AMA_DataHandler::isError($res)) {
+                        if (AMADataHandler::isError($res)) {
                             // Delayed error handling
-                            $errObjs[] = new ADA_Error(
+                            $errObjs[] = new ADAError(
                                 $res,
                                 translateFN('Impossibile spedire il messaggio'),
                                 null,
@@ -209,10 +231,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 $message_ha['mittente'] = $user_uname;
 
                 // delegate sending to the message handler
-                $res = $mh->send_message($message_ha);
+                $res = $mh->sendMessage($message_ha);
 
-                if (AMA_DataHandler::isError($res)) {
-                    $errObj = new ADA_Error(
+                if (AMADataHandler::isError($res)) {
+                    $errObj = new ADAError(
                         $res,
                         translateFN('Impossibile spedire il messaggio'),
                         null,
@@ -387,11 +409,11 @@ $ada_address_book = MessagesAddressBook::create($userObj);
 */
 
 if (isset($_SESSION['sess_id_course_instance'])) {
-    $last_access = $userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']), "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(($_SESSION['sess_id_course_instance']), "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 } else {
-    $last_access = $userObj->get_last_accessFN(null, "UT", null);
-    $last_access = AMA_DataHandler::ts_to_date($last_access);
+    $last_access = $userObj->getLastAccessFN(null, "UT", null);
+    $last_access = AMADataHandler::tsToDate($last_access);
 }
 
 if ($last_access == '' || is_null($last_access)) {

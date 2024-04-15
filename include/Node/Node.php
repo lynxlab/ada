@@ -1,5 +1,27 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Services\Exercise\ExerciseDAO;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\CSS;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\Node\Media;
+
+use Lynxlab\ADA\CORE\html4\CBaseElement;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class Node was declared with namespace Lynxlab\ADA\Main\Node. //
+
 /**
  * Node, Media, Link classes
  *
@@ -27,7 +49,7 @@ use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\read_dir;
+use function Lynxlab\ADA\Main\Utilities\readDir;
 
 class Node
 {
@@ -93,8 +115,8 @@ class Node
     //    $dh = $GLOBALS['dh'];
     //
     //    // TODO: validare anche qui id_node?
-    //    $dataHa = $dh->get_node_info($id_node);
-    //    if (AMA_DataHandler::isError($dataHa) || !is_array($dataHa)) {
+    //    $dataHa = $dh->getNodeInfo($id_node);
+    //    if (AMADataHandler::isError($dataHa) || !is_array($dataHa)) {
     //      return null;
     //    }
     //
@@ -134,9 +156,9 @@ class Node
         $root_dir      =   $GLOBALS['root_dir'] ?? null;
         $http_root_dir =   $GLOBALS['http_root_dir'] ?? null;
 
-        $dataHa = $dh->get_node_info($id_node);
+        $dataHa = $dh->getNodeInfo($id_node);
 
-        if (AMA_DataHandler::isError($dataHa) || !is_array($dataHa)) {
+        if (AMADataHandler::isError($dataHa) || !is_array($dataHa)) {
             // FIXME: prima restituiva una stringa di testo
             $this->full = 0;
         } else {
@@ -158,13 +180,13 @@ class Node
                  */
                 $childrenAr = $dh->get_node_children($id_node);
 
-                if (AMA_DataHandler::isError($childrenAr) || !is_array($childrenAr)) {
+                if (AMADataHandler::isError($childrenAr) || !is_array($childrenAr)) {
                     $this->children = '';
                 } elseif (count($childrenAr) > 0) {
                     $this->children = $childrenAr;
                 }
 
-                $next_node = $this->next_nodeFN();
+                $next_node = $this->nextNodeFN();
                 if ($next_node != "") {
                     $this->next_id = $next_node;
                 }
@@ -173,8 +195,8 @@ class Node
                     /*
                      * Links
                      */
-                    $linksAr = $dh->get_node_links($id_node);
-                    if (AMA_DataHandler::isError($linksAr) || !is_array($linksAr)) {
+                    $linksAr = $dh->getNodeLinks($id_node);
+                    if (AMADataHandler::isError($linksAr) || !is_array($linksAr)) {
                         $this->links = '';
                     } elseif (count($linksAr) > 0) {
                         $this->links = $linksAr;
@@ -182,9 +204,9 @@ class Node
                     /*
                      * Media
                      */
-                    $mediaAr = $dh->get_node_resources($id_node);
+                    $mediaAr = $dh->getNodeResources($id_node);
 
-                    if (AMA_DataHandler::isError($mediaAr) || !is_array($mediaAr)) {
+                    if (AMADataHandler::isError($mediaAr) || !is_array($mediaAr)) {
                         $this->media = "";
                     } elseif (is_array($mediaAr)) {
                         $this->media = $mediaAr;
@@ -195,7 +217,7 @@ class Node
                  */
                 if ($dataHa['type'] == ADA_LEAF_WORD_TYPE || $dataHa['type'] == ADA_GROUP_WORD_TYPE) {
                     $extended_data_nodeHA = $dh->get_extended_node($id_node);
-                    if (AMA_DataHandler::isError($extended_data_nodeHA) || !is_array($extended_data_nodeHA)) {
+                    if (AMADataHandler::isError($extended_data_nodeHA) || !is_array($extended_data_nodeHA)) {
                         $this->extended_node = "";
                     } elseif (is_array($extended_data_nodeHA)) {
                         foreach ($extended_data_nodeHA as $key => $value) {
@@ -261,9 +283,9 @@ class Node
         // duplicates a node
 
         if ($new_id_node != $this->id) {
-            $dataHa = $dh->get_node_info($this->id);
+            $dataHa = $dh->getNodeInfo($this->id);
             //mydebug(__LINE__,__FILE__,$dataHa);
-            if (AMA_DataHandler::isError($dataHa) || (!is_array($dataHa))) {
+            if (AMADataHandler::isError($dataHa) || (!is_array($dataHa))) {
                 $msg = $dataHa->getMessage();
                 if (!strstr($msg, 'record was not found')) {
                     header("Location: $error?err_msg=$msg");
@@ -273,13 +295,13 @@ class Node
                 }
             }
             $dataHa->node_id = $new_id_node;
-            $dh->add_node($dataHa); // Array
+            $dh->addNode($dataHa); // Array
         } else {
             return translateFN("Un nodo con questo id &egrave; gi&agrave; presente");
         }
     }
 
-    public function graph_indexFN($id_toc = '', $depth = 1, $user_level = 1, $user_history = '')
+    public function graphIndexFN($id_toc = '', $depth = 1, $user_level = 1, $user_history = '')
     {
         // usata per la mappa grafica
         //global $dh,$error;
@@ -304,7 +326,7 @@ class Node
             foreach ($children as $id_child) {
                 $linked_ha = [];
                 if (!empty($id_child)) {
-                    $child_dataHa = $dh->get_node_info($id_child);
+                    $child_dataHa = $dh->getNodeInfo($id_child);
                     // Vengono mostrati nella mappa solo i nodi dei tipi che sono nel seguente array
                     $nodeTypesToShow = [
                         ADA_LEAF_TYPE, ADA_GROUP_TYPE, ADA_LEAF_WORD_TYPE,
@@ -314,12 +336,12 @@ class Node
                         //mydebug(__LINE__,__FILE__,$child_dataHa);
                         $linksAr = [];
 
-                        $links_result = $dh->get_node_links($id_child); // Array
+                        $links_result = $dh->getNodeLinks($id_child); // Array
                         if (!is_object($links_result)) {
                             $linksAr = $links_result;
 
                             // filtro link
-                            $ok_link = $this->get_filter_links_FN($linksAr, $user_level);
+                            $ok_link = $this->getFilterLinksFN($linksAr, $user_level);
                             // fine filtro link
                             if (!empty($ok_link)) {
                                 foreach ($ok_link as $link) {
@@ -333,7 +355,7 @@ class Node
 
                         $children_count = 0;
                         $children_count_res = $dh->get_node_children($id_child);
-                        if (!AMA_DB::isError($children_count_res) && is_array($children_count_res)) {
+                        if (!AMADB::isError($children_count_res) && is_array($children_count_res)) {
                             $children_count = count($children_count_res);
                         }
 
@@ -386,10 +408,10 @@ class Node
         }
 
         //    $base = new Node($id_toc,1);  // da dove parte
-        $children = $dh->get_node_children_complete($id_toc);
+        $children = $dh->getNodeChildrenComplete($id_toc);
         //    $children = $base->children;
 
-        if (!empty($children) && (!AMA_DB::isError($children))) {
+        if (!empty($children) && (!AMADB::isError($children))) {
             $dataAr = [];
             //           $parent_link = array("<img name=gruppo alt=\"Questo gruppo\" src=\"img/_gruppo.png\"> <a href=view.php?id_node=".$base->id.">".$base->name."</a>",
             //           $alt = translateFN("Questo gruppo");
@@ -404,7 +426,7 @@ class Node
                 if (!empty($child_dataHa)) {
                     $id_child = $child_dataHa['id_nodo'];
                     $ok = false;
-                    //          $child_dataHa = $dh->get_node_info($id_child);
+                    //          $child_dataHa = $dh->getNodeInfo($id_child);
                     $node_type = $child_dataHa['tipo'];
                     $child_dataHa['name'] = $child_dataHa['nome'];
                     $child_dataHa['level'] = $child_dataHa['livello'];
@@ -424,14 +446,14 @@ class Node
                                 switch ($user_type) {
                                     case AMA_TYPE_STUDENT:
                                     default:
-                                        $visit_count  = ADALoggableUser::is_visited_by_userFN($id_child, $sess_id_course_instance, $sess_id_user);
+                                        $visit_count  = ADALoggableUser::isVisitedByUserFN($id_child, $sess_id_course_instance, $sess_id_user);
                                         break;
                                     case AMA_TYPE_TUTOR:
                                         // TOO SLOW !
-                                        $visit_count  = ADALoggableUser::is_visited_by_classFN($id_child, $sess_id_course_instance, $sess_id_course);
+                                        $visit_count  = ADALoggableUser::isVisitedByClassFN($id_child, $sess_id_course_instance, $sess_id_course);
                                         break;
                                     case AMA_TYPE_AUTHOR:
-                                        $visit_count  = ADALoggableUser::is_visitedFN($id_child);
+                                        $visit_count  = ADALoggableUser::isVisitedFN($id_child);
                                 }
                                 if ($visit_count <= 0) {
                                     // vito 12 gennaio 2009
@@ -465,15 +487,15 @@ class Node
                                 switch ($user_type) {
                                     case AMA_TYPE_STUDENT:
                                     default:
-                                        $visit_count  = ADALoggableUser::is_visited_by_userFN($id_child, $sess_id_course_instance, $sess_id_user);
+                                        $visit_count  = ADALoggableUser::isVisitedByUserFN($id_child, $sess_id_course_instance, $sess_id_user);
                                         break;
                                     case AMA_TYPE_TUTOR:
                                         // TOO SLOW !
-                                        //      $visit_count  = ADALoggableUser::is_visited_by_classFN($id_child,$sess_id_course_instance,$sess_id_course);
+                                        //      $visit_count  = ADALoggableUser::isVisitedByClassFN($id_child,$sess_id_course_instance,$sess_id_course);
                                         //
                                         break;
                                     case AMA_TYPE_AUTHOR:
-                                        $visit_count  = ADALoggableUser::is_visitedFN($id_child);
+                                        $visit_count  = ADALoggableUser::isVisitedFN($id_child);
                                 }
                                 if ($visit_count == 0) {
                                     // vito 12 gennaio 2009
@@ -502,8 +524,8 @@ class Node
 
                              switch (VIEW_PRIVATE_NOTES_ONLY){
                              case 0: // every node added by student of this course are visible
-                             $author_dataHa =  $dh->get_subscription($autore, $sess_id_course_instance);
-                             if (!AMA_DB::isError($author_dataHa)){
+                             $author_dataHa =  $dh->getSubscription($autore, $sess_id_course_instance);
+                             if (!AMADB::isError($author_dataHa)){
                              $alt = translateFN("Nota pubblica");
                              $icon = "_nota.png";
                              $children_link = array("<img name=\"nota\" alt=\"$alt\" src=\"img/$icon\"> <a href=view.php?id_node=".$id_child.">".$child_dataHa['name']."</a>");
@@ -539,15 +561,15 @@ class Node
                                     switch ($user_type) {
                                         case AMA_TYPE_STUDENT:
                                         default:
-                                            $visit_count  = ADALoggableUser::is_visited_by_userFN($id_child, $sess_id_course_instance, $sess_id_user);
+                                            $visit_count  = ADALoggableUser::isVisitedByUserFN($id_child, $sess_id_course_instance, $sess_id_user);
                                             break;
                                         case AMA_TYPE_TUTOR:
                                             // TOO SLOW !
-                                            //      $visit_count  = ADALoggableUser::is_visited_by_classFN($id_child,$sess_id_course_instance,$sess_id_course);
+                                            //      $visit_count  = ADALoggableUser::isVisitedByClassFN($id_child,$sess_id_course_instance,$sess_id_course);
                                             //
                                             break;
                                         case AMA_TYPE_AUTHOR:
-                                            $visit_count  = ADALoggableUser::is_visitedFN($id_child);
+                                            $visit_count  = ADALoggableUser::isVisitedFN($id_child);
                                     }
                                     if ($visit_count == 0) {
                                         // vito 12 gennaio 2009
@@ -604,53 +626,53 @@ class Node
     // le funzioni vere appartengono alla classe Course
     /* RIASSUNTO:
      main_indexFN: mostra nodi e gruppi, per studente (no autore, tutor e admin)
-     explode_nodesFN : ricorsiva, chiamata per default e se $order=struct
-     explode_nodes_iterativeFN : iterativa, chiamata se $order=alfa
+     explodeNodesFN : ricorsiva, chiamata per default e se $order=struct
+     explodeNodesIterativeFN : iterativa, chiamata se $order=alfa
 
      se hide_visits=1 mostrano anche le visite dello studente
 
      class_indexFN: mostra nodi e gruppi,per tutor e autore  (no studente e admin)
-     class_explode_nodesFN : ricorsiva, chiamata per default e se $order=struct
-     class_explode_nodes_iterativeFN : iterativa, chiamata se $order=alfa
+     classExplodeNodesFN : ricorsiva, chiamata per default e se $order=struct
+     classExplodeNodesIterativeFN : iterativa, chiamata se $order=alfa
 
      se hide_visits=1 mostrano anche le visite della classe (tutor) o di tutti (autore)
 
      forum_main_indexFN: mostra  solo note, per studente, tutor  (no admin e autore)
-     forum_explode_nodesFN : ricorsiva, chiamata se $order=struct
-     forum_explode_nodes_iterativeFN : iterativa, chiamata per default e se $order=chrono
+     forumExplodeNodesFN : ricorsiva, chiamata se $order=struct
+     forumExplodeNodesIterativeFN : iterativa, chiamata per default e se $order=chrono
 
      *se hide_visits=1 mostrano anche le visite della classe (tutor)
      */
 
-    public function main_indexFN($id_toc = '', $depth = 1, $user_level = 1, $user_history = '', $user_type = AMA_TYPE_STUDENT, $order = 'struct', $expand = 0)
+    public function mainIndexFN($id_toc = '', $depth = 1, $user_level = 1, $user_history = '', $user_type = AMA_TYPE_STUDENT, $order = 'struct', $expand = 0)
     {
         $sess_id_course = $GLOBALS['sess_id_course'];
         //  this version is intended for  studentes use only
         $CourseObj = new Course($sess_id_course);
-        $index = $CourseObj->main_indexFN($id_toc, $depth, $user_level, $user_history, $user_type, $order, $expand);
+        $index = $CourseObj->mainIndexFN($id_toc, $depth, $user_level, $user_history, $user_type, $order, $expand);
         return $index;
     }
 
-    public function class_main_indexFN($id_toc = '', $depth = 1, $id_profile = AMA_TYPE_STUDENT, $order = 'struct', $expand = 1)
+    public function classMainIndexFN($id_toc = '', $depth = 1, $id_profile = AMA_TYPE_STUDENT, $order = 'struct', $expand = 1)
     {
         //  this version is intended for  tutor  or author use
         $sess_id_course_instance = $GLOBALS['sess_id_course_instance'];
         $CourseInstanceObj = new CourseInstance($sess_id_course_instance);
-        $index = $CourseInstanceObj->class_main_indexFN($id_toc, $depth, $id_profile, $order, $expand);
+        $index = $CourseInstanceObj->classMainIndexFN($id_toc, $depth, $id_profile, $order, $expand);
         return $index;
     }
 
-    public function forum_main_indexFN($id_toc = '', $depth = 1, $id_profile = AMA_TYPE_STUDENT, $order = 'chrono', $id_student = -1, $mode = 'standard')
+    public function forumMainIndexFN($id_toc = '', $depth = 1, $id_profile = AMA_TYPE_STUDENT, $order = 'chrono', $id_student = -1, $mode = 'standard')
     {
         //  this version is intended for  tutor  and studente use
         // only notes are showed
         $sess_id_course_instance = $GLOBALS['sess_id_course_instance'];
         $CourseInstanceObj = new CourseInstance($sess_id_course_instance);
-        $index = $CourseInstanceObj->forum_main_indexFN($id_toc, $depth, $id_profile, $order, $id_student, $mode);
+        $index = $CourseInstanceObj->forumMainIndexFN($id_toc, $depth, $id_profile, $order, $id_student, $mode);
         return $index;
     }
 
-    public function get_all_childrenFN($depth, $user_level, $id_parent, $dataAr, $id_profile)
+    public function getAllChildrenFN($depth, $user_level, $id_parent, $dataAr, $id_profile)
     {
         // recursive
         //global $dh,$id_course,$sess_id_course_instance,$sess_id_course;
@@ -667,7 +689,7 @@ class Node
             foreach ($childrenAr as $id_child) {
                 if (!empty($id_child)) {
                     $childnumber++;
-                    $child_dataHa = $dh->get_node_info($id_child);
+                    $child_dataHa = $dh->getNodeInfo($id_child);
                     $node_type = $child_dataHa['type'];
                     $node_type_family = $node_type[0]; // first char
 
@@ -699,7 +721,7 @@ class Node
                         case ADA_PRIVATE_NOTE_TYPE:    // node added by users
                             // notes doesn't have levels !
                             $autore = $child_dataHa['author'];
-                            //$author_dataHa =  $dh->get_subscription($autore, $sess_id_course_instance);
+                            //$author_dataHa =  $dh->getSubscription($autore, $sess_id_course_instance);
                             if ($autore == $sess_id_user) {
                                 $alt = translateFN("Nota privata");
                                 $icon = "__nota_pers.png";
@@ -710,8 +732,8 @@ class Node
                         case ADA_NOTE_TYPE:    // node added by users
                             // notes doesn't have levels !
                             $autore = $child_dataHa['author'];
-                            $author_dataHa =  $dh->get_subscription($autore, $sess_id_course_instance);
-                            if (!AMA_DB::isError($author_dataHa)) {
+                            $author_dataHa =  $dh->getSubscription($autore, $sess_id_course_instance);
+                            if (!AMADB::isError($author_dataHa)) {
                                 $alt = translateFN("Nota pubblica");
                                 $icon = "_nota.png";
                                 $ok = true;
@@ -725,13 +747,13 @@ class Node
                         switch ($id_profile) {
                             case AMA_TYPE_STUDENT:
                             default:
-                                $visit_count  = ADALoggableUser::is_visited_by_userFN($id_child, $sess_id_course_instance, $sess_id_user);
+                                $visit_count  = ADALoggableUser::isVisitedByUserFN($id_child, $sess_id_course_instance, $sess_id_user);
                                 break;
                             case AMA_TYPE_TUTOR:
-                                $visit_count  = ADALoggableUser::is_visited_by_classFN($id_child, $sess_id_course_instance, $sess_id_course);
+                                $visit_count  = ADALoggableUser::isVisitedByClassFN($id_child, $sess_id_course_instance, $sess_id_course);
                                 break;
                             case AMA_TYPE_AUTHOR:
-                                $visit_count  = ADALoggableUser::is_visitedFN($id_child);
+                                $visit_count  = ADALoggableUser::isVisitedFN($id_child);
                         }
 
 
@@ -740,7 +762,7 @@ class Node
                         $dataAr[$depth][$childnumber] = "<img name=\"nodo\" alt=\"$alt\" src=\"img/$icon\">" . $child_dataHa['name'];
                     }
                     $dataAr[$depth][$childnumber] = "<img name=gruppo alt=\"Nodo inferiore\" src=\"img/$icon\"> <a href=view.php?id_node=" . $id_child . ">" . $child_dataHa['name'] . "</a>";
-                    Node::get_all_childrenFN($depth, $user_level, $id_child, $dataAr, $id_profile);
+                    Node::getAllChildrenFN($depth, $user_level, $id_child, $dataAr, $id_profile);
                 }
             }
         } else {
@@ -751,7 +773,7 @@ class Node
     public function findPathFN($target = "")
     {
         $pathAr =  $this->findLogicalPathFN();
-        $path = $this->logical_path_2_htmlFN($pathAr, $target);
+        $path = $this->logicalPath2HtmlFN($pathAr, $target);
         return $path;
     }
 
@@ -769,7 +791,7 @@ class Node
          $id_toc =  $sess_id_course."_".$courseObj->id_nodo_toc;
          */
         $pathAr = [];
-        $course_Ha = $dh->get_course($sess_id_course);
+        $course_Ha = $dh->getCourse($sess_id_course);
         if ((is_array($course_Ha))) {
             $id_toc = $sess_id_course . "_" . $course_Ha['id_nodo_toc'];
             // $id_toc = $sess_id_course."_0";
@@ -790,7 +812,7 @@ class Node
                     // $debug=1;
                     //mydebug(__LINE__,__FILE__,array('node'=>$id_node,'parent'=>$id_parent));
                     //$debug=0;
-                    $dataHa = $dh->get_node_info($id_parent);
+                    $dataHa = $dh->getNodeInfo($id_parent);
 
                     if ((!AMA_dataHandler::isError($dataHa)) && (is_array($dataHa))) {
                         $name = $dataHa['name'];
@@ -798,7 +820,7 @@ class Node
                         if ($id_parent != $id_toc) {
                             //$node_parentObj = new Node($id_node);
                             //$parent_type = $node_parentObj->type;
-                            $node_parent_dataHa =  $dh->get_node_info($id_node);
+                            $node_parent_dataHa =  $dh->getNodeInfo($id_node);
                             if (!is_object($node_parent_dataHa)) {
                                 $parent_type = $node_parent_dataHa['type'];
                                 //if ($parent_type ==ADA_GROUP_TYPE) {
@@ -815,7 +837,7 @@ class Node
 
 
                 // we are at the first level
-                $dataHa = $dh->get_node_info($id_toc);
+                $dataHa = $dh->getNodeInfo($id_toc);
                 if (is_array($dataHa)) {
                     $tocname = $dataHa['name'];
                     $pathAr[] = [$id_toc, $tocname];
@@ -825,7 +847,7 @@ class Node
         return $pathAr;
     }
 
-    public function logical_path_2_htmlFN($pathAr, $target)
+    public function logicalPath2HtmlFN($pathAr, $target)
     {
         // converts array to html code
         // used by findPathFN
@@ -852,7 +874,7 @@ class Node
         return $path;
     }
 
-    public function get_filter_links_FN($linksAR, $user_level = 1)
+    public function getFilterLinksFN($linksAR, $user_level = 1)
     {
         // filtro sui link:
         // verifica se i nodi linkati hanno livello<= a quello dell'utente
@@ -887,7 +909,7 @@ class Node
         }
     }
 
-    public function filter_nodeFN($user_level, $user_history, $id_profile = '3', $querystring = '')
+    public function filterNodeFN($user_level, $user_history, $id_profile = '3', $querystring = '')
     {
         /*
          restituisce i dati visibili per l'utente in un array associativo
@@ -907,20 +929,20 @@ class Node
 
         if ($this->type == ADA_LEAF_TYPE || $this->type == ADA_GROUP_TYPE || $this->type == ADA_NOTE_TYPE || $this->type == ADA_PRIVATE_NOTE_TYPE) {
             if (SEARCH_WORD_IN_NODE) {
-                $this->text = $this->search_text_in_glosary($this->text);
+                $this->text = $this->searchTextInGlosary($this->text);
             }
         }
 
-        $htmldataHa['text'] = $this->get_textFN($user_level, $querystring);
-        $htmldataHa['media'] = $this->get_mediaFN($user_level);
-        $htmldataHa['user_media'] = $this->get_user_mediaFN($user_level);
-        $htmldataHa['link'] = $this->get_linksFN($user_level, $id_profile);
-        $htmldataHa['exercises'] = $this->get_exercisesFN($user_level);
-        $htmldataHa['notes'] = $this->get_notesFN($user_level, $id_profile);
-        $htmldataHa['private_notes'] = $this->get_private_notesFN($user_level, $id_profile);
+        $htmldataHa['text'] = $this->getTextFN($user_level, $querystring);
+        $htmldataHa['media'] = $this->getMediaFN($user_level);
+        $htmldataHa['user_media'] = $this->getUserMediaFN($user_level);
+        $htmldataHa['link'] = $this->getLinksFN($user_level, $id_profile);
+        $htmldataHa['exercises'] = $this->getExercisesFN($user_level);
+        $htmldataHa['notes'] = $this->getNotesFN($user_level, $id_profile);
+        $htmldataHa['private_notes'] = $this->getPrivateNotesFN($user_level, $id_profile);
         $htmldataHa['extended_node'] = '';
         if (SHOW_NODE_EXTENDED_FIELDS) {
-            $htmldataHa['extended_node'] = $this->get_extended_nodeFN($user_level, $id_profile);
+            $htmldataHa['extended_node'] = $this->getExtendedNodeFN($user_level, $id_profile);
         }
         /*
           if ($this->type == ADA_LEAF_TYPE || $this->type == ADA_GROUP_TYPE || $this->type == ADA_NOTE_TYPE || $this->type == ADA_PRIVATE_NOTE_TYPE) {
@@ -933,7 +955,7 @@ class Node
         return $htmldataHa;
     }
 
-    public function search_text_in_glosary($text)
+    public function searchTextInGlosary($text)
     {
         $dh = $GLOBALS['dh'];
         $id_node_text = $this->id;
@@ -955,9 +977,9 @@ class Node
                 $clause = "nome = '$word' AND (tipo = $leaf_word OR  tipo = $group_word)";
                 $clause .= " AND id_nodo LIKE '%$id_course%'";
 
-                $wordsAR = $dh->doFind_nodes_list($out_fields_ar, $clause);
+                $wordsAR = $dh->doFindNodesList($out_fields_ar, $clause);
 
-                if (!AMA_DB::isError($wordsAR) && $wordsAR != "" && count($wordsAR) > 0) {
+                if (!AMADB::isError($wordsAR) && $wordsAR != "" && count($wordsAR) > 0) {
                     $id_node_word = $wordsAR[0][0];
                     $href = HTTP_ROOT_DIR . '/browsing/view.php?id_node=' . $id_node_word;
                     $text_link = $word;
@@ -977,7 +999,7 @@ class Node
      * con l'integrazione della classe MediaViewer per la visualizzazione dei
      * contenuti del nodo
      */
-    public function get_textFN($user_level, $querystring)
+    public function getTextFN($user_level, $querystring)
     {
         return self::parseInternalLinkMedia($this->text, $this->level, $user_level, $querystring);
     }
@@ -1261,7 +1283,7 @@ class Node
                 $add_height = preg_match('/HEIGHT="([^"]+)"/i', $v[1], $height);
                 $height = $height[1] ?? null;
                 $id_node = $_SESSION['sess_id_node'] ?? null;
-                $mediaInfoAr = $dh->get_risorsa_esterna_info_from_filename($value, $id_node);
+                $mediaInfoAr = $dh->getRisorsaEsternaInfoFromFilename($value, $id_node);
                 $array[$k] = [
                     'str' => $v[0],
                     'tag' => $v[2],
@@ -1421,7 +1443,7 @@ class Node
         return $str;
     }
 
-    public function get_extended_nodeFN($user_level, $id_profile)
+    public function getExtendedNodeFN($user_level, $id_profile)
     {
         $dh =   $GLOBALS['dh'] ?? null;
         $error =   $GLOBALS['error'] ?? null;
@@ -1508,7 +1530,7 @@ class Node
         return $glossary_div->getHtml();
     }
 
-    public function get_linksFN($user_level, $id_profile)
+    public function getLinksFN($user_level, $id_profile)
     {
         //global $dh,$error,$debug;
         //global $sess_id_course,$sess_id_course_instance,$sess_id_user;
@@ -1540,13 +1562,13 @@ class Node
                         switch ($id_profile) {
                             case AMA_TYPE_STUDENT:
                             default:
-                                $visit_count  = ADALoggableUser::is_visited_by_userFN($node, $sess_id_course_instance, $sess_id_user);
+                                $visit_count  = ADALoggableUser::isVisitedByUserFN($node, $sess_id_course_instance, $sess_id_user);
                                 break;
                             case AMA_TYPE_TUTOR:
-                                $visit_count  = ADALoggableUser::is_visited_by_classFN($node, $sess_id_course_instance, $sess_id_user);
+                                $visit_count  = ADALoggableUser::isVisitedByClassFN($node, $sess_id_course_instance, $sess_id_user);
                                 break;
                             case AMA_TYPE_AUTHOR:
-                                $visit_count  = ADALoggableUser::is_visitedFN($node);
+                                $visit_count  = ADALoggableUser::isVisitedFN($node);
                         }
 
                         if ($visit_count <= 0) {
@@ -1579,7 +1601,7 @@ class Node
     }
     // fine filtro links
 
-    public function get_exercisesFN($user_level)
+    public function getExercisesFN($user_level)
     {
         //global $dh,$error;
         //global $sess_id_user, $sess_id_course_instance;
@@ -1597,7 +1619,7 @@ class Node
             // mydebug(__LINE__,__FILE__,$exerc_Ar);
             $dataAr = [];
             foreach ($exerc_Ar as $id_exerc) {
-                $temp = $dh->get_node_info($id_exerc);
+                $temp = $dh->getNodeInfo($id_exerc);
                 $type = $temp['type'];
                 $exercise_type_family = $type[0]; // first char = family (3 multiple, 4 open manual 5 open automatic 6 cloze etc)
                 /*
@@ -1621,11 +1643,11 @@ class Node
                     //      if ($exercise_type_family >= ADA_STANDARD_EXERCISE_TYPE) {
                     // versione che legge nel DB la storia dell'esercizio
                     /*
-                     $exercise = $dh->get_node_info($id_exerc);
+                     $exercise = $dh->getNodeInfo($id_exerc);
                     // mydebug(__LINE__,__FILE__,$exercObj);
                     $exerc_title = $exercise['name'];
                     $out_fields_ar = array('data_visita','ripetibile');
-                    $history_exerc = $dh->find_ex_history_list($out_fields_ar,$sess_id_user, $sess_id_course_instance, $id_exerc);
+                    $history_exerc = $dh->findExHistoryList($out_fields_ar,$sess_id_user, $sess_id_course_instance, $id_exerc);
                     if (is_array($history_exerc)){
                       $h_exerc = array_shift($history_exerc);
                       // global $debug; $debug = 1; mydebug(__LINE__,__FILE__,$h_exerc); $debug=0;
@@ -1676,7 +1698,7 @@ class Node
     }
     // fine filtro esercizi
 
-    public function get_notesFN($user_level, $id_profile)
+    public function getNotesFN($user_level, $id_profile)
     {
         $dh =   $GLOBALS['dh'] ?? null;
         $error =   $GLOBALS['error'] ?? null;
@@ -1686,16 +1708,16 @@ class Node
         $id_node_base = $this->id;
 
         if (!empty($this->children)) {
-            //    $notesHa = $dh->get_node_children_complete($id_node_base);
+            //    $notesHa = $dh->getNodeChildrenComplete($id_node_base);
             $notes_Ar = $this->children;
             $dataAr = [];
 
             // vito 12 gennaio 2009
-            $class_tutor_id = $dh->course_instance_tutor_get($sess_id_course_instance);
+            $class_tutor_id = $dh->courseInstanceTutorGet($sess_id_course_instance);
 
             foreach ($notes_Ar as $id_note) {
                 //      $nodeObj = new Node($id_note,0);
-                $nodeInfo = $dh->get_node_info($id_note);
+                $nodeInfo = $dh->getNodeInfo($id_note);
                 //      $type = $nodeObj->type;
                 $type = $nodeInfo['type'];
                 //      $node_instance = $nodeObj->instance;
@@ -1719,7 +1741,7 @@ class Node
                          * Check if this is a tutor note
                          */
                         if (
-                            !AMA_DataHandler::isError($class_tutor_id)
+                            !AMADataHandler::isError($class_tutor_id)
                             //          && $nodeObj->author['id'] == $class_tutor_id) {
                             && $nodeInfo['author']['id'] == $class_tutor_id
                         ) {
@@ -1766,8 +1788,8 @@ class Node
                                 if ($nodeInfo['author']['tipo'] == AMA_TYPE_TUTOR && $nodeInfo['type'] == ADA_NOTE_TYPE) {
                                     $is_note_visible = true;
                                 } else {
-                                    $author_dataHa =  $dh->get_subscription($nodeInfo['author']['id'], $sess_id_course_instance);
-                                    if (!AMA_DataHandler::isError($author_dataHa)) {
+                                    $author_dataHa =  $dh->getSubscription($nodeInfo['author']['id'], $sess_id_course_instance);
+                                    if (!AMADataHandler::isError($author_dataHa)) {
                                         $is_note_visible = true;
                                     }
                                 }
@@ -1808,7 +1830,7 @@ class Node
     }
     // fine filtro note
 
-    public function get_private_notesFN($user_level, $id_profile)
+    public function getPrivateNotesFN($user_level, $id_profile)
     {
         //global $dh,$error,$debug;
         //global $sess_id_user, $sess_id_course_instance;
@@ -1823,7 +1845,7 @@ class Node
             $dataAr = [];
 
             // vito 12gennaio2009
-            $class_tutor_id = $dh->course_instance_tutor_get($sess_id_course_instance);
+            $class_tutor_id = $dh->courseInstanceTutorGet($sess_id_course_instance);
 
             foreach ($notes_Ar as $id_note) {
                 $nodeObj = new Node($id_note, 0);
@@ -1848,7 +1870,7 @@ class Node
                         $css_classname = 'ADA_NOTE_TYPE';
 
                         if (
-                            !AMA_DataHandler::isError($class_tutor_id)
+                            !AMADataHandler::isError($class_tutor_id)
                             && $class_tutor_id == $nodeObj->author['id']
                         ) {
                             $css_classname .= ' TUTOR_NOTE';
@@ -1878,7 +1900,7 @@ class Node
     }
     // fine filtro note private
 
-    public function get_mediaFN($user_level)
+    public function getMediaFN($user_level)
     {
 
         if ($this->level <= $user_level) {
@@ -1913,7 +1935,7 @@ class Node
         }
     }
 
-    public function get_user_mediaFN($user_level)
+    public function getUserMediaFN($user_level)
     {
         // indexing files
         $root_dir = $GLOBALS['root_dir'] ?? null;
@@ -1925,12 +1947,12 @@ class Node
 
         $dh = $GLOBALS['dh'];
 
-        $course_ha = $dh->get_course($sess_id_course);
-        if (AMA_DataHandler::isError($course_ha)) { // not enrolled yet?
+        $course_ha = $dh->getCourse($sess_id_course);
+        if (AMADataHandler::isError($course_ha)) { // not enrolled yet?
             return $this->wrapTextInSpan(translateFN('Nessuno'), 'noitem')->getHtml();
         }
         $author_id = $course_ha['id_autore'];
-        $elencofile = $this->read_user_dirFN("$root_dir/services/media/$author_id");
+        $elencofile = $this->readUserDirFN("$root_dir/services/media/$author_id");
 
         if ($elencofile == null) { //($stop<1)
             return $this->wrapTextInSpan(translateFN('Nessuno'), 'noitem')->getHtml();
@@ -1961,7 +1983,7 @@ class Node
          if ($k<$stop)
          $filename .= "_";
          }
-         $senderObj = read_user_from_DB($id_sender);
+         $senderObj = readUserFromDB($id_sender);
          if ((is_object($senderObj)) || (!empty($senderObj->error_msg))) {
          $id_profile = $senderObj->tipo;
          switch ($id_profile){
@@ -2041,7 +2063,7 @@ class Node
                 $user_name    = "";
                 // too slow !
                 /*
-                $senderObj = read_user_from_DB($id_sender);
+                $senderObj = readUserFromDB($id_sender);
                 if ((is_object($senderObj))) {
                 $id_profile = $senderObj->tipo;
                 switch ($id_profile){
@@ -2081,9 +2103,9 @@ class Node
     }
 
     // functions
-    public function read_user_dirFN($dir)
+    public function readUserDirFN($dir)
     {
-        return read_dir($dir); // from utilities.inc.php
+        return readDir($dir); // from utilities.inc.php
     }
 
     /* function next_nodeFN
@@ -2093,7 +2115,7 @@ class Node
      * @return string      - the id of the next node of the same group (if accessible)
      */
 
-    public function next_nodeFN($orderParm = 'ordine')
+    public function nextNodeFN($orderParm = 'ordine')
     {
         $dh = $GLOBALS['dh'];
         //$sess_id_course = $_SESSION['sess_id_course'];
@@ -2102,7 +2124,7 @@ class Node
         $node_type = $this->type;
         $parent_id = $this->parent_id;
         if (($parent_id != null) && ($parent_id != "NULL")) { // in nod table, id_nodo_parent for the first node of a course is always "NULL"
-            $childrenHA = $dh->get_node_children_info($parent_id, "", $orderParm);
+            $childrenHA = $dh->getNodeChildrenInfo($parent_id, "", $orderParm);
 
             if (is_array($childrenHA)) {
                 //      $childrenAr = masort ($childrenAr, 'ordine',1,SORT_STRING);
@@ -2150,7 +2172,7 @@ class Node
 
     /* da implementare ancora:    */
 
-    public function is_allowedFN($command, $id_profile)
+    public function isAllowedFN($command, $id_profile)
     {
         $dh = $GLOBALS['dh'];
 
@@ -2175,7 +2197,7 @@ class Node
         // va al form di modifica del nodo attuale se l'utente ha le permission giuste
         $sess_id_node = $_SESSION['sess_id_node'] ?? null;
         $id_node = $this->id;
-        if ($this->is_allowedFN('modify', $id_profile)) {
+        if ($this->isAllowedFN('modify', $id_profile)) {
             header("Location: ../services/edit_node.php?op=edit&id_node=$sess_id_node");
         }
     }
@@ -2184,7 +2206,7 @@ class Node
     {
         // elimina il nodo attuale se l'utente ha le permission giuste
         $sess_id_node = $_SESSION['sess_id_node'] ?? null;
-        if ($this->is_allowedFN('delete', $id_profile)) {
+        if ($this->isAllowedFN('delete', $id_profile)) {
             header("Location: ../services/edit_node.php?op=delete&id_node=$sess_id_node");
         }
     }

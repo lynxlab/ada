@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\Layout;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\Course\AbstractCourse;
+
+use Lynxlab\ADA\CORE\HtmlElements\Table;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class AbstractCourse was declared with namespace Lynxlab\ADA\Main\Course. //
+
 /**
  * AbstractCourse class
  *
@@ -51,7 +69,7 @@ abstract class AbstractCourse
         $dh = $GLOBALS['dh'];
 
         $dataHa = $dh->get_course($id_course);
-        if (AMA_DataHandler::isError($dataHa) || (!is_array($dataHa))) {
+        if (AMADataHandler::isError($dataHa) || (!is_array($dataHa))) {
             $this->full = 0;
         } else {
             if (!empty($dataHa['nome'])) {
@@ -85,21 +103,21 @@ abstract class AbstractCourse
    se hide_visits=1 mostrano anche le visite dello studente
 
    class_indexFN: mostra nodi e gruppi,per tutor e autore  (no studente e admin)
-   class_explode_nodesFN : ricorsiva, chiamata per default e se $order=struct
-   class_explode_nodes_iterativeFN : iterativa, chiamata se $order=alfa
+   classExplodeNodesFN : ricorsiva, chiamata per default e se $order=struct
+   classExplodeNodesIterativeFN : iterativa, chiamata se $order=alfa
 
    se hide_visits=1 mostrano anche le visite della classe (tutor) o di tutti (autore)
 
-   forum_main_indexFN: mostra  solo note, per studente, tutor  (no admin e autore)
-   forum_explode_nodesFN : ricorsiva, chiamata se $order=struct
-   forum_explode_nodes_iterativeFN : iterativa, chiamata per default e se $order=chrono
+   forumMainIndexFN: mostra  solo note, per studente, tutor  (no admin e autore)
+   forumExplodeNodesFN : ricorsiva, chiamata se $order=struct
+   forumExplodeNodesIterativeFN : iterativa, chiamata per default e se $order=chrono
 
    *se hide_visits=1 mostrano anche le visite della classe (tutor)
     */
 
 
 
-    public function main_indexFN($id_toc = '', $depth = 1, $user_level = 1, $user_history = '', $user_type = AMA_TYPE_STUDENT, $order = 'struct', $expand = 0, $mode = 'standard')
+    public function mainIndexFN($id_toc = '', $depth = 1, $user_level = 1, $user_history = '', $user_type = AMA_TYPE_STUDENT, $order = 'struct', $expand = 0, $mode = 'standard')
     {
         $dh = $GLOBALS['dh'];
         $debug = $GLOBALS['debug'];
@@ -115,20 +133,20 @@ abstract class AbstractCourse
         if ($order == 'struct') {
             $index .= "<img name=\"nodo\" alt=$alt src=\"img/$icon\"> <a href=view.php?id_node=" . $id_toc . ">" . translateFN("Principale") . "</a>";
         }
-        $index .= $this->tabled_explode_nodesFN(1, $user_level, $id_toc, $user_type, $order, $expand, $mode);
+        $index .= $this->tabledExplodeNodesFN(1, $user_level, $id_toc, $user_type, $order, $expand, $mode);
         $index .= "</p>";
         return $index;
     }
 
 
-    public function tabled_explode_nodesFN($depth, $user_level, $id_parent, $id_profile, $order, $expand, $mode)
+    public function tabledExplodeNodesFN($depth, $user_level, $id_parent, $id_profile, $order, $expand, $mode)
     {
         $lObj = new IList();
         if ($order == 'alfa') {
-            $data =  $this->explode_nodes_iterativeFN($depth, $user_level, $id_parent, $id_profile, $order, $expand, $mode);
+            $data =  $this->explodeNodesIterativeFN($depth, $user_level, $id_parent, $id_profile, $order, $expand, $mode);
             $lObj->initList('1', '1', 1);
         } else {    // = 'r'
-            $data =  $this->explode_nodesFN($depth, $user_level, $id_parent, $id_profile, $order, $expand, $mode);
+            $data =  $this->explodeNodesFN($depth, $user_level, $id_parent, $id_profile, $order, $expand, $mode);
             $lObj->initList(0, '', 1);
         }
         $lObj->setList($data);
@@ -139,7 +157,7 @@ abstract class AbstractCourse
 
 
 
-    public function explode_nodes_iterativeFN($depth, $user_level, $id_parent, $id_profile, $order, $expand, $mode)
+    public function explodeNodesIterativeFN($depth, $user_level, $id_parent, $id_profile, $order, $expand, $mode)
     {
         // returns an Array
         // only students
@@ -162,7 +180,7 @@ abstract class AbstractCourse
         $childnumber = 0;
         $out_fields_ar = ['nome', 'tipo'];
         $clause = "";
-        $childrenAr = $dh->find_course_nodes_list($out_fields_ar, $clause, $sess_id_course);
+        $childrenAr = $dh->findCourseNodesList($out_fields_ar, $clause, $sess_id_course);
         $childrenAr = masort($childrenAr, 1); // il campo 1 �il nome del nodo
         $k = 0;
         $indexAr = [];
@@ -172,7 +190,7 @@ abstract class AbstractCourse
             $id_child = $nodeHa[0];
             if (!empty($id_child)) {
                 $childnumber++;
-                $child_dataHa = $dh->get_node_info($id_child);
+                $child_dataHa = $dh->getNodeInfo($id_child);
                 $node_instance = $child_dataHa['instance'];
                 $id_node_parent = $child_dataHa['parent_id'];
                 $creation_date = $child_dataHa['creation_date'];
@@ -180,7 +198,7 @@ abstract class AbstractCourse
                 $node_authorHa =   $child_dataHa['author'];
                 $node_author_name = $node_authorHa['nome'];
                 $node_author_surname = $node_authorHa['cognome'];
-                $parent_dataHa = $dh->get_node_info($id_node_parent);
+                $parent_dataHa = $dh->getNodeInfo($id_node_parent);
                 if (($id_node_parent == null) or (!is_array($parent_dataHa))) { // map
                     continue;
                 }
@@ -199,7 +217,7 @@ abstract class AbstractCourse
                             $alt = translateFN("Nodo inferiore");
                             $icon = "_nodo.png";
                             if (!isset($hide_visits) or $hide_visits == 0) {
-                                $visit_count  = ADAUser::is_visited_by_userFN($id_child, $sess_id_course_instance, $sess_id_user);
+                                $visit_count  = ADAUser::isVisitedByUserFN($id_child, $sess_id_course_instance, $sess_id_user);
                             }
                             if (empty($visit_count)) {
                                 if ($with_icons) {
@@ -221,7 +239,7 @@ abstract class AbstractCourse
                                 }
                             }
                             // has user bookmarked this node?
-                            $id_bk = Bookmark::is_node_bookmarkedFN($sess_id_user, $id_child);
+                            $id_bk = Bookmark::isNodeBookmarkedFN($sess_id_user, $id_child);
                             if ($id_bk) {
                                 if ($with_icons) {
                                     $index_item .= "<a href=\"bookmarks.php?op=zoom&id_bk=$id_bk\"><img name=\"bookmark\" alt=\"bookmark\" src=\"img/check.png\"  border=\"0\"></a>";
@@ -242,7 +260,7 @@ abstract class AbstractCourse
                             $alt = translateFN("Approfondimento");
                             $icon = "_gruppo.png";
                             if (!isset($hide_visits) or $hide_visits == 0) {
-                                $visit_count  = ADAUser::is_visited_by_userFN($id_child, $sess_id_course_instance, $sess_id_user);
+                                $visit_count  = ADAUser::isVisitedByUserFN($id_child, $sess_id_course_instance, $sess_id_user);
                             }
                             if (empty($visit_count)) {
                                 if ($with_icons) {
@@ -264,7 +282,7 @@ abstract class AbstractCourse
                             }
 
                             // has user bookmarked this node?
-                            $id_bk = Bookmark::is_node_bookmarkedFN($sess_id_user, $id_child);
+                            $id_bk = Bookmark::isNodeBookmarkedFN($sess_id_user, $id_child);
                             if ($id_bk) {
                                 $index_item .= "<a href=\"bookmarks.php?op=zoom&id_bk=$id_bk\"><img name=\"bookmark\" alt=\"bookmark\" src=\"img/check.png\" border=\"0\"></a>";
                             }
@@ -301,7 +319,7 @@ abstract class AbstractCourse
     }
 
 
-    public function explode_nodesFN($depth, $user_level, $id_parent, $id_profile, $order, $expand)
+    public function explodeNodesFN($depth, $user_level, $id_parent, $id_profile, $order, $expand)
     {
         $sess_id_course_instance = $_SESSION['sess_id_course_instance'];
         $sess_id_user = $_SESSION['sess_id_user'];
@@ -318,7 +336,7 @@ abstract class AbstractCourse
         // recursive
         $indexAr = [];
         if (!empty($expand)  && ($expand > $depth)) {
-            $childrenAr = $dh->get_node_children($id_parent);
+            $childrenAr = $dh->getNodeChildren($id_parent);
             if (is_array($childrenAr)) {
                 $depth++;
                 $childnumber = 0;
@@ -329,7 +347,7 @@ abstract class AbstractCourse
                         $sub_indexAr = "";
                         $childnumber++;
                         $visit_count = 0;
-                        $child_dataHa = $dh->get_node_info($id_child);
+                        $child_dataHa = $dh->getNodeInfo($id_child);
                         if (is_array($child_dataHa)) {
                             $node_type = $child_dataHa['type'];
                             switch ($node_type) {
@@ -342,20 +360,20 @@ abstract class AbstractCourse
                                             case AMA_TYPE_STUDENT:
                                             default:
                                                 if (!isset($hide_visits) or $hide_visits == 0) {
-                                                    $visit_count  = ADAUser::is_visited_by_userFN($id_child, $sess_id_course_instance, $sess_id_user);
+                                                    $visit_count  = ADAUser::isVisitedByUserFN($id_child, $sess_id_course_instance, $sess_id_user);
                                                 }
                                                 break;
                                             case AMA_TYPE_TUTOR:
                                                 /*
                          if (!isset($hide_visits) OR $hide_visits==0) {
-                         $visit_count  = User::is_visited_by_classFN($id_child,$sess_id_course_instance,$sess_id_course);
+                         $visit_count  = User::isVisitedByClassFN($id_child,$sess_id_course_instance,$sess_id_course);
                          }
                                             */
                                                 break;
                                             case AMA_TYPE_AUTHOR:
                                                 /*
                          * if (!isset($hide_visits) OR $hide_visits==0) {
-                         $visit_count  = User::is_visitedFN($id_child);
+                         $visit_count  = User::isVisitedFN($id_child);
                          }
                                             */
                                         }
@@ -378,7 +396,7 @@ abstract class AbstractCourse
                                     }
 
                                     // has user bookmarked this node?
-                                    $id_bk = Bookmark::is_node_bookmarkedFN($sess_id_user, $id_child);
+                                    $id_bk = Bookmark::isNodeBookmarkedFN($sess_id_user, $id_child);
                                     if ($id_bk) {
                                         $index_item .= "<a href=\"bookmarks.php?op=zoom&id_bk=$id_bk\"><img name=\"bookmark\" alt=\"bookmark\" src=\"img/check.png\"  border=\"0\"></a>";
                                     }
@@ -394,20 +412,20 @@ abstract class AbstractCourse
                                             case AMA_TYPE_STUDENT:
                                             default:
                                                 if (!isset($hide_visits) or $hide_visits == 0) {
-                                                    $visit_count  = ADAUser::is_visited_by_userFN($id_child, $sess_id_course_instance, $sess_id_user);
+                                                    $visit_count  = ADAUser::isVisitedByUserFN($id_child, $sess_id_course_instance, $sess_id_user);
                                                 }
                                                 break;
                                             case AMA_TYPE_TUTOR:
                                                 /*
                                if (!isset($hide_visits) OR $hide_visits==0) {
-                               $visit_count  = User::is_visited_by_classFN($id_child,$sess_id_course_instance,$sess_id_course);
+                               $visit_count  = User::isVisitedByClassFN($id_child,$sess_id_course_instance,$sess_id_course);
                                }
                                             */
                                                 break;
                                             case AMA_TYPE_AUTHOR:
                                                 /*
                                if (!isset($hide_visits) OR $hide_visits==0) {
-                               $visit_count  = User::is_visitedFN($id_child);
+                               $visit_count  = User::isVisitedFN($id_child);
                                }
                                             */
                                                 break;
@@ -430,14 +448,14 @@ abstract class AbstractCourse
                                         }
 
                                         // has user bookmarked this node?
-                                        $id_bk = Bookmark::is_node_bookmarkedFN($sess_id_user, $id_child);
+                                        $id_bk = Bookmark::isNodeBookmarkedFN($sess_id_user, $id_child);
                                         if ($id_bk) {
                                             $index_item .= "<a href=\"bookmarks.php?op=zoom&id_bk=$id_bk\"><img name=\"bookmark\" alt=\"bookmark\" src=\"img/check.png\" border=\"0\"></a>";
                                         }
 
                                         // recurses...
                                         //$sub_indexAr = array();
-                                        $sub_indexAr = $this->explode_nodesFN($depth, $user_level, $id_child, $id_profile, $order, $expand);
+                                        $sub_indexAr = $this->explodeNodesFN($depth, $user_level, $id_child, $id_profile, $order, $expand);
                                     } else {
                                         $alt = translateFN("Approfondimento non visitabile");
                                         $icon = "_gruppodis.png";
@@ -458,7 +476,7 @@ abstract class AbstractCourse
                                 case 6: // exercise
                                 case 7: // exercise
                                     $out_fields_ar = ['data_visita', 'punteggio', 'ripetibile'];
-                                    $history_exerc = $dh->find_ex_history_list($out_fields_ar, $sess_id_user, $sess_id_course_instance, $id_child);
+                                    $history_exerc = $dh->findExHistoryList($out_fields_ar, $sess_id_user, $sess_id_course_instance, $id_child);
                                     if (is_array($history_exerc)) {
                                         $h_exerc = array_shift($history_exerc);
                                         if (is_array($h_exerc)) {
@@ -488,7 +506,7 @@ abstract class AbstractCourse
                                     }
 
                                     // has user bookmarked this node?
-                                    $id_bk = Bookmark::is_node_bookmarkedFN($sess_id_user, $id_child);
+                                    $id_bk = Bookmark::isNodeBookmarkedFN($sess_id_user, $id_child);
                                     if ($id_bk) {
                                         $index_item .= "<a href=\"bookmarks.php?op=zoom&id_bk=$id_bk\"><img name=\"bookmark\" alt=\"bookmark\" src=\"img/check.png\"></a>";
                                     }
@@ -529,7 +547,7 @@ abstract class AbstractCourse
     {
         $dh = $GLOBALS['dh'];
 
-        return $dh->get_course_max_level($this->id);
+        return $dh->getCourseMaxLevel($this->id);
     }
 
     /* sara - Execute advaced search: first in AND, then progressively in OR
@@ -585,8 +603,8 @@ abstract class AbstractCourse
                 }
             }
             $clause = '(' . $clause . ') and ((tipo <> ' . ADA_PRIVATE_NOTE_TYPE . ') OR (tipo =' . ADA_PRIVATE_NOTE_TYPE . ' AND id_utente = ' . $id_user . '))';
-            $resHa = $dh->find_course_nodes_list($out_fields_ar, $clause, $_SESSION['sess_id_course']);
-            if (!AMA_DataHandler::isError($resHa) and is_array($resHa) and !empty($resHa)) {
+            $resHa = $dh->findCourseNodesList($out_fields_ar, $clause, $_SESSION['sess_id_course']);
+            if (!AMADataHandler::isError($resHa) and is_array($resHa) and !empty($resHa)) {
                 break;
             }
             $clause = "";

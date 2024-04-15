@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Module\Badges\CourseBadge;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * @package     badges module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -60,7 +68,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
         if ($params['object'] == 'Badge') {
             $badgesData = [];
             $badgesList = $GLOBALS['dh']->findAll($params['object']);
-            if (!AMA_DB::isError($badgesList)) {
+            if (!AMADB::isError($badgesList)) {
                 /**
                  * @var \Lynxlab\ADA\Module\Badges\Badge $badge
                  */
@@ -119,7 +127,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                         $linksHtml,
                     ];
                 }
-            } // if (!AMA_DB::isError($badgesList))
+            } // if (!AMADB::isError($badgesList))
             $data = [ 'data' => $badgesData ];
         } elseif ($params['object'] == 'CourseBadge') {
             $cdh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
@@ -127,7 +135,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             $badgesData = [];
             $badgesList = $GLOBALS['dh']->findBy($params['object'], ['id_corso' => $params['courseId']]);
 
-            if (!AMA_DB::isError($badgesList)) {
+            if (!AMADB::isError($badgesList)) {
                 /**
                  * @var \Lynxlab\ADA\Module\Badges\CourseBadges $cb
                  */
@@ -135,8 +143,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                     $links = [];
                     $linksHtml = "";
 
-                    $badge = $GLOBALS['dh']->findBy('Badge', [ 'uuid' => $cb->getBadge_uuid() ]);
-                    $cs = $cdh->getCompleteConditionSet($cb->getId_conditionset());
+                    $badge = $GLOBALS['dh']->findBy('Badge', [ 'uuid' => $cb->getBadgeUuid() ]);
+                    $cs = $cdh->getCompleteConditionSet($cb->getIdConditionset());
                     if (is_array($badge) && count($badge) == 1) {
                         $badge = reset($badge);
                     }
@@ -190,7 +198,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                         ];
                     }
                 }
-            } // if (!AMA_DB::isError($badgesList))
+            } // if (!AMADB::isError($badgesList))
             $data = [ 'data' => $badgesData ];
         }
     } else {

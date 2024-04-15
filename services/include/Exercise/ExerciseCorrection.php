@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Services\Exercise\ExerciseCorrection;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class ExerciseCorrection was declared with namespace Lynxlab\ADA\Services\Exercise. //
+
 namespace Lynxlab\ADA\Services\Exercise;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -39,7 +47,7 @@ class ExerciseCorrection //implements iExerciseCorrection
         //        if (is_array($useranswer)){
         //            $userAnswerStr = "<ul>\n";
         //            foreach ($useranswer as $ua){
-        //                $node_ansHa = $dh->get_node_info($ua);
+        //                $node_ansHa = $dh->getNodeInfo($ua);
         //                $answerStr = $node_ansHa ['text'];
         //                $node_ansAr = explode('_',$ua);
         //                $node_ans_id =  $node_ansAr[1];
@@ -49,7 +57,7 @@ class ExerciseCorrection //implements iExerciseCorrection
         //            $testo .= translateFN("Risposta: ").$userAnswerStr;
         //        }  else {
         //            if  ($exercise_type==3){
-        //                $node_ansHa = $dh->get_node_info($useranswer);
+        //                $node_ansHa = $dh->getNodeInfo($useranswer);
         //                $answerStr = $node_ansHa ['text'];
         //                $node_ansAr = explode('_',$useranswer);
         //                $node_ans_id =  $node_ansAr[1];

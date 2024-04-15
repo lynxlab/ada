@@ -1,5 +1,11 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * SLIDEIMPORT MODULE.
  *
@@ -50,10 +56,10 @@ BrowsingHelper::init($neededObjAr);
 /**
  * load course list from the DB and output the generated select in a template field
  */
-$providerCourses = $GLOBALS['dh']->find_courses_list(['nome','titolo'], '`id_utente_autore`=' . $userObj->getId());
+$providerCourses = $GLOBALS['dh']->findCoursesList(['nome','titolo'], '`id_utente_autore`=' . $userObj->getId());
 $html = translateFN('Nessun corso trovato');
 
-if (!AMA_DB::isError($providerCourses)) {
+if (!AMADB::isError($providerCourses)) {
     $courses = [];
     if (isset($_GET['selectedID']) && intval($_GET['selectedID']) > 0) {
         $selectedID = intval($_GET['selectedID']);

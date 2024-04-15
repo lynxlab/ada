@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * list_chatrooms.php
  *
@@ -18,7 +38,7 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\read_course;
+use function Lynxlab\ADA\Main\AMA\DBRead\readCourse;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -104,8 +124,8 @@ switch ($id_profile) {
     case AMA_TYPE_ADMIN:
     case AMA_TYPE_SWITCHER:
         // gets an array with all the chatrooms
-        $all_chatrooms_ar = ChatRoom::get_all_chatroomsFN();
-        if (!AMA_DB::isError($all_chatrooms_ar)) {
+        $all_chatrooms_ar = ChatRoom::getAllChatroomsFN();
+        if (!AMADB::isError($all_chatrooms_ar)) {
             //initialize an array
             $list_chatrooms = [];
             // sort the chatrooms in reverse order, so we can visualize first the most recent chatrooms
@@ -115,11 +135,11 @@ switch ($id_profile) {
                 //initialize a chatroom Object
                 $chatroomObj = new ChatRoom($id_chatroom);
                 //get the array with all the current info of the chatoorm
-                $chatroom_ha = $chatroomObj->get_info_chatroomFN($id_chatroom);
+                $chatroom_ha = $chatroomObj->getInfoChatroomFN($id_chatroom);
                 $id_course_instance = $chatroom_ha['id_istanza_corso'];
-                $id_course = $dh->get_course_id_for_course_instance($chatroom_ha['id_istanza_corso']);
-                $courseObj = read_course($id_course);
-                if (is_object($courseObj) && !AMA_DB::isError($courseObj)) {
+                $id_course = $dh->getCourseIdForCourseInstance($chatroom_ha['id_istanza_corso']);
+                $courseObj = readCourse($id_course);
+                if (is_object($courseObj) && !AMADB::isError($courseObj)) {
                     $course_title = $courseObj->titolo; //title
                     $id_toc = $courseObj->id_nodo_toc;  //id_toc_node
                 }
@@ -141,9 +161,9 @@ switch ($id_profile) {
                     default:
                 } // switch $c_type
                 // verifiy the status of the chatroom
-                $started = $chatroomObj->is_chatroom_startedFN($id_chatroom);
-                $running = $chatroomObj->is_chatroom_activeFN($id_chatroom);
-                //$not_expired = $chatroomObj->is_chatroom_not_expiredFN($id_chatroom);
+                $started = $chatroomObj->isChatroomStartedFN($id_chatroom);
+                $running = $chatroomObj->isChatroomActiveFN($id_chatroom);
+                //$not_expired = $chatroomObj->isChatroomNotExpiredFN($id_chatroom);
                 if ($running) {
                     $chatroom_status = translateFN('in corso');
                     switch ($c_type) {
@@ -154,7 +174,7 @@ switch ($id_profile) {
                             $enter = translateFN("- - - ");
                             break;
                         case INVITATION_CHAT:
-                            $present = $chatroomObj->get_user_statusFN($sess_id_user, $id_chatroom);
+                            $present = $chatroomObj->getUserStatusFN($sess_id_user, $id_chatroom);
                             if (
                                 ($present == STATUS_OPERATOR) or ($present == STATUS_ACTIVE) or
                                     ($present == STATUS_MUTE) or ($present == STATUS_BAN)
@@ -175,7 +195,7 @@ switch ($id_profile) {
                     $enter = translateFN("- - - ");
                 }
                 if ($c_type == INVITATION_CHAT) {
-                    $add_users = "<a href=\"add_users_chat.php?id_room=$id_chatroom\"><img src=\"img/add_user.png\" alt=\"$add_users_label\" border=\"0\"></a>";
+                    $add_users = "<a href=\"add_users_chat.php?id_room=$id_chatroom\"><img src=\"img/addUser.png\" alt=\"$add_users_label\" border=\"0\"></a>";
                 } else {
                     $add_users = translateFN("- - -");
                 }
@@ -213,9 +233,9 @@ switch ($id_profile) {
         break;
     case AMA_TYPE_TUTOR: // TUTOR
         // get the pubblic chatroom
-        $public_chatroom = ChatRoom::find_public_chatroomFN();
+        $public_chatroom = ChatRoom::findPublicChatroomFN();
         // get the instances for which the user is the tutor of the class
-        $course_instances_ar = $dh->course_tutor_instance_get($sess_id_user);
+        $course_instances_ar = $dh->courseTutorInstanceGet($sess_id_user);
         // get only the ids of the courses instances
         foreach ($course_instances_ar as $value) {
             $course_instances_ids_ar[] = $value[0];
@@ -223,7 +243,7 @@ switch ($id_profile) {
         $class_chatrooms_ar = [];
         // get a bidimensional array with all the chatrooms for every course instance
         foreach ($course_instances_ids_ar as $id_course_instance) {
-            $class_chatrooms = ChatRoom::get_all_class_chatroomsFN($id_course_instance);
+            $class_chatrooms = ChatRoom::getAllClassChatroomsFN($id_course_instance);
             if (is_array($class_chatrooms)) {
                 $class_chatrooms_ar[] = $class_chatrooms;
             }
@@ -237,12 +257,12 @@ switch ($id_profile) {
         }
         // merge class chatrooms with the public chatroom
         //vito 9gennaio2009
-        if (!AMA_DataHandler::isError($public_chatroom)) {
+        if (!AMADataHandler::isError($public_chatroom)) {
             array_push($chatrooms_class_ids_ar, $public_chatroom);
         }
 
         // get all the private chatrooms of the user
-        $private_chatrooms_ar = ChatRoom::get_all_private_chatroomsFN($sess_id_user);
+        $private_chatrooms_ar = ChatRoom::getAllPrivateChatroomsFN($sess_id_user);
         if (is_array($private_chatrooms_ar)) {
             $all_chatrooms_ar = array_merge($chatrooms_class_ids_ar, $private_chatrooms_ar);
         } else {
@@ -259,10 +279,10 @@ switch ($id_profile) {
             if (!is_object($id_chatroom)) {
                 $chatroomObj = new ChatRoom($id_chatroom, MultiPort::getDSN($sess_selected_tester));
                 //get the array with all the current info of the chatoorm
-                $chatroom_ha = $chatroomObj->get_info_chatroomFN($id_chatroom);
+                $chatroom_ha = $chatroomObj->getInfoChatroomFN($id_chatroom);
                 $id_course_instance = $chatroom_ha['id_istanza_corso'];
-                $id_course = $dh->get_course_id_for_course_instance($chatroom_ha['id_istanza_corso']);
-                $courseObj = read_course($id_course);
+                $id_course = $dh->getCourseIdForCourseInstance($chatroom_ha['id_istanza_corso']);
+                $courseObj = readCourse($id_course);
                 if ((is_object($courseObj)) && (!AMA_dataHandler::isError($userObj))) {
                     $course_title = $courseObj->titolo; //title
                     $id_toc = $courseObj->id_nodo_toc;  //id_toc_node
@@ -285,9 +305,9 @@ switch ($id_profile) {
                     default:
                 } // switch $c_type
                 // verify the status of the chatroom
-                $started = $chatroomObj->is_chatroom_startedFN($id_chatroom);
-                $running = $chatroomObj->is_chatroom_activeFN($id_chatroom);
-                //$not_expired = $chatroomObj->is_chatroom_not_expiredFN($id_chatroom);
+                $started = $chatroomObj->isChatroomStartedFN($id_chatroom);
+                $running = $chatroomObj->isChatroomActiveFN($id_chatroom);
+                //$not_expired = $chatroomObj->isChatroomNotExpiredFN($id_chatroom);
                 if ($running) {
                     $chatroom_status = translateFN('in corso');
                     $enter = "<a href=\"chat.php?id_room=$id_chatroom&id_course=$id_course\" target=\"_blank\"><img src=\"img/_chat.png\" alt=\"$chat_label\" border=\"0\"></a>";
@@ -308,7 +328,7 @@ switch ($id_profile) {
                     $edit = "<a href=\"edit_chat.php?id_room=$id_chatroom\"><img src=\"img/edit.png\" alt=\"$edit_label\" border=\"0\"></a>";
                     $delete = "<a href=\"delete_chat.php?id_room=$id_chatroom\"><img src=\"img/delete.png\" alt=\"$delete_label\" border=\"0\"></a>";
                     if ($c_type == INVITATION_CHAT) {
-                        $add_users = "<a href=\"add_users_chat.php?id_room=$id_chatroom\"><img src=\"img/add_user.png\" alt=\"$add_users_label\" border=\"0\"></a>";
+                        $add_users = "<a href=\"add_users_chat.php?id_room=$id_chatroom\"><img src=\"img/addUser.png\" alt=\"$add_users_label\" border=\"0\"></a>";
                     } else {
                         $add_users = translateFN("- - -");
                     }
@@ -353,8 +373,8 @@ switch ($id_profile) {
          * an author can only enter chatrooms he is invited to.
          */
 
-        $available_chatrooms = ChatRoom::get_all_private_chatroomsFN($sess_id_user);
-        if (AMA_DataHandler::isError($available_chatrooms)) {
+        $available_chatrooms = ChatRoom::getAllPrivateChatroomsFN($sess_id_user);
+        if (AMADataHandler::isError($available_chatrooms)) {
             if ($available_chatrooms->code != AMA_ERR_NOT_FOUND) {
                 // there aren't chatrooms available.
                 $available_chatrooms = [];
@@ -371,7 +391,7 @@ switch ($id_profile) {
         foreach ($available_chatrooms as $id_chatroom) {
             $chatroomObj = new ChatRoom($id_chatroom);
 
-            if (!AMA_DataHandler::isError($chatroomObj)) {
+            if (!AMADataHandler::isError($chatroomObj)) {
                 switch ($chatroomObj->chat_type) {
                     case PUBLIC_CHAT:
                         $chat_type = translateFN('pubblica');
@@ -386,8 +406,8 @@ switch ($id_profile) {
                 }
 
                 // verify the status of the chatroom
-                $started = $chatroomObj->is_chatroom_startedFN($id_chatroom);
-                $running = $chatroomObj->is_chatroom_activeFN($id_chatroom);
+                $started = $chatroomObj->isChatroomStartedFN($id_chatroom);
+                $running = $chatroomObj->isChatroomActiveFN($id_chatroom);
 
                 if ($running) {
                     $chatroom_status = translateFN('in corso');
@@ -425,15 +445,15 @@ switch ($id_profile) {
 
     case AMA_TYPE_STUDENT: // STUDENT
         // get the public chatroom
-        $public_chatroom = ChatRoom::find_public_chatroomFN();
+        $public_chatroom = ChatRoom::findPublicChatroomFN();
 
         // get the active classes to which the user is subscribed
         $field_ar = ['id_corso'];
-        $all_instances = $dh->course_instance_started_get_list($field_ar);
+        $all_instances = $dh->courseInstanceStartedGetList($field_ar);
         // get only the ids of the classes
         foreach ($all_instances as $one_instance) {
             $id_course_instance = $one_instance[0];
-            $sub_courses = $dh->get_subscription($_SESSION['sess_id_user'], $id_course_instance);
+            $sub_courses = $dh->getSubscription($_SESSION['sess_id_user'], $id_course_instance);
             //print_r($sub_courses);
             if ((is_array($sub_courses)) && ($sub_courses['tipo'] == ADA_STATUS_SUBSCRIBED)) {
                 $class_instances_ids_ar[] = $id_course_instance;
@@ -445,16 +465,16 @@ switch ($id_profile) {
         if (is_array($class_instances_ids_ar)) {
             // get a bidimensional array with all the chatrooms for every course instance
             foreach ($class_instances_ids_ar as $id_course_instance) {
-                $chatroom_class = ChatRoom::get_class_chatroomFN($id_course_instance);
+                $chatroom_class = ChatRoom::getClassChatroomFN($id_course_instance);
                 //vito 9gennaio2009
                 //if(!is_object($chatroom_class)){
-                if (!AMA_DataHandler::isError($chatroom_class)) {
+                if (!AMADataHandler::isError($chatroom_class)) {
                     $class_chatrooms_ar[] = $chatroom_class;
                 }
             }
             // merge class chatrooms with the public chatroom
             //vito 9gennaio2009
-            if (!AMA_DataHandler::isError($public_chatroom)) {
+            if (!AMADataHandler::isError($public_chatroom)) {
                 array_push($class_chatrooms_ar, $public_chatroom);
             }
         }
@@ -462,7 +482,7 @@ switch ($id_profile) {
 
 
         // get all the private chatrooms of the user
-        $private_chatrooms_ar = ChatRoom::get_all_private_chatroomsFN($sess_id_user);
+        $private_chatrooms_ar = ChatRoom::getAllPrivateChatroomsFN($sess_id_user);
         if (is_array($private_chatrooms_ar)) {
             $all_chatrooms_ar = array_merge($class_chatrooms_ar, $private_chatrooms_ar);
         } else {
@@ -477,9 +497,9 @@ switch ($id_profile) {
             //initialize a chatroom Object
             $chatroomObj = new ChatRoom($id_chatroom);
             //get the array with all the current info of the chatoorm
-            $chatroom_ha = $chatroomObj->get_info_chatroomFN($id_chatroom);
+            $chatroom_ha = $chatroomObj->getInfoChatroomFN($id_chatroom);
             // vito, 16 mar 2009
-            $id_course = $dh->get_course_id_for_course_instance($chatroom_ha['id_istanza_corso']);
+            $id_course = $dh->getCourseIdForCourseInstance($chatroom_ha['id_istanza_corso']);
 
             // get the owner of the room
             $chat_title = $chatroom_ha['titolo_chat'];
@@ -498,9 +518,9 @@ switch ($id_profile) {
                 default:
             } // switch $c_type
             // verify the status of the chatroom
-            $started = $chatroomObj->is_chatroom_startedFN($id_chatroom);
-            $running = $chatroomObj->is_chatroom_activeFN($id_chatroom);
-            //$not_expired = $chatroomObj->is_chatroom_not_expiredFN($id_chatroom);
+            $started = $chatroomObj->isChatroomStartedFN($id_chatroom);
+            $running = $chatroomObj->isChatroomActiveFN($id_chatroom);
+            //$not_expired = $chatroomObj->isChatroomNotExpiredFN($id_chatroom);
             if ($running) {
                 $chatroom_status = translateFN('in corso');
                 $enter = "<a href=\"chat.php?id_room=$id_chatroom&id_course=$id_course\" target=\"_blank\"><img src=\"img/_chat.png\" alt=\"$chat_label\" border=\"0\"></a>";

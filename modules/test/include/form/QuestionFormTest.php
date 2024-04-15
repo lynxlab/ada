@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Module\Test\TemplateEditorControlTest;
+
+use Lynxlab\ADA\Module\Test\ForgetExerciseTypeControlTest;
+
+use Lynxlab\ADA\Module\Test\QuestionFormTest;
+
+use Lynxlab\ADA\Module\Test\FormTest;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class QuestionFormTest was declared with namespace Lynxlab\ADA\Module\Test. //
+
 /**
  *
  * @package
@@ -33,7 +47,7 @@ class QuestionFormTest extends FormTest
         parent::__construct($data);
     }
 
-    protected function common_elements()
+    protected function commonElements()
     {
         $dh = $GLOBALS['dh'];
 
@@ -68,7 +82,7 @@ class QuestionFormTest extends FormTest
         } else {
             if (!is_null($this->id_nodo_parent)) {
                 $defaultValue = translateFN('domanda') . ' ';
-                $res = $dh->test_getNodesByRadix($this->id_test);
+                $res = $dh->testGetNodesByRadix($this->id_test);
                 if ($dh->isError($res) || empty($res)) {
                     $defaultValue .= 1;
                 } else {
@@ -198,7 +212,7 @@ class QuestionFormTest extends FormTest
         $dh = $GLOBALS['dh'];
 
         //parent
-        $tmp_nodes = $dh->test_getTopicNodesByRadix($this->id_test);
+        $tmp_nodes = $dh->testGetTopicNodesByRadix($this->id_test);
         $nodes = [];
         while (!empty($tmp_nodes)) {
             foreach ($tmp_nodes as $id_nodo => $v) {

@@ -1,5 +1,25 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Module\Badges\CourseBadge;
+
+use Lynxlab\ADA\Module\Badges\Badge;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * File view_course.php
  *
@@ -112,16 +132,16 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
 
     if (defined('MODULES_SERVICECOMPLETE') && MODULES_SERVICECOMPLETE) {
         $cdh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
-        $conditionset = $cdh->get_linked_conditionset_for_course($courseObj->getId());
+        $conditionset = $cdh->getLinkedConditionsetForCourse($courseObj->getId());
         $formData['condizione di completamento'] = ($conditionset instanceof CompleteConditionSet) ? $conditionset->description : translateFN('Nessuna');
     }
 
     if (defined('MODULES_BADGES') && MODULES_BADGES) {
         $bdh = AMABadgesDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
         $badges = $bdh->findBy('CourseBadge', ['id_corso' => $courseObj->getId()]);
-        if (!\AMA_DB::isError($badges) && is_array($badges) && count($badges) > 0) {
+        if (!\AMADB::isError($badges) && is_array($badges) && count($badges) > 0) {
             $formData['badges'] = implode(', ', array_map(function ($el) use ($bdh) {
-                $b = $bdh->findBy('Badge', ['uuid' => $el->getBadge_uuid()]);
+                $b = $bdh->findBy('Badge', ['uuid' => $el->getBadgeUuid()]);
                 if (is_array($b) && count($b) === 1) {
                     $b = reset($b);
                     return $b->getName();

@@ -1,5 +1,31 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\User\ADAGuest;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\Node\Media;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\CourseInstance;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
 * SEARCH.
 *
@@ -158,7 +184,7 @@ $auth_clause .= "OR cognome LIKE '$s_node_author' ";
 $auth_clause .= "OR username LIKE '$s_node_author' ";
 }
 $auth_field_list_ar = array('username');
-$authorAR = $dh->find_authors_list($auth_field_list_ar,$auth_clause);
+$authorAR = $dh->findAuthorsList($auth_field_list_ar,$auth_clause);
 if (is_object($authorAR) OR (!isset($authorAR)) ) { //error
 $id_author = 'nobody';
 }
@@ -242,10 +268,10 @@ $clause = $clause . $operator. "id_utente LIKE '$id_author'";
 * }
 */
 
-    // $resHa = $dh->find_course_nodes_list($out_fields_ar, $clause,$sess_id_course);
-    $resHa = $dh->find_course_nodes_list($out_fields_ar, $clause, $id_course);
+    // $resHa = $dh->findCourseNodesList($out_fields_ar, $clause,$sess_id_course);
+    $resHa = $dh->findCourseNodesList($out_fields_ar, $clause, $id_course);
 
-    if (!AMA_DataHandler::isError($resHa) and is_array($resHa) and !empty($resHa)) {
+    if (!AMADataHandler::isError($resHa) and is_array($resHa) and !empty($resHa)) {
         $total_results = [];
         $group_count = 0;
         $node_count = 0;
@@ -435,8 +461,8 @@ ymdhms: giorno e ora attuali
 
 if ((is_object($userObj)) && (!AMA_dataHandler::isError($userObj))) {
 if (empty($userObj->error_msg)){
-$user_messages = $userObj->get_messagesFN($sess_id_user);
-$user_agenda = $userObj->get_agendaFN($sess_id_user);
+$user_messages = $userObj->getMessagesFN($sess_id_user);
+$user_agenda = $userObj->getAgendaFN($sess_id_user);
 }
 else {
 $user_messages = $userObj->error_msg;
@@ -455,7 +481,7 @@ $user_agenda = "";
 // $online_users_listing_mode = 2 : username and email of users
 
 $online_users_listing_mode = 2;
-$online_users = ADALoggableUser::get_online_usersFN($id_course_instance, $online_users_listing_mode);
+$online_users = ADALoggableUser::getOnlineUsersFN($id_course_instance, $online_users_listing_mode);
 /* 8.
 costruzione della pagina HTML
 */

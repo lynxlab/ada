@@ -1,5 +1,19 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use function \translateFN;
+
 /**
  * get_tutorDetails.php - return table with user details
  *
@@ -97,14 +111,14 @@ if (
         translateFN('Chat'),
     ];
 
-    $DetailsAr = $dh->get_tutors_assigned_course_instance($id_tutor);
-    if (!AMA_DB::isError($DetailsAr) && is_array($DetailsAr) && count($DetailsAr) > 0) {
+    $DetailsAr = $dh->getTutorsAssignedCourseInstance($id_tutor);
+    if (!AMADB::isError($DetailsAr) && is_array($DetailsAr) && count($DetailsAr) > 0) {
         $DetailsAr = $DetailsAr[$id_tutor];
     }
 
     $detailsResults = [];
 
-    if (!AMA_DB::isError($DetailsAr) && is_array($DetailsAr) && count($DetailsAr) > 0) {
+    if (!AMADB::isError($DetailsAr) && is_array($DetailsAr) && count($DetailsAr) > 0) {
         $totalSubscribedStudents = 0;
         $totalSelfInstrucionCourses = 0;
         $totalAddedNotes = 0;
@@ -116,7 +130,7 @@ if (
             // count number of subscribed users to instance
             $subscribedStudents = 0;
             if (isset($course['id_istanza_corso'])) {
-                $studentsAr = $dh->get_students_for_course_instance($course['id_istanza_corso']);
+                $studentsAr = $dh->getStudentsForCourseInstance($course['id_istanza_corso']);
                 foreach ($studentsAr as $student) {
                     if (
                         (strpos($student['status'], ADA_STATUS_SUBSCRIBED) == 0) ||
@@ -145,15 +159,15 @@ if (
                 $clause =  "tipo = '" . ADA_NOTE_TYPE . "' AND id_utente = " . $id_tutor .
                            " AND id_nodo LIKE '" . $course['id_corso'] . "\_%'" .
                            " AND id_istanza=" . $course['id_istanza_corso'];
-                $nodes = $dh->find_course_nodes_list($out_fields_ar, $clause, $course['id_corso']);
+                $nodes = $dh->findCourseNodesList($out_fields_ar, $clause, $course['id_corso']);
                 $added_nodes_count = count($nodes);
 
                 /**
                  * get tutor visit for course instance (to count read notes)
                  * the method name refers to student, but works ok for a tutor as well
                  */
-                $visits = $GLOBALS['dh']->get_student_visits_for_course_instance($id_tutor, $course['id_corso'], $course['id_istanza_corso']);
-                if (!AMA_DB::isError($visits) && is_array($visits) && count($visits) > 0) {
+                $visits = $GLOBALS['dh']->getStudentVisitsForCourseInstance($id_tutor, $course['id_corso'], $course['id_istanza_corso']);
+                if (!AMADB::isError($visits) && is_array($visits) && count($visits) > 0) {
                     foreach ($visits as $visit) {
                         if (
                             $visit['tipo'] == ADA_NOTE_TYPE &&
@@ -168,12 +182,12 @@ if (
                 /**
                  * count class chat messages written by the tutor
                  */
-                $class_chatrooms = ChatRoom::get_all_class_chatroomsFN($course['id_istanza_corso']);
-                if (!AMA_DB::isError($class_chatrooms) && is_array($class_chatrooms) && count($class_chatrooms) > 0) {
+                $class_chatrooms = ChatRoom::getAllClassChatroomsFN($course['id_istanza_corso']);
+                if (!AMADB::isError($class_chatrooms) && is_array($class_chatrooms) && count($class_chatrooms) > 0) {
                     foreach ($class_chatrooms as $aChatRoom) {
                         $mh = MessageHandler::instance($_SESSION['sess_selected_tester_dsn']);
-                        $chat_data = $mh->find_chat_messages($id_tutor, ADA_MSG_CHAT, $aChatRoom[0], '', 'id_mittente=' . $id_tutor);
-                        if (!AMA_DB::isError($chat_data) && is_array($chat_data) && count($chat_data) > 0) {
+                        $chat_data = $mh->findChatMessages($id_tutor, ADA_MSG_CHAT, $aChatRoom[0], '', 'id_mittente=' . $id_tutor);
+                        if (!AMADB::isError($chat_data) && is_array($chat_data) && count($chat_data) > 0) {
                             $chatlines_count = count($chat_data);
                         }
                     }

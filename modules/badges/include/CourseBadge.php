@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Module\Badges\CourseBadge;
+
+use Lynxlab\ADA\Module\Badges\BadgesBase;
+
+use Lynxlab\ADA\Module\Badges\Badge;
+
+use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
+
+// Trigger: ClassWithNameSpace. The class CourseBadge was declared with namespace Lynxlab\ADA\Module\Badges. //
+
 /**
  * @package     badges module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -33,7 +43,7 @@ class CourseBadge extends BadgesBase
     /**
      * Get the value of badge_uuid
      */
-    public function getBadge_uuid()
+    public function getBadgeUuid()
     {
         return $this->badge_uuid;
     }
@@ -43,7 +53,7 @@ class CourseBadge extends BadgesBase
      *
      * @return  self
      */
-    public function setBadge_uuid($badge_uuid)
+    public function setBadgeUuid($badge_uuid)
     {
         $this->badge_uuid = $badge_uuid;
 
@@ -57,16 +67,16 @@ class CourseBadge extends BadgesBase
      *
      * @return self
      */
-    public function setBadge_uuid_bin($uuid)
+    public function setBadgeUuidBin($uuid)
     {
         $tmpuuid = \Ramsey\Uuid\Uuid::fromBytes($uuid);
-        return $this->setBadge_uuid($tmpuuid->toString());
+        return $this->setBadgeUuid($tmpuuid->toString());
     }
 
     /**
      * Get the value of id_corso
      */
-    public function getId_corso()
+    public function getIdCorso()
     {
         return $this->id_corso;
     }
@@ -76,7 +86,7 @@ class CourseBadge extends BadgesBase
      *
      * @return  self
      */
-    public function setId_corso($id_corso)
+    public function setIdCorso($id_corso)
     {
         $this->id_corso = $id_corso;
 
@@ -86,7 +96,7 @@ class CourseBadge extends BadgesBase
     /**
      * Get the value of id_conditionset
      */
-    public function getId_conditionset()
+    public function getIdConditionset()
     {
         return $this->id_conditionset;
     }
@@ -96,7 +106,7 @@ class CourseBadge extends BadgesBase
      *
      * @return  self
      */
-    public function setId_conditionset($id_conditionset)
+    public function setIdConditionset($id_conditionset)
     {
         $this->id_conditionset = $id_conditionset;
 

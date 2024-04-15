@@ -1,5 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
 namespace Lynxlab\ADA\Browsing\Functions;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -24,7 +28,7 @@ function findInClientDir($filename)
     return false;
 }
 
-function menu_detailsFN()
+function menuDetailsFN()
 {
     $menu_history = translateFN("Nodi visitati recentemente:") . "<br>\n";
     $menu_history .= "<a href=\"history_details.php?period=1\">" . translateFN("1 giorno") . "</a><br>\n";

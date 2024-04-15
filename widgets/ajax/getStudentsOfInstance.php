@@ -1,5 +1,13 @@
 <?php
 
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\AMA\AMADB;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * ADA students of instance widget
  *
@@ -93,14 +101,14 @@ try {
             throw new \Exception(translateFN('Nessun fornitore di servizi &egrave; stato configurato'));
         }
     } else {
-        $testerInfo = $GLOBALS['common_dh']->get_tester_info_from_id_course($courseId);
-        if (!AMA_DB::isError($testerInfo) && is_array($testerInfo) && isset($testerInfo['puntatore'])) {
+        $testerInfo = $GLOBALS['common_dh']->getTesterInfoFromIdCourse($courseId);
+        if (!AMADB::isError($testerInfo) && is_array($testerInfo) && isset($testerInfo['puntatore'])) {
             $testerName = $testerInfo['puntatore'];
         }
     } // end if (!MULTIPROVIDER)
 
     if (isset($testerName)) {
-        $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($testerName));
+        $tester_dh = AMADataHandler::instance(MultiPort::getDSN($testerName));
         // setting of the global is needed to load the course object
         $GLOBALS['dh'] = $tester_dh;
     } else {

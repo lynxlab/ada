@@ -1,5 +1,21 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * File edit_instance.php
  *
@@ -119,8 +135,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 'duration_hours' => $_POST['duration_hours'],
                 'service_level' => $_POST['service_level'],
             ];
-            $result = $dh->course_instance_set($_POST['id_course_instance'], $course_instanceAr);
-            if (AMA_DataHandler::isError($result)) {
+            $result = $dh->courseInstanceSet($_POST['id_course_instance'], $course_instanceAr);
+            if (AMADataHandler::isError($result)) {
                 $data = new CText(translateFN("Si sono verificati degli errori durante l'aggiornamento") . '(1)');
             } else {
                 /*
@@ -130,29 +146,29 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                  */
                 $id_instance = $_POST['id_course_instance'];
                 $start_time = $start_date;
-                $end_time = $dh->add_number_of_days($_POST['durata'], $start_time);
+                $end_time = $dh->addNumberOfDays($_POST['durata'], $start_time);
                 //               $end_time   = $course_instance_data_before_update['data_fine'];
-                //               $id_chatroom = ChatRoom::get_class_chatroom_with_durationFN($id_instance,$start_time,$end_time);
-                $id_chatroom = ChatRoom::get_class_chatroom_for_instance($id_instance, 'C');
+                //               $id_chatroom = ChatRoom::getClassChatroomWithDurationFN($id_instance,$start_time,$end_time);
+                $id_chatroom = ChatRoom::getClassChatroomForInstance($id_instance, 'C');
 
-                if (AMA_DataHandler::isError($id_chatroom)) {
+                if (AMADataHandler::isError($id_chatroom)) {
                     if ($id_chatroom->code == AMA_ERR_NOT_FOUND) {
                         /*
                          * if a class chatroom with the same duration of the course instance does not exist,
                          * create it.
                          */
-                        $id_course = $dh->get_course_id_for_course_instance($id_instance);
-                        if (AMA_DataHandler::isError($id_course)) {
+                        $id_course = $dh->getCourseIdForCourseInstance($id_instance);
+                        if (AMADataHandler::isError($id_course)) {
                             // gestire l'errore
                         }
 
                         $course_data = $dh->get_course($id_course);
-                        if (AMA_DataHandler::isError($course_data)) {
+                        if (AMADataHandler::isError($course_data)) {
                             // gestire l'errore
                         }
 
-                        $id_tutor = $dh->course_instance_tutor_get($id_instance);
-                        if (!AMA_DataHandler::isError($id_tutor)) {
+                        $id_tutor = $dh->courseInstanceTutorGet($id_instance);
+                        if (!AMADataHandler::isError($id_tutor)) {
                             $chatroom_ha['id_chat_owner'] = $id_tutor;
                         } else {
                             $chatroom_ha['id_chat_owner'] = $sess_id_user;
@@ -168,8 +184,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                             'id_course_instance' => $id_instance,
                         ];
 
-                        $result = ChatRoom::add_chatroomFN($chatroom_ha);
-                        if (AMA_DataHandler::isError($result)) {
+                        $result = ChatRoom::addChatroomFN($chatroom_ha);
+                        if (AMADataHandler::isError($result)) {
                             // gestire l'errore
                         }
                     } else {
@@ -181,8 +197,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                      * already exists, so update this chatroom start and end time.
                      */
                     $chatroomObj = new Chatroom($id_chatroom, MultiPort::getDSN($_SESSION['sess_selected_tester']));
-                    $id_tutor = $dh->course_instance_tutor_get($id_instance);
-                    if (!AMA_DataHandler::isError($id_tutor)) {
+                    $id_tutor = $dh->courseInstanceTutorGet($id_instance);
+                    if (!AMADataHandler::isError($id_tutor)) {
                         $chatroom_data['id_chat_owner'] = $id_tutor;
                     } else {
                         $chatroom_data['id_chat_owner'] = $sess_id_user;
@@ -193,9 +209,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                         'max_utenti'    => '999',
                     ];
 
-                    $result = $chatroomObj->set_chatroomFN($chatroomObj->id_chatroom, $chatroom_data);
+                    $result = $chatroomObj->setChatroomFN($chatroomObj->id_chatroom, $chatroom_data);
 
-                    if (AMA_DataHandler::isError($result)) {
+                    if (AMADataHandler::isError($result)) {
                         // gestire l'errore
                     }
                 }

@@ -1,5 +1,31 @@
 <?php
 
+use Lynxlab\ADA\Switcher\Subscription;
+
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\CORE\html4\CElement;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
+use Lynxlab\ADA\Comunica\Spools\Mailer;
+
+use function \translateFN;
+
 /**
  *
  * @package     Subscription Confirm from Paypal
@@ -21,7 +47,7 @@ use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\today_dateFN;
+use function Lynxlab\ADA\Main\Utilities\todayDateFN;
 
 /**
  * Base config file
@@ -88,17 +114,17 @@ if (file_exists(ROOT_DIR . '/browsing/paypal/paypal_conf.inc.php')) {
     $paypal_allowed = true;
 }
 
-$today_date = today_dateFN();
-$providerId = DataValidator::is_uinteger($_POST['provider']);
-$courseId = DataValidator::is_uinteger($_POST['course']);
-$instanceId = DataValidator::is_uinteger($_POST['instance']);
-$studentId = DataValidator::is_uinteger($_POST['student']);
-$testerInfoAr = $common_dh->get_tester_info_from_id($providerId, 'AMA_FETCH_ASSOC');
+$today_date = todayDateFN();
+$providerId = DataValidator::isUinteger($_POST['provider']);
+$courseId = DataValidator::isUinteger($_POST['course']);
+$instanceId = DataValidator::isUinteger($_POST['instance']);
+$studentId = DataValidator::isUinteger($_POST['student']);
+$testerInfoAr = $common_dh->getTesterInfoFromId($providerId, 'AMA_FETCH_ASSOC');
 
-if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
+if (!AMACommonDataHandler::isError($testerInfoAr)) {
     $provider_name = $testerInfoAr[1];
     $tester = $testerInfoAr[10];
-    $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
+    $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester));
     $currentTesterId = $newTesterId;
     $GLOBALS['dh'] = $tester_dh;
     $dh = $tester_dh;
@@ -112,7 +138,7 @@ if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
      */
     $instanceObj = new CourseInstance($instanceId);
     $price = $instanceObj->getPrice();
-    $course = $dh->get_course($courseId);
+    $course = $dh->getCourse($courseId);
     $course_name = $course['titolo'];
 
     /*
@@ -200,7 +226,7 @@ if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
     $management_message_ha["titolo"] = $management_subject;
     $management_message_ha["testo"] = $management_body_mail;
     $management_mailer = new Mailer();
-    $res = $management_mailer->send_mail($management_message_ha, $management_sender_email, $management_recipients_emails_ar);
+    $res = $management_mailer->sendMail($management_message_ha, $management_sender_email, $management_recipients_emails_ar);
 
     /*
      * mail to user
@@ -212,7 +238,7 @@ if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
     $user_message_ha["titolo"] = $user_mail_subject;
     $user_message_ha["testo"] = $user_mail_body;
     $user_mailer = new Mailer();
-    $res = $user_mailer->send_mail($user_message_ha, $management_sender_email, $user_recipients_emails_ar);
+    $res = $user_mailer->sendMail($user_message_ha, $management_sender_email, $user_recipients_emails_ar);
 
 
     $field_data = [

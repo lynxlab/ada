@@ -1,5 +1,15 @@
 <?php
 
+use Lynxlab\ADA\Module\CollaboraACL\GrantAccessForm;
+
+use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLAbstractForm;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use function \translateFN;
+
+// Trigger: ClassWithNameSpace. The class GrantAccessForm was declared with namespace Lynxlab\ADA\Module\CollaboraACL. //
+
 /**
  * @package     collabora-access-list module
  * @author      giorgio <g.consorti@lynxlab.com>

@@ -1,5 +1,23 @@
 <?php
 
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
+
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+
+use Lynxlab\ADA\Main\Output\Output;
+
+use Lynxlab\ADA\Main\Output\ARE;
+
+use Lynxlab\ADA\Main\Node\Node;
+
+use Lynxlab\ADA\Main\History\History;
+
+use Lynxlab\ADA\Main\Course\Course;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+
+use function \translateFN;
+
 /**
  * AUTHOR REPORT.
  *
@@ -90,8 +108,8 @@ switch ($mode) {
         $out_fields_ar = ['data_visita','id_utente_studente','id_istanza_corso'];
         $clause = "id_nodo = '$id_node'";
 
-        $visits_ar = $dh->find_nodes_history_list($out_fields_ar, $clause);
-        if (AMA_DataHandler::isError($visits_ar)) {
+        $visits_ar = $dh->findNodesHistoryList($out_fields_ar, $clause);
+        if (AMADataHandler::isError($visits_ar)) {
             $msg = $visits_ar->getMessage();
             print '$msg';
             //header('Location: $error?err_msg=$msg');
@@ -103,7 +121,7 @@ switch ($mode) {
             foreach ($visits_ar as $visit) {
                 $user_id = $visit[2];
                 if ($user_id > 0) {
-                    $student = $dh->get_user_info($visit[2]);
+                    $student = $dh->getUserInfo($visit[2]);
                     //global $debug;$debug=1;mydebug(__LINE__,__FILE__,$student);$debug=0;
                     $studentname = $student['username'];
                 } else {
@@ -160,8 +178,8 @@ switch ($mode) {
         $status = translateFN('elenco dei nodi');
         $help = translateFN("Da qui l'Autore del corso può vedere la lista dei nodi di cui è autore.");
         $course_id = isset($_GET['id_course']) ? intval($_GET['id_course']) : null;
-        $courseHa = $dh->get_course($course_id);
-        if (AMA_DataHandler::isError($courseHa)) {
+        $courseHa = $dh->getCourse($course_id);
+        if (AMADataHandler::isError($courseHa)) {
             $err_msg = $courseHa->getMessage();
             //header('Location: $error?err_msg=$msg');
             //exit;
@@ -170,8 +188,8 @@ switch ($mode) {
             $clause = "id_nodo LIKE '{$course_id}\_%' AND ";
             $field_list_ar = ['nome','id_utente'];
             $clause .= "id_utente='$sess_id_user'";
-            $dataHa = $dh->doFind_nodes_list($field_list_ar, $clause);
-            if (AMA_DataHandler::isError($dataHa)) {
+            $dataHa = $dh->doFindNodesList($field_list_ar, $clause);
+            if (AMADataHandler::isError($dataHa)) {
                 $err_msg = $dataHa->getMessage();
                 //header('Location: $error?err_msg=$msg');
                 //exit;
@@ -185,10 +203,10 @@ switch ($mode) {
                 $clause = "id_nodo = '$id_node'";
 
                 // FIXME: verificare quale fra queste due usare
-                //         $visits = $dh->find_nodes_history_list($out_fields_ar,'', '', $node_id);
-                $visits = $dh->find_nodes_history_list($out_fields_ar, $clause);
+                //         $visits = $dh->findNodesHistoryList($out_fields_ar,'', '', $node_id);
+                $visits = $dh->findNodesHistoryList($out_fields_ar, $clause);
 
-                if (AMA_DataHandler::isError($visits)) {
+                if (AMADataHandler::isError($visits)) {
                     $msg = $visits->getMessage();
                     print '$msg';
                     //header('Location: $error?err_msg=$msg');
