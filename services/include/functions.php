@@ -1,17 +1,9 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use Lynxlab\ADA\Main\ADAError;
-
-use function \translateFN;
-
 namespace Lynxlab\ADA\Services\Functions;
 
+use Lynxlab\ADA\Main\ADAError;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\form\PhpOpenFormGen;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 

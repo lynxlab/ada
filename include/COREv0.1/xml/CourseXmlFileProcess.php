@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\CORE\xml\CourseXmlFileProcess;
-
-use Lynxlab\ADA\Main\Bookmark\Tag;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class CourseXmlFileProcess was declared with namespace Lynxlab\ADA\CORE\xml. //
-
 /*
   Classe course_xml_file_process per l'estrazione dei dati corso da file xml e
   inserimento nel database di ADA.
@@ -53,6 +41,8 @@ use function \translateFN;
 */
 
 namespace Lynxlab\ADA\CORE\xml;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Upload\Functions\searchdir;
@@ -315,7 +305,7 @@ class CourseXmlFileProcess
         // inserisce i dati nell'array dei dati del nodo
         //print $this->currentTag;
         switch ($this->currentTag) {
-                // riferiti al NODO
+            // riferiti al NODO
             case "ID":
                 $this->dati_nodo_ar[$this->livello]['ID'] = "$data";
                 /*

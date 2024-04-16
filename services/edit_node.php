@@ -1,29 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\ARE;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use Lynxlab\ADA\Main\AMA\MultiPort;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use Lynxlab\ADA\Main\ADAError;
-
-use function \translateFN;
-
 /**
  * EDIT NODE.
  *
@@ -40,10 +16,19 @@ use Lynxlab\ADA\Browsing\CourseViewer;
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\ADAError;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\AMAError;
+use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
+use Lynxlab\ADA\Main\History\History;
+use Lynxlab\ADA\Main\Node\Node;
+use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADAAuthor;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Main\User\ADAPractitioner;
 use Lynxlab\ADA\Services\NodeEditing\NodeEditing;
 use Lynxlab\ADA\Services\NodeEditing\NodeEditingViewer;
 use Lynxlab\ADA\Services\NodeEditing\PreferenceSelector;

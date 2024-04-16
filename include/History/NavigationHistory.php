@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\History\NavigationHistory;
-
-use Lynxlab\ADA\Main\History\History;
-
-// Trigger: ClassWithNameSpace. The class NavigationHistory was declared with namespace Lynxlab\ADA\Main\History. //
-
 /**
  * Class NavigationHistory
  *

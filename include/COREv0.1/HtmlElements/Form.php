@@ -1,21 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\CORE\HtmlElements\Tform;
-
-use Lynxlab\ADA\CORE\HtmlElements\Table;
-
-use Lynxlab\ADA\CORE\HtmlElements\HTMLElement;
-
-use Lynxlab\ADA\CORE\HtmlElements\Form;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class Form was declared with namespace Lynxlab\ADA\CORE\HtmlElements. //
-
 /**
  * Html_element, Table, Ilist, Form and Tform classes
  *
@@ -29,6 +13,8 @@ use function \translateFN;
  */
 
 namespace Lynxlab\ADA\CORE\HtmlElements;
+
+use Lynxlab\ADA\CORE\HtmlElements\HTMLElement;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;

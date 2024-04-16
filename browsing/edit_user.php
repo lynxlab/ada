@@ -1,52 +1,8 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\ARE;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Forms\lib\classes\FForm;
-
-use Lynxlab\ADA\Main\Course\CourseInstance;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use Lynxlab\ADA\CORE\html4\CElement;
-
-use Lynxlab\ADA\CORE\HtmlElements\Form;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-
-/**
- * Edit user - this module provides edit user functionality
- *
- *
- * @package
- * @author      Stefano Penge <steve@lynxlab.com>
- * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author      Vito Modena <vito@lynxlab.com>
- * @author      giorgio <g.consorti@lynxlab.com>
- * @copyright   Copyright (c) 2009-2010, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link
- * @version     0.1
- *
- * WARNING:     THIS FILE IS INCLUDED IN /switcher/edit_user.php FOR THE SWITHCER
- *              TO EDIT A USER PROFILE.
- *              PAY ATTENTION TO SWITHCER ROLE WHEN EDITING THE FILE
- */
-
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Forms\UserExtraForm;
@@ -54,6 +10,7 @@ use Lynxlab\ADA\Main\Forms\UserProfileForm;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\HtmlLibrary\UserExtraModuleHtmlLib;
+use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\User\ADAUser;
 use Lynxlab\ADA\Module\Secretquestion\AMASecretQuestionDataHandler;

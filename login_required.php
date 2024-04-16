@@ -1,35 +1,12 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\ARE;
-
-use function \translateFN;
-
-/**
- *
- * @package     user
- * @author      Stefano Penge <steve@lynxlab.com>
- * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author      Vito Modena <vito@lynxlab.com>
- * @copyright   Copyright (c) 2009, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link        info
- * @version     0.1
- */
-
-/**
- * Base config file
- */
-
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Forms\UserRegistrationForm;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\UserModuleHtmlLib;
+use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Module\GDPR\GdprAcceptPoliciesForm;

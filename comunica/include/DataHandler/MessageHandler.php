@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use Lynxlab\ADA\Comunica\DataHandler\UserDataHandler;
-
-use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
-
-// Trigger: ClassWithNameSpace. The class MessageHandler was declared with namespace Lynxlab\ADA\Comunica\DataHandler. //
-
 /**
  * MessageHandler, list messages
  *
@@ -23,11 +13,14 @@ use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 
 namespace Lynxlab\ADA\Comunica\DataHandler;
 
+use Lynxlab\ADA\Comunica\DataHandler\UserDataHandler;
 use Lynxlab\ADA\Comunica\Spools\AgendaSpool;
 use Lynxlab\ADA\Comunica\Spools\ChatSpool;
 use Lynxlab\ADA\Comunica\Spools\Mailer;
 use Lynxlab\ADA\Comunica\Spools\SimpleSpool;
 use Lynxlab\ADA\Comunica\Spools\Spool;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\Node\Node;
 
 /**

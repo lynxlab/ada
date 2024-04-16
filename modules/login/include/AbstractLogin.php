@@ -1,21 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Login\ILogin;
-
-use Lynxlab\ADA\Module\Login\AMALoginDataHandler;
-
-use Lynxlab\ADA\Module\Login\AbstractLogin;
-
-use Lynxlab\ADA\Main\User\ADALoggableUser;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class AbstractLogin was declared with namespace Lynxlab\ADA\Module\Login. //
-
 /**
  * LOGIN MODULE
  *
@@ -30,8 +14,12 @@ namespace Lynxlab\ADA\Module\Login;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Main\User\ADAUser;
+use Lynxlab\ADA\Module\Login\AMALoginDataHandler;
+use Lynxlab\ADA\Module\Login\ILogin;
 use ReflectionClass;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -417,7 +405,7 @@ abstract class AbstractLogin implements ILogin
 
     public static function getNamespaceName()
     {
-        $r = new \ReflectionClass(self::class);
+        $r = new ReflectionClass(self::class);
         return $r->getNamespaceName();
     }
 }

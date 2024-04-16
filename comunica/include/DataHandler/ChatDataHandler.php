@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Logger\ADALogger;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
-
-use Lynxlab\ADA\Comunica\DataHandler\ChatDataHandler;
-
-// Trigger: ClassWithNameSpace. The class ChatDataHandler was declared with namespace Lynxlab\ADA\Comunica\DataHandler. //
-
 // +----------------------------------------------------------------------+
 // | PHP version 4.0                                                      |
 // +----------------------------------------------------------------------+

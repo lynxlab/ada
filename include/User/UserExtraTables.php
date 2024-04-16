@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\User\UserExtraTables;
-
-use Lynxlab\ADA\Main\User\ADAUser;
-
-// Trigger: ClassWithNameSpace. The class UserExtraTables was declared with namespace Lynxlab\ADA\Main\User. //
-
 /**
  * UserExtraTables.class.inc.php
  *

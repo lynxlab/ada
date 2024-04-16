@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
-
-use Lynxlab\ADA\Comunica\VideoRoom\IVideoRoom;
-
 /**
  * Openmeetings specific class
  *
@@ -21,6 +15,9 @@ use Lynxlab\ADA\Comunica\VideoRoom\IVideoRoom;
 
 namespace Lynxlab\ADA\Comunica\VideoRoom;
 
+use Lynxlab\ADA\Comunica\VideoRoom\IVideoRoom;
+use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use SoapClient;
 
 class OpenMeeting extends VideoRoom implements IVideoRoom

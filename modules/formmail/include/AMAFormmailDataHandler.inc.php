@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\FormMail\AMAFormmailDataHandler;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-// Trigger: ClassWithNameSpace. The class AMAFormmailDataHandler was declared with namespace Lynxlab\ADA\Module\FormMail. //
-
 /**
  * FORMMAIL MODULE.
  *

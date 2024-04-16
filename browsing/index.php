@@ -1,30 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\CourseInstance;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use Lynxlab\ADA\CORE\html4\CElement;
-
-use function \translateFN;
-
-######################
-#
-#    REDIRECT
-#
-######################
-/**
- * Base config file
- */
-
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

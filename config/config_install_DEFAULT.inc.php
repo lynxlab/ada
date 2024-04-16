@@ -1,29 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Module\EtherpadIntegration\Session;
-
-use Lynxlab\ADA\Main\Node\Media;
-
-use Lynxlab\ADA\Main\History\NavigationHistory;
-
-use Lynxlab\ADA\Main\Course\Student;
-
-use Lynxlab\ADA\Main\Course\Course;
-/**
- * Standard configuration file for ADA
- *
- * @package
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2009, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link		ada_config_main
- * @version		0.1
- */
-
 use function Lynxlab\ADA\Main\Utilities\getUserIpAddr;
 
 /**
@@ -36,8 +12,8 @@ use function Lynxlab\ADA\Main\Utilities\getUserIpAddr;
 define('ADA_COMMON_DB_TYPE', 'mysql');
 define('ADA_COMMON_DB_NAME', getenv('MYSQL_DATABASE') ?: 'ada2.0_common');
 define('ADA_COMMON_DB_USER', getenv('MYSQL_USER') ?: 'root');
-define('ADA_COMMON_DB_PASS', getenv('MYSQL_PASSWORD') ?:'');
-define('ADA_COMMON_DB_HOST', getenv('MYSQL_HOST') ?:'localhost');
+define('ADA_COMMON_DB_PASS', getenv('MYSQL_PASSWORD') ?: '');
+define('ADA_COMMON_DB_HOST', getenv('MYSQL_HOST') ?: 'localhost');
 
 /*
  * ADA default provider.
@@ -52,42 +28,42 @@ define('ADA_DEFAULT_TESTER_DB_HOST', getenv('DEFAULT_PROVIDER_DB_HOST') ?: (gete
  * Session Cookie Lifetime in days
  * If 0 the session end when the browser is closed
  */
-define('ADA_SESSION_LIFE_TIME',0);
+define('ADA_SESSION_LIFE_TIME', 0);
 
 if (MULTIPROVIDER) {
-	/**
-	 * In a single provider environment, each one
-	 * shall have these set in its own config file
-	 */
+    /**
+     * In a single provider environment, each one
+     * shall have these set in its own config file
+     */
 
-	/**
-	 * ID of the public course to get the latest news
-	 */
-	define ('PUBLIC_COURSE_ID_FOR_NEWS', 1);
-	/**
-	 * How many news to get from the above mentioned course
-	 */
-    define ('NEWS_COUNT', 3);
+    /**
+     * ID of the public course to get the latest news
+     */
+    define('PUBLIC_COURSE_ID_FOR_NEWS', 1);
+    /**
+     * How many news to get from the above mentioned course
+     */
+    define('NEWS_COUNT', 3);
 
-	/**
-	 * Currency symbol
-	 */
-	define ('ADA_CURRENCY_SYMBOL' , '&euro;');
+    /**
+     * Currency symbol
+     */
+    define('ADA_CURRENCY_SYMBOL', '&euro;');
 
-	/**
-	 * How many decimal when formatting as currency
-	 */
-	define ('ADA_CURRENCY_DECIMALS', 2);
+    /**
+     * How many decimal when formatting as currency
+     */
+    define('ADA_CURRENCY_DECIMALS', 2);
 
-	/**
-	 * Thousands separator when formatting as currency
-	 */
-	define ('ADA_CURRENCY_THOUSANDS_SEP', '.');
+    /**
+     * Thousands separator when formatting as currency
+     */
+    define('ADA_CURRENCY_THOUSANDS_SEP', '.');
 
-	/**
-	 * Decimal point when formatting as currency
-	 */
-    define ('ADA_CURRENCY_DECIMAL_POINT', ',');
+    /**
+     * Decimal point when formatting as currency
+     */
+    define('ADA_CURRENCY_DECIMAL_POINT', ',');
 
     /**
      * true if instance subscription must be done by login_required.php
@@ -96,37 +72,39 @@ if (MULTIPROVIDER) {
      * NOTE: If subscription requires a payment, this will have the side-effect
      * of requesting a payment before the user is confirmed (i.e. status set to ADA_STATUS_REGISTERED)
      */
-    define ('ADA_SUBSCRIBE_FROM_LOGINREQUIRED', true);
+    define('ADA_SUBSCRIBE_FROM_LOGINREQUIRED', true);
 
     /**
      * true if instance subscription email must be send
      *
      * NOTE: will send an email only if the subscribing user has a non empty email address
      */
-    define ('ADA_SEND_INSTANCE_SUBSCRIPTION_EMAIL', true);
+    define('ADA_SEND_INSTANCE_SUBSCRIPTION_EMAIL', true);
 
     /**
      * set here the url to redirect the student after login
      */
-    define ('FORCE_STUDENT_LOGIN_REDIRECT', '');
+    define('FORCE_STUDENT_LOGIN_REDIRECT', '');
 }
 
 /**
  * URL
  * DO NOT REMOVE the trailing // *js_import*
  */
-if (!defined('HTTP_ROOT_DIR')) define('HTTP_ROOT_DIR', getenv('HTTP_ROOT_DIR') ?: 'http://localhost/ada22'); // *js_import*
+if (!defined('HTTP_ROOT_DIR')) {
+    define('HTTP_ROOT_DIR', getenv('HTTP_ROOT_DIR') ?: 'http://localhost/ada22');
+} // *js_import*
 
-define('ADA_DEFAULT_AVATAR','default_avatar.png');
+define('ADA_DEFAULT_AVATAR', 'default_avatar.png');
 
 /**
  * portal name string - displayed in window titlebar
 */
 if (!defined('PORTAL_NAME')) {
-    if (getenv('PORTAL_NAME')!==false){
+    if (getenv('PORTAL_NAME') !== false) {
         define('PORTAL_NAME', getenv('PORTAL_NAME'));
     } else {
-        define('PORTAL_NAME', getenv('ADA_OR_WISP')!==false ? strtoupper(getenv('ADA_OR_WISP')) : 'ADA 2.2');
+        define('PORTAL_NAME', getenv('ADA_OR_WISP') !== false ? strtoupper(getenv('ADA_OR_WISP')) : 'ADA 2.2');
     }
 }
 
@@ -139,21 +117,27 @@ if (!defined('PORTAL_NAME')) {
 $allowedIPs = [];
 if (!defined('MAINTENANCE_MODE')) {
     if (!empty($allowedIPs)) {
-        define('MAINTENANCE_MODE', true !== in_array(getUserIpAddr(), $allowedIPs) );
+        define('MAINTENANCE_MODE', true !== in_array(getUserIpAddr(), $allowedIPs));
     } else {
         define('MAINTENANCE_MODE', false);
     }
 }
-if (!defined('MAINTENANCE_TPL') && MAINTENANCE_MODE === true) define ('MAINTENANCE_TPL', 'maintenancemode');
+if (!defined('MAINTENANCE_TPL') && MAINTENANCE_MODE === true) {
+    define('MAINTENANCE_TPL', 'maintenancemode');
+}
 unset($allowedIPs);
 
 /**
  * set to true to enable the videocahtroom report for the tutor
  */
-if (!defined('VIDEOCHAT_REPORT')) define('VIDEOCHAT_REPORT', false);
+if (!defined('VIDEOCHAT_REPORT')) {
+    define('VIDEOCHAT_REPORT', false);
+}
 
 // key used to cipher urls sent to adaProxy.php
-if (!defined('ADAPROXY_ENC_KEY')) define ('ADAPROXY_ENC_KEY', 'adaProxyKey');
+if (!defined('ADAPROXY_ENC_KEY')) {
+    define('ADAPROXY_ENC_KEY', 'adaProxyKey');
+}
 
 /**
  * DataBase abstraction layer,
@@ -168,7 +152,7 @@ define('DB_ABS_LAYER', PDO_DB);
 /**
  * Caching mode (OLD CONSTANTS: THEY AREN'T USED AND SHOULD NOT BE HERE)
  */
-define('ADA_NO_STATIC',   0);
+define('ADA_NO_STATIC', 0);
 /*
  * partially static: only the body of file is loaded,
  * and is placed in 'data' placeholder
@@ -181,11 +165,11 @@ define('ADA_BODY_STATIC', 2);
 /*
  * entirely static: all the file is read (written)...
  */
-define('ADA_ALL_STATIC',  3);
+define('ADA_ALL_STATIC', 3);
 /*
  * the file is loaded in an external window
  */
-define('ADA_EXT_STATIC',  4);
+define('ADA_EXT_STATIC', 4);
 
 /*
  * Maximum number of students in a course instance
@@ -199,7 +183,7 @@ define('ADA_COURSE_INSTANCE_STUDENTS_NUMBER', 25);
 /*
  * how to display images 0 (icon), 1 or 2 (inline)
  */
-define ('IMG_VIEWING_MODE',2);
+define('IMG_VIEWING_MODE', 2);
 /*
  *
  */
@@ -211,7 +195,7 @@ define('VIDEO_PLAYING_MODE', 2);
 /*
  *
  */
-define('DOC_VIEWING_MODE',   2);
+define('DOC_VIEWING_MODE', 2);
 
 /*
  * size of icon image reduction
@@ -250,56 +234,56 @@ define('ADA_NOREPLY_MAIL_ADDRESS', getenv('ADA_NOREPLY_MAIL_ADDRESS') ?: 'norepl
 /**
  * ADA version
  */
-define('ADA_VERSION','2.2');
+define('ADA_VERSION', '2.2');
 
 /**
  * URL
  * DO NOT REMOVE the trailing // *js_import*
  */
-define('MODULES_DIR',ROOT_DIR.'/modules'); // *js_import*
+define('MODULES_DIR', ROOT_DIR.'/modules'); // *js_import*
 
 /**
  *
  */
-define('ADA_METAKEYWORDS','ADA metakeywords');
-define('ADA_METADESCRIPTION','ADA metadescription');
-define('ADA_MESSAGE_LANGUAGE','English');
+define('ADA_METAKEYWORDS', 'ADA metakeywords');
+define('ADA_METADESCRIPTION', 'ADA metadescription');
+define('ADA_MESSAGE_LANGUAGE', 'English');
 define('ADA_LOGIN_PAGE_DEFAULT_LANGUAGE', 'en');
-define('ADA_DYNAMIC_LANGUAGE', TRUE);
+define('ADA_DYNAMIC_LANGUAGE', true);
 define('ADA_CHARSET', 'UTF-8');
 define('SERVER_TIMEZONE', 'Europe/Rome');
 
 /*
  * if true the system search in the text node the word in the glossary
  */
-define('SEARCH_WORD_IN_NODE',0);
+define('SEARCH_WORD_IN_NODE', 0);
 
 /*
  * if true the system show the node the node extended fields glossary
  */
-define('SHOW_NODE_EXTENDED_FIELDS',1);
+define('SHOW_NODE_EXTENDED_FIELDS', 1);
 
 /*
  * after login, if true the system redirect the user to the course instance he is subscribed to
  */
 
-define ("ADA_USER_AUTOMATIC_ENTER",FALSE); // feature disabled !
+define("ADA_USER_AUTOMATIC_ENTER", false); // feature disabled !
 
 /*
  * if true the system allow to printing a certificate
  */
 
-define ("ADA_PRINT_CERTIFICATE",FALSE);
+define("ADA_PRINT_CERTIFICATE", false);
 
 /*
  * If there isn't db_common.service_type table, use this to define default service type.
  */
-define('DEFAULT_SERVICE_TYPE_NAME','Corso Online');
+define('DEFAULT_SERVICE_TYPE_NAME', 'Corso Online');
 
 /*
  * Set medias rendered with jPlayer to autoplay
  */
-define ('JPLAYER_AUTOPLAY', false);
+define('JPLAYER_AUTOPLAY', false);
 
 /**
  * Environment constants and global variables.
@@ -333,7 +317,7 @@ define('TUTOR_UPLOAD_PATH', ROOT_DIR.'/uploadFile/uploaded_files/tutors/');
 /**
  * default media path (in case author's mediapath = "")
  */
-define('MEDIA_PATH_DEFAULT','/services/media/');
+define('MEDIA_PATH_DEFAULT', '/services/media/');
 
 /**
  * writable directory permissions
@@ -347,7 +331,7 @@ define('AUTHOR_COURSE_PATH_DEFAULT', ADA_COURSE_MODELS_PATH);
 
 
 // default media local path
-define('MEDIA_LOCAL_PATH',''); // default: disabled
+define('MEDIA_LOCAL_PATH', ''); // default: disabled
 
 /**
  * Default template family
@@ -368,10 +352,10 @@ define('ADA_DATE_FORMAT', '%d/%m/%Y');
 
 // default type of field in templates
 //  define('ADA_STATIC_TEMPLATE_FIELD',0); // with reg.exp. we can use chars, crlf, &nbsp; etc in template fields between <> and </> (slower)
-define('ADA_STATIC_TEMPLATE_FIELD',1); // we cannnot use crlf, &nbsp; etc in template fields (more efficient)
+define('ADA_STATIC_TEMPLATE_FIELD', 1); // we cannnot use crlf, &nbsp; etc in template fields (more efficient)
 
 // including sub-templates allowed
-define('USE_MICROTEMPLATES',1);
+define('USE_MICROTEMPLATES', 1);
 
 // needed by class NavigationHistory: it defines the maximum number of pages
 // to mantain in navigation history
@@ -380,7 +364,7 @@ define('NAVIGATION_HISTORY_SIZE', 5);
 // defines needed while editing or adding node
 //
 define('ADA_FILE_UPLOAD_MAX_FILESIZE', 20000000);
-define('ADA_FILE_UPLOAD_ACCEPTED_MIMETYPE',_GO);
+define('ADA_FILE_UPLOAD_ACCEPTED_MIMETYPE', _GO);
 
 /**
  * system messages translation
@@ -557,26 +541,26 @@ $ADA_MIME_TYPE["application/vnd.oasis.opendocument.text-master"]['type'] = _DOC;
 $ADA_MIME_TYPE["application/octet-stream"]['type'] = _EXE;
 
 // default session mode
-define('ADA_SESSION_MODE', 		"auto");
+define('ADA_SESSION_MODE', "auto");
 
 // default session time (durata minima di una sessione in secondi)
-define('ADA_SESSION_TIME', 		300);
+define('ADA_SESSION_TIME', 300);
 
 // default code language
 define('ADA_DEFAULT_LANGUAGE', "italiano");
 
 // Parameters for evaluation  of acts  (used by class \Lynxlab\ADA\Main\Course\Student)
-define("NOTE_PAR",          7);
-define("HIST_PAR",          1);
-define("MSG_PAR",           5);
-define("EXE_PAR",           3);
-define("BKM_PAR",           1);
-define("CHA_PAR",           7);
-define("SURV_PAR",          5);
+define("NOTE_PAR", 7);
+define("HIST_PAR", 1);
+define("MSG_PAR", 5);
+define("EXE_PAR", 3);
+define("BKM_PAR", 1);
+define("CHA_PAR", 7);
+define("SURV_PAR", 5);
 
 // max user level
 define('ADA_MAX_USER_LEVEL', 100);
-define('ADA_MAX_SCORE',100);
+define('ADA_MAX_SCORE', 100);
 
 // path to the standard error page
 $error = HTTP_ROOT_DIR.'/admin/error.php';
@@ -597,7 +581,7 @@ $ADA_ELEMENT_VIEWING_PREFERENCES[AMA_TYPE_AUTHOR][ADA_LEAF_TYPE][ADD_OPERATION] 
 $ADA_ELEMENT_VIEWING_PREFERENCES[AMA_TYPE_AUTHOR][ADA_LEAF_TYPE][EDIT_OPERATION] = EDITOR_INSERT_EXTERNAL_LINK | EDITOR_INSERT_INTERNAL_LINK |
                                                                                    EDITOR_UPLOAD_FILE | EDITOR_SELECT_FILE | EDITOR_SHOW_NODE_POSITION |
                                                                                    EDITOR_SHOW_NODE_ICON | EDITOR_SHOW_PARENT_NODE_SELECTOR |
-                                                                                   EDITOR_SELECT_EXTERNAL_LINK | EDITOR_SHOW_NODE_LEVEL|
+                                                                                   EDITOR_SELECT_EXTERNAL_LINK | EDITOR_SHOW_NODE_LEVEL |
                                                                                    EDITOR_SHOW_NODE_ORDER |
                                                                                    EDITOR_ALLOW_SWITCHING_BETWEEN_EDITING_MODES;
 
@@ -608,7 +592,7 @@ $ADA_ELEMENT_VIEWING_PREFERENCES[AMA_TYPE_AUTHOR][ADA_GROUP_TYPE][ADD_OPERATION]
                                                                                     EDITOR_UPLOAD_FILE | EDITOR_SELECT_FILE |
                                                                                     EDITOR_SHOW_NODE_TYPE | EDITOR_SHOW_NODE_LEVEL |
                                                                                     EDITOR_SHOW_NODE_POSITION | EDITOR_SHOW_PARENT_NODE_SELECTOR |
-                                                                                    EDITOR_SELECT_EXTERNAL_LINK|
+                                                                                    EDITOR_SELECT_EXTERNAL_LINK |
                                                                                     EDITOR_SHOW_NODE_ORDER |
                                                                                     EDITOR_ALLOW_SWITCHING_BETWEEN_EDITING_MODES;
 
@@ -616,7 +600,7 @@ $ADA_ELEMENT_VIEWING_PREFERENCES[AMA_TYPE_AUTHOR][ADA_GROUP_TYPE][EDIT_OPERATION
                                                                                     EDITOR_UPLOAD_FILE | EDITOR_SELECT_FILE |
                                                                                     EDITOR_SHOW_NODE_ICON | EDITOR_SHOW_NODE_LEVEL | EDITOR_SHOW_NODE_POSITION |
                                                                                     EDITOR_SHOW_PARENT_NODE_SELECTOR | EDITOR_SELECT_EXTERNAL_LINK |
-                                                                                    EDITOR_SHOW_NODE_TYPE|
+                                                                                    EDITOR_SHOW_NODE_TYPE |
                                                                                     EDITOR_SHOW_NODE_ORDER |
                                                                                     EDITOR_ALLOW_SWITCHING_BETWEEN_EDITING_MODES;
 $ADA_ELEMENT_VIEWING_PREFERENCES[AMA_TYPE_AUTHOR][ADA_LEAF_WORD_TYPE][ADD_OPERATION]  = EDITOR_INSERT_EXTERNAL_LINK | EDITOR_INSERT_INTERNAL_LINK |
@@ -630,7 +614,7 @@ $ADA_ELEMENT_VIEWING_PREFERENCES[AMA_TYPE_AUTHOR][ADA_LEAF_WORD_TYPE][ADD_OPERAT
 $ADA_ELEMENT_VIEWING_PREFERENCES[AMA_TYPE_AUTHOR][ADA_LEAF_WORD_TYPE][EDIT_OPERATION] = EDITOR_INSERT_EXTERNAL_LINK | EDITOR_INSERT_INTERNAL_LINK |
                                                                                    EDITOR_UPLOAD_FILE | EDITOR_SELECT_FILE | EDITOR_SHOW_NODE_POSITION |
                                                                                    EDITOR_SHOW_NODE_ICON | EDITOR_SHOW_PARENT_NODE_SELECTOR |
-                                                                                   EDITOR_SELECT_EXTERNAL_LINK | EDITOR_SHOW_NODE_LEVEL|
+                                                                                   EDITOR_SELECT_EXTERNAL_LINK | EDITOR_SHOW_NODE_LEVEL |
                                                                                    EDITOR_SHOW_NODE_ORDER |
                                                                                    EDITOR_ALLOW_SWITCHING_BETWEEN_EDITING_MODES;
 
@@ -638,7 +622,7 @@ $ADA_ELEMENT_VIEWING_PREFERENCES[AMA_TYPE_AUTHOR][ADA_GROUP_WORD_TYPE][ADD_OPERA
                                                                                     EDITOR_UPLOAD_FILE | EDITOR_SELECT_FILE |
                                                                                     EDITOR_SHOW_NODE_TYPE | EDITOR_SHOW_NODE_LEVEL |
                                                                                     EDITOR_SHOW_NODE_POSITION | EDITOR_SHOW_PARENT_NODE_SELECTOR |
-                                                                                    EDITOR_SELECT_EXTERNAL_LINK|
+                                                                                    EDITOR_SELECT_EXTERNAL_LINK |
                                                                                     EDITOR_SHOW_NODE_ORDER |
                                                                                     EDITOR_ALLOW_SWITCHING_BETWEEN_EDITING_MODES;
 
@@ -646,12 +630,12 @@ $ADA_ELEMENT_VIEWING_PREFERENCES[AMA_TYPE_AUTHOR][ADA_GROUP_WORD_TYPE][EDIT_OPER
                                                                                     EDITOR_UPLOAD_FILE | EDITOR_SELECT_FILE |
                                                                                     EDITOR_SHOW_NODE_ICON | EDITOR_SHOW_NODE_POSITION |
                                                                                     EDITOR_SHOW_PARENT_NODE_SELECTOR | EDITOR_SELECT_EXTERNAL_LINK |
-                                                                                    EDITOR_SHOW_NODE_TYPE|
+                                                                                    EDITOR_SHOW_NODE_TYPE |
                                                                                     EDITOR_SHOW_NODE_ORDER |
                                                                                     EDITOR_ALLOW_SWITCHING_BETWEEN_EDITING_MODES;
 
 $ADA_ELEMENT_VIEWING_PREFERENCES[AMA_TYPE_AUTHOR][ADA_PERSONAL_EXERCISE_TYPE][EDIT_OPERATION] = EDITOR_SHOW_NODE_POSITION | EDITOR_SHOW_PARENT_NODE_SELECTOR |
-                                                                                    EDITOR_SELECT_EXTERNAL_LINK | EDITOR_SHOW_NODE_LEVEL|
+                                                                                    EDITOR_SELECT_EXTERNAL_LINK | EDITOR_SHOW_NODE_LEVEL |
                                                                                     EDITOR_SHOW_NODE_ORDER |
                                                                                     EDITOR_ALLOW_SWITCHING_BETWEEN_EDITING_MODES;
 

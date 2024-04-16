@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Test\QuestionTest;
-
-use Lynxlab\ADA\Module\Test\QuestionClozeTest;
-
-use Lynxlab\ADA\Module\Test\AnswerTest;
-
-use Lynxlab\ADA\CORE\html4\CDOMElement;
-
-// Trigger: ClassWithNameSpace. The class QuestionClozeTest was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -21,6 +11,8 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 namespace Lynxlab\ADA\Module\Test;
 
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Module\Test\AnswerTest;
+use Lynxlab\ADA\Module\Test\QuestionTest;
 
 abstract class QuestionClozeTest extends QuestionTest
 {

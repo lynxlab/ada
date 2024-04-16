@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Test\RootFormTest;
-
-use Lynxlab\ADA\Module\Test\FormTest;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class RootFormTest was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  *
  * @package
@@ -24,6 +14,7 @@ namespace Lynxlab\ADA\Module\Test;
 
 use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
 use Lynxlab\ADA\Main\Node\Node;
+use Lynxlab\ADA\Module\Test\FormTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

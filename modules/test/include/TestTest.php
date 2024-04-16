@@ -1,27 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\Exercise\ExerciseCorrectionFactory;
-
-use Lynxlab\ADA\Module\Test\TopicTest;
-
-use Lynxlab\ADA\Module\Test\TestTest;
-
-use Lynxlab\ADA\Module\Test\RootTest;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\MultiPort;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class TestTest was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -35,6 +13,7 @@ namespace Lynxlab\ADA\Module\Test;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Module\Test\RootTest;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\readUser;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

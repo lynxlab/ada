@@ -1,9 +1,5 @@
 <?php
 
-use Lynxlab\ADA\CORE\xml\XMLconverter;
-
-// Trigger: ClassWithNameSpace. The class XMLconverter was declared with namespace Lynxlab\ADA\CORE\xml. //
-
 /* classe di conversione dati da e verso xml
 usa le classei PEAR serialize e unserialize
 va chiamato cosi':

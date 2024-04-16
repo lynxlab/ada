@@ -1,19 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\Exercise\StandardExerciseCorrection;
-
-use Lynxlab\ADA\Services\Exercise\OpenUploadExerciseCorrection;
-
-use Lynxlab\ADA\Services\Exercise\OpenManualExerciseCorrection;
-
-use Lynxlab\ADA\Services\Exercise\OpenAutomaticExerciseCorrection;
-
-use Lynxlab\ADA\Services\Exercise\ExerciseCorrectionFactory;
-
-use Lynxlab\ADA\Services\Exercise\ClozeExerciseCorrection;
-
-// Trigger: ClassWithNameSpace. The class ExerciseCorrectionFactory was declared with namespace Lynxlab\ADA\Services\Exercise. //
-
 namespace Lynxlab\ADA\Services\Exercise;
 
 class ExerciseCorrectionFactory

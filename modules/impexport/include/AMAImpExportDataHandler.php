@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Impexport\AMAImpExportDataHandler;
-
-use Lynxlab\ADA\Main\AMA\AMATesterDataHandler;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-// Trigger: ClassWithNameSpace. The class AMAImpExportDataHandler was declared with namespace Lynxlab\ADA\Module\Impexport. //
-
 /**
  * @package     import/export course
  * @author      giorgio <g.consorti@lynxlab.com>

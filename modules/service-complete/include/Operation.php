@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Servicecomplete\Operation;
-
-use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
-
-// Trigger: ClassWithNameSpace. The class Operation was declared with namespace Lynxlab\ADA\Module\Servicecomplete. //
-
 /**
  * SERVICE-COMPLETE MODULE.
  *
@@ -20,6 +14,7 @@ use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
 namespace Lynxlab\ADA\Module\Servicecomplete;
 
 use Exception;
+use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
 
 /**
  * class for representing an operation between

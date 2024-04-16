@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-/**
- * @package     cloneinstance module
- * @author      giorgio <g.consorti@lynxlab.com>
- * @copyright   Copyright (c) 2022, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version     0.1
- */
-
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Module\CloneInstance\AMACloneInstanceDataHandler;
@@ -71,7 +59,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $data->title = '<i class="info icon"></i>' . translateFN('Istanza clonata');
         $data->status = 'OK';
         $data->message = translateFN("L'istanza è stata clonata correttamente");
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         header(' ', true, 400);
         $data->title .= ' (' . $e->getCode() . ')';
         $data->message = $e->getMessage();

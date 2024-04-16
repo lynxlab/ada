@@ -1,19 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Servicecomplete\Operation;
-
-use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
-
-use Lynxlab\ADA\Module\Servicecomplete\AMACompleteDataHandler;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-// Trigger: ClassWithNameSpace. The class AMACompleteDataHandler was declared with namespace Lynxlab\ADA\Module\Servicecomplete. //
-
 /**
  * SERVICE-COMPLETE MODULE.
  *
@@ -28,6 +14,11 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 namespace Lynxlab\ADA\Module\Servicecomplete;
 
 use Exception;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\AMAError;
+use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
+use Lynxlab\ADA\Module\Servicecomplete\Operation;
 
 class AMACompleteDataHandler extends AMADataHandler
 {

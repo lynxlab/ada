@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
-
-use Lynxlab\ADA\Comunica\VideoRoom\IVideoRoom;
-
-// Trigger: ClassWithNameSpace. The class IVideoRoom was declared with namespace Lynxlab\ADA\Comunica\VideoRoom. //
-
 namespace Lynxlab\ADA\Comunica\VideoRoom;
 
 interface IVideoRoom

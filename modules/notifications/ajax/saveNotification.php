@@ -1,26 +1,13 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
 use Lynxlab\ADA\Main\AMA\AMADB;
-
-use function \translateFN;
-
-/**
- * @package     notifications module
- * @author      giorgio <g.consorti@lynxlab.com>
- * @copyright   Copyright (c) 2021, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version     0.1
- */
-
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Notifications\AMANotificationsDataHandler;
 use Lynxlab\ADA\Module\Notifications\Notification;
-use Lynxlab\ADA\Module\Notifications\NotificationException;
 use Lynxlab\ADA\Module\Notifications\NotificationActions;
+use Lynxlab\ADA\Module\Notifications\NotificationException;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

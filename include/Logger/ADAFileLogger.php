@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Logger\ADASimpleLogger;
-
-use Lynxlab\ADA\Main\Logger\ADAScreenLogger;
-
-use Lynxlab\ADA\Main\Logger\ADAFileLogger;
-
-// Trigger: ClassWithNameSpace. The class ADAFileLogger was declared with namespace Lynxlab\ADA\Main\Logger. //
-
 /**
  *
  * Requires PHP >= 5.2.2

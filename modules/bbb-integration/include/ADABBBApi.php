@@ -1,7 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\BBBIntegration\AMABBBIntegrationDataHandler;
-
 /**
  * @package     ADA BigBlueButton Integration
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -12,9 +10,14 @@ use Lynxlab\ADA\Module\BBBIntegration\AMABBBIntegrationDataHandler;
 
 namespace Lynxlab\ADA\Module\BBBIntegration;
 
+use BigBlueButton\BigBlueButton;
+use BigBlueButton\Parameters\CreateMeetingParameters;
+use BigBlueButton\Parameters\GetMeetingInfoParameters;
+use Exception;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Module\BBBIntegration\AMABBBIntegrationDataHandler;
 
-class ADABBBApi extends \BigBlueButton\BigBlueButton
+class ADABBBApi extends BigBlueButton
 {
     /**
      * @var AMABBBIntegrationDataHandler
@@ -50,7 +53,7 @@ class ADABBBApi extends \BigBlueButton\BigBlueButton
         try {
             $meetingData = $this->dh->addVideoroom($meetingData);
 
-            $createParams = new \BigBlueButton\Parameters\CreateMeetingParameters(
+            $createParams = new CreateMeetingParameters(
                 $meetingData['meetingID']->toString(),
                 $meetingData['room_name']
             );
@@ -60,7 +63,7 @@ class ADABBBApi extends \BigBlueButton\BigBlueButton
                 ->setRecord(true);
             $this->createMeeting($createParams);
             return $meetingData;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -71,7 +74,7 @@ class ADABBBApi extends \BigBlueButton\BigBlueButton
             // load meetingID and passwords from the DB
             $meetingData = $this->dh->getInfo($roomId);
             // check if the meetingID is still at the BBB server
-            $meetingParams = new \BigBlueButton\Parameters\GetMeetingInfoParameters(
+            $meetingParams = new GetMeetingInfoParameters(
                 $meetingData['meetingID'] ?? null,
                 $meetingData['attendeePW'] ?? null
             );
@@ -87,7 +90,7 @@ class ADABBBApi extends \BigBlueButton\BigBlueButton
                 // $this->dh->deleteVideoroom($roomId);
             }
             return $meetingData;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [];
         }
     }

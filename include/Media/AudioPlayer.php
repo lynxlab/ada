@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Node\Media;
-
-use Lynxlab\ADA\Main\Media\AudioPlayer;
-
-// Trigger: ClassWithNameSpace. The class AudioPlayer was declared with namespace Lynxlab\ADA\Main\Media. //
-
 /**
  * Media Viewers
  *
@@ -21,6 +15,7 @@ use Lynxlab\ADA\Main\Media\AudioPlayer;
 
 namespace Lynxlab\ADA\Main\Media;
 
+use getID3;
 use Lynxlab\ADA\Main\HtmlLibrary\MediaViewingHtmlLib;
 
 /**
@@ -41,7 +36,7 @@ class AudioPlayer
     {
         $http_root_dir = $GLOBALS['http_root_dir'];
 
-        $getID3 = new \getID3();
+        $getID3 = new getID3();
         $toAnalyze = (!empty($http_file_path) ? $http_file_path : ROOT_DIR) . $file_name;
         $fileInfo = $getID3->analyze(urldecode(str_replace(HTTP_ROOT_DIR, ROOT_DIR, $toAnalyze)));
 

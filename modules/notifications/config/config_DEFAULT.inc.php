@@ -1,16 +1,7 @@
 <?php
 
-use Lynxlab\ADA\Module\CloneInstance\EventSubscriber;
-
-/**
- * @package     notifications module
- * @author      giorgio <g.consorti@lynxlab.com>
- * @copyright   Copyright (c) 2021, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version     0.1
- */
-
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\Notifications\EventSubscriber;
 
 try {
     if (!@include_once(MODULES_NOTIFICATIONS_PATH . '/vendor/autoload.php')) {
@@ -24,7 +15,7 @@ try {
     } else {
         // MODULE'S OWN DEFINES HERE
         if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
-            ADAEventDispatcher::getInstance()->addSubscriber(new Lynxlab\ADA\Module\Notifications\EventSubscriber());
+            ADAEventDispatcher::getInstance()->addSubscriber(new EventSubscriber());
         }
         // phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
         define('MODULES_NOTIFICATIONS_EMAILPERHOUR', 1800);

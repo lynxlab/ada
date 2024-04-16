@@ -1,25 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-/**
- * Actions perfomed at the start of each ADA module.
- *
- * This file contains all the actions that a ADA module has to perform before
- * doing anything else.
- *
- * PHP version >= 5.0
- *
- * @package
- * @author      Stefano Penge <steve@lynxlab.com>
- * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author      Vito Modena <vito@lynxlab.com>
- * @copyright   Copyright (c) 2009, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link        module_init
- * @version     0.1
- */
-
 use function Lynxlab\ADA\Main\ModuleInit\clearDataFN;
 use function Lynxlab\ADA\Main\ModuleInit\sessionControlFN;
 use function Lynxlab\ADA\Main\Utilities\todayDateFN;

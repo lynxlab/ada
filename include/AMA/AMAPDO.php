@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\AMA\AMAPDOWrapper;
-
-use Lynxlab\ADA\Main\AMA\AMAPDO;
-
-// Trigger: ClassWithNameSpace. The class AMAPDO was declared with namespace Lynxlab\ADA\Main\AMA. //
-
 /**
  *
  * AMAPDO Class.

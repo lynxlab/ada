@@ -1,21 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Notifications\QueueManager;
-
-use Lynxlab\ADA\Module\Notifications\NotificationBase;
-
-use Lynxlab\ADA\Module\Notifications\EmailQueueItem;
-
-use Lynxlab\ADA\Module\Notifications\AMANotificationsDataHandler;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-use function \sendToBrowser;
-
-// Trigger: ClassWithNameSpace. The class QueueManager was declared with namespace Lynxlab\ADA\Module\Notifications. //
-
 /**
  * @package     notifications module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -26,9 +10,14 @@ use function \sendToBrowser;
 
 namespace Lynxlab\ADA\Module\Notifications;
 
+use Exception;
 use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Logger\ADAFileLogger;
+use Lynxlab\ADA\Module\Notifications\AMANotificationsDataHandler;
+use Lynxlab\ADA\Module\Notifications\EmailQueueItem;
+use Lynxlab\ADA\Module\Notifications\NotificationBase;
+use Soundasleep\Html2Text;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -138,7 +127,7 @@ class QueueManager extends NotificationBase
                         $phpmailer->Subject = $item->getSubject();
                         $phpmailer->AddAddress($item->getRecipientEmail(), $item->getRecipientFullName());
                         $phpmailer->Body = trim($item->getBody());
-                        $phpmailer->AltBody = \Soundasleep\Html2Text::convert($phpmailer->Body, [ 'ignore_errors' => true, ]);
+                        $phpmailer->AltBody = Html2Text::convert($phpmailer->Body, [ 'ignore_errors' => true, ]);
                         $sentOK = DEV_ALLOW_SENDING_EMAILS ? $phpmailer->Send() : true;
                         if ($sentOK) {
                             $sendResult = constant($this->itemsClassName . '::STATUS_PROCESSED_OK');
@@ -147,7 +136,7 @@ class QueueManager extends NotificationBase
                         }
                         $item->setProcessTS($this->dh->dateToTs('now'))->setStatus($sendResult)->setSendResult($sentOK);
                         $this->dh->saveEmailQueueItem($item->toArray());
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $this->logMessage("Exception when persisting item:");
                         $this->logMessage($e->getMessage());
                         $this->logMessage($e->getTraceAsString());

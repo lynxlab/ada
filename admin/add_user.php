@@ -1,42 +1,17 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
-
-use Lynxlab\ADA\Main\ADAError;
-
-use function \translateFN;
-
-/**
- * Add user - this module provides add user functionality
- *
- *
- * @package
- * @author      Stefano Penge <steve@lynxlab.com>
- * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author      Vito Modena <vito@lynxlab.com>
- * @copyright   Copyright (c) 2009, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link
- * @version     0.1
- */
-
 use Lynxlab\ADA\Admin\AdminHelper;
 use Lynxlab\ADA\Admin\AdminUtils;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\ADAError;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\History\History;
 use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
+use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADAAdmin;
 use Lynxlab\ADA\Main\User\ADAAuthor;

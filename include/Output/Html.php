@@ -1,19 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\Html;
-
-use Lynxlab\ADA\Main\Output\GenericHtml;
-
-use Lynxlab\ADA\Main\Output\ARE;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\ADAError;
-
-// Trigger: ClassWithNameSpace. The class Html was declared with namespace Lynxlab\ADA\Main\Output. //
-
 /**
  * NEW Output classes
  *
@@ -33,7 +19,11 @@ use Lynxlab\ADA\Main\ADAError;
 namespace Lynxlab\ADA\Main\Output;
 
 use Exception;
+use Lynxlab\ADA\Main\ADAError;
+use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\ArrayToXML\ArrayToXML;
+use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Output\GenericHtml;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 use Lynxlab\ADA\Widgets\Widget;
 

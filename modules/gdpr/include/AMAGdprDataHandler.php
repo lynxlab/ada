@@ -1,31 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\GDPR\GdprUser;
-
-use Lynxlab\ADA\Module\GDPR\GdprRequestType;
-
-use Lynxlab\ADA\Module\GDPR\GdprRequest;
-
-use Lynxlab\ADA\Module\GDPR\GdprPolicy;
-
-use Lynxlab\ADA\Module\GDPR\GdprBase;
-
-use Lynxlab\ADA\Module\GDPR\GdprAPI;
-
-use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
-
-use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class AMAGdprDataHandler was declared with namespace Lynxlab\ADA\Module\GDPR. //
-
 /**
  * @package     gdpr module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -36,7 +10,18 @@ use function \translateFN;
 
 namespace Lynxlab\ADA\Module\GDPR;
 
+use Exception;
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Module\GDPR\GdprAPI;
+use Lynxlab\ADA\Module\GDPR\GdprBase;
+use Lynxlab\ADA\Module\GDPR\GdprPolicy;
+use Lynxlab\ADA\Module\GDPR\GdprRequest;
+use Lynxlab\ADA\Module\GDPR\GdprUser;
+use ReflectionClass;
+use ReflectionProperty;
 use stdClass;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -505,7 +490,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
                     $gdprAPI = new GdprAPI($tester['puntatore']);
                     try {
                         $found = $found || (count($gdprAPI->findBy($gdprAPI->getObjectClasses()[self::REQUESTCLASSKEY], ['uuid' => $uuid])) > 0);
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                     }
                 }
                 next($testers_infoAr);
@@ -551,12 +536,12 @@ class AMAGdprDataHandler extends AMA_DataHandler
         ) {
             $className = self::MODELNAMESPACE . $className;
         }
-        $reflection = new \ReflectionClass($className);
+        $reflection = new ReflectionClass($className);
         $properties =  array_map(
             function ($el) {
                 return $el->getName();
             },
-            $reflection->getProperties(\ReflectionProperty::IS_PRIVATE | \ReflectionProperty::IS_PROTECTED | \ReflectionProperty::IS_PUBLIC)
+            $reflection->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PUBLIC)
         );
 
         // get object properties to be loaded as a kind of join

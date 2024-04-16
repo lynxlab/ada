@@ -1,19 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Module\Impexport\ImportHelper;
-
-use Lynxlab\ADA\Module\Impexport\AMAImpExportDataHandler;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
-
-// Trigger: ClassWithNameSpace. The class ImportHelper was declared with namespace Lynxlab\ADA\Module\Impexport. //
-
 /**
  * @package     import/export course
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -24,8 +10,12 @@ use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 
 namespace Lynxlab\ADA\Module\Impexport;
 
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Logger\ADAFileLogger;
+use Lynxlab\ADA\Module\Impexport\AMAImpExportDataHandler;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 use SimpleXMLElement;
 use ZipArchive;

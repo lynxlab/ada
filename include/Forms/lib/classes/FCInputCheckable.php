@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Forms\lib\classes\FormControl;
-
-use Lynxlab\ADA\Main\Forms\lib\classes\FCInputCheckable;
-
-// Trigger: ClassWithNameSpace. The class FCInputCheckable was declared with namespace Lynxlab\ADA\Main\Forms\lib\classes. //
-
 /**
  * FCInputCheckable file
  *

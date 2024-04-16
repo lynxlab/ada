@@ -1,35 +1,8 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use function \translateFN;
-
-/**
- * ADA collabora node attachments widget
- *
- * @package     module/collaboraacl
- * @author      Stefano Penge <steve@lynxlab.com>
- * @author      giorgio <g.consorti@lynxlab.com>
- *
- * @copyright   Copyright (c) 2020, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link        widget
- * @version     0.1
- *
- * supported params you can pass either via XML or php array:
- *
- *  name="courseId"         optional,  value: course id from which to load the attachments
- *  name="courseInstanceId" optional,  value: course instance id from which to load the attachments
- *  name="nodeId"           mandatory,  value: node id from which to load the attachments
- *  name="userId"           mandatory, value: user id from which to load the attachments
- */
-
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;

@@ -1,63 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Module\Test\TopicTest;
-
-use Lynxlab\ADA\Module\Test\TestTest;
-
-use Lynxlab\ADA\Module\Test\SurveyTest;
-
-use Lynxlab\ADA\Module\Test\RootTest;
-
-use Lynxlab\ADA\Module\Test\QuestionTest;
-
-use Lynxlab\ADA\Module\Test\QuestionStandardTest;
-
-use Lynxlab\ADA\Module\Test\QuestionSlotClozeTest;
-
-use Lynxlab\ADA\Module\Test\QuestionSelectClozeTest;
-
-use Lynxlab\ADA\Module\Test\QuestionOpenUploadTest;
-
-use Lynxlab\ADA\Module\Test\QuestionOpenManualTest;
-
-use Lynxlab\ADA\Module\Test\QuestionOpenAutomaticTest;
-
-use Lynxlab\ADA\Module\Test\QuestionNormalClozeTest;
-
-use Lynxlab\ADA\Module\Test\QuestionMultipleClozeTest;
-
-use Lynxlab\ADA\Module\Test\QuestionMultipleCheckTest;
-
-use Lynxlab\ADA\Module\Test\QuestionMediumClozeTest;
-
-use Lynxlab\ADA\Module\Test\QuestionLikertTest;
-
-use Lynxlab\ADA\Module\Test\QuestionEraseClozeTest;
-
-use Lynxlab\ADA\Module\Test\QuestionDragDropClozeTest;
-
-use Lynxlab\ADA\Module\Test\NullTest;
-
-use Lynxlab\ADA\Module\Test\NodeTest;
-
-use Lynxlab\ADA\Module\Test\AnswerTest;
-
-use Lynxlab\ADA\Module\Test\AMATestDataHandler;
-
-use Lynxlab\ADA\Main\History\NavigationHistory;
-
-use Lynxlab\ADA\CORE\html4\CElement;
-
-use Lynxlab\ADA\CORE\html4\CDOMElement;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-// Trigger: ClassWithNameSpace. The class NodeTest was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -68,8 +10,30 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 
 namespace Lynxlab\ADA\Module\Test;
 
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Node\Node;
+use Lynxlab\ADA\Module\Test\AMATestDataHandler;
+use Lynxlab\ADA\Module\Test\AnswerTest;
+use Lynxlab\ADA\Module\Test\NullTest;
+use Lynxlab\ADA\Module\Test\QuestionDragDropClozeTest;
+use Lynxlab\ADA\Module\Test\QuestionEraseClozeTest;
+use Lynxlab\ADA\Module\Test\QuestionLikertTest;
+use Lynxlab\ADA\Module\Test\QuestionMediumClozeTest;
+use Lynxlab\ADA\Module\Test\QuestionMultipleCheckTest;
+use Lynxlab\ADA\Module\Test\QuestionMultipleClozeTest;
+use Lynxlab\ADA\Module\Test\QuestionNormalClozeTest;
+use Lynxlab\ADA\Module\Test\QuestionOpenAutomaticTest;
+use Lynxlab\ADA\Module\Test\QuestionOpenManualTest;
+use Lynxlab\ADA\Module\Test\QuestionOpenUploadTest;
+use Lynxlab\ADA\Module\Test\QuestionSelectClozeTest;
+use Lynxlab\ADA\Module\Test\QuestionSlotClozeTest;
+use Lynxlab\ADA\Module\Test\QuestionStandardTest;
+use Lynxlab\ADA\Module\Test\QuestionTest;
+use Lynxlab\ADA\Module\Test\SurveyTest;
+use Lynxlab\ADA\Module\Test\TestTest;
+use Lynxlab\ADA\Module\Test\TopicTest;
 
 use function Lynxlab\ADA\Main\Utilities\redirect;
 

@@ -1,7 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
 /**
  * @package     zoom integration module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -11,6 +9,7 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
  */
 
 use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
@@ -85,7 +84,5 @@ if (isset($videoroomObj)) {
 }
 ?>
 <script type="text/javascript">
-  window.parent.postMessage('endVideochat', '<?php 
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-echo HTTP_ROOT_DIR; ?>');
+  window.parent.postMessage('endVideochat', '<?php echo HTTP_ROOT_DIR; ?>');
 </script>

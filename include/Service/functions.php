@@ -1,20 +1,10 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\Service\Service;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use Lynxlab\ADA\Main\ADAError;
-
-use function \translateFN;
-
 namespace Lynxlab\ADA\Main\Service\Functions;
 
 use Lynxlab\ADA\CORE\HtmlElements\Table;
+use Lynxlab\ADA\Main\ADAError;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
 

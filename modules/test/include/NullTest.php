@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Test\NullTest;
-
-use Lynxlab\ADA\Module\Test\NodeTest;
-
-// Trigger: ClassWithNameSpace. The class NullTest was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -17,6 +11,7 @@ use Lynxlab\ADA\Module\Test\NodeTest;
 namespace Lynxlab\ADA\Module\Test;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\Module\Test\NodeTest;
 
 class NullTest extends NodeTest
 {

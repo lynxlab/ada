@@ -1,19 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\StudentsGroups\AMAStudentsGroupsDataHandler;
-
-use Lynxlab\ADA\Module\EtherpadIntegration\Groups;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class AMAStudentsGroupsDataHandler was declared with namespace Lynxlab\ADA\Module\StudentsGroups. //
-
 /**
  * @package     studentsgroups module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -24,14 +10,19 @@ use function \translateFN;
 
 namespace Lynxlab\ADA\Module\StudentsGroups;
 
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\User\ADAUser;
 use Lynxlab\ADA\Switcher\Subscription;
+use ReflectionClass;
+use ReflectionProperty;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
-class AMAStudentsGroupsDataHandler extends AMA_DataHandler
+class AMAStudentsGroupsDataHandler extends AMADataHandler
 {
     /**
      * module's own data tables prefix
@@ -67,12 +58,12 @@ class AMAStudentsGroupsDataHandler extends AMA_DataHandler
         ) {
             $className = self::MODELNAMESPACE . $className;
         }
-        $reflection = new \ReflectionClass($className);
+        $reflection = new ReflectionClass($className);
         $properties =  array_map(
             function ($el) {
                 return $el->getName();
             },
-            $reflection->getProperties(\ReflectionProperty::IS_PRIVATE | \ReflectionProperty::IS_PROTECTED | \ReflectionProperty::IS_PUBLIC)
+            $reflection->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PUBLIC)
         );
 
         // get object properties to be loaded as a kind of join
@@ -282,7 +273,7 @@ class AMAStudentsGroupsDataHandler extends AMA_DataHandler
                      */
                     $sql = sprintf(
                         "INSERT INTO `%s` VALUES %s;",
-                        \Lynxlab\ADA\Module\StudentsGroups\Groups::UTENTERELTABLE,
+                        Groups::UTENTERELTABLE,
                         implode(
                             ',',
                             array_map(function ($el) use ($retArr) {
@@ -361,7 +352,7 @@ class AMAStudentsGroupsDataHandler extends AMA_DataHandler
     {
         $result = $this->queryPrepared(
             $this->sqlDelete(
-                \Lynxlab\ADA\Module\StudentsGroups\Groups::TABLE,
+                Groups::TABLE,
                 $saveData
             ),
             array_values($saveData)

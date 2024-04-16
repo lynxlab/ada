@@ -1,27 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Services\Exercise\ExerciseDAO;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\CSS;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\Node\Media;
-
-use Lynxlab\ADA\CORE\html4\CBaseElement;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class Node was declared with namespace Lynxlab\ADA\Main\Node. //
-
 /**
  * Node, Media, Link classes
  *
@@ -37,16 +15,21 @@ use function \translateFN;
 
 namespace Lynxlab\ADA\Main\Node;
 
-use Lynxlab\ADA\CORE\HtmlElements\IList;
-use Lynxlab\ADA\CORE\HtmlElements\Table;
+use Lynxlab\ADA\CORE\html4\CBaseElement;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\CORE\HtmlElements\IList;
+use Lynxlab\ADA\CORE\HtmlElements\Table;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Media\MediaViewer;
+use Lynxlab\ADA\Main\Node\Media;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
+use Lynxlab\ADA\Services\Exercise\ExerciseDAO;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\readDir;

@@ -16,7 +16,7 @@ use Lynxlab\ADA\Main\Upload\FileUploader;
 /**
  * Base config file
 */
-require_once (realpath(dirname(__FILE__)) . '/../../../../config_path.inc.php');
+require_once(realpath(dirname(__FILE__)) . '/../../../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -31,10 +31,10 @@ $allowedUsersAr = array(AMA_TYPE_SWITCHER, AMA_TYPE_STUDENT,AMA_TYPE_AUTHOR,AMA_
  * Get needed objects
 */
 $neededObjAr = array(
-		AMA_TYPE_STUDENT => array('layout'),
-		AMA_TYPE_SWITCHER => array('layout'),
+        AMA_TYPE_STUDENT => array('layout'),
+        AMA_TYPE_SWITCHER => array('layout'),
                 AMA_TYPE_AUTHOR => array('layout'),
-		AMA_TYPE_TUTOR => array('layout')
+        AMA_TYPE_TUTOR => array('layout')
 );
 
 /**
@@ -46,12 +46,11 @@ BrowsingHelper::init($neededObjAr);
 
 $fileUploader = new FileUploader(ADA_UPLOAD_PATH.$userObj->getId().'/'); // $fieldUploadName);
 if($fileUploader->upload(true) == false) {
-	$data = $fileUploader->getErrorMessage();
+    $data = $fileUploader->getErrorMessage();
 } else {
-	 $_SESSION['uploadHelper']['filename'] = $fileUploader->getPathToUploadedFile();
-	 $_SESSION['uploadHelper']['fileNameWithoutPath'] = $fileUploader->getFileName();
-	 $data = '1'; // '1' means okay
+    $_SESSION['uploadHelper']['filename'] = $fileUploader->getPathToUploadedFile();
+    $_SESSION['uploadHelper']['fileNameWithoutPath'] = $fileUploader->getFileName();
+    $data = '1'; // '1' means okay
 }
 
 echo $data;
-?>

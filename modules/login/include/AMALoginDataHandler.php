@@ -1,19 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Login\LdapLogin;
-
-use Lynxlab\ADA\Module\Login\AMALoginDataHandler;
-
-use Lynxlab\ADA\Main\AMA\MultiPort;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
-
-// Trigger: ClassWithNameSpace. The class AMALoginDataHandler was declared with namespace Lynxlab\ADA\Module\Login. //
-
 /**
  * LOGIN MODULE
  *
@@ -26,7 +12,11 @@ use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 
 namespace Lynxlab\ADA\Module\Login;
 
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\AMAError;
+use Lynxlab\ADA\Main\AMA\MultiPort;
 
 class AMALoginDataHandler extends AMADataHandler
 {
@@ -182,7 +172,7 @@ class AMALoginDataHandler extends AMADataHandler
         $res = self::$dbToUse->getAllPrepared($sql, ($params ?? null), AMA_FETCH_ASSOC);
 
         if (!AMADB::isError($res) && is_array($res) && count($res) > 0) {
-            return array_map(function($el) {
+            return array_map(function ($el) {
                 $el['className'] = ucfirst($el['className']);
                 return $el;
             }, $res);

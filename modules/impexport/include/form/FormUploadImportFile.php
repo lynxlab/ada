@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Impexport\FormUploadImportFile;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class FormUploadImportFile was declared with namespace Lynxlab\ADA\Module\Impexport. //
-
 /**
  * IMPORT MODULE
  *

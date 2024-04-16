@@ -1,21 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Module\Login\HybridManagement;
-
-use Lynxlab\ADA\Module\Login\HybridLogin;
-
-use Lynxlab\ADA\Module\Login\AbstractLogin;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class HybridLogin was declared with namespace Lynxlab\ADA\Module\Login. //
-
 /**
  * LOGIN MODULE
  *
@@ -28,14 +12,17 @@ use function \translateFN;
 
 namespace Lynxlab\ADA\Module\Login;
 
+use Hybridauth\HttpClient\Util;
 use Hybridauth\Hybridauth;
-use Hybridauth\HttpClient;
+use Lynxlab\ADA\Browsing\ImageDevice;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
-use Lynxlab\ADA\Browsing\ImageDevice;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Module\Login\AbstractLogin;
+use ReflectionClass;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\redirect;
@@ -164,7 +151,7 @@ class HybridLogin extends AbstractLogin
             case 'Facebook':
             case 'Microsoftgraph':
                 $config = [
-                    'callback' => trim(HttpClient\Util::getCurrentUrl()),
+                    'callback' => trim(Util::getCurrentUrl()),
                     'providers' =>  [
                         $providerName =>  [
                             'enabled' => true,
@@ -410,12 +397,12 @@ class HybridLogin extends AbstractLogin
             }
 
             $emptyrow = [array_shift($tableOutData)];
-            $EmptyTable = BaseHtmlLib::tableElement('id:empty' . strtoupper((new \ReflectionClass($this))->getShortName()), $labels, $emptyrow);
+            $EmptyTable = BaseHtmlLib::tableElement('id:empty' . strtoupper((new ReflectionClass($this))->getShortName()), $labels, $emptyrow);
             $EmptyTable->setAttribute('style', 'display:none');
             $EmptyTable->setAttribute('class', ADA_SEMANTICUI_TABLECLASS);
 
             $OutTable = BaseHtmlLib::tableElement(
-                'id:complete' . strtoupper((new \ReflectionClass($this))->getShortName()) . 'List',
+                'id:complete' . strtoupper((new ReflectionClass($this))->getShortName()) . 'List',
                 $labels,
                 $tableOutData,
                 '',

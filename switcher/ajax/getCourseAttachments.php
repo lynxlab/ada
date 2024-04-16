@@ -1,21 +1,6 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
 use Lynxlab\ADA\Main\AMA\AMADB;
-
-use function \translateFN;
-
-/**
- * gets course attachments
- *
- * @package     edit course
- * @author      giorgio <g.consorti@lynxlab.com>
- * @copyright   Copyright (c) 2017, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version     0.1
- */
-
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 

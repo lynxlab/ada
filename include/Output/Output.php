@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\ARE;
-
-// Trigger: ClassWithNameSpace. The class Output was declared with namespace Lynxlab\ADA\Main\Output. //
-
 /**
  * NEW Output classes
  *

@@ -1,19 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Login\LdapManagement;
-
-use Lynxlab\ADA\Module\Login\LdapLogin;
-
-use Lynxlab\ADA\Module\Login\AbstractLogin;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class LdapLogin was declared with namespace Lynxlab\ADA\Module\Login. //
-
 /**
  * LOGIN MODULE
  *
@@ -29,8 +15,10 @@ namespace Lynxlab\ADA\Module\Login;
 use Exception;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Module\Login\AbstractLogin;
 use ReflectionClass;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

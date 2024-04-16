@@ -1,19 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Test\TemplateEditorControlTest;
-
-use Lynxlab\ADA\Module\Test\ForgetExerciseTypeControlTest;
-
-use Lynxlab\ADA\Module\Test\QuestionFormTest;
-
-use Lynxlab\ADA\Module\Test\FormTest;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class QuestionFormTest was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  *
  * @package
@@ -28,6 +14,9 @@ namespace Lynxlab\ADA\Module\Test;
 
 use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
 use Lynxlab\ADA\Main\Node\Node;
+use Lynxlab\ADA\Module\Test\ForgetExerciseTypeControlTest;
+use Lynxlab\ADA\Module\Test\FormTest;
+use Lynxlab\ADA\Module\Test\TemplateEditorControlTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

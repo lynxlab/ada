@@ -1,19 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Service\Service;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\HtmlLibrary\GuestHtmlLib;
-
-use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class GuestHtmlLib was declared with namespace Lynxlab\ADA\Main\HtmlLibrary. //
-
 /**
  *
  * @package
@@ -28,9 +14,11 @@ use function \translateFN;
 
 namespace Lynxlab\ADA\Main\HtmlLibrary;
 
-use Lynxlab\ADA\CORE\HtmlElements\Table;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\CORE\HtmlElements\Table;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

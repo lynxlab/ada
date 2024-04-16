@@ -1,23 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\User\ADAUser;
-
-use Lynxlab\ADA\Main\User\ADALoggableUser;
-
-use Lynxlab\ADA\Main\User\ADAAbstractUser;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\CORE\html4\CI;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class ADAAbstractUser was declared with namespace Lynxlab\ADA\Main\User. //
-
 /**
  * User classes
  *
@@ -35,11 +17,13 @@ use function \translateFN;
 
 namespace Lynxlab\ADA\Main\User;
 
-use Lynxlab\ADA\CORE\HtmlElements\Table;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\CORE\HtmlElements\Table;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\History\History;
+use Lynxlab\ADA\Main\User\ADALoggableUser;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\aasort;

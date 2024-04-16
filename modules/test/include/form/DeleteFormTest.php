@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Test\FormTest;
-
-use Lynxlab\ADA\Module\Test\DeleteFormTest;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class DeleteFormTest was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  *
  * @package
@@ -21,6 +11,8 @@ use function \translateFN;
  */
 
 namespace Lynxlab\ADA\Module\Test;
+
+use Lynxlab\ADA\Module\Test\FormTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

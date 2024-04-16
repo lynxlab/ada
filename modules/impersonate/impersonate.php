@@ -1,7 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
-
 /**
  * @package     impersonate module
  * @author      giorgio <g.consorti@lynxlab.com>

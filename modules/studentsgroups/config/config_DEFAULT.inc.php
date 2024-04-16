@@ -1,7 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\EtherpadIntegration\Groups;
-
 /**
  * @package     studentsgroups module
  * @author      giorgio <g.consorti@lynxlab.com>

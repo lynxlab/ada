@@ -1,9 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Stack\Stack;
-
-// Trigger: ClassWithNameSpace. The class Stack was declared with namespace Lynxlab\ADA\Main\Stack. //
-
 /**
  *
  * @author Guglielmo Celata <guglielmo@celata.com>

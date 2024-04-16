@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Test\AMATestDataHandler;
-
-use Lynxlab\ADA\Main\AMA\AMATesterDataHandler;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-// Trigger: ClassWithNameSpace. The class AMATestDataHandler was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -22,6 +10,9 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 
 namespace Lynxlab\ADA\Module\Test;
 
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\Logger\ADALogger;
 
 class AMATestDataHandler extends AMADataHandler

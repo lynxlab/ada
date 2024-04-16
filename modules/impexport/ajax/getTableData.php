@@ -1,25 +1,9 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use function \translateFN;
-
-/**
- * IMPORT MODULE
- *
- * @package     export/import course
- * @author      giorgio <g.consorti@lynxlab.com>
- * @copyright   Copyright (c) 2019, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link        impexport
- * @version     0.1
- */
-
 use Lynxlab\ADA\CORE\html4\CBase;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Impexport\AMARepositoryDataHandler;
 

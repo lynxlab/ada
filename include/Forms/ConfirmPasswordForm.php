@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Forms\ConfirmPasswordForm;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class ConfirmPasswordForm was declared with namespace Lynxlab\ADA\Main\Forms. //
-
 /**
  * ConfirmPasswordForm file
  *

@@ -1,23 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\GDPR\GdprUserType;
-
-use Lynxlab\ADA\Module\GDPR\GdprUser;
-
-use Lynxlab\ADA\Module\GDPR\GdprRequest;
-
-use Lynxlab\ADA\Module\GDPR\GdprPolicy;
-
-use Lynxlab\ADA\Module\GDPR\GdprAPI;
-
-use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
-
-use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
-
-use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
-
-// Trigger: ClassWithNameSpace. The class GdprAPI was declared with namespace Lynxlab\ADA\Module\GDPR. //
-
 /**
  * @package     gdpr module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -28,8 +10,14 @@ use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
 
 namespace Lynxlab\ADA\Module\GDPR;
 
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
+use Lynxlab\ADA\Module\GDPR\GdprPolicy;
+use Lynxlab\ADA\Module\GDPR\GdprRequest;
+use Lynxlab\ADA\Module\GDPR\GdprUser;
+use Lynxlab\ADA\Module\GDPR\GdprUserType;
 use Lynxlab\ADA\Module\Impersonate\Utils;
 
 /**

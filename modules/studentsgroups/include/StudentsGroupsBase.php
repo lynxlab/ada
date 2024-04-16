@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\StudentsGroups\StudentsGroupsBase;
-
-use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsBase;
-
-// Trigger: ClassWithNameSpace. The class StudentsGroupsBase was declared with namespace Lynxlab\ADA\Module\StudentsGroups. //
-
 /**
  * @package     studentsgroups module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -17,6 +11,7 @@ use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsBase;
 namespace Lynxlab\ADA\Module\StudentsGroups;
 
 use Lynxlab\ADA\Main\Forms\lib\classes\FForm;
+use ReflectionClass;
 
 /**
  * StudentsGroups module base class
@@ -94,7 +89,7 @@ abstract class StudentsGroupsBase
      */
     public function toArray()
     {
-        $reflectionClass = new \ReflectionClass(get_class($this));
+        $reflectionClass = new ReflectionClass(get_class($this));
         $array = [];
         foreach ($reflectionClass->getProperties() as $property) {
             $property->setAccessible(true);

@@ -1,25 +1,13 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\HtmlLibrary\FormElementCreator;
-
-use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
-
-use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class AdminModuleHtmlLib was declared with namespace Lynxlab\ADA\Main\HtmlLibrary. //
-
 namespace Lynxlab\ADA\Main\HtmlLibrary;
 
 use Lynxlab\ADA\Admin\AdminHelper;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\HtmlLibrary\FormElementCreator;
 use Lynxlab\ADA\Main\Output\Layout;
 use Lynxlab\ADA\Main\Output\UILayout;
 use Lynxlab\ADA\Main\User\ADAGenericUser;

@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Test\NodeTest;
-
-use Lynxlab\ADA\Module\Test\AnswerTest;
-
-use Lynxlab\ADA\CORE\html4\CDOMElement;
-
-// Trigger: ClassWithNameSpace. The class AnswerTest was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>

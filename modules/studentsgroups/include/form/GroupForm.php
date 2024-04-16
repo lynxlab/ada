@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\StudentsGroups\StudentsGroupsAbstractForm;
-
-use Lynxlab\ADA\Module\StudentsGroups\GroupForm;
-
-use Lynxlab\ADA\Module\EtherpadIntegration\Groups;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class GroupForm was declared with namespace Lynxlab\ADA\Module\StudentsGroups. //
-
 /**
  * @package     studentsgroups module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -24,6 +12,8 @@ namespace Lynxlab\ADA\Module\StudentsGroups;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Module\EtherpadIntegration\Groups;
+use Lynxlab\ADA\Module\StudentsGroups\StudentsGroupsAbstractForm;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

@@ -1,9 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\AMA\MultiPort;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
 /**
  * NEWSLETTER MODULE.
  *
@@ -16,6 +12,8 @@ use Lynxlab\ADA\Main\AMA\AMADB;
  */
 
 use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Logger\ADAFileLogger;
 use Lynxlab\ADA\Module\Newsletter\AMANewsletterDataHandler;

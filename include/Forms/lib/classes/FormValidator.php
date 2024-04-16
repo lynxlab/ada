@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
-
-use Lynxlab\ADA\Main\Forms\lib\classes\FormControl;
-
-// Trigger: ClassWithNameSpace. The class FormValidator was declared with namespace Lynxlab\ADA\Main\Forms\lib\classes. //
-
 /**
  * FormValidator file
  *

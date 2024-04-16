@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\ZoomIntegration\ZoomAPIWrapper;
-
-use Lynxlab\ADA\Module\ZoomIntegration\AMAZoomIntegrationDataHandler;
-
-use Lynxlab\ADA\Module\ZoomIntegration\ADAZoomApi;
-
-// Trigger: ClassWithNameSpace. The class ADAZoomApi was declared with namespace Lynxlab\ADA\Module\ZoomIntegration. //
-
 /**
  * @package     ADA Zoom Meeting Integration
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -18,7 +10,10 @@ use Lynxlab\ADA\Module\ZoomIntegration\ADAZoomApi;
 
 namespace Lynxlab\ADA\Module\ZoomIntegration;
 
+use Exception;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Module\ZoomIntegration\AMAZoomIntegrationDataHandler;
+use Lynxlab\ADA\Module\ZoomIntegration\ZoomAPIWrapper;
 
 class ADAZoomApi
 {
@@ -79,7 +74,7 @@ class ADAZoomApi
             }
 
             return $meetingData;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -105,7 +100,7 @@ class ADAZoomApi
             }
 
             return $meetingData;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [];
         }
     }

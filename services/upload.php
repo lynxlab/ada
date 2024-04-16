@@ -1,41 +1,15 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\ARE;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-
-/**
- * File uploader
- *
- * @package
- * @author      Stefano Penge <steve@lynxlab.com>
- * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author      Vito Modena <vito@lynxlab.com>
- * @copyright   Copyright (c) 2009, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link
- * @version     0.1
- */
-
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
+use Lynxlab\ADA\Main\History\History;
 use Lynxlab\ADA\Main\HtmlLibrary\UserModuleHtmlLib;
+use Lynxlab\ADA\Main\Node\Node;
+use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\User\ADAPractitioner;
 use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLException;
 
@@ -288,92 +262,12 @@ if (isset($_GET['caller']) && $_GET['caller'] == 'editor') {
     //echo $error_code;
     ?>
 <script type="text/javascript">
-    var error    = <?php 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\ARE;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-echo $error_code; ?>;
-    var filename = '<?php 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\ARE;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-echo $filename_prefix . $filename; ?>';
-    var filetype = <?php 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\ARE;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-echo $ada_filetype; ?>;
+    var error    = <?php echo $error_code; ?>;
+    var filename = '<?php echo $filename_prefix . $filename; ?>';
+    var filetype = <?php echo $ada_filetype; ?>;
     window.parent.exitUploadFileState(error, filename, filetype);
 </script>
     <?php
-
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\ARE;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
     exit();
 }
 /*

@@ -1,9 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Notifications\NotificationActions;
-
-// Trigger: ClassWithNameSpace. The class NotificationActions was declared with namespace Lynxlab\ADA\Module\Notifications. //
-
 /**
  * @package     notifications module
  * @author      giorgio <g.consorti@lynxlab.com>

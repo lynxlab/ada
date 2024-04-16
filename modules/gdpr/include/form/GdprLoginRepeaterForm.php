@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\GDPR\GdprLoginRepeaterForm;
-
-use Lynxlab\ADA\Module\GDPR\GdprAbstractForm;
-
-// Trigger: ClassWithNameSpace. The class GdprLoginRepeaterForm was declared with namespace Lynxlab\ADA\Module\GDPR. //
-
 /**
  * @package     gdpr module
  * @author      giorgio <g.consorti@lynxlab.com>

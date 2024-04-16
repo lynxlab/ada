@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Forms\CourseInstanceSubscriptionsForm;
-
-use Lynxlab\ADA\Main\Forms\CourseInstanceForm;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class CourseInstanceSubscriptionsForm was declared with namespace Lynxlab\ADA\Main\Forms. //
-
 /**
  * CourseInstanceForm file
  *

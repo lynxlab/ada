@@ -1,23 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\User\ADAAbstractUser;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\Helper\ViewBaseHelper;
-
-use Lynxlab\ADA\CORE\html4\CDOMElement;
-
-use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
-
-use Lynxlab\ADA\Main\ADAError;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class ViewBaseHelper was declared with namespace Lynxlab\ADA\Main\Helper. //
-
 /**
  * @package     view
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -29,9 +11,13 @@ use function \translateFN;
 namespace Lynxlab\ADA\Main\Helper;
 
 use Lynxlab\ADA\Comunica\ChatRoom;
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\Main\ADAError;
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
+use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\readCourse;

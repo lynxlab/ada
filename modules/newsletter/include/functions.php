@@ -1,9 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
 /**
  * NEWSLETTER MODULE.
  *

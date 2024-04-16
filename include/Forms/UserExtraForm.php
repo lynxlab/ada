@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Forms\UserExtraForm;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class UserExtraForm was declared with namespace Lynxlab\ADA\Main\Forms. //
-
 /**
  * UserSkillsForm file
  *

@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Impexport\FormSelectExportCourse;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class FormSelectExportCourse was declared with namespace Lynxlab\ADA\Module\Impexport. //
-
 /**
  * EXPORT MODULE
  *

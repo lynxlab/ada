@@ -1,36 +1,9 @@
 <?php
 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\CourseInstance;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use Lynxlab\ADA\CORE\html4\CElement;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-
-/**
- * show index menu
- *
- * @author      Sara Capotosti <sara@lynxlab.com>
- * @copyright   Copyright (c) 2001-2011, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link        view
- * @version     0.1
- */
-
 use Lynxlab\ADA\Browsing\CourseViewer;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

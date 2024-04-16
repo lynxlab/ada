@@ -1,34 +1,10 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\Output\Output;
-
+use Composer\Console\Application;
 use Lynxlab\ADA\Main\Output\ARE;
-
-use function \translateFN;
-
-use function \importSQL;
-
-use function \isEmptyDB;
-
-use function \checkDB;
-
-use function \createDB;
-
-use function \sendToBrowser;
-
-use function \getBaseUrl;
-
-use function \sendSkip;
-
-use function \sendFail;
-
-use function \sendOK;
-
-use function \outputBufferOff;
-
 use Lynxlab\ADA\Main\User\ADAGuest;
+use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\Console\Output\StreamOutput;
 
 use function Lynxlab\ADA\Main\Utilities\delTree;
 use function Lynxlab\ADA\Main\Utilities\redirect;
@@ -589,12 +565,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                                 fwrite($logfile, sprintf("\n\n******** %s ********\n", $modulename));
                                 chdir($dirname);
                                 // Create the commands
-                                $input = new Symfony\Component\Console\Input\StringInput('update -vvv -n --no-cache');
+                                $input = new StringInput('update -vvv -n --no-cache');
                                 // Create the application and run it with the commands
-                                $application = new Composer\Console\Application();
+                                $application = new Application();
                                 $application->setAutoExit(false); // prevent `$application->run` method from exitting the script
                                 $application->setCatchExceptions(false);
-                                $output = $application->run($input, new Symfony\Component\Console\Output\StreamOutput($logfile));
+                                $output = $application->run($input, new StreamOutput($logfile));
                                 if ($output == 0) {
                                     sendOK();
                                 } else {
@@ -668,7 +644,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             throw new Exception(translateFN('Parametri MySQL/MariaDB non validi'), 1);
         }
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         sendFail();
         sendToBrowser('** ' . $e->getMessage() . ' (' . $e->getCode() . ')');
         sendToBrowser('<script type="text/javascript">window.parent.postMessage("doneException", "*");</script>');

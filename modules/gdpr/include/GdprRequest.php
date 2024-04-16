@@ -1,31 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\GDPR\GdprRequestType;
-
-use Lynxlab\ADA\Module\GDPR\GdprRequest;
-
-use Lynxlab\ADA\Module\GDPR\GdprPolicy;
-
-use Lynxlab\ADA\Module\GDPR\GdprBase;
-
-use Lynxlab\ADA\Module\GDPR\GdprAPI;
-
-use Lynxlab\ADA\Module\GDPR\GdprActions;
-
-use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
-
-use Lynxlab\ADA\Main\Output\PDF;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\CORE\html4\CBaseElement;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class GdprRequest was declared with namespace Lynxlab\ADA\Module\GDPR. //
-
 /**
  * @package     gdpr module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -38,8 +12,15 @@ namespace Lynxlab\ADA\Module\GDPR;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
+use Lynxlab\ADA\Module\GDPR\GdprActions;
+use Lynxlab\ADA\Module\GDPR\GdprAPI;
+use Lynxlab\ADA\Module\GDPR\GdprBase;
+use Lynxlab\ADA\Module\GDPR\GdprPolicy;
+use Lynxlab\ADA\Module\GDPR\GdprRequestType;
 use Ramsey\Uuid\Uuid;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

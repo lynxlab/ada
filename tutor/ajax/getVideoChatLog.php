@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-/**
- * gets videoroom log data
- *
- * @package     tutor
- * @author      giorgio <g.consorti@lynxlab.com>
- * @copyright   Copyright (c) 2020, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version     0.1
- */
-
 use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
 use Lynxlab\ADA\Main\Helper\TutorHelper;
 

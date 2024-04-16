@@ -1,23 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\EtherpadIntegration\Authors;
-
-use Lynxlab\ADA\Module\Badges\CourseBadge;
-
-use Lynxlab\ADA\Main\User\ADAAbstractUser;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Helper\ViewBaseHelper;
-
-use Lynxlab\ADA\Main\Helper\BrowsingHelper;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class BrowsingHelper was declared with namespace Lynxlab\ADA\Main\Helper. //
-
 /**
  * Browsing functions
  *
@@ -31,8 +13,10 @@ use function \translateFN;
 namespace Lynxlab\ADA\Main\Helper;
 
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Helper\ViewBaseHelper;
 use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;

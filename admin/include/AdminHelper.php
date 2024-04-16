@@ -1,19 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Admin\AdminHelper;
-
-use function \translateFN;
-
-use function \importSQL;
-
-use function \isEmptyDB;
-
-use function \checkDB;
-
-use function \createDB;
-
-// Trigger: ClassWithNameSpace. The class AdminHelper was declared with namespace Lynxlab\ADA\Admin. //
-
 /**
  * ADMIN FUNCTIONS
  *
@@ -125,13 +111,13 @@ class AdminHelper extends ViewBaseHelper
                             }
                         }
                     } else {
-                        throw new \Exception(translateFN("Errore nell'importazione delle tabelle."));
+                        throw new Exception(translateFN("Errore nell'importazione delle tabelle."));
                     }
                 } else {
-                    throw new \Exception(translateFN("Il database specificato deve essere vuoto."));
+                    throw new Exception(translateFN("Il database specificato deve essere vuoto."));
                 }
             } else {
-                throw new \Exception(translateFN("Errore nella connessione al database specificato."));
+                throw new Exception(translateFN("Errore nella connessione al database specificato."));
             }
 
             if (!is_file(ROOT_DIR . '/clients/' . $providerData['pointer'] . '/client_conf.inc.php')) {
@@ -159,7 +145,7 @@ class AdminHelper extends ViewBaseHelper
             } else {
                 $retarray['message'] = translateFN('La configurazione del provider già esiste, provare con un altro nome');
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $retarray['message'] = $e->getMessage();
         }
 

@@ -1,37 +1,13 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use function \translateFN;
-
-/**
- * ADA notify badges widget
- *
- * @package     widget
- * @author      Stefano Penge <steve@lynxlab.com>
- * @author      giorgio <g.consorti@lynxlab.com>
- *
- * @copyright   Copyright (c) 2019, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link        widget
- * @version     0.1
- *
- * supported params you can pass either via XML or php array:
- *
- *  name="courseId"         optional,  value: course id from which to load the badges
- *  name="courseInstanceId" optional,  value: course instance id from which to load the badges
- *  name="userId"           mandatory, value: user id from which to load the badges
- */
-
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
-use Lynxlab\ADA\Module\Badges\RewardedBadge;
 use Lynxlab\ADA\Module\Badges\Badge;
+use Lynxlab\ADA\Module\Badges\RewardedBadge;
 use Lynxlab\ADA\Widgets\Widget;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -78,7 +54,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
  */
 try {
     if (!isset($userId)) {
-        throw new \Exception(translateFN("Specificare un id studente"));
+        throw new Exception(translateFN("Specificare un id studente"));
     }
     /**
      * get the correct testername
@@ -87,7 +63,7 @@ try {
         if (isset($GLOBALS['user_provider']) && !empty($GLOBALS['user_provider'])) {
             $testerName = $GLOBALS['user_provider'];
         } else {
-            throw new \Exception(translateFN('Nessun fornitore di servizi &egrave; stato configurato'));
+            throw new Exception(translateFN('Nessun fornitore di servizi &egrave; stato configurato'));
         }
     } elseif (isset($courseId)) {
         $testerInfo = $GLOBALS['common_dh']->getTesterInfoFromIdCourse($courseId);
@@ -97,7 +73,7 @@ try {
     } // end if (!MULTIPROVIDER)
 
     if (!isset($testerName)) {
-        throw new \Exception(translateFN('Spiacente, non so a che fornitore di servizi sei collegato'));
+        throw new Exception(translateFN('Spiacente, non so a che fornitore di servizi sei collegato'));
     }
 
     if ($userObj->getType() == AMA_TYPE_STUDENT && defined('MODULES_BADGES') && MODULES_BADGES) {

@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Token\UserRegistrationToken;
-
-use Lynxlab\ADA\Main\Token\TokenManager;
-
-use Lynxlab\ADA\Main\Token\ChangePasswordToken;
-
-use Lynxlab\ADA\Main\Token\ActionToken;
-
-use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
-
-// Trigger: ClassWithNameSpace. The class TokenManager was declared with namespace Lynxlab\ADA\Main\Token. //
-
 namespace Lynxlab\ADA\Main\Token;
 
 class TokenManager

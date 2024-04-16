@@ -1,21 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Module\Impexport\AMARepositoryDataHandler;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class AMARepositoryDataHandler was declared with namespace Lynxlab\ADA\Module\Impexport. //
-
 /**
  * @package     import/export course
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -27,6 +11,9 @@ use function \translateFN;
 namespace Lynxlab\ADA\Module\Impexport;
 
 use Exception;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

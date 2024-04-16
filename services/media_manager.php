@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\Node\Media;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-
 /**
  * Media Manager
  *
@@ -25,6 +13,12 @@ use function \translateFN;
  * @link
  * @version     0.1
  */
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\Node\Media;
+use Lynxlab\ADA\Main\Node\Node;
+use Lynxlab\ADA\Main\Output\Output;
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
 
 use function Lynxlab\ADA\Comunica\Functions\exitWithJSONError;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

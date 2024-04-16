@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Forms\UserRemovalForm;
-
-use Lynxlab\ADA\Main\Forms\ChatRemovalForm;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class ChatRemovalForm was declared with namespace Lynxlab\ADA\Main\Forms. //
-
 /**
  * UserRemovalForm file
  *

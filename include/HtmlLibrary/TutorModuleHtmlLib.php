@@ -1,21 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Service\Service;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\HtmlLibrary\TutorModuleHtmlLib;
-
-use Lynxlab\ADA\Main\HtmlLibrary\EguidanceSession;
-
-use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
-
-use Lynxlab\ADA\CORE\HtmlElements\Form;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class TutorModuleHtmlLib was declared with namespace Lynxlab\ADA\Main\HtmlLibrary. //
-
 /**
  *
  * @package
@@ -33,6 +17,8 @@ namespace Lynxlab\ADA\Main\HtmlLibrary;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\HtmlLibrary\EguidanceSession;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

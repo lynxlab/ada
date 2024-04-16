@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use Lynxlab\ADA\Comunica\Spools\Spool;
-
-use Lynxlab\ADA\Comunica\Spools\AgendaSpool;
-
-// Trigger: ClassWithNameSpace. The class AgendaSpool was declared with namespace Lynxlab\ADA\Comunica\Spools. //
-
 /**
  * AgendaSpool extends Spool and implements some peculiarities
  * related to the Agenda event.

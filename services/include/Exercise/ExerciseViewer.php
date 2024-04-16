@@ -1,9 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\Exercise\ExerciseViewer;
-
-// Trigger: ClassWithNameSpace. The class ExerciseViewer was declared with namespace Lynxlab\ADA\Services\Exercise. //
-
 namespace Lynxlab\ADA\Services\Exercise;
 
 /**

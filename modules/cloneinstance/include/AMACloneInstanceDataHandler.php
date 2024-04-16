@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\CloneInstance\AMACloneInstanceDataHandler;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class AMACloneInstanceDataHandler was declared with namespace Lynxlab\ADA\Module\CloneInstance. //
-
 /**
  * @package     cloneinstance module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -23,6 +11,8 @@ use function \translateFN;
 namespace Lynxlab\ADA\Module\CloneInstance;
 
 use ClosedGeneratorException;
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use ReflectionClass;
 use ReflectionProperty;
 

@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\GDPR\GdprRequestForm;
-
-use Lynxlab\ADA\Module\GDPR\GdprAbstractForm;
-
-use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class GdprRequestForm was declared with namespace Lynxlab\ADA\Module\GDPR. //
-
 /**
  * @package     gdpr module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -24,6 +12,8 @@ namespace Lynxlab\ADA\Module\GDPR;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
+use Lynxlab\ADA\Module\GDPR\GdprAbstractForm;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

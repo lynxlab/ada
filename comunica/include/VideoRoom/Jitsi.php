@@ -1,14 +1,11 @@
 <?php
 
-use Lynxlab\ADA\Module\JitsiIntegration\ADAJitsiApi;
-
-use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
-
-use Lynxlab\ADA\Comunica\VideoRoom\IVideoRoom;
-
 namespace Lynxlab\ADA\Comunica\VideoRoom;
 
+use Lynxlab\ADA\Comunica\VideoRoom\IVideoRoom;
+use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\Module\JitsiIntegration\ADAJitsiApi;
 use Lynxlab\ADA\Module\JitsiIntegration\JitsiIntegrationException;
 
 /**
@@ -35,7 +32,7 @@ class Jitsi extends VideoRoom implements IVideoRoom
     public function __construct($id_course_instance = "")
     {
         parent::__construct($id_course_instance);
-        $this->jitsiAPI = new \Lynxlab\ADA\Module\JitsiIntegration\ADAJitsiApi();
+        $this->jitsiAPI = new ADAJitsiApi();
     }
 
     public function addRoom($name = 'service', $sess_id_course_instance = null, $sess_id_user = null, $comment = 'Inserimento automatico via ADA', $num_user = 25, $course_title = 'service', $selected_provider = ADA_PUBLIC_TESTER)

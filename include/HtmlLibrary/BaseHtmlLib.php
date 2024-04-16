@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\CSS;
-
-use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class BaseHtmlLib was declared with namespace Lynxlab\ADA\Main\HtmlLibrary. //
-
 /**
  *
  * @package

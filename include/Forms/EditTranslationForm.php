@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Forms\EditTranslationForm;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class EditTranslationForm was declared with namespace Lynxlab\ADA\Main\Forms. //
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates

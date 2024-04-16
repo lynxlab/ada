@@ -1,40 +1,6 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use Lynxlab\ADA\Main\Menu;
-
-use function \translateFN;
-
-//
-// +----------------------------------------------------------------------+
-// | ADA version 1.8                                                      |
-// +----------------------------------------------------------------------+
-// | Copyright (c) 2009 Lynx                                              |
-// +----------------------------------------------------------------------+
-// |                                                                      |
-// |                          H I S T O R Y                               |
-// |                                                                      |
-// |                                                                      |
-// |                                                                      |
-// |                                                                      |
-// |                                                                      |
-// +----------------------------------------------------------------------+
-// | Author: Marco Benini                                                 |
-// |                                                                      |
-// +----------------------------------------------------------------------+
-//
-// $Id: history.php,v 1.0 2001/06/20
-//
-//
-
-/* 0.
-Initializating variables and including modules
-
-*/
-
 use Lynxlab\ADA\Main\Output\Html;
 use Lynxlab\ADA\Main\User\ADAUser;
 

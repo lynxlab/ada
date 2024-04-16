@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <?php
-	require_once '../../../../../config_path.inc.php';
+    require_once '../../../../../config_path.inc.php';
 ?>
 <html>
     <head>

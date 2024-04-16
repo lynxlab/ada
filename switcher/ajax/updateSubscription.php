@@ -1,22 +1,6 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-
-/**
- * updateSubscription.php - update user status in th DB
- *
- * @package
- * @author      sara <sara@lynxlab.com>
- * @copyright           Copyright (c) 2009-2013, Lynx s.r.l.
- * @license     http:www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link
- * @version     0.1
- */
-
 use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

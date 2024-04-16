@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Logger\ADALogger;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use Lynxlab\ADA\Main\Translator;
-
-use Lynxlab\ADA\Main\ADAError;
-
-// Trigger: ClassWithNameSpace. The class Translator was declared with namespace Lynxlab\ADA\Main. //
-
 /**
  *
  * @package

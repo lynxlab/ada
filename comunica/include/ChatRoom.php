@@ -1,22 +1,9 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\MultiPort;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use Lynxlab\ADA\Comunica\ChatRoom;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class ChatRoom was declared with namespace Lynxlab\ADA\Comunica. //
-
 namespace Lynxlab\ADA\Comunica;
 
 use Lynxlab\ADA\Comunica\DataHandler\ChatDataHandler;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

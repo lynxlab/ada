@@ -1,19 +1,13 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-
-use Lynxlab\ADA\Module\ForkedPaths\AMAForkedPathsDataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Node\Node;
-use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
+use Lynxlab\ADA\Module\ForkedPaths\AMAForkedPathsDataHandler;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsException;
+use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -85,16 +79,16 @@ if (array_key_exists('fromId', $postParams) && array_key_exists('toId', $postPar
             'userId' => $userObj->getId(),
             'courseInstanceId' => $courseInstanceObj->getId(),
         ]);
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         $result = $e;
     }
 }
 
-$error = AMADB::isError($result) || $result instanceof \Exception;
+$error = AMADB::isError($result) || $result instanceof Exception;
 
 if ($error === true) {
     header(' ', true, 400);
-    if ($result instanceof \Exception) {
+    if ($result instanceof Exception) {
         /* @var \Exception $result */
         $data->title .= ' (' . $result->getCode() . ')';
         $data->message = $result->getMessage();

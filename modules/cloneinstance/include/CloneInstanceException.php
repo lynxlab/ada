@@ -10,12 +10,14 @@
 
 namespace Lynxlab\ADA\Module\CloneInstance;
 
+use Exception;
+
 /**
  * CloneInstanceException class to handle custom exceptions
  *
  * @author giorgio
  */
-class CloneInstanceException extends \Exception
+class CloneInstanceException extends Exception
 {
     // custom string representation of object
     public function __toString()

@@ -1,9 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLAbstractForm;
-
-// Trigger: ClassWithNameSpace. The class CollaboraACLAbstractForm was declared with namespace Lynxlab\ADA\Module\CollaboraACL. //
-
 /**
  * @package     collabora-access-list module
  * @author      giorgio <g.consorti@lynxlab.com>

@@ -1,9 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
-
-use Lynxlab\ADA\Comunica\VideoRoom\IVideoRoom;
-
 /**
  * Zoom Conference specific class
  *
@@ -19,6 +15,8 @@ use Lynxlab\ADA\Comunica\VideoRoom\IVideoRoom;
 
 namespace Lynxlab\ADA\Comunica\VideoRoom;
 
+use Lynxlab\ADA\Comunica\VideoRoom\IVideoRoom;
+use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
 use Lynxlab\ADA\Module\ZoomIntegration\ADAZoomApi;
 use Lynxlab\ADA\Module\ZoomIntegration\ZoomAPIWrapper;
 use Lynxlab\ADA\Module\ZoomIntegration\ZoomIntegrationException;

@@ -1,19 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\ARE;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use function \translateFN;
-
 // +----------------------------------------------------------------------+
 // | ADA version 1.8 alpha                                                      |
 // +----------------------------------------------------------------------+
@@ -36,10 +22,15 @@ use function \translateFN;
  * Base config file
  */
 
+use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Forms\EditTranslationForm;
 use Lynxlab\ADA\Main\Forms\TranslationForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+use Lynxlab\ADA\Main\History\History;
+use Lynxlab\ADA\Main\Node\Node;
+use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Translator;
+use Lynxlab\ADA\Main\User\ADAPractitioner;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

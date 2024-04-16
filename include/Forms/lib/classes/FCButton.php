@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Forms\lib\classes\FormControl;
-
-use Lynxlab\ADA\Main\Forms\lib\classes\FCButton;
-
-// Trigger: ClassWithNameSpace. The class FCButton was declared with namespace Lynxlab\ADA\Main\Forms\lib\classes. //
-
 /**
  * FCButton file
  *

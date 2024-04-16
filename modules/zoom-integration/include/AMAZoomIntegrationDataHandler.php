@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\ZoomIntegration\AMAZoomIntegrationDataHandler;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-// Trigger: ClassWithNameSpace. The class AMAZoomIntegrationDataHandler was declared with namespace Lynxlab\ADA\Module\ZoomIntegration. //
-
 /**
  * @package     ADA Zoom Meeting Integration
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -18,7 +10,8 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 
 namespace Lynxlab\ADA\Module\ZoomIntegration;
 
-use Ramsey\Uuid\Uuid;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
 
 class AMAZoomIntegrationDataHandler extends AMADataHandler
 {

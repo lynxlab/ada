@@ -1,13 +1,8 @@
 <?php
 
-use Lynxlab\ADA\Comunica\AddressBook\MessagesAddressBook;
-
-use Lynxlab\ADA\Comunica\AddressBook\ADAAddressBook;
-
-// Trigger: ClassWithNameSpace. The class MessagesAddressBook was declared with namespace Lynxlab\ADA\Comunica\AddressBook. //
-
 namespace Lynxlab\ADA\Comunica\AddressBook;
 
+use Lynxlab\ADA\Comunica\AddressBook\ADAAddressBook;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 

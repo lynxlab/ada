@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Forms\lib\classes\FormControl;
-
-use Lynxlab\ADA\Main\Forms\lib\classes\FCInputHidden;
-
-// Trigger: ClassWithNameSpace. The class FCInputHidden was declared with namespace Lynxlab\ADA\Main\Forms\lib\classes. //
-
 /**
  * FCInputHidden file
  *

@@ -1,29 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Module\Test\TestManagementTest;
-
-use Lynxlab\ADA\Module\Test\SurveyManagementTest;
-
-use Lynxlab\ADA\Module\Test\RootManagementTest;
-
-use Lynxlab\ADA\Module\Test\ManagementTest;
-
-use Lynxlab\ADA\Module\Test\TestFormTest;
-
-use Lynxlab\ADA\Module\Test\SurveyFormTest;
-
-use Lynxlab\ADA\Module\Test\DeleteFormTest;
-
-use Lynxlab\ADA\Module\Test\AMATestDataHandler;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class RootManagementTest was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -37,6 +13,11 @@ namespace Lynxlab\ADA\Module\Test;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Node\Node;
+use Lynxlab\ADA\Module\Test\AMATestDataHandler;
+use Lynxlab\ADA\Module\Test\DeleteFormTest;
+use Lynxlab\ADA\Module\Test\ManagementTest;
+use Lynxlab\ADA\Module\Test\SurveyFormTest;
+use Lynxlab\ADA\Module\Test\TestFormTest;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\getMaxIdFN;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

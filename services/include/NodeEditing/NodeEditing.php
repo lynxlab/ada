@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\NodeEditing;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class NodeEditing was declared with namespace Lynxlab\ADA\Services\NodeEditing. //
-
 /**
  * NodeEditing class.
  *
@@ -23,6 +13,7 @@ use function \translateFN;
 
 namespace Lynxlab\ADA\Services\NodeEditing;
 
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\NodeEvent;
 

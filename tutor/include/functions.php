@@ -1,21 +1,11 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use Lynxlab\ADA\Main\Menu;
-
-use function \translateFN;
-
 namespace Lynxlab\ADA\Tutor\Functions;
 
-use Lynxlab\ADA\CORE\HtmlElements\Table;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\HtmlElements\Table;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\Course\Student;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 

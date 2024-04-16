@@ -1,25 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\Layout;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use Lynxlab\ADA\Main\Course\AbstractCourseInstance;
-
-use Lynxlab\ADA\CORE\HtmlElements\Table;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class AbstractCourseInstance was declared with namespace Lynxlab\ADA\Main\Course. //
-
 /**
  * AbstractCourseInstance class
  *
@@ -34,6 +14,7 @@ use function \translateFN;
 namespace Lynxlab\ADA\Main\Course;
 
 use Lynxlab\ADA\CORE\HtmlElements\IList;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Bookmark\Bookmark;
 use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\User\ADAUser;

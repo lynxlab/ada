@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Helper\ViewBaseHelper;
-
-use Lynxlab\ADA\Main\Helper\SwitcherHelper;
-
-// Trigger: ClassWithNameSpace. The class SwitcherHelper was declared with namespace Lynxlab\ADA\Main\Helper. //
-
 /**
  * Switcher functions
  *

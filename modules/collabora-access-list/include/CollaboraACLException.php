@@ -10,12 +10,14 @@
 
 namespace Lynxlab\ADA\Module\CollaboraACL;
 
+use Exception;
+
 /**
  * CollaboraACLException class to handle custom exceptions
  *
  * @author giorgio
  */
-class CollaboraACLException extends \Exception
+class CollaboraACLException extends Exception
 {
     // custom string representation of object
     public function __toString()

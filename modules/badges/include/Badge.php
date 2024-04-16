@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Badges\BadgesBase;
-
-use Lynxlab\ADA\Module\Badges\Badge;
-
-use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
-
-// Trigger: ClassWithNameSpace. The class Badge was declared with namespace Lynxlab\ADA\Module\Badges. //
-
 /**
  * @package     badges module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -18,6 +10,8 @@ use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
 
 namespace Lynxlab\ADA\Module\Badges;
 
+use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
+use Lynxlab\ADA\Module\Badges\BadgesBase;
 use Ramsey\Uuid\Uuid;
 
 /**

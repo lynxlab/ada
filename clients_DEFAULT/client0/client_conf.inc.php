@@ -15,34 +15,34 @@
  *
  * @name CLIENT0_DB_TYPE
  */
-define('CLIENT0_DB_TYPE',  'mysql');
+define('CLIENT0_DB_TYPE', 'mysql');
 
 /**
  *
  * @name CLIENT0_DB_NAME
  */
-define('CLIENT0_DB_NAME',  'ada_provider0');
+define('CLIENT0_DB_NAME', 'ada_provider0');
 
 /**
  *
  * @name CLIENT0_DB_USER
  */
-define('CLIENT0_DB_USER',  'user');
+define('CLIENT0_DB_USER', 'user');
 
 /**
  *
  * @name CLIENT0_DB_PASS
  */
-define('CLIENT0_DB_PASS',  'password');
+define('CLIENT0_DB_PASS', 'password');
 
 /**
  *
  * @name CLIENT0_DB_HOST
  */
-define('CLIENT0_DB_HOST',  'localhost');
+define('CLIENT0_DB_HOST', 'localhost');
 
 /**
  *
  * @name CLIENT0_TIMEZONE
  */
-define('CLIENT0_TIMEZONE',  'Europe/Rome');
+define('CLIENT0_TIMEZONE', 'Europe/Rome');

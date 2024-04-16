@@ -1,25 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Test\AnswerHeaderControlTest;
-
-use Lynxlab\ADA\Module\Test\AnswerFooterControlTest;
-
-use Lynxlab\ADA\Module\Test\AnswerClozeControlTest;
-
-use Lynxlab\ADA\Module\Test\FormTest;
-
-use Lynxlab\ADA\Module\Test\AnswersClozeFormTest;
-
-use Lynxlab\ADA\Module\Test\QuestionClozeTest;
-
-use Lynxlab\ADA\Module\Test\NodeTest;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class AnswersClozeFormTest was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  *
  * @package
@@ -34,6 +14,12 @@ namespace Lynxlab\ADA\Module\Test;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Module\Test\AnswerClozeControlTest;
+use Lynxlab\ADA\Module\Test\AnswerFooterControlTest;
+use Lynxlab\ADA\Module\Test\AnswerHeaderControlTest;
+use Lynxlab\ADA\Module\Test\FormTest;
+use Lynxlab\ADA\Module\Test\NodeTest;
+use Lynxlab\ADA\Module\Test\QuestionClozeTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

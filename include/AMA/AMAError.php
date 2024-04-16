@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class AMAError was declared with namespace Lynxlab\ADA\Main\AMA. //
-
 /**
  *
  * @author Guglielmo Celata <guglielmo@celata.com>

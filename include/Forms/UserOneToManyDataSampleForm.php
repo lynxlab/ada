@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
-
-use Lynxlab\ADA\Main\Forms\UserOneToManyDataSampleForm;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class UserOneToManyDataSampleForm was declared with namespace Lynxlab\ADA\Main\Forms. //
-
 /**
  * UserJobExperienceForm file
 *

@@ -1,27 +1,10 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Module\GDPR\GdprRequest;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\ARE;
-
-use function \translateFN;
-
-/**
- * @package     gdpr module
- * @author      giorgio <g.consorti@lynxlab.com>
- * @copyright   Copyright (c) 2018, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version     0.1
- */
-
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Module\GDPR\GdprActions;
 use Lynxlab\ADA\Module\GDPR\GdprException;
 use Ramsey\Uuid\Uuid;
@@ -100,7 +83,7 @@ try {
     $data = $table->getHtml();
 
     $optionsAr['onload_func'] = 'initDoc(\'' . $tableID . '\',' . htmlentities(json_encode($dataForJS), ENT_COMPAT, ADA_CHARSET) . ');';
-} catch (\Exception $e) {
+} catch (Exception $e) {
     $message = CDOMElement::create('div', 'class:ui icon error message');
     $message->addChild(CDOMElement::create('i', 'class:attention icon'));
     $mcont = CDOMElement::create('div', 'class:content');

@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Notifications\NotificationBase;
-
-use Lynxlab\ADA\Module\Notifications\Notification;
-
-use Lynxlab\ADA\Module\Notifications\AMANotificationsDataHandler;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\Layout;
-
-// Trigger: ClassWithNameSpace. The class Notification was declared with namespace Lynxlab\ADA\Module\Notifications. //
-
 /**
  * @package     notifications module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -24,6 +12,8 @@ namespace Lynxlab\ADA\Module\Notifications;
 
 use Lynxlab\ADA\Main\Output\GenericHtml;
 use Lynxlab\ADA\Main\Output\Html;
+use Lynxlab\ADA\Module\Notifications\AMANotificationsDataHandler;
+use Lynxlab\ADA\Module\Notifications\NotificationBase;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\readLayoutFromDB;
 

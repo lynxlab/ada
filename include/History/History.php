@@ -1,21 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use Lynxlab\ADA\Main\ADAError;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class History was declared with namespace Lynxlab\ADA\Main\History. //
-
 /**
  * History class
  *
@@ -32,6 +16,8 @@ use function \translateFN;
 namespace Lynxlab\ADA\Main\History;
 
 use Lynxlab\ADA\CORE\HtmlElements\Table;
+use Lynxlab\ADA\Main\ADAError;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;

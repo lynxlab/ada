@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\JitsiIntegration\AMAJitsiIntegrationDataHandler;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-// Trigger: ClassWithNameSpace. The class AMAJitsiIntegrationDataHandler was declared with namespace Lynxlab\ADA\Module\JitsiIntegration. //
-
 /**
  * @package     ADA Jitsi Integration
  * @author      giorgio <g.consorti@lynxlab.com>

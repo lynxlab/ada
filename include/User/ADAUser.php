@@ -1,21 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\User\UserExtraTables;
-
-use Lynxlab\ADA\Main\User\ADAUser;
-
-use Lynxlab\ADA\Main\User\ADAGenericUser;
-
-use Lynxlab\ADA\Main\User\ADAAbstractUser;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-// Trigger: ClassWithNameSpace. The class ADAUser was declared with namespace Lynxlab\ADA\Main\User. //
-
 /**
  * ADAUser class
  *
@@ -48,8 +32,12 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 
 namespace Lynxlab\ADA\Main\User;
 
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\User\ADAAbstractUser;
 use Lynxlab\ADA\Switcher\Subscription;
 use ReflectionClass;
 use ReflectionProperty;

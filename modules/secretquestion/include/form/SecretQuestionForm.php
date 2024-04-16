@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Secretquestion\SecretQuestionForm;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class SecretQuestionForm was declared with namespace Lynxlab\ADA\Module\Secretquestion. //
-
 /**
  * @package     secretquestion module
  * @author      giorgio <g.consorti@lynxlab.com>

@@ -1,25 +1,10 @@
 <?php
 
-use Lynxlab\ADA\Module\Badges\RewardedBadge;
-
-use Lynxlab\ADA\Module\Badges\CourseBadge;
-
-use Lynxlab\ADA\Module\Badges\Badge;
-
 use Lynxlab\ADA\Main\AMA\AMADB;
-
-/**
- * @package     badges module
- * @author      giorgio <g.consorti@lynxlab.com>
- * @copyright   Copyright (c) 2019, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version     0.1
- */
-
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
-use Lynxlab\ADA\Module\Badges\BadgesActions;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
+use Lynxlab\ADA\Module\Badges\BadgesActions;
 
 /**
  * Base config file

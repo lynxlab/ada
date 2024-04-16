@@ -1,19 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\AMA\MultiPort;
-
-use Lynxlab\ADA\Main\AMA\AMATesterDataHandler;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-// Trigger: ClassWithNameSpace. The class AMADataHandler was declared with namespace Lynxlab\ADA\Main\AMA. //
-
 /**
  * AMA_DataHandler class
  *
@@ -41,6 +27,9 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 
 namespace Lynxlab\ADA\Main\AMA;
 
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\AMATesterDataHandler;
+use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\User\ADAUser;
 
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;

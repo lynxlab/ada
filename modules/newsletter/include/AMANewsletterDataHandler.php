@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Module\Newsletter\AMANewsletterDataHandler;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-// Trigger: ClassWithNameSpace. The class AMANewsletterDataHandler was declared with namespace Lynxlab\ADA\Module\Newsletter. //
-
 /**
  * NEWSLETTER MODULE.
  *
@@ -24,6 +12,10 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
  */
 
 namespace Lynxlab\ADA\Module\Newsletter;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\AMAError;
 
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 

@@ -1,33 +1,7 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\ARE;
-
-use Lynxlab\ADA\Main\History\History;
-
-use function \translateFN;
-
-/**
- * error.php
- *
- * This page is displayed when a fatal error occurs.
- *
- * PHP version >= 5.0
- *
- * @package     view
- * @author      Stefano Penge <steve@lynxlab.com>
- * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author      Vito Modena <vito@lynxlab.com>
- * @copyright           Copyright (c) 2009-2011, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link        index
- * @version     0.1
- */
-
 use Lynxlab\ADA\Main\History\NavigationHistory;
+use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

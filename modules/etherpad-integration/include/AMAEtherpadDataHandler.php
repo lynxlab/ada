@@ -1,27 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\EtherpadIntegration\Session;
-
-use Lynxlab\ADA\Module\EtherpadIntegration\Pads;
-
-use Lynxlab\ADA\Module\EtherpadIntegration\HashKey;
-
-use Lynxlab\ADA\Module\EtherpadIntegration\Groups;
-
-use Lynxlab\ADA\Module\EtherpadIntegration\Authors;
-
-use Lynxlab\ADA\Module\EtherpadIntegration\AMAEtherpadDataHandler;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class AMAEtherpadDataHandler was declared with namespace Lynxlab\ADA\Module\EtherpadIntegration. //
-
 /**
  * @package     etherpad module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -31,6 +9,12 @@ use function \translateFN;
  */
 
 namespace Lynxlab\ADA\Module\EtherpadIntegration;
+
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Module\EtherpadIntegration\HashKey;
+use ReflectionClass;
+use ReflectionProperty;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -110,7 +94,7 @@ class AMAEtherpadDataHandler extends AMA_DataHandler
 
         $result = $this->executeCriticalPrepared(
             $this->sqlInsert(
-                \Lynxlab\ADA\Module\EtherpadIntegration\HashKey::TABLE,
+                HashKey::TABLE,
                 $saveData
             ),
             array_values($saveData)
@@ -144,12 +128,12 @@ class AMAEtherpadDataHandler extends AMA_DataHandler
         ) {
             $className = self::MODELNAMESPACE . $className;
         }
-        $reflection = new \ReflectionClass($className);
+        $reflection = new ReflectionClass($className);
         $properties =  array_map(
             function ($el) {
                 return $el->getName();
             },
-            $reflection->getProperties(\ReflectionProperty::IS_PRIVATE | \ReflectionProperty::IS_PROTECTED | \ReflectionProperty::IS_PUBLIC)
+            $reflection->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PUBLIC)
         );
 
         // get object properties to be loaded as a kind of join

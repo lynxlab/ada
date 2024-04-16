@@ -1,21 +1,10 @@
 <?php
 
-use Lynxlab\ADA\Services\Exercise\OpenUploadExerciseViewer;
-
-use Lynxlab\ADA\Services\Exercise\ExerciseViewer;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\CORE\HtmlElements\Form;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class OpenUploadExerciseViewer was declared with namespace Lynxlab\ADA\Services\Exercise. //
-
 namespace Lynxlab\ADA\Services\Exercise;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Services\Exercise\ExerciseViewer;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

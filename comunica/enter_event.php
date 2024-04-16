@@ -1,18 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-/**
- * ENTER EVENT.
- *
- * @package     comunica
- * @author
- * @copyright   Copyright (c) 2009, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link
- * @version     0.1
- */
-
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**

@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Impersonate\LinkedUsers;
-
-use Lynxlab\ADA\Module\Impersonate\ImpersonateBase;
-
-use Lynxlab\ADA\Module\Impersonate\AMAImpersonateDataHandler;
-
-use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
-
-// Trigger: ClassWithNameSpace. The class LinkedUsers was declared with namespace Lynxlab\ADA\Module\Impersonate. //
-
 /**
  * @package     impersonate module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -21,6 +11,9 @@ use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
 namespace Lynxlab\ADA\Module\Impersonate;
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
+use Lynxlab\ADA\Module\Impersonate\AMAImpersonateDataHandler;
+use Lynxlab\ADA\Module\Impersonate\ImpersonateBase;
 
 class LinkedUsers extends ImpersonateBase
 {

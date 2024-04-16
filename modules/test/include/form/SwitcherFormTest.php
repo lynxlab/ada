@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Test\SwitcherFormTest;
-
-use Lynxlab\ADA\Module\Test\FormTest;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class SwitcherFormTest was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  *
  * @package
@@ -23,6 +11,9 @@ use function \translateFN;
  */
 
 namespace Lynxlab\ADA\Module\Test;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Module\Test\FormTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

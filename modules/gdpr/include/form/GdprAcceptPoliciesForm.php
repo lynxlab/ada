@@ -1,21 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Module\GDPR\GdprAcceptPoliciesForm;
-
-use Lynxlab\ADA\Module\GDPR\GdprAbstractForm;
-
-use Lynxlab\ADA\Module\GDPR\GdprPolicy;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Forms\lib\classes\FForm;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class GdprAcceptPoliciesForm was declared with namespace Lynxlab\ADA\Module\GDPR. //
-
 /**
  * @package     gdpr module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -28,6 +12,8 @@ namespace Lynxlab\ADA\Module\GDPR;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Module\GDPR\GdprAbstractForm;
+use Lynxlab\ADA\Module\GDPR\GdprPolicy;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;

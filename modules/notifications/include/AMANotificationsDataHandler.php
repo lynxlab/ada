@@ -1,21 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Notifications\Notification;
-
-use Lynxlab\ADA\Module\Notifications\EmailQueueItem;
-
-use Lynxlab\ADA\Module\Notifications\AMANotificationsDataHandler;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class AMANotificationsDataHandler was declared with namespace Lynxlab\ADA\Module\Notifications. //
-
 /**
  * @package     notifications module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -26,6 +10,11 @@ use function \translateFN;
 
 namespace Lynxlab\ADA\Module\Notifications;
 
+use Exception;
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Module\Notifications\EmailQueueItem;
+use Lynxlab\ADA\Module\Notifications\Notification;
 use ReflectionClass;
 use ReflectionProperty;
 
@@ -168,7 +157,7 @@ class AMANotificationsDataHandler extends AMA_DataHandler
                 $this->commit();
                 return true;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->rollBack();
             return $e;
         }

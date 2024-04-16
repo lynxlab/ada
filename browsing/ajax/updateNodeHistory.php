@@ -1,34 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\CourseInstance;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use Lynxlab\ADA\CORE\html4\CElement;
-
-use function \translateFN;
-
-/**
- * closeNodeHistory.php - force the setting of data_uscita to the last history_nodi row of the passed node
- *
- * @package
- * @author      giorgio <g.consorti@lynxlab.com>
- * @copyright   Copyright (c) 2018-2020, Lynx s.r.l.
- * @license     http:www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link
- * @version     0.1
- */
-
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

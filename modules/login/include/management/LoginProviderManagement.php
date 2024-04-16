@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Login\LoginProviderManagement;
-
-use Lynxlab\ADA\Module\Login\Constants;
-
-use Lynxlab\ADA\Module\Login\FormLoginProvider;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class LoginProviderManagement was declared with namespace Lynxlab\ADA\Module\Login. //
-
 /**
  * LOGIN MODULE
  *
@@ -23,6 +11,9 @@ use function \translateFN;
  */
 
 namespace Lynxlab\ADA\Module\Login;
+
+use Lynxlab\ADA\Module\Login\Constants;
+use Lynxlab\ADA\Module\Login\FormLoginProvider;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

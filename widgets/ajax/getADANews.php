@@ -1,43 +1,9 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-
-/**
- * ADA last course's node reader
- * will dysplay the newest nodes content from the passed course id
- *
- * @package     widget
- * @author      Stefano Penge <steve@lynxlab.com>
- * @author      giorgio <g.consorti@lynxlab.com>
- *
- * @copyright   Copyright (c) 2013, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link        widget
- * @version     0.1
- *
- * supported params you can pass either via XML or php array:
- *
- *  name="course_id"       optional,  value: course id from which to load the news
- *                                           if invalid or omitted, PUBLIC_COURSE_ID_FOR_NEWS is used
- *  name="showDescription" optional,  value: shows or hides the post description. values: 0 or nonzero
- *                                           if invalid or omitted, description will be hidden
- *  name="count"           optional,  value: how many news to display
- *                                           if invalid or omitted NEWS_COUNT entries are displayed
- *  name="orderby"         optional,  value: orderby section of the query string
- *                                           if invalid or omitted its value is 'data_creazione' DESC
- *
- *  NOTE: THIS WIDGET WORKS ONLY IN SYNC MODE FOR SESSION SETTING PROBLEMS!
- *        async XML param is IGNORED
- */
-
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\User\ADALoggableUser;

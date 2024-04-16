@@ -1,41 +1,11 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\ARE;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\CORE\html4\CElement;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
 use Lynxlab\ADA\Main\ADAError;
-
-use function \translateFN;
-
-/**
- * STUDENT EXERCISE HISTORY
- *
- * @package
- * @author      Stefano Penge <steve@lynxlab.com>
- * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author      Valerio Riva <valerio.riva@gmail.com>
- * @copyright           Copyright (c) 2009-2011, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link
- * @version     0.1
- */
-
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Services\Exercise\ExerciseDAO;
 use Lynxlab\ADA\Services\Exercise\ExerciseViewerFactory;
 

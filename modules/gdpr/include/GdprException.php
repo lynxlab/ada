@@ -10,12 +10,14 @@
 
 namespace Lynxlab\ADA\Module\GDPR;
 
+use Exception;
+
 /**
  * GdprException class to handle custom exceptions
  *
  * @author giorgio
  */
-class GdprException extends \Exception
+class GdprException extends Exception
 {
     public const CAPTCHA_EMPTY = 0;
     public const CAPTCHA_NOMATCH = 1;

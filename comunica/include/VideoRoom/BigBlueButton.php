@@ -1,12 +1,10 @@
 <?php
 
-use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
-
-use Lynxlab\ADA\Comunica\VideoRoom\IVideoRoom;
-
 namespace Lynxlab\ADA\Comunica\VideoRoom;
 
 use BigBlueButton\Parameters\JoinMeetingParameters;
+use Lynxlab\ADA\Comunica\VideoRoom\IVideoRoom;
+use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
 use Lynxlab\ADA\Module\BBBIntegration\ADABBBApi;
 use Lynxlab\ADA\Module\BBBIntegration\BBBIntegrationException;
 

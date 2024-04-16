@@ -1,31 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Test\TopicTest;
-
-use Lynxlab\ADA\Module\Test\SurveyTest;
-
-use Lynxlab\ADA\Module\Test\RootTest;
-
-use Lynxlab\ADA\Module\Test\NodeTest;
-
-use Lynxlab\ADA\Module\Test\AMATestDataHandler;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use Lynxlab\ADA\CORE\html4\CElement;
-
-use Lynxlab\ADA\CORE\html4\CBaseElement;
-
-use Lynxlab\ADA\CORE\HtmlElements\Table;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class SurveyTest was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -38,7 +12,11 @@ namespace Lynxlab\ADA\Module\Test;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\Course\CourseInstance;
+use Lynxlab\ADA\Module\Test\AMATestDataHandler;
+use Lynxlab\ADA\Module\Test\NodeTest;
+use Lynxlab\ADA\Module\Test\RootTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

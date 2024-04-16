@@ -1,7 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\EtherpadIntegration\HashKey;
-
 /**
  * @package     etherpad module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -12,6 +10,8 @@ use Lynxlab\ADA\Module\EtherpadIntegration\HashKey;
 
 namespace Lynxlab\ADA\Module\EtherpadIntegration;
 
+use EtherpadLite\Client;
+
 /**
  * extend \EtherpadLite\Client to have a hash prepended to etherpad groups and author mapper
  *
@@ -21,7 +21,7 @@ namespace Lynxlab\ADA\Module\EtherpadIntegration;
  * to potentially conflicting ids such as ada user (mapped to etherpad author) and
  * course instance (mapped to etherpad goups)
  */
-class EtherpadClient extends \EtherpadLite\Client
+class EtherpadClient extends Client
 {
     public const SEPARATOR = '#';
     private static $hashKey = null;

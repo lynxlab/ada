@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\UILayout;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\Layout;
-
-// Trigger: ClassWithNameSpace. The class UILayout was declared with namespace Lynxlab\ADA\Main\Output. //
-
 /**
  * Layout.inc.php file
  *

@@ -1,22 +1,6 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
 use Lynxlab\ADA\Main\AMA\AMADB;
-
-use function \translateFN;
-
-/**
- * IMPORT MODULE
- *
- * @package     export/import course
- * @author      giorgio <g.consorti@lynxlab.com>
- * @copyright   Copyright (c) 2019, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link        impexport
- * @version     0.1
- */
-
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Impexport\AMARepositoryDataHandler;
 
@@ -73,7 +57,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $retArray['status'] = "OK";
             $retArray['msg'] = translateFN('Esportazione cancellata');
         }
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         $retArray['status'] = "ERROR";
         $retArray['msg'] = $e->getMessage();
     }

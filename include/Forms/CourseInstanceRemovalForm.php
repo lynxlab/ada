@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Forms\CourseInstanceRemovalForm;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class CourseInstanceRemovalForm was declared with namespace Lynxlab\ADA\Main\Forms. //
-
 /**
  * CourseInstanceRemovalForm file
  *

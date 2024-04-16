@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use Lynxlab\ADA\Comunica\Spools\Spool;
-
-use Lynxlab\ADA\Comunica\Spools\SimpleSpool;
-
-// Trigger: ClassWithNameSpace. The class SimpleSpool was declared with namespace Lynxlab\ADA\Comunica\Spools. //
-
 /**
  * SimpleSpool extends Spool and implements some peculiarities
  * related to the Simple message.

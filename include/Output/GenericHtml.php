@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\GenericHtml;
-
-use Lynxlab\ADA\Main\Output\CSS;
-
-use Lynxlab\ADA\Main\Output\ARE;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class GenericHtml was declared with namespace Lynxlab\ADA\Main\Output. //
-
 /**
  * NEW Output classes
  *
@@ -32,6 +20,8 @@ namespace Lynxlab\ADA\Main\Output;
 
 use Dompdf\Dompdf;
 use Lynxlab\ADA\CORE\HtmlElements\Table;
+use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Output\Output;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

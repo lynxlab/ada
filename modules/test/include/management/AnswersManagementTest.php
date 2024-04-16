@@ -1,29 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Module\Test\AnswersManagementTest;
-
-use Lynxlab\ADA\Module\Test\AnswersStandardFormTest;
-
-use Lynxlab\ADA\Module\Test\AnswersMultipleClozeFormTest;
-
-use Lynxlab\ADA\Module\Test\AnswersClozeFormTest;
-
-use Lynxlab\ADA\Module\Test\QuestionMultipleClozeTest;
-
-use Lynxlab\ADA\Module\Test\NodeTest;
-
-use Lynxlab\ADA\Module\Test\AMATestDataHandler;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\CORE\html4\CBase;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class AnswersManagementTest was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -34,9 +10,16 @@ use function \translateFN;
 
 namespace Lynxlab\ADA\Module\Test;
 
+use Lynxlab\ADA\CORE\html4\CBase;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Node\Node;
+use Lynxlab\ADA\Module\Test\AMATestDataHandler;
+use Lynxlab\ADA\Module\Test\AnswersClozeFormTest;
+use Lynxlab\ADA\Module\Test\AnswersMultipleClozeFormTest;
+use Lynxlab\ADA\Module\Test\AnswersStandardFormTest;
+use Lynxlab\ADA\Module\Test\NodeTest;
+use Lynxlab\ADA\Module\Test\QuestionMultipleClozeTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\redirect;

@@ -1,9 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsBase;
-
-// Trigger: ClassWithNameSpace. The class ForkedPathsBase was declared with namespace Lynxlab\ADA\Module\ForkedPaths. //
-
 /**
  * @package     forked-paths module
  * @author      giorgio <g.consorti@lynxlab.com>

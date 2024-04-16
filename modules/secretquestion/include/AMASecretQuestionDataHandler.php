@@ -1,19 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Secretquestion\AMASecretQuestionDataHandler;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class AMASecretQuestionDataHandler was declared with namespace Lynxlab\ADA\Module\Secretquestion. //
-
 /**
  * @package     secretquestion module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -24,6 +10,9 @@ use function \translateFN;
 
 namespace Lynxlab\ADA\Module\Secretquestion;
 
+use Exception;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Token\TokenManager;
 
@@ -72,13 +61,13 @@ class AMASecretQuestionDataHandler extends AMACommonDataHandler
                 if ($tokenObj != false) {
                     return ['redirecturl' => HTTP_ROOT_DIR . "/browsing/forget.php?uid=$userId&tok=" . $tokenObj->getTokenString()];
                 } else {
-                    throw new \Exception(translateFN('Errore interno: impossibile generare il token di autorizzazione'));
+                    throw new Exception(translateFN('Errore interno: impossibile generare il token di autorizzazione'));
                 }
             } else {
-                throw new \Exception(translateFN('Utente non valido'));
+                throw new Exception(translateFN('Utente non valido'));
             }
         } else {
-            throw new \Exception(translateFN('La risposta non è corretta'));
+            throw new Exception(translateFN('La risposta non è corretta'));
         }
     }
 

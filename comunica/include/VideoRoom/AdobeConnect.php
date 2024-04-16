@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
-
-use Lynxlab\ADA\Comunica\VideoRoom\IVideoRoom;
-
-use Lynxlab\ADA\Comunica\VideoRoom\ADAAdobeConnectApiClient;
-
-use function \translateFN;
-
 /**
  * AdobeConnect specific class
  *
@@ -30,6 +18,10 @@ namespace Lynxlab\ADA\Comunica\VideoRoom;
 use AdobeConnect\Config;
 use DateTime;
 use Exception;
+use Lynxlab\ADA\Comunica\VideoRoom\ADAAdobeConnectApiClient;
+use Lynxlab\ADA\Comunica\VideoRoom\IVideoRoom;
+use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
+use Lynxlab\ADA\Main\AMA\AMADB;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

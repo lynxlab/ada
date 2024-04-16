@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
-
-use Lynxlab\ADA\Module\EtherpadIntegration\Pads;
-
-use Lynxlab\ADA\Module\EtherpadIntegration\Groups;
-
-use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadActions;
-
-use Lynxlab\ADA\Module\EtherpadIntegration\AMAEtherpadDataHandler;
-
-// Trigger: ClassWithNameSpace. The class Utils was declared with namespace Lynxlab\ADA\Module\EtherpadIntegration. //
-
 /**
  * @package     Etherpad module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -22,8 +10,13 @@ use Lynxlab\ADA\Module\EtherpadIntegration\AMAEtherpadDataHandler;
 
 namespace Lynxlab\ADA\Module\EtherpadIntegration;
 
+use Exception;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Module\EtherpadIntegration\AMAEtherpadDataHandler;
+use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadActions;
+use Lynxlab\ADA\Module\EtherpadIntegration\Groups;
+use Lynxlab\ADA\Module\EtherpadIntegration\Pads;
 
 class Utils
 {
@@ -88,7 +81,7 @@ class Utils
                 $enabled = $nodeId === Pads::INSTANCEPADID ? MODULES_ETHERPAD_INSTANCEPAD : MODULES_ETHERPAD_NODEPAD;
             }
             return $enabled;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }

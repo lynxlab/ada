@@ -1,19 +1,6 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
 use Lynxlab\ADA\Main\AMA\AMADB;
-
-use function \translateFN;
-
-/**
- * @package     studentsgroups module
- * @author      giorgio <g.consorti@lynxlab.com>
- * @copyright   Copyright (c) 2020, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version     0.1
- */
-
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\StudentsGroups\AMAStudentsGroupsDataHandler;
@@ -60,7 +47,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $postParams = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
     $res = $GLOBALS['dh']->deleteGroup($postParams);
 
-    if (AMADB::isError($res) || $res instanceof \Exception) {
+    if (AMADB::isError($res) || $res instanceof Exception) {
         // if it's an error display the error message
         $retArray['status'] = "ERROR";
         $retArray['msg'] = $res->getMessage();

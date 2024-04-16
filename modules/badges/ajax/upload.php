@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-/**
- * @package     badges module
- * @author      giorgio <g.consorti@lynxlab.com>
- * @copyright   Copyright (c) 2018, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version     0.1
- */
-
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Upload\FileUploader;
 use Lynxlab\ADA\Module\Badges\BadgesActions;

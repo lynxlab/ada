@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Stack\Stack;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class AbstractAMADataHandler was declared with namespace Lynxlab\ADA\Main\AMA. //
-
 /**
  * AMA_DataHandler implements a class to handle complex DB read/write operations
  * for the ADA project.
@@ -23,6 +11,8 @@ use function \translateFN;
 
 namespace Lynxlab\ADA\Main\AMA;
 
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\Logger\ADALogger;
 use Lynxlab\ADA\Main\Stack\RBStack;
 use PDO;

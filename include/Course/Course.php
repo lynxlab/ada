@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Course\Course;
-
-use Lynxlab\ADA\Main\Course\AbstractCourse;
-
-// Trigger: ClassWithNameSpace. The class Course was declared with namespace Lynxlab\ADA\Main\Course. //
-
 /**
  * Course file
  *

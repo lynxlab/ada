@@ -1,23 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\Output\Template;
-
-use Lynxlab\ADA\Main\Output\PageWidget;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\Layout;
-
-use Lynxlab\ADA\Main\Output\JS;
-
-use Lynxlab\ADA\Main\Output\CSS;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class Layout was declared with namespace Lynxlab\ADA\Main\Output. //
-
 /**
  * Layout, Template, CSS, JS classes
  *
@@ -31,6 +13,11 @@ use function \translateFN;
  */
 
 namespace Lynxlab\ADA\Main\Output;
+
+use Lynxlab\ADA\Main\Output\CSS;
+use Lynxlab\ADA\Main\Output\JS;
+use Lynxlab\ADA\Main\Output\PageWidget;
+use Lynxlab\ADA\Main\Output\Template;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\mydebug;

@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Test\QuestionOpenFormTest;
-
-use Lynxlab\ADA\Module\Test\QuestionFormTest;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class QuestionOpenFormTest was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  *
  * @package
@@ -23,6 +13,7 @@ use function \translateFN;
 namespace Lynxlab\ADA\Module\Test;
 
 use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
+use Lynxlab\ADA\Module\Test\QuestionFormTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

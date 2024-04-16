@@ -1,9 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\EventDispatcher\Events\MenuEvent;
-
-// Trigger: ClassWithNameSpace. The class MenuEvent was declared with namespace Lynxlab\ADA\Module\EventDispatcher\Events. //
-
 /**
  * @package     event-dispatcher module
  * @author      giorgio <g.consorti@lynxlab.com>

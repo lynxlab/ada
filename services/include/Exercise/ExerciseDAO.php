@@ -1,16 +1,10 @@
 <?php
 
-use Lynxlab\ADA\Services\Exercise\ExerciseDAO;
-
-use Lynxlab\ADA\Services\Exercise\ADAEsercizio;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
+namespace Lynxlab\ADA\Services\Exercise;
 
 use Lynxlab\ADA\Main\ADAError;
-
-// Trigger: ClassWithNameSpace. The class ExerciseDAO was declared with namespace Lynxlab\ADA\Services\Exercise. //
-
-namespace Lynxlab\ADA\Services\Exercise;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Services\Exercise\ADAEsercizio;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\getMaxIdFN;
 

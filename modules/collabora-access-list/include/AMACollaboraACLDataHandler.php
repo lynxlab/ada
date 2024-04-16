@@ -1,21 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\CollaboraACL\FileACL;
-
-use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLActions;
-
-use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class AMACollaboraACLDataHandler was declared with namespace Lynxlab\ADA\Module\CollaboraACL. //
-
 /**
  * @package     collabora-access-list module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -26,6 +10,11 @@ use function \translateFN;
 
 namespace Lynxlab\ADA\Module\CollaboraACL;
 
+use Exception;
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLActions;
+use Lynxlab\ADA\Module\CollaboraACL\FileACL;
 use ReflectionClass;
 use ReflectionProperty;
 
@@ -114,7 +103,7 @@ class AMACollaboraACLDataHandler extends AMA_DataHandler
                         $result = $this->queryPrepared(
                             $this->insertMultiRow(
                                 $insertData,
-                                \Lynxlab\ADA\Module\CollaboraACL\FileACL::UTENTERELTABLE
+                                FileACL::UTENTERELTABLE
                             ),
                             array_values($insertData)
                         );
@@ -142,7 +131,7 @@ class AMACollaboraACLDataHandler extends AMA_DataHandler
             } else {
                 throw new CollaboraACLException($result->getMessage());
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->rollBack();
             return ($e);
         }
@@ -157,7 +146,7 @@ class AMACollaboraACLDataHandler extends AMA_DataHandler
         $this->beginTransaction();
         $result = $this->queryPrepared(
             $this->sqlDelete(
-                \Lynxlab\ADA\Module\CollaboraACL\FileACL::TABLE,
+                FileACL::TABLE,
                 $delData
             ),
             array_values($delData)

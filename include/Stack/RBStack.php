@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Stack\Stack;
-
-use Lynxlab\ADA\Main\Stack\RBStack;
-
-// Trigger: ClassWithNameSpace. The class RBStack was declared with namespace Lynxlab\ADA\Main\Stack. //
-
 /**
  *
  * @author

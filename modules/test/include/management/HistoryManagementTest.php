@@ -1,19 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Test\TutorManagementTest;
-
-use Lynxlab\ADA\Module\Test\HistoryManagementTest;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Course\CourseInstance;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class HistoryManagementTest was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -23,6 +9,8 @@ use function \translateFN;
  */
 
 namespace Lynxlab\ADA\Module\Test;
+
+use Lynxlab\ADA\Module\Test\TutorManagementTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

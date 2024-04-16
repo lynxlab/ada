@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use function \translateFN;
-
 /**
  * uploads a course attachment file
  *
@@ -22,9 +10,13 @@ use function \translateFN;
  * @version     0.1
  */
 
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\History\History;
+use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\Upload\FileUploader;
+use Lynxlab\ADA\Main\User\ADAPractitioner;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

@@ -1,20 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\HtmlLibrary\ServicesModuleHtmlLib;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-/**
- * Add exercise
- *
- * @package
- * @author      Valerio Riva <valerio@lynxlab.com>
- * @copyright   Copyright (c) 2012, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link
- * @version     0.1
- */
-
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 

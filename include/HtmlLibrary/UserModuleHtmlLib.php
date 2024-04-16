@@ -1,21 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\Layout;
-
-use Lynxlab\ADA\Main\HtmlLibrary\UserModuleHtmlLib;
-
-use Lynxlab\ADA\Main\HtmlLibrary\FormElementCreator;
-
-use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class UserModuleHtmlLib was declared with namespace Lynxlab\ADA\Main\HtmlLibrary. //
-
 /**
  *
  * @package
@@ -33,6 +17,9 @@ namespace Lynxlab\ADA\Main\HtmlLibrary;
 use Lynxlab\ADA\CORE\html4\CBase;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\HtmlLibrary\FormElementCreator;
 use Lynxlab\ADA\Module\CollaboraACL\GrantAccessForm;
 use Lynxlab\ADA\Module\Login\AbstractLogin;
 use Lynxlab\ADA\Switcher\Subscription;

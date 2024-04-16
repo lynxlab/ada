@@ -1,9 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\PDF;
-
-use Lynxlab\ADA\Main\Output\Output;
-
 /**
  * PdfClass file
  *
@@ -30,7 +26,9 @@ use Lynxlab\ADA\Main\Output\Output;
 
 namespace Lynxlab\ADA\Main\Output;
 
-class PdfClass extends \Cezpdf
+use Cezpdf;
+
+class PdfClass extends Cezpdf
 {
     private $topMargin = 75;
     private $bottomMargin = 70;

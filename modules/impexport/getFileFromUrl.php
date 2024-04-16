@@ -1,13 +1,5 @@
 <?php
 
-use function \progressCallback;
-
-use function \formatSizeUnits;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 

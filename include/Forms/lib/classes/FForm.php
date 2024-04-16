@@ -1,21 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
-
-use Lynxlab\ADA\Main\Forms\lib\classes\FormControl;
-
-use Lynxlab\ADA\Main\Forms\lib\classes\FForm;
-
-use Lynxlab\ADA\Main\Forms\lib\classes\FCFieldset;
-
-use Lynxlab\ADA\CORE\HtmlElements\Form;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class FForm was declared with namespace Lynxlab\ADA\Main\Forms\lib\classes. //
-
 /**
  * FForm.inc.php file
  *
@@ -39,6 +23,9 @@ use function \translateFN;
 namespace Lynxlab\ADA\Main\Forms\lib\classes;
 
 use Lynxlab\ADA\CORE\html4\CBaseAttributesElement;
+use Lynxlab\ADA\Main\Forms\lib\classes\FCFieldset;
+use Lynxlab\ADA\Main\Forms\lib\classes\FormControl;
+use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

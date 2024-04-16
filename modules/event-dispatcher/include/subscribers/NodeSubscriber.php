@@ -1,9 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\EventDispatcher\Subscribers\NodeSubscriber;
-
-// Trigger: ClassWithNameSpace. The class NodeSubscriber was declared with namespace Lynxlab\ADA\Module\EventDispatcher\Subscribers. //
-
 /**
  * @package     event-dispatcher module
  * @author      giorgio <g.consorti@lynxlab.com>

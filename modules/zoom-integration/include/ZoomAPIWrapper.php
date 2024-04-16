@@ -1,9 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\ZoomIntegration\ZoomAPIWrapper;
-
-// Trigger: ClassWithNameSpace. The class ZoomAPIWrapper was declared with namespace Lynxlab\ADA\Module\ZoomIntegration. //
-
 /*
 ==============================================================================
 MIT License

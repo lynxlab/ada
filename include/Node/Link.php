@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\Node\Media;
-
-use Lynxlab\ADA\Main\Node\ADAResource;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-
 /**
  * Node, Media, Link classes
  *
@@ -26,6 +14,9 @@ use function \translateFN;
  */
 
 namespace Lynxlab\ADA\Main\Node;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\Node\ADAResource;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

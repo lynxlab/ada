@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class VideoRoom was declared with namespace Lynxlab\ADA\Comunica\VideoRoom. //
-
 /**
  * videoroom abstract class
  *
@@ -24,6 +14,8 @@ use function \translateFN;
  */
 
 namespace Lynxlab\ADA\Comunica\VideoRoom;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

@@ -7,7 +7,7 @@
 
 // First find out where we are executed from
 //define('DIR_BASE',"/home/ljp/www/jpgraph/dev/");
-define('DIR_BASE',ROOT_DIR.'include/graph/');
+define('DIR_BASE', ROOT_DIR.'include/graph/');
 
 // If the color palette is full should JpGraph try to allocate
 // the closest match? If you plan on using background image or
@@ -15,20 +15,20 @@ define('DIR_BASE',ROOT_DIR.'include/graph/');
 // If not you will otherwise get an error saying that the color palette is
 // exhausted. The drawback of using approximations is that the colors
 // might not be exactly what you specified.
-define('USE_APPROX_COLORS',true);
+define('USE_APPROX_COLORS', true);
 
 // Should usage of deprecated functions and parameters give a fatal error?
 // (Useful to check if code is future proof.)
-define('ERR_DEPRECATED',true);
+define('ERR_DEPRECATED', true);
 
 // Should we try to read from the cache? Set to false to bypass the
 // reading of the cache and always re-generate the image and save it in
 // the cache. Useful for debugging.
-define('READ_CACHE',false);
+define('READ_CACHE', false);
 
 // The full name of directory to be used as a cache. This directory MUST
 // be readable and writable for PHP. Must end with '/'
-define('CACHE_DIR',DIR_BASE.'jpgraph_cache/');
+define('CACHE_DIR', DIR_BASE.'jpgraph_cache/');
 
 // Directory for TTF fonts. Must end with '/'
-define('TTF_DIR',DIR_BASE.'ttf/');
+define('TTF_DIR', DIR_BASE.'ttf/');

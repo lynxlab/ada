@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Widgets\Widget;
-
-use Lynxlab\ADA\Widgets\AjaxRemoteContent;
-
-// Trigger: ClassWithNameSpace. The class Widget was declared with namespace Lynxlab\ADA\Widgets. //
-
 /*
  * widgets_inc.php Copyright 2013 Lynx This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
@@ -13,6 +7,7 @@ use Lynxlab\ADA\Widgets\AjaxRemoteContent;
 namespace Lynxlab\ADA\Widgets;
 
 use Lynxlab\ADA\Main\ArrayToXML\ArrayToXML;
+use Lynxlab\ADA\Widgets\AjaxRemoteContent;
 
 /**
  * class representation of a widget

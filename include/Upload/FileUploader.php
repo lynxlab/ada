@@ -1,9 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Upload\FileUploader;
-
-// Trigger: ClassWithNameSpace. The class FileUploader was declared with namespace Lynxlab\ADA\Main\Upload. //
-
 /**
  * FileUploader file
  *

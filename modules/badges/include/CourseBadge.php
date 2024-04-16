@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Badges\CourseBadge;
-
-use Lynxlab\ADA\Module\Badges\BadgesBase;
-
-use Lynxlab\ADA\Module\Badges\Badge;
-
-use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
-
-// Trigger: ClassWithNameSpace. The class CourseBadge was declared with namespace Lynxlab\ADA\Module\Badges. //
-
 /**
  * @package     badges module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -20,13 +10,14 @@ use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
 
 namespace Lynxlab\ADA\Module\Badges;
 
+use Ramsey\Uuid\Uuid;
+
 /**
  * Badge class
  *
  * @author giorgio
  *
  */
-
 class CourseBadge extends BadgesBase
 {
     /**
@@ -69,7 +60,7 @@ class CourseBadge extends BadgesBase
      */
     public function setBadgeUuidBin($uuid)
     {
-        $tmpuuid = \Ramsey\Uuid\Uuid::fromBytes($uuid);
+        $tmpuuid = Uuid::fromBytes($uuid);
         return $this->setBadgeUuid($tmpuuid->toString());
     }
 

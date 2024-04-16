@@ -1,22 +1,6 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
 use Lynxlab\ADA\Main\AMA\AMADB;
-
-use function \translateFN;
-
-/**
- * LOGIN MODULE
- *
- * @package     login module
- * @author      giorgio <g.consorti@lynxlab.com>
- * @copyright   Copyright (c) 2015-2021, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version     0.1
- */
-
-use AMADB;
 use Lynxlab\ADA\Module\Login\AMALoginDataHandler;
 use Lynxlab\ADA\Module\Login\Constants;
 use Lynxlab\ADA\Module\Login\LoginProviderManagement;

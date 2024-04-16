@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Comunica\Event\ADAEventProposal;
-
-// Trigger: ClassWithNameSpace. The class ADAEventProposal was declared with namespace Lynxlab\ADA\Comunica\Event. //
-
 namespace Lynxlab\ADA\Comunica\Event;
 
 use Lynxlab\ADA\Main\AMA\MultiPort;

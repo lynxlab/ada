@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\HtmlLibrary\EguidanceSession;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class EguidanceSession was declared with namespace Lynxlab\ADA\Main\HtmlLibrary. //
-
 /**
  *
  * @package

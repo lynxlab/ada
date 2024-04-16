@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Comunica\Spools\Mailer;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class Mailer was declared with namespace Lynxlab\ADA\Comunica\Spools. //
-
 namespace Lynxlab\ADA\Comunica\Spools;
 
 use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;

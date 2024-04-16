@@ -1,23 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\ARE;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use Lynxlab\ADA\Main\ADAError;
-
-use function \translateFN;
-
 /**
  * ADD NODE.
  *
@@ -32,7 +14,14 @@ use function \translateFN;
  */
 
 use Lynxlab\ADA\Browsing\CourseViewer;
+use Lynxlab\ADA\Main\ADAError;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
+use Lynxlab\ADA\Main\History\History;
+use Lynxlab\ADA\Main\Node\Node;
+use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\User\ADAPractitioner;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\NodeEvent;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;

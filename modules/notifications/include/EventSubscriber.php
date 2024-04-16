@@ -1,27 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Notifications\QueueManager;
-
-use Lynxlab\ADA\Module\Notifications\NotificationActions;
-
-use Lynxlab\ADA\Module\Notifications\Notification;
-
-use Lynxlab\ADA\Module\Notifications\EmailQueueItem;
-
-use Lynxlab\ADA\Module\Notifications\AMANotificationsDataHandler;
-
-use Lynxlab\ADA\Module\CloneInstance\EventSubscriber;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\CORE\html4\CBase;
-
-use Lynxlab\ADA\Main\AMA\AMATesterDataHandler;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use function \translateFN;
-
 /**
  * @package     notifications module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -34,17 +12,23 @@ namespace Lynxlab\ADA\Module\Notifications;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Course\CourseInstance;
-use PHPSQLParser\PHPSQLCreator;
-use PHPSQLParser\PHPSQLParser;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
 use Lynxlab\ADA\Module\EventDispatcher\Events\ForumEvent;
 use Lynxlab\ADA\Module\EventDispatcher\Events\NodeEvent;
 use Lynxlab\ADA\Module\EventDispatcher\Subscribers\ADAMethodSubscriberInterface;
 use Lynxlab\ADA\Module\EventDispatcher\Subscribers\ADAScriptSubscriberInterface;
+use Lynxlab\ADA\Module\Notifications\AMANotificationsDataHandler;
+use Lynxlab\ADA\Module\Notifications\EmailQueueItem;
+use Lynxlab\ADA\Module\Notifications\Notification;
+use Lynxlab\ADA\Module\Notifications\NotificationActions;
+use Lynxlab\ADA\Module\Notifications\QueueManager;
+use PHPSQLParser\PHPSQLCreator;
+use PHPSQLParser\PHPSQLParser;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

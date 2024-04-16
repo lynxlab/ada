@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Test\TemplateEditorControlTest;
-
-use Lynxlab\ADA\Main\Output\Template;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class TemplateEditorControlTest was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  *
  * @package

@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\Node\Media;
-
-use Lynxlab\ADA\Main\Node\EmptyMedia;
-
-use Lynxlab\ADA\Main\Node\ADAResource;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-// Trigger: ClassWithNameSpace. The class Media was declared with namespace Lynxlab\ADA\Main\Node. //
-
 /**
  * Node, Media, Link classes
  *
@@ -27,7 +15,10 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 
 namespace Lynxlab\ADA\Main\Node;
 
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Media\MediaViewer;
+use Lynxlab\ADA\Main\Node\ADAResource;
+use Lynxlab\ADA\Main\Node\EmptyMedia;
 
 class Media extends ADAResource
 {

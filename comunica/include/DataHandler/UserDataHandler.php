@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
-
-use Lynxlab\ADA\Comunica\DataHandler\UserDataHandler;
-
-// Trigger: ClassWithNameSpace. The class UserDataHandler was declared with namespace Lynxlab\ADA\Comunica\DataHandler. //
-
 /**
  * UserDataHandler
  *

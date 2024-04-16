@@ -1,9 +1,5 @@
 <?php
 
-use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
-
-// Trigger: ClassWithNameSpace. The class ADAPHPMailer was declared with namespace Lynxlab\ADA\ADAPHPMailer. //
-
 namespace Lynxlab\ADA\ADAPHPMailer;
 
 use Lynxlab\ADA\Main\Logger\ADAFileLogger;

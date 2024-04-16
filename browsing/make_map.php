@@ -1,7 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
 use Lynxlab\ADA\Browsing\ImageDevice;
 
 use function Lynxlab\ADA\Browsing\GraphMap\computeMaxFN;

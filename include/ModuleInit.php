@@ -1,25 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\User\ADAUser;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\Layout;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
-
-use Lynxlab\ADA\Main\ADAError;
-
-use function \translateFN;
-
 /**
  * Functions used by module_init.inc.php
  *
@@ -38,6 +18,10 @@ use function \translateFN;
 namespace Lynxlab\ADA\Main\ModuleInit;
 
 use Detection\MobileDetect;
+use Lynxlab\ADA\Main\ADAError;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\DataValidator;

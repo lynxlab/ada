@@ -1,19 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\CORE\html4\CElement;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use Lynxlab\ADA\Browsing\DFSNavigationBar;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class DFSNavigationBar was declared with namespace Lynxlab\ADA\Browsing. //
-
 /**
  * DFSNavigationBar.inc.php
  *
@@ -31,6 +17,8 @@ namespace Lynxlab\ADA\Browsing;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Node\Node;

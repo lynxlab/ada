@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Badges\RewardedBadge;
-
-use Lynxlab\ADA\Module\Badges\BadgesBase;
-
-use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class RewardedBadge was declared with namespace Lynxlab\ADA\Module\Badges. //
-
 /**
  * @package     badges module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -25,6 +13,8 @@ namespace  Lynxlab\ADA\Module\Badges;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
+use Lynxlab\ADA\Module\Badges\BadgesBase;
 use Ramsey\Uuid\Uuid;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

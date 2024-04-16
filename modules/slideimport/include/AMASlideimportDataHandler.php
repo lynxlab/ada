@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Slideimport\AMASlideimportDataHandler;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-// Trigger: ClassWithNameSpace. The class AMASlideimportDataHandler was declared with namespace Lynxlab\ADA\Module\Slideimport. //
-
 /**
  * SLIDEIMPORT MODULE.
  *

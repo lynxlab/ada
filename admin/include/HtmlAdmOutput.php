@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\Output\Layout;
-
-use Lynxlab\ADA\Admin\HtmlAdmOutput;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class HtmlAdmOutput was declared with namespace Lynxlab\ADA\Admin. //
-
 //
 // +----------------------------------------------------------------------+
 // | ADA version 1.8                                                              |

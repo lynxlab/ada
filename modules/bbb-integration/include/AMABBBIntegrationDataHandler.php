@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\BBBIntegration\AMABBBIntegrationDataHandler;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-// Trigger: ClassWithNameSpace. The class AMABBBIntegrationDataHandler was declared with namespace Lynxlab\ADA\Module\BBBIntegration. //
-
 /**
  * @package     ADA BigBlueButton Integration
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -18,6 +10,8 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 
 namespace Lynxlab\ADA\Module\BBBIntegration;
 
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Ramsey\Uuid\Uuid;
 
 class AMABBBIntegrationDataHandler extends AMADataHandler

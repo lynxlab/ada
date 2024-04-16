@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\CORE\HtmlElements\Tform;
-
-use Lynxlab\ADA\CORE\HtmlElements\Table;
-
-use Lynxlab\ADA\CORE\HtmlElements\HTMLElement;
-
-use Lynxlab\ADA\CORE\HtmlElements\Form;
-
-// Trigger: ClassWithNameSpace. The class HTMLElement was declared with namespace Lynxlab\ADA\CORE\HtmlElements. //
-
 /**
  * Html_element, Table, Ilist, Form and Tform classes
  *

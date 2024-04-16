@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\Course\CourseInstance;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use Lynxlab\ADA\Main\Course\AbstractCourseInstance;
-
-// Trigger: ClassWithNameSpace. The class CourseInstance was declared with namespace Lynxlab\ADA\Main\Course. //
-
 /**
  * CourseInstance file
  *
@@ -22,6 +12,8 @@ use Lynxlab\ADA\Main\Course\AbstractCourseInstance;
  */
 
 namespace Lynxlab\ADA\Main\Course;
+
+use Lynxlab\ADA\Main\Course\AbstractCourseInstance;
 
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 

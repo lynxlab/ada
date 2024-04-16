@@ -1,9 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\CloneInstance\CloneInstanceActions;
-
-// Trigger: ClassWithNameSpace. The class CloneInstanceActions was declared with namespace Lynxlab\ADA\Module\CloneInstance. //
-
 /**
  * @package     cloneinstance module
  * @author      giorgio <g.consorti@lynxlab.com>

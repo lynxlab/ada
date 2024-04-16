@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Apps\AMAAppsDataHandler;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
-
-// Trigger: ClassWithNameSpace. The class AMAAppsDataHandler was declared with namespace Lynxlab\ADA\Module\Apps. //
-
 /**
  * APPS MODULE.
  *

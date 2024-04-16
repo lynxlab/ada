@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Test\QuestionFormTest;
-
-use Lynxlab\ADA\Module\Test\QuestionDragDropClozeFormTest;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class QuestionDragDropClozeFormTest was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  *
  * @package
@@ -21,6 +11,8 @@ use function \translateFN;
  */
 
 namespace Lynxlab\ADA\Module\Test;
+
+use Lynxlab\ADA\Module\Test\QuestionFormTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

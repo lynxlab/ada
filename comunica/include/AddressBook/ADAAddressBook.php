@@ -1,21 +1,11 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
-
-use Lynxlab\ADA\Comunica\AddressBook\ADAAddressBook;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class ADAAddressBook was declared with namespace Lynxlab\ADA\Comunica\AddressBook. //
-
 namespace Lynxlab\ADA\Comunica\AddressBook;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 

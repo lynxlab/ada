@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\CollaboraACL\FileACL;
-
-use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLBase;
-
-use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLActions;
-
-use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
-
-use Lynxlab\ADA\Main\User\ADAUser;
-
-// Trigger: ClassWithNameSpace. The class FileACL was declared with namespace Lynxlab\ADA\Module\CollaboraACL. //
-
 /**
  * @package     collabora-access-list module
  * @author      giorgio <g.consorti@lynxlab.com>

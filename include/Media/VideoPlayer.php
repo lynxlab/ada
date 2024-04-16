@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\Media\VideoPlayer;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class VideoPlayer was declared with namespace Lynxlab\ADA\Main\Media. //
-
 /**
  * Media Viewers
  *
@@ -25,6 +15,7 @@ use function \translateFN;
 
 namespace Lynxlab\ADA\Main\Media;
 
+use getID3;
 use Lynxlab\ADA\Main\HtmlLibrary\MediaViewingHtmlLib;
 use Lynxlab\ADA\Main\Node\Media;
 
@@ -64,7 +55,7 @@ class VideoPlayer
     public static function view($http_file_path, $file_name, $VideoPlayingPreferences = VIDEO_PLAYING_MODE, $videoTitle = null, $width = null, $height = null)
     {
 
-        $getID3 = new \getID3();
+        $getID3 = new getID3();
         $toAnalyze = (!empty($http_file_path) ? $http_file_path : ROOT_DIR) . $file_name;
         $fileInfo = $getID3->analyze(urldecode(str_replace(HTTP_ROOT_DIR, ROOT_DIR, $toAnalyze)));
 

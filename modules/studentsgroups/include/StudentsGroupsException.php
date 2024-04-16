@@ -10,12 +10,14 @@
 
 namespace Lynxlab\ADA\Module\StudentsGroups;
 
+use Exception;
+
 /**
  * StudentsGroupsException class to handle custom exceptions
  *
  * @author giorgio
  */
-class StudentsGroupsException extends \Exception
+class StudentsGroupsException extends Exception
 {
     // custom string representation of object
     public function __toString()

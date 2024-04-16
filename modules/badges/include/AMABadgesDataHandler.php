@@ -1,27 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Badges\RewardedBadge;
-
-use Lynxlab\ADA\Module\Badges\CourseBadge;
-
-use Lynxlab\ADA\Module\Badges\Badge;
-
-use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class AMABadgesDataHandler was declared with namespace Lynxlab\ADA\Module\Badges. //
-
 /**
  * @package     badges module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -32,6 +10,12 @@ use function \translateFN;
 
 namespace Lynxlab\ADA\Module\Badges;
 
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\AMAError;
+use Lynxlab\ADA\Module\Badges\Badge;
+use Lynxlab\ADA\Module\Badges\CourseBadge;
+use Lynxlab\ADA\Module\Badges\RewardedBadge;
 use Ramsey\Uuid\Uuid;
 use ReflectionClass;
 use ReflectionProperty;
@@ -218,7 +202,7 @@ class AMABadgesDataHandler extends AMA_DataHandler
             $saveData['uuid_bin'] = $uuid->getBytes();
             $result = $this->executeCriticalPrepared(
                 $this->sqlInsert(
-                    \Lynxlab\ADA\Module\Badges\Badge::TABLE,
+                    Badge::TABLE,
                     $saveData
                 ),
                 array_values($saveData)
@@ -229,7 +213,7 @@ class AMABadgesDataHandler extends AMA_DataHandler
             $whereArr = ['uuid' => $uuid->toString()];
             $result = $this->queryPrepared(
                 $this->sqlUpdate(
-                    \Lynxlab\ADA\Module\Badges\Badge::TABLE,
+                    Badge::TABLE,
                     array_keys($saveData),
                     $whereArr
                 ),
@@ -266,7 +250,7 @@ class AMABadgesDataHandler extends AMA_DataHandler
 
         $result = $this->queryPrepared(
             $this->sqlDelete(
-                \Lynxlab\ADA\Module\Badges\Badge::TABLE,
+                Badge::TABLE,
                 $saveData
             ),
             array_values($saveData)

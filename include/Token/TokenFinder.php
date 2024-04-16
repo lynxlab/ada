@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Token\UserRegistrationToken;
-
-use Lynxlab\ADA\Main\Token\TokenFinder;
-
-use Lynxlab\ADA\Main\Token\ChangePasswordToken;
-
-use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
-
-// Trigger: ClassWithNameSpace. The class TokenFinder was declared with namespace Lynxlab\ADA\Main\Token. //
-
 namespace Lynxlab\ADA\Main\Token;
 
 class TokenFinder

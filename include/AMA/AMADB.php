@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\AMA\AMAPDOWrapper;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\ADAError;
-
-// Trigger: ClassWithNameSpace. The class AMADB was declared with namespace Lynxlab\ADA\Main\AMA. //
-
 /**
  * AMA_DB DB abstraction layer.
  *
@@ -33,6 +23,9 @@ use Lynxlab\ADA\Main\ADAError;
 
 namespace Lynxlab\ADA\Main\AMA;
 
+use Lynxlab\ADA\Main\ADAError;
+use Lynxlab\ADA\Main\AMA\AMAError;
+use Lynxlab\ADA\Main\AMA\AMAPDOWrapper;
 use PDOException;
 
 /**

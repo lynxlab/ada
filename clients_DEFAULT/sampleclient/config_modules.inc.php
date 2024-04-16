@@ -1,6 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 /**
  * client own modules configuration
  *

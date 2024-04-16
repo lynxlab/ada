@@ -1,19 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Impersonate\LinkedUsers;
-
-use Lynxlab\ADA\Module\Impersonate\AMAImpersonateDataHandler;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class AMAImpersonateDataHandler was declared with namespace Lynxlab\ADA\Module\Impersonate. //
-
 /**
  * @package     impersonate module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -23,6 +9,12 @@ use function \translateFN;
  */
 
 namespace Lynxlab\ADA\Module\Impersonate;
+
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Module\Impersonate\LinkedUsers;
+use ReflectionClass;
+use ReflectionProperty;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -120,12 +112,12 @@ class AMAImpersonateDataHandler extends AMA_DataHandler
         ) {
             $className = self::MODELNAMESPACE . $className;
         }
-        $reflection = new \ReflectionClass($className);
+        $reflection = new ReflectionClass($className);
         $properties =  array_map(
             function ($el) {
                 return $el->getName();
             },
-            $reflection->getProperties(\ReflectionProperty::IS_PRIVATE | \ReflectionProperty::IS_PROTECTED | \ReflectionProperty::IS_PUBLIC)
+            $reflection->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PUBLIC)
         );
 
         // get object properties to be loaded as a kind of join

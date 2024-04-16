@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\GDPR\GdprLookupRequestForm;
-
-use Lynxlab\ADA\Module\GDPR\GdprAbstractForm;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class GdprLookupRequestForm was declared with namespace Lynxlab\ADA\Module\GDPR. //
-
 /**
  * @package     gdpr module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -23,6 +13,7 @@ namespace Lynxlab\ADA\Module\GDPR;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
+use Lynxlab\ADA\Module\GDPR\GdprAbstractForm;
 use Ramsey\Uuid\Uuid;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

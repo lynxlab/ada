@@ -1,21 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Services\NodeEditing\NodeEditingViewer;
-
-use Lynxlab\ADA\Services\NodeEditing\NodeEditing;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Node\Media;
-
-use Lynxlab\ADA\CORE\html4\CBase;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class NodeEditingViewer was declared with namespace Lynxlab\ADA\Services\NodeEditing. //
-
 /**
  * NodeEditingViewer class.
  *
@@ -33,6 +17,7 @@ use Lynxlab\ADA\Browsing\CourseViewer;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Translator;
+use Lynxlab\ADA\Services\NodeEditing\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Services\Functions\getNodeDataFromPost;

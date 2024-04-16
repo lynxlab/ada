@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Token\ChangePasswordToken;
-
-use Lynxlab\ADA\Main\Token\ActionToken;
-
-// Trigger: ClassWithNameSpace. The class ChangePasswordToken was declared with namespace Lynxlab\ADA\Main\Token. //
-
 namespace Lynxlab\ADA\Main\Token;
 
 class ChangePasswordToken extends ActionToken

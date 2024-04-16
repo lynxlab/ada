@@ -1,19 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\GDPR\GdprPolicy;
-
-use Lynxlab\ADA\Module\GDPR\GdprBase;
-
-use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\CORE\html4\CBaseElement;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class GdprPolicy was declared with namespace Lynxlab\ADA\Module\GDPR. //
-
 /**
  * @package     gdpr module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -26,6 +12,8 @@ namespace Lynxlab\ADA\Module\GDPR;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
+use Lynxlab\ADA\Module\GDPR\GdprBase;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

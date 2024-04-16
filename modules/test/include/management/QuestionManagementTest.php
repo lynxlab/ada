@@ -1,45 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Module\Test\QuestionManagementTest;
-
-use Lynxlab\ADA\Module\Test\ManagementTest;
-
-use Lynxlab\ADA\Module\Test\QuestionStandardFormTest;
-
-use Lynxlab\ADA\Module\Test\QuestionSelectClozeFormTest;
-
-use Lynxlab\ADA\Module\Test\QuestionOpenFormTest;
-
-use Lynxlab\ADA\Module\Test\QuestionMultipleClozeFormTest;
-
-use Lynxlab\ADA\Module\Test\QuestionFormTest;
-
-use Lynxlab\ADA\Module\Test\QuestionEraseClozeFormTest;
-
-use Lynxlab\ADA\Module\Test\QuestionEmptyFormTest;
-
-use Lynxlab\ADA\Module\Test\QuestionDragDropClozeFormTest;
-
-use Lynxlab\ADA\Module\Test\DeleteFormTest;
-
-use Lynxlab\ADA\Module\Test\QuestionSlotClozeTest;
-
-use Lynxlab\ADA\Module\Test\QuestionMultipleClozeTest;
-
-use Lynxlab\ADA\Module\Test\QuestionEraseClozeTest;
-
-use Lynxlab\ADA\Module\Test\QuestionClozeTest;
-
-use Lynxlab\ADA\Module\Test\AMATestDataHandler;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class QuestionManagementTest was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -51,6 +11,21 @@ use function \translateFN;
 namespace Lynxlab\ADA\Module\Test;
 
 use Lynxlab\ADA\Main\Node\Node;
+use Lynxlab\ADA\Module\Test\AMATestDataHandler;
+use Lynxlab\ADA\Module\Test\DeleteFormTest;
+use Lynxlab\ADA\Module\Test\ManagementTest;
+use Lynxlab\ADA\Module\Test\QuestionClozeTest;
+use Lynxlab\ADA\Module\Test\QuestionDragDropClozeFormTest;
+use Lynxlab\ADA\Module\Test\QuestionEmptyFormTest;
+use Lynxlab\ADA\Module\Test\QuestionEraseClozeFormTest;
+use Lynxlab\ADA\Module\Test\QuestionEraseClozeTest;
+use Lynxlab\ADA\Module\Test\QuestionFormTest;
+use Lynxlab\ADA\Module\Test\QuestionMultipleClozeFormTest;
+use Lynxlab\ADA\Module\Test\QuestionMultipleClozeTest;
+use Lynxlab\ADA\Module\Test\QuestionOpenFormTest;
+use Lynxlab\ADA\Module\Test\QuestionSelectClozeFormTest;
+use Lynxlab\ADA\Module\Test\QuestionSlotClozeTest;
+use Lynxlab\ADA\Module\Test\QuestionStandardFormTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\redirect;

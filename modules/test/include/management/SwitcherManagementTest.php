@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Module\Test\SwitcherManagementTest;
-
-use Lynxlab\ADA\Module\Test\SwitcherFormTest;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class SwitcherManagementTest was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -25,6 +13,7 @@ namespace Lynxlab\ADA\Module\Test;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Module\Test\SwitcherFormTest;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\getMaxIdFN;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

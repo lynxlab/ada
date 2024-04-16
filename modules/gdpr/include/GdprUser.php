@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\GDPR\GdprUserType;
-
-use Lynxlab\ADA\Module\GDPR\GdprUser;
-
-use Lynxlab\ADA\Module\GDPR\GdprBase;
-
-use Lynxlab\ADA\Module\GDPR\GdprAPI;
-
-use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
-
-// Trigger: ClassWithNameSpace. The class GdprUser was declared with namespace Lynxlab\ADA\Module\GDPR. //
-
 /**
  * @package     gdpr module
  * @author      giorgio <g.consorti@lynxlab.com>

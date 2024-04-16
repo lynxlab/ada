@@ -1,17 +1,11 @@
 <?php
 
-use Lynxlab\ADA\Module\StudentsGroups\StudentsGroupsBase;
-
-use Lynxlab\ADA\Module\StudentsGroups\AMAStudentsGroupsDataHandler;
-
-use Lynxlab\ADA\Module\EtherpadIntegration\Groups;
-
-// Trigger: ClassWithNameSpace. The class Groups was declared with namespace Lynxlab\ADA\Module\StudentsGroups. //
-
 namespace Lynxlab\ADA\Module\StudentsGroups;
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\User\ADAUser;
+use Lynxlab\ADA\Module\StudentsGroups\AMAStudentsGroupsDataHandler;
+use Lynxlab\ADA\Module\StudentsGroups\StudentsGroupsBase;
 
 class Groups extends StudentsGroupsBase
 {

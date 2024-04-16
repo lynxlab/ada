@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Badges\BadgesAbstractForm;
-
-use Lynxlab\ADA\Module\Badges\BadgeForm;
-
-use Lynxlab\ADA\Module\Badges\Badge;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class BadgeForm was declared with namespace Lynxlab\ADA\Module\Badges. //
-
 /**
  * @package     badges module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -24,6 +12,7 @@ namespace Lynxlab\ADA\Module\Badges;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Module\Badges\BadgesAbstractForm;
 use Ramsey\Uuid\Uuid;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

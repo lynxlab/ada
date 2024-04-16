@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
-
-use Lynxlab\ADA\Module\Servicecomplete\CompleteCondition;
-
-use Lynxlab\ADA\CORE\html4\CElement;
-
-use Lynxlab\ADA\Main\ADAError;
-
-// Trigger: ClassWithNameSpace. The class CompleteCondition was declared with namespace Lynxlab\ADA\Module\Servicecomplete. //
-
 /**
  * SERVICE-COMPLETE MODULE.
  *
@@ -25,7 +15,9 @@ namespace Lynxlab\ADA\Module\Servicecomplete;
 
 use Exception;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\Logger\ADAFileLogger;
+use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
 
 /**
  * abstract class for describing a complete condition.

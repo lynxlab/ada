@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Login\AbstractLogin;
-
-use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
-
-// Trigger: ClassWithNameSpace. The class ModuleLoaderHelper was declared with namespace Lynxlab\ADA\Main\Helper. //
-
 /**
  * @package     module
  * @author      giorgio <g.consorti@lynxlab.com>

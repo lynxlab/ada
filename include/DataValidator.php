@@ -1,9 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\DataValidator;
-
-// Trigger: ClassWithNameSpace. The class DataValidator was declared with namespace Lynxlab\ADA\Main. //
-
 /**
  *
  * @author      Stefano Penge <steve@lynxlab.com>

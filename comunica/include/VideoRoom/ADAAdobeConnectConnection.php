@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
-
-use Lynxlab\ADA\Comunica\VideoRoom\ADAAdobeConnectConnection;
-
-// Trigger: ClassWithNameSpace. The class ADAAdobeConnectConnection was declared with namespace Lynxlab\ADA\Comunica\VideoRoom. //
-
 namespace Lynxlab\ADA\Comunica\VideoRoom;
 
 use AdobeConnect\Connection;

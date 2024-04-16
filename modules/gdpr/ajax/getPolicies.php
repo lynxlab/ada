@@ -1,24 +1,10 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-/**
- * @package     gdpr module
- * @author      giorgio <g.consorti@lynxlab.com>
- * @copyright   Copyright (c) 2018, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version     0.1
- */
-
 use Lynxlab\ADA\CORE\html4\CBase;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
-use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use Lynxlab\ADA\Module\GDPR\GdprActions;
+use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use Lynxlab\ADA\Module\GDPR\GdprException;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
 
@@ -92,7 +78,7 @@ try {
     } else {
         $data['data'] = [];
     }
-} catch (\Exception $e) {
+} catch (Exception $e) {
     //  header(' ', true, 400);
     $data['data'] = [];
     $data['data']['error'] = $e->getMessage();

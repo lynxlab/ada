@@ -1,27 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\User\ADAUser;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
-
-use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
-
-use Lynxlab\ADA\Main\ADAError;
-
-use Lynxlab\ADA\Comunica\DataHandler\UserDataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class CommunicationModuleHtmlLib was declared with namespace Lynxlab\ADA\Main\HtmlLibrary. //
-
 /**
  *
  * @package
@@ -39,7 +17,9 @@ namespace Lynxlab\ADA\Main\HtmlLibrary;
 use Lynxlab\ADA\Comunica\Event\ADAEventProposal;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 use Lynxlab\ADA\Main\User\ADAGuest;
 use Lynxlab\ADA\Main\User\ADALoggableUser;

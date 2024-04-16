@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\StudentsGroups\SubscribeGroupForm;
-
-use Lynxlab\ADA\Module\StudentsGroups\StudentsGroupsAbstractForm;
-
-use Lynxlab\ADA\Module\EtherpadIntegration\Groups;
-
-// Trigger: ClassWithNameSpace. The class SubscribeGroupForm was declared with namespace Lynxlab\ADA\Module\StudentsGroups. //
-
 /**
  * @package     studentsgroups module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -20,6 +12,8 @@ namespace Lynxlab\ADA\Module\StudentsGroups;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Module\EtherpadIntegration\Groups;
+use Lynxlab\ADA\Module\StudentsGroups\StudentsGroupsAbstractForm;
 
 /**
  * Class for the group object form

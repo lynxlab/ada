@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Service\ServiceImplementor;
-
-use Lynxlab\ADA\Main\Service\Service;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class ServiceImplementor was declared with namespace Lynxlab\ADA\Main\Service. //
-
 /**
  * SERVICE.
  *
@@ -27,6 +15,7 @@ use function \translateFN;
 
 namespace Lynxlab\ADA\Main\Service;
 
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

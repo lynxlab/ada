@@ -1,9 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
 namespace Lynxlab\ADA\Main\Upload\Functions;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

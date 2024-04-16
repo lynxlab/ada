@@ -10,12 +10,14 @@
 
 namespace Lynxlab\ADA\Module\Badges;
 
+use Exception;
+
 /**
  * BadgesException class to handle custom exceptions
  *
  * @author giorgio
  */
-class BadgesException extends \Exception
+class BadgesException extends Exception
 {
     // custom string representation of object
     public function __toString()

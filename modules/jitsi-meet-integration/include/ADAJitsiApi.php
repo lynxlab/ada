@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\JitsiIntegration\AMAJitsiIntegrationDataHandler;
-
-use Lynxlab\ADA\Module\JitsiIntegration\ADAJitsiApi;
-
-// Trigger: ClassWithNameSpace. The class ADAJitsiApi was declared with namespace Lynxlab\ADA\Module\JitsiIntegration. //
-
 /**
  * @package     ADA Jitsi Integration
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -18,6 +12,7 @@ namespace Lynxlab\ADA\Module\JitsiIntegration;
 
 use Exception;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Module\JitsiIntegration\AMAJitsiIntegrationDataHandler;
 
 class ADAJitsiApi
 {

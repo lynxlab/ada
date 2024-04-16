@@ -1,25 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Module\Test\AMATestDataHandler;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\JS;
-
-use Lynxlab\ADA\Main\Node\Media;
-
-use Lynxlab\ADA\Main\Course\Student;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class Student was declared with namespace Lynxlab\ADA\Main\Course. //
-
 /**
  * Student class
  *
@@ -36,6 +16,7 @@ namespace Lynxlab\ADA\Main\Course;
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Bookmark\Bookmark;
 use Lynxlab\ADA\Main\History\History;
@@ -43,6 +24,7 @@ use Lynxlab\ADA\Main\User\ADAPractitioner;
 use Lynxlab\ADA\Module\Badges\RewardedBadge;
 use Lynxlab\ADA\Module\Servicecomplete\AMACompleteDataHandler;
 use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
+use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

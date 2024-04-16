@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\InstancesReport\InstancesReportActions;
-
-use Lynxlab\ADA\Module\CloneInstance\EventSubscriber;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
 /**
  * @package     instancesreport module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -21,6 +13,7 @@ namespace Lynxlab\ADA\Module\InstancesReport;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
 use Lynxlab\ADA\Module\EventDispatcher\Events\MenuEvent;
 use Lynxlab\ADA\Module\EventDispatcher\Subscribers\ADAScriptSubscriberInterface;
+use Lynxlab\ADA\Module\InstancesReport\InstancesReportActions;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\CloneInstance\EventSubscriber;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class EventSubscriber was declared with namespace Lynxlab\ADA\Module\CloneInstance. //
-
 /**
  * @package     cloneinstance module
  * @author      giorgio <g.consorti@lynxlab.com>

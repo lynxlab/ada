@@ -10,12 +10,14 @@
 
 namespace Lynxlab\ADA\Module\ForkedPaths;
 
+use Exception;
+
 /**
  * ForkedPathsException class to handle custom exceptions
  *
  * @author giorgio
  */
-class ForkedPathsException extends \Exception
+class ForkedPathsException extends Exception
 {
     // custom string representation of object
     public function __toString()

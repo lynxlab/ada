@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Forms\UserCompetencesForm;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class UserCompetencesForm was declared with namespace Lynxlab\ADA\Main\Forms. //
-
 /**
  * UserJobExperienceForm file
 *

@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Bookmark\Bookmark;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class Bookmark was declared with namespace Lynxlab\ADA\Main\Bookmark. //
-
 //
 // +----------------------------------------------------------------------+
 // | ADA version 1.8                                                      |
@@ -37,6 +25,7 @@ namespace Lynxlab\ADA\Main\Bookmark;
 use Lynxlab\ADA\CORE\HtmlElements\Form;
 use Lynxlab\ADA\CORE\HtmlElements\IList;
 use Lynxlab\ADA\CORE\HtmlElements\Table;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;

@@ -1,25 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\GDPR\GdprPolicy;
-
-use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsHistory;
-
-use Lynxlab\ADA\Module\ForkedPaths\AMAForkedPathsDataHandler;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\MultiPort;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
-
-use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class AMAForkedPathsDataHandler was declared with namespace Lynxlab\ADA\Module\ForkedPaths. //
-
 /**
  * @package     forked-paths module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -30,6 +10,9 @@ use function \translateFN;
 
 namespace Lynxlab\ADA\Module\ForkedPaths;
 
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsHistory;
 use ReflectionClass;
 use ReflectionProperty;
 

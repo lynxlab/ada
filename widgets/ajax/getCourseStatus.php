@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\User\ADAUser;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-
 /**
  * ADA course status widget
  *
@@ -33,8 +21,12 @@ use function \translateFN;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\History\History;
+use Lynxlab\ADA\Main\User\ADAUser;
 use Lynxlab\ADA\Module\Servicecomplete\AMACompleteDataHandler;
 use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
 use Lynxlab\ADA\Widgets\Widget;

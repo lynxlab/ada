@@ -1,27 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\User\ADAUser;
-
-use Lynxlab\ADA\Main\User\ADALoggableUser;
-
-use Lynxlab\ADA\Main\User\ADAGenericUser;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\CORE\HtmlElements\Table;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use Lynxlab\ADA\Main\ADAError;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class ADALoggableUser was declared with namespace Lynxlab\ADA\Main\User. //
-
 /**
  * User classes
  *
@@ -41,9 +19,13 @@ namespace Lynxlab\ADA\Main\User;
 
 use Error;
 use Exception;
+use Lynxlab\ADA\Main\ADAError;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\User\ADAGenericUser;
 use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
 use TypeError;

@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
-
-use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
-
-// Trigger: ClassWithNameSpace. The class AMACommonDataHandler was declared with namespace Lynxlab\ADA\Main\AMA. //
-
 /**
  *
  * Common
@@ -23,6 +11,9 @@ use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
 
 namespace Lynxlab\ADA\Main\AMA;
 
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\Logger\ADALogger;
 
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;

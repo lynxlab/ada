@@ -1,9 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\GDPR\GdprBase;
-
-// Trigger: ClassWithNameSpace. The class GdprBase was declared with namespace Lynxlab\ADA\Module\GDPR. //
-
 /**
  * @package     gdpr module
  * @author      giorgio <g.consorti@lynxlab.com>

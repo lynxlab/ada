@@ -1,7 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Template;
-
 /**
  * Functions used by index.php
  *

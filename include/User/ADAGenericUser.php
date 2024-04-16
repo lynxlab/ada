@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\User\ADAGenericUser;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class ADAGenericUser was declared with namespace Lynxlab\ADA\Main\User. //
-
 /**
  * User classes
  *
@@ -29,6 +19,7 @@ namespace Lynxlab\ADA\Main\User;
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\User\ADAPractitioner;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

@@ -1,32 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\CollaboraACL\FileACL;
-
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\CourseInstance;
-
-use Lynxlab\ADA\CORE\html4\CElement;
-
-use function \translateFN;
-
-/**
- * delete_uploadedFile.php - delete a file from browsing/download page
- *
- * @package
- * @author      giorgio <g.consorti@lynxlab.com>
- * @copyright   Copyright (c) 2009-2013, Lynx s.r.l.
- * @license     http:www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link
- * @version     0.1
- */
-
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;

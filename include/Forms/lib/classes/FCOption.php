@@ -1,11 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Forms\lib\classes\FormControl;
-
-use Lynxlab\ADA\Main\Forms\lib\classes\FCOption;
-
-// Trigger: ClassWithNameSpace. The class FCOption was declared with namespace Lynxlab\ADA\Main\Forms\lib\classes. //
-
 /**
  * FCOption file
  *

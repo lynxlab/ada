@@ -1,22 +1,12 @@
 <?php
 
-use Lynxlab\ADA\Services\Exercise\StandardExerciseViewer;
-
-use Lynxlab\ADA\Services\Exercise\ExerciseViewer;
-
-use Lynxlab\ADA\Services\Exercise\ExerciseDAO;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class StandardExerciseViewer was declared with namespace Lynxlab\ADA\Services\Exercise. //
-
 namespace Lynxlab\ADA\Services\Exercise;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Services\Exercise\ExerciseDAO;
+use Lynxlab\ADA\Services\Exercise\ExerciseViewer;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

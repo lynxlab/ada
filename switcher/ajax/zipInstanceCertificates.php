@@ -1,21 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use function \translateFN;
-
-/**
- * build certificates for all students in the passed instance and downloads as a zip file
- *
- * @package
- * @author      giorgio <g.consorti@lynxlab.com>
- * @copyright   Copyright (c) 2019, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version     0.1
- */
-
 use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
@@ -190,7 +174,7 @@ if (is_null($data)) {
             // Prepare ZipArchive
             $filename = translateFN('Certificati-classe-') . $courseInstanceObj->getId();
             $file = $dirname . $filename . '.zip';
-            $zip = new \ZipArchive();
+            $zip = new ZipArchive();
             $zip->open($file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
             $zip->addGlob($dirname . '*.{pdf}', GLOB_BRACE, ['add_path' => $filename . DIRECTORY_SEPARATOR, 'remove_all_path' => true]);
             $zip->close();

@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\Output\ARE;
-
-use Lynxlab\ADA\Main\AMA\AMAPDOWrapper;
-
-use Lynxlab\ADA\Main\AMA\AMAPDO;
-
-// Trigger: ClassWithNameSpace. The class AMAPDOWrapper was declared with namespace Lynxlab\ADA\Main\AMA. //
-
 /**
  *
  * PDO wrapper

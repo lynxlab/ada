@@ -10,12 +10,14 @@
 
 namespace Lynxlab\ADA\Module\BBBIntegration;
 
+use Exception;
+
 /**
  * BBBIntegrationException class to handle custom exceptions
  *
  * @author giorgio
  */
-class BBBIntegrationException extends \Exception
+class BBBIntegrationException extends Exception
 {
     // custom string representation of object
     public function __toString()

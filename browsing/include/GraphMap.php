@@ -1,7 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
 /* FUNCTIONS */
 
 namespace Lynxlab\ADA\Browsing\GraphMap;

@@ -1,36 +1,15 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\ARE;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-
-/**
- * tutor_subscriptions file
- *
- * PHP version 5
- *
- * @package   Default
- * @author    vito <vito@lynxlab.com>
- * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- */
-
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Forms\FileUploadForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+use Lynxlab\ADA\Main\History\History;
+use Lynxlab\ADA\Main\Node\Node;
+use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Token\TokenManager;
 use Lynxlab\ADA\Main\Upload\FileUploader;
 use Lynxlab\ADA\Main\User\ADAPractitioner;

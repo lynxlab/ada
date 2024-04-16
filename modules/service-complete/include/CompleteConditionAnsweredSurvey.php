@@ -1,19 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionAnsweredSurvey;
-
-use Lynxlab\ADA\Module\Servicecomplete\CompleteCondition;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\CORE\html4\CElement;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class CompleteConditionAnsweredSurvey was declared with namespace Lynxlab\ADA\Module\Servicecomplete. //
-
 /**
  * SERVICE-COMPLETE MODULE.
  *
@@ -28,6 +14,7 @@ use function \translateFN;
 namespace Lynxlab\ADA\Module\Servicecomplete;
 
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 

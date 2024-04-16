@@ -1,9 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Admin\AdminUtils;
-
-// Trigger: ClassWithNameSpace. The class AdminUtils was declared with namespace Lynxlab\ADA\Admin. //
-
 /**
  * AdminUtils file
  *

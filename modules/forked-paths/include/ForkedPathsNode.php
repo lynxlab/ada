@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
-
-use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsBase;
-
-use Lynxlab\ADA\CORE\html4\CDiv;
-
-use Lynxlab\ADA\CORE\html4\CBase;
-
-// Trigger: ClassWithNameSpace. The class ForkedPathsNode was declared with namespace Lynxlab\ADA\Module\ForkedPaths. //
-
 /**
  * @package     forked-paths module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -23,6 +13,7 @@ namespace Lynxlab\ADA\Module\ForkedPaths;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Node\Node;
+use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsBase;
 
 /**
  * ForkedPathsNode class

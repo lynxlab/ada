@@ -1,23 +1,10 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\CORE\html4\CBase;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use Lynxlab\ADA\Browsing\CourseViewer;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class CourseViewer was declared with namespace Lynxlab\ADA\Browsing. //
-
 namespace Lynxlab\ADA\Browsing;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Bookmark\Bookmark;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;

@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Test\RootTest;
-
-use Lynxlab\ADA\Module\Test\QuestionTest;
-
-use Lynxlab\ADA\Module\Test\QuestionStandardTest;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class QuestionStandardTest was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -24,6 +12,7 @@ namespace Lynxlab\ADA\Module\Test;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Module\Test\QuestionTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

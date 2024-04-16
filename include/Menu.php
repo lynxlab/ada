@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\CORE\html4\CBaseElement;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\Menu;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class Menu was declared with namespace Lynxlab\ADA\Main. //
-
 /**
  * menu_class.inc.php
  *
@@ -25,8 +13,10 @@ use function \translateFN;
 
 namespace Lynxlab\ADA\Main;
 
+use Lynxlab\ADA\CORE\html4\CBaseElement;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADB;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

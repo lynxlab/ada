@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Login\HybridManagement;
-
-use Lynxlab\ADA\Module\Login\Constants;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class HybridManagement was declared with namespace Lynxlab\ADA\Module\Login. //
-
 /**
  * LOGIN MODULE
  *
@@ -24,6 +14,7 @@ namespace Lynxlab\ADA\Module\Login;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Module\Login\Constants;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

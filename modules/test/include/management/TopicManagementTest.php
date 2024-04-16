@@ -1,23 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Module\Test\TopicManagementTest;
-
-use Lynxlab\ADA\Module\Test\ManagementTest;
-
-use Lynxlab\ADA\Module\Test\TopicFormTest;
-
-use Lynxlab\ADA\Module\Test\DeleteFormTest;
-
-use Lynxlab\ADA\Module\Test\AMATestDataHandler;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class TopicManagementTest was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -29,6 +11,10 @@ use function \translateFN;
 namespace Lynxlab\ADA\Module\Test;
 
 use Lynxlab\ADA\Main\Node\Node;
+use Lynxlab\ADA\Module\Test\AMATestDataHandler;
+use Lynxlab\ADA\Module\Test\DeleteFormTest;
+use Lynxlab\ADA\Module\Test\ManagementTest;
+use Lynxlab\ADA\Module\Test\TopicFormTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\redirect;

@@ -1,41 +1,9 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-
-/**
- * ADA students of instance widget
- *
- * @package     widget
- * @author      Stefano Penge <steve@lynxlab.com>
- * @author      giorgio <g.consorti@lynxlab.com>
- *
- * @copyright   Copyright (c) 2021, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link        widget
- * @version     0.1
- *
- * supported params you can pass either via XML or php array:
- *
- *  name="courseId"         mandatory,  value: course instance id from which to load the students list
- *  name="courseInstanceId" mandatory,  value: course instance id from which to load the students list
- *
- *  name="filterStatus"     optional, value: display all subscription statuses, or filter just one
- *  name="styleHeight"      optional, value: container css height property
- *  name="styleOverflow"    optional, value: container css overflow property
- *  name="addHeader"        optional, value: 1 if must add an header element
- *  name="showStatus"       optional, value: 1 if subscrition status must be displayed
- *  name="showEmail"        optional, value: 1 if subscriber email must be displayed
- *  name="emailIsLink"      optional, value: 1 if subscriber email must be a mailto: link
- */
-
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Switcher\Subscription;
@@ -85,10 +53,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
  */
 try {
     if (!isset($courseId)) {
-        throw new \Exception(translateFN("Specificare un id di corso"));
+        throw new Exception(translateFN("Specificare un id di corso"));
     }
     if (!isset($courseInstanceId)) {
-        throw new \Exception(translateFN("Specificare un id di istanza corso"));
+        throw new Exception(translateFN("Specificare un id di istanza corso"));
     }
 
     /**
@@ -98,7 +66,7 @@ try {
         if (isset($GLOBALS['user_provider']) && !empty($GLOBALS['user_provider'])) {
             $testerName = $GLOBALS['user_provider'];
         } else {
-            throw new \Exception(translateFN('Nessun fornitore di servizi &egrave; stato configurato'));
+            throw new Exception(translateFN('Nessun fornitore di servizi &egrave; stato configurato'));
         }
     } else {
         $testerInfo = $GLOBALS['common_dh']->getTesterInfoFromIdCourse($courseId);
@@ -112,7 +80,7 @@ try {
         // setting of the global is needed to load the course object
         $GLOBALS['dh'] = $tester_dh;
     } else {
-        throw new \Exception(translateFN('Spiacente, non so a che fornitore di servizi sei collegato'));
+        throw new Exception(translateFN('Spiacente, non so a che fornitore di servizi sei collegato'));
     }
 
     $output = '';
@@ -178,7 +146,7 @@ try {
             $output = $outCont->getHtml();
         }
     }
-} catch (\Exception $e) {
+} catch (Exception $e) {
     $divClass = 'error';
     $divMessage = basename($_SERVER['PHP_SELF']) . ': ' . $e->getMessage();
     $outDIV = CDOMElement::create('div', "class:ui $divClass message");

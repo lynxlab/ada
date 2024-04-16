@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use function \translateFN;
-
 /**
  * @package     impersonate module
  * @author      giorgio <g.consorti@lynxlab.com>
@@ -16,8 +8,10 @@ use function \translateFN;
  * @version     0.1
  */
 
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
 use Lynxlab\ADA\Module\Impersonate\AMAImpersonateDataHandler;
 use Lynxlab\ADA\Module\Impersonate\ImpersonateActions;
 use Lynxlab\ADA\Module\Impersonate\ImpersonateException;

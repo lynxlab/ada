@@ -1,35 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Module\Test\AMATestDataHandler;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Student;
-
-use Lynxlab\ADA\CORE\HtmlElements\Table;
-
-use Lynxlab\ADA\Main\AMA\AMATesterDataHandler;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
-
-use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
-
-use Lynxlab\ADA\Main\ADAError;
-
-use Lynxlab\ADA\Comunica\ChatRoom;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class AMATesterDataHandler was declared with namespace Lynxlab\ADA\Main\AMA. //
-
 /**
  *
  * Tester
@@ -41,11 +11,17 @@ use function \translateFN;
 
 namespace Lynxlab\ADA\Main\AMA;
 
+use Lynxlab\ADA\Main\ADAError;
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\Logger\ADALogger;
 use Lynxlab\ADA\Main\Menu;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CourseEvent;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
+use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -10371,7 +10347,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
          * based on show visits value, obtain info about notes with visits count for each note or not.
          */
         switch ($show_visits) {
-                // get note visits in this course instance
+            // get note visits in this course instance
             case true:
                 $sql = "
 				SELECT

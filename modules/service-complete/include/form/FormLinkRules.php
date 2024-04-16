@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Servicecomplete\FormLinkRules;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Forms\lib\classes\FForm;
-
-use Lynxlab\ADA\CORE\html4\CBaseElement;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class FormLinkRules was declared with namespace Lynxlab\ADA\Module\Servicecomplete. //
-
 /**
  * SERVICE-COMPLETE MODULE.
  *
@@ -25,9 +13,10 @@ use function \translateFN;
 
 namespace Lynxlab\ADA\Module\Servicecomplete;
 
-use Lynxlab\ADA\CORE\HtmlElements\Table;
+use Lynxlab\ADA\CORE\html4\CBaseElement;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\CORE\HtmlElements\Table;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

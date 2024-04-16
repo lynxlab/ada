@@ -1,22 +1,6 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
 use Lynxlab\ADA\Main\AMA\AMADB;
-
-use function \translateFN;
-
-/**
- * EXPORT TEST.
- *
- * @package     export/import course
- * @author          giorgio <g.consorti@lynxlab.com>
- * @copyright       Copyright (c) 2009, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link            impexport
- * @version     0.1
- */
-
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Impexport\AMAImpExportDataHandler;
@@ -337,7 +321,7 @@ try {
                     'title' => translateFN('Esportazione'),
                     'message' => translateFN('Esportazione salvata nel Repository'),
                 ]));
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 // on db error delete all of the generated files
                 @unlink($outZipFile);
                 @unlink($exportDir . DIRECTORY_SEPARATOR . $fileName);

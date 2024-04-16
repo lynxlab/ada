@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Comunica\Event\ADAEvent;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class ADAEvent was declared with namespace Lynxlab\ADA\Comunica\Event. //
-
 namespace Lynxlab\ADA\Comunica\Event;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;

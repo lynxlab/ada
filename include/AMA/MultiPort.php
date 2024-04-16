@@ -1,31 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\Service\Service;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
-
-use Lynxlab\ADA\CORE\html4\CText;
-
-use Lynxlab\ADA\Main\AMA\MultiPort;
-
-use Lynxlab\ADA\Main\AMA\AMAError;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
-
-use Lynxlab\ADA\Main\ADAError;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class MultiPort was declared with namespace Lynxlab\ADA\Main\AMA. //
-
 /**
  * MultiPort
  *
@@ -40,9 +14,14 @@ use function \translateFN;
 
 namespace Lynxlab\ADA\Main\AMA;
 
+use Exception;
 use Lynxlab\ADA\Comunica\DataHandler\ChatDataHandler;
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\Comunica\Event\ADAEventProposal;
+use Lynxlab\ADA\Main\ADAError;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Logger\ADALogger;
 use Lynxlab\ADA\Main\User\ADAAdmin;
@@ -563,7 +542,7 @@ class MultiPort
                             $gdprUser->addType($gdprType, $gdprAPI);
                         }
                         $gdprAPI->saveGdprUser($gdprUser);
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         // handle excpetion here if needed
                     }
                 }
@@ -1372,7 +1351,7 @@ class MultiPort
                         $level_ha[$testerPointer['puntatore']]['max_level'] = max((int)$level, $max_level);
                     }
                 } // end foreach instances
-            // end tester error
+                // end tester error
             } else {
                 //..
             }

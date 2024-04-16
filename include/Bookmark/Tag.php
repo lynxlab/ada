@@ -1,21 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Course\Course;
-
-use Lynxlab\ADA\Main\Bookmark\Tag;
-
-use Lynxlab\ADA\Main\Bookmark\Bookmark;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class Tag was declared with namespace Lynxlab\ADA\Main\Bookmark. //
-
 //
 // +----------------------------------------------------------------------+
 // | ADA version 1.8                                                      |
@@ -40,6 +24,8 @@ namespace Lynxlab\ADA\Main\Bookmark;
 
 use Lynxlab\ADA\CORE\HtmlElements\Form;
 use Lynxlab\ADA\CORE\HtmlElements\Table;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\Bookmark\Bookmark;
 use Lynxlab\ADA\Main\Course\Student;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

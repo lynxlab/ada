@@ -1,29 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
-use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
-
-use Lynxlab\ADA\Main\Output\PDF;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\Html;
-
-use Lynxlab\ADA\Main\Output\GenericXML;
-
-use Lynxlab\ADA\Main\Output\ARE;
-
-use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use Lynxlab\ADA\Main\ADAError;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class ARE was declared with namespace Lynxlab\ADA\Main\Output. //
-
 /**
  * NEW Output classes
  *
@@ -43,7 +19,12 @@ use function \translateFN;
 namespace Lynxlab\ADA\Main\Output;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\Main\ADAError;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Menu;
+use Lynxlab\ADA\Main\Output\GenericXML;
+use Lynxlab\ADA\Main\Output\Html;
+use Lynxlab\ADA\Main\Output\PDF;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
 use Lynxlab\ADA\Module\EventDispatcher\Events\MenuEvent;

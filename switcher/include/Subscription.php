@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Switcher\Subscription;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class Subscription was declared with namespace Lynxlab\ADA\Switcher. //
-
 /**
  * Subscription class
  *
@@ -31,6 +21,8 @@ use function \translateFN;
  */
 
 namespace Lynxlab\ADA\Switcher;
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

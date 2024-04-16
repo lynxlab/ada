@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Node\Media;
-
-use Lynxlab\ADA\Main\Media\ExternalLinkViewer;
-
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
-
-// Trigger: ClassWithNameSpace. The class ExternalLinkViewer was declared with namespace Lynxlab\ADA\Main\Media. //
-
 /**
  * Media Viewers
  *
@@ -25,6 +17,7 @@ namespace Lynxlab\ADA\Main\Media;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 
 /**

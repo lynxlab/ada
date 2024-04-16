@@ -1,28 +1,11 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\ARE;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use function \translateFN;
-
-/**
- * FORMMAIL MODULE.
- *
- * @package        formmail module
- * @author         Giorgio Consorti <g.consorti@lynxlab.com>
- * @copyright      Copyright (c) 2016, Lynx s.r.l.
- * @license        http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link           formmail
- * @version        0.1
- */
-
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Module\FormMail\AMAFormmailDataHandler;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

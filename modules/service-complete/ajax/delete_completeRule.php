@@ -1,9 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-use function \translateFN;
-
 /**
  * SERVICE-COMPLETE MODULE.
  *
@@ -15,6 +11,7 @@ use function \translateFN;
  * @version        0.1
  */
 
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Servicecomplete\AMACompleteDataHandler;

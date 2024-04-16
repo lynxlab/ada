@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\AMA\MultiPort;
-
-use Lynxlab\ADA\Main\ADAError;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class ADAError was declared with namespace Lynxlab\ADA\Main. //
-
 /**
  * ADA Error class
  *

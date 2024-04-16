@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Helper\ViewBaseHelper;
-
-use Lynxlab\ADA\Main\Helper\ComunicaHelper;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class ComunicaHelper was declared with namespace Lynxlab\ADA\Main\Helper. //
-
 /**
  * Comunica functions
  *
@@ -23,6 +13,7 @@ use function \translateFN;
 namespace Lynxlab\ADA\Main\Helper;
 
 use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Helper\ViewBaseHelper;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

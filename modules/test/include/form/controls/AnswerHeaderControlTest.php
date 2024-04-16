@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Test\AnswerHeaderControlTest;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class AnswerHeaderControlTest was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  *
  * @package

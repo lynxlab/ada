@@ -1,10 +1,6 @@
 <?php
 
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
-
 namespace Lynxlab\ADA\Comunica\Functions;
-
-use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 
 /**
  * function exitWith_JSON_Error

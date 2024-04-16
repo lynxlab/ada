@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Servicecomplete\LinkRulesManagement;
-
-use Lynxlab\ADA\Module\Servicecomplete\FormLinkRules;
-
-use Lynxlab\ADA\Main\AMA\AMADB;
-
-// Trigger: ClassWithNameSpace. The class LinkRulesManagement was declared with namespace Lynxlab\ADA\Module\Servicecomplete. //
-
 /**
  * SERVICE-COMPLETE MODULE.
  *

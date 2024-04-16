@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionNodePercentage;
-
-use Lynxlab\ADA\Module\Servicecomplete\CompleteCondition;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\CORE\html4\CDOMElement;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class CompleteConditionNodePercentage was declared with namespace Lynxlab\ADA\Module\Servicecomplete. //
-
 /**
  * SERVICE-COMPLETE MODULE.
  *
@@ -25,6 +13,7 @@ use function \translateFN;
 
 namespace Lynxlab\ADA\Module\Servicecomplete;
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\History\History;
 

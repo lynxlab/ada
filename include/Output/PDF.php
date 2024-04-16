@@ -1,15 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Main\Output\PDF;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use Lynxlab\ADA\Main\Output\Html;
-
-use Lynxlab\ADA\Main\Output\ARE;
-
-// Trigger: ClassWithNameSpace. The class PDF was declared with namespace Lynxlab\ADA\Main\Output. //
-
 /**
  * NEW Output classes
  *

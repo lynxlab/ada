@@ -1,13 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Impexport\FormSelectDatasForImport;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class FormSelectDatasForImport was declared with namespace Lynxlab\ADA\Module\Impexport. //
-
 /**
  * IMPORT MODULE
  *

@@ -1,14 +1,10 @@
 <?php
 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
 use Lynxlab\ADA\Main\Course\Course;
-
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\History\History;
+use Lynxlab\ADA\Main\Node\Node;
+use Lynxlab\ADA\Main\User\ADAPractitioner;
 
 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
 header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");          // always modified
@@ -151,26 +147,10 @@ if ($userObj->getType() == AMA_TYPE_STUDENT) {
 }
 ?>
 var dbgJitsiapi = null;
-var domain = '<?php 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-echo JITSI_CONNECT_HOST; ?>'; //'beta.meet.jit.si'; // 'meet.jit.si';
+var domain = '<?php echo JITSI_CONNECT_HOST; ?>'; //'beta.meet.jit.si'; // 'meet.jit.si';
 var ifwidth = '100%';
 var ifheight = '700px';
-var parentElement = document.querySelector('#<?php 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-echo trim($_REQUEST['parentId']) ?>');
+var parentElement = document.querySelector('#<?php echo trim($_REQUEST['parentId']) ?>');
 if (parentElement != null) {
 if (parentElement.dataset.domain != null) {
 domain = parentElement.dataset.domain;
@@ -186,15 +166,7 @@ delete parentElement;
 }
 
 $j.getScript(
-'<?php 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-echo JITSI_PROTOCOL; ?>://'+domain+'/external_api.js',
+'<?php echo JITSI_PROTOCOL; ?>://'+domain+'/external_api.js',
 function() {
 /**
 * set to non null to lock the room with a password
@@ -203,44 +175,12 @@ const pwd = null;
 var debug = false;
 var jitsiAPI = null;
 var options = {
-roomName: '<?php 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-echo $roomHash; ?>',
+roomName: '<?php echo $roomHash; ?>',
 <?php
-
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
 if (strlen($jwt) > 0) {
-?>
-    jwt: '<?php 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-echo $jwt; ?>',
+    ?>
+    jwt: '<?php echo $jwt; ?>',
 <?php
-
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
 }
 ?>
 width: ifwidth,
@@ -254,141 +194,29 @@ height: ifheight,
 // The name of client node advertised in XEP-0115 'c' stanza
 // clientNode: 'http://jitsi.org/jitsimeet',
 configOverwrite: {
-startWithVideoMuted : <?php 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-echo ($userObj->getType() == AMA_TYPE_TUTOR ? 'false' : 'true');  ?>,
-startWithAudioMuted : <?php 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-echo ($userObj->getType() == AMA_TYPE_TUTOR ? 'false' : 'true');  ?>,
-defaultLanguage: '<?php 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-echo strtolower($_SESSION['sess_user_language']) ?>',
+startWithVideoMuted : <?php echo($userObj->getType() == AMA_TYPE_TUTOR ? 'false' : 'true');  ?>,
+startWithAudioMuted : <?php echo($userObj->getType() == AMA_TYPE_TUTOR ? 'false' : 'true');  ?>,
+defaultLanguage: '<?php echo strtolower($_SESSION['sess_user_language']) ?>',
 },
 interfaceConfigOverwrite: {
-TOOLBAR_BUTTONS: [ <?php 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-echo '\'' . implode('\', \'', $TOOLBAR_BUTTONS) . '\''; ?> ],
-SETTINGS_SECTIONS: [ <?php 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-echo '\'' . implode('\', \'', $SETTINGS_SECTIONS) . '\''; ?> ],
+TOOLBAR_BUTTONS: [ <?php echo '\'' . implode('\', \'', $TOOLBAR_BUTTONS) . '\''; ?> ],
+SETTINGS_SECTIONS: [ <?php echo '\'' . implode('\', \'', $SETTINGS_SECTIONS) . '\''; ?> ],
 }
 };
 <?php
-
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
 if (isset($_REQUEST['parentId']) && strlen($_REQUEST['parentId']) > 0) {
-?>
-    if (null !== document.querySelector('#<?php 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-echo trim($_REQUEST['parentId']) ?>')) {
-    document.querySelector('#<?php 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-echo trim($_REQUEST['parentId']) ?>').className += 'ada-videochat-embed jitsi-meet';
-    document.querySelector('#<?php 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-echo trim($_REQUEST['parentId']) ?>').setAttribute('data-logout','<?php 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-echo urlencode($videoroomObj->getLogoutUrlParams()); ?>');
-    options.parentNode = document.querySelector('#<?php 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-echo trim($_REQUEST['parentId']) ?>');
+    ?>
+    if (null !== document.querySelector('#<?php echo trim($_REQUEST['parentId']) ?>')) {
+    document.querySelector('#<?php echo trim($_REQUEST['parentId']) ?>').className += 'ada-videochat-embed jitsi-meet';
+    document.querySelector('#<?php echo trim($_REQUEST['parentId']) ?>').setAttribute('data-logout','<?php echo urlencode($videoroomObj->getLogoutUrlParams()); ?>');
+    options.parentNode = document.querySelector('#<?php echo trim($_REQUEST['parentId']) ?>');
     }
 <?php
-
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
 }
 if (isset($userInfo) && is_array($userInfo)) {
-?>
-    options.userInfo = <?php 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-echo json_encode($userInfo, JSON_FORCE_OBJECT); ?>;
+    ?>
+    options.userInfo = <?php echo json_encode($userInfo, JSON_FORCE_OBJECT); ?>;
 <?php
-
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
 }
 ?>
 if (debug) {
@@ -402,65 +230,17 @@ jitsiAPI = new JitsiMeetExternalAPI(domain, options);
 
 jitsiAPI.on('readyToClose',() => {
 jitsiAPI.dispose();
-$j('#<?php 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-echo trim($_REQUEST['parentId']) ?>')
-.load('<?php 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-echo $videoroomObj->getLogoutUrl(); ?>', function (response, status, xhr) {});
+$j('#<?php echo trim($_REQUEST['parentId']) ?>')
+.load('<?php echo $videoroomObj->getLogoutUrl(); ?>', function (response, status, xhr) {});
 });
 
 setTimeout(() => {
-jitsiAPI.executeCommand('displayName', '<?php 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-echo $userObj->getFullName(); ?>');
-jitsiAPI.executeCommand('email', '<?php 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-echo $userObj->getEmail(); ?>');
+jitsiAPI.executeCommand('displayName', '<?php echo $userObj->getFullName(); ?>');
+jitsiAPI.executeCommand('email', '<?php echo $userObj->getEmail(); ?>');
 <?php
-
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
 if ($userObj->getType() == AMA_TYPE_TUTOR) {
-?>
-    jitsiAPI.executeCommand('subject', '<?php 
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
-echo $courseInstanceObj->getTitle(); ?>');
+    ?>
+    jitsiAPI.executeCommand('subject', '<?php echo $courseInstanceObj->getTitle(); ?>');
     // set new password for channel
     if (pwd != null) {
     jitsiAPI.addEventListener('participantRoleChanged', function(event) {
@@ -471,16 +251,8 @@ echo $courseInstanceObj->getTitle(); ?>');
     });
     }
 <?php
-
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
 } else {
-?>
+    ?>
     // when local user is trying to enter in a locked room
     if (pwd != null) {
     jitsiAPI.addEventListener('passwordRequired', () => {
@@ -488,14 +260,6 @@ use Lynxlab\ADA\Main\Course\Course;
     });
     }
 <?php
-
-use Lynxlab\ADA\Main\User\ADAPractitioner;
-
-use Lynxlab\ADA\Main\Node\Node;
-
-use Lynxlab\ADA\Main\History\History;
-
-use Lynxlab\ADA\Main\Course\Course;
 }
 ?>
 }, 50); // end setTimeout

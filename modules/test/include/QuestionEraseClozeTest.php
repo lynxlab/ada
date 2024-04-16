@@ -1,17 +1,5 @@
 <?php
 
-use Lynxlab\ADA\Module\Test\QuestionEraseClozeTest;
-
-use Lynxlab\ADA\Module\Test\QuestionClozeTest;
-
-use Lynxlab\ADA\Module\Test\NodeTest;
-
-use Lynxlab\ADA\Main\Output\Output;
-
-use function \translateFN;
-
-// Trigger: ClassWithNameSpace. The class QuestionEraseClozeTest was declared with namespace Lynxlab\ADA\Module\Test. //
-
 /**
  * @package test
  * @author  Valerio Riva <valerio@lynxlab.com>
@@ -25,6 +13,8 @@ namespace Lynxlab\ADA\Module\Test;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CLi;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Module\Test\NodeTest;
+use Lynxlab\ADA\Module\Test\QuestionClozeTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
