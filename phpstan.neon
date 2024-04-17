@@ -1,0 +1,11 @@
+parameters:
+    level: 0
+    bootstrapFiles:
+        - config_path.inc.php
+    excludePaths:
+        - /*/graph/*
+        - /*/vendor/*
+        - /*/services/media/*
+        - /*/upload_files/*
+        - /*/widgets/cache/*
+        - /*/api/*

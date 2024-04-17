@@ -2,61 +2,73 @@
 
 declare(strict_types=1);
 
-use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector;
-
 use Rector\Config\RectorConfig;
-use Rector\Set\ValueObject\LevelSetList;
+use Rector\Php53\Rector\Ternary\TernaryToElvisRector;
+use Rector\Php55\Rector\Class_\ClassConstantToSelfClassRector;
+use Rector\Php55\Rector\FuncCall\GetCalledClassToStaticClassRector;
+use Rector\Php70\Rector\If_\IfToSpaceshipRector;
+use Rector\Php70\Rector\MethodCall\ThisCallOnStaticMethodToStaticCallRector;
+use Rector\Php70\Rector\StmtsAwareInterface\IfIssetToCoalescingRector;
+use Rector\Php70\Rector\Variable\WrapVariableVariableNameInCurlyBracesRector;
+use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
+use Rector\Php71\Rector\TryCatch\MultiExceptionCatchRector;
+use Rector\Php73\Rector\ConstFetch\SensitiveConstantNameRector;
+use Rector\Php73\Rector\FuncCall\ArrayKeyFirstLastRector;
+use Rector\Php73\Rector\FuncCall\StringifyStrNeedlesRector;
+use Rector\Php73\Rector\String_\SensitiveHereNowDocRector;
+use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
+use Rector\Php74\Rector\FuncCall\ArrayKeyExistsOnPropertyRector;
+use Rector\Php80\Rector\Catch_\RemoveUnusedVariableInCatchRector;
+use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
+use Rector\Php80\Rector\Class_\StringableForToStringRector;
+use Rector\Php80\Rector\FuncCall\ClassOnObjectRector;
+use Rector\Php80\Rector\FunctionLike\MixedTypeRector;
+use Rector\Php80\Rector\Identical\StrEndsWithRector;
+use Rector\Php80\Rector\Identical\StrStartsWithRector;
+use Rector\Php80\Rector\NotIdentical\StrContainsRector;
+use Rector\Php80\Rector\Switch_\ChangeSwitchToMatchRector;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->paths([
-        // __DIR__ . '/admin',
-        // __DIR__ . '/api',
-        // __DIR__ . '/browsing',
-        // __DIR__ . '/clients',
-        // __DIR__ . '/clients_DEFAULT',
-        // __DIR__ . '/comunica',
-        // __DIR__ . '/config',
-        // __DIR__ . '/external',
-        // __DIR__ . '/include',
-        // __DIR__ . '/js',
-        // __DIR__ . '/modules',
-        // __DIR__ . '/services',
-        // __DIR__ . '/switcher',
-        // __DIR__ . '/tutor',
-        // __DIR__ . '/uploadFile',
-        // __DIR__ . '/widgets',
-    ]);
-
-    $rectorConfig->skip([
-        // __DIR__ . '/include/Cezpdf',
-        // __DIR__ . '/include/dompdf',
-        __DIR__ . '/include/graph',
+return RectorConfig::configure()
+    ->withImportNames(importShortClasses:true, removeUnusedImports: true, importDocBlockNames: false)
+    ->withPhpSets(php80: true)
+    ->withBootstrapFiles([
+        __DIR__ . '/config_path.inc.php',
+    ])
+    ->withRules([
+        OptionalParametersAfterRequiredRector::class,
+    ])
+    ->withSkip([
         __DIR__ . '/browsing/include/graph',
         __DIR__ . '/services/media',
-        __DIR__ . '/uploadFile',
+        __DIR__ . '/upload_file',
         __DIR__ . '/widgets/cache',
         __DIR__ . '/api',
-        // __DIR__ . '/include/phpMailer',
-        // __DIR__ . '/include/MobileDetect',
-        // __DIR__ . '/include/getid3',
         '*/vendor/*',
+        ChangeSwitchToMatchRector::class,
+        RemoveExtraParametersRector::class,
+        ArrayKeyExistsOnPropertyRector::class,
+        MixedTypeRector::class,
+        ClassPropertyAssignToConstructorPromotionRector::class,
+        IfToSpaceshipRector::class,
+        GetCalledClassToStaticClassRector::class,
+        ClassOnObjectRector::class,
+        // MultiExceptionCatchRector::class,
+        // StrContainsRector::class,
+        // RemoveUnusedVariableInCatchRector::class,
+        // ClosureToArrowFunctionRector::class,
+        // WrapVariableVariableNameInCurlyBracesRector::class,
+        // ArrayKeyFirstLastRector::class,
+        // IfIssetToCoalescingRector::class,
+        // ClassConstantToSelfClassRector::class,
+        // ThisCallOnStaticMethodToStaticCallRector::class,
+        // StringifyStrNeedlesRector::class,
+        // StrStartsWithRector::class,
+        // StrEndsWithRector::class,
+        // SensitiveHereNowDocRector::class,
+        // SensitiveConstantNameRector::class,
+        // RandomFunctionRector::class,
+        // DirNameFileConstantToDirConstantRector::class,
+        // TernaryToElvisRector::class,
+        // StringableForToStringRector::class,
     ]);
-
-    $rectorConfig->skip([
-        Rector\Php80\Rector\Switch_\ChangeSwitchToMatchRector::class,
-    ]);
-
-    // register a single rule
-    // $rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
-    $rectorConfig->rule(OptionalParametersAfterRequiredRector::class);
-
-    // define sets of rules
-    // $rectorConfig->sets([
-    //     LevelSetList::UP_TO_PHP_81
-    // ]);
-};
-
-
-
-
