@@ -67,5 +67,14 @@
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
+    },
+    "scripts": {
+        "cs": "vendor/bin/phpcs",
+        "cbf": "vendor/bin/phpcbf",
+        "cs-fixer-dry-run": "vendor/bin/php-cs-fixer fix --dry-run --verbose --diff --path-mode=intersection",
+        "cs-fixer": "vendor/bin/php-cs-fixer fix --verbose --diff --path-mode=intersection",
+        "rector-dry-run": "vendor/bin/rector process --dry-run",
+        "rector": "vendor/bin/rector process",
+        "stan": "vendor/bin/phpstan analyze"
     }
 }
