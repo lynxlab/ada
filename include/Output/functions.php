@@ -28,6 +28,10 @@ use Lynxlab\ADA\Main\Translator;
 function translateFN($message, $language_from = null, $language_to = null)
 {
 
+    if (str_contains(basename($_SERVER["SCRIPT_FILENAME"]), 'install.php')) {
+        return $message;
+    }
+
     if (is_null($language_to)) {
         $sess_userObj = $_SESSION['sess_userObj'];
         $languageId = $sess_userObj->getLanguage();
