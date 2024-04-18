@@ -95,13 +95,10 @@ class AdminHelper extends ViewBaseHelper
                             foreach ($regIter as $x) {
                                 $modulesSQL = array_merge($modulesSQL, $x);
                             }
-                            $modulesSQL = array_filter($modulesSQL, function ($sqlFile) use ($inCommon, $inCommonIfMulti) {
-                                return stristr($sqlFile, "vendor") === false && stristr($sqlFile, "menu") === false && !in_array(basename($sqlFile), $inCommon) && !(MULTIPROVIDER && in_array(basename($sqlFile), $inCommonIfMulti));
-                            });
-                            usort($modulesSQL, function ($a, $b) {
+                            $modulesSQL = array_filter($modulesSQL, fn ($sqlFile) => stristr($sqlFile, "vendor") === false && stristr($sqlFile, "menu") === false && !in_array(basename($sqlFile), $inCommon) && !(MULTIPROVIDER && in_array(basename($sqlFile), $inCommonIfMulti)));
+                            usort($modulesSQL, fn ($a, $b) =>
                                 // dirty hack to order by filename, having files that starts with a number as last elements
-                                return strnatcmp('1' . basename($a) . DIRECTORY_SEPARATOR . $a, '1' . basename($b) . DIRECTORY_SEPARATOR . $b);
-                            });
+                                strnatcmp('1' . basename($a) . DIRECTORY_SEPARATOR . $a, '1' . basename($b) . DIRECTORY_SEPARATOR . $b));
                             // import modules sql in the databases
                             if (is_array($modulesSQL) && count($modulesSQL) > 0) {
                                 foreach ($modulesSQL as $sqlFile) {

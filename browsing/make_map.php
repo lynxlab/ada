@@ -9,7 +9,7 @@ use function Lynxlab\ADA\Browsing\GraphMap\showImageFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 $debug = 0;
-$ada_config_path = realpath(dirname(__FILE__) . '/..');
+$ada_config_path = realpath(__DIR__ . '/..');
 include_once("$ada_config_path/config_path.inc.php");
 //vito 2 feb 2009
 //$encode_children = $_GET['ec'];

@@ -7,6 +7,7 @@ use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Module\GDPR\GdprActions;
 use Lynxlab\ADA\Module\GDPR\GdprException;
+use Lynxlab\ADA\Module\GDPR\GdprRequest;
 use Ramsey\Uuid\Uuid;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -17,7 +18,7 @@ error_reporting(E_ALL);
 /**
  * Base config file
 */
-require_once(realpath(dirname(__FILE__)) . '/../../config_path.inc.php');
+require_once(realpath(__DIR__) . '/../../config_path.inc.php');
 
 // MODULE's OWN IMPORTS
 
@@ -74,7 +75,7 @@ try {
         SEMANTICUI_DATATABLE_CSS,
     ];
 
-    $requestClass = 'Lynxlab\ADA\Module\GDPR\GdprRequest';
+    $requestClass = GdprRequest::class;
     if ($showAll) {
         $layout_dataAr['JS_filename'][]  = MODULES_GDPR_PATH . '/js/jeditable-2.0.1/jquery.jeditable.min.js';
     }

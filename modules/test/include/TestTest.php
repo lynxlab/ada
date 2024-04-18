@@ -93,7 +93,7 @@ class TestTest extends RootTest
                     if ($dh->setStudentLevel($this->id_istanza, [$_SESSION['sess_id_user']], $level)) {
                         $level_gained = $level;
                         $res = $dh->testSaveTest($r['id_history_test'], $r['tempo_scaduto'], $r['points'], $r['repeatable'], $r['min_barrier_points'], $level_gained);
-                        if (is_object($res) && (get_class($res) == 'AMAError')) {
+                        if (is_object($res) && ($res::class == 'AMAError')) {
                             $this->onSaveError = true;
                             $this->rollBack();
                             return false;

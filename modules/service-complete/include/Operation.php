@@ -265,6 +265,7 @@ class Operation
             $stringToEval = self::appendParamsToStr($stringToEval, $params);
         }
 
+        $value = null;
         $reteval = eval("\$value = $stringToEval;");
         if ($reteval !== false) {
             return $value;

@@ -4,10 +4,7 @@ use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
-use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\TutorHelper;
-use Lynxlab\ADA\Main\History\History;
-use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Output\PdfClass;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
@@ -20,7 +17,8 @@ use function Lynxlab\ADA\Tutor\Functions\menuDetailsFN;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -60,15 +58,16 @@ include_once 'include/tutor.inc.php';
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
+ * @var object $user_messages
+ * @var object $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -205,7 +204,7 @@ switch ($mode) {
     case "writings":
         // added notes in forum
         $sub_courses = $dh->getSubscription($id_student, $sess_id_course_instance);
-        if ((!AMA_datahandler::isError($sub_courses)) && ($sub_courses['tipo'] == ADA_STATUS_SUBSCRIBED)) {
+        if ((!AMADatahandler::isError($sub_courses)) && ($sub_courses['tipo'] == ADA_STATUS_SUBSCRIBED)) {
             $out_fields_ar = ['nome', 'titolo', 'id_istanza', 'data_creazione'];
             $clause = "TIPO = " . ADA_NOTE_TYPE . " AND ID_UTENTE = $id_student";
             $clause .= " AND ID_ISTANZA = " . $sess_id_course_instance;
@@ -240,7 +239,7 @@ switch ($mode) {
         // activity index
         // added notes in forum
         $sub_courses = $dh->getSubscription($id_student, $sess_id_course_instance);
-        if ((!AMA_datahandler::isError($sub_courses)) && ($sub_courses['tipo'] == ADA_STATUS_SUBSCRIBED)) {
+        if ((!AMADatahandler::isError($sub_courses)) && ($sub_courses['tipo'] == ADA_STATUS_SUBSCRIBED)) {
             $out_fields_ar = ['nome', 'titolo', 'id_istanza', 'data_creazione'];
             $clause = "TIPO = " . ADA_NOTE_TYPE . " AND ID_UTENTE = $id_student";
             $clause .= " AND ID_ISTANZA = " . $sess_id_course_instance;

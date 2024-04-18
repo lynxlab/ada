@@ -26,7 +26,7 @@ abstract class CEmptyElement extends CBaseAttributesElement
         $pattern   = [];
         $attribute = [];
 
-        $html_element = get_class($this);
+        $html_element = static::class;
         $template     = CHtmlTags::getTagForHtmlElement($html_element);
 
         $search_attributes = '/%([a-z]+)%/';

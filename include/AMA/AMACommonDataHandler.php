@@ -15,6 +15,7 @@ use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\Logger\ADALogger;
+use Lynxlab\ADA\Main\User\ADALoggableUser;
 
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
@@ -38,14 +39,14 @@ class AMACommonDataHandler extends AbstractAMADataHandler
      * Returns an instance of AMA_Common_DataHandler.
      *
      * @param  string $dsn - optional, a valid data source name
-     * @return an instance of AMA_Common_DataHandler
+     * @return self an instance of AMA_Common_DataHandler
      */
     public static function instance($dsn = null)
     {
 
         //ADALogger::logDb('AMA_Common_DataHandler: get instance for main db connection');
-        $callerClassName = get_called_class();
-        if (!is_null(self::$instance) && get_class(self::$instance) !== $callerClassName) {
+        $callerClassName = static::class;
+        if (!is_null(self::$instance) && self::$instance::class !== $callerClassName) {
             self::$instance = null;
         }
 
@@ -697,21 +698,25 @@ class AMACommonDataHandler extends AbstractAMADataHandler
      * @param $id the student's id
      *        $status the new status
      *
-     * @return  if something goes wrong, new status on success
+     * @return int|AMAError if something goes wrong, new status on success
      *
      */
     public function setUserStatus($userid, $status)
     {
-        $student_ha = [];
-        $student_ha['stato'] = $status;
         $usertype = $this->getUserType($userid);
         if ((is_numeric($status)) and ($usertype == AMA_TYPE_STUDENT)) {
-            $result =  $this->setStudent($userid, $student_ha);
-            if ($this->isError($result)) {
-                return $result;
+            $userObj = MultiPort::findUser($userid);
+            if ($userObj instanceof ADALoggableUser) {
+                $userObj->setStatus($status);
+                $result = MultiPort::setUser($userObj, [], true);
+                if (static::isError($result)) {
+                    return $result;
+                } else {
+                    $new_status = $this->getUserStatus($userid);
+                    return $new_status;
+                }
             } else {
-                $new_status = $this->getUserStatus($userid);
-                return $new_status;
+                return new AMAError(AMA_ERR_NOT_FOUND);
             }
         } else {
             return new AMAError(AMA_ERR_UPDATE);

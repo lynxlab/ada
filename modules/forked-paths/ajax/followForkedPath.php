@@ -11,7 +11,7 @@ use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
-require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
+require_once(realpath(__DIR__) . '/../../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION

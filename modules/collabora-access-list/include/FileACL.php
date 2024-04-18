@@ -88,9 +88,7 @@ class FileACL extends CollaboraACLBase
 
     public static function getObjectById(array $filesACL, $id)
     {
-        $retval = array_filter($filesACL, function ($acl) use ($id) {
-            return $acl->getId() == $id;
-        });
+        $retval = array_filter($filesACL, fn ($acl) => $acl->getId() == $id);
 
         if (is_array($retval) && count($retval) == 1) {
             $retval = reset($retval);

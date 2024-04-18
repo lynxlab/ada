@@ -17,7 +17,7 @@ use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../../config_path.inc.php';
+require_once realpath(__DIR__) . '/../../config_path.inc.php';
 
 if (!defined('CONFERENCE_TO_INCLUDE')) {
     define('CONFERENCE_TO_INCLUDE', 'ZoomConf');

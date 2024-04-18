@@ -71,7 +71,7 @@ class CourseXmlFileProcess
     //vito, 26 may 2009
     public $need_to_call_addslashes = false;
     // vito, 26 may 2009
-    public function CourseXmlFileProcess()
+    public function courseXmlFileProcess()
     {
         $this->need_to_call_addslashes = false;
     }
@@ -100,6 +100,7 @@ class CourseXmlFileProcess
         // verifying if course has instances already started
 
         $id_course = $this->set_ha['id_course'];
+        $id_author = $this->set_ha['id_author'];
 
         $dh = new AMADataHandler();
 
@@ -460,7 +461,7 @@ class CourseXmlFileProcess
 
         // apertura file xml
         if (!($fp = fopen($this->set_ha['xml_file'], "r"))) {
-            die("Cannot locate XML data file: $file");
+            die("Cannot locate XML data file: " . $this->set_ha['xml_file']);
         }
 
         // aumentata la durata del time limit per l'esecuazione di uno script

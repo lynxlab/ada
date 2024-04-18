@@ -13,6 +13,8 @@
 
 namespace Lynxlab\ADA\Module\Servicecomplete;
 
+use Lynxlab\ADA\Main\AMA\AMADB;
+
 /**
  * management class for completeRules form
  *

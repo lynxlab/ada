@@ -56,7 +56,7 @@ abstract class CCoreAttributesElement extends CBaseElement
         $pattern   = [];
         $attribute = [];
 
-        $html_element = get_class($this);
+        $html_element = static::class;
         $template     = CHtmlTags::getTagForHtmlElement($html_element);
 
         $search_attributes = '/%([a-z]+)%/';

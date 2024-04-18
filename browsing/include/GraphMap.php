@@ -326,8 +326,8 @@ function makeLinkFN($children_ha, $im_dest, $position_node)
                         for ($o = 1; $o <= 4; $o++) {
                             $XB = "xb" . $o;
                             $YB = "yb" . $o;
-                            $distanza_ar[] = round(sqrt(abs(pow(($$XA - $$XB), 2) + pow(($$YA - $$YB), 2))));
-                            $coordinate_ar[] = $$XA . "," . $$YA . "," . $$XB . "," . $$YB;
+                            $distanza_ar[] = round(sqrt(abs((${$XA} - ${$XB}) ** 2 + (${$YA} - ${$YB}) ** 2)));
+                            $coordinate_ar[] = ${$XA} . "," . ${$YA} . "," . ${$XB} . "," . ${$YB};
                         }
                     }
 

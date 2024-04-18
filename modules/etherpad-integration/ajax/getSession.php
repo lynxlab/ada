@@ -15,7 +15,8 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 /**
  * Base config file
  */
-require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
+
+require_once(realpath(__DIR__) . '/../../../config_path.inc.php');
 
 // MODULE's OWN IMPORTS
 
@@ -50,15 +51,11 @@ $passedData = [];
 $needed = [
     [
         'key' => 'groupId',
-        'sanitize' => function ($v) {
-            return strlen(trim($v)) > 0 ? trim($v) : null;
-        },
+        'sanitize' => fn ($v) => strlen(trim($v)) > 0 ? trim($v) : null,
     ],
     [
         'key' => 'authorId',
-        'sanitize' => function ($v) {
-            return strlen(trim($v)) > 0 ? trim($v) : null;
-        },
+        'sanitize' => fn ($v) => strlen(trim($v)) > 0 ? trim($v) : null,
     ],
 ];
 

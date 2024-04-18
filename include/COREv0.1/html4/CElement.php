@@ -53,7 +53,7 @@ abstract class CElement extends CBaseAttributesElement
 
     public function addChild(CBase $child)
     {
-        $child_classname = get_class($child);
+        $child_classname = $child::class;
         if (count($this->accept) > 0) {
             if (isset($this->accept[$child_classname])) {
                 array_push($this->children, $child);
@@ -90,7 +90,7 @@ abstract class CElement extends CBaseAttributesElement
         $pattern   = [];
         $attribute = [];
 
-        $html_element = get_class($this);
+        $html_element = static::class;
         $template     = CHtmlTags::getTagForHtmlElement($html_element);
 
         $search_attributes = '/%([a-z-]+)%/';

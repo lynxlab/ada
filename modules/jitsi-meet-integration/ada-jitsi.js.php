@@ -1,10 +1,6 @@
 <?php
 
-use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
-use Lynxlab\ADA\Main\History\History;
-use Lynxlab\ADA\Main\Node\Node;
-use Lynxlab\ADA\Main\User\ADAPractitioner;
 
 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
 header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");          // always modified
@@ -53,15 +49,16 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
+ * @var object $user_messages
+ * @var object $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990

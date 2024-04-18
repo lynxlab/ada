@@ -13,7 +13,8 @@ use function Lynxlab\ADA\Main\Utilities\whoami;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -70,6 +71,7 @@ if (!$forcereturn) {
     * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
     * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
     * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
     *
     * WARNING: $media_path is used as a global somewhere else,
     * e.g.: node_classes.inc.php:990
@@ -89,7 +91,7 @@ if (MULTIPROVIDER === false) {
     $providerImg = HTTP_ROOT_DIR . '/clients/' . $client . '/layout/' . ADA_TEMPLATE_FAMILY . '/img/' . 'header-logo.png';
     if (function_exists('get_headers')) {
         $headers = @get_headers($providerImg);
-        if (strpos($headers[0], '404') === false) {
+        if (!str_contains($headers[0], '404')) {
             $logoProvider = '<img class="usercredits_logoProvider" src="' . $providerImg . '"  />';
         }
     }

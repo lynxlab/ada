@@ -13,6 +13,7 @@ namespace Lynxlab\ADA\Module\GDPR;
 use Exception;
 use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Module\GDPR\GdprAPI;
@@ -26,7 +27,7 @@ use stdClass;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
-class AMAGdprDataHandler extends AMA_DataHandler
+class AMAGdprDataHandler extends AMADataHandler
 {
     /**
      * module's own data tables prefix
@@ -114,6 +115,9 @@ class AMAGdprDataHandler extends AMA_DataHandler
             if (count($type) === 1) {
                 // make a new request
                 $className = self::getObjectClasses()[self::REQUESTCLASSKEY];
+                /**
+                 * @var \Lynxlab\ADA\Module\GDPR\GdprRequest $request
+                 */
                 $request = new $className([], $this);
                 $request->setGeneratedTs($this->dateToTs('now'))->setType(reset($type));
                 $isUpdate = false;
@@ -333,9 +337,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
              */
             $tmp = array_filter(
                 $publishedPolicies,
-                function (GdprPolicy $el) use ($policyID) {
-                    return intval($el->getPolicyContentId()) === $policyID;
-                }
+                fn (GdprPolicy $el) => intval($el->getPolicyContentId()) === $policyID
             );
             $policyObj = reset($tmp);
 
@@ -490,7 +492,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
                     $gdprAPI = new GdprAPI($tester['puntatore']);
                     try {
                         $found = $found || (count($gdprAPI->findBy($gdprAPI->getObjectClasses()[self::REQUESTCLASSKEY], ['uuid' => $uuid])) > 0);
-                    } catch (Exception $e) {
+                    } catch (Exception) {
                     }
                 }
                 next($testers_infoAr);
@@ -538,9 +540,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
         }
         $reflection = new ReflectionClass($className);
         $properties =  array_map(
-            function ($el) {
-                return $el->getName();
-            },
+            fn ($el) => $el->getName(),
             $reflection->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PUBLIC)
         );
 
@@ -549,9 +549,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
         // and remove them from the query, they will be loaded afterwards
         $properties = array_diff($properties, $joined);
 
-        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(function ($el) {
-            return "`$el`";
-        }, $properties)), $className::table);
+        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(fn ($el) => "`$el`", $properties)), $className::table);
 
         if (!is_null($whereArr) && count($whereArr) > 0) {
             $invalidProperties = array_diff(array_keys($whereArr), $properties);
@@ -613,9 +611,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
         if (AMADB::isError($result)) {
             throw new GdprException($result->getMessage(), (int)$result->getCode());
         } else {
-            $retArr = array_map(function ($el) use ($className, $dbToUse) {
-                return new $className($el, $dbToUse);
-            }, $result);
+            $retArr = array_map(fn ($el) => new $className($el, $dbToUse), $result);
             // load properties from $joined array
             foreach ($retArr as $retObj) {
                 foreach ($joined as $joinKey) {
@@ -659,9 +655,7 @@ class AMAGdprDataHandler extends AMA_DataHandler
         return sprintf(
             "UPDATE `%s` SET %s WHERE `%s`=?;",
             $table,
-            implode(',', array_map(function ($el) {
-                return "`$el`=?";
-            }, $fields)),
+            implode(',', array_map(fn ($el) => "`$el`=?", $fields)),
             $whereField
         );
     }
@@ -678,17 +672,13 @@ class AMAGdprDataHandler extends AMA_DataHandler
         return sprintf(
             "INSERT INTO `%s` (%s) VALUES (%s);",
             $table,
-            implode(',', array_map(function ($el) {
-                return "`$el`";
-            }, array_keys($fields))),
-            implode(',', array_map(function ($el) {
-                return "?";
-            }, array_keys($fields)))
+            implode(',', array_map(fn ($el) => "`$el`", array_keys($fields))),
+            implode(',', array_map(fn ($el) => "?", array_keys($fields)))
         );
     }
 
     /**
-     * Gets the AMA_DataHandler object to be used for policies objects
+     * Gets the AMADataHandler object to be used for policies objects
      *
      * @return AbstractAMADataHandler
      */
@@ -761,9 +751,9 @@ class AMAGdprDataHandler extends AMA_DataHandler
                 // must check if passed $dsn has the module login tables
                 // execute this dummy query, if result is not an error table is there
                 $sql = 'SELECT NULL FROM `' . GdprPolicy::TABLE . '`';
-                // must use AMA_DataHandler because we are not able to
+                // must use AMADataHandler because we are not able to
                 // query AMALoginDataHandelr in this method!
-                $ok = AMA_DataHandler::instance($dsn)->getOnePrepared($sql);
+                $ok = AMADataHandler::instance($dsn)->getOnePrepared($sql);
                 if (!AMADB::isError($ok)) {
                     self::$policiesDB = $theInstance;
                 }

@@ -122,6 +122,8 @@ class ServiceImplementor
         // $this->id_author = $courseAr['id_autore'];
         // $this->id_layout = $courseAr['id_layout'];
         if ($courseAr['descr'] == null) {
+            $common_dh = $GLOBALS['common_dh'];
+            $serviceAr = $common_dh->getServiceInfoFromCourse($courseAr['id_course']);
             $this->descr = level2descriptionFN($serviceAr[3]);
         } else {
             $this->descr = $courseAr['descr'];
@@ -134,7 +136,7 @@ class ServiceImplementor
         //  $this->media_path = $courseAr['media_path'];
 
         if ($nodeHa['text'] == null) {
-            //  $errorObj = new ADA_error($nodeHa); //FIXME: mancano gli altri dati
+            //  $errorObj = new ADAError($nodeHa); //FIXME: mancano gli altri dati
             $this->description = translateFN("Not available");
         } else {
             $this->description = $nodeHa['text'];

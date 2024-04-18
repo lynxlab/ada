@@ -222,7 +222,7 @@ class FormCompleteRules
                      */
                     if ($j != -1 && $setSelected === false && isset($this->data['condition'][$i])) {
                         foreach ($this->data['condition'][$i] as $key => $checkme) {
-                            if (stripos($checkme, $aCondition) !== false) {
+                            if (stripos($checkme, (string) $aCondition) !== false) {
                                 $setSelected = $aKey;
                                 $setParam = extractParam($checkme);
                                 unset($this->data['condition'][$i][$key]);

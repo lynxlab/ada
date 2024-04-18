@@ -78,9 +78,7 @@ class GdprAPI
     public function getGdprNoneUserTypes()
     {
         $noneTypes = [GdprUserType::NONE];
-        return array_filter($this->getGdprUserTypes(), function ($el) use ($noneTypes) {
-            return in_array($el->getId(), $noneTypes);
-        });
+        return array_filter($this->getGdprUserTypes(), fn ($el) => in_array($el->getId(), $noneTypes));
     }
 
     /**
@@ -119,9 +117,7 @@ class GdprAPI
         }
         $result = array_filter(
             $this->dh->findBy('GdprUser', ['id_utente' => intval($user)]),
-            function (GdprUser $el) use ($gdprUserTypes) {
-                return $el->hasTypes($gdprUserTypes, $this);
-            }
+            fn (GdprUser $el) => $el->hasTypes($gdprUserTypes, $this)
         );
         return (count($result) > 0);
     }

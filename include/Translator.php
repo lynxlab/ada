@@ -12,6 +12,8 @@
 
 namespace Lynxlab\ADA\Main;
 
+use Lynxlab\ADA\Main\AMA\AMADB;
+
 /**
  * class Translator: used to retrieve message translations, given a message to translate.
  */
@@ -53,7 +55,7 @@ class Translator
 
         $translated_message = $common_dh->findMessageTranslation($message, $language_code);
 
-        if (AMADataHandler::isError($translated_message)) {
+        if (AMADB::isError($translated_message)) {
             /*
              * In case an error occurs during translation retrieval,
              * return the original message to the user.
@@ -80,7 +82,7 @@ class Translator
         $supported_languages = [];
         $supported_languages = $common_dh->findLanguages();
 
-        if (AMADataHandler::isError($supported_languages)) {
+        if (AMADB::isError($supported_languages)) {
             // FIXME: qui si verifica questo errore anche quando c'è un errore di connessione al database.
             $errObj = new ADAError(
                 $supported_languages,
@@ -245,7 +247,7 @@ class Translator
                 /**
                  * if matched string ends with a comma, remove it and assign to $foundLang
                  */
-                if (substr($match[0], -1, 1) === ',') {
+                if (str_ends_with($match[0], ',')) {
                     $foundLang = substr($match[0], 0, -1);
                 } else {
                     $foundLang = $match[0];
@@ -295,7 +297,7 @@ class Translator
             for ($j = 0; $j < $ada_supported_languages_count; $j++) {
                 if (strcasecmp($l2[$i], $ada_supported_languages[$j]['codice_lingua']) === 0) {
                     return $ada_supported_languages[$j]['codice_lingua'];
-                } elseif (strpos($l2[$i], $ada_supported_languages[$j]['codice_lingua']) === 0) {
+                } elseif (str_starts_with($l2[$i], $ada_supported_languages[$j]['codice_lingua'])) {
                     // if browser request lang startsWith current checking language
                     // it is a bestmatch that can be returned when out of the loops
                     $bestMatch = $ada_supported_languages[$j]['codice_lingua'];

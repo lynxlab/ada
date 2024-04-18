@@ -62,7 +62,7 @@ class Layout
             if (empty($actual_dir)) {
                 $module_dir = 'main';
             } else {
-                if (strpos($actual_dir, $modules_dir) !== false) {
+                if (str_contains($actual_dir, $modules_dir)) {
                     $this->external_module = true;
                 }
                 $module_dir = substr($actual_dir, 1);

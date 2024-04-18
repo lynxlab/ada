@@ -14,6 +14,7 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 /**
  * Destroy session
  */
+
 session_start();
 session_unset();
 session_destroy();
@@ -21,7 +22,7 @@ session_destroy();
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/config_path.inc.php';
+require_once realpath(__DIR__) . '/config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -33,7 +34,7 @@ $allowedUsersAr = [AMA_TYPE_VISITOR, AMA_TYPE_STUDENT,AMA_TYPE_TUTOR, AMA_TYPE_A
  */
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self =  index;
+$self =  'index';
 include_once 'include/' . $self . '_functions.inc.php';
 
 

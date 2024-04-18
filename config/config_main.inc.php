@@ -6,13 +6,13 @@
  * DO NOT MODIFY THIS FILE
  *
  * @package
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2009, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link		ada_config_main
- * @version		0.1
+ * @author      Stefano Penge <steve@lynxlab.com>
+ * @author      Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
+ * @author      Vito Modena <vito@lynxlab.com>
+ * @copyright   Copyright (c) 2009, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @link        ada_config_main
+ * @version     0.1
  */
 
 /**
@@ -31,7 +31,7 @@ define('ADA_LOGGER_FILE_LOG', 2);
 
 define('ADA_SELECTED_LOGGER', ADA_LOGGER_FILE_LOG);
 
-define('ADA_FILE_LOGGER_OUTPUT_FILE', ROOT_DIR.'/log/trace.log');
+define('ADA_FILE_LOGGER_OUTPUT_FILE', ROOT_DIR . '/log/trace.log');
 /**
  * Operations to be logged
  */
@@ -39,13 +39,13 @@ define('ADA_LOG_DB', 1);
 define('ADA_LOG_GENERIC', 2);
 
 define('ADA_LOG_DB_SELECTED_LOGGER', ADA_LOGGER_FILE_LOG);
-define('ADA_LOG_DB_FILE_LOG_OUTPUT_FILE', ROOT_DIR.'/log/db.log');
+define('ADA_LOG_DB_FILE_LOG_OUTPUT_FILE', ROOT_DIR . '/log/db.log');
 
 define('ADA_LOG_GENERIC_SELECTED_LOGGER', ADA_LOGGER_FILE_LOG);
-define('ADA_LOG_GENERIC_FILE_LOG_OUTPUT_FILE', ROOT_DIR.'/log/generic.log');
+define('ADA_LOG_GENERIC_FILE_LOG_OUTPUT_FILE', ROOT_DIR . '/log/generic.log');
 
 define('ADA_LOG_ERROR_SELECTED_LOGGER', ADA_LOGGER_FILE_LOG);
-define('ADA_LOG_ERROR_FILE_LOG_OUTPUT_FILE', ROOT_DIR.'/log/error.log');
+define('ADA_LOG_ERROR_FILE_LOG_OUTPUT_FILE', ROOT_DIR . '/log/error.log');
 
 define('ADA_LOGGING_LEVEL', ADA_LOG_DB | ADA_LOG_GENERIC);
 
@@ -120,10 +120,10 @@ define('DEFAULT_SERVICE_TYPE', ADA_SERVICE_ONLINECOURSE);
  * Take the ADA generic services types defined in config/config_main.inc.php
  * and group them in onLine and presence service types
  */
-$GLOBALS['onLineServiceTypes'] = array(ADA_SERVICE_ONLINECOURSE, ADA_SERVICE_TUTORCOMMUNITY);
-$GLOBALS['presenceServiceTypes'] = array(ADA_SERVICE_PRESENCECOURSE, ADA_SERVICE_MIXEDCOURSE);
-$GLOBALS['autosubscribeServiceTypes'] = array(ADA_SERVICE_AUTOSUBSCRIBE);
-$GLOBALS['userHiddenServiceTypes'] = array(ADA_SERVICE_AUTOSUBSCRIBE);
+$GLOBALS['onLineServiceTypes'] = [ADA_SERVICE_ONLINECOURSE, ADA_SERVICE_TUTORCOMMUNITY];
+$GLOBALS['presenceServiceTypes'] = [ADA_SERVICE_PRESENCECOURSE, ADA_SERVICE_MIXEDCOURSE];
+$GLOBALS['autosubscribeServiceTypes'] = [ADA_SERVICE_AUTOSUBSCRIBE];
+$GLOBALS['userHiddenServiceTypes'] = [ADA_SERVICE_AUTOSUBSCRIBE];
 
 /**
  * ADA token
@@ -212,7 +212,7 @@ define('_LINK', '4');
 define('_DOC', '5');
 define('_EXE', '6');
 define('INTERNAL_LINK', '7');
-define('POSSIBLE_TYPE', '7');
+define('POSSIBLE_TYPE', INTERNAL_LINK);
 define('_PRONOUNCE', '21'); //→ audio
 define('_FINGER_SPELLING', '31'); //→ video
 define('_LABIALE', '32'); //→ video
@@ -342,22 +342,22 @@ define('DB_START', 4); //logging only the beginning of db operations
 
 define('ADA_SECONDS_IN_A_DAY', 86400);
 
-define('JQUERY', ROOT_DIR.'/js/include/jquery/jquery-1.11.1.min.js');
-define('JQUERY_UI', ROOT_DIR.'/js/include/jquery/ui/jquery-ui-1.11.1.custom.min.js');
-define('JQUERY_UI_CSS', ROOT_DIR.'/js/include/jquery/ui/jquery-ui-1.11.1.custom.min.css');
-define('JQUERY_DATATABLE', ROOT_DIR.'/js/include/jquery/dataTables/datatables.min.js');
-define('SEMANTICUI_DATATABLE', ROOT_DIR.'/js/include/jquery/dataTables/DataTables-1.10.15/js/dataTables.semanticui.js');
-define('JQUERY_MASKEDINPUT', ROOT_DIR.'/js/include/jquery/maskedinput/jquery.maskedinput.min.js');
-define('JQUERY_DATATABLE_DATE', ROOT_DIR.'/js/include/jquery/dataTables/dateSortPlugin.js');
-define('JQUERY_DATATABLE_REDRAW', ROOT_DIR.'/js/include/jquery/dataTables/fnStandingRedraw.js');
-define('JQUERY_DATATABLE_CSS', ROOT_DIR.'/js/include/jquery/dataTables/datatables.min.css');
-define('SEMANTICUI_DATATABLE_CSS', ROOT_DIR.'/js/include/jquery/dataTables/DataTables-1.10.15/css/dataTables.semanticui.min.css');
-define('JQUERY_NO_CONFLICT', ROOT_DIR.'/js/include/jquery.noConflict.js');
-define('JQUERY_NIVOSLIDER', ROOT_DIR.'/js/include/jquery/nivo-slider/jquery.nivo.slider.pack.js');
-define('JQUERY_NIVOSLIDER_CSS', ROOT_DIR.'/js/include/jquery/nivo-slider/nivo-slider.css');
-define('SEMANTICUI_CSS', ROOT_DIR.'/js/include/semantic/css/semantic.min.css');
-define('SEMANTICUI_JS', ROOT_DIR.'/js/include/semantic/javascript/semantic.min.js');
-define('SMARTMENUS_CSS', ROOT_DIR.'/js/include/smartmenus/css/sm-core-css.css');
-define('SMARTMENUS_JS', ROOT_DIR.'/js/include/smartmenus/jquery.smartmenus.min.js');
-define('JQUERY_JPLAYER', ROOT_DIR.'/js/include/jquery/jplayer/jquery.jplayer.min.js');
-define('JQUERY_JPLAYER_CSS', ROOT_DIR.'/js/include/jquery/jplayer/skin/blue.monday/css/jplayer.blue.monday.min.css');
+define('JQUERY', ROOT_DIR . '/js/include/jquery/jquery-1.11.1.min.js');
+define('JQUERY_UI', ROOT_DIR . '/js/include/jquery/ui/jquery-ui-1.11.1.custom.min.js');
+define('JQUERY_UI_CSS', ROOT_DIR . '/js/include/jquery/ui/jquery-ui-1.11.1.custom.min.css');
+define('JQUERY_DATATABLE', ROOT_DIR . '/js/include/jquery/dataTables/datatables.min.js');
+define('SEMANTICUI_DATATABLE', ROOT_DIR . '/js/include/jquery/dataTables/DataTables-1.10.15/js/dataTables.semanticui.js');
+define('JQUERY_MASKEDINPUT', ROOT_DIR . '/js/include/jquery/maskedinput/jquery.maskedinput.min.js');
+define('JQUERY_DATATABLE_DATE', ROOT_DIR . '/js/include/jquery/dataTables/dateSortPlugin.js');
+define('JQUERY_DATATABLE_REDRAW', ROOT_DIR . '/js/include/jquery/dataTables/fnStandingRedraw.js');
+define('JQUERY_DATATABLE_CSS', ROOT_DIR . '/js/include/jquery/dataTables/datatables.min.css');
+define('SEMANTICUI_DATATABLE_CSS', ROOT_DIR . '/js/include/jquery/dataTables/DataTables-1.10.15/css/dataTables.semanticui.min.css');
+define('JQUERY_NO_CONFLICT', ROOT_DIR . '/js/include/jquery.noConflict.js');
+define('JQUERY_NIVOSLIDER', ROOT_DIR . '/js/include/jquery/nivo-slider/jquery.nivo.slider.pack.js');
+define('JQUERY_NIVOSLIDER_CSS', ROOT_DIR . '/js/include/jquery/nivo-slider/nivo-slider.css');
+define('SEMANTICUI_CSS', ROOT_DIR . '/js/include/semantic/css/semantic.min.css');
+define('SEMANTICUI_JS', ROOT_DIR . '/js/include/semantic/javascript/semantic.min.js');
+define('SMARTMENUS_CSS', ROOT_DIR . '/js/include/smartmenus/css/sm-core-css.css');
+define('SMARTMENUS_JS', ROOT_DIR . '/js/include/smartmenus/jquery.smartmenus.min.js');
+define('JQUERY_JPLAYER', ROOT_DIR . '/js/include/jquery/jplayer/jquery.jplayer.min.js');
+define('JQUERY_JPLAYER_CSS', ROOT_DIR . '/js/include/jquery/jplayer/skin/blue.monday/css/jplayer.blue.monday.min.css');

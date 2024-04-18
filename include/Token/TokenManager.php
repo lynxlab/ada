@@ -2,6 +2,8 @@
 
 namespace Lynxlab\ADA\Main\Token;
 
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+
 class TokenManager
 {
     public static function createTokenForUserRegistration($userObj)

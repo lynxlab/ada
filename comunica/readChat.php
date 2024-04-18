@@ -12,7 +12,8 @@ use function Lynxlab\ADA\Main\Utilities\whoami;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -186,15 +187,13 @@ for ($i = 0; $i < $msgs_number; $i++) {
     }
 }
 
-$json_data = array_map(function ($message) {
-    return [
-    'id' => $message['id_messaggio'],
-    'tipo' => $message['tipo'],
-    'time' => ts2tmFN($message['data_ora']),
-    'sender' => $message['nome'],
-    'text' => stripslashes($message['testo']),
-    ];
-}, $messages_display_Ha);
+$json_data = array_map(fn ($message) => [
+'id' => $message['id_messaggio'],
+'tipo' => $message['tipo'],
+'time' => ts2tmFN($message['data_ora']),
+'sender' => $message['nome'],
+'text' => stripslashes($message['testo']),
+], $messages_display_Ha);
 
 /*
  * fine di costruisce la stringa json contenente i messaggi ricevuti

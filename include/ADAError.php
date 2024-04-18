@@ -38,7 +38,7 @@ class ADAError
 
     public function __construct($AMAErrorObject = null, $errorMessage = null, $callerName = null, $ADAErrorCode = null, $severity = null, $redirectTo = null, $delayErrorHandling = false)
     {
-        //ADALogger::logError('call to new ADA_Error');
+        //ADALogger::logError('call to new ADAError');
 
         $this->AMAErrorObject = $AMAErrorObject;
         $this->errorMessage   = $errorMessage;
@@ -172,7 +172,7 @@ class ADAError
     }
 
     /**
-     * Saves the path to the file and the line number in which new ADA_Error
+     * Saves the path to the file and the line number in which new ADAError
      * was called
      *
      * @return void

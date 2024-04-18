@@ -41,15 +41,9 @@ class StudentsGroupsActions
     protected static function getCanDoArr()
     {
         return [
-            self::NEW_GROUP => function ($object = null, $userType = null) {
-                return in_array($userType, [ AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER ]);
-            },
-            self::EDIT_GROUP => function ($object = null, $userType = null) {
-                return in_array($userType, [ AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER ]);
-            },
-            self::TRASH_GROUP => function ($object = null, $userType = null) {
-                return in_array($userType, [ AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER ]);
-            },
+            self::NEW_GROUP => fn ($object = null, $userType = null) => in_array($userType, [ AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER ]),
+            self::EDIT_GROUP => fn ($object = null, $userType = null) => in_array($userType, [ AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER ]),
+            self::TRASH_GROUP => fn ($object = null, $userType = null) => in_array($userType, [ AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER ]),
         ];
     }
 
@@ -61,7 +55,7 @@ class StudentsGroupsActions
      */
     public static function getConstantFromString($stringConstant)
     {
-        return defined(__CLASS__ . '::' . $stringConstant) ? constant(__CLASS__ . '::' . $stringConstant) : null;
+        return defined(self::class . '::' . $stringConstant) ? constant(self::class . '::' . $stringConstant) : null;
     }
 
     /**

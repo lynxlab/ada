@@ -5,19 +5,16 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
-use Lynxlab\ADA\Main\Course\Course;
-use Lynxlab\ADA\Main\History\History;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
-use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\Output\ARE;
-use Lynxlab\ADA\Main\User\ADAPractitioner;
 
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -55,15 +52,16 @@ $self =  whoami();  // = admin!
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
+ * @var object $user_messages
+ * @var object $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -92,9 +90,9 @@ if ($userObj->getType() == AMA_TYPE_ADMIN) {
             $Services_Type[DEFAULT_SERVICE_TYPE] = translateFN(DEFAULT_SERVICE_TYPE_NAME);
         }
     }
-    $log_dataAr =  MultiPort::log_report(null, $Services_Type);
+    $log_dataAr =  MultiPort::logReport(null, $Services_Type);
 } elseif ($userObj->getType() == AMA_TYPE_SWITCHER) {
-    $log_dataAr = Multiport::log_report($userObj->getDefaultTester(), null);
+    $log_dataAr = Multiport::logReport($userObj->getDefaultTester(), null);
     $Services_Type = $_SESSION['service_level'];
 }
 
@@ -103,7 +101,7 @@ if (defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogR
     $service_position = 0;
     $arrayService = [];
     foreach ($GLOBALS['LogReport_Array'] as $key => $value) {
-        if (strpos($key, 'service_level') === 0) {
+        if (str_starts_with($key, 'service_level')) {
             if ($value['show'] == true) {
                 if (isset($Services_Type)) {
                     foreach ($Services_Type as $key_service => $value) {
@@ -132,7 +130,7 @@ if (defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogR
         if ($tableInfo['show'] == true && array_key_exists($key, $checkAr)) {
             if (!isset($thead_data[$key])) {
                 /* init Tooltip */
-                if (strpos($key, 'course_') === 0) {
+                if (str_starts_with($key, 'course_')) {
                     $title =  translateFN('Numero corsi di tipo : ' . $tableInfo['label']);
                     $span_label = CDOMElement::create('span');
                     $span_label->setAttribute('title', $title);
@@ -305,10 +303,10 @@ if (defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogR
                             $service_id = preg_replace('/course_/', '', $key);
                             $link_Service_level = BaseHtmlLib::link("../switcher/list_courses.php?filter=$service_id", $providerData[$key]);
                             $testersData_Ar[$providerName][$key] = $link_Service_level->getHtml();
-                        } elseif (strpos($key, 'course') === 0) {
+                        } elseif (str_starts_with($key, 'course')) {
                             $link_Courses = BaseHtmlLib::link("../switcher/list_courses.php", $providerData[$key]);
                             $testersData_Ar[$providerName][$key] = $link_Courses->getHtml();
-                        } elseif (strpos($key, 'final_users') === 0) {
+                        } elseif (str_starts_with($key, 'final_users')) {
                             $link_Users = BaseHtmlLib::link("../switcher/list_users.php?list=students", $providerData[$key]);
                             $testersData_Ar[$providerName][$key] = $link_Users->getHtml();
                         }
@@ -324,7 +322,7 @@ if (defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogR
                     }
                 } else {
                     /* rates calculation */
-                    if (strpos($key, 'student_CompletedStatus_sessStarted_Rate') === 0) {
+                    if (str_starts_with($key, 'student_CompletedStatus_sessStarted_Rate')) {
                         $StudentCompleted_SessStared = intval($providerData['student_CompletedStatus_sessStarted']);
                         $StudentSubscribed_SessStared = intval($providerData['student_subscribedStatus_sessStarted']);
                         $totStudent = $StudentCompleted_SessStared + $StudentSubscribed_SessStared;
@@ -333,7 +331,7 @@ if (defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogR
                         } else {
                             $testersData_Ar[$providerName][$key] = 0;
                         }
-                    } elseif (strpos($key, 'student_CompletedStatus_sessionEnd_Rate') === 0) {
+                    } elseif (str_starts_with($key, 'student_CompletedStatus_sessionEnd_Rate')) {
                         $StudentCompleted_SessEnd = intval($providerData['student_CompletedStatus_sessionEnd']);
                         $StudentSubscribed_SessEnd = intval($providerData['student_subscribedStatus_sessEnd']);
                         $totStudent = $StudentCompleted_SessEnd + $StudentSubscribed_SessEnd;
@@ -342,7 +340,7 @@ if (defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogR
                         } else {
                             $testersData_Ar[$providerName][$key] = 0;
                         }
-                    } elseif (strpos($key, 'tot_student_CompletedStatus_Rate') === 0) {
+                    } elseif (str_starts_with($key, 'tot_student_CompletedStatus_Rate')) {
                         $tot_student_CompletedStatus = intval($providerData['tot_student_CompletedStatus']);
                         $tot_student_subscribedStatus = intval($providerData['tot_student_subscribedStatus']);
                         $totStudent = $tot_student_CompletedStatus + $tot_student_subscribedStatus;
@@ -399,19 +397,19 @@ if ($userObj->getType() == AMA_TYPE_ADMIN) {
                 if (!isset($totalAr[$key])) {
                     $totalAr[$key] = 0;
                 }
-                if (strpos($key, 'student_CompletedStatus_sessStarted_Rate') === 0) {
+                if (str_starts_with($key, 'student_CompletedStatus_sessStarted_Rate')) {
                     if ($Tot_student_subscribedStatus_sessStarted > 0 || $Tot_student_CompletedStatus_sessStarted > 0) {
                         $totalAr[$key] = number_format(($Tot_student_CompletedStatus_sessStarted * 100) / ($Tot_student_subscribedStatus_sessStarted + $Tot_student_CompletedStatus_sessStarted), 1);
                     } else {
                         $totalAr[$key] = 0;
                     }
-                } elseif (strpos($key, 'student_CompletedStatus_sessionEnd_Rate') === 0) {
+                } elseif (str_starts_with($key, 'student_CompletedStatus_sessionEnd_Rate')) {
                     if ($Tot_student_subscribedStatus_sessEnd > 0 || $Tot_student_CompletedStatus_sessionEnd > 0) {
                         $totalAr[$key] = number_format(($Tot_student_CompletedStatus_sessionEnd * 100) / ($Tot_student_subscribedStatus_sessEnd + $Tot_student_CompletedStatus_sessionEnd), 1);
                     } else {
                         $totalAr[$key] = 0;
                     }
-                } elseif (strpos($key, 'tot_student_CompletedStatus_Rate') === 0) {
+                } elseif (str_starts_with($key, 'tot_student_CompletedStatus_Rate')) {
                     if ($Tot_student_subscribedStatus > 0 || $Tot_student_CompletedStatus > 0) {
                         $totalAr[$key] = number_format(($Tot_student_CompletedStatus * 100) / ($Tot_student_subscribedStatus + $Tot_student_CompletedStatus), 1);
                     } else {

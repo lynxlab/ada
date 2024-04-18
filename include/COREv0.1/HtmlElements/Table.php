@@ -189,9 +189,7 @@ $t->printTable();
                     //$str.="<thead class=\"".$this->style."_thead\" align=\"".$this->align.">\"";
                     $str .= "<thead class=\"" . $this->style . "_thead\">";
                     $str .= "\t<tr>\r\n";
-
-                    reset($data);
-                    $firstKey = key($data);
+                    $firstKey = array_key_first($data);
                     $riga = $data[$firstKey];
                     // $riga = $data[0];
                     $str .= "\t<th class=\"" . $this->style . "_th\">&nbsp;</th>";

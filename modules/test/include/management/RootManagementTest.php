@@ -73,9 +73,9 @@ class RootManagementTest extends ManagementTest
             $data = null;
         }
 
-        if (get_class($this) == 'TestManagementTest') {
+        if (static::class == 'TestManagementTest') {
             $form = new TestFormTest($data);
-        } elseif (get_class($this) == 'SurveyManagementTest') {
+        } elseif (static::class == 'SurveyManagementTest') {
             $form = new SurveyFormTest($data);
         }
 
@@ -207,9 +207,9 @@ class RootManagementTest extends ManagementTest
         }
 
         require_once(MODULES_TEST_PATH . '/include/forms/rootFormTest.inc.php');
-        if (get_class($this) == 'TestManagementTest') {
+        if (static::class == 'TestManagementTest') {
             $form = new TestFormTest($data);
-        } elseif (get_class($this) == 'SurveyManagementTest') {
+        } elseif (static::class == 'SurveyManagementTest') {
             $form = new SurveyFormTest($data);
         }
 

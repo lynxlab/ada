@@ -15,7 +15,7 @@ error_reporting(E_ALL);
 /**
  * Base config file
 */
-require_once(realpath(dirname(__FILE__)) . '/../../config_path.inc.php');
+require_once(realpath(__DIR__) . '/../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -227,9 +227,7 @@ try {
                 if (!$exportSurvey) {
                     // If user requested to NOT export surveys,
                     // remove them from the testsArr array
-                    $testsArr = array_filter($testsArr, function ($element) {
-                        return $element['tipo'][0] != ADA_TYPE_SURVEY;
-                    });
+                    $testsArr = array_filter($testsArr, fn ($element) => $element['tipo'][0] != ADA_TYPE_SURVEY);
                 }
 
                 if (!empty($testsArr) && !AMADB::isError($testsArr)) {

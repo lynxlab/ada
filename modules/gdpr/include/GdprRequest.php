@@ -249,9 +249,7 @@ class GdprRequest extends GdprBase
             $headerArr = array_merge($headerArr, ['Testo/Note', 'Azioni']);
         }
 
-        return array_map(function ($el) {
-            return ucwords(strtolower(translateFN($el)));
-        }, $headerArr);
+        return array_map(fn ($el) => ucwords(strtolower(translateFN($el))), $headerArr);
     }
 
     /**

@@ -174,7 +174,7 @@ class ImportHelper
          * if the selected node does not contain the course separator character,
          * assume that the import is done on the node 0 of the course
          */
-        if (strpos($this->selectedNodeID, self::$courseSeparator) === false) {
+        if (!str_contains($this->selectedNodeID, self::$courseSeparator)) {
             $this->selectedNodeID .= self::$courseSeparator . '0';
         }
 
@@ -243,7 +243,7 @@ class ImportHelper
                     // e.g. attributed exportedId=107 becomes
                     // a local var named $exportedId, initialized to 107 as a string
                     foreach ($course->attributes() as $name => $val) {
-                        $$name = (string) $val;
+                        ${$name} = (string) $val;
                     }
                     // as a result of this foreach we have a php var for any XML object attribute
                     // var_dump ($exportedId); should neither raise an error nor dump a null value.
@@ -585,7 +585,7 @@ class ImportHelper
         foreach ($xml->children() as $survey) {
             foreach ($survey->attributes() as $name => $value) {
                 // export every xml <survey> tag attribute as a local var
-                $$name = (string) $value;
+                ${$name} = (string) $value;
             }
             // if the test referenced by the id_nodoTestEsportato is not set
             // there's no corresponding test in the DB and we cannot save :(

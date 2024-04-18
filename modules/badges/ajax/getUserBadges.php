@@ -9,7 +9,8 @@ use Lynxlab\ADA\Module\Badges\BadgesActions;
 /**
  * Base config file
  */
-require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
+
+require_once(realpath(__DIR__) . '/../../../config_path.inc.php');
 
 // MODULE's OWN IMPORTS
 
@@ -64,7 +65,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
         } else {
             $courseInstances = $bdh->getCourseInstancesForThisStudent($userId, true);
         }
-        if (\AMADB::isError($courseInstances)) {
+        if (AMADB::isError($courseInstances)) {
             $courseInstances = [];
         }
         $courseInstances = array_filter($courseInstances, function ($courseInstance) {
@@ -158,9 +159,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                  *
                  * now sort the badges array by badge name asc
                  */
-                usort($tmpBadges, function ($a, $b) {
-                    return strcasecmp($a['name'], $b['name']);
-                });
+                usort($tmpBadges, fn ($a, $b) => strcasecmp($a['name'], $b['name']));
                 $badges[$courseId]['courseInstances'][$courseInstanceId]['badges'] = $tmpBadges;
             }
         }

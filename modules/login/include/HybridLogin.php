@@ -343,7 +343,7 @@ class HybridLogin extends AbstractLogin
         $configIndexDIV->addChild(CDOMElement::create('div', 'class:clearfix'));
 
         $tableOutData = [];
-        if (!\AMADB::isError($optionSetList)) {
+        if (!AMADB::isError($optionSetList)) {
             unset($optionSetList['optionscount']);
             unset($optionSetList['providers_options_id']);
             /**

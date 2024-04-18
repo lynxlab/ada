@@ -15,7 +15,7 @@ use Lynxlab\ADA\Module\GDPR\GdprActions;
 /**
  * Base config file
  */
-require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
+require_once(realpath(__DIR__) . '/../../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -41,7 +41,7 @@ try {
     $_SESSION['captchaText'] = $builder->getPhrase();
     header('Content-type: image/jpeg');
     die($builder->inline());
-} catch (Exception $e) {
+} catch (Exception) {
     header(' ', true, 400);
     die();
 }

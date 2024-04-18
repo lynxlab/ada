@@ -113,7 +113,7 @@ abstract class NodeTest
      */
     public function __get($name)
     {
-        if (!property_exists(get_class($this), $name) || !isset($this->{$name})) {
+        if (!property_exists(static::class, $name) || !isset($this->{$name})) {
             return null;
         } else {
             return $this->{$name};
@@ -171,7 +171,7 @@ abstract class NodeTest
 
         //eventually clean record's array from fields not compliant
         foreach ($data as $k => $v) {
-            if (!property_exists(get_class(), $k)) {
+            if (!property_exists(self::class, $k)) {
                 return new AMAError(AMA_ERR_INCONSISTENT_DATA);
             }
         }
@@ -185,13 +185,13 @@ abstract class NodeTest
      *
      * @param $data id node or database record as array
      * @param $parent object reference to parent node
-     * @return object relative node object or an AMAError object
+     * @return null|object relative node object or an AMAError object
      */
     public static function readNode($data, $parent = null)
     {
         //read data from database
         $data = self::readData($data);
-        if (is_object($data) && (get_class($data) == 'AMAError')) {
+        if (is_object($data) && ($data::class == 'AMAError')) {
             return $data;
         } else {
             //and if data is valid, let's check what kind of object we need to instantiate
@@ -264,6 +264,7 @@ abstract class NodeTest
                     break;
             }
         }
+        return null;
     }
 
     /**
@@ -338,10 +339,10 @@ abstract class NodeTest
     public function addChild(NodeTest $child)
     {
         //use pipes in CHILD_CLASS constant to specifiy more than one possible child class
-        $constants = constant(get_class($this) . '::CHILD_CLASS');
+        $constants = constant(static::class . '::CHILD_CLASS');
         $constants = explode('|', $constants);
         foreach ($constants as $v) {
-            if (get_class($child) == $v || is_subclass_of($child, $v)) {
+            if ($child::class == $v || is_subclass_of($child, $v)) {
                 if (is_null($this->children)) {
                     $this->children = [];
                 }
@@ -557,7 +558,7 @@ abstract class NodeTest
     public static function checkAndRedirect($nodeObj)
     {
 
-        $isView = (strstr($_SERVER['PHP_SELF'], 'view.php') !== false);
+        $isView = (str_contains($_SERVER['PHP_SELF'], 'view.php'));
 
         $redirectTo = '';
         $node = null;

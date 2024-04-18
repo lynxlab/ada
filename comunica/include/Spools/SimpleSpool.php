@@ -11,6 +11,10 @@
 
 namespace Lynxlab\ADA\Comunica\Spools;
 
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\AMAError;
+
 class SimpleSpool extends Spool
 {
     /**
@@ -42,7 +46,7 @@ class SimpleSpool extends Spool
      * @param   $message_ha        - message data as an hash
      * @param   $recipients_ids_ar - list of recipients ids
      *
-     * @return  an AMAError object if something goes wrong
+     * @return  mixed|AMAError an AMAError object if something goes wrong
      *
      * (non-PHPdoc)
      * @see Spool::add_message()
@@ -63,8 +67,8 @@ class SimpleSpool extends Spool
         $res = parent::addMessage($message_ha, $recipients_ids_ar, $check_on_uniqueness);
         if (AMADataHandler::isError($res)) {
             // $res is an AMAError object
-            return $res;
         }
+        return $res;
     }
 
 
@@ -82,7 +86,7 @@ class SimpleSpool extends Spool
      *                            (records are always filtered for user and type)
      * @param   $ordering       - the order
      *
-     * @return  a reference to a hash, if more than one fields are required
+     * @return  array|AMAError a reference to a hash, if more than one fields are required
      *           res_ha[ID_MESSAGGIO] contains an array with all the values
      *          a reference to a linear array if only one field is required
      *          an AMAError object if something goes wrong
@@ -124,7 +128,7 @@ class SimpleSpool extends Spool
      *
      * @access  public
      *
-     * @return  an AMAError object if something goes wrong
+     * @return  void|AMAerror an AMAError object if something goes wrong
      *          it is recommended that the error is not treated
      *
      */

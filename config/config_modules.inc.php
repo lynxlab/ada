@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ModuleLoaderHelper is included in ada_config.inc.php file
  */

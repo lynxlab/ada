@@ -11,13 +11,14 @@
 namespace Lynxlab\ADA\Main\Helper;
 
 use Lynxlab\ADA\Comunica\ChatRoom;
+use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
-use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\readCourse;
@@ -244,7 +245,7 @@ abstract class ViewBaseHelper
 
         if (in_array('course', $thisUserNeededObjAr)) {
             /**
-             * @var Course $courseObj
+             * @var \Lynxlab\ADA\Main\Course\Course $courseObj
              */
             $courseObj = readCourse($sess_id_course);
             if (ADAError::isError($courseObj)) {
@@ -271,7 +272,7 @@ abstract class ViewBaseHelper
             if (!ADAError::isError($courseObj) && !$courseObj->getIsPublic()) {
                 if (in_array($userObj->getType(), [AMA_TYPE_STUDENT, AMA_TYPE_TUTOR, AMA_TYPE_SWITCHER])) {
                     /**
-                     *    @var Course_Instance $courseInstanceObj
+                     *    @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
                      */
                     $courseInstanceObj = readCourseInstanceFromDB($sess_id_course_instance);
                     if (ADAError::isError($courseInstanceObj)) {
@@ -291,7 +292,7 @@ abstract class ViewBaseHelper
 
         if (in_array('tutor', $thisUserNeededObjAr)) {
             global $sess_id_course_instance;
-            $calledClass = get_called_class();
+            $calledClass = static::class;
 
             if (isset($sess_id_course_instance)) {
                 if (method_exists($userObj, 'getStudentStatus')) {
@@ -301,9 +302,9 @@ abstract class ViewBaseHelper
                 }
                 if ($user_status != ADA_STATUS_VISITOR) {
                     $tutor_id = $dh->courseInstanceTutorGet($sess_id_course_instance);
-                    if (!empty($tutor_id) && !AMA_DataHandler::isError($tutor_id)) {
+                    if (!empty($tutor_id) && !AMADataHandler::isError($tutor_id)) {
                         $tutorAr = $dh->getTutor($tutor_id);
-                        if (!AMA_dataHandler::isError($tutorAr)) {
+                        if (!AMADataHandler::isError($tutorAr)) {
                             if (isset($tutorAr['username'])) {
                                 $calledClass::$tutor_uname = $tutorAr['username'];
                             }
@@ -317,7 +318,8 @@ abstract class ViewBaseHelper
         if (in_array('node', $thisUserNeededObjAr)) {
             global $id_node;
             /**
-             * @var Node $nodeObj
+             * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
              */
             $nodeObj = readNodeFromDB($id_node ?? null);
             if (ADAError::isError($nodeObj)) {
@@ -339,7 +341,7 @@ abstract class ViewBaseHelper
             $retArr['exit_reason'] = NO_EXIT_REASON;
             if (!isset($id_chatroom) && isset($_SESSION['sess_id_course_instance'])) {
                 $id_chatroom = ChatRoom::getClassChatroomFN($_SESSION['sess_id_course_instance']);
-                if (AMA_DataHandler::isError($id_chatroom)) {
+                if (AMADataHandler::isError($id_chatroom)) {
                     $id_chatroom = 0;
                 }
             }
@@ -366,7 +368,7 @@ abstract class ViewBaseHelper
                         /**
                          * get videoroom Obj
                          */
-                        $videoroomObj = videoroom::getVideoObj();
+                        $videoroomObj = VideoRoom::getVideoObj();
                         $tempo_attuale = time();
                         $videoroomObj->videoroomInfo($sess_id_course_instance, $tempo_attuale);
                         if ($videoroomObj->full) {
@@ -388,7 +390,7 @@ abstract class ViewBaseHelper
                         }
                         break;
                     case AMA_TYPE_TUTOR:
-                        $videoroomObj = videoroom::getVideoObj();
+                        $videoroomObj = VideoRoom::getVideoObj();
                         $tempo_attuale = time();
                         $creationDate = AbstractAMADataHandler::tsToDate($tempo_attuale);
                         $videoroomObj->videoroomInfo($sess_id_course_instance, $tempo_attuale);
@@ -551,7 +553,7 @@ abstract class ViewBaseHelper
         foreach (self::getHelperData() as $key => $value) {
             if (self::$dumpExtract === true) {
                 if (is_object($value)) {
-                    $dbgval = 'Object of class ' . get_class($value);
+                    $dbgval = 'Object of class ' . $value::class;
                 } elseif (is_array($value)) {
                     $dbgval = sprintf("Array with %d elements", count($value));
                 } else {

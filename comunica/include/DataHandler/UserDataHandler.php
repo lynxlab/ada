@@ -13,9 +13,13 @@
 
 namespace Lynxlab\ADA\Comunica\DataHandler;
 
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\AMAError;
+
 /**
  * UserDataHandler implements the API to access data regarding users
- * The class extends the AMA_DataHandler class
+ * The class extends the AMADataHandler class
  *
  * @access public
  *
@@ -58,7 +62,7 @@ class UserDataHandler extends AbstractAMADataHandler
      * @param   $fields_list_ar - a list of fields to return
      * @param   $clause         - a clause to filter records
      *
-     * @return  a refrerence to a 2-dim array,
+     * @return  array|AMAError a refrerence to a 2-dim array,
      *           each row will have id_utente in the 0 element
      *           and the fields specified in the list in the others
      *          an AMAError object if something goes wrong

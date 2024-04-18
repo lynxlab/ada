@@ -185,7 +185,7 @@ class AdobeConnect extends VideoRoom implements IVideoRoom
      * @return string The Adobe Conncect id of user found
      * @return bolean false if no user found
      */
-    public function SearchUser($username)
+    public function searchUser($username)
     {
         $filters = [];
         $filters['filter-login'] = $username;
@@ -193,7 +193,7 @@ class AdobeConnect extends VideoRoom implements IVideoRoom
             $userInfo = $this->apiClient->principalList($filters);
             $ACUserId = VideoRoom::xmlAttribute($userInfo[0], 'principal-id');
             return $ACUserId;
-        } catch (Exception $ex) {
+        } catch (Exception) {
             return false;
         }
     }
@@ -225,7 +225,7 @@ class AdobeConnect extends VideoRoom implements IVideoRoom
             //            var_dump($userInfo);die();
             $ACUserId = VideoRoom::xmlAttribute($userInfo, 'principal-id');
             return $ACUserId;
-        } catch (Exception $ex) {
+        } catch (Exception) {
             return false;
         }
     }
@@ -240,7 +240,7 @@ class AdobeConnect extends VideoRoom implements IVideoRoom
         try {
             $ACUserLogin = $this->apiClient->login($userName, $userPwd);
             return $ACUserLogin;
-        } catch (Exception $ex) {
+        } catch (Exception) {
             return false;
         }
     }
@@ -287,9 +287,9 @@ class AdobeConnect extends VideoRoom implements IVideoRoom
         }
 
         $ACroomCreatedInfo = $this->createMeeting($name, $sess_id_course_instance, $sess_id_user, $course_title, $selected_provider);
-        if (!$ACroomCreatedInfo[0] && strpos($ACroomCreatedInfo[1], 'duplicate') === false) {
+        if (!$ACroomCreatedInfo[0] && !str_contains($ACroomCreatedInfo[1], 'duplicate')) {
             return false;
-        } elseif (!$ACroomCreatedInfo[0] && strpos($ACroomCreatedInfo[1], 'duplicate') !== false) {
+        } elseif (!$ACroomCreatedInfo[0] && str_contains($ACroomCreatedInfo[1], 'duplicate')) {
 
             /**
              * @todo Search a meeting room in order to write the correct one in table DB
@@ -377,7 +377,7 @@ class AdobeConnect extends VideoRoom implements IVideoRoom
         }
         $ACMeetingPath = (string)$ACMeetingInfo['sco']->{'url-path'};
         if ($id_profile == AMA_TYPE_TUTOR) {
-            $ACUserId = $this->SearchUser($username);
+            $ACUserId = $this->searchUser($username);
             if ($ACUserId == false || is_null($ACUserId)) {
                 $ACUserId = $this->addUser($GLOBALS['userObj']);
                 if ($ACUserId == false) {
@@ -416,7 +416,7 @@ class AdobeConnect extends VideoRoom implements IVideoRoom
         try {
             $ACMeetingInfo = $this->apiClient->scoInfo($id_room);
             return $ACMeetingInfo;
-        } catch (Exception $exc) {
+        } catch (Exception) {
             return false;
         }
     }

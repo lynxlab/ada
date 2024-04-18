@@ -33,34 +33,35 @@ class ChatManagementForm extends FForm
         parent::__construct();
 
         $this->addTextInput('id_room', translateFN('ChatRoom ID'))
-             ->setAttribute('readonly', 'readonly');
+            ->setAttribute('readonly', 'readonly');
 
         $this->addTextInput('chat_title', translateFN('Titolo'))
-             ->setRequired()
-             ->setValidator(FormValidator::FIRSTNAME_VALIDATOR);
+            ->setRequired()
+            ->setValidator(FormValidator::FIRSTNAME_VALIDATOR);
 
         $this->addTextInput('chat_topic', translateFN('Argomento'))
-             ->setRequired()
-             ->setValidator(FormValidator::DEFAULT_VALIDATOR);
+            ->setRequired()
+            ->setValidator(FormValidator::DEFAULT_VALIDATOR);
 
         $this->addTextArea('welcome_msg', translateFN('Messaggio di benvenuto'))
-             ->setValidator(FormValidator::DEFAULT_VALIDATOR);
+            ->setValidator(FormValidator::DEFAULT_VALIDATOR);
 
         $this->addTextInput('chat_owner', translateFN('Proprietario'))
-             ->setRequired()
-             ->setAttribute('readonly', 'readonly')
-             ->setValidator(FormValidator::USERNAME_VALIDATOR);
+            ->setRequired()
+            ->setAttribute('readonly', 'readonly')
+            ->setValidator(FormValidator::USERNAME_VALIDATOR);
 
         $this->addTextInput('actual_chat_type', translateFN('Tipo'))
-             ->setAttribute('readonly', 'readonly');
+            ->setAttribute('readonly', 'readonly');
 
-        if (!isset($chatroom_started) || (isset($chatroom_started) && !$chatroom_started)) {
+        $chatroom_started ??= true;
+        if ($chatroom_started) {
             $this->addSelect(
                 'new_chat_type',
                 translateFN('Nuovo tipo'),
                 [
                     '-- select --' => '-- select --',
-                //                     'Privata' => translateFN('Privata'),
+                    //                     'Privata' => translateFN('Privata'),
                     'Classe' => translateFN('Classe'),
                     'Pubblica' => translateFN('Pubblica'),
                 ],
@@ -69,25 +70,25 @@ class ChatManagementForm extends FForm
         }
 
         $this->addTextInput('max_users', translateFN('Numero di utenti'))
-             ->setValidator(FormValidator::NON_NEGATIVE_NUMBER_VALIDATOR);
+            ->setValidator(FormValidator::NON_NEGATIVE_NUMBER_VALIDATOR);
 
         $this->addTextInput('start_day', translateFN('Data di apertura (gg/mm/aaaa)'))
-             ->setAttribute('readonly', 'readonly')
-             ->setValidator(FormValidator::DATE_VALIDATOR);
+            ->setAttribute('readonly', 'readonly')
+            ->setValidator(FormValidator::DATE_VALIDATOR);
 
         $this->addTextInput('start_time', translateFN('Ora di apertura (oo:mm:ss)'))
-             ->setAttribute('readonly', 'readonly')
-             ->setValidator(FormValidator::TIME_VALIDATOR);
+            ->setAttribute('readonly', 'readonly')
+            ->setValidator(FormValidator::TIME_VALIDATOR);
 
         $this->addTextInput('end_day', translateFN('Data di chiusura (gg/mm/aaaa)'))
-             ->setValidator(FormValidator::DATE_VALIDATOR);
+            ->setValidator(FormValidator::DATE_VALIDATOR);
 
         $this->addTextInput('end_time', translateFN('Ora di chiusura (oo:mm:ss)'))
-             ->setValidator(FormValidator::TIME_VALIDATOR);
+            ->setValidator(FormValidator::TIME_VALIDATOR);
 
         $this->addTextInput('id_course_instance', translateFN('ID Classe'))
-             ->setRequired()
-             ->setAttribute('readonly', 'readonly')
-             ->setValidator(FormValidator::NON_NEGATIVE_NUMBER_VALIDATOR);
+            ->setRequired()
+            ->setAttribute('readonly', 'readonly')
+            ->setValidator(FormValidator::NON_NEGATIVE_NUMBER_VALIDATOR);
     }
 }

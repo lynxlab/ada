@@ -2,6 +2,7 @@
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
@@ -21,7 +22,8 @@ use function Lynxlab\ADA\Main\Utilities\whoami;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 /**
  * Clear node and layout variable in $_SESSION
  */
@@ -68,6 +70,7 @@ $self =  whoami();
  * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
  * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
  * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -92,7 +95,7 @@ $id_course_instance = $_SESSION['sess_id_course_instance'];
 // ******************************************************
 // get user object
 $userObj = $_SESSION['sess_userObj'];
-if ((is_object($userObj)) && (!AMA_dataHandler::isError($userObj))) {
+if ((is_object($userObj)) && (!AMADataHandler::isError($userObj))) {
     $id_profile = $userObj->tipo;
     $user_name =  $userObj->username;
     $user_name_name = $userObj->nome;
@@ -104,7 +107,7 @@ if ((is_object($userObj)) && (!AMA_dataHandler::isError($userObj))) {
         $user_level = $userObj->getStudentLevel($sess_id_user, $sess_id_course_instance);
     }
 } else {
-    $errObj = new ADA_error(translateFN("Utente non trovato"), translateFN("Impossibile proseguire."));
+    $errObj = new ADAError(translateFN("Utente non trovato"), translateFN("Impossibile proseguire."));
 }
 
 $ymdhms = todayDateFN();
@@ -341,7 +344,6 @@ $node_data = [
                'status' => $status,
                'user_name' => $user_name_name,
                'user_type' => $user_type,
-               'status' => $status,
                'user_level' => $user_level,
                'messages' => $user_messages->getHtml(),
                'agenda' => $user_agenda->getHtml(),

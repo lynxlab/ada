@@ -142,7 +142,7 @@ class NavigationHistory
 
     public function callerModuleWas($module_name)
     {
-        return strpos($this->last_page, "$module_name.php") !== false;
+        return str_contains($this->last_page, "$module_name.php");
     }
 
     public function userComesFromLoginPage()

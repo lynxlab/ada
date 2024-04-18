@@ -74,7 +74,7 @@ class ARE
                 ]
             );
             foreach ($event->getArguments() as $key => $val) {
-                $$key = $val;
+                ${$key} = $val;
             }
         }
 

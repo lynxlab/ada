@@ -90,9 +90,7 @@ class GdprPolicy extends GdprBase
             $headerArr[] = 'Azioni';
         }
 
-        return array_map(function ($el) {
-            return ucwords(strtolower(translateFN($el)));
-        }, $headerArr);
+        return array_map(fn ($el) => ucwords(strtolower(translateFN($el))), $headerArr);
     }
 
     /**

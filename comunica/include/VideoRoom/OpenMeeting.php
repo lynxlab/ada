@@ -23,7 +23,7 @@ use SoapClient;
 class OpenMeeting extends VideoRoom implements IVideoRoom
 {
     public $resultAddRoom;
-    public $list_rooms;
+    public $listRooms;
     public $error_openmeetings;
     public $secureHash;
 
@@ -59,7 +59,7 @@ class OpenMeeting extends VideoRoom implements IVideoRoom
         $videoPodWidth = VIDEO_POD_WIDTH;
         $videoPodHeight = VIDEO_POD_HEIGHT;
         $videoPodXPosition = VIDEO_POD_X_POSITION;
-        $videoPodYPosition = VIDEO_POD_y_POSITION;
+        $videoPodYPosition = VIDEO_POD_Y_POSITION;
         $moderationPanelXPosition = MODERATION_PANEL_X_POSITION;
         $showWhiteBoard = SHOW_WHITE_BOARD;
         $whiteBoardPanelXPosition = WHITE_BOARD_PANEL_X_POSITION;

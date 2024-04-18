@@ -15,8 +15,6 @@
 namespace Lynxlab\ADA\Main\HtmlLibrary;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
-use Lynxlab\ADA\CORE\html4\CText;
-use Lynxlab\ADA\CORE\HtmlElements\Table;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
@@ -29,146 +27,6 @@ class GuestHtmlLib
     /*
      * methods used to display all services list
      */
-
-
-    public static function displayAllServicesData(ADAGenericUser $UserObj, $service_infoAr = [], $optionsAr = [])
-    {
-
-        $to_sub_course_dataHa = [];
-        $callerModule = $optionsAr['callerModule'];
-        $orderBy = $optionsAr['orderBy'];
-
-
-        // this function is called by browsing/user and by info
-        if ($callerModule == 'user') {
-            $callerModuleUrl = HTTP_ROOT_DIR . "/browsing/$callerModule.php";
-        } else {
-            $callerModuleUrl = HTTP_ROOT_DIR . "/$callerModule.php";
-        }
-
-        $service_ordering_link = CDOMElement::create('a', 'href:' . $callerModuleUrl . '?ob=service');
-        $service_ordering_link->addChild(new CText(translateFN("Servizio")));
-
-        $country_ordering_link = CDOMElement::create('a', 'href:' . $callerModuleUrl . '?ob=country');
-        $country_ordering_link->addChild(new CText(translateFN("Country")));
-
-        $label1 = $service_ordering_link->getHtml();
-        $label2 = $country_ordering_link->getHtml();
-        $label3 = translateFN("Livello del servizio"); // ??
-        $label4 = translateFN("Richiedi");
-        $label5 = translateFN("Provider");
-        $label6 = translateFN("Login/Register");
-        $label7 = translateFN("Servizio non accessibile");
-        $label8 = translateFN("Non disponibile");
-        $label9 = translateFN("Iscritto");
-        $label10 = translateFN("Info");
-        $label11 = translateFN("Dettagli");
-
-        $old_service_country = "";
-        $old_service_title = "";
-
-        foreach ($service_infoAr as $course_dataHa) {
-            //var_dump($course_dataHa);
-            $id_service = $course_dataHa[0];
-            $service_title = translateFN($course_dataHa[1]);
-            $service_info =  CDOMElement::create('a', 'href:' . HTTP_ROOT_DIR . '/browsing/service_info.php?id_service=' . $id_service);
-            $service_info->addChild(new CText($label10));
-            $service_info_link = $service_info->getHtml();
-            $service_level = $course_dataHa[2];
-            $service_country = $course_dataHa[7] . "/" . $course_dataHa[6];
-            $service_implementation_id = $course_dataHa[3];
-
-            $provider_name = $course_dataHa[5];
-
-            //var_dump($course_dataHa);
-            //if (AMADataHandler::isError($id_course_instanceAr)){ // never subscribed
-            if ($course_dataHa[8] == 0) { // never subscribed
-                $norequest = "";
-                // is level attainable for this provider?
-                $max_level = $level_ha[$provider_pointer]['max_level'];
-                if (($max_level == 0) or (($service_level - $maxlevel) == 1)) {
-                    $course_subscription = CDOMElement::create('a', 'href:' . HTTP_ROOT_DIR . '/browsing/subscribe.php?id_course=' . $service_implementation_id);
-                    $course_subscription->addChild(new CText($label4));
-                    $course_subscription_link = $course_subscription->getHtml();
-                } else {
-                    $course_subscription_link = $label7 . ":" . $service_level . "-" . $max_level; // level too much higher
-                }
-            } else {
-                // var_dump($id_course_instanceAr) ;
-                $norequest = "&norequest=1";
-                $id_course_instance = $course_dataHa[8];
-                $course_subscription_link = $label9;
-                /*.": $id_course_instance"*/ ;
-            }
-            $course_registration = CDOMElement::create('a', 'href:' . HTTP_ROOT_DIR . '/browsing/registration.php?id_course=' . $service_implementation_id);
-            $course_registration->addChild(new CText($label6));
-            $course_registration_link =  $course_registration->getHtml();
-
-            $course_info = CDOMElement::create('a', 'href:' . HTTP_ROOT_DIR . '/browsing/service_info.php?id_course=' . $service_implementation_id . $norequest);
-            $course_info->addChild(new CText($label11));
-            $course_info_link = $course_info->getHtml();
-
-            if ($orderBy == 'service') {
-                if ($service_title != $old_service_title) {
-                    $row[$label1] = "<strong>" . $service_title . "</strong>";
-                    $old_service_title = $service_title;
-                    //    $row[$label10] = $service_info_link;
-                } else {
-                    $row[$label1] = "";
-                    //  $row[$label10] = "";
-                }
-
-                // $course_info->addChild(new CText($provider_name));
-                $row[$label2] = $service_country;
-                // $row[$label5] = $course_info_link;
-                $row[$label5] = $provider_name;
-                $row[$label11] = $course_info_link;
-                $row[$label3] =   level2stringFN($service_level);
-                if ($callerModule == 'user') {
-                    $row[$label4] = $course_subscription_link;
-                } elseif ($callerModule == 'info') {
-                    $row[$label4] = $course_registration_link;
-                }
-            } elseif ($orderBy == 'country') {
-                if ($service_country != $old_service_country) {
-                    $row[$label2] = "<strong>" . $service_country . "</strong>";
-                    $old_service_country = $service_country;
-                } else {
-                    $row[$label2] = "";
-                }
-                // $course_info->addChild(new CText($service_title));
-
-                $row[$label5] = $provider_name;
-                $row[$label1] = $service_title;
-                // $row[$label10] = $service_info_link;
-                $row[$label11] = $course_info_link;
-                $row[$label3] = level2stringFN($service_level);
-                if ($callerModule == 'user') {
-                    $row[$label4] = $course_subscription_link;
-                } elseif ($callerModule == 'info') {
-                    $row[$label4] = $course_registration_link;
-                }
-            }
-
-            $to_sub_course_dataHa[] = $row;
-        }
-
-        if (count($to_sub_course_dataHa) > 0) {
-            $tObj = new Table();
-            $tObj->initTable('1', 'center', '0', '1', '100%', '', '', '', '', '1', '1');
-            $caption = "<strong>" . translateFN("Servizi che puoi richiedere") . "</strong>";
-            $summary = translateFN("Elenco dei servizi che puoi richiedere");
-            $tObj->setTable($to_sub_course_dataHa, $caption, $summary);
-            $all_services_data = $tObj->getTable();
-            // $submit_button = "<p align='center'><input type=\"submit\" name=\"submit\" value=".translateFN("Richiedi")."></p>";
-        } else {
-            // $submit_button = "<p align='center'><input type=\"submit\" name=\"submit\" value=".translateFN("Registrati")."></p>";
-            $all_services_data = translateFN("Non ci sono servizi che puoi richiedere");
-        }
-
-        $form .= $all_services_data; //.$submit_button;
-        return $form;
-    }
 
     public static function displayImplementationServiceData(ADAGenericUser $UserObj, $service_infoAr, $optionsAr = [])
     {
@@ -292,7 +150,7 @@ class GuestHtmlLib
 
                       ];
 
-        $serviceTable = BaseHtmlLib::tableElement($element_attributes, $thead_data, $tbody_dataAr);
+        $serviceTable = BaseHtmlLib::tableElement('', $thead_data, $tbody_dataAr);
 
         $service_div->addChild($serviceTable);
         $service_data = $service_div->getHtml();

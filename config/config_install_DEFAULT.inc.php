@@ -1,11 +1,16 @@
 <?php
 
+/**
+ * config_install.inc.php file.
+ */
+
 use function Lynxlab\ADA\Main\Utilities\getUserIpAddr;
 
 /**
  * DB and interface constants
  * This section can be modified  by the installer
  */
+
 /*
  * ADA Common database
  */
@@ -240,7 +245,7 @@ define('ADA_VERSION', '2.2');
  * URL
  * DO NOT REMOVE the trailing // *js_import*
  */
-define('MODULES_DIR', ROOT_DIR.'/modules'); // *js_import*
+define('MODULES_DIR', ROOT_DIR . '/modules'); // *js_import*
 
 /**
  *
@@ -302,17 +307,17 @@ define('ADA_DEFAULT_EMAIL_FOOTER', sprintf("This message has been sent to you by
 /**
  * default author upload path
  */
-define('ADA_UPLOAD_PATH', ROOT_DIR.'/uploadFile/uploaded_files/');
+define('ADA_UPLOAD_PATH', ROOT_DIR . '/uploadFile/uploaded_files/');
 
 /**
  * default HTTP upload path for each user
  */
-define('HTTP_UPLOAD_PATH', HTTP_ROOT_DIR.'/uploadFile/uploaded_files/');
+define('HTTP_UPLOAD_PATH', HTTP_ROOT_DIR . '/uploadFile/uploaded_files/');
 
 /**
  * default tutor upload path
  */
-define('TUTOR_UPLOAD_PATH', ROOT_DIR.'/uploadFile/uploaded_files/tutors/');
+define('TUTOR_UPLOAD_PATH', ROOT_DIR . '/uploadFile/uploaded_files/tutors/');
 
 /**
  * default media path (in case author's mediapath = "")
@@ -322,7 +327,7 @@ define('MEDIA_PATH_DEFAULT', '/services/media/');
 /**
  * writable directory permissions
  */
-define('ADA_WRITABLE_DIRECTORY_PERMISSIONS', 0755);
+define('ADA_WRITABLE_DIRECTORY_PERMISSIONS', 0o755);
 
 define('ADA_COURSE_MODELS_PATH', ADA_UPLOAD_PATH . 'models');
 
@@ -345,7 +350,7 @@ define('ADA_TEMPLATE_FAMILY', 'ada_blu');   // *js_import*
 define('ADA_SEMANTICUI_TABLECLASS', 'ui padded table');   // *js_import*
 
 // default templates path
-define('ADA_TEMPLATE_PATH', ROOT_DIR.'/templates/main');
+define('ADA_TEMPLATE_PATH', ROOT_DIR . '/templates/main');
 
 // default date format
 define('ADA_DATE_FORMAT', '%d/%m/%Y');
@@ -400,7 +405,7 @@ $duplicate_dir_structure = 1;
 
 // TODO: vengono ancora utilizzati?
 // path to the ADA Middle API library  (absolute path)
-$ama_lib = ROOT_DIR.'/include/ama_class.inc.php';
+$ama_lib = ROOT_DIR . '/include/ama_class.inc.php';
 
 //accepted mimetypes for upload
 // was $mimetypeHa + $mimetypeCodeHa in 1.7
@@ -563,13 +568,13 @@ define('ADA_MAX_USER_LEVEL', 100);
 define('ADA_MAX_SCORE', 100);
 
 // path to the standard error page
-$error = HTTP_ROOT_DIR.'/admin/error.php';
+$error = HTTP_ROOT_DIR . '/admin/error.php';
 
 /**
  * Preferences array
  */
 
-$ADA_ELEMENT_VIEWING_PREFERENCES = array();
+$ADA_ELEMENT_VIEWING_PREFERENCES = [];
 $ADA_ELEMENT_VIEWING_PREFERENCES[AMA_TYPE_AUTHOR][ADA_LEAF_TYPE][ADD_OPERATION]  = EDITOR_INSERT_EXTERNAL_LINK | EDITOR_INSERT_INTERNAL_LINK |
                                                                                    EDITOR_UPLOAD_FILE | EDITOR_SELECT_FILE |
                                                                                    EDITOR_SHOW_NODE_TYPE | EDITOR_SHOW_NODE_LEVEL |

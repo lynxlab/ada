@@ -31,7 +31,7 @@ define('ROOM_IS_PUBLIC', 'true');
 define('VIDEO_POD_WIDTH', '355');
 define('VIDEO_POD_HEIGHT', '560');
 define('VIDEO_POD_X_POSITION', '2');
-define('VIDEO_POD_y_POSITION', '2');
+define('VIDEO_POD_Y_POSITION', '2');
 define('MODERATION_PANEL_X_POSITION', '400');
 define('SHOW_WHITE_BOARD', 'true');
 define('WHITE_BOARD_PANEL_X_POSITION', '360');

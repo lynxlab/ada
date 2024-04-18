@@ -55,7 +55,7 @@ class CollaboraACLActions
      */
     public static function getConstantFromString($stringConstant)
     {
-        return defined(__CLASS__ . '::' . $stringConstant) ? constant(__CLASS__ . '::' . $stringConstant) : null;
+        return defined(self::class . '::' . $stringConstant) ? constant(self::class . '::' . $stringConstant) : null;
     }
 
     /**

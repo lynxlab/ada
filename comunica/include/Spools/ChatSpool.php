@@ -11,6 +11,10 @@
 
 namespace Lynxlab\ADA\Comunica\Spools;
 
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\AMAError;
+
 class ChatSpool extends Spool
 {
     public $id_chatroom;
@@ -77,7 +81,7 @@ class ChatSpool extends Spool
      * @param   $fields_list_ar - a list of fields to return
      * @param   $clause         - a clause to filter records
      *
-     * @return  a refrerence to a 2-dim array,
+     * @return  void a refrerence to a 2-dim array,
      *           each row will have id_utente in the 0 element
      *           and the fields specified in the list in the others
      *          an AMAError object if something goes wrong

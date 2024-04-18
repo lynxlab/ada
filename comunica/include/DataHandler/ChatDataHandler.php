@@ -19,7 +19,7 @@
 // ADA ChatDataHandler
 
 /*****************************************************************************
- * ChatDataHandler extends the AMA_DataHandler, to communicate with the DB,
+ * ChatDataHandler extends the AMADataHandler, to communicate with the DB,
  * and implements the API to access data regarding the functionality of the
  * chatrooms.
  *
@@ -28,6 +28,10 @@
  *****************************************************************************/
 
 namespace Lynxlab\ADA\Comunica\DataHandler;
+
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\AMAError;
 
 class ChatDataHandler extends AbstractAMADataHandler
 {
@@ -87,7 +91,7 @@ class ChatDataHandler extends AbstractAMADataHandler
      * Returns an instance of ChatDataHandler.
      *
      * @param  string $dsn - optional, a valid data source name
-     * @return an instance of ChatDataHandler
+     * @return ChatDataHandler an instance of ChatDataHandler
      */
     public static function instance($dsn = null)
     {
@@ -185,17 +189,17 @@ class ChatDataHandler extends AbstractAMADataHandler
             return new AMAError(AMA_ERR_NOT_FOUND);
         }
         // referential integrity checks
-        $ri_id = $db->getOne("select id_utente from utente_chatroom where id_chatroom=$id");
+        $ri_id = $db->getOne("select id_utente from utente_chatroom where id_chatroom=$id_chatroom");
         if ($ri_id) {
             return new AMAError(AMA_ERR_REF_INT_KEY);
         }
         // referential integrity checks
-        $ri_id = $db->getOne("select id_messaggio from messaggi where id_chatroom=$id");
+        $ri_id = $db->getOne("select id_messaggio from messaggi where id_chatroom=$id_chatroom");
         if ($ri_id) {
             return new AMAError(AMA_ERR_REF_INT_KEY);
         }
 
-        $sql = "delete from chatroom where id_chatroom=$id";
+        $sql = "delete from chatroom where id_chatroom=$id_chatroom";
 
         $res = parent::executeCritical($sql);
         if (AMADB::isError($res)) {

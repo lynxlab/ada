@@ -417,7 +417,7 @@ abstract class AbstractCourse
                                         }
                                         if ($visit_count == 0) {
                                             $index_item = "<img name=\"nodo\" alt=$alt src=\"img/$icon\">
-                                   <b><a href=view.php?id_node=" . $id_child . ">" . $child_dataHa['name'] . "</a></b>$expand_link";
+                                   <b><a href=view.php?id_node=" . $id_child . ">" . $child_dataHa['name'] . "</a></b>" . ($expand_link ?? '');
                                         } else {
                                             $index_item = "<img name=\"nodo\" alt=$alt src=\"img/$icon\">
                                    <a href=view.php?id_node=" . $id_child . ">" . $child_dataHa['name'] . "</a>

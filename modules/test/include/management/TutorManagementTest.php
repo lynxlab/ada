@@ -246,7 +246,7 @@ class TutorManagementTest
                 $tbody[$k][] = round(array_sum($r['punteggio']) / $r['count'], 2);
                 $tbody[$k][] = min($r['punteggio']);
                 $tbody[$k][] = max($r['punteggio']);
-                $tbody[$k][] = ($r['punteggio_barriera']) ? $r['punteggio_barriera'] : translateFN('Nessuna');
+                $tbody[$k][] = $r['punteggio_barriera'] ?: translateFN('Nessuna');
                 $tbody[$k][] = $r['count_consegnato'] . ' ' . translateFN('su') . ' ' . $r['count'];
                 $tbody[$k][] = $r['count_scaduto'] . ' ' . translateFN('su') . ' ' . $r['count'];
                 $tbody[$k][] = '<a href="' . $this->filepath . '?op=' . $this->what . '&id_course=' . $r['id_course'] . '&id_course_instance=' . $r['id_instance'] . '&id_student=' . $r['id_utente'] . '&id_test=' . $r['id_test'] . '"><img src="img/magnify.png" /></a>';

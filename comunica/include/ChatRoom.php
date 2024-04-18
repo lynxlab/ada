@@ -55,6 +55,10 @@ class ChatRoom
     public $end_time = 0;
     public $error = 1;
     public $error_msg = "";
+    public $operator_id;
+    public $status;
+    public $action;
+    public $chatroom_ha;
 
     private static $tester_dsn;
     private static $isStatic = true;
@@ -83,7 +87,7 @@ class ChatRoom
         //case id_chatroom is provided
         if ((isset($id_chatroom)) && (!is_object($id_chatroom))) {
             // search for a chatroom into the DB with such id_chatroom
-            $chatroom_ha = $this->getInfoChatroomFN($id_chatroom);
+            $chatroom_ha = static::getInfoChatroomFN($id_chatroom);
             //            print_r($chatroom_ha);
             // the chatroom with such id allready exists;
             if (is_array($chatroom_ha)) {
@@ -246,11 +250,11 @@ class ChatRoom
                 //verify that a course_instance exists
                 if (!empty($sess_id_course_instance)) {
                     // search into the DB for a chatroom assosciated to the course_instance
-                    $id_chatroom = $this->getClassChatroomFN($sess_id_course_instance);
+                    $id_chatroom = static::getClassChatroomFN($sess_id_course_instance);
                     // there is a chatroom for that course_instance
                     if ($id_chatroom) {
                         // search for a chatroom into the DB with such id_chatroom
-                        $chatroom_ha = $this->getInfoChatroomFN($id_chatroom);
+                        $chatroom_ha = static::getInfoChatroomFN($id_chatroom);
                         // the chatroom with such id allready exists;
                         if (is_array($chatroom_ha)) {
                             // check the user status into the chatroom
@@ -308,7 +312,7 @@ class ChatRoom
                         } //end of (is_array($chatroom_ha))
                     } else { //error. no chatroom where found for the classroom, but $sess_id_course_instance isset
                         //if does not exist create a new chatroom for the class
-                        $id_chatroom = $this->addChatroomFN($chatroom_ha, self::$tester_dsn);
+                        $id_chatroom = static::addChatroomFN($chatroom_ha, self::$tester_dsn);
                         $this->error = 2;
                         $this->error_msg = translateFN("Utente non presente"); // non presente
                     } // end of case that the provided id does not exist
@@ -317,8 +321,8 @@ class ChatRoom
                     // $this->error = 1;
                     // $this->error_msg = translateFN("Chatroom non trovata. Impossibile proseguire");
                     // give access to user for the public chatroom
-                    $id_chatroom = $this->findPublicChatroomFN();
-                    $chatroom_ha = $this->getInfoChatroomFN($id_chatroom);
+                    $id_chatroom = static::findPublicChatroomFN();
+                    $chatroom_ha = static::getInfoChatroomFN($id_chatroom);
                     // check the user status into the chatroom
                     $present = $this->findUserFN($sess_id_user, $id_chatroom);
                     switch ($present) {
@@ -476,7 +480,7 @@ class ChatRoom
         //      }
 
         $cdh = self::obtainChatDataHandlerInstance();
-        $result = $cdh->add_chatroom($chatroom_ha);
+        $result = $cdh->addChatroom($chatroom_ha);
 
         return $result;
     }
@@ -532,7 +536,7 @@ class ChatRoom
     {
         self::$id_chatroom = $id_chatroom;
         $cdh = self::obtainChatDataHandlerInstance();
-        $result = $cdh->remove_unused_chatroom($id_chatroom);
+        $result = $cdh->removeUnusedChatroom($id_chatroom);
         return $result;
     }
 
@@ -542,7 +546,7 @@ class ChatRoom
     //*******************************************************************************/
     public function removeAllUnusedChatroomsFN()
     {
-        $chatrooms_ha = $this->getAllChatroomsFN();
+        $chatrooms_ha = static::getAllChatroomsFN();
         foreach ($chatrooms_ha as $key => $id) {
             $this->removeUnusedChatroomFN($id);
         }
@@ -559,7 +563,7 @@ class ChatRoom
             self::$id_chatroom = $id_chatroom;
         }
         $cdh = self::obtainChatDataHandlerInstance();
-        $result = $cdh->remove_chatroom($id_chatroom);
+        $result = $cdh->removeChatroom($id_chatroom);
         return $result;
     }
 
@@ -568,9 +572,9 @@ class ChatRoom
     //*******************************************************************************/
     public function removeAllChatroomsFN()
     {
-        $chatrooms_ha = $this->getAllChatroomsFN();
+        $chatrooms_ha = static::getAllChatroomsFN();
         foreach ($chatrooms_ha as $key => $id) {
-            $this->removeChatroomFN($id);
+            static::removeChatroomFN($id);
         }
     }
 
@@ -583,7 +587,7 @@ class ChatRoom
             self::$id_chatroom = $id_chatroom;
         }
         $cdh = self::obtainChatDataHandlerInstance();
-        $result = $cdh->get_info_chatroom($id_chatroom);
+        $result = $cdh->getInfoChatroom($id_chatroom);
         return $result;
     }
 
@@ -593,7 +597,7 @@ class ChatRoom
     public static function getAllChatroomsFN()
     {
         $cdh = self::obtainChatDataHandlerInstance();
-        $result = $cdh->get_all_chatrooms();
+        $result = $cdh->getAllChatrooms();
         return $result;
     }
 
@@ -603,7 +607,7 @@ class ChatRoom
     public static function findPublicChatroomFN()
     {
         $cdh = self::obtainChatDataHandlerInstance();
-        $result = $cdh->find_public_chatroom();
+        $result = $cdh->findPublicChatroom();
         return $result;
     }
 
@@ -617,7 +621,7 @@ class ChatRoom
         }
         $actual_time = time();
         $cdh = self::obtainChatDataHandlerInstance();
-        $result = $cdh->get_class_chatroom($id_course_instance, $actual_time);
+        $result = $cdh->getClassChatroom($id_course_instance, $actual_time);
         return $result;
     }
 
@@ -658,7 +662,7 @@ class ChatRoom
             self::$id_course_instance = $id_course_instance;
         }
         $cdh = self::obtainChatDataHandlerInstance();
-        $result = $cdh->get_all_class_chatrooms($id_course_instance);
+        $result = $cdh->getAllClassChatrooms($id_course_instance);
         return $result;
     }
 
@@ -668,7 +672,7 @@ class ChatRoom
     public static function getAllPrivateChatroomsFN($user_id)
     {
         $cdh = self::obtainChatDataHandlerInstance();
-        $result = $cdh->get_all_private_chatrooms($user_id);
+        $result = $cdh->getAllPrivateChatrooms($user_id);
         return $result;
     }
 
@@ -688,7 +692,7 @@ class ChatRoom
         }
         $entrance_time = time();
         $cdh = self::obtainChatDataHandlerInstance();
-        $result = $cdh->add_user_chatroom($operator_id, $user_id, $id_chatroom, $entrance_time, $action, $status);
+        $result = $cdh->addUserChatroom($operator_id, $user_id, $id_chatroom, $entrance_time, $action, $status);
         return $result;
     }
 
@@ -701,7 +705,7 @@ class ChatRoom
         $this->user_id = $user_id;
         self::$id_chatroom = $id_chatroom;
         $cdh = self::obtainChatDataHandlerInstance();
-        $result = $cdh->remove_user_chatroom($user_id, $id_chatroom);
+        $result = $cdh->removeUserChatroom($user_id, $id_chatroom);
         return $result;
     }
 
@@ -713,7 +717,7 @@ class ChatRoom
     {
         self::$id_chatroom = $id_chatroom;
         $cdh = self::obtainChatDataHandlerInstance();
-        $result = $cdh->remove_allusers_chatroom($id_chatroom);
+        $result = $cdh->removeAllusersChatroom($id_chatroom);
         return $result;
     }
 
@@ -728,7 +732,7 @@ class ChatRoom
         $exit_time = time();
         $action = ACTION_EXIT;
         $cdh = self::obtainChatDataHandlerInstance();
-        $result = $cdh->quit_chatroom($operator_id, $user_id, $id_chatroom, $exit_time, $action);
+        $result = $cdh->quitChatroom($operator_id, $user_id, $id_chatroom, $exit_time, $action);
         return $result;
     }
 
@@ -784,7 +788,7 @@ class ChatRoom
                 //default:
         } // switch
         $cdh = self::obtainChatDataHandlerInstance();
-        $result = $cdh->set_user_status($operator_id, $user_id, $id_chatroom, $action, $status, $time);
+        $result = $cdh->setUserStatus($operator_id, $user_id, $id_chatroom, $action, $status, $time);
         return $result;
     }
 
@@ -796,7 +800,7 @@ class ChatRoom
         $this->user_id = $user_id;
         self::$id_chatroom = $id_chatroom;
         $cdh = self::obtainChatDataHandlerInstance();
-        $result = $cdh->get_user_status($user_id, $id_chatroom);
+        $result = $cdh->getUserStatus($user_id, $id_chatroom);
         return $result;
     }
 
@@ -808,7 +812,7 @@ class ChatRoom
         $this->user_id = $user_id;
         self::$id_chatroom = $id_chatroom;
         $cdh = self::obtainChatDataHandlerInstance();
-        $result = $cdh->get_user_status($user_id, $id_chatroom);
+        $result = $cdh->getUserStatus($user_id, $id_chatroom);
         return $result;
     }
 
@@ -822,7 +826,7 @@ class ChatRoom
             self::$id_chatroom = $id_chatroom;
         }
         $cdh = self::obtainChatDataHandlerInstance();
-        $result = $cdh->list_users_chatroom($id_chatroom);
+        $result = $cdh->listUsersChatroom($id_chatroom);
         return $result;
     }
 
@@ -834,7 +838,7 @@ class ChatRoom
         self::$id_chatroom = $id_chatroom;
         $cdh = self::obtainChatDataHandlerInstance();
 
-        $result = $cdh->list_users_invited_to_chatroom($id_chatroom);
+        $result = $cdh->listUsersInvitedToChatroom($id_chatroom);
         return $result;
     }
 
@@ -848,7 +852,7 @@ class ChatRoom
 
         $cdh = self::obtainChatDataHandlerInstance();
 
-        $result = $cdh->list_banned_users_chatroom($id_chatroom);
+        $result = $cdh->listBannedUsersChatroom($id_chatroom);
         return $result;
     }
 
@@ -863,7 +867,7 @@ class ChatRoom
             $this->user_id = $user_id;
         }
         $cdh = self::obtainChatDataHandlerInstance();
-        $result = $cdh->list_chatrooms_user($user_id);
+        $result = $cdh->listChatroomsUser($user_id);
         return $result;
     }
 
@@ -874,7 +878,7 @@ class ChatRoom
     {
         //first we read and get all the information from the DB, relative to the selected
         // chatroom, assining all the values into the variable $old_chatroom_ha
-        $old_chatroom_ha = $this->getInfoChatroomFN($id_chatroom);
+        $old_chatroom_ha = static::getInfoChatroomFN($id_chatroom);
 
         if (!empty($chatroom_ha['chat_type'])) {
             $chatroom_ha['chat_type'] = $chatroom_ha['chat_type'];
@@ -935,7 +939,7 @@ class ChatRoom
 
         $cdh = self::obtainChatDataHandlerInstance();
 
-        $result = $cdh->set_chatroom($id_chatroom, $chatroom_ha);
+        $result = $cdh->setChatroom($id_chatroom, $chatroom_ha);
 
         return $result;
     }
@@ -951,13 +955,17 @@ class ChatRoom
 
         $cdh = self::obtainChatDataHandlerInstance();
 
-        $result = $cdh->set_last_event_time($user_id, $id_chatroom, $last_event_time);
+        $result = $cdh->setLastEventTime($user_id, $id_chatroom, $last_event_time);
         return $result;
     }
 
-    //*******************************************************************************/
-    // gets the time of the last event done by the user on a specific chatroom
-    //*******************************************************************************/
+    /**
+     * gets the time of the last event done by the user on a specific chatroom
+     *
+     * @param int $user_id
+     * @param int $id_chatroom
+     * @return int
+     */
     public function getLastEventTimeFN($user_id, $id_chatroom)
     {
         $this->user_id = $user_id;
@@ -965,7 +973,7 @@ class ChatRoom
 
         $cdh = self::obtainChatDataHandlerInstance();
 
-        $result = $cdh->get_last_event_time($user_id, $id_chatroom);
+        $result = $cdh->getLastEventTime($user_id, $id_chatroom);
         return $result;
     }
 
@@ -976,7 +984,7 @@ class ChatRoom
     {
         self::$id_chatroom = $id_chatroom;
         $actual_time = time();
-        $chatroom_ha = $this->getInfoChatroomFN($id_chatroom);
+        $chatroom_ha = static::getInfoChatroomFN($id_chatroom);
         $starting_time = $chatroom_ha['tempo_avvio'];
         $expiration_time = $chatroom_ha['tempo_fine'];
         if (($actual_time >= $starting_time) and (($expiration_time == 0) or ($actual_time < $expiration_time))) {
@@ -993,7 +1001,7 @@ class ChatRoom
     {
         self::$id_chatroom = $id_chatroom;
         $actual_time = time();
-        $chatroom_ha = $this->getInfoChatroomFN($id_chatroom);
+        $chatroom_ha = static::getInfoChatroomFN($id_chatroom);
         if (is_array($chatroom_ha)) {
             $starting_time = $chatroom_ha['tempo_avvio'];
             if ($actual_time >= $starting_time) {
@@ -1013,7 +1021,7 @@ class ChatRoom
     {
         self::$id_chatroom = $id_chatroom;
         $actual_time = time();
-        $chatroom_ha = $this->getInfoChatroomFN($id_chatroom);
+        $chatroom_ha = static::getInfoChatroomFN($id_chatroom);
         if (is_array($chatroom_ha)) {
             $expiration_time = $chatroom_ha['tempo_fine'];
             if (($expiration_time == 0) or ($actual_time < $expiration_time)) {
@@ -1047,7 +1055,7 @@ class ChatRoom
     public function isChatroomFullFN($id_chatroom)
     {
         self::$id_chatroom = $id_chatroom;
-        $chatroom_ha = $this->getInfoChatroomFN($id_chatroom);
+        $chatroom_ha = static::getInfoChatroomFN($id_chatroom);
         if (is_array($chatroom_ha)) {
             $max_users = $chatroom_ha['max_utenti'];
             $list = $this->listUsersChatroomFN($id_chatroom);

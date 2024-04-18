@@ -207,7 +207,7 @@ abstract class QuestionTest extends NodeTest
                     $div->addChild($span);
                 }
 
-                if ((is_a($this, 'QuestionMultipleClozeTest') && !$this->isAnswersTableDataEmpty())) {
+                if ((is_a($this, QuestionMultipleClozeTest::class) && !$this->isAnswersTableDataEmpty())) {
                     $span = CDOMElement::create('span', 'class:wrong_answer_test');
                     $span->addChild(new CText(translateFN('Attenzione! Non sono state associate le risposte ai campi della tabella!')));
                     $div->addChild($span);

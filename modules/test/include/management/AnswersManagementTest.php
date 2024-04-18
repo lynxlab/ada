@@ -176,7 +176,7 @@ class AnswersManagementTest
                         'tipo' => $t,
                         'id_nodo_parent' => $this->question['id_nodo'],
                         'id_nodo_radice' => $this->test['id_nodo'],
-                        'ordine' => ($v['ordine']) ? $v['ordine'] : $k + 1,
+                        'ordine' => $v['ordine'] ?: $k + 1,
                     ];
 
                     if (intval($v['record']) > 0) {

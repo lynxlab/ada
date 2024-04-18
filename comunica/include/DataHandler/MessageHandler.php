@@ -366,7 +366,7 @@ class MessageHandler
      *                            (records are always filtered for user and type)
      * @param   $ordering       - the order
      *
-     * @return  a reference to a 2-dim array,
+     * @return  array a reference to a 2-dim array,
      *           each row will have id_utente in the 0 element
      *           and the fields specified in the list in the others
      *          an AMAError object if something goes wrong
@@ -519,7 +519,7 @@ class MessageHandler
         $message_ha['destinatari'] = $recipients_usernames;
 
         // set message as read
-        $res = $spool->set_message($msg_id, "read", 'R');
+        $res = $spool->setMessage($msg_id, "read", 'R');
         if (AMADataHandler::isError($res)) {
             $retval = new AMAError(AMA_ERR_UPDATE);
             return $retval;
@@ -556,7 +556,7 @@ class MessageHandler
         [$current, $msgs_ar] = $res;
 
         // return content of next message
-        return getMessageInfo($msgs_ar[$current + 1]);
+        return (new Spool($user_id, $this->dsn))->getMessageInfo($msgs_ar[$current + 1]);
     }
 
     /**
@@ -578,7 +578,7 @@ class MessageHandler
     {
 
         // find current message's index
-        $res = $this->getIdsList($user_id, $type, $msg_id);
+        $res = $this->getIdsList($user_id, $type, $msg_id ?? 0);
         if (AMADataHandler::isError($res)) {
             // $res is an AMAError object
             return $res;
@@ -586,7 +586,7 @@ class MessageHandler
         [$current, $msgs_ar] = $res;
 
         // return content of next message
-        return getMessageInfo($msgs_ar[$current + 1]);
+        return (new Spool($user_id, $this->dsn))->getMessageInfo($msgs_ar[$current + 1]);
     }
 
     /**
@@ -616,7 +616,7 @@ class MessageHandler
         $msgs_ar = $res;
 
         // return content of next message
-        return getMessageInfo($msgs_ar[0]);
+        return (new Spool($user_id, $this->dsn))->getMessageInfo($msgs_ar[0]);
     }
 
     /**
@@ -647,7 +647,7 @@ class MessageHandler
         $n = count($msgs_ar);
 
         // return content of next message
-        return getMessageInfo($msgs_ar[$n - 1]);
+        return (new Spool($user_id, $this->dsn))->getMessageInfo($msgs_ar[$n - 1]);
     }
 
     /**
@@ -659,7 +659,7 @@ class MessageHandler
      * @param   $msgs_ar - array of messages id to change
      * @param   $value   - new status (R or N)
      *
-     * @return  an AMAError object if something goes wrong
+     * @return  bool|AMAError an AMAError object if something goes wrong
      *
      **/
     public function setMessages($user_id, $msgs_ar, $value)
@@ -675,9 +675,9 @@ class MessageHandler
             $res = $spool->setMessages($msgs_ar, $value);
             if (AMADataHandler::isError($res)) {
                 $retval = new AMAError(AMA_ERR_REMOVE);
-                return $retval;
             }
         }
+        return $retval ?? true;
     }
 
     /**
@@ -688,7 +688,7 @@ class MessageHandler
      * @param   $user_id - id of the owner of the spool
      * @param   $msgs_ar - array of messages id to change
      *
-     * @return  an AMAError object if something goes wrong
+     * @return  bool|AMAError an AMAError object if something goes wrong
      *
      **/
     public function removeMessages($user_id, $msgs_ar)
@@ -704,9 +704,9 @@ class MessageHandler
             $res = $spool->removeMessages($msgs_ar);
             if (AMADataHandler::isError($res)) {
                 $retval = new AMAError(AMA_ERR_REMOVE);
-                return $retval;
             }
         }
+        return $retval ?? true;
     }
 
 
@@ -722,7 +722,7 @@ class MessageHandler
      * @param   $user_id - user
      * @param   $type    - type of message
      *
-     * @return an array, comprising:
+     * @return array|AMAError an array, comprising:
      *          an integer representing the index
      *          the messages' ids array
      *         only the array if the msg_id is not passed
@@ -783,7 +783,7 @@ class MessageHandler
      * @param   $user_id - id of the owner of the spool
      * @param   $msgs_ar - array of messages id to log
      *
-     * @return  an AMAError object if something goes wrong
+     * @return  bool|AMAError an AMAError object if something goes wrong
      *
      **/
     public function logMessages($user_id, $msgs_ar)
@@ -796,15 +796,15 @@ class MessageHandler
         $spool = new Spool($user_id, $this->dsn);
         if (count($msgs_ar)) {
             foreach ($msgs_ar as $message_id) {
-                $msg_Ha = getMessageInfo($message_id);
-                $res = $spool->log_message($msg_Ha);
+                $msg_Ha = $spool->getMessageInfo($message_id);
+                $res = $spool->logMessage($msg_Ha, []);
             }
             // FIXME: qui gestione errore non e' a posto.
             if (AMADataHandler::isError($res)) {
                 $retval = new AMAError(AMA_ERR_ADD);
-                return $retval;
             }
         }
+        return $retval ?? true;
     }
 
     /**

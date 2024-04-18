@@ -74,7 +74,7 @@ class ADAZoomApi
             }
 
             return $meetingData;
-        } catch (Exception $e) {
+        } catch (Exception) {
             return false;
         }
     }
@@ -100,7 +100,7 @@ class ADAZoomApi
             }
 
             return $meetingData;
-        } catch (Exception $e) {
+        } catch (Exception) {
             return [];
         }
     }

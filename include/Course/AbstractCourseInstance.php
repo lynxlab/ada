@@ -142,7 +142,7 @@ abstract class AbstractCourseInstance
                 $id_node_parent = $child_dataHa['parent_id'];
                 $node_keywords = $child_dataHa['title'];
                 $parent_dataHa = $dh->getNodeInfo($id_node_parent);
-                if ((!AMA_datahandler::isError($parent_dataHa)) && ($parent_dataHa['type'] >= ADA_STANDARD_EXERCISE_TYPE)) {
+                if ((!AMADatahandler::isError($parent_dataHa)) && ($parent_dataHa['type'] >= ADA_STANDARD_EXERCISE_TYPE)) {
                     $node_type = 'answer';
                 } else {
                     $node_type = $child_dataHa['type'];

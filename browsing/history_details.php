@@ -1,5 +1,6 @@
 <?php
 
+use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Output\Html;
 use Lynxlab\ADA\Main\User\ADAUser;
@@ -11,7 +12,7 @@ use function Lynxlab\ADA\Main\AMA\DBRead\readUserFromDB;
 use function Lynxlab\ADA\Main\ModuleInit\sessionControlFN;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
-$ada_config_path = realpath(dirname(__FILE__) . '/..');
+$ada_config_path = realpath(__DIR__ . '/..');
 
 $history = "" ;
 $self = "history";
@@ -55,7 +56,7 @@ if ($sess_id_course) {
         $course_family = $courseObj->template_family;
     }
 } else {
-    $errObj = new ADA_error(translateFN("Corso non trovato"), translateFN("Impossibile proseguire."));
+    $errObj = new ADAError(translateFN("Corso non trovato"), translateFN("Impossibile proseguire."));
 }
 
 
@@ -64,7 +65,7 @@ if ($sess_id_course) {
 // ******************************************************
 // get user object
 $userObj = readUserFromDB($sess_id_user);
-if ((is_object($userObj)) && (!AMA_dataHandler::isError($userObj))) {
+if ((is_object($userObj)) && (!AMADataHandler::isError($userObj))) {
     $id_profile = $userObj->tipo;
     $user_name =  $userObj->username;
     $user_type = $userObj->convertUserTypeFN($id_profile);
@@ -72,7 +73,7 @@ if ((is_object($userObj)) && (!AMA_dataHandler::isError($userObj))) {
     $user_level = $userObj->getStudentLevel($sess_id_user, $sess_id_course_instance);
     $user_family = $userObj->template_family;
 } else {
-    $errObj = new ADA_error(translateFN("Utente non trovato"), translateFN("Impossibile proseguire."));
+    $errObj = new ADAError(translateFN("Utente non trovato"), translateFN("Impossibile proseguire."));
 }
 
 // ******************************************************

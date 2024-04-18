@@ -56,7 +56,7 @@ class EmailQueueItem extends NotificationBase
      *
      * @param int $type
      *
-     * @return void
+     * @return string|null
      */
     public static function getEmailConfigFromType($type)
     {

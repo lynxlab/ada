@@ -10,18 +10,14 @@
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
-use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
-use Lynxlab\ADA\Main\History\History;
-use Lynxlab\ADA\Main\Node\Node;
-use Lynxlab\ADA\Main\User\ADAPractitioner;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../../config_path.inc.php';
+require_once realpath(__DIR__) . '/../../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -75,15 +71,16 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
+ * @var object $user_messages
+ * @var object $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -113,7 +110,7 @@ if (is_null($videoroomObj->link_to_room)) {
     $errdiv->addChild($content);
     die($errdiv->getHtml());
 } elseif (is_string($videoroomObj->link_to_room) && strlen($videoroomObj->link_to_room) > 0) {
-    $className = get_class($videoroomObj);
+    $className = $videoroomObj::class;
     $iframe = "<iframe src='$videoroomObj->link_to_room' width='$width' height = '$height'";
     if (defined($className . '::IFRAMEATTR')) {
         $iframe .= constant($className . '::IFRAMEATTR');

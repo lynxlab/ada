@@ -124,7 +124,7 @@ abstract class RootTest extends NodeTest
                         }
                         $answer_data = $question->serializeAnswers($answer_data);
                         $obj = $dh->testSaveAnswer($this->id_history_test, $_SESSION['sess_id_user'], $topic_id, $question_id, $_SESSION['sess_id_course'], $_SESSION['sess_id_course_instance'], $answer_data, $points, $attachment);
-                        if (is_object($obj) && (get_class($obj) == 'AMAError' || is_subclass_of($obj, 'PEAR_Error'))) {
+                        if (is_object($obj) && ($obj::class == 'AMAError' || is_subclass_of($obj, 'PEAR_Error'))) {
                             $result = false;
                             break 2;
                         }
@@ -190,7 +190,7 @@ abstract class RootTest extends NodeTest
         $res = $dh->testSaveTest($this->id_history_test, $tempo_scaduto, $points, $repeatable, $min_barrier_points, $level_gained);
 
         //checking if we got errors
-        if (is_object($res) && (get_class($res) == 'AMAError' || is_subclass_of($res, 'PEAR_Error'))) {
+        if (is_object($res) && ($res::class == 'AMAError' || is_subclass_of($res, 'PEAR_Error'))) {
             $this->onSaveError = true;
             $this->rollBack();
             return false;
@@ -366,7 +366,7 @@ abstract class RootTest extends NodeTest
                     $changeState = false;
                     $this->randomQuestion = [];
 
-                    srand(time());
+                    mt_srand(time());
                     if (!empty($this->children)) {
                         foreach ($this->children as $k => $sub) {
                             $this->pickRandomQuestionTopic($sub);
@@ -426,7 +426,7 @@ abstract class RootTest extends NodeTest
 
         $tmpList = [];
         while (count($tmpList) != $num_domande) {
-            $r = rand(0, $n);
+            $r = random_int(0, $n);
             if (isset($sub->_children[$r])) {
                 $i = $sub->_children[$r];
                 if (!in_array($i->id_nodo, $tmpList)) {
@@ -1019,7 +1019,7 @@ abstract class RootTest extends NodeTest
 
 
             //test di sbarramento
-            if (is_a($this, 'TestTest')) {
+            if (is_a($this, TestTest::class)) {
                 $sbarramento = ($this->barrier) ? translateFN('Si') : translateFN('No');
                 $lis[++$i] = CDOMElement::create('li', 'class:li_test_info');
                 $lis[$i]->addChild(new CText('<b>' . translateFN('Test di sbarramento') . '</b>: ' . $sbarramento));

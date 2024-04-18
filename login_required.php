@@ -17,7 +17,7 @@ use Lynxlab\ADA\Module\Login\AbstractLogin;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
-require_once realpath(dirname(__FILE__)) . '/config_path.inc.php';
+require_once realpath(__DIR__) . '/config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION

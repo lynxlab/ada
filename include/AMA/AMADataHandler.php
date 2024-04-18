@@ -1,9 +1,9 @@
 <?php
 
 /**
- * AMA_DataHandler class
+ * AMADataHandler class
  *
- * This is the new implementation of the AMA_DataHandler class that
+ * This is the new implementation of the AMADataHandler class that
  * the whole ADA system is used to work with.
  *
  * The new implementation shall basically manage any extra required
@@ -20,7 +20,7 @@
  * @author      giorgio <g.consorti@lynxlab.com>
  * @copyright   Copyright (c) 2013, Lynx s.r.l.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link        AMA_DataHandler
+ * @link        AMADataHandler
  * @version     0.1
  * @see         AMATesterDataHandler
  */
@@ -35,13 +35,13 @@ use Lynxlab\ADA\Main\User\ADAUser;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 /**
- * AMA_DataHandler.
+ * AMADataHandler.
  *
  */
 class AMADataHandler extends AMATesterDataHandler
 {
     /**
-     * AMA_DataHandler constructor is inherited from AMATesterDataHandler
+     * AMADataHandler constructor is inherited from AMATesterDataHandler
      * for time being there's no need to implement a new one.
      */
 
@@ -308,6 +308,17 @@ class AMADataHandler extends AMATesterDataHandler
         $result = $this->queryPrepared($delQry, [$user_id, $extraTableId]);
 
         return $result;
+    }
+
+    /**
+     * Returns an instance of AMADataHandler.
+     *
+     * @param  string $dsn - optional, a valid data source name
+     * @return self an instance of AMADataHandler
+     */
+    public static function instance($dsn = null)
+    {
+        return parent::instance($dsn);
     }
 
     public function disconnect()

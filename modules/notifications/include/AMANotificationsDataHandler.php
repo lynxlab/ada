@@ -12,6 +12,7 @@ namespace Lynxlab\ADA\Module\Notifications;
 
 use Exception;
 use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Module\Notifications\EmailQueueItem;
 use Lynxlab\ADA\Module\Notifications\Notification;
@@ -20,7 +21,7 @@ use ReflectionProperty;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
-class AMANotificationsDataHandler extends AMA_DataHandler
+class AMANotificationsDataHandler extends AMADataHandler
 {
     /**
      * module's own data tables prefix
@@ -184,9 +185,7 @@ class AMANotificationsDataHandler extends AMA_DataHandler
         }
         $reflection = new ReflectionClass($className);
         $properties =  array_map(
-            function ($el) {
-                return $el->getName();
-            },
+            fn ($el) => $el->getName(),
             $reflection->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PUBLIC)
         );
 
@@ -197,9 +196,7 @@ class AMANotificationsDataHandler extends AMA_DataHandler
         // check for customField class const and explode matching propertiy array
         $properties = $className::explodeArrayProperties($properties);
 
-        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(function ($el) {
-            return "`$el`";
-        }, $properties)), $className::TABLE)
+        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(fn ($el) => "`$el`", $properties)), $className::TABLE)
             . $this->buildWhereClause($whereArr, $properties) . $this->buildOrderBy($orderByArr, $properties);
 
         if (is_null($dbToUse)) {
@@ -210,9 +207,7 @@ class AMANotificationsDataHandler extends AMA_DataHandler
         if (AMADB::isError($result)) {
             throw new NotificationException($result->getMessage(), (int) $result->getCode());
         } else {
-            $retArr = array_map(function ($el) use ($className, $dbToUse) {
-                return new $className($el, $dbToUse);
-            }, $result);
+            $retArr = array_map(fn ($el) => new $className($el, $dbToUse), $result);
             // load properties from $joined array
             foreach ($retArr as $retObj) {
                 foreach ($joined as $joinKey => $joinData) {
@@ -288,6 +283,17 @@ class AMANotificationsDataHandler extends AMA_DataHandler
     }
 
     /**
+     * Returns an instance of AMANotificationsDataHandler.
+     *
+     * @param  string $dsn - optional, a valid data source name
+     * @return self an instance of AMANotificationsDataHandler
+     */
+    public static function instance($dsn = null)
+    {
+        return parent::instance($dsn);
+    }
+
+    /**
      * Builds an sql update query as a string
      *
      * @param string $table
@@ -301,18 +307,14 @@ class AMANotificationsDataHandler extends AMA_DataHandler
             return sprintf(
                 "UPDATE `%s` SET %s %s;",
                 $table,
-                implode(',', array_map(function ($el) {
-                    return "`$el`=?";
-                }, $fields)),
+                implode(',', array_map(fn ($el) => "`$el`=?", $fields)),
                 $this->buildWhereClause($whereField, array_keys($whereField))
             );
         } else {
             return sprintf(
                 "UPDATE `%s` SET %s WHERE `%s`=?;",
                 $table,
-                implode(',', array_map(function ($el) {
-                    return "`$el`=?";
-                }, $fields)),
+                implode(',', array_map(fn ($el) => "`$el`=?", $fields)),
                 $whereField
             );
         }
@@ -330,12 +332,8 @@ class AMANotificationsDataHandler extends AMA_DataHandler
         return sprintf(
             "INSERT INTO `%s` (%s) VALUES (%s);",
             $table,
-            implode(',', array_map(function ($el) {
-                return "`$el`";
-            }, array_keys($fields))),
-            implode(',', array_map(function ($el) {
-                return "?";
-            }, array_keys($fields)))
+            implode(',', array_map(fn ($el) => "`$el`", array_keys($fields))),
+            implode(',', array_map(fn ($el) => "?", array_keys($fields)))
         );
     }
 
@@ -471,7 +469,7 @@ class AMANotificationsDataHandler extends AMA_DataHandler
      *
      * @return bool
      */
-    private function beginTransaction()
+    protected function beginTransaction()
     {
         return $this->getConnection()->connectionObject()->beginTransaction();
     }
@@ -481,7 +479,7 @@ class AMANotificationsDataHandler extends AMA_DataHandler
      *
      * @return bool
      */
-    private function rollBack()
+    protected function rollBack()
     {
         return $this->getConnection()->connectionObject()->rollBack();
     }
@@ -491,7 +489,7 @@ class AMANotificationsDataHandler extends AMA_DataHandler
      *
      * @return bool
      */
-    private function commit()
+    protected function commit()
     {
         return $this->getConnection()->connectionObject()->commit();
     }

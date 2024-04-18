@@ -81,7 +81,7 @@ class Utils
                 $enabled = $nodeId === Pads::INSTANCEPADID ? MODULES_ETHERPAD_INSTANCEPAD : MODULES_ETHERPAD_NODEPAD;
             }
             return $enabled;
-        } catch (Exception $e) {
+        } catch (Exception) {
             return false;
         }
     }

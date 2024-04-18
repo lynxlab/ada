@@ -12,6 +12,7 @@ namespace Lynxlab\ADA\Module\CollaboraACL;
 
 use Exception;
 use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLActions;
 use Lynxlab\ADA\Module\CollaboraACL\FileACL;
@@ -20,7 +21,7 @@ use ReflectionProperty;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
-class AMACollaboraACLDataHandler extends AMA_DataHandler
+class AMACollaboraACLDataHandler extends AMADataHandler
 {
     /**
      * module's own data tables prefix
@@ -93,13 +94,11 @@ class AMACollaboraACLDataHandler extends AMA_DataHandler
                 if (array_key_exists('grantedUsers', $saveData) && is_array($saveData['grantedUsers'])) {
                     if (count($saveData['grantedUsers']) > 0) {
                         // save in the utenteRelTable
-                        $insertData = array_map(function ($el) use ($saveData) {
-                            return [
-                                'file_id' => $saveData['fileAclId'],
-                                'utente_id' => $el,
-                                'permissions' => CollaboraACLActions::READ_FILE,
-                            ];
-                        }, $saveData['grantedUsers']);
+                        $insertData = array_map(fn ($el) => [
+                            'file_id' => $saveData['fileAclId'],
+                            'utente_id' => $el,
+                            'permissions' => CollaboraACLActions::READ_FILE,
+                        ], $saveData['grantedUsers']);
                         $result = $this->queryPrepared(
                             $this->insertMultiRow(
                                 $insertData,
@@ -181,9 +180,7 @@ class AMACollaboraACLDataHandler extends AMA_DataHandler
         }
         $reflection = new ReflectionClass($className);
         $properties =  array_map(
-            function ($el) {
-                return $el->getName();
-            },
+            fn ($el) => $el->getName(),
             $reflection->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PUBLIC)
         );
 
@@ -194,9 +191,7 @@ class AMACollaboraACLDataHandler extends AMA_DataHandler
         // check for customField class const and explode matching propertiy array
         $properties = $className::explodeArrayProperties($properties);
 
-        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(function ($el) {
-            return "`$el`";
-        }, $properties)), $className::table)
+        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(fn ($el) => "`$el`", $properties)), $className::table)
             . $this->buildWhereClause($whereArr, $properties) . $this->buildOrderBy($orderByArr, $properties);
 
         if (is_null($dbToUse)) {
@@ -207,9 +202,7 @@ class AMACollaboraACLDataHandler extends AMA_DataHandler
         if (AMADB::isError($result)) {
             throw new CollaboraACLException($result->getMessage(), (int) $result->getCode());
         } else {
-            $retArr = array_map(function ($el) use ($className, $dbToUse) {
-                return new $className($el, $dbToUse);
-            }, $result);
+            $retArr = array_map(fn ($el) => new $className($el, $dbToUse), $result);
             // load properties from $joined array
             foreach ($retArr as $retObj) {
                 foreach ($joined as $joinKey => $joinData) {
@@ -263,6 +256,17 @@ class AMACollaboraACLDataHandler extends AMA_DataHandler
     }
 
     /**
+     * Returns an instance of AMACollaboraACLDataHandler.
+     *
+     * @param  string $dsn - optional, a valid data source name
+     * @return self an instance of AMACollaboraACLDataHandler
+     */
+    public static function instance($dsn = null)
+    {
+        return parent::instance($dsn);
+    }
+
+    /**
      * Builds an sql update query as a string
      *
      * @param string $table
@@ -275,9 +279,7 @@ class AMACollaboraACLDataHandler extends AMA_DataHandler
         return sprintf(
             "UPDATE `%s` SET %s WHERE `%s`=?;",
             $table,
-            implode(',', array_map(function ($el) {
-                return "`$el`=?";
-            }, $fields)),
+            implode(',', array_map(fn ($el) => "`$el`=?", $fields)),
             $whereField
         );
     }
@@ -294,12 +296,8 @@ class AMACollaboraACLDataHandler extends AMA_DataHandler
         return sprintf(
             "INSERT INTO `%s` (%s) VALUES (%s);",
             $table,
-            implode(',', array_map(function ($el) {
-                return "`$el`";
-            }, array_keys($fields))),
-            implode(',', array_map(function ($el) {
-                return "?";
-            }, array_keys($fields)))
+            implode(',', array_map(fn ($el) => "`$el`", array_keys($fields))),
+            implode(',', array_map(fn ($el) => "?", array_keys($fields)))
         );
     }
 
@@ -435,7 +433,7 @@ class AMACollaboraACLDataHandler extends AMA_DataHandler
      *
      * @return bool
      */
-    private function beginTransaction()
+    protected function beginTransaction()
     {
         return $this->getConnection()->connectionObject()->beginTransaction();
     }
@@ -445,7 +443,7 @@ class AMACollaboraACLDataHandler extends AMA_DataHandler
      *
      * @return bool
      */
-    private function rollBack()
+    protected function rollBack()
     {
         return $this->getConnection()->connectionObject()->rollBack();
     }
@@ -455,7 +453,7 @@ class AMACollaboraACLDataHandler extends AMA_DataHandler
      *
      * @return bool
      */
-    private function commit()
+    protected function commit()
     {
         return $this->getConnection()->connectionObject()->commit();
     }

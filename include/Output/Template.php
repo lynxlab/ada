@@ -37,9 +37,7 @@ class Template
          * giorgio 12/ago/2013
          * sets user select provider
          */
-        if (!MULTIPROVIDER) {
-            $user_provider = $GLOBALS['user_provider'];
-        }
+        $user_provider = !MULTIPROVIDER ? $GLOBALS['user_provider'] : '';
 
         // templates file extensions could be .tpl or .dwt or .HTML etc
         // default: .tpl

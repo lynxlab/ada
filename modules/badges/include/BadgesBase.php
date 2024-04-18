@@ -100,7 +100,7 @@ abstract class BadgesBase
      */
     public function toArray()
     {
-        $reflectionClass = new ReflectionClass(get_class($this));
+        $reflectionClass = new ReflectionClass(static::class);
         $array = [];
         $skip = $this::doNotLoad();
         foreach ($reflectionClass->getProperties() as $property) {

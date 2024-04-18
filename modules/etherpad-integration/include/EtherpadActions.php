@@ -44,24 +44,12 @@ class EtherpadActions
     protected static function getCanDoArr()
     {
         return [
-            self::USER_MAP => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR, AMA_TYPE_STUDENT]);
-            },
-            self::INSTANCE_GROUP_MAP => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR]);
-            },
-            self::CREATE_PAD => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR]);
-            },
-            self::DELETE_PAD => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR]);
-            },
-            self::CREATE_SESSION => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR, AMA_TYPE_STUDENT]);
-            },
-            self::ACCESS_PAD => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR, AMA_TYPE_STUDENT]);
-            },
+            self::USER_MAP => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR, AMA_TYPE_STUDENT]),
+            self::INSTANCE_GROUP_MAP => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR]),
+            self::CREATE_PAD => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR]),
+            self::DELETE_PAD => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR]),
+            self::CREATE_SESSION => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR, AMA_TYPE_STUDENT]),
+            self::ACCESS_PAD => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR, AMA_TYPE_STUDENT]),
         ];
     }
 
@@ -73,7 +61,7 @@ class EtherpadActions
      */
     public static function getConstantFromString($stringConstant)
     {
-        return defined(__CLASS__ . '::' . $stringConstant) ? constant(__CLASS__ . '::' . $stringConstant) : null;
+        return defined(self::class . '::' . $stringConstant) ? constant(self::class . '::' . $stringConstant) : null;
     }
 
     /**

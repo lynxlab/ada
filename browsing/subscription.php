@@ -1,6 +1,7 @@
 <?php
 
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
+use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
@@ -18,7 +19,8 @@ use function Lynxlab\ADA\Main\Utilities\whoami;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -33,8 +35,8 @@ $allowedUsersAr = [AMA_TYPE_VISITOR, AMA_TYPE_STUDENT];
  * Get needed objects
  */
 $neededObjAr = [
-  AMA_TYPE_VISITOR      => ['layout'],
-  AMA_TYPE_STUDENT         => ['layout'],
+    AMA_TYPE_VISITOR      => ['layout'],
+    AMA_TYPE_STUDENT         => ['layout'],
 ];
 require_once ROOT_DIR . '/include/module_init.inc.php';
 
@@ -63,6 +65,7 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
  * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
  * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -98,11 +101,11 @@ if ($_REQUEST['id_course']) {
 
     $days = $serviceinfoAr[4];
     $istanza_ha = [
-       'data_inizio' => $start_date1,
-           'durata' => $days,
-           'data_inizio_previsto' => $start_date2,
-           'id_layout' => null,
-           ];
+        'data_inizio' => $start_date1,
+        'durata' => $days,
+        'data_inizio_previsto' => $start_date2,
+        'id_layout' => null,
+    ];
 
     // add an instance to tester db
     //echo "added $id_course to $tester";
@@ -118,11 +121,11 @@ if ($_REQUEST['id_course']) {
         $res_presub = $tester_dh->courseInstanceStudentPresubscribeAdd($id_instance, $id_user);
     } else {
         $message = translateFN("Errore nella richiesta di servizio: 1");
-        $errorObj = new ADA_Error($res_inst_add, $message, "registration.php");
+        $errorObj = new ADAError($res_inst_add, $message, "registration.php");
     }
 
     $admtypeAr = [AMA_TYPE_ADMIN];
-    $admList = $common_dh-> getUsersByType($admtypeAr);
+    $admList = $common_dh->getUsersByType($admtypeAr);
     // $admList = $tester_dh-> getUsersByType($admtypeAr); ???
 
     if (!AMADataHandler::isError($admList)) {
@@ -159,14 +162,14 @@ if ($_REQUEST['id_course']) {
 
         $res = $mh->sendMessage($message_ha);
         if (AMADataHandler::isError($res)) {
-            //  $errObj = new ADA_Error($res,translateFN('Impossibile spedire il messaggio'),
+            //  $errObj = new ADAError($res,translateFN('Impossibile spedire il messaggio'),
             // NULL,NULL,NULL,$error_page.'?err_msg='.urlencode(translateFN('Impossibile spedire il messaggio')));
         }
         unset($mh); // perché altrimenti manda due volte lo stesso messaggio?
 
         //  2. send a message to the switcher  if any
         $swtypeAr = [AMA_TYPE_SWITCHER];
-        $switcherList = $tester_dh-> getUsersByType($swtypeAr);
+        $switcherList = $tester_dh->getUsersByType($swtypeAr);
         if (!AMADataHandler::isError($switcherList)) {
             $switcher_uname = $switcherList[0]['username']; // there should be only one sw per tester
             $titolo = translateFN("Richiesta di servizio");
@@ -193,7 +196,7 @@ if ($_REQUEST['id_course']) {
 
             $res = $mh->sendMessage($message_ha);
             if (AMADataHandler::isError($res)) {
-                //  $errObj = new ADA_Error($res,translateFN('Impossibile spedire il messaggio'),
+                //  $errObj = new ADAError($res,translateFN('Impossibile spedire il messaggio'),
                 // NULL,NULL,NULL,$error_page.'?err_msg='.urlencode(translateFN('Impossibile spedire il messaggio')));
             }
             unset($mh);
@@ -229,17 +232,17 @@ if ($_REQUEST['id_course']) {
         $res2 = $mh->sendMessage($message2_ha);
 
         if (AMADataHandler::isError($res2)) {
-            // $errObj = new ADA_Error($res,translateFN('Impossibile spedire il messaggio'),
+            // $errObj = new ADAError($res,translateFN('Impossibile spedire il messaggio'),
             //NULL,NULL,NULL,$error_page.'?err_msg='.urlencode(translateFN('Impossibile spedire il messaggio')));
         }
         unset($mh);
     } else { // a real error
         $message = translateFN("Errore nella richiesta di servizio: 2");
         //$AMAErrorObject=NULL,$errorMessage=NULL, $callerName=NULL, $ADAErrorCode=NULL, $severity=NULL, $redirectTo=NULL, $delayErrorHandling=FALSE
-        $errorObj = new ADA_Error($res_presub, $message, "subscription.php");
+        $errorObj = new ADAError($res_presub, $message, "subscription.php");
     }
 } else {
-    $errorObj = new ADA_Error($res_inst_add, $message, "subscription.php");
+    $errorObj = new ADAError($res_inst_add, $message, "subscription.php");
 }
 
 $menu = "<a href=\"#course_list\">" . translateFN("elenco servizi") . "</a><br>";
@@ -249,13 +252,13 @@ $menu .= $enroll_link;
 $title = translateFN('Informazioni');
 
 $content_dataAr = [
-  'user_name'   => $user_name,
-  'home'        => $home,
-  'iscrivibili' => $form,
-  'help'        => $hlpmsg,
-  'menu'        => $menu,
-  'message'     => $message,
-  'status'      => $status,
+    'user_name'   => $user_name,
+    'home'        => $home,
+    'iscrivibili' => $form,
+    'help'        => $hlpmsg,
+    'menu'        => $menu,
+    'message'     => $message,
+    'status'      => $status,
 ];
 
 

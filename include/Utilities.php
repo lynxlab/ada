@@ -202,7 +202,7 @@ function aasort(&$array, $args)
     if (count($array) > 0) {
         foreach ($args as $arg) {
             $temp_array = $array;
-            $array = array();
+            $array = [];
             $order_key = substr($arg, 1, strlen($arg));
 
             foreach ($temp_array as $index => $nirvana) {
@@ -231,7 +231,7 @@ function masort($array, $arg, $sort_order = 1, $sort_method = SORT_STRING)
    $arg: field to be used as key
    $sort_order : 1 (default) or -1 (reverse)
    */
-    $temparray = array();
+    $temparray = [];
     $i = 0;
     foreach ($array as $subarray) {
         $key = ucfirst(strtolower(strip_tags($subarray[$arg])));
@@ -244,7 +244,7 @@ function masort($array, $arg, $sort_order = 1, $sort_method = SORT_STRING)
         // echo$key.":".$temparray[$key]."<br>";
     }
 
-    $arraycopy = array();
+    $arraycopy = [];
     $max = count($array);
     $i = 0;
     if ($sort_order == -1) {
@@ -324,7 +324,7 @@ function dirTree($path)
     /*
    **** dato un percorso ritorna l'elenco delle directory ****
    */
-    $dirlist = array();
+    $dirlist = [];
     if ($handle = opendir($path)) {
         while (false !== ($file = readdir($handle))) {
             if ($file != '.' && $file != '..') {
@@ -341,7 +341,7 @@ function dirTree($path)
 
 function delTree($dir)
 {
-    $files = array_diff(scandir($dir), array('.', '..'));
+    $files = array_diff(scandir($dir), ['.', '..']);
     foreach ($files as $file) {
         (is_dir("$dir/$file")) ? delTree("$dir/$file") : unlink("$dir/$file");
     }
@@ -366,13 +366,13 @@ function readDir($dir, $ext = "", $moreExtension = [])
     /*
    **** dato un percorso ritorna l'elenco dei file dei tipi consentiti ****
    */
-    $nomedata = array();
+    $nomedata = [];
     $elencofile = "";
     // vito, 31 ottobre 2008: aggiunto il check $ext!=""
     if (isset($ext) && $ext != "") {
-        $allowed_extAr = array($ext);
+        $allowed_extAr = [$ext];
     } else {
-        $allowed_extAr = $moreExtension + array(
+        $allowed_extAr = $moreExtension + [
             'txt',
             'doc',
             'rtf',
@@ -396,8 +396,8 @@ function readDir($dir, $ext = "", $moreExtension = [])
             'dotx',
             'pptx',
             'ppsx',
-            'potx'
-        );
+            'potx',
+        ];
     }
 
     $dirid = @opendir($dir);
@@ -410,7 +410,7 @@ function readDir($dir, $ext = "", $moreExtension = [])
                 //$elencofile[$i]['file'] = $dir."/".$file;
                 // vito, 30 mar 2009
                 if (!is_array($elencofile)) {
-                    $elencofile = array();
+                    $elencofile = [];
                 }
                 $elencofile[$i]['path_to_file'] = $dir . "/" . $file;
                 $elencofile[$i]['filemtime'] = filemtime($dir . "/" . $file);
@@ -450,7 +450,7 @@ function convertiDattiloFN($word, $img_dir)
             $dattilo_string .= "<img src='$img_dir/$lettera.jpg' alt=$lettera>";
         }
     } else {
-        $letAr = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
+        $letAr = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
         foreach ($letAr as $lettera) {
             $dattilo_string .= strToUpper($lettera) . "<img src='$lettera.jpg' alt=$lettera border=0>";
         }

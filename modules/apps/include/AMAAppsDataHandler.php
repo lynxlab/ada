@@ -13,6 +13,9 @@
 
 namespace Lynxlab\ADA\Module\Apps;
 
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+
 class AMAAppsDataHandler extends AMACommonDataHandler
 {
     /**
@@ -57,5 +60,16 @@ class AMAAppsDataHandler extends AMACommonDataHandler
         }
 
         return null;
+    }
+
+    /**
+     * Returns an instance of AMAAppsDataHandler.
+     *
+     * @param  string $dsn - optional, a valid data source name
+     * @return an instance of AMAAppsDataHandler
+     */
+    public static function instance($dsn = null)
+    {
+        return parent::instance($dsn);
     }
 }

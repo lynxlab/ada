@@ -3,6 +3,7 @@
 namespace Lynxlab\ADA\Comunica\Spools;
 
 use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
+use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -28,7 +29,7 @@ class Mailer
      *            $sender_email -
      *            $recipients_emails_ar - an array of all recipients
      *
-     * @return    an AMAError object if something goes wrong
+     * @return    bool|AMAError an AMAError object if something goes wrong
      *
      */
     public function sendMail($message_ha, $sender_email, $recipients_emails_ar)
@@ -72,10 +73,10 @@ class Mailer
                 $res =  @mail($recipient_list, '=?UTF-8?B?' . base64_encode($subject) . '?=', $message, $headers);
             }
             if (!$res) {
-                $errObj = new ADA_error(null, "Errore nell'invio dell'email", 'Mailer', AMA_ERR_SEND_MSG);
-                return $errObj;
+                $errObj = new ADAError(null, "Errore nell'invio dell'email", 'Mailer', AMA_ERR_SEND_MSG);
             }
         }
+        return $errObj ?? true;
     }
 
     public function clean()

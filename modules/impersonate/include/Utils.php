@@ -46,7 +46,7 @@ class Utils
         } else {
             try {
                 $impersonateObj = LinkedUsers::getSessionLinkedUser();
-            } catch (ImpersonateException $ie) {
+            } catch (ImpersonateException) {
                 $impersonateObj = [];
             }
             if (count($impersonateObj) > 0) {
@@ -95,9 +95,7 @@ class Utils
             }
 
             // filter the passed array to get only needed values
-            $filteredUsers = array_filter($linkedUsers, function ($el) use ($userId, $userType, $linkedType) {
-                return $el->getSourceId() == $userId && $el->getSourceType() == $userType && $el->getLinkedType() == $linkedType;
-            });
+            $filteredUsers = array_filter($linkedUsers, fn ($el) => $el->getSourceId() == $userId && $el->getSourceType() == $userType && $el->getLinkedType() == $linkedType);
 
             $addLink = false;
             $img = CDOMElement::create('img');

@@ -1,11 +1,9 @@
 <?php
 
+use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
-use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\TutorHelper;
-use Lynxlab\ADA\Main\History\History;
-use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Output\PdfClass;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
@@ -18,7 +16,8 @@ use function Lynxlab\ADA\Tutor\Functions\menuDetailsFN;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -58,15 +57,16 @@ include_once 'include/tutor.inc.php';
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
+ * @var object $user_messages
+ * @var object $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -82,16 +82,16 @@ $history = '';
 if ($id_course) {
     // get object course
     $courseObj = readCourseFromDB($id_course);
-    if ((is_object($courseObj)) && (!AMA_dataHandler::isError($courseObj))) {
+    if ((is_object($courseObj)) && (!AMADataHandler::isError($courseObj))) {
         $course_title = $courseObj->titolo; //title
         $id_toc = $courseObj->id_nodo_toc;  //id_toc_node
     } else {
-        $errObj = new ADA_error(translateFN("Corso non trovato"), translateFN("Impossibile proseguire."));
+        $errObj = new ADAError(translateFN("Corso non trovato"), translateFN("Impossibile proseguire."));
     }
 }
 
 $studentObj = readUserFromDB($id_student);
-if ((is_object($studentObj)) && (!AMA_dataHandler::isError($studentObj))) {
+if ((is_object($studentObj)) && (!AMADataHandler::isError($studentObj))) {
     if ($studentObj instanceof ADAPractitioner) {
         /**
          * @author giorgio 14/apr/2015
@@ -109,7 +109,7 @@ if ((is_object($studentObj)) && (!AMA_dataHandler::isError($studentObj))) {
     $user_level = $studentObj->livello;
     $user_historyObj->setCourse($id_course);
 } else {
-    $errObj = new ADA_error(translateFN("Utente non trovato"), translateFN("Impossibile proseguire."));
+    $errObj = new ADAError(translateFN("Utente non trovato"), translateFN("Impossibile proseguire."));
 }
 
 if ($period != 'all') {

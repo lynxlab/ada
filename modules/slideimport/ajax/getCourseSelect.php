@@ -9,7 +9,8 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 /**
  * Base config file
 */
-require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
+
+require_once(realpath(__DIR__) . '/../../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -59,9 +60,8 @@ if (!AMADB::isError($providerCourses)) {
     }
 
     if (count($courses) > 0) {
-        reset($courses);
         if (!isset($idToSelect)) {
-            $idToSelect = key($courses);
+            $idToSelect = array_key_first($courses);
         }
         $html = BaseHtmlLib::selectElement2('id:courseSelect,class:ui search selection dropdown', $courses, $idToSelect)->getHtml();
     }

@@ -169,7 +169,7 @@ class HtmlAdmOutput
         $names["add"][] = "Layout: $val_sel";
         $edittypes["add"][] = "select";
         $necessary["add"][] = "";
-        $values["add"][] = $course['layout'];
+        $values["add"][] = $course['layout'] ?? "";
         $options["add"][] = $val_sel;
         $maxsize["add"][] = 20;
 

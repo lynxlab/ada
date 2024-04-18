@@ -56,18 +56,15 @@ class GdprActions
                     return false;
                 }
             },
-            self::FORCE_CLOSE_REQUEST => function () {
+            self::FORCE_CLOSE_REQUEST => fn () =>
                 // use the same logic as ACCESS_ALL_REQUESTS action
-                return call_user_func(self::getCanDoArr()[self::ACCESS_ALL_REQUESTS]);
-            },
-            self::LIST_POLICIES => function () {
+                call_user_func(self::getCanDoArr()[self::ACCESS_ALL_REQUESTS]),
+            self::LIST_POLICIES => fn () =>
                 // use the same logic as ACCESS_ALL_REQUESTS action
-                return call_user_func(self::getCanDoArr()[self::ACCESS_ALL_REQUESTS]);
-            },
-            self::EDIT_POLICY => function () {
+                call_user_func(self::getCanDoArr()[self::ACCESS_ALL_REQUESTS]),
+            self::EDIT_POLICY => fn () =>
                 // use the same logic as ACCESS_ALL_REQUESTS action
-                return call_user_func(self::getCanDoArr()[self::ACCESS_ALL_REQUESTS]);
-            },
+                call_user_func(self::getCanDoArr()[self::ACCESS_ALL_REQUESTS]),
             self::REQUEST_TYPE_ACCESS => function ($object = null, $userType = null) {
                 // first check if the session user is a GdprUser as well
                 $gdprUser = (new GdprAPI())->getGdprUserByID($_SESSION['sess_userObj']);
@@ -83,22 +80,18 @@ class GdprActions
                 // deny the action by default
                 return false;
             },
-            self::REQUEST_TYPE_EDIT => function ($object = null, $userType = null) {
+            self::REQUEST_TYPE_EDIT => fn ($object = null, $userType = null) =>
                 // use the same logic as REQUEST_TYPE_ACCESS action
-                return call_user_func_array(self::getCanDoArr()[self::REQUEST_TYPE_ACCESS], [$object, $userType]);
-            },
-            self::REQUEST_TYPE_ONHOLD => function ($object = null, $userType = null) {
+                call_user_func_array(self::getCanDoArr()[self::REQUEST_TYPE_ACCESS], [$object, $userType]),
+            self::REQUEST_TYPE_ONHOLD => fn ($object = null, $userType = null) =>
                 // use the same logic as REQUEST_TYPE_ACCESS action
-                return call_user_func_array(self::getCanDoArr()[self::REQUEST_TYPE_ACCESS], [$object, $userType]);
-            },
-            self::REQUEST_TYPE_DELETE => function ($object = null, $userType = null) {
+                call_user_func_array(self::getCanDoArr()[self::REQUEST_TYPE_ACCESS], [$object, $userType]),
+            self::REQUEST_TYPE_DELETE => fn ($object = null, $userType = null) =>
                 // use the same logic as REQUEST_TYPE_ACCESS action
-                return call_user_func_array(self::getCanDoArr()[self::REQUEST_TYPE_ACCESS], [$object, $userType]);
-            },
-            self::REQUEST_TYPE_OPPOSITION => function ($object = null, $userType = null) {
+                call_user_func_array(self::getCanDoArr()[self::REQUEST_TYPE_ACCESS], [$object, $userType]),
+            self::REQUEST_TYPE_OPPOSITION => fn ($object = null, $userType = null) =>
                 // use the same logic as REQUEST_TYPE_ACCESS action
-                return call_user_func_array(self::getCanDoArr()[self::REQUEST_TYPE_ACCESS], [$object, $userType]);
-            },
+                call_user_func_array(self::getCanDoArr()[self::REQUEST_TYPE_ACCESS], [$object, $userType]),
         ];
     }
 
@@ -110,7 +103,7 @@ class GdprActions
      */
     public static function getConstantFromString($stringConstant)
     {
-        return defined(__CLASS__ . '::' . $stringConstant) ? constant(__CLASS__ . '::' . $stringConstant) : null;
+        return defined(self::class . '::' . $stringConstant) ? constant(self::class . '::' . $stringConstant) : null;
     }
 
     /**

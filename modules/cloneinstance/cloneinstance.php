@@ -17,7 +17,8 @@ use function Lynxlab\ADA\Main\Utilities\whoami;
 /**
  * Base config file
  */
-require_once(realpath(dirname(__FILE__)) . '/../../config_path.inc.php');
+
+require_once(realpath(__DIR__) . '/../../config_path.inc.php');
 
 // MODULE's OWN IMPORTS
 
@@ -88,9 +89,7 @@ if (!AMADB::isError($tutors) && $tutors !== false && count($tutors) > 0) {
                     (translateFN('Un tutor assegnato')) : (sprintf(translateFN('%d tutor assegnati'), count($tutors)))),
         'ok' => true,
     ];
-    $tutorList = array_map(function ($el) {
-        return $el['nome'] . ' ' . $el['cognome'];
-    }, $tutors);
+    $tutorList = array_map(fn ($el) => $el['nome'] . ' ' . $el['cognome'], $tutors);
     if (count($tutorList) > 0) {
         $summaryArr['tutors']['text'] .= ': ' . implode(', ', $tutorList);
     }
@@ -141,9 +140,7 @@ if (count($summaryArr) > 0) {
 }
 
 $publicServiceLevels = array_keys(
-    array_filter($_SESSION['service_level_info'], function ($el) {
-        return true === (bool) $el['isPublic'];
-    })
+    array_filter($_SESSION['service_level_info'], fn ($el) => true === (bool) $el['isPublic'])
 );
 $clause = (count($publicServiceLevels) > 0) ? '`tipo_servizio` NOT IN (' . implode(',', $publicServiceLevels) . ')' : '';
 /** @var array $courses */

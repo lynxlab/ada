@@ -53,7 +53,7 @@ class HashKey extends EtherpadBase
             if (!is_null($etDH)) {
                 try {
                     $saveResult = $etDH->saveHashKey($retval->toArray());
-                } catch (EtherpadException $e) {
+                } catch (EtherpadException) {
                     $saveResult = false;
                     $retval = new self();
                 }

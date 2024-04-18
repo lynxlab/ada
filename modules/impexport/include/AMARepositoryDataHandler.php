@@ -94,10 +94,9 @@ class AMARepositoryDataHandler extends AMACommonDataHandler
             $cachedValues = ['courseTitles' => [], 'courseProviders' => []];
             $res = array_map(function ($element) use ($testersArr, &$cachedValues) {
                 if (!array_key_exists($element['id_course'], $cachedValues['courseTitles'])) {
-                    $provider = array_filter($testersArr, function ($el) use ($element) {
+                    $provider = array_filter($testersArr, fn ($el) =>
                         // var_dump([$el, $element]);
-                        return $el['id_tester'] == $element['id_tester'];
-                    });
+                        $el['id_tester'] == $element['id_tester']);
                     $provider = reset($provider);
                     $pdh = AMADataHandler::instance(MultiPort::getDSN($provider['puntatore']));
                     $courseData = $pdh->getCourse($element['id_course']);
@@ -189,9 +188,7 @@ class AMARepositoryDataHandler extends AMACommonDataHandler
         return sprintf(
             "UPDATE `%s` SET %s",
             $table,
-            implode(',', array_map(function ($el) {
-                return "`$el`=?";
-            }, $fields))
+            implode(',', array_map(fn ($el) => "`$el`=?", $fields))
         ) . $this->buildWhereClause($whereArr, array_keys($whereArr)) . ';';
     }
 
@@ -207,12 +204,8 @@ class AMARepositoryDataHandler extends AMACommonDataHandler
         return sprintf(
             "INSERT INTO `%s` (%s) VALUES (%s);",
             $table,
-            implode(',', array_map(function ($el) {
-                return "`$el`";
-            }, array_keys($fields))),
-            implode(',', array_map(function ($el) {
-                return "?";
-            }, array_keys($fields)))
+            implode(',', array_map(fn ($el) => "`$el`", array_keys($fields))),
+            implode(',', array_map(fn ($el) => "?", array_keys($fields)))
         );
     }
 

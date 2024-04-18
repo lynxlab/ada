@@ -100,7 +100,7 @@ class GenericHtml extends Output
         }
         $template = $this->template;
 
-        if (!strstr($template, $tpl_fileextension)) {
+        if (!strstr($template, (string) $tpl_fileextension)) {
             $template .= $tpl_fileextension;
         }
         if (!file_exists($template)) {
@@ -342,7 +342,7 @@ class GenericHtml extends Output
 
 
         $template = $this->template;
-        if (!strstr($template, $tpl_fileextension)) {
+        if (!strstr($template, (string) $tpl_fileextension)) {
             $template .= $tpl_fileextension;   // add extension
         }
         if (!file_exists($template)) {

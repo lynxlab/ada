@@ -16,26 +16,26 @@ use Lynxlab\ADA\Main\Upload\FileUploader;
 /**
  * Base config file
 */
-require_once(realpath(dirname(__FILE__)) . '/../../../../config_path.inc.php');
+require_once(realpath(__DIR__) . '/../../../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
 */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 /**
  * Users (types) allowed to access this module.
 */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER, AMA_TYPE_STUDENT,AMA_TYPE_AUTHOR,AMA_TYPE_TUTOR);
+$allowedUsersAr = [AMA_TYPE_SWITCHER, AMA_TYPE_STUDENT,AMA_TYPE_AUTHOR,AMA_TYPE_TUTOR];
 
 /**
  * Get needed objects
 */
-$neededObjAr = array(
-        AMA_TYPE_STUDENT => array('layout'),
-        AMA_TYPE_SWITCHER => array('layout'),
-                AMA_TYPE_AUTHOR => array('layout'),
-        AMA_TYPE_TUTOR => array('layout')
-);
+$neededObjAr = [
+        AMA_TYPE_STUDENT => ['layout'],
+        AMA_TYPE_SWITCHER => ['layout'],
+                AMA_TYPE_AUTHOR => ['layout'],
+        AMA_TYPE_TUTOR => ['layout'],
+];
 
 /**
  * Performs basic controls before entering this module

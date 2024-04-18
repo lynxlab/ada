@@ -26,7 +26,8 @@ use function Lynxlab\ADA\Main\Utilities\whoami;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/config_path.inc.php';
+
+require_once realpath(__DIR__) . '/config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -352,12 +353,7 @@ if ($op !== false && $op == 'course_info') {
                     // instance data
                     if (isset($instanceData) && is_array($instanceData) && count($instanceData) > 0) {
                         // sort instanceData by 'order' field
-                        usort($instanceData, function ($item1, $item2) {
-                            if ($item1['order'] == $item2['order']) {
-                                return 0;
-                            }
-                            return $item1['order'] < $item2['order'] ? -1 : 1;
-                        });
+                        usort($instanceData, fn ($item1, $item2) => $item1['order'] <=> $item2['order']);
 
                         $instanceDataSEGMENT = CDOMElement::create('div', 'class:ui attached segment');
                         $instanceDataDIV = CDOMElement::create('div', 'class:ui horizontal floated list');
@@ -739,12 +735,7 @@ if ($op !== false && $op == 'course_info') {
                     $row['instances'] = null;
                     if ($Flag_course_has_instance) {
                         // sort by data_inizio_previsto DESC
-                        uasort($instancesAr, function ($a, $b) {
-                            if ($a['data_inizio_previsto'] == $b['data_inizio_previsto']) {
-                                return 0;
-                            }
-                            return ($a['data_inizio_previsto'] > $b['data_inizio_previsto']) ? -1 : 1;
-                        });
+                        uasort($instancesAr, fn ($a, $b) => $b['data_inizio_previsto'] <=> $a['data_inizio_previsto']);
                         foreach ($instancesAr as $instKey => $instanceEl) {
                             foreach ($instanceEl as $iKey => $iVal) {
                                 if (is_numeric($iKey)) {

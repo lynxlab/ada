@@ -812,19 +812,19 @@ class AMALoginDataHandler extends AMADataHandler
     public static function instance($dsn = null)
     {
         if (!MULTIPROVIDER && is_null($dsn)) {
-            $dsn = \MultiPort::getDSN($GLOBALS['user_provider']);
+            $dsn = MultiPort::getDSN($GLOBALS['user_provider']);
         }
         $theInstance = parent::instance($dsn);
 
         if (is_null(self::$dbToUse)) {
-            self::$dbToUse = \AMACommonDataHandler::instance();
+            self::$dbToUse = AMACommonDataHandler::instance();
             if (!MULTIPROVIDER && !is_null($dsn)) {
                 // must check if passed $dsn has the module login tables
                 // execute this dummy query, if result is not an error table is there
                 $sql = 'SELECT NULL FROM `' . self::$PREFIX . 'providers`';
                 // must use AMADataHandler because we are not able to
                 // query AMALoginDataHandelr in this method!
-                $ok = \AMADataHandler::instance($dsn)->getOnePrepared($sql);
+                $ok = AMADataHandler::instance($dsn)->getOnePrepared($sql);
                 if (!AMADB::isError($ok)) {
                     self::$dbToUse = $theInstance;
                 }

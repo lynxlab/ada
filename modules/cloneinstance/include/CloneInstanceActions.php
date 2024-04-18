@@ -39,9 +39,7 @@ class CloneInstanceActions
     protected static function getCanDoArr()
     {
         return [
-            self::CLONE_INSTANCE => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER]);
-            },
+            self::CLONE_INSTANCE => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER]),
         ];
     }
 
@@ -53,7 +51,7 @@ class CloneInstanceActions
      */
     public static function getConstantFromString($stringConstant)
     {
-        return defined(__CLASS__ . '::' . $stringConstant) ? constant(__CLASS__ . '::' . $stringConstant) : null;
+        return defined(self::class . '::' . $stringConstant) ? constant(self::class . '::' . $stringConstant) : null;
     }
 
     /**

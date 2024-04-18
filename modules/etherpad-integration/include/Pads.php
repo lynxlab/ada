@@ -69,9 +69,7 @@ class Pads extends EtherpadBase
             if ($isNodePad) {
                 $replaceArr = array_filter($nodeData, 'is_scalar');
                 // placeholder support: replace every occurence of $nodeData keys surrounded by percent sign with its value
-                $searchArr = array_map(function ($el) {
-                    return '%' . $el . '%';
-                }, array_keys($replaceArr));
+                $searchArr = array_map(fn ($el) => '%' . $el . '%', array_keys($replaceArr));
                 $text = str_replace($searchArr, $replaceArr, $text);
             }
         }

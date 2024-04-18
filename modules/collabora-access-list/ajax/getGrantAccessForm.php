@@ -15,7 +15,8 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 /**
  * Base config file
  */
-require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
+
+require_once(realpath(__DIR__) . '/../../../config_path.inc.php');
 
 // MODULE's OWN IMPORTS
 
@@ -49,39 +50,27 @@ $passedData = [];
 $needed = [
     [
         'key' => 'courseId',
-        'sanitize' => function ($v) {
-            return intval($v);
-        },
+        'sanitize' => fn ($v) => intval($v),
     ],
     [
         'key' => 'instanceId',
-        'sanitize' => function ($v) {
-            return intval($v);
-        },
+        'sanitize' => fn ($v) => intval($v),
     ],
     [
         'key' => 'fileAclId',
-        'sanitize' => function ($v) {
-            return intval($v);
-        },
+        'sanitize' => fn ($v) => intval($v),
     ],
     [
         'key' => 'ownerId',
-        'sanitize' => function ($v) {
-            return intval($v);
-        },
+        'sanitize' => fn ($v) => intval($v),
     ],
     [
         'key' => 'nodeId',
-        'sanitize' => function ($v) {
-            return (is_string($v) ? strval(trim($v)) : null);
-        },
+        'sanitize' => fn ($v) => is_string($v) ? strval(trim($v)) : null,
     ],
     [
         'key' => 'filename',
-        'sanitize' => function ($v) {
-            return (is_string($v) ? strval(trim($v)) : null);
-        },
+        'sanitize' => fn ($v) => is_string($v) ? strval(trim($v)) : null,
     ],
     [
         'key' => 'grantedUsers',
@@ -148,9 +137,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $allUsers
     );
     // sort by lastname asc
-    usort($allUsers, function ($a, $b) {
-        return strcasecmp($a['cognome'], $b['cognome']);
-    });
+    usort($allUsers, fn ($a, $b) => strcasecmp($a['cognome'], $b['cognome']));
     // display the form with loaded data
     $formData = [
         'fileAclId' => $passedData['fileAclId'] > 0 ? $passedData['fileAclId'] : 0,

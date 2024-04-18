@@ -19,10 +19,11 @@ use function Lynxlab\ADA\Widgets\Functions\cleanFileName;
 /**
  * Common initializations and include files
  */
+
 ini_set('display_errors', '0');
 error_reporting(E_ALL);
 
-require_once realpath(dirname(__FILE__)) . '/../../config_path.inc.php';
+require_once realpath(__DIR__) . '/../../config_path.inc.php';
 
 /**
  * Users (types) allowed to access this module.
@@ -127,9 +128,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                 });
 
                 if (is_array($elencofile) && count($elencofile) > 0) {
-                    usort($elencofile, function ($a, $b) {
-                        return strcasecmp(cleanFileName($a['file']), cleanFileName($b['file']));
-                    });
+                    usort($elencofile, fn ($a, $b) => strcasecmp(cleanFileName($a['file']), cleanFileName($b['file'])));
 
                     $icongeneric = 'attachment';
                     $iconcls = [
@@ -174,9 +173,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                     $outputArr[] = $maincontent;
                 }
             }
-            $output = implode(PHP_EOL, array_map(function ($el) {
-                return $el->getHtml();
-            }, $outputArr));
+            $output = implode(PHP_EOL, array_map(fn ($el) => $el->getHtml(), $outputArr));
         }
     } catch (CollaboraACLException $e) {
         $divClass = 'error';

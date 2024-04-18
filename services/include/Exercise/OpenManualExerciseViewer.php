@@ -134,6 +134,7 @@ class OpenManualExerciseViewer extends ExerciseViewer
         $error_msg = "";
         if (isset($data['empty_field']) && $data['empty_field'] == true) {
             $error_msg = translateFN("Attenzione: campo non compilato!") . '<br />';
+            $question  = parent::fillFieldWithData('question', $data);
         }
 
         $div = CDOMElement::create('div');

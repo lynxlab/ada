@@ -101,6 +101,17 @@ class AMASecretQuestionDataHandler extends AMACommonDataHandler
     }
 
     /**
+     * Returns an instance of AMASecretQuestionDataHandler.
+     *
+     * @param  string $dsn - optional, a valid data source name
+     * @return self an instance of AMASecretQuestionDataHandler
+     */
+    public static function instance($dsn = null)
+    {
+        return parent::instance($dsn);
+    }
+
+    /**
      * Prepares the answer string by applying at least a trim and a hashing function
      *
      * @param string $answer
@@ -128,9 +139,7 @@ class AMASecretQuestionDataHandler extends AMACommonDataHandler
         return sprintf(
             "UPDATE `%s` SET %s WHERE `%s`=?;",
             $table,
-            implode(',', array_map(function ($el) {
-                return "`$el`=?";
-            }, $fields)),
+            implode(',', array_map(fn ($el) => "`$el`=?", $fields)),
             $whereField
         );
     }
@@ -147,12 +156,8 @@ class AMASecretQuestionDataHandler extends AMACommonDataHandler
         return sprintf(
             "INSERT INTO `%s` (%s) VALUES (%s);",
             $table,
-            implode(',', array_map(function ($el) {
-                return "`$el`";
-            }, array_keys($fields))),
-            implode(',', array_map(function ($el) {
-                return "?";
-            }, array_keys($fields)))
+            implode(',', array_map(fn ($el) => "`$el`", array_keys($fields))),
+            implode(',', array_map(fn ($el) => "?", array_keys($fields)))
         );
     }
 }

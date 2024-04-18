@@ -23,7 +23,7 @@ error_reporting(E_ALL);
 /**
  * Base config file
 */
-require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
+require_once(realpath(__DIR__) . '/../../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -130,7 +130,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             }
 
             $senderEmail = MODULES_NEWSLETTER_DEFAULT_EMAIL_ADDRESS; // uncomment to get domain from HTTP_ROOT_DIR.'@'.getDomain(HTTP_ROOT_DIR);
-            $senderFullName = (isset($newsLetterArray['sender'])) ? $newsLetterArray['sender'] : $senderEmail;
+            $senderFullName = $newsLetterArray['sender'] ?? $senderEmail;
 
             // perform general substitutions for course and instance
             $HTMLModelText = str_replace(['{coursename}','{instancename}'], [ $courseTitle, $instanceTitle], $newsLetterArray['htmltext']);

@@ -44,21 +44,11 @@ class BadgesActions
     protected static function getCanDoArr()
     {
         return [
-            self::NEW_BADGE => function ($object = null, $userType = null) {
-                return in_array($userType, [ AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER ]);
-            },
-            self::EDIT_BADGE => function ($object = null, $userType = null) {
-                return in_array($userType, [ AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER ]);
-            },
-            self::TRASH_BADGE => function ($object = null, $userType = null) {
-                return in_array($userType, [ AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER ]);
-            },
-            self::BADGE_COURSE_LINK => function ($object = null, $userType = null) {
-                return in_array($userType, [ AMA_TYPE_SWITCHER ]);
-            },
-            self::BADGE_COURSE_TRASH => function ($object = null, $userType = null) {
-                return in_array($userType, [ AMA_TYPE_SWITCHER ]);
-            },
+            self::NEW_BADGE => fn ($object = null, $userType = null) => in_array($userType, [ AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER ]),
+            self::EDIT_BADGE => fn ($object = null, $userType = null) => in_array($userType, [ AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER ]),
+            self::TRASH_BADGE => fn ($object = null, $userType = null) => in_array($userType, [ AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER ]),
+            self::BADGE_COURSE_LINK => fn ($object = null, $userType = null) => in_array($userType, [ AMA_TYPE_SWITCHER ]),
+            self::BADGE_COURSE_TRASH => fn ($object = null, $userType = null) => in_array($userType, [ AMA_TYPE_SWITCHER ]),
         ];
     }
 
@@ -70,7 +60,7 @@ class BadgesActions
      */
     public static function getConstantFromString($stringConstant)
     {
-        return defined(__CLASS__ . '::' . $stringConstant) ? constant(__CLASS__ . '::' . $stringConstant) : null;
+        return defined(self::class . '::' . $stringConstant) ? constant(self::class . '::' . $stringConstant) : null;
     }
 
     /**

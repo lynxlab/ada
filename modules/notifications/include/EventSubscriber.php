@@ -210,9 +210,7 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
                     'options' => [
                         'onload_func' => [
                             'initval' => '',
-                            'additems' => function ($v) {
-                                return $v . '; new NotificationsManager().addSubscribeHandler(\'.noteActions\',\'button.noteSubscribe\');';
-                            },
+                            'additems' => fn ($v) => $v . '; new NotificationsManager().addSubscribeHandler(\'.noteActions\',\'button.noteSubscribe\');',
                         ],
                     ],
                 ];
@@ -255,9 +253,7 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
             'options' => [
                 'onload_func' => [
                     'initval' => '',
-                    'additems' => function ($v) {
-                        return $v . '; new NotificationsManager().addSubscribeHandler(\'.noteActions\',\'button.noteSubscribe\');';
-                    },
+                    'additems' => fn ($v) => $v . '; new NotificationsManager().addSubscribeHandler(\'.noteActions\',\'button.noteSubscribe\');',
                 ],
             ],
         ];
@@ -339,28 +335,24 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
                 // load all students and tutors of the course instance
                 $students =  $ntDH->getStudentsForCourseInstance($instanceId);
                 if (!AMADB::isError($students)) {
-                    $instanceSubscribedList = array_merge($instanceSubscribedList, array_map(function ($el) {
-                        return [
-                            'id_utente' => intval($el['id_utente']),
-                            'nome' => $el['nome'],
-                            'cognome' => $el['cognome'],
-                            'e_mail' => $el['e_mail'],
-                            'type' => AMA_TYPE_STUDENT,
-                        ];
-                    }, $students));
+                    $instanceSubscribedList = array_merge($instanceSubscribedList, array_map(fn ($el) => [
+                        'id_utente' => intval($el['id_utente']),
+                        'nome' => $el['nome'],
+                        'cognome' => $el['cognome'],
+                        'e_mail' => $el['e_mail'],
+                        'type' => AMA_TYPE_STUDENT,
+                    ], $students));
                 }
 
                 $tutors = $ntDH->courseInstanceTutorInfoGet($instanceId);
                 if (!AMADB::isError($tutors)) {
-                    $instanceSubscribedList = array_merge($instanceSubscribedList, array_map(function ($el) {
-                        return [
-                            'id_utente' => intval($el['id_utente_tutor']),
-                            'nome' => $el['nome'],
-                            'cognome' => $el['cognome'],
-                            'e_mail' => $el['e_mail'],
-                            'type' => AMA_TYPE_TUTOR,
-                        ];
-                    }, $tutors));
+                    $instanceSubscribedList = array_merge($instanceSubscribedList, array_map(fn ($el) => [
+                        'id_utente' => intval($el['id_utente_tutor']),
+                        'nome' => $el['nome'],
+                        'cognome' => $el['cognome'],
+                        'e_mail' => $el['e_mail'],
+                        'type' => AMA_TYPE_TUTOR,
+                    ], $tutors));
                 }
 
                 if (count($instanceSubscribedList) > 0) {
@@ -368,9 +360,7 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
                     $notifyUserList = $ntDH->findBy('Notification', [
                         'userId' => [
                             'op' => 'IN',
-                            'value' => sprintf("(%s)", implode(', ', array_map(function ($el) {
-                                return $el['id_utente'];
-                            }, $instanceSubscribedList))),
+                            'value' => sprintf("(%s)", implode(', ', array_map(fn ($el) => $el['id_utente'], $instanceSubscribedList))),
                         ],
                         'nodeId' => $nodeData['parent_id'],
                         'instanceId' => $instanceId,
@@ -399,9 +389,7 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
                         $saveData = [];
                         // foreach notifyUserList, build an EmailQueueItem with rendered template fields
                         foreach ($notifyUserList as $notifyUser) {
-                            $userData = array_filter($instanceSubscribedList, function ($el) use ($notifyUser) {
-                                return $notifyUser->getUserId() == $el['id_utente'] && strlen($el['e_mail']) > 0;
-                            });
+                            $userData = array_filter($instanceSubscribedList, fn ($el) => $notifyUser->getUserId() == $el['id_utente'] && strlen($el['e_mail']) > 0);
                             if (is_array($userData) && count($userData) > 0) {
                                 $userData = reset($userData);
                                 $qItem->setUserId($userData['id_utente']);

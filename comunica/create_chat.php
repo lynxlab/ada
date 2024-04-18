@@ -5,12 +5,8 @@ use Lynxlab\ADA\Comunica\DataHandler\UserDataHandler;
 use Lynxlab\ADA\CORE\HtmlElements\Tform;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMAError;
-use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
-use Lynxlab\ADA\Main\History\History;
-use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\Output\ARE;
-use Lynxlab\ADA\Main\User\ADAPractitioner;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\sumDateTimeFN;
@@ -18,7 +14,8 @@ use function Lynxlab\ADA\Main\Utilities\sumDateTimeFN;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -65,15 +62,16 @@ $self = 'list_chatrooms'; // x template
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
+ * @var object $user_messages
+ * @var object $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -254,7 +252,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         // Trim all submitted data
         $create_chat_form = $_POST;
         foreach ($create_chat_form as $key => $value) {
-            $$key = $value;
+            ${$key} = $value;
         }
 
         // title could non be empty
@@ -480,9 +478,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                             [
                             'label' => 'Classe ID',
                             'type' => 'text',
-                            'value' => $id_course_instance,
                             'name' => 'id_course_instance',
-                'value' => $_POST['id_course_instance'],
+                            'value' => $_POST['id_course_instance'],
                             'size' => '11',
                             'maxlength' => '11',
                             ],
@@ -588,7 +585,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                   [
                                   'label' => 'Classe ID',
                                   'type' => 'text',
-                                  'value' => $id_course_instance,
                                   'name' => 'id_course_instance',
                                   'value' => $_POST['id_course_instance'],
                                   'size' => '11',

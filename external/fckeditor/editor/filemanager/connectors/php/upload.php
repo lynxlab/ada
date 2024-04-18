@@ -1,4 +1,5 @@
 <?php
+
 /*
  * FCKeditor - The text editor for Internet - http://www.fckeditor.net
  * Copyright (C) 2003-2010 Frederico Caldeira Knabben
@@ -42,9 +43,9 @@ if (!$Config['Enabled']) {
 $sCommand = 'QuickUpload' ;
 
 // The file type (from the QueryString, by default 'File').
-$sType = isset($_GET['Type']) ? $_GET['Type'] : 'File' ;
+$sType = $_GET['Type'] ?? 'File' ;
 
-$sCurrentFolder	= "/" ;
+$sCurrentFolder = "/" ;
 
 // Is enabled the upload?
 if (! IsAllowedCommand($sCommand)) {

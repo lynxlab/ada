@@ -207,7 +207,7 @@ class ADAEventDispatcher extends EventDispatcher implements EventDispatcherInter
                 return call_user_func([$parent, $method]);
             }
         }
-        throw new Exception(sprintf('The required method %s does not exist for %s', $method, get_class($this)));
+        throw new Exception(sprintf('The required method %s does not exist for %s', $method, static::class));
     }
 
     /**
@@ -221,7 +221,7 @@ class ADAEventDispatcher extends EventDispatcher implements EventDispatcherInter
         $subscribersNS = 'Subscribers';
         $fullNS = __NAMESPACE__ . '\\' . $subscribersNS . '\\';
         $dispatcher = self::getInstance();
-        foreach (glob(dirname(__FILE__) . '/' . strtolower($subscribersNS) . '/*' . $fileext) as $filename) {
+        foreach (glob(__DIR__ . '/' . strtolower($subscribersNS) . '/*' . $fileext) as $filename) {
             if (is_readable($filename)) {
                 $classname = $fullNS . rtrim(basename($filename), $fileext);
                 if (class_exists($classname)) {

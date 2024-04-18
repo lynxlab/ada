@@ -1,40 +1,14 @@
 <?php
 
-// +----------------------------------------------------------------------+
-// | ADA version 1.8 alpha                                                      |
-// +----------------------------------------------------------------------+
-// | Copyright (c) 2001-2008 Lynx                                         |
-// +----------------------------------------------------------------------+
-// |                                                                      |
-// |                  T R A N S L A T O R                                 |
-// |                                                                      |
-// |                                                                      |
-// |                                                                      |
-// |                                                                      |
-// |                                                                      |
-// +----------------------------------------------------------------------+
-// | Author: Stefano Penge <steve@lynxlab.com>                            |
-// | Modified by: vito (nov 2008)                                         |
-// +----------------------------------------------------------------------+
-
-
-/**
- * Base config file
- */
-
-use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Forms\EditTranslationForm;
 use Lynxlab\ADA\Main\Forms\TranslationForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
-use Lynxlab\ADA\Main\History\History;
-use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Translator;
-use Lynxlab\ADA\Main\User\ADAPractitioner;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /*
  * Only admins and switchers are allowed to update translations
@@ -72,15 +46,16 @@ $self =  "switcher";
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
+ * @var object $user_messages
+ * @var object $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990

@@ -6,6 +6,13 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 class ExerciseCorrection //implements iExerciseCorrection
 {
+    /**
+     * Undocumented function
+     *
+     * @param \Lynxlab\ADA\Services\Exercise\ADAEsercizio $exercise
+     * @param int $user_level
+     * @return bool
+     */
     public function raiseUserLevel($exercise, $user_level)
     {
         return ($user_level == $exercise->getExerciseLevel() && $exercise->getExerciseBarrier() && $exercise->getRating() == ADA_MAX_SCORE);

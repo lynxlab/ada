@@ -94,6 +94,7 @@ class AMABBBIntegrationDataHandler extends AMADataHandler
         } else {
             throw new BBBIntegrationException($result->getMessage(), is_numeric($result->getCode()) ? $result->getCode() : null);
         }
+        return false;
     }
 
     public function deleteVideoroom($id_room)
@@ -120,9 +121,7 @@ class AMABBBIntegrationDataHandler extends AMADataHandler
         return sprintf(
             "UPDATE `%s` SET %s WHERE `%s`=?;",
             $table,
-            implode(',', array_map(function ($el) {
-                return "`$el`=?";
-            }, $fields)),
+            implode(',', array_map(fn ($el) => "`$el`=?", $fields)),
             $whereField
         );
     }
@@ -139,12 +138,8 @@ class AMABBBIntegrationDataHandler extends AMADataHandler
         return sprintf(
             "INSERT INTO `%s` (%s) VALUES (%s);",
             $table,
-            implode(',', array_map(function ($el) {
-                return "`$el`";
-            }, array_keys($fields))),
-            implode(',', array_map(function ($el) {
-                return "?";
-            }, array_keys($fields)))
+            implode(',', array_map(fn ($el) => "`$el`", array_keys($fields))),
+            implode(',', array_map(fn ($el) => "?", array_keys($fields)))
         );
     }
 }

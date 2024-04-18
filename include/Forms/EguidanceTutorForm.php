@@ -28,7 +28,7 @@ class EguidanceTutorForm extends FForm
         parent::__construct();
         //$authors = array_merge(array(0 => translateFN('Scegli un autore per il corso')), $authors);
         //$languages = array_merge(array(0 => translateFN('Scegli una lingua per il corso')), $languages);
-        $id_user = $userObj->getId();
+        //$id_user = $userObj->getId();
 
         $this->setName('formEguidanceForm');
         $this->setId('formEguidanceForm');
@@ -49,7 +49,7 @@ class EguidanceTutorForm extends FForm
 
         $this->addHidden('id_corso');
 
-        $this->addHidden('id_utente')->withData($user_id);
+        $this->addHidden('id_utente')->withData($id_user);
 
         $this->addTextInput('nome', translateFN('Codice servizio'))
              ->setRequired()

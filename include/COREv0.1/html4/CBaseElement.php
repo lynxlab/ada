@@ -24,11 +24,7 @@ abstract class CBaseElement extends CBase
      */
     public function getAttribute($attribute_name)
     {
-        if (isset($this->$attribute_name)) {
-            return $this->$attribute_name;
-        }
-
-        return null;
+        return $this->$attribute_name ?? null;
     }
 
     public function setAttribute($attribute_name, $attribute_value)

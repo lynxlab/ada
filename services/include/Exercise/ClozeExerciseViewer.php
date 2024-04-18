@@ -66,13 +66,13 @@ class ClozeExerciseViewer extends ExerciseViewer
 
         $div_question = CDOMElement::create('div', 'id:exercise_text');
         //$div_question->addChild(new CText(translateFN('Domanda')));
-        $div_question->addChild($this->formatExerciseText($exercise));
+        $div_question->addChild(static::formatExerciseText($exercise));
         $div->addChild($div_question);
 
         $div_answer = CDOMElement::create('div', 'id:student_answer');
         $div_answer->addChild(new CText(translateFN('Risposta') . ' '));
         $div_answer2 = CDOMElement::create('div', 'id:answer');
-        $div_answer2->addChild($this->formatStudentAnswer($exercise));
+        $div_answer2->addChild(static::formatStudentAnswer($exercise));
         $div_answer->addChild($div_answer2);
         $div->addChild($div_answer);
 

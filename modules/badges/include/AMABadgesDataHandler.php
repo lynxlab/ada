@@ -11,6 +11,7 @@
 namespace Lynxlab\ADA\Module\Badges;
 
 use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Module\Badges\Badge;
@@ -22,7 +23,7 @@ use ReflectionProperty;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
-class AMABadgesDataHandler extends AMA_DataHandler
+class AMABadgesDataHandler extends AMADataHandler
 {
     /**
      * module's own data tables prefix
@@ -246,6 +247,8 @@ class AMABadgesDataHandler extends AMA_DataHandler
         if (is_array($badge) && count($badge) == 1) {
             $badge = reset($badge);
             $deletefile = str_replace(HTTP_ROOT_DIR, ROOT_DIR, $badge->getImageUrl());
+        } else {
+            $deletefile = '';
         }
 
         $result = $this->queryPrepared(
@@ -329,6 +332,17 @@ class AMABadgesDataHandler extends AMA_DataHandler
     }
 
     /**
+     * Returns an instance of AMABadgesDataHandler.
+     *
+     * @param  string $dsn - optional, a valid data source name
+     * @return self an instance of AMABadgesDataHandler
+     */
+    public static function instance($dsn = null)
+    {
+        return parent::instance($dsn);
+    }
+
+    /**
      * Move an uploaded badge png from tmp to actual badges dir
      *
      * @param string $src
@@ -368,9 +382,7 @@ class AMABadgesDataHandler extends AMA_DataHandler
         }
         $reflection = new ReflectionClass($className);
         $properties =  array_map(
-            function ($el) {
-                return $el->getName();
-            },
+            fn ($el) => $el->getName(),
             $reflection->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PUBLIC)
         );
 
@@ -380,9 +392,7 @@ class AMABadgesDataHandler extends AMA_DataHandler
         $properties = array_diff($properties, $joined);
         $properties = array_diff($properties, $className::doNotLoad());
 
-        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(function ($el) use ($className) {
-            return ($className::isUuidField($el) ? "`$el" . $className::BINFIELDSUFFIX . "`" : "`$el`");
-        }, $properties)), $className::table)
+        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(fn ($el) => $className::isUuidField($el) ? "`$el" . $className::BINFIELDSUFFIX . "`" : "`$el`", $properties)), $className::table)
             . $this->buildWhereClause($whereArr, $properties) . $this->buildOrderBy($orderByArr, $properties);
 
         if (is_null($dbToUse)) {
@@ -393,9 +403,7 @@ class AMABadgesDataHandler extends AMA_DataHandler
         if (AMADB::isError($result)) {
             throw new BadgesException($result->getMessage(), (int)$result->getCode());
         } else {
-            $retArr = array_map(function ($el) use ($className, $dbToUse) {
-                return new $className($el, $dbToUse);
-            }, $result);
+            $retArr = array_map(fn ($el) => new $className($el, $dbToUse), $result);
             // load properties from $joined array
             foreach ($retArr as $retObj) {
                 foreach ($joined as $joinKey) {
@@ -439,9 +447,7 @@ class AMABadgesDataHandler extends AMA_DataHandler
         return sprintf(
             "UPDATE `%s` SET %s",
             $table,
-            implode(',', array_map(function ($el) {
-                return "`$el`=?";
-            }, $fields))
+            implode(',', array_map(fn ($el) => "`$el`=?", $fields))
         ) . $this->buildWhereClause($whereArr, array_keys($whereArr)) . ';';
     }
 
@@ -457,12 +463,8 @@ class AMABadgesDataHandler extends AMA_DataHandler
         return sprintf(
             "INSERT INTO `%s` (%s) VALUES (%s);",
             $table,
-            implode(',', array_map(function ($el) {
-                return "`$el`";
-            }, array_keys($fields))),
-            implode(',', array_map(function ($el) {
-                return "?";
-            }, array_keys($fields)))
+            implode(',', array_map(fn ($el) => "`$el`", array_keys($fields))),
+            implode(',', array_map(fn ($el) => "?", array_keys($fields)))
         );
     }
 

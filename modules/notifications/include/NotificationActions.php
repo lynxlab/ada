@@ -40,12 +40,8 @@ class NotificationActions
     protected static function getCanDoArr()
     {
         return [
-            self::ADDNOTIFICATION => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR, AMA_TYPE_STUDENT]);
-            },
-            self::DELNOTIFICATION => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR, AMA_TYPE_STUDENT]);
-            },
+            self::ADDNOTIFICATION => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR, AMA_TYPE_STUDENT]),
+            self::DELNOTIFICATION => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR, AMA_TYPE_STUDENT]),
         ];
     }
 
@@ -57,7 +53,7 @@ class NotificationActions
      */
     public static function getConstantFromString($stringConstant)
     {
-        return defined(__CLASS__ . '::' . $stringConstant) ? constant(__CLASS__ . '::' . $stringConstant) : null;
+        return defined(self::class . '::' . $stringConstant) ? constant(self::class . '::' . $stringConstant) : null;
     }
 
     /**

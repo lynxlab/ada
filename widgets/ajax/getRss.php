@@ -42,7 +42,7 @@ use SimplePie\SimplePie;
 ini_set('display_errors', '0');
 error_reporting(E_ALL);
 
-require_once realpath(dirname(__FILE__)) . '/../../config_path.inc.php';
+require_once realpath(__DIR__) . '/../../config_path.inc.php';
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
     /**
@@ -114,7 +114,7 @@ if ($headerLink) {
         }
         $headerHREF->addChild($headerIMG);
     } else {
-        $headerHREF->addChild(new CText($headerTitle ? $headerTitle : $headerLink));
+        $headerHREF->addChild(new CText($headerTitle ?: $headerLink));
     }
     //  $rssDIV->addChild ($headerHREF);
 }
@@ -123,8 +123,11 @@ $rss_items = [];
 $i = 0;
 $clearfix = CDOMElement::create('div', 'class:clearfix')->getHtml();
 
+/**
+ * @var \SimplePie\Item $item
+ */
 foreach ($spObj->get_items() as $item) {
-    $title = $item->getTitle() ;
+    $title = $item->get_title() ;
     if ($title == '' && !$showDescription) {
         continue;
     }
@@ -137,7 +140,7 @@ foreach ($spObj->get_items() as $item) {
 
     if ($showDescription) {
         $rssCONTENT->addChild(new CText($clearfix));
-        $rssCONTENT->addChild(new CText($item->getDescription()));
+        $rssCONTENT->addChild(new CText($item->get_description()));
     }
 
     //  $rssDIV->addChild($rssCONTENT);

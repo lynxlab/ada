@@ -262,7 +262,7 @@ class Menu
 
         // add the label inside a span
         if (!is_null($item['label'])) {
-            if (strpos($item['label'], 'template_field') === false) {
+            if (!str_contains($item['label'], 'template_field')) {
                 // translate label directly if it's not a template field
                 $label = translateFN($item['label']);
             } else {
@@ -293,7 +293,7 @@ class Menu
                 if (is_array($splitted) && count($splitted) > 1) {
                     foreach ($splitted as $count => $word) {
                         // if $word is a not template field, translate it
-                        if (strpos($item['label'], 'template_field') !== false) {
+                        if (str_contains($item['label'], 'template_field')) {
                             $splitted[$count] = translateFN($word);
                         }
                     }
@@ -412,7 +412,7 @@ class Menu
     private function buildHREFParams($item, $DOMitem)
     {
 
-        if (strpos($item['href_paramlist'], 'template_field') !== false) {
+        if (str_contains($item['href_paramlist'], 'template_field')) {
             /**
              * if href_paramlist is a template field append it right away
              */
@@ -447,7 +447,7 @@ class Menu
         // set the actual href value
         if (isset($paramString) && strlen($paramString) > 0) {
             // add the question mark or ampersand to the href
-            $conjunction = (strpos($DOMitem->getAttribute('href'), '?') === false) ? '?' : '&amp;';
+            $conjunction = (!str_contains($DOMitem->getAttribute('href'), '?')) ? '?' : '&amp;';
             // add actual parameters
             $DOMitem->setAttribute('href', $DOMitem->getAttribute('href') . $conjunction . $paramString);
         }
@@ -470,7 +470,7 @@ class Menu
         if (!is_null($item['href_prefix'])) {
             $prefix = $this->constSubstitute($item['href_prefix']);
             // if prefix does not ends with a slash, add it
-            if (substr($prefix, -1) !== '/') {
+            if (!str_ends_with($prefix, '/')) {
                 $prefix .= '/';
             }
             $DOMitem->setAttribute('href', $DOMitem->getAttribute('href') . $prefix);

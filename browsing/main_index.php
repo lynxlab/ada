@@ -4,6 +4,7 @@ use Lynxlab\ADA\Browsing\CourseViewer;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\CORE\HtmlElements\Form;
+use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
@@ -16,7 +17,8 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -72,6 +74,7 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
  * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
  * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -497,7 +500,7 @@ if (is_object($userObj) && (!AMADataHandler::isError($userObj))) {
 } else {
     //  $user_messages = $userObj;
     //  $user_agenda = "";
-    $errObj = new ADA_error($userObj, translateFN('Utente non trovato, impossibile proseguire'));
+    $errObj = new ADAError($userObj, translateFN('Utente non trovato, impossibile proseguire'));
 }
 
 /*

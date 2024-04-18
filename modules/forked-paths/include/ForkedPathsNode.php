@@ -229,9 +229,7 @@ class ForkedPathsNode extends ForkedPathsBase
         }
         // sort the return array by orders asc
         if ($sortOrder) {
-            usort($retArray, function ($a, $b) use ($orders) {
-                return $orders[$a->id] - $orders[$b->id];
-            });
+            usort($retArray, fn ($a, $b) => $orders[$a->id] - $orders[$b->id]);
         }
         return $retArray;
     }

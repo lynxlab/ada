@@ -5,11 +5,8 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
-use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
-use Lynxlab\ADA\Main\History\History;
 use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
-use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 
@@ -40,10 +37,11 @@ use function Lynxlab\ADA\Main\Utilities\whoami;
  * 4. sendChatMessage.php   - called to send a message in the chatroom
  * 5. topChat.php           - called to obtain the top chat
  */
+
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -87,15 +85,16 @@ $self = (isset($_REQUEST['iframe']) && intval($_REQUEST['iframe']) === 1) ? 'cha
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
+ * @var object $user_messages
+ * @var object $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -144,25 +143,20 @@ if ($exit_reason == NO_EXIT_REASON) {
 
         if (($status != STATUS_BAN) and ($chatroomObj->error == 1)) {
             $exit_reason = EXIT_REASON_WRONG_ROOM;
-        }
-        // user is banned from chatroom
-        elseif ($status == STATUS_BAN) {
+        } elseif ($status == STATUS_BAN) {
+            // user is banned from chatroom
             $exit_reason = EXIT_REASON_BANNED;
-        }
-        // chatroom session not started yet
-        elseif (!$started) {
+        } elseif (!$started) {
+            // chatroom session not started yet
             $exit_reason = EXIT_REASON_NOT_STARTED;
-        }
-        // chatroom session terminated
-        elseif (!$still_running) {
+        } elseif (!$still_running) {
+            // chatroom session terminated
             $exit_reason = EXIT_REASON_EXPIRED;
-        }
-        // chatroom session terminated
-        elseif ($complete) {
+        } elseif ($complete) {
+            // chatroom session terminated
             $exit_reason = EXIT_REASON_FULL_ROOM;
-        }
-        // everything is ok, enter into the chat
-        else {
+        } else {
+            // everything is ok, enter into the chat
             //$mh = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
             $mh = MessageHandler::instance($_SESSION['sess_selected_tester_dsn']);
             // send a message to announce the entrance of the user

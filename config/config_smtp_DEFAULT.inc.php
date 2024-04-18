@@ -1,7 +1,9 @@
 <?php
+
 /**
  * SMTP CONFIGURATION
  */
+
 define('ADA_SMTP_HOST', 'localhost');
 define('ADA_SMTP_PORT', 25);
 define('ADA_SMTP_AUTH', false);

@@ -61,7 +61,7 @@ class ZoomConf extends VideoRoom implements IVideoRoom
             $this->meetingID = $videoroom_data['meetingID'];
             $this->meetingPWD = $videoroom_data['meetingPWD'];
             return $this->id_room;
-        } catch (ZoomIntegrationException $e) {
+        } catch (ZoomIntegrationException) {
             return false;
         }
     }

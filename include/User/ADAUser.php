@@ -315,7 +315,7 @@ class ADAUser extends ADAAbstractUser
             // then property is one of the elements we are lookin for
             if (
                 $property->class == $refclass->name &&
-                (strpos($property->name, 'tbl_')) === false
+                !str_contains($property->name, 'tbl_')
             ) {
                 $retArray[] = $property->name;
             }
@@ -347,28 +347,28 @@ class ADAUser extends ADAAbstractUser
 
     public static function getLinkedTables()
     {
-        if (property_exists(get_called_class(), 'linkedTables') && !empty(self::$linkedTables)) {
+        if (property_exists(static::class, 'linkedTables') && !empty(self::$linkedTables)) {
             return self::$linkedTables;
         }
     }
 
     public static function getTablesPrefix()
     {
-        if (property_exists(get_called_class(), 'tablesPrefix')) {
+        if (property_exists(static::class, 'tablesPrefix')) {
             return self::$tablesPrefix;
         }
     }
 
     public static function getExtraTableName()
     {
-        if (property_exists(get_called_class(), 'extraTableName')) {
+        if (property_exists(static::class, 'extraTableName')) {
             return self::$extraTableName;
         }
     }
 
     public static function getExtraTableKeyProperty()
     {
-        if (property_exists(get_called_class(), 'extraTableKeyProperty')) {
+        if (property_exists(static::class, 'extraTableKeyProperty')) {
             return self::$extraTableKeyProperty;
         }
     }

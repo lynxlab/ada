@@ -90,20 +90,20 @@ function sendToBrowser($message)
     $style = '';
     $color = 'lightgray';
 
-    if (strpos($message, 'text/javascript') !== false) {
+    if (str_contains($message, 'text/javascript')) {
         echo $message;
     } else {
-        if (strpos($message, '...') !== false) {
+        if (str_contains($message, '...')) {
             $style = 'width:auto; float: left; margin-right: 1em;';
             $message = sprintf("%-75s", $message);
         }
-        if (strpos($message, '[') !== false  || strpos($message, ' SKIP ') !== false) {
+        if (str_contains($message, '[')  || str_contains($message, ' SKIP ')) {
             $color = 'yellow';
         }
-        if (strpos($message, '**') !== false || strpos($message, ' FAIL ') !== false) {
+        if (str_contains($message, '**') || str_contains($message, ' FAIL ')) {
             $color = 'red';
         }
-        if (strpos($message, ' OK ') !== false) {
+        if (str_contains($message, ' OK ')) {
             $color = '#37fd37';
         }
 
@@ -196,7 +196,8 @@ putenv('HTTP_ROOT_DIR=' . getBaseUrl());
 foreach (
     [
     __DIR__ . '/config_path_DEFAULT.inc.php',
-    __DIR__ . '/config/config_install_DEFAULT.inc.php'] as $mustfile
+    __DIR__ . '/config/config_install_DEFAULT.inc.php',
+    ] as $mustfile
 ) {
     if (!is_file($mustfile)) {
         die("NO $mustfile, aborting installation!");
@@ -209,7 +210,7 @@ foreach (
     }
 }
 
-require_once realpath(dirname(__FILE__)) . '/config_path.inc.php';
+require_once realpath(__DIR__) . '/config_path.inc.php';
 
 /**
  * redirect to homepage if ADA is installed, either with install script or manually
@@ -234,11 +235,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             setcookie(
                 session_name(),
                 '',
-                time() - 42000,
-                $params["path"],
-                $params["domain"],
-                $params["secure"],
-                $params["httponly"]
+                ['expires' => time() - 42000, 'path' => $params["path"], 'domain' => $params["domain"], 'secure' => $params["secure"], 'httponly' => $params["httponly"]]
             );
         }
         session_destroy();
@@ -284,6 +281,56 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $newUsers = [];
 
     try {
+        // Install composer dependencies as first
+        if (is_file(ROOT_DIR . '/composer.json') && is_readable(ROOT_DIR . '/composer.json')) {
+            // Composer in php code, thanks to https://stackoverflow.com/a/17244866
+            define('COMPOSER_DIRECTORY', ADA_UPLOAD_PATH . 'composer');
+            define('COMPOSER_URL', 'https://getcomposer.org/download/2.7.2/composer.phar');
+            if (!is_dir(COMPOSER_DIRECTORY)) {
+                mkdir(COMPOSER_DIRECTORY);
+            }
+            if (file_exists(COMPOSER_DIRECTORY . '/vendor/autoload.php') !== true) {
+                set_time_limit(300);
+                sendToBrowser(translateFN('Download composer') . '...');
+                copy(COMPOSER_URL, COMPOSER_DIRECTORY . DIRECTORY_SEPARATOR . 'Composer.phar');
+                sendOK();
+                sendToBrowser(translateFN('Estrazione composer') . '...');
+                $composerPhar = new Phar(COMPOSER_DIRECTORY . DIRECTORY_SEPARATOR . 'Composer.phar');
+                $composerPhar->extractTo(COMPOSER_DIRECTORY);
+                sendOK();
+                unset($composerPhar);
+            }
+            ini_set('memory_limit', '1024M');
+            // Composer\Factory::getHomeDir() method needs COMPOSER_HOME environment variable set
+            putenv('COMPOSER_HOME=' . COMPOSER_DIRECTORY);
+            putenv('COMPOSER_MEMORY_LIMIT=1024M');
+            //This requires the phar to have been extracted successfully.
+            require_once(COMPOSER_DIRECTORY . '/vendor/autoload.php');
+
+            set_time_limit(300);
+            sendToBrowser(translateFN('Installazione dipendenze ADA') . ' ...');
+            $logfile = fopen(ROOT_DIR . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . 'composer-install.log', 'a');
+            fwrite($logfile, sprintf("\n\n******** %s ********\n", 'ADA'));
+            // Create the commands
+            $input = new StringInput('install -vvv -n --no-cache --no-dev');
+            // Create the application and run it with the commands
+            // @phpstan-ignore-next-line
+            $application = new Application();
+            $application->setAutoExit(false); // prevent `$application->run` method from exitting the script
+            $application->setCatchExceptions(false);
+            $output = $application->run($input, new StreamOutput($logfile));
+            if ($output == 0) {
+                sendOK();
+            } else {
+                sendFail();
+                sendToBrowser('** ' . translateFN('Problemi con composer'));
+                die(translateFN('ADA NON INSTALLATA'));
+            }
+            chdir(__DIR__);
+            fclose($logfile);
+            // } else sendSkip();
+        }
+
         if (array_key_exists('MYSQL', $postData) && array_key_exists('COMMON', $postData['MYSQL']) && is_array($postData['MYSQL']['COMMON']) && count($postData['MYSQL']['COMMON']) == 3) {
             $providers = isset($postData['PROVIDER']) && is_array($postData['PROVIDER']) ? $postData['PROVIDER'] : [];
             foreach ($providers as $i => $provider) {
@@ -364,9 +411,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                         $uData = $stmt->fetch(PDO::FETCH_ASSOC);
 
                         $fields = '`' . implode('`, `', array_keys($uData)) . '`';
-                        $fields_data = implode(', ', array_map(function () {
-                            return '?';
-                        }, $uData));
+                        $fields_data = implode(', ', array_map(fn () => '?', $uData));
                         $sql =  "INSERT INTO `" . $provider['DB'] . "`.`utente` ({$fields}) VALUES ({$fields_data});";
                         $stmt = $providers[$i]['pdo']->prepare($sql);
                         $stmt->execute(array_values($uData));
@@ -385,8 +430,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                             unset($stmt);
                         } elseif (in_array($anUserId, $authorIds[$usersKey])) {
                             $sql = "INSERT INTO `" . $provider['DB'] . "`.`autore` (`id_utente_autore`, `profilo`, `tariffa`) VALUES ($anUserId, NULL, 0);" .
-                                   "UPDATE `" . $provider['DB'] . "`.`modello_corso` SET `id_utente_autore`=$anUserId, `data_pubblicazione`=" . time() . ", `data_creazione`=" . time() . ";" .
-                                   "UPDATE `" . $provider['DB'] . "`.`nodo` SET `id_utente`=$anUserId, `data_creazione`=" . time() . ";";
+                                "UPDATE `" . $provider['DB'] . "`.`modello_corso` SET `id_utente_autore`=$anUserId, `data_pubblicazione`=" . time() . ", `data_creazione`=" . time() . ";" .
+                                "UPDATE `" . $provider['DB'] . "`.`nodo` SET `id_utente`=$anUserId, `data_creazione`=" . time() . ";";
                             $stmt = $providers[$i]['pdo']->prepare($sql);
                             $stmt->execute();
                             unset($stmt);
@@ -420,8 +465,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                         mkdir(ROOT_DIR . '/clients/' . $providers[$i]['pointer'], 0o770, true);
                     }
                     $outfile = str_replace(
-                        [ '${UPPERPROVIDER}', '${ASISPROVIDER}_provider', '${PROV_HTTP}', '${MYSQL_USER}', '${MYSQL_PASSWORD}', '${MYSQL_HOST}', ],
-                        [ strtoupper($providers[$i]['pointer']), $provider['DB'], $postData['HTTP_ROOT_DIR'], $postData['MYSQL'][$i]['USER'], $postData['MYSQL'][$i]['PASSWORD'], $postData['MYSQL'][$i]['HOST'], ],
+                        ['${UPPERPROVIDER}', '${ASISPROVIDER}_provider', '${PROV_HTTP}', '${MYSQL_USER}', '${MYSQL_PASSWORD}', '${MYSQL_HOST}',],
+                        [strtoupper($providers[$i]['pointer']), $provider['DB'], $postData['HTTP_ROOT_DIR'], $postData['MYSQL'][$i]['USER'], $postData['MYSQL'][$i]['PASSWORD'], $postData['MYSQL'][$i]['HOST'],],
                         file_get_contents(ROOT_DIR . '/clients_DEFAULT/install-templates/client_conf.inc.php')
                     );
                     if (false === file_put_contents(ROOT_DIR . '/clients/' . $providers[$i]['pointer'] . '/client_conf.inc.php', $outfile)) {
@@ -441,10 +486,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 foreach ($regIter as $x) {
                     $modulesSQL = array_merge($modulesSQL, $x);
                 }
-                usort($modulesSQL, function ($a, $b) {
+                usort($modulesSQL, fn ($a, $b) =>
                     // dirty hack to order by filename, having files that starts with a number as last elements
-                    return strnatcmp('1' . basename($a) . DIRECTORY_SEPARATOR . $a, '1' . basename($b) . DIRECTORY_SEPARATOR . $b);
-                });
+                    strnatcmp('1' . basename($a) . DIRECTORY_SEPARATOR . $a, '1' . basename($b) . DIRECTORY_SEPARATOR . $b));
 
                 // import modules sql in the databases
                 if (is_array($modulesSQL) && count($modulesSQL) > 0) {
@@ -529,30 +573,6 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                     $composerFiles = array_merge($composerFiles, $x);
                 }
                 if (is_array($composerFiles) && count($composerFiles) > 0) {
-                    // Composer in php code, thanks to https://stackoverflow.com/a/17244866
-                    define('COMPOSER_DIRECTORY', ADA_UPLOAD_PATH . 'composer');
-                    define('COMPOSER_URL', 'https://getcomposer.org/download/1.10.20/composer.phar');
-                    if (!is_dir(COMPOSER_DIRECTORY)) {
-                        mkdir(COMPOSER_DIRECTORY);
-                    }
-                    if (file_exists(COMPOSER_DIRECTORY . '/vendor/autoload.php') !== true) {
-                        set_time_limit(300);
-                        sendToBrowser(translateFN('Download composer') . '...');
-                        copy(COMPOSER_URL, COMPOSER_DIRECTORY . DIRECTORY_SEPARATOR . 'Composer.phar');
-                        sendOK();
-                        sendToBrowser(translateFN('Estrazione composer') . '...');
-                        $composerPhar = new Phar(COMPOSER_DIRECTORY . DIRECTORY_SEPARATOR . 'Composer.phar');
-                        $composerPhar->extractTo(COMPOSER_DIRECTORY);
-                        sendOK();
-                        unset($composerPhar);
-                    }
-                    ini_set('memory_limit', '1024M');
-                    // Composer\Factory::getHomeDir() method needs COMPOSER_HOME environment variable set
-                    putenv('COMPOSER_HOME=' . COMPOSER_DIRECTORY);
-                    putenv('COMPOSER_MEMORY_LIMIT=128M');
-                    //This requires the phar to have been extracted successfully.
-                    require_once(COMPOSER_DIRECTORY . '/vendor/autoload.php');
-
                     foreach ($composerFiles as $composerFile) {
                         $dirname = dirname($composerFile);
                         $modulename = basename($dirname);
@@ -565,8 +585,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                                 fwrite($logfile, sprintf("\n\n******** %s ********\n", $modulename));
                                 chdir($dirname);
                                 // Create the commands
-                                $input = new StringInput('update -vvv -n --no-cache');
+                                $input = new StringInput('install -vvv -n --no-cache --no-dev');
                                 // Create the application and run it with the commands
+                                // @phpstan-ignore-next-line
                                 $application = new Application();
                                 $application->setAutoExit(false); // prevent `$application->run` method from exitting the script
                                 $application->setCatchExceptions(false);
@@ -639,7 +660,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             sendToBrowser('&nbsp;');
             sendToBrowser(PHP_EOL . "<strong>" . translateFN("ADA è installata, naviga su:") . " <a style='color:lime;' href='" .
-            $postData['HTTP_ROOT_DIR'] . "' target='_top'>" . $postData['HTTP_ROOT_DIR'] . "</a></strong>");
+                $postData['HTTP_ROOT_DIR'] . "' target='_top'>" . $postData['HTTP_ROOT_DIR'] . "</a></strong>");
             sendToBrowser('<script type="text/javascript">window.parent.postMessage("doneOK", "*");</script>');
         } else {
             throw new Exception(translateFN('Parametri MySQL/MariaDB non validi'), 1);
@@ -655,8 +676,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $_SESSION['sess_userObj'] = new ADAGuest();
     $self = whoami();
     $modulesAv = [];
-    $modulesDIS = [ 'secretquestion','code_man' ];
-    $modulesHidden = [ 'event-dispatcher', 'gdpr', 'login', 'test' ];
+    $modulesDIS = ['secretquestion', 'code_man'];
+    $modulesHidden = ['event-dispatcher', 'gdpr', 'login', 'test'];
     if (is_dir(MODULES_DIR)) {
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(MODULES_DIR . DIRECTORY_SEPARATOR));
         $regIter = new RegexIterator($iterator, '/^[a-z:|\/].+[\/|\\\]config\_DEFAULT\.inc\.php$/i', RecursiveRegexIterator::GET_MATCH);

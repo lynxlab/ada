@@ -16,12 +16,8 @@
 use Lynxlab\ADA\Browsing\CourseViewer;
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
-use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
-use Lynxlab\ADA\Main\History\History;
-use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\Output\ARE;
-use Lynxlab\ADA\Main\User\ADAPractitioner;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\NodeEvent;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
@@ -38,7 +34,7 @@ use function Lynxlab\ADA\Main\Utilities\whoami;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -76,15 +72,16 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
+ * @var object $user_messages
+ * @var object $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -217,11 +214,10 @@ if ($op == 'add_node') {
             $node_to_edit['title'] = ForkedPathsNode::removeMagicWordFromTitle($node_to_edit['title']);
         }
         $head_form = NodeEditingViewer::getHeadForm($sess_id_user, $user_level, $user_type, $nodeObj, $new_node, $node_type);
-    }
-    /*
-     * Provengo da author.php
-     */
-    elseif (isset($id_course)) {
+    } elseif (isset($id_course)) {
+        /*
+         * Provengo da author.php
+         */
         $node_type = ADA_LEAF_TYPE;
 
         $default_parent_node = $id_course . "_" . ADA_DEFAULT_NODE;
@@ -260,11 +256,7 @@ if ($op == 'add_node') {
             $node_to_edit['title'] = ForkedPathsNode::removeMagicWordFromTitle($node_to_edit['title']);
         }
         $head_form = NodeEditingViewer::getHeadForm($sess_id_user, $user_level, $user_type, $nodeObj, $new_node, $node_type);
-    }
-    /*
-     *
-     */
-    elseif (!isset($id_course) && !isset($id_parent) && !isset($type)) {
+    } elseif (!isset($id_course) && !isset($id_parent) && !isset($type)) {
         // qui il codice necessario a generare la pagina di aggiunta per il nodo
         // quando non vengono passati parametri
     }
@@ -343,11 +335,10 @@ if ($op == 'add_node') {
      $save_link = '';
      $node_data_and_buttons_CSS_class = 'hide_node_data';
      */
-}
-/*
- * Anteprima dei contenuti del nodo
- */
-elseif ($op == 'preview') {
+} elseif ($op == 'preview') {
+    /*
+     * Anteprima dei contenuti del nodo
+     */
     //$data = NodeEditingViewer::getPreviewForm('addnode.php?op=add_node', 'addnode.php?op=save');
     //$form = $data['form'];
     $form = NodeEditingViewer::getPreviewForm('addnode.php?op=add_node', 'addnode.php?op=save');
@@ -419,12 +410,10 @@ elseif ($op == 'preview') {
     ]);
 
     $body_onload = "initDoc();";
-}
-
-/*
- * Salvataggio dei contenuti del nodo
- */
-elseif ($op == 'save') {
+} elseif ($op == 'save') {
+    /*
+     * Salvataggio dei contenuti del nodo
+     */
     $form = 'Salvataggio del nodo';
 
     /*

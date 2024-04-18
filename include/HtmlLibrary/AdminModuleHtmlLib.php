@@ -349,9 +349,7 @@ class AdminModuleHtmlLib
                 }
                 $gdprUser = $gdprAPI->getGdprUserByID($user_dataAr['id_utente']);
                 $gdprUserTypes = (false !== $gdprUser) ? $gdprUser->getType() : $gdprNoneTypes;
-                $gdpr_type = implode(', ', array_map(function ($el) {
-                    return translateFN($el->getDescription());
-                }, $gdprUserTypes));
+                $gdpr_type = implode(', ', array_map(fn ($el) => translateFN($el->getDescription()), $gdprUserTypes));
                 $row = array_pop($tbody_dataAr);
                 // add gdpr types string before actions column
                 array_splice($row, count($row) - 1, 0, [$gdpr_type]);

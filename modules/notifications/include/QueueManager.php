@@ -224,8 +224,6 @@ class QueueManager extends NotificationBase
      * @param string $text the message to be logged
      * @param boolean $sendToBrowser true if text must be send to the browser, false to log into logfile only
      *
-     * @return unknown_type
-     *
      * @access private
      */
     private function logMessage($text)

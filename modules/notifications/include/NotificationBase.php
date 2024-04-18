@@ -33,7 +33,7 @@ abstract class NotificationBase
      */
     public static function fqcn()
     {
-        return get_called_class();
+        return static::class;
     }
 
     /**
@@ -100,7 +100,7 @@ abstract class NotificationBase
      */
     public function toArray()
     {
-        $reflectionClass = new ReflectionClass(get_class($this));
+        $reflectionClass = new ReflectionClass(static::class);
         $array = [];
         foreach ($reflectionClass->getProperties() as $property) {
             $property->setAccessible(true);

@@ -1,6 +1,7 @@
 <?php
 
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
+use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
@@ -27,7 +28,8 @@ use function Lynxlab\ADA\Main\Utilities\whoami;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -73,6 +75,7 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
  * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
  * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -133,7 +136,7 @@ if ($id_course != false) {
         $id_user =  $userObj->getId();
     } else {
         $message = urlencode(translateFN('Impossibile richiedere il servizio'));
-        $errObj = new ADA_Error($res, $message, null, null, null, $error_page . '?message=' . $message);
+        $errObj = new ADAError($res, $message, null, null, null, $error_page . '?message=' . $message);
         exit();
     }
 
@@ -146,7 +149,7 @@ if ($id_course != false) {
     $tester_infoHa = $common_dh->getTesterInfoFromIdCourse($id_course);
     if (AMADataHandler::isError($tester_infoHa)) {
         $message = urlencode(translateFN('Impossibile richiedere il servizio'));
-        $errObj = new ADA_Error($tester_infoHa, $message, null, null, null, $error_page . '?message=' . $message);
+        $errObj = new ADAError($tester_infoHa, $message, null, null, null, $error_page . '?message=' . $message);
         exit();
     }
     $tester = $tester_infoHa['puntatore'];
@@ -164,7 +167,7 @@ if ($id_course != false) {
     $serviceinfoAr = $common_dh->getServiceInfoFromCourse($id_course);
     if (AMADataHandler::isError($serviceinfoAr)) {
         $message = urlencode(translateFN('Impossibile richiedere il servizio'));
-        $errObj = new ADA_Error($serviceinfoAr, $message, null, null, null, $error_page . '?message=' . $message);
+        $errObj = new ADAError($serviceinfoAr, $message, null, null, null, $error_page . '?message=' . $message);
         exit();
     }
 
@@ -203,7 +206,7 @@ if ($id_course != false) {
         $res_presub = $tester_dh->courseInstanceStudentPresubscribeAdd($id_instance, $id_user);
     } else {
         $message = urlencode(translateFN("Errore nella richiesta di servizio: 1"));
-        $errorObj = new ADA_Error($res_inst_add, $message, null, null, null, $error_page . '?message=' . $message);
+        $errorObj = new ADAError($res_inst_add, $message, null, null, null, $error_page . '?message=' . $message);
     }
 
     $admtypeAr = [AMA_TYPE_ADMIN];
@@ -244,7 +247,7 @@ if ($id_course != false) {
         $message_ha['mittente'] = $adm_uname;
         $res = $mh->sendMessage($message_ha);
         if (AMADataHandler::isError($res)) {
-            //  $errObj = new ADA_Error($res,translateFN('Impossibile spedire il messaggio'),
+            //  $errObj = new ADAError($res,translateFN('Impossibile spedire il messaggio'),
             // NULL,NULL,NULL,$error_page.'?err_msg='.urlencode(translateFN('Impossibile spedire il messaggio')));
         }
         unset($mh); // perché altrimenti manda due volte lo stesso messaggio?
@@ -278,7 +281,7 @@ if ($id_course != false) {
 
             $res2 = $mh->sendMessage($message2_ha);
             if (AMADataHandler::isError($res2)) {
-                //  $errObj = new ADA_Error($res,translateFN('Impossibile spedire il messaggio'),
+                //  $errObj = new ADAError($res,translateFN('Impossibile spedire il messaggio'),
                 // NULL,NULL,NULL,$error_page.'?err_msg='.urlencode(translateFN('Impossibile spedire il messaggio')));
             }
         } else {
@@ -313,7 +316,7 @@ if ($id_course != false) {
         $res3 = $mh->sendMessage($message3_ha);
 
         if (AMADataHandler::isError($res3)) {
-            // $errObj = new ADA_Error($res,translateFN('Impossibile spedire il messaggio'),
+            // $errObj = new ADAError($res,translateFN('Impossibile spedire il messaggio'),
             //NULL,NULL,NULL,$error_page.'?err_msg='.urlencode(translateFN('Impossibile spedire il messaggio')));
         }
         unset($mh);
@@ -321,12 +324,12 @@ if ($id_course != false) {
     } else { // a real error
         $message = urlencode(translateFN("Errore nella richiesta di servizio: 2"));
         //$AMAErrorObject=NULL,$errorMessage=NULL, $callerName=NULL, $ADAErrorCode=NULL, $severity=NULL, $redirectTo=NULL, $delayErrorHandling=FALSE
-        $errorObj = new ADA_Error($res_presub, $message, null, null, null, $error_page . '?message=' . $message);
+        $errorObj = new ADAError($res_presub, $message, null, null, null, $error_page . '?message=' . $message);
     }
 } else { // id_course is null or was not set
     $error_page = $userObj->getHomePage();
     $message = urlencode(translateFN('Impossibile richiedere il servizio'));
-    $errObj = new ADA_Error($res, $message, null, null, null, $error_page . '?message=' . $message);
+    $errObj = new ADAError($res, $message, null, null, null, $error_page . '?message=' . $message);
     exit();
 }
 

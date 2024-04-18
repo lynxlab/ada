@@ -797,7 +797,7 @@ class Node
                     //$debug=0;
                     $dataHa = $dh->getNodeInfo($id_parent);
 
-                    if ((!AMA_dataHandler::isError($dataHa)) && (is_array($dataHa))) {
+                    if ((!AMADataHandler::isError($dataHa)) && (is_array($dataHa))) {
                         $name = $dataHa['name'];
                         $id_node = $dataHa['parent_id'];
                         if ($id_parent != $id_toc) {
@@ -1193,7 +1193,7 @@ class Node
             $nwURL = HTTP_ROOT_DIR . '/adaProxy.php?q=';
             $urlhashes = [];
             foreach ($unique as $i => $url) {
-                if (stripos($url, 'vimeo.com') === false && stripos($url, 'youtube.com') === false && strncmp($url, HTTP_ROOT_DIR, strlen(HTTP_ROOT_DIR)) !== 0) {
+                if (stripos($url, 'vimeo.com') === false && stripos($url, 'youtube.com') === false && !str_starts_with($url, HTTP_ROOT_DIR)) {
                     $enc = openssl_encrypt($url, 'BF-ECB', ADAPROXY_ENC_KEY);
                     if (false === $enc) {
                         $enc = $url;
@@ -1342,7 +1342,7 @@ class Node
             _DOC =>             $path . '_doc.png',
             _EXE =>             $path . '_exe.png',
             INTERNAL_LINK =>    $path . '_linka.png',
-            POSSIBLE_TYPE =>    $path . '_linka.png',
+            // POSSIBLE_TYPE =>    $path . '_linka.png',
             _MONTESSORI =>      $path . '_img_montessori.png',
             _PRONOUNCE =>       $path . '_audio_pronounce.png',
             _FINGER_SPELLING => $path . '_video_finger_spelling.png',
@@ -1622,7 +1622,7 @@ class Node
                 break;
                 }
                 */
-                if ($this->isNodeExercise($exercise_type_family)) {
+                if (static::isNodeExercise($exercise_type_family)) {
                     //      if ($exercise_type_family >= ADA_STANDARD_EXERCISE_TYPE) {
                     // versione che legge nel DB la storia dell'esercizio
                     /*

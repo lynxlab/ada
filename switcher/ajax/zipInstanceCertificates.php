@@ -14,7 +14,8 @@ use function Lynxlab\ADA\Switcher\Functions\formatBytes;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -56,7 +57,7 @@ $maxCertdownloadCount = defined('MAX_CERTDOWNLOAD_COUNT') ? constant('MAX_CERTDO
 
 if (!$checkOnly && isset($_REQUEST['c']) && isset($_REQUEST['t']) && strlen($_REQUEST['c']) > 0 && strlen($_REQUEST['t']) > 0) {
     // a cookie name and token has been passed, send them back to the server in a cookie
-    setcookie($_REQUEST['c'], $_REQUEST['t'], time() + 600, "/"); // expires in 10 minutes
+    setcookie($_REQUEST['c'], $_REQUEST['t'], ['expires' => time() + 600, 'path' => "/"]); // expires in 10 minutes
 }
 
 // check if it's ok to run the export
@@ -70,14 +71,10 @@ if (array_key_exists('selectedIds', $_REQUEST) && is_array($_REQUEST['selectedId
                     $subscriptions = Subscription::findSubscriptionsToClassRoom($courseInstanceObj->getId(), true);
                     if (is_array($subscriptions) && count($subscriptions) > 0) {
                         // filter out students not having the id in the selectedIds array
-                        $subscriptions = array_filter($subscriptions, function ($asub) use ($selectedIs) {
-                            return in_array($asub->getSubscriberId(), $selectedIs);
-                        });
+                        $subscriptions = array_filter($subscriptions, fn ($asub) => in_array($asub->getSubscriberId(), $selectedIs));
                         unset($selectedIs);
                         // filter out students not having the requirements
-                        $subscriptions = array_filter($subscriptions, function ($asub) {
-                            return ADAUser::CheckRequirementsCertificate($asub->getSubscriberId(), $asub->getSubscriptionStatus());
-                        });
+                        $subscriptions = array_filter($subscriptions, fn ($asub) => ADAUser::checkRequirementsCertificate($asub->getSubscriberId(), $asub->getSubscriptionStatus()));
                         if (is_array($subscriptions) && count($subscriptions) > 0) {
                             // do the report
                         } else {

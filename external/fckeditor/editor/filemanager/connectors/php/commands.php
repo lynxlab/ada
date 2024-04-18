@@ -1,4 +1,5 @@
 <?php
+
 /*
  * FCKeditor - The text editor for Internet - http://www.fckeditor.net
  * Copyright (C) 2003-2010 Frederico Caldeira Knabben
@@ -28,7 +29,7 @@ function GetFolders($resourceType, $currentFolder)
     $sServerDir = ServerMapFolder($resourceType, $currentFolder, 'GetFolders') ;
 
     // Array that will hold the folders names.
-    $aFolders	= array() ;
+    $aFolders   = [] ;
 
     $oCurrentFolder = @opendir($sServerDir) ;
 
@@ -59,8 +60,8 @@ function GetFoldersAndFiles($resourceType, $currentFolder)
     $sServerDir = ServerMapFolder($resourceType, $currentFolder, 'GetFoldersAndFiles') ;
 
     // Arrays that will hold the folders and files names.
-    $aFolders	= array() ;
-    $aFiles		= array() ;
+    $aFolders   = [] ;
+    $aFiles     = [] ;
 
     $oCurrentFolder = @opendir($sServerDir) ;
 
@@ -114,17 +115,17 @@ function CreateFolder($resourceType, $currentFolder)
     if (!isset($_GET)) {
         global $_GET;
     }
-    $sErrorNumber	= '0' ;
-    $sErrorMsg		= '' ;
+    $sErrorNumber   = '0' ;
+    $sErrorMsg      = '' ;
 
     if (isset($_GET['NewFolderName'])) {
         $sNewFolderName = $_GET['NewFolderName'] ;
         $sNewFolderName = SanitizeFolderName($sNewFolderName) ;
 
-        if (strpos($sNewFolderName, '..') !== false) {
+        if (str_contains($sNewFolderName, '..')) {
+            // Invalid folder name.
             $sErrorNumber = '102' ;
-        }		// Invalid folder name.
-        else {
+        } else {
             // Map the virtual path to the local server path of the current folder.
             $sServerDir = ServerMapFolder($resourceType, $currentFolder, 'CreateFolder') ;
 
@@ -139,7 +140,7 @@ function CreateFolder($resourceType, $currentFolder)
                         break ;
                     case 'Invalid argument':
                     case 'No such file or directory':
-                        $sErrorNumber = '102' ;		// Path too long.
+                        $sErrorNumber = '102' ;     // Path too long.
                         break ;
                     default:
                         $sErrorNumber = '110' ;
@@ -190,8 +191,10 @@ function FileUpload($resourceType, $currentFolder, $sCommand)
         }
 
         if (isset($Config['HtmlExtensions'])) {
-            if (!IsHtmlExtension($sExtension, $Config['HtmlExtensions']) &&
-                ($detectHtml = DetectHtml($oFile['tmp_name'])) === true) {
+            if (
+                !IsHtmlExtension($sExtension, $Config['HtmlExtensions']) &&
+                ($detectHtml = DetectHtml($oFile['tmp_name'])) === true
+            ) {
                 $sErrorNumber = '202' ;
             }
         }
@@ -215,7 +218,7 @@ function FileUpload($resourceType, $currentFolder, $sCommand)
                             break ;
                         }
 
-                        $permissions = 0777;
+                        $permissions = 0o777;
 
                         if (isset($Config['ChmodOnUpload']) && $Config['ChmodOnUpload']) {
                             $permissions = $Config['ChmodOnUpload'] ;

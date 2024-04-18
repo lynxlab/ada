@@ -32,9 +32,7 @@ class CSS
          * giorgio 12/ago/2013
          * sets user select provider
          */
-        if (!MULTIPROVIDER) {
-            $user_provider = $GLOBALS['user_provider'];
-        }
+        $user_provider = !MULTIPROVIDER ? $GLOBALS['user_provider'] : '';
 
         $CSS_files = [];
         // reads CSS from filesystem
@@ -110,6 +108,8 @@ class CSS
             if (is_file($CSS_provider_dir . $module_dir . "/" . $node_type . ".css")) {
                 $CSS_files[] = $CSS_provider_dir . $module_dir . "/" . $node_type . ".css";
             }
+        } else {
+            $CSS_provider_dir = '';
         }
 
         /**

@@ -661,9 +661,7 @@ function parameterControlFN($neededObjAr = [], $allowedUsersAr = [])
                     $autoInstancesArr = $dh->getCourseInstanceForThisStudentAndCourseModel($sess_userObj->getId(), $sess_courseObj->getId(), $getAll);
                     if (!AMADB::isError($autoInstancesArr) && count($autoInstancesArr) > 0) {
                         // sort by id_istanza_corso DESC
-                        usort($autoInstancesArr, function ($a, $b) {
-                            return $b['id_istanza_corso'] - $a['id_istanza_corso'];
-                        });
+                        usort($autoInstancesArr, fn ($a, $b) => $b['id_istanza_corso'] - $a['id_istanza_corso']);
                         $temp = reset($autoInstancesArr);
                         $maxSubscribedID = intval($temp['id_istanza_corso']);
                         unset($temp);

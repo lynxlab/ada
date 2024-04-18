@@ -1,12 +1,13 @@
 <?php
+
 /**
  * Chat configuration file
  *
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2009-2010, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @author      Stefano Penge <steve@lynxlab.com>
+ * @author      Vito Modena <vito@lynxlab.com>
+ * @copyright   Copyright (c) 2009-2010, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
 
 /*

@@ -13,15 +13,20 @@
 
 namespace Lynxlab\ADA\Comunica\Spools;
 
+use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\AMAError;
+
 /**
- * Spool extends the AMA_DataHandler, to communicate with the DB,
+ * Spool extends the AMADataHandler, to communicate with the DB,
  * and implements the API to access data regarding messages.
  * Some functions are implemented in the original Spool, while some others
  * in the derivated classes.
  *
  * The class hierarchy is the following:
  *
- *                  AMA_DataHandler
+ *                  AMADataHandler
  *                          ^
  *                          |
  *                        Spool
@@ -44,13 +49,14 @@ class Spool extends AbstractAMADataHandler
     public $type;      // type of messages
     public $user_id;   // user of the spool
     public $cleaned;   // is hygenic to clean only once in a session
+    public $id_chatroom;
 
     public function __construct($user_id = "", $dsn = null)
     {
 
         // logger("entered Spool constructor - user_id=$user_id", 3);
         $this->user_id = $user_id;
-        //AMA_DataHandler::AMA_DataHandler();
+        //AMADataHandler::AMADataHandler();
         parent::__construct($dsn);
     }
 
@@ -65,7 +71,7 @@ class Spool extends AbstractAMADataHandler
      *                               ID, data_ora, titolo, priorita, testo
      * @param   $recipients_ids_ar - list of recipients ids
      *
-     * @return  an AMAError object if something goes wrong
+     * @return  mixed|AMAError an AMAError object if something goes wrong
      *
      */
     public function addMessage($message_ha, $recipients_ids_ar, $check_on_uniqueness = true)
@@ -112,7 +118,7 @@ class Spool extends AbstractAMADataHandler
             //$id =  $db->getOne($sql);
             $id = parent::getOnePrepared($sql, [$timestamp, $type, $id_group, $title, $sender_id]);
 
-            if (AMA_DataHandler::isError($id)) {
+            if (AMADataHandler::isError($id)) {
                 $retval = new AMAError(AMA_ERR_GET);
                 return $retval;
             }
@@ -246,7 +252,7 @@ class Spool extends AbstractAMADataHandler
      *                               tempo, mittente, id_corso, id_istanza_corso, titolo, testo, lingua
      * @param   $recipients_ids_ar - list of recipients ids
      *
-     * @return  an AMAError object if something goes wrong
+     * @return  mixed|AMAError an AMAError object if something goes wrong
      *
      */
     public function logMessage($message_ha, $recipients_ids_ar)
@@ -332,8 +338,8 @@ class Spool extends AbstractAMADataHandler
         $res = parent::executeCritical($sql);
         if (AMADB::isError($res)) {
             // $res is an AMAError object
-            return $res;
         }
+        return $res;
     }
 
     /**
@@ -430,7 +436,7 @@ class Spool extends AbstractAMADataHandler
      *                            (records are always filtered for user and type)
      * @param   $ordering       - the order
      *
-     * @return  a reference to a hash, if more than one fields are required
+     * @return  array|AMAError a reference to a hash, if more than one fields are required
      *           res_ha[ID_MESSAGGIO] contains an array with all the values
      *          a reference to a linear array if only one field is required
      *          an AMAError object if something goes wrong
@@ -545,7 +551,7 @@ class Spool extends AbstractAMADataHandler
 
         //prepare fields list
         if ($fields_list != "") {
-            $fields = "messaggi.id_mittente, messaggi.testo, messaggi.data_ora, " . implode(",", $fields_list);
+            $fields = "messaggi.id_mittente, messaggi.testo, messaggi.data_ora, " . $fields_list;
         } else {
             $fields = "messaggi.id_mittente, messaggi.testo, messaggi.data_ora";
         }
@@ -619,9 +625,7 @@ class Spool extends AbstractAMADataHandler
         //prepare fields list
         if ($fields_list != "") {
             // prepend every element of $field_list with an 'M.' string
-            array_map(function ($val) {
-                return "M." . $val;
-            }, $fields_list);
+            array_map(fn ($val) => "M." . $val, $fields_list);
             $fields = "M.id_messaggio, " . implode(",", $fields_list);
         } else {
             $fields = "M.id_messaggio";
@@ -751,7 +755,7 @@ class Spool extends AbstractAMADataHandler
      * @param   $msgs_ar - array of messages id to change
      * @param   $value   - new status ('R' or 'N')
      *
-     * @return  an AMAError object if something goes wrong
+     * @return  void|AMAError an AMAError object if something goes wrong
      *
      */
     public function setMessages($msgs_ar, $value)
@@ -774,14 +778,14 @@ class Spool extends AbstractAMADataHandler
             $inverse_value = 'R';
         }
 
-        if (strstr("RN", $value)) {
+        if (strstr("RN", (string) $value)) {
             // begin a transaction
             $this->beginTransaction();
 
             foreach ($msgs_ar as $msg_id) {
                 // update message
                 $res = $this->setMessage($msg_id, "read", $value);
-                if (AMA_DataHandler::isError($res)) {
+                if (AMADataHandler::isError($res)) {
                     $this->rollback();
                     $retval = new AMAError(AMA_ERR_UPDATE);
                     return $retval;
@@ -871,7 +875,7 @@ class Spool extends AbstractAMADataHandler
      *
      * @param   $msgs_ar - array of messages id to change
      *
-     * @return  an AMAError object if something goes wrong
+     * @return  void|AMAError an AMAError object if something goes wrong
      *
      */
     public function removeMessages($msgs_ar)
@@ -891,7 +895,7 @@ class Spool extends AbstractAMADataHandler
             // the field deleted is set to 'Y'
             $res = $this->setMessage($msg_id, "deleted", "Y");
 
-            if (AMA_DataHandler::isError($res)) {
+            if (AMADataHandler::isError($res)) {
                 $retval = new AMAError(AMA_ERR_REMOVE);
                 return $retval;
             }
@@ -903,7 +907,7 @@ class Spool extends AbstractAMADataHandler
 
             $res = $this->logMessage($msg_Ha[0], $msg_Ha[1]);
 
-            if (AMA_DataHandler::isError($res)) {
+            if (AMADataHandler::isError($res)) {
                 $retval = new AMAError(AMA_ERR_ADD);
                 return $retval;
             }
@@ -926,7 +930,7 @@ class Spool extends AbstractAMADataHandler
      * @param   $user_id - id of the owner of the spool
      * @param   $msgs_ar - array of messages id to change
      *
-     * @return  an AMAError object if something goes wrong
+     * @return  void|AMAError an AMAError object if something goes wrong
      *
      */
     protected function cleanMessages($msgs_ar)
@@ -943,7 +947,7 @@ class Spool extends AbstractAMADataHandler
         foreach ($msgs_ar as $msg_id) {
             // remove message from user's spool
             $res = $this->cleanMessage($msg_id, $this->user_id);
-            if (AMA_DataHandler::isError($res)) {
+            if (AMADataHandler::isError($res)) {
                 $retval = new AMAError(AMA_ERR_REMOVE);
                 return $retval;
             }
@@ -962,7 +966,7 @@ class Spool extends AbstractAMADataHandler
             // if it is not, then remove the message from the 'messaggi' table
             if ($n_refs == 0) {
                 $res =  $this->cleanMessage($msg_id);
-                if (AMA_DataHandler::isError($res)) {
+                if (AMADataHandler::isError($res)) {
                     $retval = new AMAError(AMA_ERR_REMOVE);
                     return $retval;
                 }
@@ -983,7 +987,7 @@ class Spool extends AbstractAMADataHandler
      *                 if the parameter is passed and not null, then
      *                 a row is removed from 'destinatari_messaggi' table
      *
-     * @return  an AMAError object if something goes wrong
+     * @return  void|AMAError an AMAError object if something goes wrong
      *
      */
     protected function cleanMessage($id, $rid = 0)

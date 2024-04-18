@@ -511,24 +511,18 @@ class UserModuleHtmlLib
         if (defined('MODULES_COLLABORAACL') &&  MODULES_COLLABORAACL && array_key_exists('userObj', $GLOBALS)) {
             // use the userObj global
             if ($GLOBALS['userObj']->getType() == AMA_TYPE_TUTOR) {
-                $users = array_map(function ($s) {
-                    return [
-                    'id' => $s->getSubscriberId(),
-                    'nome' => $s->getSubscriberFirstname(),
-                    'cognome' => $s->getSubscriberLastname(),
-                    'granted' => false,
-                    ];
-                }, Subscription::findSubscriptionsToClassRoom($id_course_instance));
+                $users = array_map(fn ($s) => [
+                'id' => $s->getSubscriberId(),
+                'nome' => $s->getSubscriberFirstname(),
+                'cognome' => $s->getSubscriberLastname(),
+                'granted' => false,
+                ], Subscription::findSubscriptionsToClassRoom($id_course_instance));
             } else {
                 // build the tutors list
-                $users = array_map(function ($tutor_id) {
-                    return ['id' => $tutor_id, 'granted' => false ] + $GLOBALS['dh']->getTutor($tutor_id);
-                }, $GLOBALS['dh']->courseInstanceTutorGet($id_course_instance, 'ALL'));
+                $users = array_map(fn ($tutor_id) => ['id' => $tutor_id, 'granted' => false ] + $GLOBALS['dh']->getTutor($tutor_id), $GLOBALS['dh']->courseInstanceTutorGet($id_course_instance, 'ALL'));
             }
             // sort by lastname asc
-            usort($users, function ($a, $b) {
-                return strcasecmp($a['cognome'], $b['cognome']);
-            });
+            usort($users, fn ($a, $b) => strcasecmp($a['cognome'], $b['cognome']));
             // build the grantaccess form
             $grantAccess = new GrantAccessForm('grantaccess', null, [
             'allUsers' => $users,

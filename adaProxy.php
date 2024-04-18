@@ -12,7 +12,7 @@
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/config_path.inc.php';
+require_once realpath(__DIR__) . '/config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION

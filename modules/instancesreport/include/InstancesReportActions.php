@@ -39,9 +39,7 @@ class InstancesReportActions
     protected static function getCanDoArr()
     {
         return [
-            self::EXPORT => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER]);
-            },
+            self::EXPORT => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER]),
         ];
     }
 
@@ -53,7 +51,7 @@ class InstancesReportActions
      */
     public static function getConstantFromString($stringConstant)
     {
-        return defined(__CLASS__ . '::' . $stringConstant) ? constant(__CLASS__ . '::' . $stringConstant) : null;
+        return defined(self::class . '::' . $stringConstant) ? constant(self::class . '::' . $stringConstant) : null;
     }
 
     /**

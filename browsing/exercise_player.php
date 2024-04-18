@@ -20,7 +20,8 @@ use function Lynxlab\ADA\Main\Utilities\whoami;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -74,6 +75,7 @@ $self = whoami();
  * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
  * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
  * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -83,7 +85,7 @@ BrowsingHelper::init($neededObjAr);
 $id_node = $nodeObj->id;
 
 //redirect to test module if necessary
-if (MODULES_TEST && ADA_REDIRECT_TO_TEST && strpos($nodeObj->type, (string) constant('ADA_PERSONAL_EXERCISE_TYPE')) === 0) {
+if (MODULES_TEST && ADA_REDIRECT_TO_TEST && str_starts_with($nodeObj->type, (string) constant('ADA_PERSONAL_EXERCISE_TYPE'))) {
     NodeTest::checkAndRedirect($nodeObj);
 }
 

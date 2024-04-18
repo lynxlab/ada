@@ -3,11 +3,7 @@
 use Lynxlab\ADA\Comunica\ChatRoom;
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
-use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
-use Lynxlab\ADA\Main\History\History;
-use Lynxlab\ADA\Main\Node\Node;
-use Lynxlab\ADA\Main\User\ADAPractitioner;
 
 use function Lynxlab\ADA\Comunica\Functions\exitWithJSONError;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -16,7 +12,8 @@ use function Lynxlab\ADA\Main\Utilities\whoami;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -56,15 +53,16 @@ $self = whoami();
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
+ * @var object $user_messages
+ * @var object $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -266,21 +264,18 @@ if (is_array($userslist_ar)) {
      * Create the json for the users list
      */
     $json_data['users_list'] = array_map(
-        function ($user_data) {
-            return [
-                'id' => $user_data['id_utente'],
-                'username' => $user_data['username'],
-                'nome' => $user_data['nome'],
-                'cognome' => $user_data['cognome'],
-            ];
-        },
+        fn ($user_data) => [
+            'id' => $user_data['id_utente'],
+            'username' => $user_data['username'],
+            'nome' => $user_data['nome'],
+            'cognome' => $user_data['cognome'],
+        ],
         $userslist_ar
     );
-}// end of users list
-else {
+} else {
     $json_data['users_list'] = [];
     // Errors on $userslist_ar should have been catched on line 138.
-    //  $errObj = new ADA_error(translateFN("Errore durante la lettura del DataBase"),translateFN("Impossibile proseguire."));
+    //  $errObj = new ADAError(translateFN("Errore durante la lettura del DataBase"),translateFN("Impossibile proseguire."));
 }
 
 
@@ -308,7 +303,7 @@ else {
 //{
 //    $json_invited_users_list = '[]';
 //    // Errors on $userslist_ar should have been catched on line 138.
-//    //  $errObj = new ADA_error(translateFN("Errore durante la lettura del DataBase"),translateFN("Impossibile proseguire."));
+//    //  $errObj = new ADAError(translateFN("Errore durante la lettura del DataBase"),translateFN("Impossibile proseguire."));
 //}
 
 

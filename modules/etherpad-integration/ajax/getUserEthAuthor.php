@@ -15,7 +15,8 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 /**
  * Base config file
  */
-require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
+
+require_once(realpath(__DIR__) . '/../../../config_path.inc.php');
 
 // MODULE's OWN IMPORTS
 
@@ -49,9 +50,7 @@ $passedData = [];
 $needed = [
     [
         'key' => 'userId',
-        'sanitize' => function ($v) {
-            return intval($v);
-        },
+        'sanitize' => fn ($v) => intval($v),
     ],
 ];
 

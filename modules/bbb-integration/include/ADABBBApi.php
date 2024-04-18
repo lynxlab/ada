@@ -63,7 +63,7 @@ class ADABBBApi extends BigBlueButton
                 ->setRecord(true);
             $this->createMeeting($createParams);
             return $meetingData;
-        } catch (Exception $e) {
+        } catch (Exception) {
             return false;
         }
     }
@@ -90,7 +90,7 @@ class ADABBBApi extends BigBlueButton
                 // $this->dh->deleteVideoroom($roomId);
             }
             return $meetingData;
-        } catch (Exception $e) {
+        } catch (Exception) {
             return [];
         }
     }

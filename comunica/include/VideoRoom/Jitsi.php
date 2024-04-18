@@ -55,7 +55,7 @@ class Jitsi extends VideoRoom implements IVideoRoom
             $this->id_istanza_corso = $videoroom_data['id_istanza_corso'];
             $this->meetingID = $videoroom_data['meetingID'];
             return $this->id_room;
-        } catch (JitsiIntegrationException $e) {
+        } catch (JitsiIntegrationException) {
             return false;
         }
     }

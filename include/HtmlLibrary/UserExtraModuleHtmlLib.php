@@ -35,7 +35,7 @@ class UserExtraModuleHtmlLib
      */
     public static function extraObjectRow($extraObject, $columnsPerRow = 3)
     {
-        $className = get_class($extraObject);
+        $className = $extraObject::class;
         $keyProperty = $className::getKeyProperty();
         $fields = $className::getFields();
 

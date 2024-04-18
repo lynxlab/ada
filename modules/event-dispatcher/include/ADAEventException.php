@@ -23,8 +23,8 @@ class ADAEventException extends Exception
     public const EVENTNAMENOTFOUND = 4;
 
     // custom string representation of object
-    public function __toString()
+    public function __toString(): string
     {
-        return __CLASS__ . ": [{$this->code}]: {$this->message}\n";
+        return self::class . ": [{$this->code}]: {$this->message}\n";
     }
 }

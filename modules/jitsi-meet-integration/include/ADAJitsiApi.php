@@ -42,7 +42,7 @@ class ADAJitsiApi
         try {
             $meetingData = $this->dh->addVideoroom($meetingData);
             return $meetingData;
-        } catch (Exception $e) {
+        } catch (Exception) {
             return false;
         }
     }
@@ -53,7 +53,7 @@ class ADAJitsiApi
             // load meetingID from the DB
             $meetingData = $this->dh->getInfo($roomId);
             return $meetingData;
-        } catch (Exception $e) {
+        } catch (Exception) {
             return [];
         }
     }

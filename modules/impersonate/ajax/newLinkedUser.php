@@ -27,7 +27,7 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 /**
  * Base config file
  */
-require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
+require_once(realpath(__DIR__) . '/../../../config_path.inc.php');
 
 // MODULE's OWN IMPORTS
 
@@ -61,15 +61,11 @@ $passedData = [];
 $needed = [
     [
         'key' => 'linkedType',
-        'sanitize' => function ($v) {
-            return intval($v);
-        },
+        'sanitize' => fn ($v) => intval($v),
     ],
     [
         'key' => 'sourceId',
-        'sanitize' => function ($v) {
-            return intval($v);
-        },
+        'sanitize' => fn ($v) => intval($v),
     ],
 ];
 
@@ -105,9 +101,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 $targetArr['username'] = LinkedUsers::getNewUserPrefix()[$passedData['linkedType']] . $targetArr['username'];
                 // fix a weirdness in object constructor
                 $targetArr['email'] = $targetArr['e_mail'];
-                $targetArr = array_map(function ($el) {
-                    return strlen(trim($el)) > 0 ? trim($el) : null;
-                }, $targetArr);
+                $targetArr = array_map(fn ($el) => strlen(trim($el)) > 0 ? trim($el) : null, $targetArr);
                 if ($passedData['linkedType'] == AMA_TYPE_SWITCHER) {
                     $targetUser = new ADASwitcher($targetArr);
                 } elseif ($passedData['linkedType'] == AMA_TYPE_AUTHOR) {

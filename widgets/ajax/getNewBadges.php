@@ -15,10 +15,11 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 /**
  * Common initializations and include files
  */
+
 ini_set('display_errors', '0');
 error_reporting(E_ALL);
 
-require_once realpath(dirname(__FILE__)) . '/../../config_path.inc.php';
+require_once realpath(__DIR__) . '/../../config_path.inc.php';
 
 /**
  * Users (types) allowed to access this module.
@@ -90,7 +91,7 @@ try {
 
         $rewardsList = $bdh->findBy('RewardedBadge', $findByArr);
         $outputArr = [];
-        if (!\AMADB::isError($rewardsList) && is_array($rewardsList) && count($rewardsList) > 0) {
+        if (!AMADB::isError($rewardsList) && is_array($rewardsList) && count($rewardsList) > 0) {
             /** @var RewardedBadge  $reward */
             foreach ($rewardsList as $reward) {
                 $badge = $bdh->findBy('Badge', [ 'uuid' => $reward->getBadgeUuid() ]);
@@ -121,9 +122,7 @@ try {
                 $bdh->saveRewardedBadge($reward->toArray());
             }
         }
-        $output = implode(PHP_EOL, array_map(function ($el) {
-            return $el->getHtml();
-        }, $outputArr));
+        $output = implode(PHP_EOL, array_map(fn ($el) => $el->getHtml(), $outputArr));
     }
 } catch (Exception $e) {
     $divClass = 'error';

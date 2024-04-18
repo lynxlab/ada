@@ -11,7 +11,6 @@
 namespace Lynxlab\ADA\Module\Impersonate;
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
-use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
 use Lynxlab\ADA\Module\Impersonate\AMAImpersonateDataHandler;
 use Lynxlab\ADA\Module\Impersonate\ImpersonateBase;
 

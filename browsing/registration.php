@@ -23,7 +23,8 @@ use function Lynxlab\ADA\Main\Utilities\whoami;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 /**
  * Clear node and layout variable in $_SESSION
  */
@@ -65,6 +66,7 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
  * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
  * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -146,7 +148,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                     (new GdprAPI())->saveUserPolicies($postParams);
                 }
             }
-        } catch (Exception $e) {
+        } catch (Exception) {
             $message = translateFN('Errore nel salvataggio delle politiche sulla privacy');
             header('Location:' . HTTP_ROOT_DIR . '/browsing/registration.php?message=' . $message);
             exit();

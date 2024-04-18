@@ -7,7 +7,7 @@
 
 // First find out where we are executed from
 //define('DIR_BASE',"/home/ljp/www/jpgraph/dev/");
-define('DIR_BASE', ROOT_DIR.'include/graph/');
+define('DIR_BASE', realpath(__DIR__).'/../browsing/include/graph/');
 
 // If the color palette is full should JpGraph try to allocate
 // the closest match? If you plan on using background image or

@@ -20,7 +20,7 @@ class ExerciseDAO
      * @method getExercise
      * Used to retrieve an exercise from database.
      * It gets all the needed data to build an exercise and returns the exercise object.
-     * @return ADA_Exercise object on success, AMA_PEAR_Error on failure.
+     * @return ADAError|\Lynxlab\ADA\Services\Exercise\ADAEsercizio object on success, AMA_PEAR_Error on failure.
      */
 
     public static function getExercise($id_node, $id_answer = null)
@@ -44,7 +44,7 @@ class ExerciseDAO
         $student_answer = null;
 
         if ($id_answer != null) {
-            $student_answer = $dh->get_student_answer($id_answer);
+            $student_answer = $dh->getStudentAnswer($id_answer);
             if (AMADataHandler::isError($student_answer)) {
                 //return $student_answer;
                 $errObj = new ADAError($student_answer, 'Error while loading student answer');

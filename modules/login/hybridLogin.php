@@ -12,7 +12,8 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../../config_path.inc.php';
 /**
  * Users (types) allowed to access this module.
  */

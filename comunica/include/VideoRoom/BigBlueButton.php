@@ -63,7 +63,7 @@ class BigBlueButton extends VideoRoom implements IVideoRoom
             $this->moderatorPW = $videoroom_data['moderatorPW']->toString();
             $this->attendeePW = $videoroom_data['attendeePW']->toString();
             return $this->id_room;
-        } catch (BBBIntegrationException $e) {
+        } catch (BBBIntegrationException) {
             return false;
         }
     }

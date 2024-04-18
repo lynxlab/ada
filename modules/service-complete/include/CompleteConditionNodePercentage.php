@@ -75,7 +75,7 @@ class CompleteConditionNodePercentage extends CompleteCondition
      */
     private function isSatisfied($id_course_instance = null, $id_student = null, &$summary = null)
     {
-        /** @var History $history */
+        /** @var \Lynxlab\ADA\Main\History\History $history */
         $history = new History($id_course_instance, $id_student);
         $id_course = $GLOBALS['dh']->getCourseIdForCourseInstance($id_course_instance);
         if (is_numeric($id_course)) {
@@ -96,7 +96,7 @@ class CompleteConditionNodePercentage extends CompleteCondition
         }
 
         if (!is_null($summary) && is_array($summary)) {
-            $summary[__CLASS__] = [
+            $summary[self::class] = [
                 'isSatisfied' => $retval,
                 'param' => floatval($this->param),
                 'check' => $checkFloat,

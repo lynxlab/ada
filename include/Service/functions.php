@@ -71,7 +71,7 @@ function getCourseInstanceInfo($id_course, $id_course_instance)
                     $errObj = new ADAError($msgs_ha, translateFN('Errore in lettura appuntamenti'));
                 }
                 $testers_dataAr = MultiPort::getTestersPointersAndIds();
-                $meeting_list   = CommunicationModuleHtmlLib::getAgendaAsForm($dataAr, $testers_dataAr);
+                $meeting_list   = CommunicationModuleHtmlLib::getAgendaAsForm($msgs_ha, $testers_dataAr);
 
 
                 //  $label_provider = translateFN('Fornitore');

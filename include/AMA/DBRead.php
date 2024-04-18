@@ -210,7 +210,7 @@ function readCourseInstanceFromDB($id_course_instance)
 /**
  * Wrapper function for read_user_from_DB.
  *
- * @return \Lynxlab\ADA\Main\User\ADAGenericUser
+ * @return \Lynxlab\ADA\Main\User\ADALoggableUser
  * @see read_user_from_DB
  */
 function readUser($id_user = null)

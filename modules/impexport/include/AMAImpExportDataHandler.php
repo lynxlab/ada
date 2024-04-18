@@ -10,6 +10,10 @@
 
 namespace Lynxlab\ADA\Module\Impexport;
 
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\AMAError;
+
 class AMAImpExportDataHandler extends AMADataHandler
 {
     /**

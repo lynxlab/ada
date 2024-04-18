@@ -15,7 +15,7 @@
  * Base config file
  */
 // ini_set('display_errors', '0'); error_reporting(E_ALL);
-require_once realpath(dirname(__FILE__)) . '/../../config_path.inc.php';
+require_once realpath(__DIR__) . '/../../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION

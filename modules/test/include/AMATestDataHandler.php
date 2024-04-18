@@ -242,7 +242,7 @@ class AMATestDataHandler extends AMADataHandler
      *
      * @param $where - array with key (field) and values (value)
      *
-     * @return an error if something goes wrong or an array (empty if the node doesn't exists)
+     * @return array|AMAError an error if something goes wrong or an array (empty if the node doesn't exists)
      *
      */
     public function testGetNodes($where)
@@ -260,7 +260,7 @@ class AMATestDataHandler extends AMADataHandler
                 } elseif (is_array($v) && !empty($v)) {
                     $sql .= " AND t.`" . $k . "` IN ('" . implode("','", $v) . "')";
                     unset($where[$k]);
-                } elseif (strpos($v, 'LIKE ') === 0) {
+                } elseif (str_starts_with($v, 'LIKE ')) {
                     $sql .= " AND t.`" . $k . "` LIKE '" . str_replace('LIKE ', '', $v) . "'";
                     unset($where[$k]);
                 } else {
@@ -313,7 +313,7 @@ class AMATestDataHandler extends AMADataHandler
                 } elseif (is_array($v) && !empty($v)) {
                     $sql .= " AND t.`" . $k . "` IN ('" . implode("','", $v) . "')";
                     unset($where[$k]);
-                } elseif (strpos($v, 'LIKE ') === 0) {
+                } elseif (str_starts_with($v, 'LIKE ')) {
                     $sql .= " AND t.`" . $k . "` LIKE '" . str_replace('LIKE ', '', $v) . "'";
                     unset($where[$k]);
                 } else {
@@ -413,7 +413,7 @@ class AMATestDataHandler extends AMADataHandler
                 } elseif (is_array($v) && !empty($v)) {
                     $sql .= " AND t.`" . $k . "` IN ('" . implode("','", $v) . "')";
                     unset($where[$k]);
-                } elseif (strpos($v, 'LIKE ') === 0) {
+                } elseif (str_starts_with($v, 'LIKE ')) {
                     $sql .= " AND t.`" . $k . "` LIKE '" . str_replace('LIKE ', '', $v) . "'";
                     unset($where[$k]);
                 } else {
@@ -614,7 +614,7 @@ class AMATestDataHandler extends AMADataHandler
                 } elseif (is_array($v) && !empty($v)) {
                     $sql .= " AND ht.`" . $k . "` IN ('" . implode("','", $v) . "')";
                     unset($where[$k]);
-                } elseif (strpos($v, 'LIKE ') === 0) {
+                } elseif (str_starts_with($v, 'LIKE ')) {
                     $sql .= " AND ht.`" . $k . "` LIKE '" . str_replace('LIKE ', '', $v) . "'";
                     unset($where[$k]);
                 } else {
@@ -1147,7 +1147,7 @@ class AMATestDataHandler extends AMADataHandler
      *
      * @param $where - array with key (field) and values (value)
      *
-     * @return an error if something goes wrong or an array (empty if the node doesn't exists)
+     * @return array|AMAError an error if something goes wrong or an array (empty if the node doesn't exists)
      *
      */
     public function testGetCourseSurveys($where)
@@ -1166,7 +1166,7 @@ class AMATestDataHandler extends AMADataHandler
                 } elseif (is_array($v) && !empty($v)) {
                     $sql .= " AND t.`" . $k . "` IN ('" . implode("','", $v) . "')";
                     unset($where[$k]);
-                } elseif (strpos($v, 'LIKE ') === 0) {
+                } elseif (str_starts_with($v, 'LIKE ')) {
                     $sql .= " AND t.`" . $k . "` LIKE '" . str_replace('LIKE ', '', $v) . "'";
                     unset($where[$k]);
                 } else {
@@ -1290,5 +1290,16 @@ class AMATestDataHandler extends AMADataHandler
         '`id_utente_studente` = ? AND `id_nodo` = ? AND `id_istanza_corso`= ?';
 
         return $this->queryPrepared($sql, [time(), $student_id, $node_id, $course_instance_id]);
+    }
+
+    /**
+     * Returns an instance of AMATestDataHandler.
+     *
+     * @param  string $dsn - optional, a valid data source name
+     * @return self an instance of AMATestDataHandler
+     */
+    public static function instance($dsn = null)
+    {
+        return parent::instance($dsn);
     }
 }

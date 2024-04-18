@@ -16,8 +16,8 @@ use function Lynxlab\ADA\Main\Utilities\getUserIpAddr;
 use function Lynxlab\ADA\Main\Utilities\redirect;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
-if (is_file(realpath(dirname(__FILE__)) . '/config_path.inc.php')) {
-    require_once realpath(dirname(__FILE__)) . '/config_path.inc.php';
+if (is_file(realpath(__DIR__) . '/config_path.inc.php')) {
+    require_once realpath(__DIR__) . '/config_path.inc.php';
 } else {
     header('Location: install.php', true, 302);
 }
@@ -40,7 +40,24 @@ $allowedUsersAr = [AMA_TYPE_VISITOR, AMA_TYPE_STUDENT,AMA_TYPE_TUTOR, AMA_TYPE_A
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami(); // index
-include_once 'include/index_functions.inc.php';
+
+/**
+ * Template Family
+ */
+$template_family = ADA_TEMPLATE_FAMILY; // default template famliy
+$_SESSION['sess_template_family'] = $template_family;
+
+/**
+ * LAYOUT
+ */
+$layout_dataAr = [
+    'node_type'      => null,
+    'family'         => $template_family,
+    'node_author_id' => null,
+    'node_course_id' => null,
+    'module_dir'     => null,
+];
+
 if (is_file(ROOT_DIR . '/include/' . $self . '_functions.inc.php')) {
     include_once ROOT_DIR . '/include/' . $self . '_functions.inc.php';
 }
@@ -134,7 +151,7 @@ $login_error_message = '';
 /**
  * Perform login
  */
-if (class_exists('Lynxlab\\ADA\\Module\\GDPR\\GdprPolicy', true)) {
+if (class_exists(GdprPolicy::class, true)) {
     if (isset($gdprAccepted) && intval($gdprAccepted) === 1 &&  array_key_exists(GdprPolicy::SESSIONKEY, $_SESSION) && array_key_exists('post', $_SESSION[GdprPolicy::SESSIONKEY])) {
         extract($_SESSION[GdprPolicy::SESSIONKEY]['post']);
     }

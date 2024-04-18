@@ -78,7 +78,7 @@ class CompleteConditionAnsweredSurvey extends CompleteCondition
     {
         $retval = false;
         if (!is_null($summary) && is_array($summary)) {
-            $summary[__CLASS__] = [
+            $summary[self::class] = [
                 'param' => $this->param,
             ];
         }
@@ -110,7 +110,7 @@ class CompleteConditionAnsweredSurvey extends CompleteCondition
                              */
                             $retval = $retval && !AMADB::isError($historyArr) && is_array($historyArr) && count($historyArr) >= $this->param;
                             if (!is_null($summary) && is_array($summary)) {
-                                $summary[__CLASS__]['check'][$test_listEL['id_nodo']] = [
+                                $summary[self::class]['check'][$test_listEL['id_nodo']] = [
                                     'title' => $test_listEL['titolo'],
                                     'count' => (is_array($historyArr) ? count($historyArr) : 0),
                                     'isSatisfied' => is_array($historyArr) && count($historyArr) >= $this->param,
@@ -139,7 +139,7 @@ class CompleteConditionAnsweredSurvey extends CompleteCondition
             }
 
             if (!is_null($summary) && is_array($summary)) {
-                $summary[__CLASS__]['isSatisfied'] = $retval;
+                $summary[self::class]['isSatisfied'] = $retval;
             }
 
             return $retval;

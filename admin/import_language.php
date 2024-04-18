@@ -3,17 +3,12 @@
 use Lynxlab\ADA\Admin\AdminHelper;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
-use Lynxlab\ADA\CORE\xml\XMLconverter;
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
-use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
-use Lynxlab\ADA\Main\Course\Course;
-use Lynxlab\ADA\Main\History\History;
+use Lynxlab\ADA\Main\ArrayToXML\ArrayToXML;
 use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
-use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\Output\ARE;
-use Lynxlab\ADA\Main\User\ADAPractitioner;
 
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
@@ -21,7 +16,7 @@ use function Lynxlab\ADA\Main\Utilities\whoami;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -58,15 +53,16 @@ $self =  whoami();  // = admin!
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
+ * @var object $user_messages
+ * @var object $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -121,10 +117,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
         //  $array_lang = file($file_to_import);
         $lang_XML = file_get_contents($file_to_import);
-        $xmlObj = new XMLconverter();
-        $xmlObj->setXml($lang_XML);
-        $xmlObj->xml2array();
-        $dataHa = $xmlObj->getdata();
+        $dataHa = ArrayToXML::toArray($lang_XML);
         $xml_array = $dataHa[0];
         $array_lang = $dataHa['ooo_sheet']['ooo_row'];
         //  print_r($array_lang);
@@ -147,7 +140,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             //        $testersAr[$tester_dataAr['puntatore']] = $tester_dataAr['nome'];
 
             $tester_dsn = MultiPort::getDSN($tester);
-            $tester_dh = AMADataHandler::instance($tester_dsn);
+            $tester_dh = AMACommonDataHandler::instance($tester_dsn);
             if ($delete_messages == "yes") {
                 $tester_dh->deleteAllMessages($suffix);
             }
@@ -156,10 +149,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 // inserisce le frasi di base in messaggi sistema dopo aver svuotato la tabella
                 $file_sistema_to_import = "../db/messaggi/ADA_messaggi_sistema.xml";
                 $lang_XML = file_get_contents($file_sistema_to_import);
-                $xmlObj = new XMLconverter();
-                $xmlObj->setXml($lang_XML);
-                $xmlObj->xml2array();
-                $dataHa = $xmlObj->getdata();
+                $dataHa = ArrayToXML::toArray($lang_XML);
                 $xml_array = $dataHa[0];
                 $array_sistema_lang = $dataHa['ooo_sheet']['ooo_row'];
                 foreach ($array_sistema_lang as $one_message_sitema) {

@@ -286,7 +286,7 @@ class AMACompleteDataHandler extends AMADataHandler
             if (!AMADB::isError($result)) {
                 return $this->getCompleteConditionSet($result);
             }
-        } catch (Exception $e) {
+        } catch (Exception) {
         }
         return $result;
     }
@@ -350,5 +350,16 @@ class AMACompleteDataHandler extends AMADataHandler
             return false;
         }
         return true;
+    }
+
+    /**
+     * Returns an instance of AMACompleteDataHandler.
+     *
+     * @param  string $dsn - optional, a valid data source name
+     * @return self an instance of AMADataHandler
+     */
+    public static function instance($dsn = null)
+    {
+        return parent::instance($dsn);
     }
 }

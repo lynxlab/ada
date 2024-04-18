@@ -25,7 +25,6 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
-use Lynxlab\ADA\Main\History\History;
 use Lynxlab\ADA\Main\User\ADAUser;
 use Lynxlab\ADA\Module\Servicecomplete\AMACompleteDataHandler;
 use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
@@ -41,7 +40,7 @@ use function Lynxlab\ADA\Widgets\Functions\prettyPrintHourMin;
 ini_set('display_errors', '0');
 error_reporting(E_ALL);
 
-require_once realpath(dirname(__FILE__)) . '/../../config_path.inc.php';
+require_once realpath(__DIR__) . '/../../config_path.inc.php';
 
 /**
  * Users (types) allowed to access this module.
@@ -111,7 +110,7 @@ try {
 
     /**
      * @var ADAUser $userObj
-     * @var History $historyObj
+     * @var \Lynxlab\ADA\Main\History\History $historyObj
      */
     $userObj->setCourseInstanceForHistory($courseInstanceId);
     $historyObj = $userObj->getHistoryInCourseInstance($courseInstanceId);

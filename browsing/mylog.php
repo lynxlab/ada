@@ -3,6 +3,7 @@
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\CORE\HtmlElements\Form;
+use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\Course\CourseInstance;
@@ -19,7 +20,8 @@ use function Lynxlab\ADA\Main\Utilities\whoami;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -67,6 +69,7 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
  * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
  * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -107,7 +110,7 @@ $com_enabled = true;  // link to comunicate among users
 // Get user object
 $userObj = readUserFromDB($sess_id_user);
 //print_r($userObj);
-if ((is_object($userObj)) && (!AMA_dataHandler::isError($userObj))) {
+if ((is_object($userObj)) && (!AMADataHandler::isError($userObj))) {
     $id_profile = $userObj->tipo;
     switch ($id_profile) {
         case AMA_TYPE_TUTOR:
@@ -125,7 +128,7 @@ if ((is_object($userObj)) && (!AMA_dataHandler::isError($userObj))) {
     $user_name =  $userObj->username;
     $user_family = $userObj->template_family;
 } else {
-    $errObj = new ADA_error(translateFN("Utente non trovato"), translateFN("Impossibile proseguire."));
+    $errObj = new ADAError(translateFN("Utente non trovato"), translateFN("Impossibile proseguire."));
 }
 
 // set the  title:

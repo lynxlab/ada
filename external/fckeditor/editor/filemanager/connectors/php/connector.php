@@ -1,4 +1,5 @@
 <?php
+
 /*
  * FCKeditor - The text editor for Internet - http://www.fckeditor.net
  * Copyright (C) 2003-2010 Frederico Caldeira Knabben
@@ -47,9 +48,9 @@ function DoResponse()
     }
 
     // Get the main request informaiton.
-    $sCommand		= $_GET['Command'] ;
-    $sResourceType	= $_GET['Type'] ;
-    $sCurrentFolder	= GetCurrentFolder() ;
+    $sCommand       = $_GET['Command'] ;
+    $sResourceType  = $_GET['Type'] ;
+    $sCurrentFolder = GetCurrentFolder() ;
 
     // Check if it is an allowed command
     if (! IsAllowedCommand($sCommand)) {

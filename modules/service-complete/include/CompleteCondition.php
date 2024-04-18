@@ -88,7 +88,7 @@ abstract class CompleteCondition
              * wrong number of arguments, let's take some action:
              * first: log the error. this shall go to log/trace.log file
              */
-            ADAFileLogger::log(__CLASS__ . '::' . __METHOD__ . ' WRONG NUMBER OR TYPE OF PARAMETERS');
+            ADAFileLogger::log(self::class . '::' . __METHOD__ . ' WRONG NUMBER OR TYPE OF PARAMETERS');
             /**
              * third: raise an ADAError if wrong number of arguments
              * see config_errors.inc.php line 167 and following.
@@ -98,7 +98,7 @@ abstract class CompleteCondition
             /**
              * third throw an exception to be catched by the caller
             */
-            throw new Exception('Fatal Error: could not instantiate ' . __CLASS__, AMA_ERR_WRONG_ARGUMENTS);
+            throw new Exception('Fatal Error: could not instantiate ' . self::class, AMA_ERR_WRONG_ARGUMENTS);
         }
         $this->setLogToFile(defined('MODULES_SERVICECOMPLETE_LOG') && MODULES_SERVICECOMPLETE_LOG === true);
     }

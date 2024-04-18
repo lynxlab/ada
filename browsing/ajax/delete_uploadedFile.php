@@ -11,7 +11,8 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../../config_path.inc.php';
 
 /**
  * Do not track this in navigation history
@@ -65,6 +66,7 @@ $self =  'download';
  * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
  * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
  * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990

@@ -7,7 +7,7 @@ namespace Lynxlab\ADA\Services\Exercise;
  * This class (and its subclasses) manages the html form generation for each one of ExerciseFamily
  * in ADA.
  */
-class ExerciseViewer //extends AbsExerciseViewer
+abstract class ExerciseViewer //extends AbsExerciseViewer
 {
     /**
      * @method fill_field_with_data
@@ -71,4 +71,7 @@ class ExerciseViewer //extends AbsExerciseViewer
 
         return $this->getStudentForm($action, $exerciseObj);
     }
+
+    abstract public function getExerciseReport($exerciseObj, $id_course_instance);
+    abstract public function getStudentForm($form_action, $exercise);
 }

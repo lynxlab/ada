@@ -432,7 +432,7 @@ class CourseViewer
      * @param unknown_type $id_toc
      * @param unknown_type $expand_index
      * @param unknown_type $callback
-     * @param unknown_type $callback_params
+     * @param array $callback_params
      * @return \Lynxlab\ADA\CORE\html4\CBase
      */
     public static function struct($course_data, $id_toc, $expand_index, $callback, $callback_params = [], $dhToUse = null)
@@ -548,7 +548,7 @@ class CourseViewer
                 array_push($list, $ul);
             }
         }
-        return $html;
+        return $ul;
     }
 
     /**

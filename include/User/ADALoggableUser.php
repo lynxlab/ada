@@ -136,11 +136,9 @@ abstract class ADALoggableUser extends ADAGenericUser
                 $this->fillWithArrayData($userArr);
                 $this->setStatus(ADA_STATUS_ANONYMIZED);
                 return $this;
-            } catch (TypeError $e) {
+            } catch (TypeError | Error) {
                 die("An unexpected error has occurred");
-            } catch (Error $e) {
-                die("An unexpected error has occurred");
-            } catch (Exception $e) {
+            } catch (Exception) {
                 // If you get this message, the CSPRNG failed hard.
                 die("Could not generate a random string. Is our OS secure?");
             }
@@ -689,7 +687,7 @@ abstract class ADALoggableUser extends ADAGenericUser
                 if (!$gdprApi->checkMandatoryPoliciesForUser($userObj)) {
                     $_SESSION[GdprPolicy::SESSIONKEY]['post'] = $_POST;
                     if (!is_null($loginProviderObj)) {
-                        $_SESSION[GdprPolicy::SESSIONKEY]['post']['selectedLoginProvider'] = basename(str_replace('\\', '/', get_class($loginProviderObj)));
+                        $_SESSION[GdprPolicy::SESSIONKEY]['post']['selectedLoginProvider'] = basename(str_replace('\\', '/', $loginProviderObj::class));
                         $_SESSION[GdprPolicy::SESSIONKEY]['post']['selectedLoginProviderID'] = $loginProviderObj->getID();
                     }
                     if (!is_null($redirectURL)) {
@@ -721,7 +719,7 @@ abstract class ADALoggableUser extends ADAGenericUser
             }
 
             if (!is_null($loginProviderObj)) {
-                $_SESSION['sess_loginProviderArr']['className'] = get_class($loginProviderObj);
+                $_SESSION['sess_loginProviderArr']['className'] = $loginProviderObj::class;
                 $_SESSION['sess_loginProviderArr']['id'] = $loginProviderObj->getID();
                 $loginProviderObj->addLoginToHistory($userObj->getId());
             }
@@ -749,6 +747,11 @@ abstract class ADALoggableUser extends ADAGenericUser
             }
         }
 
+        return false;
+    }
+
+    public function hasExtra()
+    {
         return false;
     }
 

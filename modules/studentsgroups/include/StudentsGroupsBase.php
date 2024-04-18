@@ -89,7 +89,7 @@ abstract class StudentsGroupsBase
      */
     public function toArray()
     {
-        $reflectionClass = new ReflectionClass(get_class($this));
+        $reflectionClass = new ReflectionClass(static::class);
         $array = [];
         foreach ($reflectionClass->getProperties() as $property) {
             $property->setAccessible(true);

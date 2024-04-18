@@ -12,7 +12,6 @@ namespace Lynxlab\ADA\Module\StudentsGroups;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
-use Lynxlab\ADA\Module\EtherpadIntegration\Groups;
 use Lynxlab\ADA\Module\StudentsGroups\StudentsGroupsAbstractForm;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;

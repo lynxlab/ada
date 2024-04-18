@@ -11,6 +11,7 @@
 namespace Lynxlab\ADA\Module\Impersonate;
 
 use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Module\Impersonate\LinkedUsers;
 use ReflectionClass;
@@ -18,7 +19,7 @@ use ReflectionProperty;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
-class AMAImpersonateDataHandler extends AMA_DataHandler
+class AMAImpersonateDataHandler extends AMADataHandler
 {
     /**
      * module's own data tables prefix
@@ -114,9 +115,7 @@ class AMAImpersonateDataHandler extends AMA_DataHandler
         }
         $reflection = new ReflectionClass($className);
         $properties =  array_map(
-            function ($el) {
-                return $el->getName();
-            },
+            fn ($el) => $el->getName(),
             $reflection->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PUBLIC)
         );
 
@@ -127,9 +126,7 @@ class AMAImpersonateDataHandler extends AMA_DataHandler
         // check for customField class const and explode matching propertiy array
         $properties = $className::explodeArrayProperties($properties);
 
-        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(function ($el) {
-            return "`$el`";
-        }, $properties)), $className::table)
+        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(fn ($el) => "`$el`", $properties)), $className::table)
             . $this->buildWhereClause($whereArr, $properties) . $this->buildOrderBy($orderByArr, $properties);
 
         if (is_null($dbToUse)) {
@@ -140,9 +137,7 @@ class AMAImpersonateDataHandler extends AMA_DataHandler
         if (AMADB::isError($result)) {
             throw new ImpersonateException($result->getMessage(), (int) $result->getCode());
         } else {
-            $retArr = array_map(function ($el) use ($className, $dbToUse) {
-                return new $className($el, $dbToUse);
-            }, $result);
+            $retArr = array_map(fn ($el) => new $className($el, $dbToUse), $result);
             // load properties from $joined array
             foreach ($retArr as $retObj) {
                 foreach ($joined as $joinKey => $joinData) {
@@ -209,18 +204,14 @@ class AMAImpersonateDataHandler extends AMA_DataHandler
             return sprintf(
                 "UPDATE `%s` SET %s %s;",
                 $table,
-                implode(',', array_map(function ($el) {
-                    return "`$el`=?";
-                }, $fields)),
+                implode(',', array_map(fn ($el) => "`$el`=?", $fields)),
                 $this->buildWhereClause($whereField, array_keys($whereField))
             );
         } else {
             return sprintf(
                 "UPDATE `%s` SET %s WHERE `%s`=?;",
                 $table,
-                implode(',', array_map(function ($el) {
-                    return "`$el`=?";
-                }, $fields)),
+                implode(',', array_map(fn ($el) => "`$el`=?", $fields)),
                 $whereField
             );
         }
@@ -238,12 +229,8 @@ class AMAImpersonateDataHandler extends AMA_DataHandler
         return sprintf(
             "INSERT INTO `%s` (%s) VALUES (%s);",
             $table,
-            implode(',', array_map(function ($el) {
-                return "`$el`";
-            }, array_keys($fields))),
-            implode(',', array_map(function ($el) {
-                return "?";
-            }, array_keys($fields)))
+            implode(',', array_map(fn ($el) => "`$el`", array_keys($fields))),
+            implode(',', array_map(fn ($el) => "?", array_keys($fields)))
         );
     }
 
@@ -379,7 +366,7 @@ class AMAImpersonateDataHandler extends AMA_DataHandler
      *
      * @return bool
      */
-    private function beginTransaction()
+    protected function beginTransaction()
     {
         return $this->getConnection()->connectionObject()->beginTransaction();
     }
@@ -389,7 +376,7 @@ class AMAImpersonateDataHandler extends AMA_DataHandler
      *
      * @return bool
      */
-    private function rollBack()
+    protected function rollBack()
     {
         return $this->getConnection()->connectionObject()->rollBack();
     }
@@ -399,7 +386,7 @@ class AMAImpersonateDataHandler extends AMA_DataHandler
      *
      * @return bool
      */
-    private function commit()
+    protected function commit()
     {
         return $this->getConnection()->connectionObject()->commit();
     }

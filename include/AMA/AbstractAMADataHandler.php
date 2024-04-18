@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AMA_DataHandler implements a class to handle complex DB read/write operations
+ * AMADataHandler implements a class to handle complex DB read/write operations
  * for the ADA project.
  *
  * @access public
@@ -45,7 +45,7 @@ abstract class AbstractAMADataHandler
     //protected static $instance = null;
 
     /**
-     * function AMA_DataHandler
+     * function AMADataHandler
      *
      * @param $db_type
      * @param $db_name
@@ -164,6 +164,9 @@ abstract class AbstractAMADataHandler
         // $res is the number of affected rows or an error
         // if $res is an error, return an AMA Error with error message as
         // additional debug info
+
+        // phpcs:disable PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection
+
         if (AMADB::isError($res)) {
             // get debug info (this works from php 4.3.0)
             $deb_bac = debug_backtrace();
@@ -182,6 +185,9 @@ abstract class AbstractAMADataHandler
             return new AMAError($ERROR, $error_msg);
         }
         // if $res > 0, query succeeded. we return number of affected rows.
+
+        // phpcs:enable
+
         return $res;
     }
 
@@ -221,7 +227,7 @@ abstract class AbstractAMADataHandler
      *
      * @param $s the string to be prepared
      *
-     * @return the prepared string
+     * @return string the prepared string
      */
     public function sqlPrepared($s)
     {
@@ -404,7 +410,7 @@ abstract class AbstractAMADataHandler
     public function errorMessage($error)
     {
 
-        if (AMA_DataHandler::isError($error)) {
+        if (AMADataHandler::isError($error)) {
             return $error->errorMessage();
         }
 
@@ -522,9 +528,9 @@ abstract class AbstractAMADataHandler
             eval($e_str);
 
             // add to error message if the instruction in the stack fails, somehow
-            if (AMA_DataHandler::isError($res)) {
-                $err_msg .= AMA_SEP . "error in function $function_name (" . $res->getMessage() . ")";
-            }
+            // if (AMADataHandler::isError($res)) {
+            //     $err_msg .= AMA_SEP . "error in function $function_name (" . $res->getMessage() . ")";
+            // }
         }
 
         // return error message
@@ -807,6 +813,9 @@ abstract class AbstractAMADataHandler
         // $res is the number of affected rows or an error
         // if $res is an error, return an AMA Error with error message as
         // additional debug info
+
+        // phpcs:disable PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection
+
         if (AMADB::isError($res)) {
             // get debug info (this works from php 4.3.0)
             $deb_bac = debug_backtrace();
@@ -825,6 +834,9 @@ abstract class AbstractAMADataHandler
             return new AMAError($ERROR, $error_msg);
         }
         // if $res > 0, query succeeded. we return number of affected rows.
+
+        // phpcs:enable
+
         return $res;
     }
 
@@ -876,7 +888,7 @@ abstract class AbstractAMADataHandler
     {
         // FIXME: verificare se e' ok chiudere cosi' una connessione al database.
 
-        //ADALogger::logDb('Call to Abstract_AMA_DataHandler destructor');
+        //ADALogger::logDb('Call to AbstractAMADataHandler destructor');
         if (is_object($this->db) && method_exists($this->db, 'disconnect')) {
             //ADALogger::logDb('Closing open connection to database');
             $this->disconnect();

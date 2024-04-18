@@ -56,7 +56,7 @@ function deleteNodeFN($id_node, $id_course, $action)
         $node_childrenAr = $dh->getNodeChildren($id_node, $sess_id_course_instance);
 
         $has_children = is_array($node_childrenAr);//(!is_object($node_childrenAr));
-        $is_root_node = (strpos($nodeObj->id, '_0') !== false);
+        $is_root_node = (str_contains($nodeObj->id, '_0'));
         if (!$is_root_node && ((!$has_children) || ($type == ADA_LEAF_TYPE))) {
             /* si possono eliminare:
              *           i nodi semplici

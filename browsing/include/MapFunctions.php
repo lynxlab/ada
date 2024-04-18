@@ -93,9 +93,5 @@ function returnAdaNodeLink($t)
 function returnMapType()
 {
 
-    if (isset($_GET['map_type'])) {
-        return $_GET['map_type'];
-    };
-
-    return "nodo";
+    return $_GET['map_type'] ?? "nodo";
 }

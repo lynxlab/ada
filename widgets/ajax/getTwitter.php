@@ -35,7 +35,7 @@ use Lynxlab\ADA\Widgets\Widget;
 ini_set('display_errors', '0');
 error_reporting(E_ALL);
 
-require_once realpath(dirname(__FILE__)) . '/../../config_path.inc.php';
+require_once realpath(__DIR__) . '/../../config_path.inc.php';
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
     /**

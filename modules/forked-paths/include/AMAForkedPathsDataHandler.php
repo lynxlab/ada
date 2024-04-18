@@ -11,6 +11,7 @@
 namespace Lynxlab\ADA\Module\ForkedPaths;
 
 use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsHistory;
 use ReflectionClass;
@@ -18,7 +19,7 @@ use ReflectionProperty;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
-class AMAForkedPathsDataHandler extends AMA_DataHandler
+class AMAForkedPathsDataHandler extends AMADataHandler
 {
     /**
      * module's own data tables prefix
@@ -56,9 +57,7 @@ class AMAForkedPathsDataHandler extends AMA_DataHandler
         }
         $reflection = new ReflectionClass($className);
         $properties =  array_map(
-            function ($el) {
-                return $el->getName();
-            },
+            fn ($el) => $el->getName(),
             $reflection->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PUBLIC)
         );
 
@@ -67,9 +66,7 @@ class AMAForkedPathsDataHandler extends AMA_DataHandler
         // and remove them from the query, they will be loaded afterwards
         $properties = array_diff($properties, $joined);
 
-        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(function ($el) {
-            return "`$el`";
-        }, $properties)), $className::table);
+        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(fn ($el) => "`$el`", $properties)), $className::table);
 
         if (!is_null($whereArr) && count($whereArr) > 0) {
             $invalidProperties = array_diff(array_keys($whereArr), $properties);
@@ -131,9 +128,7 @@ class AMAForkedPathsDataHandler extends AMA_DataHandler
         if (AMADB::isError($result)) {
             throw new ForkedPathsException($result->getMessage(), (int)$result->getCode());
         } else {
-            $retArr = array_map(function ($el) use ($className, $dbToUse) {
-                return new $className($el, $dbToUse);
-            }, $result);
+            $retArr = array_map(fn ($el) => new $className($el, $dbToUse), $result);
             // load properties from $joined array
             foreach ($retArr as $retObj) {
                 foreach ($joined as $joinKey) {
@@ -199,9 +194,7 @@ class AMAForkedPathsDataHandler extends AMA_DataHandler
         return sprintf(
             "UPDATE `%s` SET %s WHERE `%s`=?;",
             $table,
-            implode(',', array_map(function ($el) {
-                return "`$el`=?";
-            }, $fields)),
+            implode(',', array_map(fn ($el) => "`$el`=?", $fields)),
             $whereField
         );
     }
@@ -218,12 +211,8 @@ class AMAForkedPathsDataHandler extends AMA_DataHandler
         return sprintf(
             "INSERT INTO `%s` (%s) VALUES (%s);",
             $table,
-            implode(',', array_map(function ($el) {
-                return "`$el`";
-            }, array_keys($fields))),
-            implode(',', array_map(function ($el) {
-                return "?";
-            }, array_keys($fields)))
+            implode(',', array_map(fn ($el) => "`$el`", array_keys($fields))),
+            implode(',', array_map(fn ($el) => "?", array_keys($fields)))
         );
     }
 
@@ -246,9 +235,9 @@ class AMAForkedPathsDataHandler extends AMA_DataHandler
                 // must check if passed $dsn has the module login tables
                 // execute this dummy query, if result is not an error table is there
                 $sql = 'SELECT NULL FROM `'.GdprPolicy::table.'`';
-                // must use AMA_DataHandler because we are not able to
+                // must use AMADataHandler because we are not able to
                 // query AMALoginDataHandelr in this method!
-                $ok = \AMA_DataHandler::instance($dsn)->getOnePrepared($sql);
+                $ok = AMADataHandler::instance($dsn)->getOnePrepared($sql);
                 if (!AMADB::isError($ok)) self::$policiesDB = $theInstance;
             }
         }

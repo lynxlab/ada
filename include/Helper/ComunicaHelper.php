@@ -117,6 +117,7 @@ class ComunicaHelper extends ViewBaseHelper
      */
     protected static function getUserBrowsingData(ADAGenericUser $userObj, $log_enabled = false)
     {
+        $http_root_dir = $GLOBALS['http_root_dir'] ?? HTTP_ROOT_DIR;
         if ($userObj->getType() == AMA_TYPE_ADMIN) {
             $homepage = "$http_root_dir/admin/admin.php"; // admin.php
             $msg = urlencode(translateFN("Ridirezionamento automatico"));

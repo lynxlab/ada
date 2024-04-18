@@ -154,7 +154,7 @@ class BrowsingHelper extends ViewBaseHelper
      * @param int $courseId
      * @param int $courseInstanceId
      *
-     * @return void
+     * @return int
      */
     public static function checkServiceComplete(ADAGenericUser $userObj, $courseId = null, $courseInstanceId = null)
     {
@@ -261,6 +261,7 @@ class BrowsingHelper extends ViewBaseHelper
         if ($last_access_date == translateFN("Nessun'informazione")) {
             $user_name = $userObj->username;
             $destAr = [$user_name];
+            $language = $_SESSION['sess_user_language'] ?? ADA_DEFAULT_LANGUAGE;
             // FIXME: multiportare, ora e' bloccato sul tester selezionato
             $mh = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
             $message_ha['destinatari'] = $destAr;

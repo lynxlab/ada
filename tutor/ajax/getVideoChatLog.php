@@ -9,7 +9,8 @@ use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -68,9 +69,7 @@ $data = array_map(function ($el) {
                         $u['events'][$i][$what]['display'] = ts2dFN($u['events'][$i][$what]['timestamp']) . ' ' . ts2tmFN($u['events'][$i][$what]['timestamp']);
                     }
                 }
-                $u['events'] = array_filter($u['events'], function ($el) {
-                    return $el['entrata']['timestamp'] != $el['uscita']['timestamp'];
-                });
+                $u['events'] = array_filter($u['events'], fn ($el) => $el['entrata']['timestamp'] != $el['uscita']['timestamp']);
             }
             return $u;
         }, $el['users']);

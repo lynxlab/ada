@@ -14,10 +14,11 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 /**
  * Common initializations and include files
  */
+
 ini_set('display_errors', '0');
 error_reporting(E_ALL);
 
-require_once realpath(dirname(__FILE__)) . '/../../config_path.inc.php';
+require_once realpath(__DIR__) . '/../../config_path.inc.php';
 
 /**
  * Users (types) allowed to access this module.
@@ -88,14 +89,10 @@ try {
     $subscriptions = Subscription::findSubscriptionsToClassRoom($courseInstanceId, true);
     if (is_array($subscriptions) && count($subscriptions) > 0) {
         if (isset($filterStatus)) {
-            $subscriptions = array_filter($subscriptions, function ($v) use ($filterStatus) {
-                return $filterStatus == $v->getSubscriptionStatus();
-            });
+            $subscriptions = array_filter($subscriptions, fn ($v) => $filterStatus == $v->getSubscriptionStatus());
         }
         if (count($subscriptions) > 0) {
-            usort($subscriptions, function ($a, $b) {
-                return strcasecmp($a->getSubscriberFullname(), $b->getSubscriberFullname());
-            });
+            usort($subscriptions, fn ($a, $b) => strcasecmp($a->getSubscriberFullname(), $b->getSubscriberFullname()));
             $outCont = CDOMElement::create('div', 'class:widget get-students-of-instance');
             $cssString = [];
             if (isset($styleHeight) && strlen($styleHeight) > 0) {

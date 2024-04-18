@@ -60,7 +60,7 @@ class UserRegistrationForm extends FForm
 
         $email = $this->addTextInput('email', translateFN('Email'));
         if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
-            (new SecretQuestionForm(strcmp(get_class($this), __CLASS__) === 0))->addControlsToForm($this);
+            (new SecretQuestionForm(strcmp(static::class, self::class) === 0))->addControlsToForm($this);
         } else {
             $email->setRequired()->setValidator(FormValidator::EMAIL_VALIDATOR);
         }

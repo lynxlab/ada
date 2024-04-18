@@ -79,11 +79,11 @@ abstract class GdprBase
      * Convert Object (With Protected Values) To Associative Array
      * http://www.beliefmedia.com/object-to-array
      *
-     * @return NULL[]
+     * @return array
      */
     public function toArray()
     {
-        $reflectionClass = new ReflectionClass(get_class($this));
+        $reflectionClass = new ReflectionClass(static::class);
         $array = [];
         foreach ($reflectionClass->getProperties() as $property) {
             $property->setAccessible(true);

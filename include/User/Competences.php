@@ -75,26 +75,26 @@ class Competences extends UserExtraTables
      * Must be overridden in each class because
      * it must pass __CLASS__ to the parent.
      */
-    public static function getFields($className = __CLASS__)
+    public static function getFields($className = self::class)
     {
         return parent::getFields($className);
     }
 
     public static function buildArrayFromPOST($postData)
     {
-        return parent::doBuildArrayFromPOST(__CLASS__, $postData);
+        return parent::doBuildArrayFromPOST(self::class, $postData);
     }
 
     public static function getKeyProperty()
     {
-        if (property_exists(get_called_class(), 'keyProperty')) {
+        if (property_exists(static::class, 'keyProperty')) {
             return self::$keyProperty;
         }
     }
 
     public static function getForeignKeyProperty()
     {
-        if (property_exists(get_called_class(), 'foreignKeyProperty')) {
+        if (property_exists(static::class, 'foreignKeyProperty')) {
             return self::$foreignKeyProperty;
         }
     }

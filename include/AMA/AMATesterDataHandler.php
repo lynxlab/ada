@@ -11,6 +11,7 @@
 
 namespace Lynxlab\ADA\Main\AMA;
 
+use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
@@ -32,7 +33,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
 {
     protected static $instance = null;
     /**
-     * Contains the data source name used to create this instance of AMA_DataHandler
+     * Contains the data source name used to create this instance of AMADataHandler
      * @var string
      */
     protected static $tester_dsn = null;
@@ -40,11 +41,11 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
     /**
      *
      * @param  string $dsn - a valid data source name
-     * @return an instance of AMA_DataHandler
+     * @return an instance of AMADataHandler
      */
     public function __construct($dsn = null)
     {
-        //ADALogger::logDb('AMA_DataHandler constructor');
+        //ADALogger::logDb('AMADataHandler constructor');
         parent::__construct($dsn);
     }
 
@@ -60,15 +61,15 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
 
 
     /**
-     * Returns an instance of AMA_DataHandler.
+     * Returns an instance of AMADataHandler.
      *
      * @param  string $dsn - optional, a valid data source name
-     * @return an instance of AMA_DataHandler
+     * @return self an instance of AMADataHandler
      */
     public static function instance($dsn = null)
     {
-        $callerClassName = get_called_class();
-        if (!is_null(self::$instance) && get_class(self::$instance) !== $callerClassName) {
+        $callerClassName = static::class;
+        if (!is_null(self::$instance) && self::$instance::class !== $callerClassName) {
             self::$instance = null;
         }
 
@@ -229,7 +230,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      *        possible values are: nome, cognome, e-mail, username, password,
      *        telefono, profilo, tariffa
      *
-     * @return a nested array containing the list, or an AMAError object or a
+     * @return array|AMAError a nested array containing the list, or an AMAError object or a
      * DB_Error object if something goes wrong
      *
      * The form of the nested array is:
@@ -269,7 +270,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      *
      * @param  clause the clause string which will be added to the select
      *
-     * @return a nested array containing the list, or an AMAError object or a DB_Error object if something goes wrong
+     * @return array|AMAError a nested array containing the list, or an AMAError object or a DB_Error object if something goes wrong
      * The form of the nested array is:
      *     array(array(ID1, 'field_1_1', 'field_1_2'),
      *           array(ID2, 'field_2_1', 'field_2_2'),
@@ -857,7 +858,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         $res_id =  $db->getRow("select id_bookmark from bookmark where id_bookmark=$id");
         //    if (AMADB::isError($res_id)) {
         //    return $res_id;
-        if (AMAError($res_id) || $res_id == 0) {
+        if (AMADB::isError($res_id) || $res_id == 0) {
             $db->free();
             return new AMAError(AMA_ERR_NOT_FOUND);
         }
@@ -921,14 +922,14 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
 
         // get ordering for first record
         $res_ha = $this->getBookmarkInfo($id1);
-        if (AMA_DataHandler::isError($res_ha)) {
+        if (AMADataHandler::isError($res_ha)) {
             return new AMAError(AMA_ERR_NOT_FOUND);
         }
         $ordering1 = $res_ha['ordering'];
 
         // get ordering for second record
         $res_ha = $this->getBookmarkInfo($id2);
-        if (AMA_DataHandler::isError($res_ha)) {
+        if (AMADataHandler::isError($res_ha)) {
             return new AMAError(AMA_ERR_NOT_FOUND);
         }
         $ordering2 = $res_ha['ordering'];
@@ -973,7 +974,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
 
         // get data of record to remove (for rollback)
         $res_ha = $this->getBookmarkInfo($id);
-        if (AMA_DataHandler::isError($res_ha)) {
+        if (AMADataHandler::isError($res_ha)) {
             return new AMAError(AMA_ERR_NOT_FOUND);
         }
         $ordering = $res_ha['ordering'];
@@ -1819,12 +1820,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
          * regardless of numer_visite (i.e. visit count). Let's sort the whole array so that the root
          * node will be properly positioned as well.
          */
-        usort($result, function ($a, $b) {
-            if ($a['numero_visite'] == $b['numero_visite']) {
-                return 0;
-            }
-            return ($a['numero_visite'] > $b['numero_visite']) ? -1 : 1;
-        });
+        usort($result, fn ($a, $b) => $b['numero_visite'] <=> $a['numero_visite']);
 
         return $result;
     }
@@ -1947,7 +1943,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      * @param $id_corso    - course instance id
      * @param $livello     - level of subscription (0=beginner, 1=intermediate, 2=advanced)
      *
-     * @return true on success, an AMAError object if something goes wrong
+     * @return bool|AMAError true on success, an AMAError object if something goes wrong
      */
     public function courseInstanceStudentPresubscribeAdd($id_istanza_corso, $id_studente, $livello = 0)
     {
@@ -2000,7 +1996,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
 
         for ($i = 0; $i < count($studenti_ar); $i++) {
             $res = $this->courseInstanceStudentPresubscribeAdd($id_course_instance, $studenti_ar[$i]);
-            if (!AMA_DataHandler::isError($res)) {
+            if (!AMADataHandler::isError($res)) {
                 $successfully_added++;
             }
         }
@@ -2027,7 +2023,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
 
         for ($i = 0; $i < count($studenti_ar); $i++) {
             $res = $this->courseInstanceStudentPresubscribeRemove($id_course_instance, $studenti_ar[$i]);
-            if (!AMA_DataHandler::isError($res)) {
+            if (!AMADataHandler::isError($res)) {
                 $successfully_removed++;
             }
         }
@@ -2306,7 +2302,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         foreach ($studenti_ar as $student) {
             $res = $this->courseInstanceStudentSubscribe($id_course_instance, $student, $status);
             // FIXME: verificare se bisogna ritornare errore o lasciare continuare l'iscrizione degli altri utenti
-            if (AMA_DataHandler::isError($res)) {
+            if (AMADataHandler::isError($res)) {
                 return $res;
             }
             $student_subscribed++;
@@ -2895,7 +2891,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      *
      * @param  $clause the clause string which will be added to the select
      *
-     * @return a nested array containing the list, or an AMAError object or a DB_Error object if something goes wrong
+     * @return array nested array containing the list, or an AMAError object or a DB_Error object if something goes wrong
      * The form of the nested array is:
      *     array(array(ID1, 'field_1_1', 'field_1_2'),
      *           array(ID2, 'field_2_1', 'field_2_2'),
@@ -2944,7 +2940,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      *
      * @param $id_course the course model id
      *
-     * @return a nested array containing the list, or an AMAError object or a DB_Error object if something goes wrong
+     * @return array|AMAError a nested array containing the list, or an AMAError object or a DB_Error object if something goes wrong
      * The form of the nested array is:
      *     array(array(ID1, 'field_1_1', 'field_1_2'),
      *           array(ID2, 'field_2_1', 'field_2_2'),
@@ -2986,7 +2982,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
     public function courseInstanceSubscribeableGetList($field_list_ar, $courseId)
     {
         $today_date = todayDateFN();
-        $timestamp = AMA_DataHandler::dateToTs($today_date);
+        $timestamp = AMADataHandler::dateToTs($today_date);
         //        $timestamp = time();
         //        return $this->course_instance_find_list($field_list_ar, "id_corso=$courseId AND self_registration=1 AND data_inizio=0 AND data_inizio_previsto >= $timestamp and durata > 0  ORDER BY data_inizio_previsto ASC");
         return $this->courseInstanceFindList($field_list_ar, "id_corso=$courseId AND self_registration=1 AND open_subscription=1 ORDER BY data_inizio_previsto DESC");
@@ -3092,7 +3088,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             return new AMAError(AMA_ERR_UPDATE);
         } else {
             if (intval($data_inizio) > 0) {
-                $this->UpdateStudentsSubscriptionAfterCourseInstanceSet($id, intval($duration_subscription));
+                $this->updateStudentsSubscriptionAfterCourseInstanceSet($id, intval($duration_subscription));
             }
         }
 
@@ -3109,7 +3105,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      *
      * @author giorgio 02/apr/2015
      */
-    private function UpdateStudentsSubscriptionAfterCourseInstanceSet($instance_id, $duration_subscription)
+    private function updateStudentsSubscriptionAfterCourseInstanceSet($instance_id, $duration_subscription)
     {
         $subscriptions = Subscription::findSubscriptionsToClassRoom($instance_id);
         if (!AMADB::isError($subscriptions) && is_array($subscriptions) && count($subscriptions) > 0) {
@@ -3347,7 +3343,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             $id_posizione = $id;
         } else {
             // add row to table "posizione"
-            if (AMA_DataHandler::isError($res = $this->doAddPosition($pos_ar))) {
+            if (AMADataHandler::isError($res = $this->doAddPosition($pos_ar))) {
                 return new AMAError($res->getMessage());
             } else {
                 // get id of position just added
@@ -3418,7 +3414,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         // vito, 21 luglio 2008
         $id =  $db->getOne("select id_link from link where id_nodo=$sqlnode_id and id_nodo_to=$sqlnode_to_id");
         //$id =  $db->getOne("select id_link from link where id_nodo='$sqlnode_id' and id_nodo_to='$sqlnode_to_id'");
-        if (AMA_DataHandler::isError($id)) {
+        if (AMADataHandler::isError($id)) {
             // vito, $db e' l'oggetto di connessione, l'errore e' in $id
             //                 return $db;
             return new AMAError(AMA_ERR_GET);
@@ -3532,7 +3528,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             //mydebug(__LINE__,__FILE__,$link_ha);
 
             ADALogger::logDb("trying to add link $i");
-            if (AMA_DataHandler::isError($res = $this->addLink($link_ha))) {
+            if (AMADataHandler::isError($res = $this->addLink($link_ha))) {
                 // does the rollback
                 $err  = $res->getMessage() . AMA_SEP . $this->rollback();
                 ADALogger::logDb("$err detected, rollbacking");
@@ -4087,7 +4083,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         for ($i = 0; $i < $n_ids; $i++) {
             $res = $this->removeNode($ids[$i]);
             // FIXME: resituire subito l'errore?
-            if (AMA_DataHandler::isError($res)) {
+            if (AMADataHandler::isError($res)) {
                 return $res;
             }
         }
@@ -4129,7 +4125,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         ADALogger::logDb("trying to remove course content");
         $res = $this->removeCourseContent($id);
 
-        if (AMA_DataHandler::isError($res) && $res->code != AMA_ERR_NOT_FOUND) {
+        if (AMADataHandler::isError($res) && $res->code != AMA_ERR_NOT_FOUND) {
             return $res;
         }
 
@@ -4138,14 +4134,14 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         ADALogger::logDb("getting instances related to this model -$id-");
 
         $ids = $db->getCol("select id_istanza_corso from istanza_corso where id_corso=$id");
-        if (!AMA_DataHandler::isError($ids)) {
+        if (!AMADataHandler::isError($ids)) {
             $n_ids = count($ids);
             ADALogger::logDb("got $n_ids records");
             // start a loop to remove the instances (may be a void loop)
             for ($i = 0; $i < $n_ids; $i++) {
                 ADALogger::logDb("trying to remove course instance " . $ids[$i]);
                 $res = $this->courseInstanceRemove($ids[$i]);
-                if (AMA_DataHandler::isError($res)) {
+                if (AMADataHandler::isError($res)) {
                     return $res;
                 }
                 ADALogger::logDb("instance " . $ids[$i] . " successfully removed");
@@ -4156,7 +4152,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         // remove the course model
         ADALogger::logDb("trying to remove course model " . $id);
         $res = $this->removeCourseModel($id);
-        if (AMA_DataHandler::isError($res)) {
+        if (AMADataHandler::isError($res)) {
             return $res;
         }
         ADALogger::logDb("course model $id successfully removed");
@@ -4197,7 +4193,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      */
     public function &getCoursesIds()
     {
-        return $this->getCoursesList();
+        return $this->getCoursesList([]);
     }
 
     /**
@@ -4668,12 +4664,20 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         return $result;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param integer $id_course
+     * @param string $id_toc
+     * @param integer $depth
+     * @return int
+     */
     public function getMaxIdFN($id_course = 1, $id_toc = '', $depth = 1)
     {
         // return the max id_node of the course
         $id_node_max = $this->doGetMaxIdFN($id_course, $id_toc, $depth);
         // vito, 15/07/2009
-        if (AMA_DataHandler::isError($id_node_max)) {
+        if (AMADataHandler::isError($id_node_max)) {
             /*
              * Return a ADAError object with delayedErrorHandling set to TRUE.
              */
@@ -4873,7 +4877,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             preg_match($regExp, $parentId, $stringFound);
             if (count($stringFound) > 0) {
                 $idCourse = $stringFound[1];
-                $last_node = getMaxIdFN($idCourse);
+                $last_node = $this->getMaxIdFN($idCourse);
                 $tempAr = explode("_", $last_node);
                 $newId = intval($tempAr[1]) + 1;
                 $new_node_id = $idCourse . "_" . $newId;
@@ -5070,7 +5074,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         }
         // update row to table "extended_node"
         if ($node_ha['type'] == ADA_LEAF_WORD_TYPE or $node_ha['type'] == ADA_GROUP_WORD_TYPE) {
-            $res = $this->EditExtensionNode($node_ha);
+            $res = $this->editExtensionNode($node_ha);
             if (AMADB::isError($res)) {
                 $err = $this->errorMessage(AMA_ERR_ADD) . "while in doEdit_node($id_node)" .
                     AMA_SEP . $res->getMessage();
@@ -5098,7 +5102,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      *
      * @see doEdit_node()
      */
-    private function EditExtensionNode($node_ha)
+    private function editExtensionNode($node_ha)
     {
         ADALogger::logDb("entered add_extension_node");
 
@@ -5302,7 +5306,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         // add row to table "nodo"
         $res = $this->doAddNode($node_ha);
         if (AMADB::isError($res)) {
-            $err = $this->errorMessage(AMA_ERR_ADD) . "while in add_node(".$node_ha['id'].")" .
+            $err = $this->errorMessage(AMA_ERR_ADD) . "while in add_node(" . $node_ha['id'] . ")" .
                 AMA_SEP . $res->getMessage();
 
             ADALogger::logDb("$err detected");
@@ -5391,7 +5395,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             $resources_ar = $node_ha['resources_ar'];
             // add them to the DB
             $res = $this->addMedia($resources_ar, $sqlnode_id);
-            if (AMA_DataHandler::isError($res)) {
+            if (AMADataHandler::isError($res)) {
                 $err = $this->errorMessage(AMA_ERR_ADD) . "while in add_node($node_id)" .
                     AMA_SEP . $res->getMessage();
                 $this->rollback();
@@ -5528,7 +5532,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             $node_id,
         ];
         $result = $this->queryPrepared($sql, $values);
-        if (AMA_DataHandler::isError($result)) {
+        if (AMADataHandler::isError($result)) {
             return new AMAError(AMA_ERR_UPDATE);
         }
         return true;
@@ -5574,7 +5578,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         if (count($risorse_ar)) {
             // delete all references to $node_id in risorse_nodi
             $res_risorse = $this->delMedia($risorse_ar, $sqlnode_id);
-            if (AMA_DataHandler::isError($res_risorse)) {
+            if (AMADataHandler::isError($res_risorse)) {
                 $err = $this->errorMessage(AMA_ERR_REMOVE) . "while in remove_node($node_id)" .
                     AMA_SEP .  $res_risorse->getMessage();
 
@@ -5595,7 +5599,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         if (count($links_ar)) {
             // delete all references to $node_id in link
             $res_links = $this->delLinks($sqlnode_id);
-            if (AMA_DataHandler::isError($res_links)) {
+            if (AMADataHandler::isError($res_links)) {
                 $err = $this->errorMessage(AMA_ERR_REMOVE) .  "while in remove_node($node_id)" .
                     AMA_SEP . $res_links->getMessage();
 
@@ -5655,7 +5659,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
          * node removal
          */
         $res_node = $this->doRemoveNode($sqlnode_id);
-        if (AMA_DataHandler::isError($res_node)) {
+        if (AMADataHandler::isError($res_node)) {
             $err = $this->errorMessage(AMA_ERR_REMOVE) . "while in remove_node($node_id)" .
                 AMA_SEP . $res_node->getMessage();
 
@@ -5700,7 +5704,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         // children removal loop
         foreach ($ids_ar as $id) {
             $res = $this->removeNode($node_id);
-            if (AMA_DataHandler::isError($res)) {
+            if (AMADataHandler::isError($res)) {
                 ADALogger::logDb($res->message . " detected, aborting recursive removal");
                 return $res;
             }
@@ -5735,7 +5739,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
 				WHERE `id_nodo`" . $condition;
 
         $tmp = $db->getAll($sql, null, AMA_FETCH_ASSOC);
-        if (AMA_DataHandler::isError($tmp)) {
+        if (AMADataHandler::isError($tmp)) {
             return $tmp;
         } else {
             $result = [];
@@ -5914,7 +5918,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      *
      * @param $clause
      *
-     * @return a bi-dimensional array containing these fields
+     * @return array|AMAError a bi-dimensional array containing these fields
      *
      *     array(array(ID1, 'field_1_1', 'field_1_2'),
      *           array(ID2, 'field_2_1', 'field_2_2'),
@@ -6219,7 +6223,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             return new AMAError(AMA_ERR_GET);
         }
         // return an error in case of an empty recordset
-        if (!res_ar) {
+        if (!$res_ar) {
             return new AMAError(AMA_ERR_NOT_FOUND);
         }
         return $res_ar;
@@ -6429,7 +6433,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      *
      * @param pos_ar - the four elements array containing the x0, y0, x1, y1 coordinates
      *
-     * @return true on success, an AMAError object on failure
+     * @return true|AMAError on success, an AMAError object on failure
      */
     protected function doAddPosition($pos_ar)
     {
@@ -6908,7 +6912,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         }
 
         $sqlsearch_text = $this->sqlPrepared($search_text);
-        $sqlsearch_text = substr($sqlsearch_text, 1, count($sqlsearch_text) - 2);
+        $sqlsearch_text = substr($sqlsearch_text, 1, strlen($sqlsearch_text) - 1);
 
         $sql = "SELECT  RE.nome_file, RE.tipo, N.id_nodo, N.id_utente, N.nome, N.titolo
                 FROM risorsa_esterna AS RE, risorse_nodi AS RN, nodo AS N
@@ -7087,7 +7091,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      * @param $node_id id of the node to be added
      * @param $res_id  id of the resource to be added
      *
-     * @return true on success, an AMAError object on failure
+     * @return true|AMAError on success, an AMAError object on failure
      */
     public function addRisorseNodi($sqlnode_id, $res_id)
     {
@@ -7274,7 +7278,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         for ($i = 1; $i <= $n; $i++) {
             $res_id = $risorse_ar[$i - 1];
             $res = $this->delRisorseNodi($sqlnode_id, $res_id);
-            if (AMA_DataHandler::isError($res)) {
+            if (AMADataHandler::isError($res)) {
                 // does the rollback
                 $err  = $res->getMessage() . AMA_SEP . $this->rollback();
                 ADALogger::logDb("$err detected, rollbacking");
@@ -7286,7 +7290,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             }
 
             $res = $this->removeRisorsaEsterna($res_id);
-            if (AMA_DataHandler::isError($res)) {
+            if (AMADataHandler::isError($res)) {
                 // does the rollback
                 $err  = $res->getMessage() . AMA_SEP . $this->rollback();
                 ADALogger::logDb("$err detected, rollbacking");
@@ -7658,7 +7662,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      *
      * @param  clause the clause string which will be added to the select
      *
-     * @return a nested array containing the list, or an AMAError object or a DB_Error object if something goes wrong
+     * @return array a nested array containing the list, or an AMAError object or a DB_Error object if something goes wrong
      * The form of the nested array is:
      *     array(array(ID1, 'field_1_1', 'field_1_2'),
      *           array(ID2, 'field_2_1', 'field_2_2'),
@@ -8292,7 +8296,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      * @param $id_instance    - course instance id
      * @param $number    - mode: a single tutor  or array
      *
-     * @return an error if something goes wrong, an array if $number >=1, an integer else
+     * @return array|AMAError an error if something goes wrong, an array if $number >=1, an integer else
      */
     public function courseInstanceTutorGet($id_instance, $number = 1)
     {
@@ -8312,7 +8316,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             return new AMAError(AMA_ERR_GET);
         }
 
-        if ((!empty($res)) && (!AMA_dataHandler::isError($res))) {
+        if ((!empty($res)) && (!AMADataHandler::isError($res))) {
             if ($number == 1) {
                 $id_utente_tutor = $res[0];
                 return $id_utente_tutor;
@@ -8339,7 +8343,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      * @param $id_instance    - course instance id
      * @param $number    - mode: a single tutor  or array
      *
-     * @return an error if something goes wrong, an array if $number >=1, an integer else
+     * @return array|AMAError an error if something goes wrong, an array if $number >=1, an integer else
      */
     public function courseInstanceTutorInfoGet($id_instance, $number = 0)
     {
@@ -8359,7 +8363,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         }
         return $res;
         /*
-        if ((!empty($res)) && (!AMA_dataHandler::isError($res))){
+        if ((!empty($res)) && (!AMADataHandler::isError($res))){
         if ($number==1){
           $id_utente_tutor = $res[0];
           return $id_utente_tutor;
@@ -8443,7 +8447,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      * @param userId
      *
      *
-     * @return number of notes on success, an AMAError object on failure
+     * @return int of notes on success, an AMAError object on failure
      */
     public function countNewNotesInCourseInstances($courseInstanceId, $userId)
     {
@@ -8957,7 +8961,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
     /**
      *
      * @param $videoroom_dataAr
-     * @return unknown_type
+     * @return bool|\PDOException|\Lynxlab\ADA\Main\AMA\AMAError|\Lynxlab\ADA\Main\ADAError
      */
     public function addVideoroom($videoroom_dataAr = [])
     {
@@ -9081,7 +9085,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         } else {
             $sql .= ' ORDER BY `id_log` DESC LIMIT 1';
         }
-        if ($logData['event'] == videoroom::EVENT_ENTER) {
+        if ($logData['event'] == VideoRoom::EVENT_ENTER) {
             // run the prepared exit query
             $res = $this->queryPrepared($sql, $values);
             if (AMADB::isError($res)) {
@@ -9615,7 +9619,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         $res_ar['provider'] = $tester;
         foreach ($sql as $type => $query) {
             $res =  $db->getOne($query);
-            if (!AMA_DataHandler::isError($res)) {
+            if (!AMADataHandler::isError($res)) {
                 $res_ar[$type] = $res;
             }
         }
@@ -9999,7 +10003,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         ];
 
         $result = $this->getRowPrepared($sql, $values, AMA_FETCH_ASSOC);
-        if (AMA_DataHandler::isError($result)) {
+        if (AMADataHandler::isError($result)) {
             return new AMAError(AMA_ERR_GET);
         }
         return $result;
@@ -10020,7 +10024,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      */
     public function &getExHistoryList($out_fields_ar)
     {
-        return $this->doFindExHistoryList($out_fields_ar);
+        return $this->doFindExHistoryList($out_fields_ar, '');
     }
 
 
@@ -10543,7 +10547,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      * gets the left and right submenu trees
      *
      * @param number $tree_id the id of the menu tree to load
-     * @param AMA_DataHandler $dbToUse the data handler to be used, either Common or Tester
+     * @param AMADataHandler $dbToUse the data handler to be used, either Common or Tester
      * @param boolean $get_all set it to true to get also disabled elements.
      *
      * @return array associative, with 'left' and 'right' keys for each submenu tree
@@ -10583,7 +10587,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      *
      * @param number $tree_id the id of the menu tree to load
      * @param number $parent_id the id of the parent to get children for
-     * @param AMA_DataHandler $dbToUse the data handler to be used, either Common or Tester
+     * @param AMADataHandler $dbToUse the data handler to be used, either Common or Tester
      * @param boolean $get_all set it to true to get also disabled elements.
      *
      * @return array of found children or null if no children found

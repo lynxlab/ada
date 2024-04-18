@@ -146,7 +146,7 @@ class Html extends GenericHtml
         if (is_file($widgetsConfFilename)) {
             try {
                 $widgetAr = ArrayToXML::toArray(file_get_contents($widgetsConfFilename));
-            } catch (Exception $e) {
+            } catch (Exception) {
                 /*
                    * see config_errors.inc.php line 167 and following.
                    * depending on the erorr phase / severity something will happen...

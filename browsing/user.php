@@ -20,7 +20,8 @@ use function Lynxlab\ADA\Main\Utilities\whoami;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -64,6 +65,7 @@ $self = whoami();
  * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
  * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
  * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -125,10 +127,8 @@ if (!AMADataHandler::isError($courseInstances)) {
      * and the proper page is shown to the logged user (as if she was subscribed to one course only)
      */
     if (isset($_GET['id_course']) && isset($_GET['id_course_instance'])) {
-        $courseInstances = array_filter($courseInstances, function ($courseInstance) {
-            return (($courseInstance['id_corso'] == $_GET['id_course']) &&
-                ($courseInstance['id_istanza_corso'] == $_GET['id_course_instance']));
-        });
+        $courseInstances = array_filter($courseInstances, fn ($courseInstance) => ($courseInstance['id_corso'] == $_GET['id_course']) &&
+            ($courseInstance['id_istanza_corso'] == $_GET['id_course_instance']));
         /**
          * @author giorgio 24/apr/2013
          *
@@ -371,7 +371,6 @@ $content_dataAr = [
     'messages' => $user_messages->getHtml(),
     'agenda' => $user_agenda->getHtml(),
     'events' => $user_events->getHtml(),
-    'status' => $status,
     'firstcol_title' => translateFN('Informazioni'),
 ];
 
@@ -410,9 +409,7 @@ if ($displayTable) {
     if ($displayWhatsNew) {
         $whatsnew = $userObj->getwhatsnew();
         $new_nodes = array_unique(
-            array_filter($whatsnew[$provider['puntatore']], function ($node) use ($courseId) {
-                return strpos($node['id_nodo'], $courseId) !== false;
-            })
+            array_filter($whatsnew[$provider['puntatore']], fn ($node) => str_contains($node['id_nodo'], $courseId))
         );
 
         //display a link to node if there are new nodes

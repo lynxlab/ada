@@ -42,18 +42,10 @@ class ImpersonateActions
     protected static function getCanDoArr()
     {
         return [
-            self::IMPERSONATE => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR]);
-            },
-            self::NEW_LINKEDUSER => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER]);
-            },
-            self::SAVE_LINKEDUSER => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER]);
-            },
-            self::DELETE_LINKEDUSER => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER]);
-            },
+            self::IMPERSONATE => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR]),
+            self::NEW_LINKEDUSER => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER]),
+            self::SAVE_LINKEDUSER => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER]),
+            self::DELETE_LINKEDUSER => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER]),
         ];
     }
 
@@ -65,7 +57,7 @@ class ImpersonateActions
      */
     public static function getConstantFromString($stringConstant)
     {
-        return defined(__CLASS__ . '::' . $stringConstant) ? constant(__CLASS__ . '::' . $stringConstant) : null;
+        return defined(self::class . '::' . $stringConstant) ? constant(self::class . '::' . $stringConstant) : null;
     }
 
     /**

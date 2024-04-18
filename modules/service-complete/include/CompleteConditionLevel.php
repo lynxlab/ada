@@ -109,7 +109,7 @@ class CompleteConditionLevel extends CompleteCondition
         }
 
         if (!is_null($summary) && is_array($summary)) {
-            $summary[__CLASS__] = [
+            $summary[self::class] = [
                 'isSatisfied' => $retval,
                 'param' => intval($max_level ?? $this->param),
                 'check' => intval($level),

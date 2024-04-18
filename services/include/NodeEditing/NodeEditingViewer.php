@@ -1099,6 +1099,7 @@ class NodeEditingViewer
         // language
         Translator::loadSupportedLanguagesInSession();
         $supported_languages = Translator::getSupportedLanguages();
+        $login_page_language_code = $_SESSION['sess_user_language'] ?? Translator::negotiateLoginPageLanguage();
 
         $select = CDOMElement::create('select', 'id:p_selected_language, name:lingua');
         foreach ($supported_languages as $language) {

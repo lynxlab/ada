@@ -18,7 +18,8 @@ use function Lynxlab\ADA\Main\Utilities\whoami;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -71,6 +72,7 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
  * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
  * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -168,10 +170,9 @@ if (!is_null($submit)) {
         // se studente, filtra i nodi con livello > di quello dello studente
         if (isset($userObj) && $userObj->getType() == AMA_TYPE_STUDENT) {
             $studenLevel = (int) $userObj->getStudentLevel($userObj->getId(), $courseInstanceObj->getId());
-            $resHa = array_filter($resHa, function ($row) use ($studenLevel) {
+            $resHa = array_filter($resHa, fn ($row) =>
                 // livello is row[6]
-                return (int) $row[6] <= $studenLevel;
-            });
+                (int) $row[6] <= $studenLevel);
         }
     }
 

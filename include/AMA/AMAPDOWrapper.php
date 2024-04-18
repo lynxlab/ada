@@ -136,7 +136,7 @@ class AMAPDOWrapper
                     $modes = array_filter(explode(',', $modeStr), function ($mode) use ($modes, $removeModes) {
                         if (!in_array($mode, $modes)) {
                             foreach ($removeModes as $removeMode) {
-                                if (strpos($mode, $removeMode) !== false) {
+                                if (str_contains($mode, $removeMode)) {
                                     return false;
                                 }
                             }
@@ -225,7 +225,7 @@ class AMAPDOWrapper
                     ]
                 );
                 foreach ($event->getArguments() as $key => $val) {
-                    $$key = $val;
+                    ${$key} = $val;
                 }
             }
             $stmt = $this->connection_object->prepare($query);
@@ -257,7 +257,7 @@ class AMAPDOWrapper
                 ]
             );
             foreach ($event->getArguments() as $key => $val) {
-                $$key = $val;
+                ${$key} = $val;
             }
         }
         return $retval;

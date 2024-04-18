@@ -329,13 +329,13 @@ abstract class AbstractLogin implements ILogin
      * stored $_SESSION['sess_loginProviderArr']['className'] and
      * $_SESSION['sess_loginProviderArr']['id'] variables
      *
-     * @return Object the instantiated class
+     * @return object the instantiated class
      *
      * @access public
      */
     public static function getLoginProviderFromSession()
     {
-
+        $retval = null;
         if (
             isset($_SESSION['sess_loginProviderArr']) &&
             is_array($_SESSION['sess_loginProviderArr']) &&
@@ -344,11 +344,10 @@ abstract class AbstractLogin implements ILogin
         ) {
             $className = AbstractLogin::getNamespaceName() . "\\" . $_SESSION['sess_loginProviderArr']['className'];
             if (class_exists($className)) {
-                return new $className($_SESSION['sess_loginProviderArr']['id']);
+                $retval =  new $className($_SESSION['sess_loginProviderArr']['id']);
             }
-        } else {
-            return null;
         }
+        return $retval;
     }
 
     /**

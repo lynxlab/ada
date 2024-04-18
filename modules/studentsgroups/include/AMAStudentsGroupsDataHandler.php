@@ -60,9 +60,7 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
         }
         $reflection = new ReflectionClass($className);
         $properties =  array_map(
-            function ($el) {
-                return $el->getName();
-            },
+            fn ($el) => $el->getName(),
             $reflection->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PUBLIC)
         );
 
@@ -73,9 +71,7 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
         // check for customField class const and explode matching propertiy array
         $properties = $className::explodeArrayProperties($properties);
 
-        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(function ($el) {
-            return "`$el`";
-        }, $properties)), $className::table)
+        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(fn ($el) => "`$el`", $properties)), $className::table)
             . $this->buildWhereClause($whereArr, $properties) . $this->buildOrderBy($orderByArr, $properties);
 
         if (is_null($dbToUse)) {
@@ -86,9 +82,7 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
         if (AMADB::isError($result)) {
             throw new StudentsGroupsException($result->getMessage(), (int) $result->getCode());
         } else {
-            $retArr = array_map(function ($el) use ($className, $dbToUse) {
-                return new $className($el, $dbToUse);
-            }, $result);
+            $retArr = array_map(fn ($el) => new $className($el, $dbToUse), $result);
             // load properties from $joined array
             foreach ($retArr as $retObj) {
                 foreach ($joined as $joinKey => $joinData) {
@@ -156,7 +150,7 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
 
         // set to null all empty passed fields
         foreach (array_keys($saveData) as $aKey) {
-            if (strpos($aKey, Groups::CUSTOMFIELDPRFIX) === 0 && strlen($saveData[$aKey]) <= 0) {
+            if (str_starts_with($aKey, Groups::CUSTOMFIELDPRFIX) && strlen($saveData[$aKey]) <= 0) {
                 $saveData[$aKey] = null;
             }
         }
@@ -276,9 +270,7 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
                         Groups::UTENTERELTABLE,
                         implode(
                             ',',
-                            array_map(function ($el) use ($retArr) {
-                                return '(' . $retArr['group']->getId() . ',' . $el . ')';
-                            }, $usersToAdd)
+                            array_map(fn ($el) => '(' . $retArr['group']->getId() . ',' . $el . ')', $usersToAdd)
                         )
                     );
                     $this->executeCriticalPrepared($sql);
@@ -311,9 +303,7 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
                 ];
                 $group = reset($result);
                 $courseProviderAr = $GLOBALS['common_dh']->getTesterInfoFromIdCourse($saveData['courseId']);
-                $subscribedIds = array_map(function ($s) {
-                    return $s->getSubscriberId();
-                }, Subscription::findSubscriptionsToClassRoom($saveData['instanceId'], true));
+                $subscribedIds = array_map(fn ($s) => $s->getSubscriberId(), Subscription::findSubscriptionsToClassRoom($saveData['instanceId'], true));
                 foreach ($group->getMembers() as $student) {
                     if (!in_array($student->getId(), $subscribedIds)) {
                         if (!in_array($courseProviderAr['puntatore'], $student->getTesters())) {
@@ -378,9 +368,7 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
         return sprintf(
             "UPDATE `%s` SET %s",
             $table,
-            implode(',', array_map(function ($el) {
-                return "`$el`=?";
-            }, $fields))
+            implode(',', array_map(fn ($el) => "`$el`=?", $fields))
         ) . $this->buildWhereClause($whereArr, array_keys($whereArr)) . ';';
     }
 
@@ -396,12 +384,8 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
         return sprintf(
             "INSERT INTO `%s` (%s) VALUES (%s);",
             $table,
-            implode(',', array_map(function ($el) {
-                return "`$el`";
-            }, array_keys($fields))),
-            implode(',', array_map(function ($el) {
-                return "?";
-            }, array_keys($fields)))
+            implode(',', array_map(fn ($el) => "`$el`", array_keys($fields))),
+            implode(',', array_map(fn ($el) => "?", array_keys($fields)))
         );
     }
 

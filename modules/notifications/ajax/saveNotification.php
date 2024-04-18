@@ -14,7 +14,8 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 /**
  * Base config file
  */
-require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
+
+require_once(realpath(__DIR__) . '/../../../config_path.inc.php');
 
 // MODULE's OWN IMPORTS
 
@@ -48,27 +49,19 @@ $passedData = [];
 $needed = [
     [
         'key' => 'notificationType',
-        'sanitize' => function ($v) {
-            return (in_array($v, Notification::TYPES) ? $v : 0);
-        },
+        'sanitize' => fn ($v) => in_array($v, Notification::TYPES) ? $v : 0,
     ],
     [
         'key' => 'isActive',
-        'sanitize' => function ($v) {
-            return (bool) $v;
-        },
+        'sanitize' => fn ($v) => (bool) $v,
     ],
     [
         'key' => 'instanceId',
-        'sanitize' => function ($v) {
-            return intval($v) > 0 ? intval($v) : null;
-        },
+        'sanitize' => fn ($v) => intval($v) > 0 ? intval($v) : null,
     ],
     [
         'key' => 'notificationId',
-        'sanitize' => function ($v) {
-            return intval($v) > 0 ? intval($v) : null;
-        },
+        'sanitize' => fn ($v) => intval($v) > 0 ? intval($v) : null,
     ],
     [
         'key' => 'nodeId',

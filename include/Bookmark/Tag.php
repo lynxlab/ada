@@ -243,6 +243,7 @@ class Tag extends Bookmark
         $error = $GLOBALS['error'];
         $sess_id_course_instance = $GLOBALS['sess_id_course_instance'];
         $sess_id_user = $GLOBALS['sess_id_user'];
+        $sess_id_course = $GLOBALS['sess_id_course'];
 
         $debug = $GLOBALS['debug'];
 
@@ -269,7 +270,7 @@ class Tag extends Bookmark
                 $student_listAr =  $student_classObj->student_list;
                 foreach ($student_listAr as $student) {
                     $id_student = $student['id_utente_studente'];
-                    $student_dataHa =  $student_classObj->findStudentIndexAtt($id_course, $sess_id_course_instance, $id_student);
+                    $student_dataHa =  $student_classObj->findStudentIndexAtt($sess_id_course, $sess_id_course_instance, $id_student);
                     $user_activity_index = $student_dataHa['index_att'];
                     $class_student_activityAr[$id_student] = $user_activity_index;
                     //echo "$id_student : $user_activity_index <br>";

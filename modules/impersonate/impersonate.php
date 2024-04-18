@@ -23,7 +23,7 @@ use function Lynxlab\ADA\Main\AMA\DBRead\readUser;
 /**
  * Base config file
  */
-require_once(realpath(dirname(__FILE__)) . '/../../config_path.inc.php');
+require_once(realpath(__DIR__) . '/../../config_path.inc.php');
 
 // MODULE's OWN IMPORTS
 
@@ -59,9 +59,7 @@ if (isset($_SESSION[Utils::MODULES_IMPERSONATE_SESSBACKDATA])) {
         if (count($impObj) > 0) {
             if (isset($_GET['t']) && intval($_GET['t']) > 0) {
                 $t = intval($_GET['t']);
-                $impObj = array_filter($impObj, function ($el) use ($t) {
-                    return $el->getLinkedType() == $t;
-                });
+                $impObj = array_filter($impObj, fn ($el) => $el->getLinkedType() == $t);
             }
             $impObj = reset($impObj);
             $impersonateId = $impObj->getLinkedId();
@@ -69,7 +67,7 @@ if (isset($_SESSION[Utils::MODULES_IMPERSONATE_SESSBACKDATA])) {
         } else {
             throw new ImpersonateException('Error loading LinkedUsers object');
         }
-    } catch (ImpersonateException $e) {
+    } catch (ImpersonateException) {
         $impersonateId = -1;
         if (isset($_SESSION[Utils::MODULES_IMPERSONATE_SESSBACKDATA])) {
             unset($_SESSION[Utils::MODULES_IMPERSONATE_SESSBACKDATA]);
