@@ -896,7 +896,7 @@ function loadServiceTypes()
 
     if (!isset($_SESSION['service_level'])) {
         if ($GLOBALS['dh'] instanceof AMADataHandler) {
-            $servicesTypeAr =  $GLOBALS['dh']->get_service_type();
+            $servicesTypeAr =  $GLOBALS['dh']->getServiceType();
             if (!empty($servicesTypeAr) && !AMADB::isError($servicesTypeAr)) {
                 foreach ($servicesTypeAr as $servicesType) {
                     if (isset($servicesType['livello_servizio']) && isset($servicesType['nome_servizio'])) {
