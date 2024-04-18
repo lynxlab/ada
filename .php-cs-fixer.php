@@ -9,6 +9,7 @@ $finder = (new PhpCsFixer\Finder())
         'widgets/cache',
         'api',
         'vendor',
+        'external/fckeditor/editor/dialog/fck_spellerpages/spellerpages/server-scripts/',
     ]);
 
 return (new PhpCsFixer\Config())
@@ -21,5 +22,6 @@ return (new PhpCsFixer\Config())
             'sort_algorithm' => 'alpha',
         ],
         '@PHP83Migration' => true,
+        'heredoc_indentation' => false,
     ])
     ->setFinder($finder);
