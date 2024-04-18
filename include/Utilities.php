@@ -13,6 +13,7 @@
 namespace Lynxlab\ADA\Main\Utilities;
 
 use DateTime;
+use DateTimeImmutable;
 use DateTimeZone;
 
 function mydebug($line, $file, $vars)
@@ -102,7 +103,7 @@ function ts2dFN($timestamp = "")
         $timestamp = time();
     }
 
-    $dataformattata = strftime(ADA_DATE_FORMAT, $timestamp); // AMA version
+    $dataformattata  = (new DateTimeImmutable())->setTimestamp($timestamp)->format(str_replace('%','',ADA_DATE_FORMAT));
     /*
   $data = getdate($timestamp);
   $dataformattata = $data['mday']."/".$data['mon']."/".$data['year'];

@@ -11,6 +11,7 @@
 
 namespace Lynxlab\ADA\Main\AMA;
 
+use DateTimeImmutable;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\Logger\ADALogger;
@@ -296,14 +297,14 @@ abstract class AbstractAMADataHandler
      * @param $timestamp the timestamp
      * @param $format the format used to convert the timestamp (optional, default = ADA_DATE_FORMAT)
      *
-     * @return the string representing the timestamp as a date, according to the format
+     * @return string the string representing the timestamp as a date, according to the format
      */
     public static function tsToDate($timestamp, $format = ADA_DATE_FORMAT)
     {
         if ($timestamp == "") {
             return "";
         }
-        return strftime($format, (float)$timestamp);
+        return (new DateTimeImmutable())->setTimestamp($timestamp)->format(str_replace('%','',$format));
     }
 
     /**
