@@ -341,7 +341,6 @@ class AdminModuleHtmlLib
             ];
 
             if (defined('MODULES_GDPR') && true === MODULES_GDPR && isset($_GET['user_type']) && DataValidator::isUinteger($_GET['user_type']) == AMA_TYPE_SWITCHER) {
-                require_once MODULES_GDPR_PATH . '/include/GdprAPI.php';
                 if (!isset($gdprApi)) {
                     $tester_info = $GLOBALS['common_dh']->getTesterInfoFromId($id_tester);
                     $gdprAPI = new GdprAPI($tester_info[10]);

@@ -127,7 +127,6 @@ class VideoPlayer
                             //      <video>
                             //          <source src="'.$http_file_path.$file_name.'" type="video/mp4" />
                             //      </video></div>';
-                            require_once ROOT_DIR . '/include/HtmlLibrary/MediaViewingHtmlLib.inc.php';
                             $exploded_video = MediaViewingHtmlLib::jplayerMp4Viewer($http_file_path . $file_name, $file_name, $width, $height);
                         } else {
                             $exploded_video = '

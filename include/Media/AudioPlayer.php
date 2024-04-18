@@ -52,7 +52,6 @@ class AudioPlayer
             case 2:
             default:
                 if ($fileInfo['fileformat'] == 'mp3') { // use jplayer if mp3
-                    require_once ROOT_DIR . '/include/HtmlLibrary/MediaViewingHtmlLib.inc.php';
                     $exploded_audio = MediaViewingHtmlLib::jplayerMp3Viewer($http_file_path . $file_name, $audioTitle);
                 } else {
                     $url = $http_root_dir . "/external/mediaplayer/1pixelout/1pixelout.swf";
