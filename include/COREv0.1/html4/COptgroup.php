@@ -18,6 +18,6 @@ class COptgroup extends CSelectElement
     public function __construct()
     {
         parent::__construct();
-        $this->addAccepted('COption');
+        $this->addAccepted(COption::class);
     }
 }

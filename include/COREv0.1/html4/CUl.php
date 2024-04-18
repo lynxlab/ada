@@ -18,6 +18,6 @@ class CUl extends CElement
     public function __construct()
     {
         parent::__construct();
-        $this->addAccepted('CLi');
+        $this->addAccepted(CLi::class);
     }
 }

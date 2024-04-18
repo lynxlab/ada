@@ -28,6 +28,6 @@ class CForm extends CElement
     {
         parent::__construct();
         // TODO: chiamare addAccepted per %block, Script
-        $this->addRejected('CForm');
+        $this->addRejected(CForm::class);
     }
 }

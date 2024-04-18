@@ -50,7 +50,7 @@ abstract class CBaseElement extends CBase
         //$attribute_value_pair = '/\s*([a-z]+)\s*:\s*(.*)\s*/';
 
         $matches = [];
-        preg_match_all($attribute_value_pair, $a_list_of_attribute_value_pairs, $matches);
+        preg_match_all($attribute_value_pair, (string) $a_list_of_attribute_value_pairs, $matches);
 
         $attributes       = [];
         $attributes       = $matches[1];

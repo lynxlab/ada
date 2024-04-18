@@ -26,11 +26,11 @@ class CTable extends CElement
     public function __construct()
     {
         parent::__construct();
-        $this->addAccepted('CCaption');
-        $this->addAccepted('CCol');
-        $this->addAccepted('CColgroup');
-        $this->addAccepted('CTHead');
-        $this->addAccepted('CTFoot');
-        $this->addAccepted('CTBody');
+        $this->addAccepted(CCaption::class);
+        $this->addAccepted(CCol::class);
+        $this->addAccepted(CColgroup::class);
+        $this->addAccepted(CTHead::class);
+        $this->addAccepted(CTFoot::class);
+        $this->addAccepted(CTBody::class);
     }
 }

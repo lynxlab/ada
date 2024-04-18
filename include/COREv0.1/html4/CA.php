@@ -29,6 +29,6 @@ class CA extends CATFElement
     public function __construct()
     {
         parent::__construct();
-        $this->addRejected('CA');
+        $this->addRejected(CA::class);
     }
 }

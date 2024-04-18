@@ -21,6 +21,6 @@ class CColgroup extends CAlignableElement
     public function __construct()
     {
         parent::__construct();
-        $this->addAccepted('CCol');
+        $this->addAccepted(CCol::class);
     }
 }

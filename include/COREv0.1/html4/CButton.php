@@ -23,13 +23,13 @@ class CButton extends CATFElement
     public function __construct()
     {
         parent::__construct();
-        $this->addRejected('CA');
-        $this->addRejected('CInput');
-        $this->addRejected('CSelect');
-        $this->addRejected('CTextarea');
-        $this->addRejected('CLabel');
-        $this->addRejected('CButton');
-        $this->addRejected('CForm');
-        $this->addRejected('CFieldset');
+        $this->addRejected(CA::class);
+        $this->addRejected(CInputElement::class);
+        $this->addRejected(CSelect::class);
+        $this->addRejected(CTextarea::class);
+        $this->addRejected(CLabel::class);
+        $this->addRejected(CButton::class);
+        $this->addRejected(CForm::class);
+        $this->addRejected(CFieldset::class);
     }
 }

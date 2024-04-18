@@ -24,7 +24,7 @@ class CSelect extends CTFElement
     public function __construct()
     {
         parent::__construct();
-        $this->addAccepted('COptgroup');
-        $this->addAccepted('COption');
+        $this->addAccepted(COptgroup::class);
+        $this->addAccepted(COption::class);
     }
 }

@@ -20,6 +20,6 @@ class CLabel extends CAFElement
     public function __construct()
     {
         parent::__construct();
-        $this->addRejected('CLabel');
+        $this->addRejected(CLabel::class);
     }
 }

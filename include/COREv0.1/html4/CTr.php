@@ -18,7 +18,7 @@ class CTr extends CAlignableElement
     public function __construct()
     {
         parent::__construct();
-        $this->addAccepted('CTh');
-        $this->addAccepted('CTd');
+        $this->addAccepted(CTh::class);
+        $this->addAccepted(CTd::class);
     }
 }

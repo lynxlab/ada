@@ -18,6 +18,6 @@ class CTFoot extends CAlignableElement
     public function __construct()
     {
         parent::__construct();
-        $this->addAccepted('CTr');
+        $this->addAccepted(CTr::class);
     }
 }

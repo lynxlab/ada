@@ -18,7 +18,7 @@ class CDl extends CElement
     public function __construct()
     {
         parent::__construct();
-        $this->addAccepted('CDt');
-        $this->addAccepted('CDd');
+        $this->addAccepted(CDt::class);
+        $this->addAccepted(CDd::class);
     }
 }
