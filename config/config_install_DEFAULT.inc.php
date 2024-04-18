@@ -307,17 +307,17 @@ define('ADA_DEFAULT_EMAIL_FOOTER', sprintf("This message has been sent to you by
 /**
  * default author upload path
  */
-define('ADA_UPLOAD_PATH', ROOT_DIR . '/uploadFile/uploaded_files/');
+define('ADA_UPLOAD_PATH', ROOT_DIR . '/upload_file/uploaded_files/');
 
 /**
  * default HTTP upload path for each user
  */
-define('HTTP_UPLOAD_PATH', HTTP_ROOT_DIR . '/uploadFile/uploaded_files/');
+define('HTTP_UPLOAD_PATH', HTTP_ROOT_DIR . '/upload_file/uploaded_files/');
 
 /**
  * default tutor upload path
  */
-define('TUTOR_UPLOAD_PATH', ROOT_DIR . '/uploadFile/uploaded_files/tutors/');
+define('TUTOR_UPLOAD_PATH', ROOT_DIR . '/upload_file/uploaded_files/tutors/');
 
 /**
  * default media path (in case author's mediapath = "")
