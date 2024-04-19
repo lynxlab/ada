@@ -13,20 +13,21 @@ use Lynxlab\ADA\Module\Login\AbstractLogin;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\getUserIpAddr;
-use function Lynxlab\ADA\Main\Utilities\redirect;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 if (is_file(realpath(__DIR__) . '/config_path.inc.php')) {
     require_once realpath(__DIR__) . '/config_path.inc.php';
 } else {
-    header('Location: install.php', true, 302);
+    header('Location: install.php', true, 307);
+    die();
 }
 
 /**
  * redirect to install if ADA is NOT installed, either with install script or manually
  */
-if (!is_dir(ROOT_DIR . '/clients') || count(glob(ROOT_DIR . "/clients/*/client_conf.inc.php")) === 0) {
-    redirect('install.php');
+if (!defined('ROOT_DIR') || !is_dir(ROOT_DIR . '/clients') || count(glob(ROOT_DIR . "/clients/*/client_conf.inc.php")) === 0) {
+    header('Location: install.php', true, 307);
+    die();
 }
 
 /**
@@ -57,13 +58,6 @@ $layout_dataAr = [
     'node_course_id' => null,
     'module_dir'     => null,
 ];
-
-if (is_file(ROOT_DIR . '/include/' . $self . '_functions.inc.php')) {
-    include_once ROOT_DIR . '/include/' . $self . '_functions.inc.php';
-}
-
-// non serve più...
-// require_once ROOT_DIR.'/include/aut/login.inc.php';
 
 $lang_get = $_GET['lang'] ?? null;
 
