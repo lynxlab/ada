@@ -10,6 +10,7 @@
 
 namespace Lynxlab\ADA\Module\EtherpadIntegration;
 
+use Jawira\CaseConverter\Convert;
 use Lynxlab\ADA\Main\Forms\lib\classes\FForm;
 use ReflectionClass;
 
@@ -76,6 +77,11 @@ abstract class EtherpadBase
         foreach ($data as $key => $val) {
             if (property_exists($this, $key) && method_exists($this, 'set' . ucfirst($key))) {
                 $this->{'set' . ucfirst($key)}($val);
+            } else {
+                $method = (new Convert('set_' . $key))->toCamel();
+                if (property_exists($this, $key) && method_exists($this, $method)) {
+                    $this->{$method}($val);
+                }
             }
         }
         return $this;
