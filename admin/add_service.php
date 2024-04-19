@@ -7,6 +7,7 @@ use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**

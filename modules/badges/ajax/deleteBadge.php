@@ -6,6 +6,8 @@ use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
 use Lynxlab\ADA\Module\Badges\BadgesActions;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Base config file
  */

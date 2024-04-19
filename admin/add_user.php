@@ -16,6 +16,7 @@ use Lynxlab\ADA\Main\User\ADAPractitioner;
 use Lynxlab\ADA\Main\User\ADASwitcher;
 use Lynxlab\ADA\Main\User\ADAUser;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**

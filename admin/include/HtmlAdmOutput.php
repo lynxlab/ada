@@ -23,6 +23,7 @@ namespace Lynxlab\ADA\Admin;
 
 use Lynxlab\ADA\Main\form\PhpOpenFormGen;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\dirTree;
 use function Lynxlab\ADA\Main\Utilities\readDir;
 use function Lynxlab\ADA\Main\Utilities\todayDateFN;

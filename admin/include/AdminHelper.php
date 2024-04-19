@@ -21,6 +21,8 @@ use RecursiveIteratorIterator;
 use RecursiveRegexIterator;
 use RegexIterator;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Admin helper class
  */

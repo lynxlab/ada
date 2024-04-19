@@ -3,6 +3,8 @@
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /*
  *
  * Comportamento

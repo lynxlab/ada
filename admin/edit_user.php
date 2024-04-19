@@ -11,6 +11,8 @@ use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Base config file
  */

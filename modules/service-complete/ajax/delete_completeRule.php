@@ -16,6 +16,8 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Servicecomplete\AMACompleteDataHandler;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 ini_set('display_errors', '0');
 error_reporting(E_ALL);
 /**

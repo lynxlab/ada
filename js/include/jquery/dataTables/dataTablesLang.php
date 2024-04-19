@@ -14,6 +14,8 @@
  * @version		0.1
  */
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Base config file
  */
