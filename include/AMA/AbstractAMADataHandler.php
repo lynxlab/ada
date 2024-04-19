@@ -304,7 +304,7 @@ abstract class AbstractAMADataHandler
         if ($timestamp == "") {
             return "";
         }
-        return (new DateTimeImmutable())->setTimestamp($timestamp)->format(str_replace('%','',$format));
+        return (new DateTimeImmutable())->setTimestamp($timestamp)->format(str_replace('%', '', $format));
     }
 
     /**
@@ -603,6 +603,10 @@ abstract class AbstractAMADataHandler
         /**
          * if $values is a scalar, let's transform it into a one-element array
          */
+        if ($values === null) {
+            $values = [];
+        }
+
         if (!is_array($values)) {
             $values =  [$values];
         }
@@ -649,7 +653,7 @@ abstract class AbstractAMADataHandler
             return $resultObj;
         }
 
-        $resultAr = $resultObj->fetch($fetchmode);
+        $resultAr = $resultObj->fetch($fetchmode ?? AMA_FETCH_BOTH);
         $resultObj->closeCursor();
         return $resultAr;
     }
@@ -679,9 +683,9 @@ abstract class AbstractAMADataHandler
         }
 
         if (is_null($col)) {
-            $resultAr = $resultObj->fetchAll($fetchmode);
+            $resultAr = $resultObj->fetchAll($fetchmode ?? AMA_FETCH_BOTH);
         } elseif (is_numeric($col) && intval($col) >= 0) {
-            $resultAr = $resultObj->fetchAll($fetchmode, intval($col));
+            $resultAr = $resultObj->fetchAll($fetchmode ?? AMA_FETCH_BOTH, intval($col));
         }
 
         $resultObj->closeCursor();

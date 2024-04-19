@@ -204,8 +204,12 @@ class AMAPDOWrapper
         /**
          * if $params is a scalar, let's transform it into a one-element array
          */
+        if ($params === null) {
+            $params = [];
+        }
+
         if (!is_array($params)) {
-            $values =  [$params];
+            $params =  [$params];
         }
 
         try {
@@ -231,7 +235,7 @@ class AMAPDOWrapper
             $stmt = $this->connection_object->prepare($query);
             $stmt->execute($params);
             if (is_null($col)) {
-                $retval = $stmt->fetchAll($fetchmode);
+                $retval = $stmt->fetchAll($fetchmode ?? AMA_FETCH_BOTH);
             } elseif (is_numeric($col) && intval($col) >= 0) {
                 $retval = $stmt->fetchAll($fetchmode, intval($col));
             } else {
@@ -300,6 +304,10 @@ class AMAPDOWrapper
         /**
          * if $params is a scalar, let's transform it into a one-element array
          */
+        if ($params === null) {
+            $params = [];
+        }
+
         if (!is_array($params)) {
             $params =  [$params];
         }
@@ -309,7 +317,7 @@ class AMAPDOWrapper
             $stmt->execute($params);
             // build an array like MDB2 getAssoc would
             $tmparray = [];
-            while ($row = $stmt->fetch($fetchmode)) {
+            while ($row = $stmt->fetch($fetchmode ?? AMA_FETCH_BOTH)) {
                 $firstRow = current($row);
                 $index = $firstRow;
                 array_shift($row);
@@ -382,6 +390,10 @@ class AMAPDOWrapper
         /**
          * if $params is a scalar, let's transform it into a one-element array
          */
+        if ($params === null) {
+            $params = [];
+        }
+
         if (!is_array($params)) {
             $params =  [$params];
         }
@@ -389,7 +401,7 @@ class AMAPDOWrapper
         try {
             $stmt = $this->connection_object->prepare($query);
             $stmt->execute($params);
-            $retval = $stmt->fetch($fetchmode);
+            $retval = $stmt->fetch($fetchmode ?? AMA_FETCH_BOTH);
             return $retval;
         } catch (PDOException $e) {
             $retval = self::handleException($e);
