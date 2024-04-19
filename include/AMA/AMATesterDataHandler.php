@@ -6048,7 +6048,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      *
      * @param $node_id the id of the father
      *
-     * @return an array of ids containing all the id's of the children of a given node
+     * @return array|AMAError an array of ids containing all the id's of the children of a given node
      *
      * @see get_node_info
      *
