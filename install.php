@@ -6,6 +6,7 @@ use Lynxlab\ADA\Main\User\ADAGuest;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\StreamOutput;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\delTree;
 use function Lynxlab\ADA\Main\Utilities\redirect;
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -187,6 +188,44 @@ function importSQL($filename, $pdoconn)
     }
 }
 
+function composerInstall($version = '2.7.2')
+{
+    // Composer in php code, thanks to https://stackoverflow.com/a/17244866
+    define('COMPOSER_DIRECTORY', __DIR__ . '/upload_file/uploaded_files/composer');
+
+    ini_set('memory_limit', '1024M');
+    // Composer\Factory::getHomeDir() method needs COMPOSER_HOME environment variable set
+    putenv('COMPOSER_HOME=' . COMPOSER_DIRECTORY);
+    putenv('COMPOSER_MEMORY_LIMIT=128M');
+
+    if (!is_dir(COMPOSER_DIRECTORY)) {
+        $COMPOSER_URL = 'https://getcomposer.org/download/' . $version . '/composer.phar';
+        if (!mkdir(COMPOSER_DIRECTORY)) {
+            die("Cannot make dir for composer: " . COMPOSER_DIRECTORY . ", aborting installation!");
+        }
+        if (file_exists(COMPOSER_DIRECTORY . '/vendor/autoload.php') !== true) {
+            set_time_limit(300);
+            copy($COMPOSER_URL, COMPOSER_DIRECTORY . DIRECTORY_SEPARATOR . 'Composer.phar');
+            $composerPhar = new Phar(COMPOSER_DIRECTORY . DIRECTORY_SEPARATOR . 'Composer.phar');
+            $composerPhar->extractTo(COMPOSER_DIRECTORY);
+            unset($composerPhar);
+            require_once(COMPOSER_DIRECTORY . '/vendor/autoload.php');
+            // Create the commands
+            $input = new StringInput('dumpautoload');
+            // Create the application and run it with the commands
+            // @phpstan-ignore-next-line
+            $application = new Application();
+            $application->setAutoExit(false); // prevent `$application->run` method from exitting the script
+            $application->setCatchExceptions(false);
+            $application->run($input);
+        }
+    }
+    //This requires the phar to have been extracted successfully.
+    require_once(COMPOSER_DIRECTORY . '/vendor/autoload.php');
+}
+
+composerInstall();
+
 putenv('PORTAL_NAME=ADA Install');
 putenv('HTTP_ROOT_DIR=' . getBaseUrl());
 
@@ -217,13 +256,6 @@ require_once realpath(__DIR__) . '/config_path.inc.php';
  */
 if (is_dir('clients') && count(glob(ROOT_DIR . "/clients/*/client_conf.inc.php")) > 0) {
     redirect(HTTP_ROOT_DIR);
-}
-
-if (!function_exists('translateFN')) {
-    function translateFN($msg)
-    {
-        return $msg;
-    }
 }
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -283,34 +315,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     try {
         // Install composer dependencies as first
         if (is_file(ROOT_DIR . '/composer.json') && is_readable(ROOT_DIR . '/composer.json')) {
-            // Composer in php code, thanks to https://stackoverflow.com/a/17244866
-            define('COMPOSER_DIRECTORY', ADA_UPLOAD_PATH . 'composer');
-            define('COMPOSER_URL', 'https://getcomposer.org/download/2.7.2/composer.phar');
-            if (!is_dir(COMPOSER_DIRECTORY)) {
-                mkdir(COMPOSER_DIRECTORY);
-            }
-            if (file_exists(COMPOSER_DIRECTORY . '/vendor/autoload.php') !== true) {
-                set_time_limit(300);
-                sendToBrowser(translateFN('Download composer') . '...');
-                copy(COMPOSER_URL, COMPOSER_DIRECTORY . DIRECTORY_SEPARATOR . 'Composer.phar');
-                sendOK();
-                sendToBrowser(translateFN('Estrazione composer') . '...');
-                $composerPhar = new Phar(COMPOSER_DIRECTORY . DIRECTORY_SEPARATOR . 'Composer.phar');
-                $composerPhar->extractTo(COMPOSER_DIRECTORY);
-                sendOK();
-                unset($composerPhar);
-            }
-            ini_set('memory_limit', '1024M');
-            // Composer\Factory::getHomeDir() method needs COMPOSER_HOME environment variable set
-            putenv('COMPOSER_HOME=' . COMPOSER_DIRECTORY);
-            putenv('COMPOSER_MEMORY_LIMIT=1024M');
-            //This requires the phar to have been extracted successfully.
-            require_once(COMPOSER_DIRECTORY . '/vendor/autoload.php');
-
             set_time_limit(300);
             sendToBrowser(translateFN('Installazione dipendenze ADA') . ' ...');
             $logfile = fopen(ROOT_DIR . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . 'composer-install.log', 'a');
             fwrite($logfile, sprintf("\n\n******** %s ********\n", 'ADA'));
+            chdir(__DIR__);
             // Create the commands
             $input = new StringInput('install -vvv -n --no-cache --no-dev');
             // Create the application and run it with the commands
@@ -326,9 +335,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 sendToBrowser('** ' . translateFN('Problemi con composer'));
                 die(translateFN('ADA NON INSTALLATA'));
             }
-            chdir(__DIR__);
             fclose($logfile);
-            // } else sendSkip();
         }
 
         if (array_key_exists('MYSQL', $postData) && array_key_exists('COMMON', $postData['MYSQL']) && is_array($postData['MYSQL']['COMMON']) && count($postData['MYSQL']['COMMON']) == 3) {
@@ -515,6 +522,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                         foreach ($modulesSQL as $sqlFile) {
                             set_time_limit(300);
                             if (
+                                stristr($sqlFile, "vendor") === false &&
                                 stristr($sqlFile, "menu") === false &&
                                 !in_array(basename($sqlFile), $inCommon) &&
                                 !($multiprovider && in_array(basename($sqlFile), $inCommonIfMulti))
