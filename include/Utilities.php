@@ -103,7 +103,7 @@ function ts2dFN($timestamp = "")
         $timestamp = time();
     }
 
-    $dataformattata  = (new DateTimeImmutable())->setTimestamp($timestamp)->format(str_replace('%','',ADA_DATE_FORMAT));
+    $dataformattata  = (new DateTimeImmutable())->setTimestamp($timestamp)->format(str_replace('%', '', ADA_DATE_FORMAT));
     /*
   $data = getdate($timestamp);
   $dataformattata = $data['mday']."/".$data['mon']."/".$data['year'];

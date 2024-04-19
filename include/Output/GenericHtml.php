@@ -147,7 +147,7 @@ class GenericHtml extends Output
             } else {
                 // simple data type
                 if (ADA_STATIC_TEMPLATE_FIELD) {
-                    $tpl = str_replace($ereg, $data, $tpl); //faster !!!
+                    $tpl = str_replace($ereg, $data ?? '', $tpl); //faster !!!
                 } else {
                     $tpl = preg_replace('/' . $preg . '/i', $data, $tpl);
                     //        $tpl = eregi_replace($ereg,$data,$tpl);

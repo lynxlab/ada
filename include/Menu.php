@@ -187,7 +187,7 @@ class Menu
      * actually builds the menu CBaseElement if the passed item
      * and adds them as a child to the passed container
      *
-     * @param CBaseElement $container where to add the generated CBaseElement
+     * @param \Lynxlab\ADA\CORE\html4\CElement $container where to add the generated CBaseElement
      * @param array $item item to be generated
      * @param boolean $firstLevel true if the item is a first level one
      *
@@ -500,7 +500,7 @@ class Menu
         }
 
         // do not send out without an href
-        if (strlen($DOMitem->getAttribute('href')) <= 0) {
+        if (strlen($DOMitem->getAttribute('href') ?? '') <= 0) {
             $DOMitem->setAttribute('href', 'javascript:void(0);');
             // if element has no link and no children, add disabled class
             if (!$item['specialItem'] && !$hasOnClick && (is_null($item['children']) || !isset($item['children']) || count($item['children']) <= 0)) {
@@ -519,7 +519,7 @@ class Menu
             $LIitem->setAttribute('data-item-id', $item['item_id']);
         }
         // set class attribute
-        $LIitem->setAttribute('class', trim('item ' . trim($item['extraClass'])));
+        $LIitem->setAttribute('class', trim('item ' . trim($item['extraClass'] ?? '')));
         $LIitem->addChild($DOMitem);
 
         if (!is_null($item['extraHTML'])) {

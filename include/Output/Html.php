@@ -67,7 +67,7 @@ class Html extends GenericHtml
             $this->external_module = $layoutObj->external_module;
         }
         $template_name = basename($template);
-        $widget_filename = (!is_null($layoutObj)) ? basename($layoutObj->WIDGET_filename) : '';
+        $widget_filename = (!is_null($layoutObj)) ? basename($layoutObj->WIDGET_filename ?? '') : '';
         $family_name = $this->family;
         $module_dir =  $this->module_dir;
         $this->htmlheader = "

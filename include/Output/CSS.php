@@ -39,7 +39,7 @@ class CSS
         //  la struttura dei CSS ricopia quella di ADA (default)
 
         $rel_pref = $root_dir . '/';
-        if (($function_group == "main") || (strtoupper($function_group) == strToUpper($basedir_ada))) {
+        if (($function_group == "main") || (strtoupper((string) $function_group) === strtoupper((string) $basedir_ada))) {
             $module_dir = "main";
             // es. index.php -> layout/clear/css/main/default/index.css
         } else {

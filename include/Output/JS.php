@@ -24,7 +24,7 @@ class JS
     {
         $root_dir = $GLOBALS['root_dir'];
         $http_root_dir = $GLOBALS['http_root_dir'];
-        if (($function_group == "main") || (strtoupper($function_group) == strToUpper($basedir_ada))) {
+        if (($function_group == "main") || (strtoupper((string) $function_group) == strtoupper((string) $basedir_ada))) {
             $module_dir = "main";
             $rel_pref = "";
             // es. index.php -> js/main/default/index.js

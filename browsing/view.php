@@ -473,8 +473,8 @@ $content_dataAr['link'] = $data['link'];
 $content_dataAr['media'] = $data['media'];
 $content_dataAr['user_media'] = $data['user_media'];
 $content_dataAr['exercises'] = $data['exercises'];
-$content_dataAr['notes'] = strlen($data['notes']) > 0 ? $data['notes'] : translateFN('Nessuna');
-$content_dataAr['personal'] = strlen($data['private_notes']) > 0 ? $data['private_notes'] : translateFN('Nessuna');
+$content_dataAr['notes'] = strlen($data['notes'] ?? '') > 0 ? $data['notes'] : translateFN('Nessuna');
+$content_dataAr['personal'] = strlen($data['private_notes'] ?? '') > 0 ? $data['private_notes'] : translateFN('Nessuna');
 
 if ($node_type == ADA_GROUP_WORD_TYPE or $node_type == ADA_LEAF_WORD_TYPE) {
     $content_dataAr['text'] .= $data['extended_node'];
@@ -706,6 +706,5 @@ switch ($op) {
          */
         $content_dataAr['test_history'] = 'op=test&id_course_instance=' . $sess_id_course_instance . '&id_course=' . $sess_id_course;
 
-        echo ROOT_DIR;
         ARE::render($layout_dataAR, $content_dataAr, null, $optionsAr, $menuOptions);
 }

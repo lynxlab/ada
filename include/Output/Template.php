@@ -62,7 +62,7 @@ class Template
         //___________TPL ____________
         // reads templates from filesystem
         //
-        if (($function_group == "main") || (strtoupper($function_group) == strToUpper($basedir_ada))) {
+        if (($function_group == "main") || (strtoupper((string) $function_group) === strtoupper((string) $basedir_ada))) {
             $module_dir = 'main';
         } else {
             $module_dir = $function_group;
