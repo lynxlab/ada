@@ -71,7 +71,7 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
         // check for customField class const and explode matching propertiy array
         $properties = $className::explodeArrayProperties($properties);
 
-        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(fn ($el) => "`$el`", $properties)), $className::table)
+        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(fn ($el) => "`$el`", $properties)), $className::TABLE)
             . $this->buildWhereClause($whereArr, $properties) . $this->buildOrderBy($orderByArr, $properties);
 
         if (is_null($dbToUse)) {

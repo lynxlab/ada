@@ -66,7 +66,7 @@ class AMAForkedPathsDataHandler extends AMADataHandler
         // and remove them from the query, they will be loaded afterwards
         $properties = array_diff($properties, $joined);
 
-        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(fn ($el) => "`$el`", $properties)), $className::table);
+        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(fn ($el) => "`$el`", $properties)), $className::TABLE);
 
         if (!is_null($whereArr) && count($whereArr) > 0) {
             $invalidProperties = array_diff(array_keys($whereArr), $properties);
@@ -132,8 +132,8 @@ class AMAForkedPathsDataHandler extends AMADataHandler
             // load properties from $joined array
             foreach ($retArr as $retObj) {
                 foreach ($joined as $joinKey) {
-                    $sql = sprintf("SELECT `%s` FROM `%s` WHERE `%s`=?", $joinKey, $retObj::table, $retObj::key);
-                    $res = $dbToUse->getAllPrepared($sql, $retObj->{$retObj::GETTERPREFIX . ucfirst($retObj::key)}(), AMA_FETCH_ASSOC);
+                    $sql = sprintf("SELECT `%s` FROM `%s` WHERE `%s`=?", $joinKey, $retObj::TABLE, $retObj::KEY);
+                    $res = $dbToUse->getAllPrepared($sql, $retObj->{$retObj::GETTERPREFIX . ucfirst($retObj::KEY)}(), AMA_FETCH_ASSOC);
                     if (!AMADB::isError($res)) {
                         foreach ($res as $row) {
                             $retObj->{$retObj::ADDERPREFIX . ucfirst($joinKey)}($row[$joinKey], $dbToUse);
@@ -234,7 +234,7 @@ class AMAForkedPathsDataHandler extends AMADataHandler
             if (!MULTIPROVIDER && !is_null($dsn)) {
                 // must check if passed $dsn has the module login tables
                 // execute this dummy query, if result is not an error table is there
-                $sql = 'SELECT NULL FROM `'.GdprPolicy::table.'`';
+                $sql = 'SELECT NULL FROM `'.GdprPolicy::TABLE.'`';
                 // must use AMADataHandler because we are not able to
                 // query AMALoginDataHandelr in this method!
                 $ok = AMADataHandler::instance($dsn)->getOnePrepared($sql);

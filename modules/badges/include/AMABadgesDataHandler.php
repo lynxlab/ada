@@ -392,7 +392,7 @@ class AMABadgesDataHandler extends AMADataHandler
         $properties = array_diff($properties, $joined);
         $properties = array_diff($properties, $className::doNotLoad());
 
-        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(fn ($el) => $className::isUuidField($el) ? "`$el" . $className::BINFIELDSUFFIX . "`" : "`$el`", $properties)), $className::table)
+        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(fn ($el) => $className::isUuidField($el) ? "`$el" . $className::BINFIELDSUFFIX . "`" : "`$el`", $properties)), $className::TABLE)
             . $this->buildWhereClause($whereArr, $properties) . $this->buildOrderBy($orderByArr, $properties);
 
         if (is_null($dbToUse)) {
@@ -407,8 +407,8 @@ class AMABadgesDataHandler extends AMADataHandler
             // load properties from $joined array
             foreach ($retArr as $retObj) {
                 foreach ($joined as $joinKey) {
-                    $sql = sprintf("SELECT `%s` FROM `%s` WHERE `%s`=?", $joinKey, $retObj::table, $retObj::key);
-                    $res = $dbToUse->getAllPrepared($sql, $retObj->{$retObj::GETTERPREFIX . ucfirst($retObj::key)}(), AMA_FETCH_ASSOC);
+                    $sql = sprintf("SELECT `%s` FROM `%s` WHERE `%s`=?", $joinKey, $retObj::TABLE, $retObj::KEY);
+                    $res = $dbToUse->getAllPrepared($sql, $retObj->{$retObj::GETTERPREFIX . ucfirst($retObj::KEY)}(), AMA_FETCH_ASSOC);
                     if (!AMADB::isError($res)) {
                         foreach ($res as $row) {
                             $retObj->{$retObj::ADDERPREFIX . ucfirst($joinKey)}($row[$joinKey], $dbToUse);

@@ -179,10 +179,10 @@ class AMAGdprDataHandler extends AMADataHandler
             $fields = $request->toArray();
             $fields['type'] = $fields['type']->getId();
             if (!$isUpdate) {
-                $result = $this->executeCriticalPrepared($this->sqlInsert($request::table, $fields), array_values($fields));
+                $result = $this->executeCriticalPrepared($this->sqlInsert($request::TABLE, $fields), array_values($fields));
             } else {
                 unset($fields['uuid']);
-                $result = $this->queryPrepared($this->sqlUpdate($request::table, array_keys($fields), 'uuid'), array_values($fields + [$request->getUuid()]));
+                $result = $this->queryPrepared($this->sqlUpdate($request::TABLE, array_keys($fields), 'uuid'), array_values($fields + [$request->getUuid()]));
             }
 
             if (AMADB::isError($result)) {
@@ -541,7 +541,10 @@ class AMAGdprDataHandler extends AMADataHandler
         $reflection = new ReflectionClass($className);
         $properties =  array_map(
             fn ($el) => $el->getName(),
-            $reflection->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PUBLIC)
+            array_filter(
+                $reflection->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PUBLIC),
+                fn ($refEl) => $className === $refEl->getDeclaringClass()->getName()
+            )
         );
 
         // get object properties to be loaded as a kind of join
@@ -549,7 +552,7 @@ class AMAGdprDataHandler extends AMADataHandler
         // and remove them from the query, they will be loaded afterwards
         $properties = array_diff($properties, $joined);
 
-        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(fn ($el) => "`$el`", $properties)), $className::table);
+        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(fn ($el) => "`$el`", $properties)), $className::TABLE);
 
         if (!is_null($whereArr) && count($whereArr) > 0) {
             $invalidProperties = array_diff(array_keys($whereArr), $properties);
@@ -615,8 +618,8 @@ class AMAGdprDataHandler extends AMADataHandler
             // load properties from $joined array
             foreach ($retArr as $retObj) {
                 foreach ($joined as $joinKey) {
-                    $sql = sprintf("SELECT `%s` FROM `%s` WHERE `%s`=?", $joinKey, $retObj::table, $retObj::key);
-                    $res = $dbToUse->getAllPrepared($sql, $retObj->{$retObj::GETTERPREFIX . ucfirst($retObj::key)}(), AMA_FETCH_ASSOC);
+                    $sql = sprintf("SELECT `%s` FROM `%s` WHERE `%s`=?", $joinKey, $retObj::TABLE, $retObj::KEY);
+                    $res = $dbToUse->getAllPrepared($sql, $retObj->{$retObj::GETTERPREFIX . ucfirst($retObj::KEY)}(), AMA_FETCH_ASSOC);
                     if (!AMADB::isError($res)) {
                         foreach ($res as $row) {
                             $retObj->{$retObj::ADDERPREFIX . ucfirst($joinKey)}($row[$joinKey], $dbToUse);
