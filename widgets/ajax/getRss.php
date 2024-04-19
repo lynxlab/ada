@@ -90,6 +90,7 @@ if (!isset($headerLink)) {
 }
 
 $spObj = new SimplePie();
+$spObj->enable_cache(false);
 $spObj->set_feed_url($url);
 $spObj->init();
 // $spObj->set_cache_location('./cache')
