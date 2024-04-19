@@ -18,6 +18,7 @@ use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 
@@ -269,6 +270,7 @@ abstract class ViewBaseHelper
         }
 
         if (in_array('course_instance', $thisUserNeededObjAr)) {
+            $retArr['courseInstanceObj'] = new CourseInstance(0);
             if (!ADAError::isError($courseObj) && !$courseObj->getIsPublic()) {
                 if (in_array($userObj->getType(), [AMA_TYPE_STUDENT, AMA_TYPE_TUTOR, AMA_TYPE_SWITCHER])) {
                     /**
