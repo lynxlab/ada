@@ -138,7 +138,7 @@ if ($op !== false && $op == 'course_info') {
                     $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester));
                     $currentTesterId = $newTesterId;
                     $courseId = $courseData['id_corso'];
-                    $course_dataHa = $tester_dh->get_course($courseId);
+                    $course_dataHa = $tester_dh->getCourse($courseId);
                     if (!AMADataHandler::isError($course_dataHa)) {
                         // supponiamo che tutti i dati di un servizio (su tester diversi) abbiano lo stesso valore
                         // quindi prendiamo solo l'ultimo
@@ -417,7 +417,7 @@ if ($op !== false && $op == 'course_info') {
                 $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester));
                 $course_instance_infoAR = $tester_dh->courseInstanceGet($instanceId);
                 if (!AMADataHandler::isError($course_instance_infoAR)) {
-                    $course_infoAr = $tester_dh->get_course($courseId);
+                    $course_infoAr = $tester_dh->getCourse($courseId);
                     $startStudentLevel = $course_instance_infoAR['start_level_student'];
 
                     // add user to tester DB
@@ -696,7 +696,7 @@ if ($op !== false && $op == 'course_info') {
                             $tester = $testerInfoAr['puntatore'];
                             $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester));
                             $currentTesterId = $newTesterId;
-                            $course_dataHa = $tester_dh->get_course($courseId);
+                            $course_dataHa = $tester_dh->getCourse($courseId);
                             $instancesAr = $tester_dh->courseInstanceSubscribeableGetList(
                                 ['data_inizio_previsto', 'durata', 'data_fine', 'title'],
                                 $courseId

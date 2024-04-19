@@ -516,7 +516,7 @@ abstract class ADALoggableUser extends ADAGenericUser
 
         $visit_count = 0;
         $out_fields_ar = ['id_utente_studente', 'data_visita', 'data_uscita'];
-        $history = $dh->find_nodes_history_list($out_fields_ar, $user_id, $course_instance_id, $node_id);
+        $history = $dh->findNodesHistoryList($out_fields_ar, $user_id, $course_instance_id, $node_id);
         foreach ($history as $visit) {
             // $debug=1; mydebug(__LINE__,__FILE__,$visit);$debug=0;
             if ($visit[1] == $user_id) {
@@ -540,7 +540,7 @@ abstract class ADALoggableUser extends ADAGenericUser
         $debug = $GLOBALS['debug'] ?? null;
 
         $out_fields_ar = ['id_nodo', 'data_visita'];
-        $history = $dh->find_nodes_history_list($out_fields_ar, "", $course_instance_id, $node_id);
+        $history = $dh->findNodesHistoryList($out_fields_ar, "", $course_instance_id, $node_id);
         $visit_count = count($history);
 
         return $visit_count;
@@ -581,7 +581,7 @@ abstract class ADALoggableUser extends ADAGenericUser
         $lastAccess = (!is_array($lastAccessArr)) ? time() : intval($lastAccessArr[1]);
 
         $id_course = $dh->getCourseIdForCourseInstance($id_course_instance);
-        $course_ha = $dh->get_course($id_course);
+        $course_ha = $dh->getCourse($id_course);
 
         if (!AMADataHandler::isError($course_ha)) {
             $author_id = $course_ha['id_autore'];

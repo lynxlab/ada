@@ -723,7 +723,7 @@ class MultiPort
                 break;
 
             case AMA_TYPE_STUDENT:
-                $user_dataAr = $common_dh->get_student($id_user);
+                $user_dataAr = $common_dh->getStudent($id_user);
                 if (AMACommonDataHandler::isError($user_dataAr)) {
                     $errObj = new ADAError($user_dataAr, 'An error occurred while retrieving user data in MultiPort::finduser');
                 }
@@ -880,7 +880,7 @@ class MultiPort
                 break;
 
             case AMA_TYPE_STUDENT:
-                $user_dataAr = $common_dh->get_student($id_user);
+                $user_dataAr = $common_dh->getStudent($id_user);
                 if (AMACommonDataHandler::isError($user_dataAr)) {
                     $errObj = new ADAError($user_dataAr, 'An error occurred while retrieving user data in MultiPort::finduser');
                     return null;
@@ -1505,8 +1505,6 @@ class MultiPort
         $fields_list_Ar = ['id_mittente', 'data_ora', 'titolo', 'priorita', 'read_timestamp', 'flags', 'utente.username', 'utente.nome', 'utente.cognome',];
         $sort_field     = ' data_ora desc';
 
-        include_once ROOT_DIR . '/comunica/include/MessageHandler.inc.php';
-
         //if($sess_selected_tester === NULL || $sess_selected_tester === ADA_PUBLIC_TESTER) {
         if (self::isUserBrowsingThePublicTester()) {
             // Sono nel tester pubblico, che poi è il caso di user.php, ma anche ...
@@ -1562,8 +1560,6 @@ class MultiPort
     public static function getUserSentMessages(ADAGenericUser $userObj, $display_mode = 1)
     {
 
-        include_once ROOT_DIR . '/include/HtmlLibrary/BaseHtmlLib.inc.php';
-
         if ($userObj instanceof ADAGuest) {
             //return new CText(translateFN('Non sono presenti messaggi'));
             return [];
@@ -1582,9 +1578,6 @@ class MultiPort
      */
     public static function getUserMessages(ADAGenericUser $userObj, $unread = false)
     {
-
-        include_once ROOT_DIR . '/include/HtmlLibrary/BaseHtmlLib.inc.php';
-
         if ($userObj instanceof ADAGuest) {
             //return new CText(translateFN('Non sono presenti messaggi'));
             return [];
@@ -2246,8 +2239,10 @@ class MultiPort
         }
     }
 
-    /*
+    /**
      * Used by admin/log_report.php
+     *
+     * @return array
      */
     public static function logReport($pointer = null, $Services_Type = null)
     {

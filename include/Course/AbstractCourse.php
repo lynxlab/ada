@@ -51,7 +51,7 @@ abstract class AbstractCourse
     {
         $dh = $GLOBALS['dh'];
 
-        $dataHa = $dh->get_course($id_course);
+        $dataHa = $dh->getCourse($id_course);
         if (AMADataHandler::isError($dataHa) || (!is_array($dataHa))) {
             $this->full = 0;
         } else {

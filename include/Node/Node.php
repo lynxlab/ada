@@ -133,6 +133,9 @@ class Node
 
     public function __construct($id_node, $extended_data_required = 2)
     {
+        /**
+         * @var \Lynxlab\ADA\Main\AMA\AMADataHandler $dh
+         */
         $dh            =   $GLOBALS['dh'] ?? null;
         $error         =   $GLOBALS['error'] ?? null;
         $debug         =   $GLOBALS['debug'] ?? null;
@@ -161,7 +164,7 @@ class Node
                 /*
                  * node children
                  */
-                $childrenAr = $dh->get_node_children($id_node);
+                $childrenAr = $dh->getNodeChildren($id_node);
 
                 if (AMADataHandler::isError($childrenAr) || !is_array($childrenAr)) {
                     $this->children = '';
@@ -337,7 +340,7 @@ class Node
                         }
 
                         $children_count = 0;
-                        $children_count_res = $dh->get_node_children($id_child);
+                        $children_count_res = $dh->getNodeChildren($id_child);
                         if (!AMADB::isError($children_count_res) && is_array($children_count_res)) {
                             $children_count = count($children_count_res);
                         }
@@ -414,7 +417,7 @@ class Node
                     $child_dataHa['name'] = $child_dataHa['nome'];
                     $child_dataHa['level'] = $child_dataHa['livello'];
                     $child_dataHa['type'] = $child_dataHa['tipo'];
-                    $node_type_family = $node_type[0];
+                    $node_type_family = strval($node_type)[0];
                     switch ($node_type_family) {
                         case ADA_LEAF_TYPE:
                         case ADA_LEAF_WORD_TYPE:
@@ -666,7 +669,7 @@ class Node
         $sess_id_user =   $_SESSION['sess_id_user'];
 
         $depth++;
-        $childrenAr = $dh->get_node_children($id_parent);
+        $childrenAr = $dh->getNodeChildren($id_parent);
         if (!is_object($childrenAr)) { // it is an Error
             $childnumber = 0;
             foreach ($childrenAr as $id_child) {
@@ -1604,7 +1607,7 @@ class Node
             foreach ($exerc_Ar as $id_exerc) {
                 $temp = $dh->getNodeInfo($id_exerc);
                 $type = $temp['type'];
-                $exercise_type_family = $type[0]; // first char = family (3 multiple, 4 open manual 5 open automatic 6 cloze etc)
+                $exercise_type_family = strval($type)[0]; // first char = family (3 multiple, 4 open manual 5 open automatic 6 cloze etc)
                 /*
                 switch (strlen($exercise_type)){
                 case 1:
@@ -2196,7 +2199,7 @@ class Node
 
     public static function isNodeExercise($type)
     {
-        switch ($type[0]) { // type can be a string of 5 chars, like 30001
+        switch (strval($type)[0] ?? null) { // type can be a string of 5 chars, like 30001
             case ADA_STANDARD_EXERCISE_TYPE:
                 return true;
                 break;

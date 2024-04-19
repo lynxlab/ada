@@ -133,7 +133,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                             // gestire l'errore
                         }
 
-                        $course_data = $dh->get_course($id_course);
+                        $course_data = $dh->getCourse($id_course);
                         if (AMADataHandler::isError($course_data)) {
                             // gestire l'errore
                         }

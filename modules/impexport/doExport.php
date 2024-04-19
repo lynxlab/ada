@@ -119,7 +119,7 @@ try {
         // need an Import/Export DataHandler
         $dh = AMAImpExportDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
-        $course_data = $dh->get_course($course_id);
+        $course_data = $dh->getCourse($course_id);
 
         if (!empty($course_data) && !AMADB::isError($course_data)) {
             // create node for current course

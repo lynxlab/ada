@@ -154,7 +154,7 @@ switch ($op) {
         break;
     case 'student_level':
         $studenti_ar = [$id_student];
-        $info_course = $dh->get_course($id_course);
+        $info_course = $dh->getCourse($id_course);
         if (AMADataHandler::isError($info_course)) {
         } else {
             $updated = $dh->setStudentLevel($id_instance, $studenti_ar, $level);
@@ -216,7 +216,7 @@ switch ($op) {
             */
         }
 
-        $info_course = $dh->get_course($id_course); // Get title course
+        $info_course = $dh->getCourse($id_course); // Get title course
         if (AMADataHandler::isError($info_course)) {
             $msg = $info_course->getMessage();
             $data = $msg;
@@ -299,7 +299,7 @@ switch ($op) {
                         $out_fields_ar = ['nome','titolo','id_istanza','data_creazione','testo'];
                         $clause = "tipo = '2' AND id_utente = '$id_student'";
                         $nodes = $dh->findCourseNodesList($out_fields_ar, $clause, $id_course);
-                        $course = $dh->get_course($id_course);
+                        $course = $dh->getCourse($id_course);
                         $course_title = $course['titolo'];
                         $node_index = translateFN("Nodi aggiunti dallo studente:") . $studente_username . "\n\n";
                         foreach ($nodes as $one_node) {
@@ -363,7 +363,7 @@ switch ($op) {
     case 'zoom_student':
         //$sess_id_course_instance = $id_instance;
         if (isset($id_course)) {
-            $info_course = $dh->get_course($id_course); // Get title course
+            $info_course = $dh->getCourse($id_course); // Get title course
             if (AMADataHandler::isError($info_course)) {
                 $msg = $info_course->getMessage();
             } else {
@@ -410,7 +410,7 @@ switch ($op) {
 
         // build the caption
         // 0. Get title course
-        $info_course = $dh->get_course($id_course);
+        $info_course = $dh->getCourse($id_course);
         if (AMADB::isError($info_course)) {
             $course_title = '';
         } else {

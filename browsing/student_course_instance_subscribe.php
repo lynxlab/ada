@@ -105,7 +105,7 @@ if (!AMACommonDataHandler::isError($testerInfoAr)) {
     //    print_r($instanceObj);
     $price = $instanceObj->getPrice();
     $id_course = $instanceObj->getCourseId();
-    $course = $dh->get_course($courseId);
+    $course = $dh->getCourse($courseId);
     //    print_r($course);
     $course_name = $course['titolo'];
 

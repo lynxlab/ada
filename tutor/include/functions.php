@@ -42,7 +42,7 @@ function getCoursesTutorFN($id_user, $isSuper = false)
             } else {
                 $id_course = $instance_course_ha['id_corso'];
                 if (!empty($id_course)) {
-                    $info_course = $dh->get_course($id_course); // Get title course
+                    $info_course = $dh->getCourse($id_course); // Get title course
                     if (AMADataHandler::isError($dh)) {
                         $msg .= $dh->getMessage() . "<br />";
                     }
@@ -151,7 +151,7 @@ function getStudentDataFN($id_student, $id_instance)
     $id_course = $instance_course_ha['id_corso'];
     $start_date =  AMADataHandler::tsToDate($instance_course_ha['data_inizio'], ADA_DATE_FORMAT);
 
-    $info_course = $dh->get_course($id_course); // Get title course
+    $info_course = $dh->getCourse($id_course); // Get title course
     if (AMADataHandler::isError($info_course)) {
         $msg = $info_course->getMessage();
         return $msg;
