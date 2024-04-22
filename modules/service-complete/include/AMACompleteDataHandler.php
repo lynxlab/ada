@@ -34,7 +34,7 @@ class AMACompleteDataHandler extends AMADataHandler
      *
      * @param string $tablename table name to retreive fields list
      * @param bool $backTick true if fields name must be backtrick enquoted
-     * @return AMAError on error, array on success
+     * @return array|AMAError on error, array on success
      * @access private
      */
     private function getFieldsList($tablename, $backTick = true)
@@ -259,8 +259,6 @@ class AMACompleteDataHandler extends AMADataHandler
         $arrOperations = $this->getAllPrepared($sql, $id_conditionSet, AMA_FETCH_ASSOC);
 
         if (!AMADB::isError($arrOperations) && !empty($arrOperations)) {
-            require_once 'completeConditionSet.class.inc.php';
-            require_once 'operation.class.inc.php';
             $conditionSet = new CompleteConditionSet($arrOperations[0]['id_conditionset'], $arrOperations[0]['descrizione']);
             $conditionSet->setOperation(Operation::buildOperationTreeFromArray($arrOperations));
             return $conditionSet;
