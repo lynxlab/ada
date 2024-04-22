@@ -1811,7 +1811,10 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         if (AMADB::isError($result_root_node)) {
             return new AMAError(AMA_ERR_GET);
         }
-        array_push($result, $result_root_node);
+
+        if (false !== $result_root_node) {
+            array_push($result, $result_root_node);
+        }
 
         /**
          * @author giorgio 16/mag/2013
@@ -7992,7 +7995,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         // do the query
         $sql_query = "select id_utente$more_fields from utente, tutor where  tipo=" .
             ($supertutors ? AMA_TYPE_SUPERTUTOR : AMA_TYPE_TUTOR) . " and id_utente=id_utente_tutor$clause";
-        $tutors_ar =  $db->getAll($sql_query);
+        $tutors_ar =  $db->getAll($sql_query, [], AMA_FETCH_DEFAULT);
         if (AMADB::isError($tutors_ar)) {
             return new AMAError(AMA_ERR_GET);
         }
