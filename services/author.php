@@ -66,7 +66,6 @@ $self =  whoami();  // = author!
  * e.g.: node_classes.inc.php:990
  */
 ServiceHelper::init($neededObjAr);
-
 /*
  * YOUR CODE HERE
  */
@@ -176,8 +175,8 @@ if (isset($err_msg)) {
 
 $lObj = new IList() ;
 $data =  [
-    BaseHtmlLib::link('author_report.php', translateFN('report')),
-    BaseHtmlLib::link("edit_author.php?id=$sess_id_user", translateFN('modifica il tuo profilo')),
+    BaseHtmlLib::link('author_report.php', translateFN('report'))->getHtml(),
+    BaseHtmlLib::link("edit_author.php?id=$sess_id_user", translateFN('modifica il tuo profilo'))->getHtml(),
   ];
 
 $lObj->setList($data);
