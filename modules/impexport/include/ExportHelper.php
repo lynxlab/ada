@@ -316,7 +316,7 @@ class ExportHelper
     {
         // creates a CDATA section
         $XMLCDATAElement = $domtree->createElement($name);
-        $XMLCDATAElement->appendChild($domtree->createCDATASection($value)) ;
+        $XMLCDATAElement->appendChild($domtree->createCDATASection((string) $value)) ;
 
         return $XMLCDATAElement;
     }
@@ -654,7 +654,7 @@ class ExportHelper
             // remove HTTP_ROOT_DIR so that it'll become
             // a relative path (no more, it will be substituted with other abs path)
             $value = str_replace(HTTP_ROOT_DIR, '<http_root/>', $value);
-            $value = str_replace(parse_url(HTTP_ROOT_DIR, PHP_URL_PATH), '<http_path/>', $value);
+            $value = str_replace((string) parse_url(HTTP_ROOT_DIR, PHP_URL_PATH), '<http_path/>', $value);
 
             $regExp = '/\/?(' . preg_quote($this->mediaFilesPath, '/') . ')(\d+)\/([^\"]+)/';
         } elseif ($name === 'icon') {

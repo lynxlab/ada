@@ -515,7 +515,7 @@ class Menu
         $this->buildCommon($DOMitem, $item);
 
         $LIitem = CDOMElement::create('li');
-        if (array_key_exists('item_id', $item) && strlen($item['item_id']) > 0) {
+        if (array_key_exists('item_id', $item) && strlen($item['item_id'] ?? '') > 0) {
             $LIitem->setAttribute('data-item-id', $item['item_id']);
         }
         // set class attribute

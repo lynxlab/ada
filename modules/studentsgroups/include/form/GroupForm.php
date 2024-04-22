@@ -46,7 +46,7 @@ class GroupForm extends StudentsGroupsAbstractForm
             $lbl = CDOMElement::create('label', 'for:grouplbl');
             $lbl->addChild(new CText(translateFN('Nome') . ' (*)'));
             $input = CDOMElement::create('text', 'id:grouplbl,name:label');
-            $input->setAttribute('value', htmlspecialchars(trim($group->getLabel()), ENT_QUOTES, ADA_CHARSET));
+            $input->setAttribute('value', htmlspecialchars(trim($group->getLabel() ?? ''), ENT_QUOTES, ADA_CHARSET));
             $input->setAttribute('data-notempty', 'true');
             $field->addChild($lbl);
             $field->addChild($input);
@@ -63,7 +63,7 @@ class GroupForm extends StudentsGroupsAbstractForm
 
                 $dd = CDOMElement::create('div', 'class:ui fluid selection dropdown');
                 $dh = CDOMElement::create('hidden', 'name:customField' . $cIndex);
-                if (!is_null($group->getCustomFields()[$cIndex])) {
+                if (!is_null($group->getCustomFields()[$cIndex] ?? null)) {
                     $dh->setAttribute('value', $group->getCustomFields()[$cIndex]);
                     $dd->setAttribute('data-selected-value', $group->getCustomFields()[$cIndex]);
                 }
@@ -110,7 +110,7 @@ class GroupForm extends StudentsGroupsAbstractForm
                     'File in formato csv',
                     'Senza riga di intestazione, sequenza campi: nome, cognome, ' . (MODULES_SECRETQUESTION ? 'username' : 'e-mail (che sarà anche l\'username)') . ', password',
                 ];
-                $dzlegend->addChild(new CText(implode('<br/>', array_map('translateFN', $legend))));
+                $dzlegend->addChild(new CText(implode('<br/>', array_map('Lynxlab\ADA\Main\Output\Functions\translateFN', $legend))));
                 $row->addChild($dzlegend);
             }
 

@@ -149,7 +149,7 @@ if (
                     foreach ($visits as $visit) {
                         if (
                             $visit['tipo'] == ADA_NOTE_TYPE &&
-                            $visit['id_utente'] != $id_tutor &&
+                            // $visit['id_utente'] != $id_tutor &&
                             intval($visit['numero_visite']) > 0
                         ) {
                             $read_notes_count++;
@@ -164,7 +164,7 @@ if (
                 if (!AMADB::isError($class_chatrooms) && is_array($class_chatrooms) && count($class_chatrooms) > 0) {
                     foreach ($class_chatrooms as $aChatRoom) {
                         $mh = MessageHandler::instance($_SESSION['sess_selected_tester_dsn']);
-                        $chat_data = $mh->findChatMessages($id_tutor, ADA_MSG_CHAT, $aChatRoom[0], '', 'id_mittente=' . $id_tutor);
+                        $chat_data = $mh->findChatMessages($id_tutor, ADA_MSG_CHAT, $aChatRoom, '', 'id_mittente=' . $id_tutor);
                         if (!AMADB::isError($chat_data) && is_array($chat_data) && count($chat_data) > 0) {
                             $chatlines_count = count($chat_data);
                         }
@@ -187,7 +187,7 @@ if (
                     $elencofile = leggidir($download_path);
                     // 02. loop the $media_path dir looking for files
                     // uploaded by $id_tutor in the current course and course instance
-                    if (!is_null($elencofile)) {
+                    if (!is_string($elencofile) && !is_null($elencofile)) {
                         foreach ($elencofile as $singleFile) {
                             $complete_file_name = $singleFile['file'];
                             $filenameAr = explode('_', $complete_file_name);

@@ -75,6 +75,7 @@ class AMALoginDataHandler extends AMADataHandler
             $retArr = [];
             if (count($res) > 0) {
                 foreach ($res as $keyvalue) {
+                    $keyvalue['value'] = (string) $keyvalue['value'];
                     if (is_numeric($keyvalue['value'])) {
                         $value = $keyvalue['value'] + 0;
                     } elseif (strcasecmp($keyvalue['value'], 'null') === 0) {
@@ -808,6 +809,8 @@ class AMALoginDataHandler extends AMADataHandler
      * If found, use the provider DB else use the common
      *
      * @param string $dsn
+     *
+     * @return self
      */
     public static function instance($dsn = null)
     {

@@ -104,7 +104,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                     }
                     $retArr =  $el;
                     $retArr['actions']  =  array_reduce($actions, function ($carry, $item) {
-                        if (strlen($carry) <= 0) {
+                        if (strlen($carry ?? '') <= 0) {
                             $carry = '';
                         }
                         $carry .= ($item instanceof CBase ? $item->getHtml() : '');

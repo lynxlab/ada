@@ -16,7 +16,7 @@ function returnAdaNodeType($t)
         return "lemma";
     } elseif ($t == ADA_GROUP_WORD_TYPE) {
         return "gruppo_lemmi";
-    } elseif ($t == ADA_PERSONAL_EXERCISE_TYPE || $t[0] == ADA_STANDARD_EXERCISE_TYPE) {
+    } elseif ($t == ADA_PERSONAL_EXERCISE_TYPE || strval($t)[0] == ADA_STANDARD_EXERCISE_TYPE) {
         return "test";
     }
 }

@@ -429,7 +429,7 @@ class ARE
                     }
 
                     if (!array_key_exists('last_visit', $content_dataAr)) {
-                        $tmpla = trim(AMADataHandler::tsToDate($_SESSION['sess_userObj']->getLastAccessFN(null, "UT", null)));
+                        $tmpla = trim(AMADataHandler::tsToDate($_SESSION['sess_userObj']->getLastAccessFN(null, "UT", null)) ?? '');
                         if (strlen($tmpla) > 0) {
                             $content_dataAr['last_visit'] = translateFN('ultimo accesso') . ': ' . $tmpla;
                         }

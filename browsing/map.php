@@ -166,7 +166,7 @@ if (!AMADB::isError($nodeList) && is_array($nodeList) && count($nodeList) > 0) {
                     }
                     $data .= '<a href="' . $linkFile . '?id_node=' . $key['id_child'] . '&map_type=lemma">' . $key['name_child'] . '</a>';
                 } else {
-                    if ($key['type_child'][0] == ADA_STANDARD_EXERCISE_TYPE) {
+                    if (strval($key['type_child'])[0] == ADA_STANDARD_EXERCISE_TYPE) {
                         $linkFile = 'exercise';
                     } else {
                         $linkFile = 'view';

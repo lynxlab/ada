@@ -135,7 +135,7 @@ try {
                 } elseif ($name === 'id_lingua') {
                     $XMLElementForCourse = $domtree->createElement($name, ExportHelper::getLanguageTableFromID($value));
                 } else {
-                    $XMLElementForCourse = $domtree->createElement($name, $value);
+                    $XMLElementForCourse = $domtree->createElement($name, $value ?? '');
                 }
 
                 if (isset($XMLElementForCourse)) {
