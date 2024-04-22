@@ -202,7 +202,7 @@ class Node
                  * Extended node (glossary)
                  */
                 if ($dataHa['type'] == ADA_LEAF_WORD_TYPE || $dataHa['type'] == ADA_GROUP_WORD_TYPE) {
-                    $extended_data_nodeHA = $dh->get_extended_node($id_node);
+                    $extended_data_nodeHA = $dh->getExtendedNode($id_node);
                     if (AMADataHandler::isError($extended_data_nodeHA) || !is_array($extended_data_nodeHA)) {
                         $this->extended_node = "";
                     } elseif (is_array($extended_data_nodeHA)) {
@@ -318,7 +318,7 @@ class Node
                         ADA_LEAF_TYPE, ADA_GROUP_TYPE, ADA_LEAF_WORD_TYPE,
                         ADA_GROUP_WORD_TYPE, ADA_PERSONAL_EXERCISE_TYPE, ADA_STANDARD_EXERCISE_TYPE,
                     ];
-                    if (in_array($child_dataHa['type'][0], $nodeTypesToShow)) {
+                    if (in_array(strval($child_dataHa['type'])[0], $nodeTypesToShow)) {
                         //mydebug(__LINE__,__FILE__,$child_dataHa);
                         $linksAr = [];
 
@@ -1269,7 +1269,6 @@ class Node
                 $add_height = preg_match('/HEIGHT="([^"]+)"/i', $v[1], $height);
                 $height = $height[1] ?? null;
                 $id_node = $_SESSION['sess_id_node'] ?? null;
-                $mediaInfoAr = $dh->getRisorsaEsternaInfoFromFilename($value, $id_node);
                 $array[$k] = [
                     'str' => $v[0],
                     'tag' => $v[2],
@@ -1278,11 +1277,14 @@ class Node
                     'title' => ($add_title) ? $title : null,
                     'width' => ($add_width) ? $width : null,
                     'height' => ($add_height) ? $height : null,
-                    'owner' => $mediaInfoAr['id_utente'],
+                    'owner' => null,
                 ];
+                if (strcasecmp($type, 'INTERNAL') !== 0) {
+                    $mediaInfoAr = $dh->getRisorsaEsternaInfoFromFilename($value, $id_node);
+                    $array[$k]['owner'] = $mediaInfoAr['id_utente'] ?? null;
+                }
             }
         }
-
         return $array;
     }
 

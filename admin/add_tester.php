@@ -197,7 +197,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $testersAr = [];
             $form = AdminModuleHtmlLib::getAddTesterForm($testersAr, $tester_dataAr, $errorsAr);
         } else {
-            $result = $common_dh->add_tester($tester_dataAr);
+            $result = $common_dh->addTester($tester_dataAr);
             if (AMACommonDataHandler::isError($result)) {
                 $errObj = new ADAError($result);
                 $form = new CText('');

@@ -21,7 +21,7 @@ class TokenManager
         $common_dh = $GLOBALS['common_dh'];
 
         $token_dataAr = $token->toArray();
-        $result = $common_dh->update_token($token_dataAr);
+        $result = $common_dh->updateToken($token_dataAr);
         if (AMACommonDataHandler::isError($result)) {
             return false;
         }

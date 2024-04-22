@@ -87,7 +87,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                     if (!AMACommonDataHandler::isError($result)) {
                         $result = $common_dh->unlinkServiceFromCourse($serviceId, $courseId);
                         if (!AMADataHandler::isError($result)) {
-                            $result = $dh->remove_course($courseId);
+                            $result = $dh->removeCourse($courseId);
                             if (AMADataHandler::isError($result)) {
                                 $data = new CText(translateFN('Si sono verificati degli errori durante la cancellazione del corso.') . '(1)');
                             } else {

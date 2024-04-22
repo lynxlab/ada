@@ -164,7 +164,7 @@ if ($page > $eguidance_sessions_count) {
 /*
  * Obtain and display an eguidance session evaluation sheet.
  */
-$eguidance_session_dataAr = $dh->get_eguidance_session($id_course_instance, $page - 1);
+$eguidance_session_dataAr = $dh->getEguidanceSession($id_course_instance, $page - 1);
 if (
     AMADataHandler::isError($eguidance_session_dataAr)
     && $eguidance_session_dataAr->code != AMA_ERR_GET

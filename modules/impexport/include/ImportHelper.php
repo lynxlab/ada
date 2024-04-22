@@ -915,7 +915,7 @@ class ImportHelper
                 $this->logMessage('Saving course node, passing:');
                 $this->logMessage(print_r($outArr, true));
 
-                $addResult = $this->dh->add_node($outArr);
+                $addResult = $this->dh->addNode($outArr);
                 // if it's an error return it right away, as usual
                 if (AMADB::isError($addResult)) {
                     $this->logMessage(__METHOD__ . ' Error saving course node. DB returned the following:');
@@ -980,7 +980,7 @@ class ImportHelper
 
         $rename_count = 0;
         do {
-            $courseNewID = $this->dh->add_course($courseArr);
+            $courseNewID = $this->dh->addCourse($courseArr);
             if (AMADB::isError($courseNewID)) {
                 if (strlen($courseArr['nome']) > 32) { // 32 is the size of the field in the database
                     $this->logMessage('Generated name will be over maximum allowed size, I\'ll give up and generate an error message.');

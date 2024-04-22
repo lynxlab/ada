@@ -26,7 +26,7 @@ class ExerciseDAO
     public static function getExercise($id_node, $id_answer = null)
     {
         $dh = $GLOBALS['dh'];
-        $exercise_nodes = $dh->get_exercise($id_node);
+        $exercise_nodes = $dh->getExercise($id_node);
         if (AMADataHandler::isError($exercise_nodes)) {
             $errObj = new ADAError($exercise_nodes, 'Error while loading exercise');
         }

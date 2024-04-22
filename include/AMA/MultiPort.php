@@ -322,7 +322,7 @@ class MultiPort
              */
             $user_dataAr = $userObj->toArray();
             unset($user_dataAr['id_utente']);
-            $user_id = $common_dh->add_user($user_dataAr, $checkUserExistsInCommonDB);
+            $user_id = $common_dh->addUser($user_dataAr, $checkUserExistsInCommonDB);
             /*
              * add_user restituisce o AMA_ERR_UNIQUE_KEY nel caso
              * sia già presente un utente con lo stesso username (email)
@@ -1609,7 +1609,6 @@ class MultiPort
     // MARK: restituire $result_Ar, rimuovere la chiamata a getEventsAsTable
     public static function getUserEvents(ADAGenericUser $userObj)
     {
-        // include_once ROOT_DIR.'/include/HtmlLibrary/BaseHtmlLib.inc.php';
         if (!($userObj instanceof ADAUser || $userObj instanceof ADAPractitioner)) {
             return [];
         }
@@ -1628,7 +1627,6 @@ class MultiPort
 
     public static function getUserEventsNotRead(ADAGenericUser $userObj)
     {
-        // include_once ROOT_DIR.'/include/HtmlLibrary/BaseHtmlLib.inc.php';
         if (!($userObj instanceof ADAUser || $userObj instanceof ADAPractitioner)) {
             return [];
         }

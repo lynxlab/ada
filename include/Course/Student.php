@@ -1125,7 +1125,7 @@ class Student
     {
         $dh     = $GLOBALS['dh'];
         $debug  = $GLOBALS['debug'] ?? '';
-        $dataHa = $dh->get_class_report($id_course, $id_course_instance, $date);
+        $dataHa = $dh->getClassReport($id_course, $id_course_instance, $date);
         // vito, 16 luglio 2008. Lasciamo la gestione dell'errore al chiamante.
         return $dataHa;
     }
@@ -1134,7 +1134,7 @@ class Student
     {
         $dh = $GLOBALS['dh'];
         $debug  = $GLOBALS['debug'];
-        $dataHa = $dh->get_class_report($id_course, $id_course_instance, $id_student);
+        $dataHa = $dh->getClassReport($id_course, $id_course_instance, $id_student);
         if (AMADataHandler::isError($dataHa) || (!is_array($dataHa))) {
             $msg = $dataHa->getMessage();
             // header("Location: $error?err_msg=$msg");

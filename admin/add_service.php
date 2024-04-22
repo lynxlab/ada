@@ -119,7 +119,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         unset($_POST['submit']);
         $service_dataAr = $_POST;
 
-        if ($common_dh->add_service($service_dataAr)) {
+        if ($common_dh->addService($service_dataAr)) {
             header('Location: ' . $userObj->getHomePage());
             exit();
         } else {

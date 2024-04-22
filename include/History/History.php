@@ -150,7 +150,7 @@ class History
     public function getLastNodes($num)
     {
         $dh = $GLOBALS['dh'];
-        $result = $dh->get_last_visited_nodes($this->id_student, $this->id_course_instance, $num);
+        $result = $dh->getLastVisitedNodes($this->id_student, $this->id_course_instance, $num);
         //verificare il controllo degli errori
         if (AMADataHandler::isError($result)) {
             $errObj = new ADAError($result, translateFN('Errore nella lettura dei dati'));

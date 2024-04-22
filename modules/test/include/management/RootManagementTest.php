@@ -132,7 +132,7 @@ class RootManagementTest extends ManagementTest
                     $nodo_test['pos_y0']            = 0;
                     $nodo_test['pos_x1']            = 0;
                     $nodo_test['pos_y1']            = 0;
-                    $id_nodo_riferimento = $dh->add_node($nodo_test);
+                    $id_nodo_riferimento = $dh->addNode($nodo_test);
 
                     if (!AMATestDataHandler::isError($id_nodo_riferimento)) {
                         $data = [
@@ -206,7 +206,6 @@ class RootManagementTest extends ManagementTest
             ];
         }
 
-        require_once(MODULES_TEST_PATH . '/include/forms/rootFormTest.inc.php');
         if (static::class == 'TestManagementTest') {
             $form = new TestFormTest($data);
         } elseif (static::class == 'SurveyManagementTest') {
@@ -280,7 +279,6 @@ class RootManagementTest extends ManagementTest
                 redirect(MODULES_TEST_HTTP . '/index.php?id_test=' . $this->id);
             }
         } else {
-            require_once(MODULES_TEST_PATH . '/include/forms/deleteFormTest.inc.php');
             $titolo = $test['titolo'];
             if (empty($titolo)) {
                 $titolo = $test['nome'];
