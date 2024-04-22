@@ -14,6 +14,7 @@
 namespace Lynxlab\ADA\Module\Servicecomplete;
 
 use Exception;
+use Jawira\CaseConverter\Convert;
 use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
 
 /**
@@ -183,7 +184,8 @@ class Operation
         if ($this->firstOperand instanceof self) {
             $converted .= '(' . $this->firstOperand->toString() . ')';
         } else {
-            $converted .= $this->firstOperand;
+            $className = new Convert($this->firstOperand);
+            $converted .= __NAMESPACE__ . '\\' . $className->toPascal();
         }
 
         if (!is_null($this->operator) && !is_null($this->secondOperand)) {
@@ -192,7 +194,8 @@ class Operation
             if ($this->secondOperand instanceof self) {
                 $converted .= '(' . $this->secondOperand->toString() . ')';
             } else {
-                $converted .= $this->secondOperand;
+                $className = new Convert($this->secondOperand);
+                $converted .= __NAMESPACE__ . '\\' . $className->toPascal();
             }
         }
         return $converted;
@@ -361,7 +364,7 @@ class Operation
                         $op1Pointer = false;
                     }
 
-                    if (preg_match('/expr[(](\d+)[)]/', $currentOperation['operand2'], $matches)) {
+                    if (preg_match('/expr[(](\d+)[)]/', (string) $currentOperation['operand2'], $matches)) {
                         $op2Pointer = $matches[1];
                     } else {
                         $op2Pointer = false;

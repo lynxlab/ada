@@ -11,6 +11,7 @@
 namespace Lynxlab\ADA\Module\Notifications;
 
 use Exception;
+use Jawira\CaseConverter\Convert;
 use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
@@ -186,7 +187,10 @@ class AMANotificationsDataHandler extends AMADataHandler
         $reflection = new ReflectionClass($className);
         $properties =  array_map(
             fn ($el) => $el->getName(),
-            $reflection->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PUBLIC)
+            array_filter(
+                $reflection->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PUBLIC),
+                fn ($refEl) => $className === $refEl->getDeclaringClass()->getName()
+            )
         );
 
         // get object properties to be loaded as a kind of join
@@ -221,7 +225,7 @@ class AMANotificationsDataHandler extends AMADataHandler
                         if (!is_array($joinData['key'])) {
                             $joinData['key'] = [
                                 'name' => $joinData['key'],
-                                'getter' => $retObj::GETTERPREFIX . ucfirst($joinData['key']),
+                                'getter' => (new Convert($retObj::GETTERPREFIX . ucfirst($joinData['key'])))->toCamel(),
                             ];
                         }
                         $joinSelFields = '';
@@ -238,7 +242,8 @@ class AMANotificationsDataHandler extends AMADataHandler
                                 $joinRes = $retObj->{$joinData['callback']}($joinRes);
                             }
                         }
-                        $retObj->{$retObj::SETTERPREFIX . ucfirst($joinKey)}($joinRes);
+                        $method = new Convert($retObj::SETTERPREFIX . ucfirst($joinKey));
+                        $retObj->{$method->toCamel()}($joinRes);
                     }
                 }
             }

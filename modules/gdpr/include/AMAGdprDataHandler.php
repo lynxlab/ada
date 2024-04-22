@@ -11,6 +11,7 @@
 namespace Lynxlab\ADA\Module\GDPR;
 
 use Exception;
+use Jawira\CaseConverter\Convert;
 use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
@@ -619,10 +620,12 @@ class AMAGdprDataHandler extends AMADataHandler
             foreach ($retArr as $retObj) {
                 foreach ($joined as $joinKey) {
                     $sql = sprintf("SELECT `%s` FROM `%s` WHERE `%s`=?", $joinKey, $retObj::TABLE, $retObj::KEY);
-                    $res = $dbToUse->getAllPrepared($sql, $retObj->{$retObj::GETTERPREFIX . ucfirst($retObj::KEY)}(), AMA_FETCH_ASSOC);
+                    $method = new Convert($retObj::GETTERPREFIX . ucfirst($retObj::KEY));
+                    $res = $dbToUse->getAllPrepared($sql, $retObj->{$method->toCamel()}(), AMA_FETCH_ASSOC);
                     if (!AMADB::isError($res)) {
                         foreach ($res as $row) {
-                            $retObj->{$retObj::ADDERPREFIX . ucfirst($joinKey)}($row[$joinKey], $dbToUse);
+                            $method = new Convert($retObj::ADDERPREFIX . ucfirst($joinKey));
+                            $retObj->{$method->toCamel()}($row[$joinKey], $dbToUse);
                         }
                     }
                 }

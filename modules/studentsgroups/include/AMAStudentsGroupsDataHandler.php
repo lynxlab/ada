@@ -10,6 +10,7 @@
 
 namespace Lynxlab\ADA\Module\StudentsGroups;
 
+use Jawira\CaseConverter\Convert;
 use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
@@ -61,7 +62,10 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
         $reflection = new ReflectionClass($className);
         $properties =  array_map(
             fn ($el) => $el->getName(),
-            $reflection->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PUBLIC)
+            array_filter(
+                $reflection->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PUBLIC),
+                fn ($refEl) => $className === $refEl->getDeclaringClass()->getName()
+            )
         );
 
         // get object properties to be loaded as a kind of join
@@ -96,7 +100,7 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
                         if (!is_array($joinData['key'])) {
                             $joinData['key'] = [
                                 'name' => $joinData['key'],
-                                'getter' => $retObj::GETTERPREFIX . ucfirst($joinData['key']),
+                                'getter' => (new Convert($retObj::GETTERPREFIX . ucfirst($joinData['key'])))->toCamel(),
                             ];
                         }
                         // this is a 1:n relation, load the linked objects querying the relation table
@@ -105,7 +109,8 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
                         if (array_key_exists('callback', $joinData)) {
                             $joinRes = $retObj->{$joinData['callback']}($joinRes);
                         }
-                        $retObj->{$retObj::SETTERPREFIX . ucfirst($joinKey)}($joinRes);
+                        $method = new Convert($retObj::SETTERPREFIX . ucfirst($joinKey));
+                        $retObj->{$method->toCamel()}($joinRes);
                     }
                 }
             }
@@ -291,44 +296,46 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
      */
     public function saveSubscribeGroup($saveData)
     {
-        $saveData = array_map('intval', $saveData);
-        $result = $this->findBy('Groups', ['id' => $saveData['groupId']]);
-        if (!AMADB::isError($result)) {
-            // check instance existence
-            $iArr = $GLOBALS['dh']->courseInstanceGet($saveData['instanceId']);
-            if (!AMADB::isError($iArr) && is_array($iArr) && isset($iArr['id_corso']) && $iArr['id_corso'] == $saveData['courseId']) {
-                $counters = [
-                    'alreadySubscribed' => 0,
-                    'subscribed' => 0,
-                ];
-                $group = reset($result);
-                $courseProviderAr = $GLOBALS['common_dh']->getTesterInfoFromIdCourse($saveData['courseId']);
-                $subscribedIds = array_map(fn ($s) => $s->getSubscriberId(), Subscription::findSubscriptionsToClassRoom($saveData['instanceId'], true));
-                foreach ($group->getMembers() as $student) {
-                    if (!in_array($student->getId(), $subscribedIds)) {
-                        if (!in_array($courseProviderAr['puntatore'], $student->getTesters())) {
-                            // subscribe user to course provider
-                            $isUserInProvider = Multiport::setUser($student, [$courseProviderAr['puntatore']]);
+        try {
+            $saveData = array_map('intval', $saveData);
+            $result = $this->findBy('Groups', ['id' => $saveData['groupId']]);
+            if (!AMADB::isError($result)) {
+                // check instance existence
+                $iArr = $GLOBALS['dh']->courseInstanceGet($saveData['instanceId']);
+                if (!AMADB::isError($iArr) && is_array($iArr) && isset($iArr['id_corso']) && $iArr['id_corso'] == $saveData['courseId']) {
+                    $counters = [
+                        'alreadySubscribed' => 0,
+                        'subscribed' => 0,
+                    ];
+                    $group = reset($result);
+                    $courseProviderAr = $GLOBALS['common_dh']->getTesterInfoFromIdCourse($saveData['courseId']);
+                    $subscribedIds = array_map(fn ($s) => $s->getSubscriberId(), Subscription::findSubscriptionsToClassRoom($saveData['instanceId'], true));
+                    foreach ($group->getMembers() as $student) {
+                        if (!in_array($student->getId(), $subscribedIds)) {
+                            if (!in_array($courseProviderAr['puntatore'], $student->getTesters())) {
+                                // subscribe user to course provider
+                                $isUserInProvider = Multiport::setUser($student, [$courseProviderAr['puntatore']]);
+                            } else {
+                                $isUserInProvider = true;
+                            }
+                            if ($isUserInProvider) {
+                                $s = new Subscription($student->getId(), $saveData['instanceId']);
+                                $s->setSubscriptionStatus(ADA_STATUS_SUBSCRIBED);
+                                $s->setStartStudentLevel($iArr['start_level_student']);
+                                Subscription::addSubscription($s);
+                                ++$counters['subscribed'];
+                            }
                         } else {
-                            $isUserInProvider = true;
+                            ++$counters['alreadySubscribed'];
                         }
-                        if ($isUserInProvider) {
-                            $s = new Subscription($student->getId(), $saveData['instanceId']);
-                            $s->setSubscriptionStatus(ADA_STATUS_SUBSCRIBED);
-                            $s->setStartStudentLevel($iArr['start_level_student']);
-                            Subscription::addSubscription($s);
-                            ++$counters['subscribed'];
-                        }
-                    } else {
-                        ++$counters['alreadySubscribed'];
                     }
+                    return $counters;
+                } else {
+                    return new StudentsGroupsException(translateFN('ID corso o ID classe non valido'));
                 }
-                return $counters;
-            } else {
-                return new StudentsGroupsException(translateFN('ID corso o ID classe non valido'));
             }
-        } else {
-            return new StudentsGroupsException($result->getMessage());
+        } catch (StudentsGroupsException $e) {
+            return $e;
         }
     }
 

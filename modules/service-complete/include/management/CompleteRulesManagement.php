@@ -13,6 +13,8 @@
 
 namespace Lynxlab\ADA\Module\Servicecomplete;
 
+use Jawira\CaseConverter\Convert;
+
 /**
  * management class for completeRules form
  *
@@ -49,7 +51,10 @@ class CompleteRulesManagement
 
         // populate the conditionList array
         foreach ($GLOBALS['completeClasses'] as $className) {
-            if (class_exists(__NAMESPACE__ . "\\" . $className)) {
+            if (
+                class_exists(__NAMESPACE__ . "\\" . (new Convert($className))->toPascal()) ||
+                class_exists(__NAMESPACE__ . "\\" . $className)
+            ) {
                 $this->formConditionsList[$className] = $className;
             }
         }

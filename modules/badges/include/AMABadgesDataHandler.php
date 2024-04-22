@@ -10,6 +10,7 @@
 
 namespace Lynxlab\ADA\Module\Badges;
 
+use Jawira\CaseConverter\Convert;
 use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
@@ -383,7 +384,10 @@ class AMABadgesDataHandler extends AMADataHandler
         $reflection = new ReflectionClass($className);
         $properties =  array_map(
             fn ($el) => $el->getName(),
-            $reflection->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PUBLIC)
+            array_filter(
+                $reflection->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PUBLIC),
+                fn ($refEl) => $className === $refEl->getDeclaringClass()->getName()
+            )
         );
 
         // get object properties to be loaded as a kind of join
@@ -408,10 +412,12 @@ class AMABadgesDataHandler extends AMADataHandler
             foreach ($retArr as $retObj) {
                 foreach ($joined as $joinKey) {
                     $sql = sprintf("SELECT `%s` FROM `%s` WHERE `%s`=?", $joinKey, $retObj::TABLE, $retObj::KEY);
-                    $res = $dbToUse->getAllPrepared($sql, $retObj->{$retObj::GETTERPREFIX . ucfirst($retObj::KEY)}(), AMA_FETCH_ASSOC);
+                    $method = new Convert($retObj::GETTERPREFIX . ucfirst($retObj::KEY));
+                    $res = $dbToUse->getAllPrepared($sql, $retObj->{$method->toCamel()}(), AMA_FETCH_ASSOC);
                     if (!AMADB::isError($res)) {
                         foreach ($res as $row) {
-                            $retObj->{$retObj::ADDERPREFIX . ucfirst($joinKey)}($row[$joinKey], $dbToUse);
+                            $method = new Convert($retObj::ADDERPREFIX . ucfirst($joinKey));
+                            $retObj->{$method->toCamel()}($row[$joinKey], $dbToUse);
                         }
                     }
                 }
