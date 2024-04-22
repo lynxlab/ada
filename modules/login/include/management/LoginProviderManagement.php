@@ -82,7 +82,7 @@ class LoginProviderManagement
      * - have a .php extension
      * - have the name that does not start with 'abstract'
      *
-     * @return Ambigous <NULL, array>
+     * @return array|null
      *
      * @access public
      */
@@ -99,7 +99,7 @@ class LoginProviderManagement
                 if (
                     $entry != "." && $entry != ".."  &&
                     !is_dir($classdir . DIRECTORY_SEPARATOR . $entry) &&
-                    1 === preg_match("/^(?!abstract|AMA)(.*).php$/", $entry, $output_array)
+                    1 === preg_match("/^(?!abstract|AMA|ilogin)(.*).php$/i", $entry, $output_array)
                 ) {
                     if (isset($output_array[1])) {
                         $files[$output_array[1]] = $output_array[1];
