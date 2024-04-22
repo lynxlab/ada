@@ -35,7 +35,7 @@ class Media extends ADAResource
             } else {
                 $className = 'Media';
             }
-            $mediaObj = new $className(
+            $mediaObj = new (__NAMESPACE__ . '\\' . $className)(
                 $id,
                 $result['nome_file'],
                 $result['tipo'],

@@ -125,7 +125,7 @@ class Groups extends StudentsGroupsBase
             if (in_array($property, $arrayProp)) {
                 // build Lbl constant name: e.g. from customFields, build customFieldLbl
                 $singular = rtrim($property, 's');
-                $labels = constant(static::class . '::' . $singular . 'Lbl');
+                $labels = constant(static::class . '::' . strtoupper($singular . 'Lbl'));
                 foreach (array_keys($labels) as $index) {
                     $properties[] = $singular . $index;
                 }
