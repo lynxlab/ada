@@ -301,9 +301,13 @@ abstract class AbstractAMADataHandler
      */
     public static function tsToDate($timestamp, $format = ADA_DATE_FORMAT)
     {
-        if ($timestamp == "") {
-            return "";
+        if (empty($timestamp) || is_string($timestamp)) {
+            return $timestamp;
         }
+        $format = str_replace(["%M", "%S"], ["%i", "%s"], $format);
+        // if (is_string($timestamp)) {
+        // var_dump($timestamp); die(__FILE__.':'.__LINE__);
+        // }
         return (new DateTimeImmutable())->setTimestamp($timestamp)->format(str_replace('%', '', $format));
     }
 
@@ -643,6 +647,10 @@ abstract class AbstractAMADataHandler
         /**
          * if $values is a scalar, let's transform it into a one-element array
          */
+        if ($values === null) {
+            $values = [];
+        }
+
         if (!is_array($values)) {
             $values =  [$values];
         }
@@ -672,6 +680,10 @@ abstract class AbstractAMADataHandler
         /**
          * if $values is a scalar, let's transform it into a one-element array
          */
+        if ($values === null) {
+            $values = [];
+        }
+
         if (!is_array($values)) {
             $values =  [$values];
         }
@@ -734,6 +746,10 @@ abstract class AbstractAMADataHandler
         /**
          * if $values is a scalar, let's transform it into a one-element array
          */
+        if ($values === null) {
+            $values = [];
+        }
+
         if (!is_array($values)) {
             $values =  [$values];
         }
@@ -764,6 +780,10 @@ abstract class AbstractAMADataHandler
         /**
          * if $values is a scalar, let's transform it into a one-element array
          */
+        if ($values === null) {
+            $values = [];
+        }
+
         if (!is_array($values)) {
             $values =  [$values];
         }
@@ -856,6 +876,9 @@ abstract class AbstractAMADataHandler
     {
 
         //ADALogger::logDb('Call to DB_execute_critical_prepared');
+        if ($values === null) {
+            $values = [];
+        }
 
         // connect to db if not connected
         $db = &$this->getConnection();

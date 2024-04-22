@@ -237,7 +237,7 @@ class AMAPDOWrapper
             if (is_null($col)) {
                 $retval = $stmt->fetchAll($fetchmode ?? AMA_FETCH_BOTH);
             } elseif (is_numeric($col) && intval($col) >= 0) {
-                $retval = $stmt->fetchAll($fetchmode, intval($col));
+                $retval = $stmt->fetchAll($fetchmode ?? AMA_FETCH_BOTH, intval($col));
             } else {
                 throw new PDOException("Soemthing went wrong in query execution " . __FILE__ . " line: " . __LINE__);
             }
@@ -318,9 +318,12 @@ class AMAPDOWrapper
             // build an array like MDB2 getAssoc would
             $tmparray = [];
             while ($row = $stmt->fetch($fetchmode ?? AMA_FETCH_BOTH)) {
-                $firstRow = current($row);
-                $index = $firstRow;
-                array_shift($row);
+                // if fetchmode is AMA_FETCH_BOTH, must shift 2 rows
+                for ($i = 0; $i < ($fetchmode ?? AMA_FETCH_BOTH == AMA_FETCH_BOTH ? 2 : 1); $i++) {
+                    $firstRow = current($row);
+                    $index = $firstRow;
+                    array_shift($row);
+                }
                 // print_r($index."-"); continue;
                 foreach ($row as $key => $value) {
                     $tmparray[$index][$key] = $value;
