@@ -118,7 +118,6 @@ class UserProfileForm extends UserRegistrationForm
         $layoutsAr = [
           ''         => translateFN('seleziona un layout'),
         ];
-        require_once ROOT_DIR . '/include/Layout.inc.php';
         $layoutObj = new UILayout();
         $avalaibleLayoutAr = $layoutObj->getAvailableLayouts();
         $layouts = array_merge($layoutsAr, $avalaibleLayoutAr);

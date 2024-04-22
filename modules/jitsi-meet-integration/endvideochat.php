@@ -39,8 +39,6 @@ if (count($data) == 0) {
 }
 
 if (isset($data['p']) && strlen($data['p']) && DataValidator::validateTestername($data['p'])) {
-    require_once ROOT_DIR . '/comunica/include/videoroom.classes.inc.php';
-
     $GLOBALS['dh'] = new AMADataHandler(MultiPort::getDSN($data['p']));
     $videoroomObj = VideoRoom::getVideoObj();
     $logData = [

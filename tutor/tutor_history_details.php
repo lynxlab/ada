@@ -39,8 +39,6 @@ $neededObjAr = [
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = 'default';
 
-include_once 'include/tutor.inc.php';
-
 /**
  * This will at least import in the current symbol table the following vars.
  * For a complete list, please var_dump the array returned by the init method.

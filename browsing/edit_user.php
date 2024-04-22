@@ -240,8 +240,7 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
                  * existance here because if they did not existed you'd get an error while loggin in.
                  */
                 if (
-                    !in_array($extraTableName, $linkedTablesInADAUser) ||
-                    !@include_once(ROOT_DIR . '/include/Forms/' . $extraTableFormClass . '.inc.php')
+                    !in_array($extraTableName, $linkedTablesInADAUser)
                 ) {
                     continue;
                 }

@@ -359,7 +359,6 @@ class QuestionManagementTest extends ManagementTest
                 redirect(MODULES_TEST_HTTP . '/index.php?id_test=' . $question['id_nodo_radice'] . $get_topic);
             }
         } else {
-            require_once(MODULES_TEST_PATH . '/include/forms/deleteFormTest.inc.php');
             $titolo = $question['titolo'];
             if (empty($titolo)) {
                 $titolo = $question['nome'];

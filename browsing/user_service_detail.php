@@ -77,8 +77,6 @@ $self =  'default';//whoami();
  */
 BrowsingHelper::init($neededObjAr);
 
-include_once '../tutor/include/eguidance_tutor_form_functions.inc.php';
-
 /*
  * YOUR CODE HERE
  */

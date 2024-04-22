@@ -94,8 +94,6 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-include_once ROOT_DIR . '/include/services_functions.inc.php';
-
 $self = whoami();   // serve per scegliere il template
 
 //$dh = AMADataHandler::instance(); // init AMA

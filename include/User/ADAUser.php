@@ -27,9 +27,6 @@
  * @version     0.1
  */
 
-// include needed table managing class
-// include_once ROOT_DIR.'/include/UserExtraTables.class.inc.php';
-
 namespace Lynxlab\ADA\Main\User;
 
 use Lynxlab\ADA\Main\AMA\AMADataHandler;

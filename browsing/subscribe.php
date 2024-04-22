@@ -82,8 +82,6 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-include_once ROOT_DIR . '/include/services_functions.inc.php';
-
 $self =  whoami();
 $error_page = HTTP_ROOT_DIR . "/index.php";
 

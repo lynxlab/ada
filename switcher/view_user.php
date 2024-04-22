@@ -72,7 +72,6 @@ $self = whoami();
  */
 SwitcherHelper::init($neededObjAr);
 
-include_once ROOT_DIR . '/admin/include/AdminUtils.inc.php';
 /*
  * YOUR CODE HERE
  */

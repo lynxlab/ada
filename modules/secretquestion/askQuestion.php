@@ -45,7 +45,6 @@ try {
         $sqdh = AMASecretQuestionDataHandler::instance();
         $question = $sqdh->getUserQuestion($userId);
         if (strlen($question) > 0) {
-            require_once MODULES_SECRETQUESTION_PATH . '/include/form/SecretQuestionForm.php';
             $form = new SecretQuestionForm(false, true);
             $form->fillWithArrayData(['secretquestion' => htmlentities($question), 'userId' => $userId]);
             $data = $form->getHtml();

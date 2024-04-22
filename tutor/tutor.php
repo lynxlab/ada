@@ -85,7 +85,6 @@ TutorHelper::init($neededObjAr);
 /*
  * YOUR CODE HERE
  */
-include_once 'include/tutor.inc.php';
 include_once ROOT_DIR . '/config/config_class_report.inc.php';
 
 if (!isset($_GET['mode'])) {

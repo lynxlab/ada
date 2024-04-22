@@ -127,8 +127,6 @@ switch ($exit_reason) {
             }
         }
 
-
-        //       include_once("include/MessageHandler.inc.php"); // messages functions
         // initialize a new MessageHandler object
 
         //$mh = new MessageHandler(MultiPort::getDSN($sess_selected_tester));

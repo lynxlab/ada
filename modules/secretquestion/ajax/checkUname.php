@@ -32,7 +32,6 @@ $neededObjAr = [AMA_TYPE_VISITOR => ['layout']];
  */
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
-require_once ROOT_DIR . '/browsing/include/browsing_functions.inc.php';
 BrowsingHelper::init($neededObjAr);
 
 $data = new stdClass();

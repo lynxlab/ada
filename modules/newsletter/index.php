@@ -41,9 +41,6 @@ $neededObjAr = [
 require_once(ROOT_DIR . '/include/module_init.inc.php');
 BrowsingHelper::init($neededObjAr);
 
-// MODULE's OWN IMPORTS
-require_once MODULES_NEWSLETTER_PATH . '/include/AMANewsletterDataHandler.inc.php';
-
 $self = 'newsletter';
 
 $GLOBALS['dh'] = AMANewsletterDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
