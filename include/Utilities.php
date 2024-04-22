@@ -16,6 +16,8 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeZone;
 
+use function readdir as phpreaddir;
+
 function mydebug($line, $file, $vars)
 {
     $debug = $GLOBALS['debug'];
@@ -400,11 +402,15 @@ function readDir($dir, $ext = "", $moreExtension = [])
             'potx',
         ];
     }
+    // var_dump($dir);
+    // var_dump(opendir($dir));
+
+    // die(__FILE__.':'.__LINE__);
 
     $dirid = @opendir($dir);
     if ($dirid) {
         $i = 0;
-        while (($file = readdir($dirid)) != false) {
+        while (($file = phpreaddir($dirid)) != false) {
             $fileAr = explode('.', $file);
             $ext = strtolower(array_pop($fileAr));
             if (in_array($ext, $allowed_extAr)) {
