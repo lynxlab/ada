@@ -23,7 +23,7 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
  *
  * @author giorgio
 */
-class FormEditNewsLetter extends FForm
+class FormEditNewsletter extends FForm
 {
     public function __construct($formName)
     {

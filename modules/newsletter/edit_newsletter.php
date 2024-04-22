@@ -7,7 +7,7 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Module\Newsletter\AMANewsletterDataHandler;
-use Lynxlab\ADA\Module\Newsletter\FormEditNewsLetter;
+use Lynxlab\ADA\Module\Newsletter\FormEditNewsletter;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -85,7 +85,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'  &
         die();
     }
 } else {
-    $containedElement = new FormEditNewsLetter('editnewsletter');
+    $containedElement = new FormEditNewsletter('editnewsletter');
 
     $newsletterId = (isset($_GET['id']) && intval($_GET['id']) > 0) ? intval($_GET['id']) : 0;
 

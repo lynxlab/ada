@@ -19,7 +19,7 @@ use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
-class FormFilterNewsLetter extends FForm
+class FormFilterNewsletter extends FForm
 {
     public function __construct($formName, $courseList)
     {

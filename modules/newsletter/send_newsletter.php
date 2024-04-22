@@ -7,7 +7,7 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Module\Newsletter\AMANewsletterDataHandler;
-use Lynxlab\ADA\Module\Newsletter\FormFilterNewsLetter;
+use Lynxlab\ADA\Module\Newsletter\FormFilterNewsletter;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -41,10 +41,6 @@ $neededObjAr = [
 require_once(ROOT_DIR . '/include/module_init.inc.php');
 BrowsingHelper::init($neededObjAr);
 
-// MODULE's OWN IMPORTS
-require_once MODULES_NEWSLETTER_PATH . '/include/forms/formFilterNewsletter.inc.php';
-require_once MODULES_NEWSLETTER_PATH . '/include/AMANewsletterDataHandler.inc.php';
-
 $self = whoami();
 
 $GLOBALS['dh'] = AMANewsletterDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
@@ -68,7 +64,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET'  &&
             $courses[$course[0]] = '(' . $course[0] . ') ' . $course[1] . ' - ' . $course[2];
         }
 
-        $form = new FormFilterNewsLetter('newsletterFilterForm', $courses);
+        $form = new FormFilterNewsletter('newsletterFilterForm', $courses);
         $form->fillWithArrayData(['id' => $idNewsletter]);
 
         $summaryDIV = CDOMElement::create('div', 'id:newsletterSummary');
