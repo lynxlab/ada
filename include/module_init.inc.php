@@ -1,7 +1,7 @@
 <?php
 
-use function Lynxlab\ADA\Main\ModuleInit\clearDataFN;
-use function Lynxlab\ADA\Main\ModuleInit\sessionControlFN;
+use Lynxlab\ADA\Main\ModuleInit;
+
 use function Lynxlab\ADA\Main\Utilities\todayDateFN;
 
 /**
@@ -31,12 +31,12 @@ if (!isset($allowedUsersAr) || !is_array($allowedUsersAr)) {
 if (!isset($trackPageToNavigationHistory)) {
     $trackPageToNavigationHistory = true;
 }
-sessionControlFN($neededObjAr, $allowedUsersAr, $trackPageToNavigationHistory);
+ModuleInit::sessionControlFN($neededObjAr, $allowedUsersAr, $trackPageToNavigationHistory);
 /**
  * Clears variables specified in $whatAR
  */
 if (isset($variableToClearAR) && is_array($variableToClearAR)) {
-    clearDataFN($variableToClearAR);
+    ModuleInit::clearDataFN($variableToClearAR);
 }
 
 $ymdhms = todayDateFN();
