@@ -504,6 +504,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                         if (
                             stristr($sqlFile, "menu") !== false ||
                             in_array(basename($sqlFile), $inCommon) ||
+                            str_contains($sqlFile, "common") ||
                             (!$multiprovider && in_array(basename($sqlFile), $inBothIfNonMulti)) ||
                             ($multiprovider && in_array(basename($sqlFile), $inCommonIfMulti))
                         ) {
