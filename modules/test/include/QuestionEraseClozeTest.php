@@ -47,8 +47,8 @@ class QuestionEraseClozeTest extends QuestionClozeTest
         }
 
         //fifth character
-        $this->exerciseVariation = $this->tipo[4];
-        $this->apostrophe = $this->tipo[5];
+        $this->exerciseVariation = strval($this->tipo)[4];
+        $this->apostrophe = strval($this->tipo)[5];
         return true;
     }
 

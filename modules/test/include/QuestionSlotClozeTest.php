@@ -47,7 +47,7 @@ class QuestionSlotClozeTest extends QuestionClozeTest
         }
 
         //fifth character
-        $this->boxPosition = $this->tipo[4];
+        $this->boxPosition = strval($this->tipo)[4];
         return true;
     }
 
@@ -321,8 +321,8 @@ class QuestionSlotClozeTest extends QuestionClozeTest
         if ($this->feedback) {
             /*
             $answer = array();
-            if (!empty($this->_children)) {
-                foreach($this->_children as $v) {
+            if (!empty($this->children)) {
+                foreach($this->children as $v) {
                     if ($ordine == $v->ordine) {
                         $answer[] = $v;
                     }
@@ -416,8 +416,8 @@ class QuestionSlotClozeTest extends QuestionClozeTest
             $div->setAttribute('style', 'display:none;');
             $risposte = [];
             /*
-            if (!empty($this->_children)) {
-                foreach($this->_children as $k=>$v) {
+            if (!empty($this->children)) {
+                foreach($this->children as $k=>$v) {
                     if ($v->ordine == $ordine) {
                         $v->correttezza = is_null($v->correttezza)?0:$v->correttezza;
                         $risposte[] = $v->testo.' ('.$v->correttezza.' '.translateFN('Punti').')';
@@ -464,7 +464,7 @@ class QuestionSlotClozeTest extends QuestionClozeTest
             $div->setAttribute('style', 'display:none;');
             $risposte = [];
             /*
-            foreach($this->_children as $k=>$v) {
+            foreach($this->children as $k=>$v) {
                 if ($v->ordine == $ordine) {
                     $v->correttezza = is_null($v->correttezza)?0:$v->correttezza;
                     $risposte[] = $v->testo.' ('.$v->correttezza.' '.translateFN('Punti').')';

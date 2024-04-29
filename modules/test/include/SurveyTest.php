@@ -34,7 +34,7 @@ class SurveyTest extends RootTest
     protected function configureProperties()
     {
         //first character
-        if ($this->tipo[0] != self::NODE_TYPE) {
+        if (strval($this->tipo)[0] != self::NODE_TYPE) {
             return false;
         }
 

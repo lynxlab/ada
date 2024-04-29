@@ -54,7 +54,7 @@ try {
         throw new GdprException(translateFN("Solo il coordinatore può vedere tutte le richieste"));
     }
 
-    if (strlen($uuid) > 0 && !Uuid::isValid($uuid)) {
+    if (strlen($uuid ?? '') > 0 && !Uuid::isValid($uuid)) {
         throw new GdprException(translateFN("Numero di pratica non valido"));
     }
 
@@ -67,7 +67,7 @@ try {
         $where = [];
     }
 
-    if (strlen($uuid) > 0) {
+    if (strlen($uuid ?? '') > 0) {
         if (intval($_SESSION['sess_userObj']->getType()) === AMA_TYPE_SWITCHER) {
             // the swithcer can view an uuid regardless of the generatedBy value
             $where = [];

@@ -53,8 +53,8 @@ class QuestionMultipleClozeTest extends QuestionClozeTest
         }
 
         //fifth character
-        $this->boxPosition = $this->tipo[4];
-        $this->apostrophe = $this->tipo[5];
+        $this->boxPosition = strval($this->tipo)[4];
+        $this->apostrophe = strval($this->tipo)[5];
         return true;
     }
 

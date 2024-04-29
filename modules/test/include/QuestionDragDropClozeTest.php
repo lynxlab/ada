@@ -34,7 +34,7 @@ class QuestionDragDropClozeTest extends QuestionClozeTest
         }
 
         //fifth character
-        $this->boxPosition = $this->tipo[4];
+        $this->boxPosition = strval($this->tipo)[4];
         return true;
     }
 

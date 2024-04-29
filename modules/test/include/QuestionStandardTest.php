@@ -33,7 +33,7 @@ class QuestionStandardTest extends QuestionTest
         }
 
         //fourth character: variation
-        $this->variation = $this->tipo[3];
+        $this->variation = strval($this->tipo)[3];
         return true;
     }
 
@@ -61,8 +61,8 @@ class QuestionStandardTest extends QuestionTest
 
         if (!empty($this->children)) {
             $_children = $this->children;
-            if ($this->searchParent('RootTest')->shuffle_answers) {
-                // giorgio 04/lug/2014 bugfix: was shuffle($this->_children);
+            if ($this->searchParent('RootTest')?->shuffle_answers) {
+                // giorgio 04/lug/2014 bugfix: was shuffle($this->children);
                 shuffle($_children);
             }
 
@@ -95,7 +95,7 @@ class QuestionStandardTest extends QuestionTest
                         }
                     }
 
-                    if ($post_data[self::POST_ANSWER_VAR] == $v->id_nodo) {
+                    if ($post_data !== false && $post_data[self::POST_ANSWER_VAR] == $v->id_nodo) {
                         $input->setAttribute('checked', '');
                     }
 

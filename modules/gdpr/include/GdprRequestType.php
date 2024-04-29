@@ -49,7 +49,7 @@ class GdprRequestType extends GdprBase
      */
     public function fromArray($data = [])
     {
-        if (array_key_exists('extra', $data) && strlen($data['extra']) > 0) {
+        if (array_key_exists('extra', $data) && strlen($data['extra'] ?? '') > 0) {
             $this->setExtra(json_decode($data['extra'], true));
             unset($data['extra']);
         }

@@ -12,6 +12,7 @@ namespace Lynxlab\ADA\Module\Test;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Test\RootTest;
 
@@ -36,7 +37,7 @@ class TestTest extends RootTest
         $this->shuffle_answers = true;
 
         //first character
-        if ($this->tipo[0] != self::NODE_TYPE) {
+        if (strval($this->tipo)[0] != self::NODE_TYPE) {
             return false;
         }
 
@@ -45,7 +46,7 @@ class TestTest extends RootTest
         //fourth character delegated to parent class
 
         //fifth character
-        switch ($this->tipo[4]) {
+        switch (strval($this->tipo)[4]) {
             default:
             case ADA_NO_TEST_BARRIER:
                 $this->barrier = false;
@@ -93,7 +94,7 @@ class TestTest extends RootTest
                     if ($dh->setStudentLevel($this->id_istanza, [$_SESSION['sess_id_user']], $level)) {
                         $level_gained = $level;
                         $res = $dh->testSaveTest($r['id_history_test'], $r['tempo_scaduto'], $r['points'], $r['repeatable'], $r['min_barrier_points'], $level_gained);
-                        if (is_object($res) && ($res::class == 'AMAError')) {
+                        if (is_object($res) && ($res::class == AMAError::class)) {
                             $this->onSaveError = true;
                             $this->rollBack();
                             return false;

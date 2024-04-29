@@ -32,12 +32,12 @@ class TopicTest extends NodeTest
     protected function configureProperties()
     {
         //first character
-        if ($this->tipo[0] != self::NODE_TYPE) {
+        if (strval($this->tipo)[0] != self::NODE_TYPE) {
             return false;
         }
 
         //second character
-        switch ($this->tipo[1]) {
+        switch (strval($this->tipo)[1]) {
             default:
             case ADA_PICK_QUESTIONS_NORMAL:
                 $this->randomQuestions = false;
@@ -163,8 +163,8 @@ class TopicTest extends NodeTest
             $ul->setAttribute('class', $ul->getAttribute('class') . ' feedback');
         }
         /*
-        if (isset($this->_children[0])) {
-            $ul->setAttribute('start', $this->_children[0]->ordine);
+        if (isset($this->children[0])) {
+            $ul->setAttribute('start', $this->children[0]->ordine);
         }
         */
         $out->addChild($ul);

@@ -763,7 +763,7 @@ class CourseViewer
             preg_match("/^([0-9]+)_/", $params['node']['id_nodo'], $match);
             $id_course = $match[1];
 
-            $node_type_family = $params['node']['tipo'][0];
+            $node_type_family = strval($params['node']['tipo'])[0];
             if ($node_type_family >= ADA_STANDARD_EXERCISE_TYPE and $node_type_family <= ADA_OPEN_UPLOAD_EXERCISE_TYPE) {
                 $node_element = CDOMElement::create('a', "href:$http_root_dir/browsing/exercise.php?id_node={$params['node']['id_nodo']}");
             } elseif ($node_type_family == ADA_PERSONAL_EXERCISE_TYPE) {

@@ -37,11 +37,11 @@ class RootFormTest extends FormTest
         $this->addTextInput('titolo', translateFN('Titolo') . ':')
              ->setRequired()
              ->setValidator(FormValidator::NOT_EMPTY_STRING_VALIDATOR)
-             ->withData($this->data['titolo']);
+             ->withData($this->data['titolo'] ?? '');
 
         //descrizione
         $this->addTextarea('testo', translateFN('Descrizione') . ':')
-             ->withData(Node::prepareInternalLinkMediaForEditor($this->data['testo']));
+             ->withData(Node::prepareInternalLinkMediaForEditor($this->data['testo'] ?? ''));
 
         //consegna (message showed on test / survey ending)
         if (!empty($this->data['nome'])) {

@@ -33,7 +33,7 @@ class QuestionMultipleCheckTest extends QuestionTest
         }
 
         //fourth character: variation
-        $this->variation = $this->tipo[3];
+        $this->variation = strval($this->tipo)[3];
         return true;
     }
 
@@ -61,7 +61,7 @@ class QuestionMultipleCheckTest extends QuestionTest
 
         if (!empty($this->children)) {
             $_children = $this->children;
-            if ($this->searchParent('RootTest')->shuffle_answers) {
+            if ($this->searchParent('RootTest')?->shuffle_answers) {
                 shuffle($_children);
             }
 
@@ -94,7 +94,7 @@ class QuestionMultipleCheckTest extends QuestionTest
                                 $answer->setAttribute('class', 'wrong_answer_test');
                             }
                         }
-                    } elseif ($post_data[self::POST_ANSWER_VAR] == $v->id_nodo) {
+                    } elseif ($post_data !== false && $post_data[self::POST_ANSWER_VAR] == $v->id_nodo) {
                         $input->setAttribute('checked', '');
                     }
 

@@ -73,9 +73,9 @@ class RootManagementTest extends ManagementTest
             $data = null;
         }
 
-        if (static::class == 'TestManagementTest') {
+        if (static::class == __NAMESPACE__ . '\TestManagementTest') {
             $form = new TestFormTest($data);
-        } elseif (static::class == 'SurveyManagementTest') {
+        } elseif (static::class == __NAMESPACE__ . '\SurveyManagementTest') {
             $form = new SurveyFormTest($data);
         }
 
@@ -206,9 +206,9 @@ class RootManagementTest extends ManagementTest
             ];
         }
 
-        if (static::class == 'TestManagementTest') {
+        if (static::class == __NAMESPACE__ . '\TestManagementTest') {
             $form = new TestFormTest($data);
-        } elseif (static::class == 'SurveyManagementTest') {
+        } elseif (static::class == __NAMESPACE__ . '\SurveyManagementTest') {
             $form = new SurveyFormTest($data);
         }
 

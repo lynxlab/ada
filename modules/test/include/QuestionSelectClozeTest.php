@@ -34,7 +34,7 @@ class QuestionSelectClozeTest extends QuestionClozeTest
         }
 
         //fifth character
-        switch ($this->tipo[4]) {
+        switch (strval($this->tipo)[4]) {
             default:
             case ADA_NORMAL_SELECT_TEST:
                 $this->synonym = false;

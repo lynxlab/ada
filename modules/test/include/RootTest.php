@@ -14,6 +14,7 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Module\Test\NodeTest;
@@ -124,7 +125,7 @@ abstract class RootTest extends NodeTest
                         }
                         $answer_data = $question->serializeAnswers($answer_data);
                         $obj = $dh->testSaveAnswer($this->id_history_test, $_SESSION['sess_id_user'], $topic_id, $question_id, $_SESSION['sess_id_course'], $_SESSION['sess_id_course_instance'], $answer_data, $points, $attachment);
-                        if (is_object($obj) && ($obj::class == 'AMAError' || is_subclass_of($obj, 'PEAR_Error'))) {
+                        if (is_object($obj) && ($obj::class == AMAError::class || is_subclass_of($obj, 'PEAR_Error'))) {
                             $result = false;
                             break 2;
                         }
@@ -190,7 +191,7 @@ abstract class RootTest extends NodeTest
         $res = $dh->testSaveTest($this->id_history_test, $tempo_scaduto, $points, $repeatable, $min_barrier_points, $level_gained);
 
         //checking if we got errors
-        if (is_object($res) && ($res::class == 'AMAError' || is_subclass_of($res, 'PEAR_Error'))) {
+        if (is_object($res) && ($res::class == AMAError::class || is_subclass_of($res, 'PEAR_Error'))) {
             $this->onSaveError = true;
             $this->rollBack();
             return false;
@@ -381,12 +382,12 @@ abstract class RootTest extends NodeTest
                 if (!empty($this->children)) {
                     foreach ($this->children as $sub) {
                         $sub->setDisplay(false);
-                        if (!empty($sub->_children)) {
-                            foreach ($sub->_children as $i) {
+                        if (!empty($sub->children)) {
+                            foreach ($sub->children as $i) {
                                 $i->setDisplay(false);
                                 if (is_a($i, 'TopicTest')) {
-                                    if (!empty($i->_children)) {
-                                        foreach ($i->_children as $v) {
+                                    if (!empty($i->children)) {
+                                        foreach ($i->children as $v) {
                                             $v->setDisplay(false);
                                         }
                                     }
@@ -417,7 +418,7 @@ abstract class RootTest extends NodeTest
 
     protected function pickRandomQuestionTopic($sub)
     {
-        $n = count($sub->_children);
+        $n = count($sub->children ?? []);
         if ($sub->randomQuestions && intval($sub->livello) > 0) {
             $num_domande = intval($sub->livello);
         } else {
@@ -427,8 +428,8 @@ abstract class RootTest extends NodeTest
         $tmpList = [];
         while (count($tmpList) != $num_domande) {
             $r = random_int(0, $n);
-            if (isset($sub->_children[$r])) {
-                $i = $sub->_children[$r];
+            if (isset($sub->children[$r])) {
+                $i = $sub->children[$r];
                 if (!in_array($i->id_nodo, $tmpList)) {
                     $tmpList[] = $i->id_nodo;
                     if (is_a($i, 'QuestionTest')) {
@@ -441,7 +442,7 @@ abstract class RootTest extends NodeTest
         }
 
         if (!empty($tmpList)) {
-            foreach ($sub->_children as $k => $i) {
+            foreach ($sub->children as $k => $i) {
                 if (!in_array($i->id_nodo, $tmpList)) {
                     $i->setDisplay(false);
                 }
@@ -460,10 +461,10 @@ abstract class RootTest extends NodeTest
 
         //first character delegated to child class
         //second character
-        $this->returnLink = $this->tipo[1];
+        $this->returnLink = strval($this->tipo)[1];
 
         //third character
-        switch ($this->tipo[2]) {
+        switch (strval($this->tipo)[2]) {
             default:
             case ADA_RATING_TEST_INTERACTION:
                 $this->feedback = true;
@@ -488,7 +489,7 @@ abstract class RootTest extends NodeTest
         }
 
         //fourth character
-        switch ($this->tipo[3]) {
+        switch (strval($this->tipo)[3]) {
             default:
             case ADA_ONEPAGE_TEST_MODE:
                 $this->sequenced = false;
@@ -500,7 +501,7 @@ abstract class RootTest extends NodeTest
 
         //fifth character delegated to child class
         //sixth character
-        switch ($this->tipo[5]) {
+        switch (strval($this->tipo)[5]) {
             default:
             case ADA_NO_TEST_REPETEABLE:
                 $this->repeatable = false;
@@ -1077,10 +1078,10 @@ abstract class RootTest extends NodeTest
             }
             for ($i = $start; $i < $limit; $i++) {
                 $topic = $this->getChild($i);
-                if (!empty($topic->_children)) {
-                    foreach ($topic->_children as $subTopic) {
+                if (!empty($topic->children)) {
+                    foreach ($topic->children as $subTopic) {
                         if (is_a($subTopic, 'TopicTest')) {
-                            foreach ($subTopic->_children as $v) {
+                            foreach ($subTopic->children as $v) {
                                 $questions[] = $v;
                             }
                         } elseif (is_a($subTopic, 'QuestionTest')) {

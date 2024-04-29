@@ -36,7 +36,7 @@ abstract class QuestionClozeTest extends QuestionTest
         }
 
         //fourth character
-        $this->clozeType = $this->tipo[3];
+        $this->clozeType = strval($this->tipo)[3];
         return true;
     }
 
@@ -185,7 +185,7 @@ abstract class QuestionClozeTest extends QuestionTest
         }
 
         $tipo = ADA_LEAF_ANSWER . ADA_NO_OPEN_TEST_ANSWER . ADA_CASE_SENSITIVE_TEST . '000';
-        if ($data['tipo'][5]) {
+        if (strval($data['tipo'])[5]) {
             $tipo[5] = ADA_CASE_INSENSITIVE_TEST;
         }
 

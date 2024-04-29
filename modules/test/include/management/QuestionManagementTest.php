@@ -93,7 +93,7 @@ class QuestionManagementTest extends ManagementTest
                 case ADA_CLOZE_TEST_TYPE:
                     $this->tipo[3] = intval($new_q['cloze']);
 
-                    switch ($this->tipo[3]) {
+                    switch (strval($this->tipo)[3]) {
                         case ADA_SELECT_TEST_SIMPLICITY:
                             $this->tipo[4] = intval($_POST['cloze_sinonimi']);
                             break;
@@ -117,13 +117,13 @@ class QuestionManagementTest extends ManagementTest
             if (isset($_POST['commento'])) {
                 $this->tipo[2] = intval($_POST['commento']);
             }
-            switch ($this->tipo[1]) {
+            switch (strval($this->tipo)[1]) {
                 case ADA_STANDARD_TEST_TYPE:
                 case ADA_MULTIPLE_CHECK_TEST_TYPE:
                     $this->tipo[3] = intval($_POST['variant']);
                     break;
                 case ADA_CLOZE_TEST_TYPE:
-                    switch ($this->tipo[3]) {
+                    switch (strval($this->tipo)[3]) {
                         case ADA_SELECT_TEST_SIMPLICITY:
                             if (isset($_POST['cloze_sinonimi'])) {
                                 $this->tipo[4] = intval($_POST['cloze_sinonimi']);
@@ -457,12 +457,12 @@ class QuestionManagementTest extends ManagementTest
             $question_res = $dh->testUpdateNode($question_id, $data);
         }
 
-        if ($data['tipo'][1] == ADA_CLOZE_TEST_TYPE && $question_res) {
-            if ($data['tipo'][3] == ADA_ERASE_TEST_SIMPLICITY) {
+        if (strval($data['tipo'])[1] == ADA_CLOZE_TEST_TYPE && $question_res) {
+            if (strval($data['tipo'])[3] == ADA_ERASE_TEST_SIMPLICITY) {
                 QuestionEraseClozeTest::createEraseClozeAnswers($question_id, $data, $this->test);
-            } elseif ($data['tipo'][3] == ADA_SLOT_TEST_SIMPLICITY) {
+            } elseif (strval($data['tipo'])[3] == ADA_SLOT_TEST_SIMPLICITY) {
                 QuestionSlotClozeTest::createSlotClozeAnswers($question_id, $data, $this->test);
-            } elseif ($data['tipo'][3] == ADA_MULTIPLE_TEST_SIMPLICITY) {
+            } elseif (strval($data['tipo'])[3] == ADA_MULTIPLE_TEST_SIMPLICITY) {
                 QuestionMultipleClozeTest::createMultipleClozeAnswers($question_id, $data, $this->test);
             } else {
                 QuestionClozeTest::createClozeAnswers($question_id, $data, $this->test);
