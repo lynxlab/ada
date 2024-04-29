@@ -57,4 +57,16 @@ final class CoreEvent extends GenericEvent
      * @var string
      */
     public const AMAPDOPOSTGETALL = self::NAMESPACE . '.amapdo.postgetall';
+
+    /**
+     * The HELPERINITEXTRACT event occurs before ViewBaseHelper::extract
+     * sets the $GLOBALS array keys.
+     *
+     * This event allows you to manipulate the retunred results array
+     *
+     * @CoreEvent
+     *
+     * @var string
+     */
+    public const HELPERINITEXTRACT = self::NAMESPACE . '.helperinit.extract';
 }
