@@ -10,6 +10,7 @@
 
 namespace Lynxlab\ADA\Main\Helper;
 
+use Exception;
 use Lynxlab\ADA\Comunica\ChatRoom;
 use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
@@ -21,12 +22,15 @@ use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\readCourse;
 use function Lynxlab\ADA\Main\AMA\DBRead\readCourseInstanceFromDB;
 use function Lynxlab\ADA\Main\AMA\DBRead\readNodeFromDB;
 use function Lynxlab\ADA\Main\AMA\DBRead\readUser;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+use function Lynxlab\ADA\Main\Utilities\GetCallingMethodName;
 
 /**
  * View helper base class
@@ -82,6 +86,16 @@ abstract class ViewBaseHelper
             self::$helperData['layout_dataAr']['family'] = self::$helperData['template_family'];
         }
         return self::getHelperData();
+    }
+
+    public static function get($name)
+    {
+        $arr = self::getHelperData();
+        if (array_key_exists($name, $arr)) {
+            return $arr[$name];
+        } else {
+            throw new Exception("$name non esiste");
+        }
     }
 
     /**
@@ -321,7 +335,7 @@ abstract class ViewBaseHelper
             global $id_node;
             /**
              * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
- * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
+             * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
              */
             $nodeObj = readNodeFromDB($id_node ?? null);
             if (ADAError::isError($nodeObj)) {
@@ -546,12 +560,32 @@ abstract class ViewBaseHelper
     }
 
     /**
+     * @deprecated use get method instead.
+     *
      * Extracts the helperData array to $GLOBALS
      *
      * @return void
      */
     protected static function extract()
     {
+        if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CoreEvent::class,
+                    'eventName' => CoreEvent::HELPERINITEXTRACT,
+                ],
+                GetCallingMethodName(),
+                [
+                    'data' => self::getHelperData(),
+                    'class' => static::class,
+                    'script' => $_SERVER['SCRIPT_NAME'],
+                ]
+            );
+            foreach ($event->getArgument('data') as $key => $val) {
+                self::$helperData[$key] = $val;
+            }
+        }
+
         foreach (self::getHelperData() as $key => $value) {
             if (self::$dumpExtract === true) {
                 if (is_object($value)) {
