@@ -47,16 +47,11 @@ $self =  'index';
 $docDir = '/docs/';
 $helpPath = '';
 
-if (isset($_GET['type'])) {
-    $fileext = $_GET['type'];
-} else {
-    $fileext = 'html';
-}
-if (isset($_GET['lan'])) {
-    $language = $_GET['lan'];
-} else {
-    $language = $_SESSION['sess_user_language'];
-}
+$fileext = DataValidator::checkInputValues('type','ExtensionType',INPUT_GET, 'html');
+
+$language = DataValidator::checkInputValues('lan','Language',INPUT_GET,  $_SESSION['sess_user_language']);
+
+
 switch ($id_profile) {
     case AMA_TYPE_SWITCHER:
         $usertype = 'switcher';
