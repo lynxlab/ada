@@ -4,31 +4,80 @@
  *
  * @author      Stefano Penge <steve@lynxlab.com>
  * @author      Vito Modena <vito@lynxlab.com>
+ * @author      Giorgio Consorti <g.consorti@lynxlab.com>
  * @author
- * @author
- * @copyright   Copyright (c) 2009, Lynx s.r.l.
+ * @copyright   Copyright (c) 2024, Lynx s.r.l.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link        index
- * @version     0.1
+ * @version     0.2
  */
 
 namespace Lynxlab\ADA\Main;
 
 class DataValidator
 {
+    private const MINPASSWORDLEN = 8;
+    private const MAXPASSWORDLEN = 40;
+
+
+    /**
+     * checkInputValues
+     *
+     * @param  string $parameterName
+     * @param  string $filter
+     * @param  int $inputType
+     * @param  mixed $defaultValue
+     * @return mixed
+     */
+    public static function checkInputValues(string $parameterName, string $filter, int $inputType = INPUT_GET, $defaultValue = false): mixed
+    {
+        $value = filter_input($inputType, $parameterName, FILTER_CALLBACK, ['options' => 'Lynxlab\ADA\Main\DataValidator::validate' . $filter]) ?? $defaultValue;
+        return ($value !== false) ? $value : $defaultValue;
+    }
+
+    /**
+     * validateValueWithPattern
+     *
+     * @param  string $value
+     * @param  string $pattern
+     * @return bool
+     */
+    public static function validateValueWithPattern(string $value, string $pattern): bool
+    {
+        return match ($value) {
+            null,'' => false,
+            default => (preg_match($pattern, $value)) ? $value : false
+        };
+    }
+
+    
+    /**
+     * validateValue
+     *
+     * @param  mixed $value
+     * @return mixed
+     */
+    public static function validateValue($value): mixed
+    {
+        return match ($value) {
+            null,'' =>false,
+            default=> $value
+        };
+    }
+
+
     public static function validateLocalFilename($filename)
     {
         if (self::validateNotEmptyString($filename)) {
             $pattern = '/^[a-zA-Z\_]+\.[a-zA-Z0-9\.]+$/';
-            if (preg_match($pattern, $filename)) {
-                return $filename;
-            }
+            return static::validateValueWithPattern($filename, $pattern);
         }
         return false;
     }
 
     public static function validateString($string)
     {
+        // Caution: this function may return '', a bool or a string
         if (!isset($string) || empty($string)) {
             return '';
         } else {
@@ -39,14 +88,12 @@ class DataValidator
 
     public static function validateNotEmptyString($string)
     {
-        if (isset($string) && !empty($string)) {
-            return $string;
-        }
-        return false;
+        return static::validateValue($string);
     }
 
-    public static function validateBirthdate($date)
+    public static function validateBirthdate($date): bool
     {
+         // Caution: this function may only a bool
         $ok = self::validateDateFormat($date);
         if ($ok) {
             [$giorno, $mese, $anno] = explode("/", $date);
@@ -67,35 +114,20 @@ class DataValidator
 
     public static function validateDateFormat($date)
     {
-        if (isset($date) && !empty($date)) {
-            $pattern = '/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/';
-            if (preg_match($pattern, $date)) {
-                return $date;
-            }
-        }
-        return false;
+        $pattern = '/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/';
+        return static::validateValueWithPattern($date, $pattern);
     }
 
     public static function validateEventToken($event_token)
     {
-        if (isset($event_token) && !empty($event_token)) {
-            $pattern = '/^[1-9][0-9]*_[1-9][0-9]*_[1-9][0-9]*_[1-9][0-9]+$/';
-            if (preg_match($pattern, $event_token)) {
-                return $event_token;
-            }
-        }
-        return false;
+        $pattern = '/^[1-9][0-9]*_[1-9][0-9]*_[1-9][0-9]*_[1-9][0-9]+$/';
+        return static::validateWithPattern($event_token, $pattern);
     }
 
     public static function validateActionToken($action_token)
     {
-        if (isset($action_token) && !empty($action_token)) {
-            $pattern = '/^[a-f0-9]{40}$/';
-            if (preg_match($pattern, $action_token)) {
-                return $action_token;
-            }
-        }
-        return false;
+        $pattern = '/^[a-f0-9]{40}$/';
+        return static::validateWithPattern($action_token, $pattern);
     }
 
     public static function isUinteger($value)
@@ -112,61 +144,39 @@ class DataValidator
         return false;
     }
 
-    public static function validateNodeId($node_id)
+    public static function validateNodeId($nodeId)
     {
-        if (isset($node_id) && !empty($node_id)) {
-            $pattern = '/^[1-9][0-9]*\_[0-9]*$/';
-            if (preg_match($pattern, $node_id)) {
-                return $node_id;
-            }
-        }
-        return false;
+        $pattern = '/^[1-9][0-9]*\_[0-9]*$/';
+        return static::validateValueWithPattern($nodeId, $pattern);
     }
 
-    public static function validateTestername($testername, $multiprovider = true)
+    public static function validateTestername($providername, $multiprovider = true)
     {
-        if (isset($testername) && !empty($testername)) {
-            /**
-             * giorgio, set proper pattern validation depending on multiprovider environment
-             * modified 14/ago/2013 if the commented lines are kept, admin will not view
-             * testers whose name is NOT 'clientX' in singleprovider mode.
-             * Thought that this was not a desirable behaviour...
-             * anyway, i keep passing the multiprovider params for
-             * easy switching to whatsoever behaviour is desired.
-             */
-            //     if ($multiprovider===true)
-            //       $pattern = '/^(?:client)[0-9]{1,2}$/';
-            //     else
-            $pattern = '/^(\w|-)+$/';
-            if (preg_match($pattern, $testername)) {
-                return $testername;
-            }
-        }
-        return false;
+        /**
+         * giorgio, set proper pattern validation depending on multiprovider environment
+         * modified 14/ago/2013 if the commented lines are kept, admin will not view
+         * testers whose name is NOT 'clientX' in singleprovider mode.
+         * Thought that this was not a desirable behaviour...
+         * anyway, i keep passing the multiprovider params for
+         * easy switching to whatsoever behaviour is desired.
+         */
+        //     if ($multiprovider===true)
+        //       $pattern = '/^(?:client)[0-9]{1,2}$/';
+        //     else
+        $pattern = '/^(\w|-)+$/';
+        return static::validateValueWithPattern($providername, $pattern);
     }
 
     // TODO: definire minima e massima lunghezza per lo username
     public static function validateFirstname($firstname)
     {
-        if (isset($firstname) && !empty($firstname)) {
-            //  $pattern = '/^$/';
-            //  if (preg_match($pattern, $firstname)) {
-            return $firstname;
-            //  }
-        }
-        return false;
+        return static::validateValue($firstname);
     }
 
     // TODO: definire minima e massima lunghezza per lo username
     public static function validateLastname($lastname)
     {
-        if (isset($lastname) && !empty($lastname)) {
-            // $pattern = '/^$/';
-            // if (preg_match($pattern, $firstname)) {
-            return $lastname;
-            // }
-        }
-        return false;
+        return static::validateValue($lastname);
     }
 
     // TODO: definire minima e massima lunghezza per lo username
@@ -175,14 +185,8 @@ class DataValidator
         /* username is the user's email
          * ->  return self::validate_email($username);
          * */
-
-        if (isset($username) && !empty($username)) {
-            $pattern = '/^[A-Za-z0-9_][A-Za-z0-9_@\-\.]{7,255}$/';
-            if (preg_match($pattern, $username)) {
-                return $username;
-            }
-        }
-        return false;
+        $pattern = '/^[A-Za-z0-9_][A-Za-z0-9_@\-\.]{7,255}$/';
+        return static::validateValueWithPattern($username, $pattern);
     }
 
 
@@ -191,17 +195,16 @@ class DataValidator
         /**
          * @author steve 28/mag/2020
          *
-         * adding  variables for min and max length of password
-         * @todo move in configuration
+         * 
+         * @todo move class constants MINPASSWORDLEN and MAXPASSWORDLEN to configuration file
          */
-        $minLen = 8;
-        $maxLen = 40;
+
 
         if (
             isset($password) && !empty($password) && isset($passwordcheck)
             && !empty($passwordcheck) && $password == $passwordcheck
         ) {
-            $pattern = '/^[A-Za-z0-9_\.]{' . $minLen . ',' . $maxLen . '}$/';
+            $pattern = '/^[A-Za-z0-9_\.]{' . self::MINPASSWORDLEN . ',' . self::MAXPASSWORDLEN . '}$/';
             if (preg_match($pattern, $password)) {
                 return $password;
             }
@@ -229,8 +232,9 @@ class DataValidator
         return false;
     }
 
-    public static function validatePhone($phone)
+    public static function validatePhone($phone): string
     {
+        // Caution: this function may return '' or a string, not bool
         if (!isset($phone)) {
             return '';
         }
@@ -239,6 +243,7 @@ class DataValidator
 
     public static function validateAge($age)
     {
+        // Caution: this function may return '', bool or a string representing an integer
         if (!isset($age)) {
             return '';
         }
@@ -252,51 +257,46 @@ class DataValidator
 
     public static function validateEmail($email)
     {
-        if (isset($email) && !empty($email)) {
-            $email_pattern = '/(?:[a-zA-Z0-9_\-\.\+\^!#\$%&*+\/\=\?\`\|\{\}~\'\[\]]+)@(?:(?:(?:[a-z0-9][a-z0-9\-_\[\]]*\.)+(?:aero|arpa|biz|com|cat|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel|mobi|media|[a-z]{2}))|(?:[0-9]{1,3}(?:\.[0-9]{1,3}){3})|(?:[0-9a-fA-F]{1,4}(?:\:[0-9a-fA-F]{1-4}){7}))$/';
-
-            if (preg_match($email_pattern, $email)) {
-                return $email;
-            }
-        }
-        return false;
+        $pattern = '/(?:[a-zA-Z0-9_\-\.\+\^!#\$%&*+\/\=\?\`\|\{\}~\'\[\]]+)@(?:(?:(?:[a-z0-9][a-z0-9\-_\[\]]*\.)+(?:aero|arpa|biz|com|cat|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel|mobi|media|[a-z]{2}))|(?:[0-9]{1,3}(?:\.[0-9]{1,3}){3})|(?:[0-9a-fA-F]{1,4}(?:\:[0-9a-fA-F]{1-4}){7}))$/';
+        return static::validateValueWithPattern($email, $pattern);
     }
 
-    public static function validateUrl($url)
+    public static function validateUrl($email)
     {
-        if (isset($url) && !empty($url)) {
-            /**
-             * Regular Expression for URL validation by Diego Perini
-             * Pls refer to https://gist.github.com/dperini/729294
-             * for details and upgrades
-             */
-
-            $url_pattern = '_^(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\x{00a1}-\x{ffff}0-9]-*)*[a-z\x{00a1}-\x{ffff}0-9]+)(?:\.(?:[a-z\x{00a1}-\x{ffff}0-9]-*)*[a-z\x{00a1}-\x{ffff}0-9]+)*(?:\.(?:[a-z\x{00a1}-\x{ffff}]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?$_iuS';
-
-            if (preg_match($url_pattern, $url)) {
-                return $url;
-            }
-            return false;
-        }
-        return false;
+        /**
+         * Regular Expression for URL validation by Diego Perini
+         * Pls refer to https://gist.github.com/dperini/729294
+         * for details and upgrades
+         */
+        $pattern = '_^(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\x{00a1}-\x{ffff}0-9]-*)*[a-z\x{00a1}-\x{ffff}0-9]+)(?:\.(?:[a-z\x{00a1}-\x{ffff}0-9]-*)*[a-z\x{00a1}-\x{ffff}0-9]+)*(?:\.(?:[a-z\x{00a1}-\x{ffff}]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?$_iuS';
+        return static::validateValueWithPattern($url, $pattern);
     }
 
     public static function validateIban($iban)
     {
-        if (isset($iban) && !empty($iban)) {
-            /**
-             * Regular Expression for IBAN validation
-             * Pls refer to https://stackoverflow.com/a/44657292
-             * for details and upgrades
-             */
+        /**
+         * Regular Expression for IBAN validation
+         * Pls refer to https://stackoverflow.com/a/44657292
+         * for details and upgrades
+         */
 
-            $iban_pattern = '/^([A-Z]{2}[ \-]?[0-9]{2})(?=(?:[ \-]?[A-Z0-9]){9,30}$)((?:[ \-]?[A-Z0-9]{3,5}){2,7})([ \-]?[A-Z0-9]{1,3})?$/m';
+        $pattern = '/^([A-Z]{2}[ \-]?[0-9]{2})(?=(?:[ \-]?[A-Z0-9]){9,30}$)((?:[ \-]?[A-Z0-9]{3,5}){2,7})([ \-]?[A-Z0-9]{1,3})?$/m';
+        return static::validateValueWithPattern($iban, $pattern);
+    }
 
-            if (preg_match($iban_pattern, $iban)) {
-                return $iban;
-            }
-            return false;
-        }
-        return false;
+    public static function validateLanguage($language)
+    {
+        return match ($language) {
+            null => false,
+            default => (in_array($language, Translator::getSupportedLanguages())) ? $language : false
+        };
+    }
+
+    public static function validateExtensionType($value)
+    {
+        return match ($value) {
+            'html','htm','pdf' => $value,
+            default => false
+        };
     }
 }
