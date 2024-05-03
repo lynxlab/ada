@@ -82,7 +82,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $res = fclose($n);
 }
 
-$codeLang = $_GET['codeLang'];
+$codeLang = DataValidator::checkInputValues('codeLang','Language',INPUT_GET);
 switch ($op) {
     case 'edit':
         $newsmsg = [];

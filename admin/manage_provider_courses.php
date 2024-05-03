@@ -77,8 +77,7 @@ AdminHelper::init($neededObjAr);
  * 3. link a lista utenti presenti sul tester
  */
 
-$id_tester = DataValidator::isUinteger($_GET['id_tester']);
-
+$id_tester = DataValidator::checkInputValues('id_tester','Integer',INPUT_GET);
 if ($id_tester !== false) {
     $tester_infoAr = $common_dh->getTesterInfoFromId($id_tester);
     if (AMACommonDataHandler::isError($tester_infoAr)) {

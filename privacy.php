@@ -47,17 +47,8 @@ BrowsingHelper::init($neededObjAr);
 $self =  "index";
 $docDir = "/docs/";
 
-
-if (isset($_GET['type'])) {
-    $fileext = $_GET['type'];
-} else {
-    $fileext = 'html';
-}
-if (isset($_GET['lan'])) {
-    $language = $_GET['lan'];
-} else {
-    $language = 'en';
-}
+$type = DataValidator::checkInputValues('type','ExtensionType', INPUT_GET, 'html');
+$language = DataValidator::checkInputValues('lan','Language', INPUT_GET, 'en');
 
 $short_privacy_file_name = "privacy_$language.$fileext";
 $privacy_file = ROOT_DIR . $docDir . $short_privacy_file_name;

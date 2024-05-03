@@ -74,13 +74,10 @@ AdminHelper::init($neededObjAr);
 /*
  * YOUR CODE HERE
  */
-$id_tester = DataValidator::isUinteger($_GET['id_tester']);
-if (!isset($_GET['page']) || DataValidator::isUinteger($_GET['page']) === false) {
-    $page = 1;
-} else {
-    $page = $_GET['page'];
-}
-$userTypeToFilter = isset($_GET['user_type']) ? DataValidator::isUinteger($_GET['user_type']) : false;
+$id_tester = DataValidator::checkInputValues('id_tester','Integer',INPUT_GET);
+$page = DataValidator::checkInputValues('page','Integer',INPUT_GET,1);
+$userTypeToFilter = DataValidator::checkInputValues('user_type','Integer',INPUT_GET);
+
 
 $users_per_page = 20;
 

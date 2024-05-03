@@ -221,15 +221,15 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     /*
      * Display the add user form
      */
-
-    if (DataValidator::isUinteger($_GET['id_user']) === false) {
+    $id_user = DataValidator::checkInputValues('id_user','Integer',INPUT_GET);
+    if ($id_user === false) {
         $form = new CText('');
     } else {
-        $userToEditObj = MultiPort::findUser($_GET['id_user']);
+        $userToEditObj = MultiPort::findUser($id_user);
 
         $user_dataAr = $userToEditObj->toArray();
 
-        $testers_for_userAr = $common_dh->getTestersForUser($_GET['id_user']);
+        $testers_for_userAr = $common_dh->getTestersForUser($id_user);
         /*
          * FIXME: selects just one tester. if the user is of type ADAUser
          * we have to display all the associated testers.

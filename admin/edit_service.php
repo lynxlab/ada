@@ -132,7 +132,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     /*
      * Display the add user form
      */
-    $id_service = DataValidator::isUinteger($_GET['id_service']);
+    $id_service = DataValidator::checkInputValues('id_service','Integer',INPUT_GET);
     if ($id_service !== false) {
         $service_infoAr = $common_dh->getServiceInfo($id_service);
         if (AMACommonDataHandler::isError($service_infoAr)) {

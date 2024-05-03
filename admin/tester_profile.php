@@ -81,7 +81,7 @@ AdminHelper::init($neededObjAr);
  * 3. link a lista utenti presenti sul tester
  */
 
-$id_tester = DataValidator::isUinteger($_GET['id_tester']);
+$id_tester = DataValidator::checkInputValues('id_tester','Integer', INPUT_GET);
 
 if ($id_tester !== false) {
     $tester_infoAr = $common_dh->getTesterInfoFromId($id_tester);
@@ -136,10 +136,13 @@ if ($id_tester !== false) {
             $tester_data->addChild($link);
         }
     }
+    $data = $tester_data->getHtml();
+    $menuOptions['id_tester'] = $id_tester;
 } else {
     /*
      * non e' stato passato id_tester
      */
+    $data = '';
 }
 
 
@@ -164,13 +167,13 @@ $content_dataAr = [
   'status'       => $status,
   'label'        => $label,
   // 'help'         => $help,
-  'data'         => $tester_data->getHtml(),
+  'data'         => $data,
                     // $tester_services->getHtml() .
                     // $users_list_link->getHtml(),
   'module'       => $module,
 ];
 
 
-$menuOptions['id_tester'] = $_GET['id_tester'];
+
 
 ARE::render($layout_dataAr, $content_dataAr, null, null, $menuOptions);

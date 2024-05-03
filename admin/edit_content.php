@@ -116,7 +116,8 @@ $files_news = readDir(ROOT_DIR . $filePath . '/docs/' . $reqType, 'txt');
 //print_r($files_news);
 
 
-$codeLang = $_GET['codeLang'] ?? null;
+$codeLang = DataValidator::checkInputValues('codeLang','Language', INPUT_GET, null);
+
 if (!isset($op)) {
     $op = null;
 }

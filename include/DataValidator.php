@@ -299,4 +299,15 @@ class DataValidator
             default => false
         };
     }
+
+    public static function validateMessage($value)
+    {
+        return static::validateValue(htmlspeciachars($value,ENT_QUOTES));
+    }
+
+    public static function validateInteger($value)
+    {
+        return static::validateValue(filter_var($value, FILTER_VALIDATE_INT));
+    }
+
 }

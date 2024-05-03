@@ -55,8 +55,7 @@ $neededObjAr = [
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 BrowsingHelper::init($neededObjAr);
-
-$op = isset($_GET['op']) ? DataValidator::validateString($_GET['op']) : false;
+$op = DataValidator::checkInputValues('op','Value', INPUT_GET);
 $today_date = todayDateFN();
 
 //$self = 'list_chatrooms'; // x template
@@ -669,9 +668,8 @@ if ($op !== false && $op == 'course_info') {
         $thead_data = ['&nbsp;', 'ID', translateFN('corso'), translateFN('descrizione'), translateFN('crediti'),'&nbsp;'];
     } else {
         $thead_data = ['&nbsp;', 'ID', translateFN('corso'), translateFN('Fornito da'), translateFN('descrizione'), translateFN('crediti'),'&nbsp;'];
-        $publishedServices = $common_dh->getPublishedCourses(
-            isset($_GET['provider']) && intval($_GET['provider'] > 0) ? intval($_GET['provider']) : null
-        );
+        $provider = DataValidator::checkInputValues('provider', 'Integer', INPUT_GET, null);
+        $publishedServices = $common_dh->getPublishedCourses($provider);
     }
 
     if (!AMACommonDataHandler::isError($publishedServices)) {

@@ -74,8 +74,9 @@ switch ($id_profile) {
         break;
 }
 
-if (isset($_GET['arg'])) {
-    $arg = $_GET['arg'];
+
+$args = DataValidator::checkInputValues('arg','Value',INPUT_GET);
+if ($arg!== false) {
     $short_help_file_name = $usertype . '_' . $arg . '_' . $language . '.' . $fileext;
     $title = translateFN("Help for") . " $usertype " . translateFN("on") . " $arg";
 } else {
