@@ -83,8 +83,6 @@ $help = translateFN("Da qui l'utente puo' vedere la lista di tutte le chatrooms 
 $status = ''; //translateFN('lista delle chatrooms');
 $modulo = translateFN('lista delle chatrooms');
 
-// including the banner
-
 $chat_label = translateFN('entra');
 $edit_label = translateFN('modifica');
 $delete_label = translateFN('cancella');

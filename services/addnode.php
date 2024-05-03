@@ -16,7 +16,9 @@
 use Lynxlab\ADA\Browsing\CourseViewer;
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
+use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\NodeEvent;
@@ -222,7 +224,10 @@ if ($op == 'add_node') {
 
         $default_parent_node = $id_course . "_" . ADA_DEFAULT_NODE;
 
-        $nodeObj = & readNodeFromDB($default_parent_node);
+        $nodeObj = readNodeFromDB($default_parent_node);
+        if (AMADB::isError($nodeObj)) {
+            $nodeObj = new Node($default_parent_node);
+        }
         // gestione errore !!!
 
         /*

@@ -64,7 +64,7 @@ class AMAExtractloggerDataHandler extends AMACommonDataHandler
         array_walk($data, function ($value, $key) use (&$retarr) {
             if (is_object($value)) {
                 $type = $value::class;
-            } else if (is_numeric($value)) {
+            } elseif (is_numeric($value)) {
                 $type = (filter_var($value, FILTER_VALIDATE_INT) !== false) ? 'int' : 'float';
             } else {
                 $type = gettype($value);

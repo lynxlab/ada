@@ -329,8 +329,6 @@ if (isset($node_author)) {
 // E-portal
 $eportal = PORTAL_NAME;
 
-// banner
-
 if ($id_profile == AMA_TYPE_AUTHOR && $mod_enabled) {
     $edit_node = "<a href=\"$http_root_dir/services/edit_node.php?op=edit&id_node=$sess_id_node&id_course=$sess_id_course&type=$node_type\">" .
         translateFN('modifica nodo') . "</a>";

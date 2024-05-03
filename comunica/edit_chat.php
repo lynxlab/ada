@@ -138,8 +138,6 @@ $help = translateFN("Da qui l'utente puo' modificare i dati di chatroom esistent
 $status = translateFN("Modifica di una chatroom");
 // indicates which fields are compulsory
 $star = translateFN("I campi contrassegnati con * sono obbligatori, non possono essere lasciati vuoti!");
-// including the banner
-
 
 // Has the form been posted?
 if ($_SERVER['REQUEST_METHOD'] == "POST") {

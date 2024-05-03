@@ -44,7 +44,6 @@ class CommunicationModuleHtmlLib
         $html = CDOMElement::create('div', 'id:chat');
 
         $top  = CDOMElement::create('div', 'id:top');
-        $top->addChild(CDOMElement::create('div', 'id:chatroom_banner'));
         $top->addChild(CDOMElement::create('div', 'id:chatroom_info'));
 
         /*

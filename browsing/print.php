@@ -151,8 +151,6 @@ if (isset($node_author) && isset($node_author_id)) {
 // E-portal
 $eportal = PORTAL_NAME;
 
-// banner
-
 //show course istance name if isn't empty - valerio
 if (!empty($courseInstanceObj->title)) {
     $course_title .= ' - ' . $courseInstanceObj->title;

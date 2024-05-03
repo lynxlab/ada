@@ -326,11 +326,11 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
     {
         $nodeData = $event->getSubject();
         if ($isNewNode) {
-            $nodeId = $nodeData['id'];
-            $instanceId = array_key_exists('id_instance', $nodeData) ? $nodeData['id_instance'] : $_SESSION['sess_id_course_instance'];
-            $instanceSubscribedList = [];
-            $notifyUserList = [];
             if (in_array($nodeData['type'], [ADA_NOTE_TYPE])) {
+                $nodeId = $nodeData['id'];
+                $instanceId = array_key_exists('id_instance', $nodeData) ? $nodeData['id_instance'] : $_SESSION['sess_id_course_instance'];
+                $instanceSubscribedList = [];
+                $notifyUserList = [];
                 $ntDH = AMANotificationsDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
                 // load all students and tutors of the course instance
                 $students =  $ntDH->getStudentsForCourseInstance($instanceId);
