@@ -83,7 +83,7 @@ if (count($serviceProviders) == 1) {
 }
  *
  */
-$id_course = (isset($_GET['id_course']) && intval($_GET['id_course']) >= 0) ? intval($_GET['id_course']) : -1;
+$id_course = DataValidator::checkInputValues('id_course','CourseId', INPUT_GET,-1);
 $providerAr = $common_dh->getTesterInfoFromIdCourse($id_course);
 $client = $providerAr['puntatore'];
 $provider_dh = AMADataHandler::instance(MultiPort::getDSN($client));

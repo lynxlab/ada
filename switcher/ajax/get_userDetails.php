@@ -70,7 +70,7 @@ SwitcherHelper::init($neededObjAr);
 $retArray = [];
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
-    $id_user = $_GET['id_user'];
+    $id_user = DataValidator::checkInputValues('id_user','Integer',INPUT_GET);
     $user_type = $dh->getUserType($id_user);
     $DetailsAr = [];
     switch ($user_type) {

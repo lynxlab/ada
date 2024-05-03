@@ -31,9 +31,9 @@ class UILayout
         } else {
             $this->pathToLayoutDir = ROOT_DIR . DIRECTORY_SEPARATOR . 'layout';
         }
-
-        if (isset($_GET['family']) && !empty($_GET['family'])) {
-            $this->layoutsPrecedence[] = $_GET['family'];
+        $family = DataValidator::checkInputValues('family','Vaue',INPUT_GET);
+        if ($family!== false) {
+            $this->layoutsPrecedence[] = $family;
         }
         $this->layoutsPrecedence[] = ADA_TEMPLATE_FAMILY;
         // $conf_base = basename(HTTP_ROOT_DIR));

@@ -74,7 +74,7 @@ ServiceHelper::init($neededObjAr);
 */
 
 ####################### recupero variabili dalla get
-$step = $_GET['step'] ?? '1';
+$step = DataValidator::checkInputValues('step','Value',INPUT_GET,'1');
 
 $status = translateFN("Aggiunta di un esercizio. Step: " . $step);
 

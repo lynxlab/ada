@@ -196,7 +196,8 @@ class HtmlAdmOutput
 
         // vito, 15 giugno 2009
         $message = "";
-        if ($is_author && (int)$_GET['modello'] == 1) {
+        $modello = DataValidator::checkInputValues('modello','Integer',INPUT_GET);
+        if ($is_author && (int)$modello == 1) {
             $course_models = readDir(AUTHOR_COURSE_PATH_DEFAULT, 'xml');
 
             /*

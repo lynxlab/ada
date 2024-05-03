@@ -78,8 +78,7 @@ $self =  whoami();
 $external_link_id = isset($_GET['id']) ? DataValidator::isUinteger($_GET['id']) : false;
 $filename = isset($_GET['file']) ? DataValidator::validateLocalFilename($_GET['file']) : false;
 
-//$url = DataValidator::validateUrl($_GET['url']);
-$url = $_GET['url'] ?? null;
+$url = DataValidator::checkInputValues('url', 'Url', INPUT_GET, null);
 
 if ($external_link_id != false) {
     $external_resourceAr = $dh->getRisorsaEsternaInfo($external_link_id);

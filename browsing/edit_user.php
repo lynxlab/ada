@@ -376,7 +376,7 @@ $layout_dataAr['CSS_filename'] = [
         ROOT_DIR . '/js/include/jquery/pekeUpload/pekeUpload.css',
 ];
 //if a course instance is self_instruction
-$self_instruction = $_GET['self_instruction'] ?? null;
+$self_instruction = DataValidator::checkInputValues('self_instruction', 'Value', INPUT_GET, null);
 if ($userObj->tipo == AMA_TYPE_STUDENT && ($self_instruction)) {
     $self = 'editUserSelfInstruction';
 } else {
@@ -408,8 +408,9 @@ if (!is_null($editUserObj)) {
 /*
  * Display error message  if the password is incorrect
  */
-if (isset($_GET['message'])) {
-    $help = $_GET['message'];
+$message = DataValidator::checkInputValues('message', 'Message', INPUT_GET);
+if ($message!== false) {
+    $help = $message;
 }
 
 if (isset($_SESSION['sess_id_course_instance'])) {

@@ -79,7 +79,7 @@ $self =  "registration";
  * Negotiate login page language
  */
 
-$lang_get = $_GET['lan'] ?? null;
+$lang_get = DataValidator::checkInputValues('lan', 'Language', INPUT_GET, null);
 
 Translator::loadSupportedLanguagesInSession();
 $supported_languages = Translator::getSupportedLanguages();
@@ -103,12 +103,7 @@ if (isset($_POST['username'])) {
     $op  = "insert_username";
 }
 
-
-if (isset($_GET['status'])) {
-    $status = $_GET['status'];
-} else {
-    $status = translateFN("New password");
-}
+$status = DataValidator::checkInputValues('status', 'Value', INPUT_GET, translateFN("New password"));
 
 switch ($op) {
     case "check_username":

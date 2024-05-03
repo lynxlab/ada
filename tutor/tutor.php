@@ -87,14 +87,9 @@ TutorHelper::init($neededObjAr);
  * YOUR CODE HERE
  */
 include_once ROOT_DIR . '/config/config_class_report.inc.php';
-
-if (!isset($_GET['mode'])) {
-    $mode = 'load';
-} else {
-    $mode = $_GET['mode'];
-}
-
-$speed_mode = (!isset($_GET['speed_mode']) || (isset($_GET['speed_mode']) && $_GET['speed_mode'] !== 'false'));
+$mode = DataValidator::checkInputValues('mode', 'Value', INPUT_GET, 'load');
+$speed_mode = DataValidator::checkInputValues('speed_mode', 'Value', INPUT_GET) ? true : false;
+// $speed_mode = (!isset($_GET['speed_mode']) || (isset($_GET['speed_mode']) && $_GET['speed_mode'] !== 'false'));
 
 if (!isset($op)) {
     $op = null;

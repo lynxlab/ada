@@ -96,17 +96,9 @@ if (MULTIPROVIDER === false) {
         }
     }
 }
-
-if (isset($_GET['id_user'])) {
-    $id_user = $_GET['id_user'];
-}
-
-if (isset($_GET['id_instance'])) {
-    $id_instance = $_GET['id_instance'];
-} else {
-    $id_instance = $sess_id_instance;
-}
-
+$id_user = DataValidator::checkInputValues('id_user','Integer', INPUT_GET);
+$id_instance = DataValidator::checkInputValues('id_instance','Integer', INPUT_GET, $sess_id_instance);
+    
 //instance
 if (!(isset($courseInstanceObj) && $courseInstanceObj instanceof CourseInstance)) {
     $courseInstanceObj =  new CourseInstance($id_instance);

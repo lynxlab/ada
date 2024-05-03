@@ -132,9 +132,9 @@ if ($courseObj->media_path != "") {
     $media_path = MEDIA_PATH_DEFAULT . $author_id ;
 }
 $download_path = $root_dir . $media_path;
-
-if (isset($_GET['file'])) {
-    $complete_file_name = $_GET['file'];
+$file = DataValidator::checkInputValues('file', 'Value', INPUT_GET);
+if ($file !== false) {
+    $complete_file_name = $file;
     $filenameAr = explode('_', $complete_file_name);
     $stop = count($filenameAr) - 1;
     $course_instance = $filenameAr[0];

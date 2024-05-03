@@ -127,9 +127,12 @@ if (!AMADataHandler::isError($courseInstances)) {
      * course instances so that at the end courseInstances array should have one element
      * and the proper page is shown to the logged user (as if she was subscribed to one course only)
      */
-    if (isset($_GET['id_course']) && isset($_GET['id_course_instance'])) {
-        $courseInstances = array_filter($courseInstances, fn ($courseInstance) => ($courseInstance['id_corso'] == $_GET['id_course']) &&
-            ($courseInstance['id_istanza_corso'] == $_GET['id_course_instance']));
+    $id_course = DataValidator::checkInputValues('id_course','CourseId', INPUT_GET);
+    $id_course_instance = DataValidator::checkInputValues('id_course_instance','CourseId', INPUT_GET);
+    
+    if (($id_course!== false) && ($id_course_instance !== false)) {
+        $courseInstances = array_filter($courseInstances, fn ($courseInstance) => ($courseInstance['id_corso'] == $id_course) &&
+            ($courseInstance['id_istanza_corso'] == $id_course_instance));
         /**
          * @author giorgio 24/apr/2013
          *

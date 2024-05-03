@@ -357,7 +357,7 @@ switch ($op) {
        */
         $break = '<br />'; // FIXME: CORE...
         $title = translateFN('Subscription confirmation');
-        $message = $_GET['message'];
+        $message = DataValidator::checkInputValues('message', 'Message', INPUT_GET);
         //  $dati  = translateFN('Servizio richiesto correttamente. Ti verrà inviato un messaggio contenente le proposte di appuntamento.');
         $dati1 = translateFN('Thank you for registering in ADA and for asking our services!');
         $dati2 = translateFN('To complete your registration, you have to choose a password following the link sent to you by e-mail.');
