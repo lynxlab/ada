@@ -5,6 +5,7 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Forms\UserRegistrationForm;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\UserModuleHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Translator;
@@ -87,7 +88,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 $login_error_message = translateFN("Username  e/o password non valide");
             }
         } elseif (
-            defined('MODULES_LOGIN') && MODULES_LOGIN &&
+            ModuleLoaderHelper::isLoaded('LOGIN') &&
                 isset($selectedLoginProvider) && strlen($selectedLoginProvider) > 0
         ) {
             $className = AbstractLogin::getNamespaceName() . "\\" . $selectedLoginProvider;
@@ -159,7 +160,7 @@ $layout_dataAr['JS_filename'] = [
         JQUERY_NO_CONFLICT,
 ];
 $layout_dataAr['CSS_filename'] = [ ROOT_DIR . '/layout/' . $_SESSION['sess_userObj']->template_family . '/css/main/index.css' ];
-if (defined('MODULES_LOGIN') && MODULES_LOGIN) {
+if (ModuleLoaderHelper::isLoaded('LOGIN')) {
     $layout_dataAr['CSS_filename'] = array_merge(
         $layout_dataAr['CSS_filename'],
         [
@@ -170,7 +171,7 @@ if (defined('MODULES_LOGIN') && MODULES_LOGIN) {
 
 $optionsAr['onload_func'] = 'initDateField();';
 
-if (defined('MODULES_GDPR') && MODULES_GDPR === true && isset($registration_data)) {
+if (ModuleLoaderHelper::isLoaded('GDPR') === true && isset($registration_data)) {
     $gdprApi = new GdprAPI();
     GdprAcceptPoliciesForm::addPolicies($registration_data, [
         'policies' => $gdprApi->getPublishedPolicies(),
@@ -184,7 +185,7 @@ if (defined('MODULES_GDPR') && MODULES_GDPR === true && isset($registration_data
     $optionsAr['onload_func'] .= 'initRegistration();';
 }
 
-if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+if (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) {
     $layout_dataAr['JS_filename'][] = MODULES_SECRETQUESTION_PATH . '/js/modules_define.js.php';
 }
 

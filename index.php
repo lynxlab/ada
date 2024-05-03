@@ -4,6 +4,7 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\UserModuleHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Translator;
@@ -175,7 +176,7 @@ if (isset($p_login) || (isset($selectedLoginProvider) && strlen($selectedLoginPr
             $login_error_message = translateFN("Username  e/o password non valide");
         }
     } elseif (
-        defined('MODULES_LOGIN') && MODULES_LOGIN &&
+        ModuleLoaderHelper::isLoaded('LOGIN') &&
                isset($selectedLoginProvider) && strlen($selectedLoginProvider) > 0
     ) {
         $className = AbstractLogin::getNamespaceName() . "\\" . $selectedLoginProvider;
@@ -265,7 +266,7 @@ $forget_link = $forget_linkObj->getHtml();
 $status = "";
 
 $message = CDOMElement::create('div');
-$getMessage = DataValidator::checkInputValues('message','Message',INPUT_GET); 
+$getMessage = DataValidator::checkInputValues('message','Message',INPUT_GET);
 if ($getMessage!== false) {
     $message->addChild(new CText($getMessage));
 } else {
@@ -363,7 +364,7 @@ $layout_dataAr['JS_filename'] = [
 $layout_dataAr['CSS_filename'] =  [
         JQUERY_UI_CSS,
 ];
-if (defined('MODULES_LOGIN') && MODULES_LOGIN) {
+if (ModuleLoaderHelper::isLoaded('LOGIN')) {
     $layout_dataAr['CSS_filename'] = array_merge(
         $layout_dataAr['CSS_filename'],
         [

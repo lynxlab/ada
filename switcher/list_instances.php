@@ -4,6 +4,7 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
@@ -103,7 +104,7 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
         $edit_img = CDOMElement::create('img', 'src:img/edit.png,alt:edit');
         $delete_img = CDOMElement::create('img', 'src:img/trash.png,alt:' . translateFN('Delete instance'));
         //$view_img = CDOMElement::create('img', 'src:img/zoom.png,alt:view');
-        if (defined('MODULES_STUDENTSGROUPS') && MODULES_STUDENTSGROUPS) {
+        if (ModuleLoaderHelper::isLoaded('STUDENTSGROUPS')) {
             $subscribeGroup_img = CDOMElement::create('img', 'class:subscribe-group-icon,src:img/add_instances.png,alt:' . translateFN('Iscrivi gruppo'));
         }
 
@@ -136,7 +137,7 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
                 // $view_link,
                 $delete_link,
             ];
-            if (defined('MODULES_STUDENTSGROUPS') && MODULES_STUDENTSGROUPS) {
+            if (ModuleLoaderHelper::isLoaded('STUDENTSGROUPS')) {
                 $subscribeGroup_link = BaseHtmlLib::link('javascript:void(0)', $subscribeGroup_img);
                 $subscribeGroup_link->setAttribute('class', 'subscribe-group');
                 $subscribeGroup_link->setAttribute('data-courseid', $courseId);
@@ -148,7 +149,7 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
                 array_splice($actionsArr, count($actionsArr) - 1, 0, [$subscribeGroup_link]);
             }
 
-            if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+            if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
                 $event = ADAEventDispatcher::buildEventAndDispatch(
                     [
                         'eventClass' => ActionsEvent::class,
@@ -222,7 +223,7 @@ $dataForJS = [
     'datatables' => ['list_instances'],
 ];
 
-if (defined('MODULES_STUDENTSGROUPS') && MODULES_STUDENTSGROUPS) {
+if (ModuleLoaderHelper::isLoaded('STUDENTSGROUPS')) {
     $layout_dataAr['JS_filename'][] = MODULES_STUDENTSGROUPS_PATH . '/js/instanceSubscribe.js';
     $layout_dataAr['CSS_filename'][] = MODULES_STUDENTSGROUPS_PATH . '/layout/ada_blu/css/showHideDiv.css';
     $dataForJS['loadModuleJS'] = [

@@ -7,6 +7,7 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Forms\FileUploadForm;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Token\TokenManager;
@@ -129,7 +130,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                     $FlagFileWellFormat = false;
                     break;
                 }
-                if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true && $userDataAr[3] == null) {
+                if (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true && $userDataAr[3] == null) {
                     $FlagFileWellFormat = false;
                     break;
                 }
@@ -168,7 +169,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                             ]
                         );
 
-                        if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+                        if (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) {
                             $subscriberObj->setPassword((isset($userDataAr[3]) && strlen($userDataAr[3]) > 0) ? $userDataAr[3] : time());
                             $subscriberObj->setEmail('');
                             $subscriberObj->setStatus(ADA_STATUS_REGISTERED);
@@ -285,7 +286,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                             'testo' => $text,
                             'destinatari' => [$subscriberObj->getUserName()],
                             'data_ora' => 'now',
-                            'tipo' => (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) ? ADA_MSG_SIMPLE : ADA_MSG_MAIL,
+                            'tipo' => (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) ? ADA_MSG_SIMPLE : ADA_MSG_MAIL,
                             'mittente' => $adm_uname,
                         ];
 
@@ -324,7 +325,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 //            header("Location: course_instance.php?id_course=$courseId&id_course_instance=$courseInstanceId");
                 //            exit();
             } else {
-                $fields = (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) ? 'nome,cognome,mail' : 'nome,cognome,username,password';
+                $fields = (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) ? 'nome,cognome,mail' : 'nome,cognome,username,password';
                 $data = new CText('Il file non è ben formato sottometterlo di nuovo con: ' . $fields);
             }
         } else {

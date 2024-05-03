@@ -21,6 +21,7 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 use Lynxlab\ADA\Module\Test\NodeTest;
@@ -89,7 +90,7 @@ class DFSNavigationBar
          * BUT, I'll pass the computed $this->_nextNode to give a callBack point
          * to be used when user is in the last topic of the test.
          */
-        if (defined('MODULES_TEST') && MODULES_TEST) { // && strpos($n->type,(string) constant('ADA_PERSONAL_EXERCISE_TYPE')) === 0) {
+        if (ModuleLoaderHelper::isLoaded('TEST')) { // && strpos($n->type,(string) constant('ADA_PERSONAL_EXERCISE_TYPE')) === 0) {
             if (isset($GLOBALS['dh'])) {
                 $GLOBALS['dh']->disconnect();
             }

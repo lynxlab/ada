@@ -21,6 +21,7 @@ namespace Lynxlab\ADA\Main\Output;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Menu;
 use Lynxlab\ADA\Main\Output\GenericXML;
 use Lynxlab\ADA\Main\Output\Html;
@@ -57,7 +58,7 @@ class ARE
             $id_profile = null;
         }
 
-        if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
             $event = ADAEventDispatcher::buildEventAndDispatch(
                 [
                     'eventClass' => CoreEvent::class,
@@ -393,7 +394,7 @@ class ARE
                  * for the template_field substitution to work inside the menu
                  */
                 if (!is_null($layoutObj->menu)) {
-                    if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+                    if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
                         ADAEventDispatcher::buildEventAndDispatch(
                             [
                                 'eventClass' => MenuEvent::class,
@@ -406,7 +407,7 @@ class ARE
 
                     $content_dataAr = ['adamenu' => $layoutObj->menu->getHtml()] + $content_dataAr;
 
-                    if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+                    if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
                         ADAEventDispatcher::buildEventAndDispatch(
                             [
                                 'eventClass' => MenuEvent::class,
@@ -446,7 +447,7 @@ class ARE
                     }
 
                     if (
-                        defined('MODULES_IMPERSONATE') && MODULES_IMPERSONATE &&
+                        ModuleLoaderHelper::isLoaded('IMPERSONATE') &&
                         ImpersonateActions::canDo(ImpersonateActions::IMPERSONATE) &&
                         !array_key_exists('impersonatelink', $content_dataAr)
                     ) {

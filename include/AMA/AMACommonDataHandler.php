@@ -14,6 +14,7 @@ namespace Lynxlab\ADA\Main\AMA;
 use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Logger\ADALogger;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 
@@ -672,7 +673,7 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         /**
          * UPDATE USERNAME ONLY IF MODULES_GDPR
          */
-        if (defined('MODULES_GDPR') && MODULES_GDPR === true && array_key_exists('username', $user_ha) && strlen($user_ha['username']) > 0 && $user_ha['username'] !== $old_values_ha['username']) {
+        if (ModuleLoaderHelper::isLoaded('GDPR') === true && array_key_exists('username', $user_ha) && strlen($user_ha['username']) > 0 && $user_ha['username'] !== $old_values_ha['username']) {
             $update_user_sql .= ',username=?';
             $valuesAr[] = $user_ha['username'];
         }

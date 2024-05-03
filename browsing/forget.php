@@ -10,6 +10,7 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Token\TokenFinder;
@@ -167,7 +168,7 @@ switch ($op) {
             exit();
         }
 
-        if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+        if (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) {
             /**
              * MODULES_SECRETQUESTION will handle questioning and answer check
              */
@@ -437,7 +438,7 @@ switch ($op) {
         $welcome = "<br />" . translateFN('Welcome, user') . "<br />";
         $welcome .= translateFN('If you forgot your password, please insert your username. We will send you a message with instructions
      to change your password');
-        if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+        if (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) {
             $welcome .= ' ' . translateFN('or ask your secret question');
         }
         $welcome .= ".<br />";

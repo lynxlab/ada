@@ -2,6 +2,7 @@
 
 use Lynxlab\ADA\CORE\HtmlElements\IList;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
@@ -136,11 +137,11 @@ if (AMADataHandler::isError($dataHa)) {
       //translateFN('XML')=> "<a href=\"author_report.php?mode=xml&amp;id_course=$id_course\"><img src=\"img/xml.png\" border=0></a>",
       //translateFN('Elimina')=> "<a href=\"#\" onclick=\"$onclick\"><img src=\"img/delete.png\" border=0></a>"
         ];
-        if (defined('MODULES_SLIDEIMPORT') && MODULES_SLIDEIMPORT) {
+        if (ModuleLoaderHelper::isLoaded('SLIDEIMPORT')) {
             $row[translateFN('Importa')] = "<a href=\"" . MODULES_SLIDEIMPORT_HTTP . "/?id_course=$id_course\"><img src=\"" . MODULES_SLIDEIMPORT_HTTP . "/layout/img/slideimport.png\" border=0></a>";
         }
 
-        if (defined('MODULES_IMPEXPORT') && MODULES_IMPEXPORT && defined('MODULES_IMPEXPORT_REPODIR') && strlen(MODULES_IMPEXPORT_REPODIR) > 0) {
+        if (ModuleLoaderHelper::isLoaded('IMPEXPORT') && defined('MODULES_IMPEXPORT_REPODIR') && strlen(MODULES_IMPEXPORT_REPODIR) > 0) {
             $row[translateFN('Repository')] = "<a href=\"" .
             MODULES_IMPEXPORT_HTTP . "/export.php?exporttorepo=1&id_course=" . $id_course .
             "\"><img src=\"" . MODULES_IMPEXPORT_HTTP . "/layout/" . $_SESSION['sess_template_family'] . "/img/export-to-repo.png\"/></a>";

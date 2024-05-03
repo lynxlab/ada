@@ -7,6 +7,7 @@ use Lynxlab\ADA\CORE\HtmlElements\Table;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\Course\Student;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -71,13 +72,13 @@ function getCoursesTutorFN($id_user, $isSuper = false)
                             $dati_corso[$num_courses][$azioni_key] .= $videochatlog;
                         }
 
-                        if (defined('MODULES_TEST') && MODULES_TEST) {
+                        if (ModuleLoaderHelper::isLoaded('TEST')) {
                             $survey_title = translateFN('Report Sondaggi');
                             $survey_img = CDOMElement::create('img', 'src:img/_exer.png,alt:' . $survey_title . ',class:tooltip,title:' . $survey_title);
                             $survey_link = BaseHtmlLib::link(MODULES_TEST_HTTP . '/surveys_report.php?id_course_instance=' . $id_instance . '&id_course=' . $id_course, $survey_img->getHtml());
                             $dati_corso[$num_courses][$azioni_key] .= $survey_link->getHtml();
                         }
-                        if (defined('MODULES_BADGES') && MODULES_BADGES) {
+                        if (ModuleLoaderHelper::isLoaded('BADGES')) {
                             $badges_title = translateFN('Badges disponibili');
                             $badges_img = CDOMElement::create('img', 'src:' . MODULES_BADGES_HTTP . '/layout/' . $_SESSION['sess_template_family'] . '/img/course-badges.png,alt:' . $badges_title . ',class:tooltip,title:' . $badges_title);
                             $badges_link = BaseHtmlLib::link(MODULES_BADGES_HTTP . '/user-badges.php?id_instance=' . $id_instance . '&id_course=' . $id_course, $badges_img->getHtml());

@@ -24,6 +24,7 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 use Lynxlab\ADA\Module\GDPR\GdprAPI;
@@ -122,7 +123,7 @@ abstract class ADALoggableUser extends ADAGenericUser
      */
     public function anonymize($dataArr = ['nome', 'cognome', 'codice_fiscale', 'email', 'username', 'password', 'matricola'])
     {
-        if (defined('MODULES_GDPR') && MODULES_GDPR === true) {
+        if (ModuleLoaderHelper::isLoaded('GDPR') === true) {
             try {
                 $userArr = $this->toArray();
                 foreach ($dataArr as $key) {
@@ -681,7 +682,7 @@ abstract class ADALoggableUser extends ADAGenericUser
                 }
             }
 
-            if (defined('MODULES_GDPR') && MODULES_GDPR === true) {
+            if (ModuleLoaderHelper::isLoaded('GDPR') === true) {
                 // check if user has accepted the mandatory privacy policies
                 $gdprApi = new GdprAPI();
                 if (!$gdprApi->checkMandatoryPoliciesForUser($userObj)) {
@@ -750,10 +751,9 @@ abstract class ADALoggableUser extends ADAGenericUser
         return false;
     }
 
-    public function hasExtra()
-    {
-        return false;
-    }
+    abstract public function setExtras($extra);
+    abstract public function hasExtra();
+    abstract public function saveUsingAjax();
 
     public function isSuper()
     {

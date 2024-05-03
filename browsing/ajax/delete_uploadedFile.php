@@ -3,6 +3,7 @@
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
 
@@ -99,7 +100,7 @@ if (!is_null($fileName) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUES
 
         if ($success) {
             $retArray =  ["status" => "OK", "title" => $title, "msg" => translateFN('File cancellato')];
-            if (defined('MODULES_COLLABORAACL') && MODULES_COLLABORAACL) {
+            if (ModuleLoaderHelper::isLoaded('COLLABORAACL')) {
                 $aclDH = AMACollaboraACLDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
                 $filesACL = $aclDH->findBy('FileACL', [ 'filepath' => str_replace(ROOT_DIR . DIRECTORY_SEPARATOR, '', $download_path . DIRECTORY_SEPARATOR . $fileName) ]);
                 if (is_array($filesACL) && count($filesACL) > 0) {

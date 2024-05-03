@@ -24,6 +24,7 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Course\CourseInstance;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Media\MediaViewer;
 use Lynxlab\ADA\Main\Node\Media;
@@ -213,7 +214,7 @@ class Node
                 }
             }
 
-            if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS) {
+            if (ModuleLoaderHelper::isLoaded('FORKEDPATHS')) {
                 $this->isForkedPaths = ForkedPathsNode::checkNode($this);
             } else {
                 $this->isForkedPaths = false;

@@ -598,7 +598,7 @@ if (isset($id_course) && intval($id_course) > 0 && isset($id_instance) && intval
 }
 $optionsAr['onload_func'] .= ');';
 
-if (defined('MODULES_SERVICECOMPLETE') && MODULES_SERVICECOMPLETE && in_array($op, ['student', 'class_report'])) {
+if (ModuleLoaderHelper::isLoaded('SERVICECOMPLETE') && in_array($op, ['student', 'class_report'])) {
     $layout_dataAr['JS_filename'][] = MODULES_SERVICECOMPLETE_PATH . '/js/condition-recap-modal.js';
     $layout_dataAr['CSS_filename'][] = MODULES_SERVICECOMPLETE_PATH . '/layout/' . $template_family . '/css/condition-recap.css';
     $optionsAr['onload_func'] .= 'initSummaryModal(\'' . str_replace(ROOT_DIR, '', MODULES_SERVICECOMPLETE_PATH) . '\')';

@@ -18,6 +18,7 @@ use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Logger\ADALogger;
 use Lynxlab\ADA\Main\Menu;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
@@ -512,7 +513,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         /**
          * UPDATE USERNAME ONLY IF MODULES_GDPR
          */
-        if (defined('MODULES_GDPR') && MODULES_GDPR === true && array_key_exists('username', $user_ha) && strlen($user_ha['username']) > 0) {
+        if (ModuleLoaderHelper::isLoaded('GDPR') === true && array_key_exists('username', $user_ha) && strlen($user_ha['username']) > 0) {
             $update_user_sql .= ',username=?';
             $valuesAr[] = $user_ha['username'];
         }
@@ -1398,7 +1399,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
 
         $sql = 'SELECT U.*, I.status,I.data_iscrizione,I.laststatusupdate';
 
-        if (defined('MODULES_CODEMAN') && (MODULES_CODEMAN)) {
+        if (ModuleLoaderHelper::isLoaded('CODEMAN')) {
             $sql = $sql . ', I.codice';
         }
 
@@ -1739,7 +1740,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
 
         $sql = 'SELECT U.*, I.status,I.data_iscrizione,I.laststatusupdate';
 
-        if (defined('MODULES_CODEMAN') && (MODULES_CODEMAN)) {
+        if (ModuleLoaderHelper::isLoaded('CODEMAN')) {
             $sql = $sql . ', I.codice';
         }
 
@@ -1889,8 +1890,8 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
       FROM history_nodi AS H LEFT JOIN nodo AS N ON (N.id_nodo=H.id_nodo)
       WHERE H.id_utente_studente=?
       AND H.id_istanza_corso=?
-      ORDER BY H.data_uscita DESC, H.data_visita DESC LIMIT ?";
-        $result = $db->getAll($sql, [$id_student, $id_course_instance, $num_visits], AMA_FETCH_ASSOC);
+      ORDER BY H.data_uscita DESC, H.data_visita DESC LIMIT " . (int) $num_visits;
+        $result = $db->getAll($sql, [$id_student, $id_course_instance], AMA_FETCH_ASSOC);
 
         if (AMADB::isError($result)) {
             return new AMAError(AMA_ERR_GET);
@@ -3953,7 +3954,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             return $db;
         }
 
-        if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
             $event = ADAEventDispatcher::buildEventAndDispatch(
                 [
                     'eventClass' => CourseEvent::class,
@@ -4053,7 +4054,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         if (AMADB::isError($id)) {
             return new AMAError(AMA_ERR_GET);
         }
-        if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
             $event = ADAEventDispatcher::buildEventAndDispatch(
                 [
                     'eventClass' => CourseEvent::class,
@@ -4535,7 +4536,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             return $db;
         }
 
-        if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
             $event = ADAEventDispatcher::buildEventAndDispatch(
                 [
                     'eventClass' => CourseEvent::class,
@@ -4631,7 +4632,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         if (AMADB::isError($res)) {
             return new AMAError(AMA_ERR_UPDATE);
         }
-        if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
             $event = ADAEventDispatcher::buildEventAndDispatch(
                 [
                     'eventClass' => CourseEvent::class,
@@ -4931,7 +4932,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         /**
          * ForkedPaths title must be set before the title
          */
-        if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS && isset($node_ha['is_forkedpaths']) && $node_ha['is_forkedpaths'] == 1) {
+        if (ModuleLoaderHelper::isLoaded('FORKEDPATHS') && isset($node_ha['is_forkedpaths']) && $node_ha['is_forkedpaths'] == 1) {
             $node_ha['title'] = ForkedPathsNode::addMagicKeywordToTitle($node_ha['title']);
         }
         $title = $this->sqlPrepared($this->orNull($node_ha['title'] ?? null));
@@ -5082,7 +5083,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         /**
          * ForkedPaths title must be set before the title
          */
-        if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS && isset($node_ha['is_forkedpaths']) && $node_ha['is_forkedpaths'] == 1) {
+        if (ModuleLoaderHelper::isLoaded('FORKEDPATHS') && isset($node_ha['is_forkedpaths']) && $node_ha['is_forkedpaths'] == 1) {
             $node_ha['title'] = ForkedPathsNode::addMagicKeywordToTitle($node_ha['title']);
         }
         $title = $this->sqlPrepared($this->orNull($node_ha['title'] ?? ''));

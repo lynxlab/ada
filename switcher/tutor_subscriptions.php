@@ -5,6 +5,7 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Forms\FileUploadForm;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Token\TokenManager;
@@ -232,7 +233,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
                 $data = new CText($message);
             } else {
-                $fields = (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) ? 'nome,cognome,mail' : 'nome,cognome,username';
+                $fields = (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) ? 'nome,cognome,mail' : 'nome,cognome,username';
                 $help = translateFN('Errore');
                 $data = new CText('Il file non è ben formato sottometterlo di nuovo con: ' . $fields);
             }
@@ -252,7 +253,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $help = translateFN('Da qui il provider admin può iscrivere una lista di docenti.');
     $help .= '<BR />';
     $help .= translateFN('Il file deve essere di tipo CSV e deve contenere in ogni riga i seguenti dati:');
-    $help .= (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) ? 'nome,cognome,email' : 'nome,cognome,username';
+    $help .= (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) ? 'nome,cognome,email' : 'nome,cognome,username';
 }
 
 /*

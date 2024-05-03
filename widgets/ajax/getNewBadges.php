@@ -5,6 +5,7 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
 use Lynxlab\ADA\Module\Badges\Badge;
 use Lynxlab\ADA\Module\Badges\RewardedBadge;
@@ -77,7 +78,7 @@ try {
         throw new Exception(translateFN('Spiacente, non so a che fornitore di servizi sei collegato'));
     }
 
-    if ($userObj->getType() == AMA_TYPE_STUDENT && defined('MODULES_BADGES') && MODULES_BADGES) {
+    if ($userObj->getType() == AMA_TYPE_STUDENT && ModuleLoaderHelper::isLoaded('BADGES')) {
         $bdh = AMABadgesDataHandler::instance(MultiPort::getDSN($testerName));
         $findByArr['id_utente'] = $userObj->getId();
         $findByArr['notified'] = 0;

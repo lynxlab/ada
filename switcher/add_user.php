@@ -4,6 +4,7 @@ use Lynxlab\ADA\Admin\AdminUtils;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Forms\UserSubscriptionForm;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADAAdmin;
@@ -91,7 +92,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $user_dataAr = $_POST;
         $user_dataAr['layout'] = $user_layout;
         $user_dataAr['stato'] = 0;
-        if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+        if (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) {
             $user_dataAr['username'] = $user_dataAr['uname'];
         }
 
@@ -116,7 +117,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $userObj->setPassword($_POST['password']);
         $result = MultiPort::addUser($userObj, [$sess_selected_tester]);
         if ($result > 0) {
-            if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+            if (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) {
                 if (
                     array_key_exists('secretquestion', $_POST) &&
                     array_key_exists('secretanswer', $_POST) &&

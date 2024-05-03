@@ -8,6 +8,7 @@ use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Forms\UserExtraForm;
 use Lynxlab\ADA\Main\Forms\UserProfileForm;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\HtmlLibrary\UserExtraModuleHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
@@ -135,7 +136,7 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
             $editUserObj->setExtras($_POST);
         }
 
-        if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+        if (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) {
             if (
                 array_key_exists('secretquestion', $_POST) &&
                 array_key_exists('secretanswer', $_POST) &&
@@ -185,7 +186,7 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
     unset($user_dataAr['password']);
     $user_dataAr['email'] = $user_dataAr['e_mail'];
     unset($user_dataAr['e_mail']);
-    if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+    if (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) {
         $user_dataAr['uname'] = $editUserObj->username;
         $sqdh = AMASecretQuestionDataHandler::instance();
         $user_dataAr['secretquestion'] = htmlentities($sqdh->getUserQuestion($editUserObj->getId()));

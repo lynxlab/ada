@@ -9,6 +9,7 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Forms\ConfirmPasswordForm;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Token\TokenFinder;
 use Lynxlab\ADA\Main\Token\TokenManager;
@@ -160,7 +161,7 @@ switch ($op) {
                         $redirectURL = $_SESSION['subscription_page'];
                         unset($_SESSION['subscription_page']);
                     }
-                    if (isset($redirectURL) && defined('MODULES_GDPR') && MODULES_GDPR === true) {
+                    if (isset($redirectURL) && ModuleLoaderHelper::isLoaded('GDPR') === true) {
                         // check if user has accepted the mandatory privacy policies
                         $gdprApi = new GdprAPI();
                         if ($gdprApi->checkMandatoryPoliciesForUser($userObj)) {

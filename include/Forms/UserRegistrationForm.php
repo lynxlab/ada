@@ -17,6 +17,7 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Forms\lib\classes\FForm;
 use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Module\Secretquestion\SecretQuestionForm;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -59,7 +60,7 @@ class UserRegistrationForm extends FForm
         //         $this->addTextInput('birthprovince', translateFN('Provincia di nascita'));
 
         $email = $this->addTextInput('email', translateFN('Email'));
-        if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+        if (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) {
             (new SecretQuestionForm(strcmp(static::class, self::class) === 0))->addControlsToForm($this);
         } else {
             $email->setRequired()->setValidator(FormValidator::EMAIL_VALIDATOR);

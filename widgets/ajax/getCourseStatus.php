@@ -25,6 +25,7 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\User\ADAUser;
 use Lynxlab\ADA\Module\Servicecomplete\AMACompleteDataHandler;
 use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
@@ -131,7 +132,7 @@ try {
     /**
      * get complete condition to have target time to complete the course, if any
      */
-    if ($userObj->getType() == AMA_TYPE_STUDENT && defined('MODULES_SERVICECOMPLETE') && MODULES_SERVICECOMPLETE) {
+    if ($userObj->getType() == AMA_TYPE_STUDENT && ModuleLoaderHelper::isLoaded('SERVICECOMPLETE')) {
         $goalTime = 0;
         $completeTimeClassName = 'completeConditionTime';
         $mydh = AMACompleteDataHandler::instance(MultiPort::getDSN($testerName));

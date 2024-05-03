@@ -568,7 +568,7 @@ abstract class ViewBaseHelper
      */
     protected static function extract()
     {
-        if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
             $event = ADAEventDispatcher::buildEventAndDispatch(
                 [
                     'eventClass' => CoreEvent::class,

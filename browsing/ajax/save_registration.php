@@ -4,6 +4,7 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Forms\UserProfileForm;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\User\ADAUser;
 use Lynxlab\ADA\Module\Secretquestion\AMASecretQuestionDataHandler;
@@ -116,7 +117,7 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
             $editUserObj->setExtras($_POST);
         }
 
-        if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+        if (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) {
             if (
                 array_key_exists('secretquestion', $_POST) &&
                 array_key_exists('secretanswer', $_POST) &&

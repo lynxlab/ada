@@ -4,6 +4,7 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
@@ -113,7 +114,7 @@ switch ($usersType) {
         break;
 }
 
-if (defined('MODULES_IMPERSONATE') && MODULES_IMPERSONATE) {
+if (ModuleLoaderHelper::isLoaded('IMPERSONATE')) {
     // get the list of users linked to the current listed type
     $impDH = AMAImpersonateDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
     try {
@@ -203,7 +204,7 @@ if (is_array($usersAr) && count($usersAr) > 0) {
             $actionsArr[] = $undelete_link;
         }
 
-        if (defined('MODULES_IMPERSONATE') && MODULES_IMPERSONATE && $user[5] == ADA_STATUS_REGISTERED) {
+        if (ModuleLoaderHelper::isLoaded('IMPERSONATE') && $user[5] == ADA_STATUS_REGISTERED) {
             $impActions = Utils::buildActionsLinks($userId, $user[4], $linkedUsers);
             if (is_array($impActions) && count($impActions) > 0) {
                 $actionsArr =  array_merge($actionsArr, $impActions);
@@ -272,7 +273,7 @@ $layout_dataAr['CSS_filename'] = [
 ];
 $render = null;
 $optionsAr['onload_func'] = 'initDoc();';
-if (defined('MODULES_IMPERSONATE') && MODULES_IMPERSONATE) {
+if (ModuleLoaderHelper::isLoaded('IMPERSONATE')) {
     $layout_dataAr['JS_filename'][] = MODULES_IMPERSONATE_PATH . '/js/impersonateAPI.js';
     $layout_dataAr['CSS_filename'][] = MODULES_IMPERSONATE_PATH . '/layout/css/showHideDiv.css';
 }

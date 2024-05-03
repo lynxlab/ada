@@ -16,6 +16,7 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\User\ADAUser;
 use Lynxlab\ADA\Switcher\Subscription;
 use ReflectionClass;
@@ -235,7 +236,7 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
                                 );
                                 if (DataValidator::validatePassword($userDataAr[3], $userDataAr[3])) {
                                     $subscriberObj->setPassword($userDataAr[3]);
-                                    if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+                                    if (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) {
                                         $subscriberObj->setEmail('');
                                     }
                                     /**

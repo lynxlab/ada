@@ -6,6 +6,7 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
@@ -65,7 +66,7 @@ $self = whoami();
  * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
  * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
  * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
- * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
+ * @var \Lynxlab\ADA\Main\User\ADAAbstractUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -541,7 +542,7 @@ if ($displayTable) {
     $content_dataAr['gohistory'] = isset($gohistory) ? $gohistory->getHtml() : null;
     $content_dataAr['subscription_status'] = Subscription::subscriptionStatusArray()[$subscription_status];
 
-    if (defined('MODULES_SERVICECOMPLETE') && MODULES_SERVICECOMPLETE) {
+    if (ModuleLoaderHelper::isLoaded('SERVICECOMPLETE')) {
         // need the service-complete module data handler
         $mydh = AMACompleteDataHandler::instance(MultiPort::getDSN($provider['puntatore']));
         // load the conditionset for this course
@@ -562,7 +563,7 @@ if ($displayTable) {
         }
     }
 
-    if (defined('MODULES_BADGES') && MODULES_BADGES) {
+    if (ModuleLoaderHelper::isLoaded('BADGES')) {
         // need the badges module data handler
         $bdh = AMABadgesDataHandler::instance(MultiPort::getDSN($provider['puntatore']));
         // load all the badges for this course

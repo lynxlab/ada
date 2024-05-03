@@ -15,6 +15,7 @@ namespace Lynxlab\ADA\Main\Forms;
 
 use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
 use Lynxlab\ADA\Main\Forms\UserRegistrationForm;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -24,7 +25,7 @@ class UserSubscriptionForm extends UserRegistrationForm
     {
         parent::__construct();
 
-        if (!(defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true)) {
+        if (!(ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true)) {
             $this->addTextInput('username', translateFN('Nome utente'))
                  ->setRequired()
                  ->setValidator(FormValidator::EMAIL_VALIDATOR);

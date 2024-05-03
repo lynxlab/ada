@@ -3,6 +3,7 @@
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\UserModuleHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
@@ -405,7 +406,7 @@ if (isset($_GET['caller']) && $_GET['caller'] == 'editor') {
                      * This is done with a modal dialog, jQuery is needed
                      */
 
-                    if (defined('MODULES_COLLABORAACL') && MODULES_COLLABORAACL && array_key_exists('grantedUsers', $_POST) && count($_POST['grantedUsers'])) {
+                    if (ModuleLoaderHelper::isLoaded('COLLABORAACL') && array_key_exists('grantedUsers', $_POST) && count($_POST['grantedUsers'])) {
                         $saveData = [
                         'courseId' => intval($_POST['id_course']),
                         'instanceId' => intval($_POST['id_course_instance']),
@@ -500,7 +501,7 @@ if (isset($_GET['caller']) && $_GET['caller'] == 'editor') {
             $optionsAr['onload_func']  = "askActionToUser('" . rawurlencode(json_encode($askOptions)) . "');";
         }
 
-        if (defined('MODULES_COLLABORAACL') && MODULES_COLLABORAACL) {
+        if (ModuleLoaderHelper::isLoaded('COLLABORAACL')) {
             $layout_dataAr['CSS_filename'][] = MODULES_COLLABORAACL_PATH . '/layout/ada-blu/css/moduleADAForm.css';
             array_splice($layout_dataAr['JS_filename'], count($layout_dataAr['JS_filename']) - 1, 0, [ MODULES_COLLABORAACL_PATH . '/js/multiselect.min.js' ]);
             if (!isset($optionsAr)) {

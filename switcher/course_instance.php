@@ -4,6 +4,7 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Course\CourseInstance;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
@@ -147,7 +148,7 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
             array_push($thead_data, $badgesKey);
             RewardedBadge::loadInstanceRewards($courseId, $instanceId);
         }
-        if (!$isTutorCommunity && defined('MODULES_CODEMAN') && (MODULES_CODEMAN)) {
+        if (!$isTutorCommunity && ModuleLoaderHelper::isLoaded('CODEMAN')) {
             array_push($thead_data, translateFN('Codice iscrizione'));
         }
         if (!$isTutorCommunity && defined('ADA_PRINT_CERTIFICATE') && (ADA_PRINT_CERTIFICATE)) {
@@ -258,7 +259,7 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
             if (MODULES_BADGES) {
                 $userArray[$badgesKey] = RewardedBadge::buildStudentRewardHTML($courseId, $instanceId, $user->getSubscriberId())->getHtml();
             }
-            if (!$isTutorCommunity && defined('MODULES_CODEMAN') && (MODULES_CODEMAN)) {
+            if (!$isTutorCommunity && ModuleLoaderHelper::isLoaded('CODEMAN')) {
                 $code = $user->getSubscriptionCode();
                 $userArray[translateFN('Codice iscrizione')] = $code;
             }
@@ -302,7 +303,7 @@ $buttonSubscription->addChild(new CText(translateFN('Iscrivi studente')));
  *
  * If module StudentsGroups is loaded, this button now is not useful, since we can (and should) load students as groups
  */
-if (defined('MODULES_STUDENTSGROUPS') && MODULES_STUDENTSGROUPS === true) {
+if (ModuleLoaderHelper::isLoaded('STUDENTSGROUPS') === true) {
     $buttonSubscriptions = CDOMElement::create('span');
     $buttonSubscriptions->addChild(new CText(''));
 } else {

@@ -19,6 +19,7 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Bookmark\Bookmark;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\History\History;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 use Lynxlab\ADA\Module\Badges\RewardedBadge;
@@ -397,7 +398,7 @@ class Student
                 }
 
                 $stausIsButton = false;
-                if (defined('MODULES_SERVICECOMPLETE') && MODULES_SERVICECOMPLETE) {
+                if (ModuleLoaderHelper::isLoaded('SERVICECOMPLETE')) {
                     // need the service-complete module data handler
                     $mydh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
                     // load the conditionset for this course
@@ -504,7 +505,7 @@ class Student
 
                     if (array_key_exists(REPORT_COLUMN_STATUS, $columns)) {
                         //build level HTML
-                        if (defined('MODULES_SERVICECOMPLETE') && MODULES_SERVICECOMPLETE && $stausIsButton) {
+                        if (ModuleLoaderHelper::isLoaded('SERVICECOMPLETE') && $stausIsButton) {
                             $stBtn = CDOMElement::create('button', 'class:ui tiny button servicecomplete-summary-modal');
                             $stBtn->setAttribute('data-student-id', $id_student);
                             $stBtn->setAttribute('data-instance-id', $id_instance);

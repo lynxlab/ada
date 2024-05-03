@@ -16,6 +16,7 @@ namespace Lynxlab\ADA\Module\Servicecomplete;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -82,7 +83,7 @@ class CompleteConditionAnsweredSurvey extends CompleteCondition
                 'param' => $this->param,
             ];
         }
-        if (defined('MODULES_TEST') && MODULES_TEST) {
+        if (ModuleLoaderHelper::isLoaded('TEST')) {
             if (isset($GLOBALS['dh'])) {
                 $GLOBALS['dh']->disconnect();
             }

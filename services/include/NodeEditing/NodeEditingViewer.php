@@ -16,6 +16,7 @@ namespace Lynxlab\ADA\Services\NodeEditing;
 use Lynxlab\ADA\Browsing\CourseViewer;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Services\NodeEditing\Utilities;
 
@@ -707,7 +708,7 @@ class NodeEditingViewer
         /**
          * NOTE: EDITOR_SHOW_NODE_LEVEL flag is used to check if user is an author
          */
-        if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS && ($flags & EDITOR_SHOW_NODE_LEVEL)) {
+        if (ModuleLoaderHelper::isLoaded('FORKEDPATHS') && ($flags & EDITOR_SHOW_NODE_LEVEL)) {
             // @author giorgio 14/jun/2019
             // checkbox to set ForkedPaths node flag
             $node_isforkedpaths  = CDOMElement::create('div', 'id:show_node_isforkedpaths, class:editor_input');

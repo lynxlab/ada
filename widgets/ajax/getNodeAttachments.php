@@ -6,6 +6,7 @@ use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLActions;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLException;
@@ -89,7 +90,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             throw new CollaboraACLException(translateFN('Spiacente, non so a che fornitore di servizi sei collegato'));
         }
 
-        if (defined('MODULES_COLLABORAACL') && MODULES_COLLABORAACL) {
+        if (ModuleLoaderHelper::isLoaded('COLLABORAACL')) {
             $aclDH = AMACollaboraACLDataHandler::instance(MultiPort::getDSN($testerName));
 
             if (!isset($courseObj)) {

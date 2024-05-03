@@ -5,6 +5,7 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Forms\UserProfileForm;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Module\Secretquestion\AMASecretQuestionDataHandler;
@@ -111,7 +112,7 @@ if (!$isEditingAStudent) {
                 if ($password != '') {
                     $editedUserObj->setPassword($password);
                 }
-                if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+                if (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) {
                     if (
                         array_key_exists('secretquestion', $_POST) &&
                         array_key_exists('secretanswer', $_POST) &&

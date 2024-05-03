@@ -18,6 +18,7 @@ use Lynxlab\ADA\CORE\html4\CBase;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\HtmlLibrary\FormElementCreator;
 use Lynxlab\ADA\Module\CollaboraACL\GrantAccessForm;
@@ -85,7 +86,7 @@ class UserModuleHtmlLib
         $div_select->addChild($select);
 
         $div_submit = CDOMElement::create('div', 'id:login_button');
-        if (defined('MODULES_LOGIN') && MODULES_LOGIN) {
+        if (ModuleLoaderHelper::isLoaded('LOGIN')) {
             // load login providers
             $loginProviders = AbstractLogin::getLoginProviders();
         } else {

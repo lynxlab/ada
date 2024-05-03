@@ -4,6 +4,7 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
@@ -97,13 +98,13 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
         'crediti' => $courseObj->getCredits(),
     ];
 
-    if (defined('MODULES_SERVICECOMPLETE') && MODULES_SERVICECOMPLETE) {
+    if (ModuleLoaderHelper::isLoaded('SERVICECOMPLETE')) {
         $cdh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
         $conditionset = $cdh->getLinkedConditionsetForCourse($courseObj->getId());
         $formData['condizione di completamento'] = ($conditionset instanceof CompleteConditionSet) ? $conditionset->description : translateFN('Nessuna');
     }
 
-    if (defined('MODULES_BADGES') && MODULES_BADGES) {
+    if (ModuleLoaderHelper::isLoaded('BADGES')) {
         $bdh = AMABadgesDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
         $badges = $bdh->findBy('CourseBadge', ['id_corso' => $courseObj->getId()]);
         if (!AMADB::isError($badges) && is_array($badges) && count($badges) > 0) {

@@ -17,6 +17,7 @@ use Lynxlab\ADA\Browsing\CourseViewer;
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\Output\ARE;
@@ -83,7 +84,7 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
  * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
  * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
- * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
+ * @var \Lynxlab\ADA\Main\User\ADAAbstractUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -212,7 +213,7 @@ if ($op == 'add_node') {
                 'copyright'      => '',
                 'is_forkedpaths' => $nodeObj->isForkedPaths,
                 ];
-        if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS && $nodeObj->isForkedPaths) {
+        if (ModuleLoaderHelper::isLoaded('FORKEDPATHS') && $nodeObj->isForkedPaths) {
             $node_to_edit['title'] = ForkedPathsNode::removeMagicWordFromTitle($node_to_edit['title']);
         }
         $head_form = NodeEditingViewer::getHeadForm($sess_id_user, $user_level, $user_type, $nodeObj, $new_node, $node_type);
@@ -257,7 +258,7 @@ if ($op == 'add_node') {
                 'copyright'      => '',
                 'is_forkedpaths' => $nodeObj->isForkedPaths,
                 ];
-        if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS && $nodeObj->isForkedPaths) {
+        if (ModuleLoaderHelper::isLoaded('FORKEDPATHS') && $nodeObj->isForkedPaths) {
             $node_to_edit['title'] = ForkedPathsNode::removeMagicWordFromTitle($node_to_edit['title']);
         }
         $head_form = NodeEditingViewer::getHeadForm($sess_id_user, $user_level, $user_type, $nodeObj, $new_node, $node_type);
@@ -452,7 +453,7 @@ if ($op == 'add_node') {
     unset($_SESSION['sess_node_editing']);
     header("Location: $http_root_dir/browsing/view.php?id_node={$node_data['id']}");
 
-    if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+    if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
         ADAEventDispatcher::buildEventAndDispatch([
         'eventClass' => NodeEvent::class,
         'eventName' => 'POSTADDREDIRECT',

@@ -8,6 +8,7 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Forms\UserRegistrationForm;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Token\TokenManager;
 use Lynxlab\ADA\Main\Translator;
@@ -93,7 +94,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $form->fillWithPostData();
     if ($form->isValid()) {
         $user_dataAr = $form->toArray();
-        if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+        if (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) {
             $user_dataAr['username'] = trim($_POST['uname']);
             $passw = trim($_POST['upass']);
             $ustatus = ADA_STATUS_REGISTERED;
@@ -129,7 +130,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($id_user < 0) {
             $message = translateFN('Impossibile procedere. Un utente con questi dati esiste?')
                      . ' ' . urlencode(
-                         (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) ?
+                         (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) ?
                          $userObj->getUserName() :
                          $userObj->getEmail()
                      );
@@ -141,7 +142,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
          * before doing anything, save the accepted privacy policies here
          */
         try {
-            if (defined('MODULES_GDPR') && MODULES_GDPR === true) {
+            if (ModuleLoaderHelper::isLoaded('GDPR') === true) {
                 $postParams = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
                 if (array_key_exists('acceptPolicy', $postParams) && is_array($postParams['acceptPolicy']) && count($postParams['acceptPolicy']) > 0) {
                     $postParams['userId'] = $userObj->getId();
@@ -154,7 +155,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             exit();
         }
 
-        if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+        if (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) {
             /**
              * Save secret question and answer and set the registration as successful
              */
@@ -340,7 +341,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     $form = new UserRegistrationForm();
 
-    if (defined('MODULES_GDPR') && MODULES_GDPR === true) {
+    if (ModuleLoaderHelper::isLoaded('GDPR') === true) {
         $gdprApi = new GdprAPI();
         GdprAcceptPoliciesForm::addPolicies($form, [
             'policies' => $gdprApi->getPublishedPolicies(),
@@ -366,7 +367,7 @@ if (isset($gdprApi)) {
     $layout_dataAr['JS_filename'][] =  MODULES_GDPR_PATH . '/js/acceptPolicies.js';
 }
 
-if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+if (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) {
     $layout_dataAr['JS_filename'][] = MODULES_SECRETQUESTION_PATH . '/js/modules_define.js.php';
 }
 

@@ -5,6 +5,7 @@ namespace Lynxlab\ADA\Services\Functions;
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\form\PhpOpenFormGen;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\readNodeFromDB;
@@ -397,7 +398,7 @@ function editNodeFN($id_node, $id_course, $action)
         $icon = $nodeObj->icon;
         $id_node_author = $nodeObj->author;
         $creation_date = $nodeObj->creation_date;
-        $id_instance = $nodeObj->id_instance;
+        $id_instance = $nodeObj->instance;
 
         //get parent obj node [useful in several tasks]
         $nodeObjParent = readNodeFromDB($sess_id_node);
@@ -420,7 +421,7 @@ function editNodeFN($id_node, $id_course, $action)
             $iconParent = $nodeObjParent->icon;
             $id_node_authorParent = $nodeObjParent->author;
             $creation_dateParent = $nodeObjParent->creation_date;
-            $id_instanceParent = $nodeObjParent->id_instance;
+            $id_instanceParent = $nodeObjParent->instance;
         }
         // building form
         $invia = translateFN("Anteprima");
@@ -689,7 +690,7 @@ function getNodeData($id_node)
     if (AMADataHandler::isError($nodeObj)) {
         return $nodeObj;
     }
-    if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS) {
+    if (ModuleLoaderHelper::isLoaded('FORKEDPATHS')) {
         $nodeObj = ForkedPathsNode::removeMagicWord($nodeObj);
     }
 

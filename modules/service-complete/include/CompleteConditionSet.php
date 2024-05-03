@@ -13,6 +13,7 @@
 
 namespace Lynxlab\ADA\Module\Servicecomplete;
 
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Module\Servicecomplete\Operation;
 
 use function Lynxlab\ADA\Module\Servicecomplete\Functions\logToFile;
@@ -97,7 +98,7 @@ class CompleteConditionSet
         if (!is_null($description)) {
             $this->description = $description;
         }
-        $this->setLogToFile(defined('MODULES_SERVICECOMPLETE_LOG') && MODULES_SERVICECOMPLETE_LOG === true);
+        $this->setLogToFile(ModuleLoaderHelper::isLoaded('SERVICECOMPLETE_LOG') === true);
     }
 
     /**

@@ -9,6 +9,7 @@ use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLActions;
@@ -171,7 +172,7 @@ if (isset($_GET['file'])) {
         //           $lista = translateFN("Nessun file inviato dagli studenti di questa classe.");
         $html = translateFN("Nessun file inviato dagli studenti di questa classe.");
     } else {
-        if (defined('MODULES_COLLABORAACL') && MODULES_COLLABORAACL) {
+        if (ModuleLoaderHelper::isLoaded('COLLABORAACL')) {
             $aclDH = AMACollaboraACLDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
             $filesACL = $aclDH->findBy('FileACL', [ 'id_corso' => $id_course, 'id_istanza' => $id_course_instance, 'id_nodo' => $id_node ]);
             $elencofile = array_filter($elencofile, function ($fileel) use ($filesACL, $userObj) {
@@ -290,7 +291,7 @@ if (isset($_GET['file'])) {
                                         $buttonDel->setAttribute('onclick', 'javascript:deleteFile(\'' . rawurlencode(translateFN('Confermi la cancellazione del file') . ' ' . $filename . ' ?') . '\',\'' . rawurlencode($complete_file_name) . '\',\'row' . $i . '\');');
                                         $buttonDel->setAttribute('title', translateFN('Clicca per cancellare il file'));
                                         $td->addChild($buttonDel);
-                                        if (defined('MODULES_COLLABORAACL') && MODULES_COLLABORAACL) {
+                                        if (ModuleLoaderHelper::isLoaded('COLLABORAACL')) {
                                             $aclId = FileACL::getIdFromFileName($filesACL, $singleFile['path_to_file']);
                                             if (!is_null($aclId)) {
                                                 $aclObj = FileACL::getObjectById($filesACL, $aclId);
@@ -375,7 +376,7 @@ $layout_dataAr['CSS_filename'] = [
 $render = null;
 $options['onload_func'] = 'initDoc()';
 
-if (defined('MODULES_COLLABORAACL') && MODULES_COLLABORAACL && $userObj->getType() == AMA_TYPE_TUTOR) {
+if (ModuleLoaderHelper::isLoaded('COLLABORAACL') && $userObj->getType() == AMA_TYPE_TUTOR) {
     $layout_dataAr['CSS_filename'][] = MODULES_COLLABORAACL_PATH . '/layout/ada-blu/css/moduleADAForm.css';
     array_splice($layout_dataAr['JS_filename'], count($layout_dataAr['JS_filename']) - 1, 0, [ MODULES_COLLABORAACL_PATH . '/js/multiselect.min.js' ]);
     $layout_dataAr['JS_filename'][] = MODULES_COLLABORAACL_PATH . '/js/collaboraaclAPI.js';

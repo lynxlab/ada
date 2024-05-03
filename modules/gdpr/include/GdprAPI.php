@@ -12,6 +12,7 @@ namespace Lynxlab\ADA\Module\GDPR;
 
 use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
@@ -287,7 +288,7 @@ class GdprAPI
              * the ADMIN is not required to accept all mandatory policies
              */
             return true;
-        } elseif (defined('MODULES_IMPERSONATE') && MODULES_IMPERSONATE && Utils::isImpersonating()) {
+        } elseif (ModuleLoaderHelper::isLoaded('IMPERSONATE') && Utils::isImpersonating()) {
             /**
              * if impersonate module is active and logged user is impersonating another user
              * no policy must be accepted

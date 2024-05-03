@@ -16,6 +16,7 @@ namespace Lynxlab\ADA\Module\Servicecomplete;
 use Exception;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\Main\ADAError;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Logger\ADAFileLogger;
 use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
 
@@ -100,7 +101,7 @@ abstract class CompleteCondition
             */
             throw new Exception('Fatal Error: could not instantiate ' . self::class, AMA_ERR_WRONG_ARGUMENTS);
         }
-        $this->setLogToFile(defined('MODULES_SERVICECOMPLETE_LOG') && MODULES_SERVICECOMPLETE_LOG === true);
+        $this->setLogToFile(ModuleLoaderHelper::isLoaded('SERVICECOMPLETE_LOG') === true);
     }
 
 

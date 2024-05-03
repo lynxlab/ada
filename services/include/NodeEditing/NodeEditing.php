@@ -14,6 +14,7 @@
 namespace Lynxlab\ADA\Services\NodeEditing;
 
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\NodeEvent;
 
@@ -293,7 +294,7 @@ class NodeEditing
             $node_data['icon'] = 'nodo.png';
         }
 
-        if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
             ADAEventDispatcher::buildEventAndDispatch([
                 'eventClass' => NodeEvent::class,
                 'eventName' => 'PRESAVE',
@@ -302,7 +303,7 @@ class NodeEditing
 
         $result = $dh->doEditNode($node_data);
 
-        if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
             ADAEventDispatcher::buildEventAndDispatch([
                 'eventClass' => NodeEvent::class,
                 'eventName' => 'POSTSAVE',
@@ -366,7 +367,7 @@ class NodeEditing
         }
 
         $node_data['creation_date'] = "now";
-        if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
             ADAEventDispatcher::buildEventAndDispatch([
                 'eventClass' => NodeEvent::class,
                 'eventName' => 'PRESAVE',
@@ -375,7 +376,7 @@ class NodeEditing
 
         $result = $dh->addNode($node_data);
 
-        if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
             ADAEventDispatcher::buildEventAndDispatch([
                 'eventClass' => NodeEvent::class,
                 'eventName' => 'POSTSAVE',

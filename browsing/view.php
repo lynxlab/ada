@@ -9,6 +9,7 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADAGuest;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
@@ -418,7 +419,7 @@ $linksAr  = [];
 $keyAr = explode(',', $node_keywords); // or space?
 $keyAr = array_map('trim', $keyAr);
 foreach ($keyAr as $keyword) {
-    if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS && $keyword == ForkedPathsNode::MAGIC_KEYWORD) {
+    if (ModuleLoaderHelper::isLoaded('FORKEDPATHS') && $keyword == ForkedPathsNode::MAGIC_KEYWORD) {
         // just skip the ForkedPathsNode::MAGIC_KEYWORD
         continue;
     }
@@ -635,7 +636,7 @@ switch ($op) {
             // NOTE: the widget code will set the notified flag of the reward to true
             // so that the notification box will show one time only
             $layout_dataAR['widgets']['badges'] = [
-                'isActive' => defined('MODULES_BADGES') && MODULES_BADGES,
+                'isActive' => ModuleLoaderHelper::isLoaded('BADGES'),
                 'courseId' => $courseObj->getId(),
                 'courseInstanceId' => (isset($courseInstanceObj) && $courseInstanceObj instanceof CourseInstance) ? $courseInstanceObj->getId() : -1,
                 'userId' => $userObj->getId(),
@@ -645,7 +646,7 @@ switch ($op) {
                 //$self='viewSelfInstruction';
                 $layout_dataAR['JS_filename'][] = ROOT_DIR . '/js/browsing/view.js';
 
-                if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS && $nodeObj->isForkedPaths) {
+                if (ModuleLoaderHelper::isLoaded('FORKEDPATHS') && $nodeObj->isForkedPaths) {
                     $newself = $self . 'ForkedPaths';
                     // self must be a relative path
                     $self = '/../../../../modules/' . basename(MODULES_FORKEDPATHS_PATH) . '/layout/' . $userObj->template_family . '/templates/browsing/' . $newself;
@@ -663,7 +664,7 @@ switch ($op) {
             ];
         }
 
-        if (defined('MODULES_COLLABORAACL') && MODULES_COLLABORAACL) {
+        if (ModuleLoaderHelper::isLoaded('COLLABORAACL')) {
             $layout_dataAR['widgets']['collaborafiles'] = [
                 'courseId' => $courseObj->getId(),
                 'courseInstanceId' => (isset($courseInstanceObj) && $courseInstanceObj instanceof CourseInstance) ? $courseInstanceObj->getId() : -1,
@@ -697,7 +698,7 @@ switch ($op) {
         $menuOptions['type'] = $nodeObj->type;
 
         // define to enable author menu items
-        define('MODULES_TEST_MOD_ENABLED', defined('MODULES_TEST') && MODULES_TEST && $mod_enabled);
+        define('MODULES_TEST_MOD_ENABLED', ModuleLoaderHelper::isLoaded('TEST') && $mod_enabled);
 
         /**
          * this is modified here to test parameters passing on new menu

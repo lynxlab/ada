@@ -158,7 +158,7 @@ class BrowsingHelper extends ViewBaseHelper
      */
     public static function checkServiceComplete(ADAGenericUser $userObj, $courseId = null, $courseInstanceId = null)
     {
-        if ($userObj->getType() == AMA_TYPE_STUDENT && defined('MODULES_SERVICECOMPLETE') && MODULES_SERVICECOMPLETE) {
+        if ($userObj->getType() == AMA_TYPE_STUDENT && ModuleLoaderHelper::isLoaded('SERVICECOMPLETE')) {
             if (intval($courseInstanceId) > 0 && intval($courseId) > 0 && isset($userObj) && is_object($userObj)) {
                 $user_status = self::getUserBrowsingData($userObj)['user_status'];
                 if ($user_status != ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED) {
@@ -206,7 +206,7 @@ class BrowsingHelper extends ViewBaseHelper
      */
     public static function checkRewardedBadges(ADAGenericUser $userObj, $courseId = null, $courseInstanceId = null)
     {
-        if ($userObj->getType() == AMA_TYPE_STUDENT && defined('MODULES_BADGES') && MODULES_BADGES) {
+        if ($userObj->getType() == AMA_TYPE_STUDENT && ModuleLoaderHelper::isLoaded('BADGES')) {
             if (
                 intval($courseInstanceId) > 0 && intval($courseId) > 0 && isset($userObj) && is_object($userObj)
             ) {

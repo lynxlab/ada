@@ -7,6 +7,7 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Forms\AdvancedSearchForm;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
@@ -72,7 +73,7 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
  * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
  * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
- * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
+ * @var \Lynxlab\ADA\Main\User\ADAAbstractUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -187,7 +188,7 @@ if (!is_null($submit)) {
             $res_id_node = $row[0];
             $res_name = $row[1];
             $res_course_title = $row[2];
-            if (DEFINED('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS) {
+            if (ModuleLoaderHelper::isLoaded('FORKEDPATHS')) {
                 $res_course_title = ForkedPathsNode::removeMagicWordFromTitle($res_course_title);
             }
             $res_text = $row[3];

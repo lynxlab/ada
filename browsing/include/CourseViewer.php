@@ -6,6 +6,7 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Bookmark\Bookmark;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\ForumEvent;
@@ -122,7 +123,7 @@ class CourseViewer
             case AMA_TYPE_STUDENT:
                 $callback    = 'studentCallback';
                 $course_data = $dh->getCourseData($id_course, 3, $order_by_name, $id_course_instance, $userObj->id_user, $userObj->livello); //sarebbe meglio $userObj->getId()
-                if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS) {
+                if (ModuleLoaderHelper::isLoaded('FORKEDPATHS')) {
                     $course_data = ForkedPathsNode::removeForkedPathsChildrenFromIndex($course_data);
                 }
 
@@ -942,7 +943,7 @@ class CourseViewer
         $details->addChild($authorContainer);
 
         $actionsContainer = CDOMElement::create('div', 'class:noteActions');
-        if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
             ADAEventDispatcher::buildEventAndDispatch(
                 [
                     'eventClass' => ForumEvent::class,
@@ -967,7 +968,7 @@ class CourseViewer
             // $link_zoom->addChild($zoom);
             $actionsContainer->addChild($link_zoom);
         }
-        if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
             ADAEventDispatcher::buildEventAndDispatch(
                 [
                     'eventClass' => ForumEvent::class,

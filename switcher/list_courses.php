@@ -2,6 +2,7 @@
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
@@ -89,10 +90,10 @@ if (is_array($coursesAr) && count($coursesAr) > 0) {
     $add_instance_img = CDOMElement::create('img', 'src:img/add_instances.png,alt:view');
     $survey_img = CDOMElement::create('img', 'src:img/_exer.png,alt:view');
     $delete_img = CDOMElement::create('img', 'src:img/trash.png,alt:view');
-    if (defined('MODULES_BADGES') && MODULES_BADGES) {
+    if (ModuleLoaderHelper::isLoaded('BADGES')) {
         $coursebadges_img = CDOMElement::create('img', 'src:' . MODULES_BADGES_HTTP . '/layout/' . $_SESSION['sess_template_family'] . '/img/course-badges.png');
     }
-    if (defined('MODULES_IMPEXPORT') && MODULES_IMPEXPORT && defined('MODULES_IMPEXPORT_REPODIR') && strlen(MODULES_IMPEXPORT_REPODIR) > 0) {
+    if (ModuleLoaderHelper::isLoaded('IMPEXPORT') && defined('MODULES_IMPEXPORT_REPODIR') && strlen(MODULES_IMPEXPORT_REPODIR) > 0) {
         $exporttorepo_img = CDOMElement::create('img', 'src:' . MODULES_IMPEXPORT_HTTP . '/layout/' . $_SESSION['sess_template_family'] . '/img/export-to-repo.png');
     }
 
@@ -151,7 +152,7 @@ if (is_array($coursesAr) && count($coursesAr) > 0) {
         }
 
         if (!$isPublicCourse) {
-            if (defined('MODULES_BADGES') && MODULES_BADGES) {
+            if (ModuleLoaderHelper::isLoaded('BADGES')) {
                 $badges_link = BaseHtmlLib::link(MODULES_BADGES_HTTP . '/course-badges.php?id_course=' . $courseId, $coursebadges_img->getHtml());
                 $title = translateFN('Badges');
                 $div_badges = CDOMElement::create('div');
@@ -160,7 +161,7 @@ if (is_array($coursesAr) && count($coursesAr) > 0) {
                 $div_badges->addChild(($badges_link));
                 $actions[] = $div_badges;
             }
-            if (defined('MODULES_IMPEXPORT') && MODULES_IMPEXPORT && defined('MODULES_IMPEXPORT_REPODIR') && strlen(MODULES_IMPEXPORT_REPODIR) > 0) {
+            if (ModuleLoaderHelper::isLoaded('IMPEXPORT') && defined('MODULES_IMPEXPORT_REPODIR') && strlen(MODULES_IMPEXPORT_REPODIR) > 0) {
                 $extorepo_link = BaseHtmlLib::link(MODULES_IMPEXPORT_HTTP . '/export.php?exporttorepo=1&id_course=' . $courseId, $exporttorepo_img->getHtml());
                 $title = translateFN('Esporta nel repository');
                 $div_extorepo = CDOMElement::create('div');
