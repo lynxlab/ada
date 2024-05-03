@@ -257,13 +257,8 @@ class AMACommonDataHandler extends AbstractAMADataHandler
      */
     public function addUserToTester($user_id, $tester_id)
     {
-        $db = & $this->getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
-
-        $sql = 'INSERT INTO utente_tester VALUES(' . $user_id . ',' . $tester_id . ')';
-        $result = $db->query($sql);
+        $sql = 'INSERT INTO utente_tester VALUES (?, ?)';
+        $result = $this->executeCriticalPrepared($sql, [$user_id, $tester_id]);
         if (AMADB::isError($result)) {
             return new AMAError(AMA_ERR_ADD);
         }
@@ -289,8 +284,8 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         }
 
         // get a row from table UTENTE
-        $query = "select password from utente where id_utente=$id";
-        $res_ar =  $db->getOne($query, null, AMA_FETCH_ASSOC);
+        $query = "select password from utente where id_utente=?";
+        $res_ar =  $db->getOne($query, [$id], AMA_FETCH_ASSOC);
         if (AMADB::isError($res_ar)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -328,8 +323,8 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         // get a row from table UTENTE
         $query = "select nome, cognome, tipo, e_mail AS email, telefono, username, layout, " .
                 "indirizzo, citta, provincia, nazione, codice_fiscale, birthdate, sesso, " .
-                "telefono, stato, lingua, timezone, cap, matricola, avatar, birthcity, birthprovince from utente where id_utente=$id";
-        $res_ar =  $db->getRow($query, null, AMA_FETCH_ASSOC);
+                "telefono, stato, lingua, timezone, cap, matricola, avatar, birthcity, birthprovince from utente where id_utente=?";
+        $res_ar =  $db->getRow($query, [$id], AMA_FETCH_ASSOC);
         if (AMADB::isError($res_ar)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -364,7 +359,10 @@ class AMACommonDataHandler extends AbstractAMADataHandler
 
         // get a row from table iscrizioni
         // FIXME: usare getOne al posto di getRow
-        $res_ar =  $db->getRow("select livello from iscrizioni where id_utente_studente=$id_user and  id_istanza_corso=$id_course_instance");
+        $res_ar =  $db->getRow(
+            "select livello from iscrizioni where id_utente_studente=? and  id_istanza_corso=?",
+            [$id_user, $id_course_instance]
+        );
         if (AMADB::isError($res_ar)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -391,7 +389,7 @@ class AMACommonDataHandler extends AbstractAMADataHandler
             return $db;
         }
 
-        $result =  $db->getOne("select tipo from utente where id_utente=$id");
+        $result =  $db->getOne("select tipo from utente where id_utente=?", [$id]);
         if (AMADB::isError($result)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -417,8 +415,8 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         if (AMADB::isError($db)) {
             return $db;
         }
-        $query = "select stato from utente where id_utente=$id";
-        $result =  $db->getOne($query);
+        $query = "select stato from utente where id_utente=?";
+        $result =  $db->getOne($query, [$id]);
         if (AMADB::isError($result)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -761,13 +759,13 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         }
 
         if ($clause == '') {
-            $query = "select id_utente$more_fields from utente where tipo=" . $usertype . " order by $order";
+            $query = "select id_utente$more_fields from utente where tipo=?" . " order by $order";
         } else {
-            $query = "SELECT id_utente$more_fields from utente $clause and tipo=" . $usertype . "  order by $order";
+            $query = "SELECT id_utente$more_fields from utente $clause and tipo=?" . "  order by $order";
         }
 
         // do the query
-        $users_ar =  $db->getAll($query);
+        $users_ar =  $db->getAll($query, [$usertype]);
         if (AMADB::isError($users_ar)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -791,9 +789,9 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         }
 
         $testers_sql = "SELECT T.puntatore FROM utente_tester AS U, tester AS T "
-                . "WHERE U.id_utente = $id_user AND T.id_tester = U.id_tester";
+                . "WHERE U.id_utente = ? AND T.id_tester = U.id_tester";
 
-        $testers_result = $db->getCol($testers_sql);
+        $testers_result = $db->getCol($testers_sql, 0, [$id_user]);
         if (self::isError($testers_result)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -809,9 +807,9 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         }
 
         $testers_sql = "SELECT T.puntatore FROM utente AS U, utente_tester AS UT, tester AS T "
-                . "WHERE U.username = '$username' AND UT.id_utente= U.id_utente AND T.id_tester = UT.id_tester";
+                . "WHERE U.username = ? AND UT.id_utente= U.id_utente AND T.id_tester = UT.id_tester";
 
-        $testers_result = $db->getCol($testers_sql);
+        $testers_result = $db->getCol($testers_sql, 0, [$username]);
         if (self::isError($testers_result)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -867,9 +865,9 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         }
 
         $tester_sql = "SELECT T.id_tester,T.nome,T.ragione_sociale,T.indirizzo,T.citta,T.provincia,T.nazione,T.telefono,T.e_mail,T.responsabile,T.puntatore,T.descrizione,T.iban "
-                . "FROM tester AS T, servizio_tester AS ST WHERE ST.id_corso=$id_course AND T.id_tester=ST.id_tester";
+                . "FROM tester AS T, servizio_tester AS ST WHERE ST.id_corso= ? AND T.id_tester=ST.id_tester";
 
-        $tester_resultAr = $db->getRow($tester_sql, null, AMA_FETCH_ASSOC);
+        $tester_resultAr = $db->getRow($tester_sql, [$id_course], AMA_FETCH_ASSOC);
         if (self::isError($tester_resultAr)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -888,9 +886,9 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         }
 
         $tester_sql = "SELECT T.id_tester,T.nome,T.ragione_sociale,T.indirizzo,T.provincia,T.nazione,T.telefono,T.e_mail,T.responsabile,T.puntatore,T.descrizione,T.iban "
-                . "FROM tester AS T, servizio_tester AS ST WHERE ST.id_servizio=$id_service AND T.id_tester=ST.id_tester";
+                . "FROM tester AS T, servizio_tester AS ST WHERE ST.id_servizio= ? AND T.id_tester=ST.id_tester";
 
-        $tester_resultAr = $db->getRow($tester_sql, null, AMA_FETCH_ASSOC);
+        $tester_resultAr = $db->getRow($tester_sql, [$id_service], AMA_FETCH_ASSOC);
         if (self::isError($tester_resultAr)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -910,9 +908,9 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         }
 
         $testers_sql = "SELECT id_tester,nome,ragione_sociale,indirizzo,citta,provincia,nazione,telefono,e_mail,responsabile,puntatore,descrizione,iban FROM tester "
-                . "WHERE puntatore = '$tester'";
+                . "WHERE puntatore = ?";
 
-        $testers_result = $db->getRow($testers_sql);
+        $testers_result = $db->getRow($testers_sql, [$tester]);
         if (self::isError($testers_result)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -1001,9 +999,9 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         }
 
         $testers_sql = "SELECT id_tester FROM servizio_tester "
-                . "WHERE id_servizio = $id_service";
+                . "WHERE id_servizio = ?";
 
-        $testers_result = $db->getCol($testers_sql);
+        $testers_result = $db->getCol($testers_sql, 0, [$id_service]);
         if (self::isError($testers_result)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -1030,9 +1028,9 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         }
 
         $testers_sql = "SELECT id_servizio FROM servizio_tester "
-                . "WHERE id_tester = $id_tester";
+                . "WHERE id_tester = ?";
 
-        $testers_result = $db->getCol($testers_sql);
+        $testers_result = $db->getCol($testers_sql, 0, [$id_tester]);
         if (self::isError($testers_result)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -1071,11 +1069,11 @@ class AMACommonDataHandler extends AbstractAMADataHandler
 				JOIN `servizio` s ON (s.`id_servizio` = st.`id_servizio`)";
 
         if (!empty($id_tester)) {
-            $sql .= " WHERE t.`id_tester` IN (" . implode(',', $id_tester) . ")";
+            $sql .= " WHERE t.`id_tester` IN (" . join(',', array_fill(0, count($id_tester), '?')) . ")";
         }
         $sql .= " ORDER BY t.`nome` ASC, s.`nome` ASC";
 
-        $res = $db->getAll($sql, null, AMA_FETCH_ASSOC);
+        $res = $db->getAll($sql, $id_tester, AMA_FETCH_ASSOC);
         if (self::isError($res)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -1102,9 +1100,9 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         }
 
         $testers_sql = "SELECT id_corso FROM servizio_tester "
-                . "WHERE id_tester = $id_tester";
+                . "WHERE id_tester = ?";
 
-        $testers_result = $db->getCol($testers_sql);
+        $testers_result = $db->getCol($testers_sql, 0, [$id_tester]);
         if (self::isError($testers_result)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -1155,9 +1153,9 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         }
 
         $service_sql = "SELECT id_servizio, nome, descrizione, livello, durata_servizio, min_incontri, max_incontri, durata_max_incontro  FROM servizio "
-                . "WHERE id_servizio = $id_servizio";
+                . "WHERE id_servizio = ?";
 
-        $service_result = $db->getRow($service_sql);
+        $service_result = $db->getRow($service_sql, [$id_servizio]);
         if (self::isError($service_result)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -1184,9 +1182,9 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         }
 
         $services_sql = "SELECT S.id_servizio, S.nome, S.descrizione, S.livello, S.durata_servizio, S.min_incontri, S.max_incontri, S.durata_max_incontro,"
-                . " ST.id_corso FROM servizio AS S, servizio_tester AS ST WHERE ST.id_tester=$id_tester AND S.id_servizio=ST.id_servizio";
+                . " ST.id_corso FROM servizio AS S, servizio_tester AS ST WHERE ST.id_tester=? AND S.id_servizio=ST.id_servizio";
 
-        $services_result = $db->getAll($services_sql, null, AMA_FETCH_ASSOC);
+        $services_result = $db->getAll($services_sql, [$id_tester], AMA_FETCH_ASSOC);
         if (self::isError($services_result)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -1323,15 +1321,20 @@ class AMACommonDataHandler extends AbstractAMADataHandler
             return $db;
         }
 
+        $params = [
+            $id_service,
+        ];
+
         $courses_sql = "SELECT id_tester, id_corso FROM servizio_tester "
-                . "WHERE id_servizio = $id_service";
+                . "WHERE id_servizio = ?";
         if ($id_tester != null) {
-            $courses_sql .= " AND id_tester = $id_tester";
+            $courses_sql .= " AND id_tester = ?";
+            $params[] = $id_tester;
         }
 
         $courses_sql .= ' GROUP BY id_tester';
 
-        $courses_result = $db->getAll($courses_sql, null, AMA_FETCH_ASSOC);
+        $courses_result = $db->getAll($courses_sql, $params, AMA_FETCH_ASSOC);
         if (self::isError($courses_result)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -1361,11 +1364,11 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         // FIXME:sistemare query
         $service_sql = "SELECT S.id_servizio, S.nome, S.descrizione, S.livello, S.durata_servizio, S.min_incontri, S.max_incontri, S.durata_max_incontro FROM servizio AS S, "
                 . "  servizio_tester as ST "
-                . "WHERE ST.id_corso = $id_course "
+                . "WHERE ST.id_corso = ? "
                 . " AND S.id_servizio = ST.id_servizio";
         //. " AND ST.id_servizio = S.id_servizio";
 
-        $service_result = $db->getRow($service_sql);
+        $service_result = $db->getRow($service_sql, [$id_course]);
         if (self::isError($service_result)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -1509,14 +1512,17 @@ class AMACommonDataHandler extends AbstractAMADataHandler
             return $db;
         }
 
+        $params = [];
+
         $courses_sql = 'SELECT S.id_servizio, S.nome, S.descrizione, S.durata_servizio FROM servizio AS S ' .
                 'JOIN `service_type` AS STYPE ON STYPE.`livello_servizio`=S.`livello` AND STYPE.`hiddenFromInfo`!=1 ' .
                 'JOIN `servizio_tester` AS ST ON ST.`id_servizio`=S.`id_servizio`';
         if (!is_null($id_tester) && intval($id_tester) > 0) {
-            $courses_sql .= ' WHERE id_tester=' . intval($id_tester);
+            $courses_sql .= ' WHERE id_tester= ?';
+            $params[] = intval($id_tester);
         }
 
-        $result = $db->getAll($courses_sql, null, AMA_FETCH_ASSOC);
+        $result = $db->getAll($courses_sql, $params, AMA_FETCH_ASSOC);
         if (AMADB::isError($result)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -1545,14 +1551,14 @@ class AMACommonDataHandler extends AbstractAMADataHandler
             return $db;
         }
 
-        $type = implode(',', $user_type);
+        $type = join(',', array_fill(0, count($user_type), '?'));
         if ($retrieve_extended_data) {
             $sql = "SELECT nome, cognome, tipo, username FROM utente WHERE tipo IN ($type)";
         } else {
             $sql = "SELECT tipo, username FROM utente WHERE tipo IN ($type)";
         }
 
-        $result = $db->getAll($sql, null, AMA_FETCH_ASSOC);
+        $result = $db->getAll($sql, $user_type, AMA_FETCH_ASSOC);
         if (AMADB::isError($result)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -1570,10 +1576,10 @@ class AMACommonDataHandler extends AbstractAMADataHandler
             return $db;
         }
 
-        $user_ids = implode(',', $user_idsAr);
+        $user_ids = join(',', array_fill(0, count($user_idsAr), '?'));
         $sql = 'SELECT count(id_utente) FROM utente WHERE id_utente IN(' . $user_ids . ')
-    		AND stato=' . $status;
-        $result = $db->getOne($sql);
+    		AND stato= ?';
+        $result = $db->getOne($sql, array_merge($user_ids, [$status]));
         if (AMADB::isError($result)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -1629,9 +1635,9 @@ class AMACommonDataHandler extends AbstractAMADataHandler
             return $db;
         }
 
-        $sql = "SELECT token, id_utente, timestamp_richiesta, azione, valido FROM token WHERE token='$token' AND id_utente=$user_id AND azione=$action";
+        $sql = "SELECT token, id_utente, timestamp_richiesta, azione, valido FROM token WHERE token=? AND id_utente=? AND azione=?";
 
-        $result = $db->getRow($sql, null, AMA_FETCH_ASSOC);
+        $result = $db->getRow($sql, [$token, $user_id, $action], AMA_FETCH_ASSOC);
         if (AMADB::isError($result) || !is_array($result)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -1641,17 +1647,12 @@ class AMACommonDataHandler extends AbstractAMADataHandler
 
     public function updateToken($token_dataAr = [])
     {
-        $db  = & $this->getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
-
         $valido = $token_dataAr['valido'];
         $token  = $token_dataAr['token'];
 
-        $sql = "UPDATE token SET valido=$valido WHERE token='$token'";
+        $sql = "UPDATE token SET valido=? WHERE token=?";
 
-        $result = $db->query($sql);
+        $result = $this->executeCriticalPrepared($sql, [$valido, $token]);
         if (AMADB::isError($result)) {
             return new AMAError(AMA_ERR_UPDATE);
         }
@@ -1694,9 +1695,9 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         /*
      * Check if the given message is already in table messaggi_sistema
         */
-        $sql_message_id = "SELECT id_messaggio FROM messaggi_sistema WHERE testo_messaggio=$sql_message";
+        $sql_message_id = "SELECT id_messaggio FROM messaggi_sistema WHERE testo_messaggio=?";
 
-        $result = $db->getRow($sql_message_id);
+        $result = $db->getRow($sql_message_id, [$sql_message]);
         if (AMADB::isError($result)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -1755,8 +1756,8 @@ class AMACommonDataHandler extends AbstractAMADataHandler
             return $db;
         }
 
-        $sql_translated_message = "SELECT testo_messaggio FROM $table_name WHERE id_messaggio=$message_id";
-        $result = $db->getRow($sql_translated_message, null, AMA_FETCH_ASSOC);
+        $sql_translated_message = "SELECT testo_messaggio FROM $table_name WHERE id_messaggio=?";
+        $result = $db->getRow($sql_translated_message, [$message_id], AMA_FETCH_ASSOC);
         if (AMADB::isError($result)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -2110,8 +2111,8 @@ class AMACommonDataHandler extends AbstractAMADataHandler
             return $db;
         }
 
-        $sql_select_languages = "SELECT identificatore_tabella FROM lingue WHERE id_lingua=" . $language_id;
-        $result = $db->getOne($sql_select_languages, null, AMA_FETCH_ASSOC);
+        $sql_select_languages = "SELECT identificatore_tabella FROM lingue WHERE id_lingua=?";
+        $result = $db->getOne($sql_select_languages, [$language_id], AMA_FETCH_ASSOC);
 
         if (AMADB::isError($result)) {
             return new AMAError(AMA_ERR_GET);
@@ -2138,8 +2139,8 @@ class AMACommonDataHandler extends AbstractAMADataHandler
             return $db;
         }
 
-        $sql_select_languages = "SELECT id_lingua FROM lingue WHERE identificatore_tabella='" . $table_identifier . "'";
-        $result = $db->getOne($sql_select_languages, null, AMA_FETCH_ASSOC);
+        $sql_select_languages = "SELECT id_lingua FROM lingue WHERE identificatore_tabella=?";
+        $result = $db->getOne($sql_select_languages, [$table_identifier], AMA_FETCH_ASSOC);
 
         if (AMADB::isError($result)) {
             return new AMAError(AMA_ERR_GET);
@@ -2169,9 +2170,9 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         // = AMA_DB_MDB2_wrapper
         $translation_tables_default_prefix = 'messaggi_';
 
-        $sql_translation_table_suffix_for_language_code = "SELECT identificatore_tabella FROM lingue WHERE codice_lingua='$language_code'";
+        $sql_translation_table_suffix_for_language_code = "SELECT identificatore_tabella FROM lingue WHERE codice_lingua=?";
 
-        $result = $db->getRow($sql_translation_table_suffix_for_language_code);
+        $result = $db->getRow($sql_translation_table_suffix_for_language_code, [$language_code]);
         if (AMADB::isError($result)) {
             return new AMAError(AMA_ERR_GET);
         }

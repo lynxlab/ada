@@ -34,7 +34,7 @@ use function Lynxlab\ADA\Main\Utilities\GetCallingMethodName;
 class AMAPDOWrapper
 {
     /**
-     * @var mixed $connection_object - it will contain an
+     * @var AMAPDO|PDOException $connection_object - it will contain an
      * AMAPDO connection object, or a PDOException object on error.
      */
     private $connection_object = null;
@@ -194,8 +194,8 @@ class AMAPDOWrapper
      * @param array $params array of params to be bounded to the query
      * @param string $fetchmode fetchmode, one of: AMA_FETCH_ASSOC, AMA_FETCH_OBJECT, AMA_FETCH_ORDERED
      * @param string $col if passed, returns only column number specifed
-     * @throws PDOException on invalid datas passed (i.e. a non-numeric $col parameter)
-     * @return array|PDOException on failure
+     * @throws \PDOException on invalid datas passed (i.e. a non-numeric $col parameter)
+     * @return array|\PDOException on failure
      *
      * @access public
      */
@@ -352,7 +352,7 @@ class AMAPDOWrapper
      * @param string query - the SELECT query statement to be executed.
      * @param numeric col the number of column to get.
      * @param array params to be bounded to the query
-     * @return field value on success, a PDOException on failure.
+     * @return array|\PDOExcpetion field value on success, a PDOException on failure.
      *
      * @access public
      */

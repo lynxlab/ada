@@ -42,10 +42,14 @@ class AMAImpExportDataHandler extends AMADataHandler
             return $db;
         }
 
+        $values = [
+            $node_id,
+        ];
         if ($id_course_instance != "") {
-            $sql  = "select id_nodo,ordine from nodo where id_nodo_parent='$node_id' AND id_istanza='$id_course_instance'";
+            $sql  = "select id_nodo,ordine from nodo where id_nodo_parent=? AND id_istanza=?";
+            $values[] = $id_course_instance;
         } else {
-            $sql  = "select id_nodo,ordine from nodo where id_nodo_parent='$node_id'";
+            $sql  = "select id_nodo,ordine from nodo where id_nodo_parent=?";
         }
 
         if (is_array($excludeNodeTypes) && !empty($excludeNodeTypes)) {
@@ -54,7 +58,7 @@ class AMAImpExportDataHandler extends AMADataHandler
 
         $sql .= " ORDER BY ordine ASC";
 
-        $res_ar = & $db->getCol($sql);
+        $res_ar = & $db->getCol($sql, 0, $values);
         if (AMADB::isError($res_ar)) {
             return new AMAError(AMA_ERR_GET);
         }

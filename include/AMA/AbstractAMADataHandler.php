@@ -90,7 +90,7 @@ abstract class AbstractAMADataHandler
      * If $this->db already stores a connection object, then simply
      * return a reference to it.
      *
-     * @return mixed $db - an AMADB connection object on success,
+     * @return AMAPDOWrapper|AMAError $db - an AMADB connection object on success,
      *                  an AMAError object on failure.
      */
     protected function &getConnection()
@@ -232,7 +232,7 @@ abstract class AbstractAMADataHandler
      */
     public function sqlPrepared($s)
     {
-        $s =  addslashes($s);
+        $s = addslashes($s ?? '');
         return "'$s'";
     }
 
@@ -766,9 +766,9 @@ abstract class AbstractAMADataHandler
     /**
      * This is the prepared version of the ama_pear_mdb2_wrapper exec() method.
      *
-     * @param $stmt
-     * @param $values
-     * @return number of affected rows on success, MDB2 error on failure
+     * @param \PDOStatement $stmt
+     * @param array $values
+     * @return int|AMAError of affected rows on success, MDB2 error on failure
      */
     protected function execPrepared($stmt, $values = [])
     {

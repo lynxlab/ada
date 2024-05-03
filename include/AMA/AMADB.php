@@ -52,7 +52,7 @@ class AMADB
      *
      * @param mixed $dsn the string "data source name" as requested by PEAR (kept for compatibility)
      * @param array $options an associative array of option names and values as requested by selected ABS_LAYER
-     * @return a new DB object
+     * @return AMAPDOWrapper|\PDOException a new DB object
      *
      * @access public
      */
