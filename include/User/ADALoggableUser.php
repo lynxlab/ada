@@ -751,9 +751,18 @@ abstract class ADALoggableUser extends ADAGenericUser
         return false;
     }
 
-    abstract public function setExtras($extra);
-    abstract public function hasExtra();
-    abstract public function saveUsingAjax();
+    public function setExtras($extra)
+    {
+    }
+
+    public function hasExtra()
+    {
+        return false;
+    }
+
+    public function saveUsingAjax()
+    {
+    }
 
     public function isSuper()
     {
