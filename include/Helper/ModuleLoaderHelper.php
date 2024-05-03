@@ -22,8 +22,6 @@
 namespace Lynxlab\ADA\Main\Helper;
 
 use Exception;
-use Lynxlab\ADA\Main\Logger\ADAFileLogger;
-use Lynxlab\ADA\Main\Logger\ADALogger;
 
 class ModuleLoaderHelper
 {
@@ -128,8 +126,7 @@ class ModuleLoaderHelper
         $basedefine = strtoupper(self::PREFIX . $modulename);
         $defval = false;
         if (!defined($basedefine) && !$forcedisable && static::checkModuleLoadCondtion($modulename, $moduledir)) {
-                $defval = static::requireAutoloader($modulename, $moduledir);
-                ADAFileLogger::log(sprintf("module %s %s loaded from %s", $modulename, $defval ? '' : 'not', $moduledir));
+            $defval = static::requireAutoloader($modulename, $moduledir);
         }
         /*
          * $basedefine should be defined in the required module
@@ -149,7 +146,8 @@ class ModuleLoaderHelper
      * @param string $module
      * @return boolean
      */
-    public static function isLoaded($module) {
+    public static function isLoaded($module)
+    {
         if (!str_starts_with($module, self::PREFIX)) {
             $module = strtoupper(self::PREFIX . $module);
         }
@@ -179,7 +177,8 @@ class ModuleLoaderHelper
         }
     }
 
-    private static function requireAutoloader($modulename, $moduledir) {
+    private static function requireAutoloader($modulename, $moduledir)
+    {
         try {
             if (!@include_once(MODULES_DIR . DIRECTORY_SEPARATOR . $moduledir . '/vendor/autoload.php')) {
                 // @ - to suppress warnings,

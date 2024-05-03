@@ -1,5 +1,6 @@
 <?php
 
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 
@@ -47,9 +48,9 @@ $self =  'index';
 $docDir = '/docs/';
 $helpPath = '';
 
-$fileext = DataValidator::checkInputValues('type','ExtensionType',INPUT_GET, 'html');
+$fileext = DataValidator::checkInputValues('type', 'ExtensionType', INPUT_GET, 'html');
 
-$language = DataValidator::checkInputValues('lan','Language',INPUT_GET,  $_SESSION['sess_user_language']);
+$language = DataValidator::checkInputValues('lan', 'Language', INPUT_GET, $_SESSION['sess_user_language']);
 
 
 switch ($id_profile) {
@@ -75,8 +76,8 @@ switch ($id_profile) {
 }
 
 
-$args = DataValidator::checkInputValues('arg','Value',INPUT_GET);
-if ($arg!== false) {
+$args = DataValidator::checkInputValues('arg', 'Value', INPUT_GET);
+if ($arg !== false) {
     $short_help_file_name = $usertype . '_' . $arg . '_' . $language . '.' . $fileext;
     $title = translateFN("Help for") . " $usertype " . translateFN("on") . " $arg";
 } else {

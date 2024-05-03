@@ -1,6 +1,7 @@
 <?php
 
 use Lynxlab\ADA\Admin\AdminHelper;
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
@@ -82,7 +83,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $res = fclose($n);
 }
 
-$codeLang = DataValidator::checkInputValues('codeLang','Language',INPUT_GET);
+$codeLang = DataValidator::checkInputValues('codeLang', 'Language', INPUT_GET);
 switch ($op) {
     case 'edit':
         $newsmsg = [];

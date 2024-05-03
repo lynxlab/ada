@@ -55,7 +55,7 @@ $neededObjAr = [
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 BrowsingHelper::init($neededObjAr);
-$op = DataValidator::checkInputValues('op','Value', INPUT_GET);
+$op = DataValidator::checkInputValues('op', 'Value', INPUT_GET);
 $today_date = todayDateFN();
 
 //$self = 'list_chatrooms'; // x template

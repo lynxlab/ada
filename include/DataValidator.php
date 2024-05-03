@@ -50,7 +50,7 @@ class DataValidator
         };
     }
 
-    
+
     /**
      * validateValue
      *
@@ -60,8 +60,8 @@ class DataValidator
     public static function validateValue($value): mixed
     {
         return match ($value) {
-            null,'' =>false,
-            default=> $value
+            null,'' => false,
+            default => $value
         };
     }
 
@@ -93,7 +93,7 @@ class DataValidator
 
     public static function validateBirthdate($date): bool
     {
-         // Caution: this function may only a bool
+        // Caution: this function may only a bool
         $ok = self::validateDateFormat($date);
         if ($ok) {
             [$giorno, $mese, $anno] = explode("/", $date);
@@ -121,13 +121,13 @@ class DataValidator
     public static function validateEventToken($event_token)
     {
         $pattern = '/^[1-9][0-9]*_[1-9][0-9]*_[1-9][0-9]*_[1-9][0-9]+$/';
-        return static::validateWithPattern($event_token, $pattern);
+        return static::validateValueWithPattern($event_token, $pattern);
     }
 
     public static function validateActionToken($action_token)
     {
         $pattern = '/^[a-f0-9]{40}$/';
-        return static::validateWithPattern($action_token, $pattern);
+        return static::validateValueWithPattern($action_token, $pattern);
     }
 
     public static function isUinteger($value)
@@ -195,7 +195,7 @@ class DataValidator
         /**
          * @author steve 28/mag/2020
          *
-         * 
+         *
          * @todo move class constants MINPASSWORDLEN and MAXPASSWORDLEN to configuration file
          */
 
@@ -261,7 +261,7 @@ class DataValidator
         return static::validateValueWithPattern($email, $pattern);
     }
 
-    public static function validateUrl($email)
+    public static function validateUrl($url)
     {
         /**
          * Regular Expression for URL validation by Diego Perini
@@ -302,12 +302,11 @@ class DataValidator
 
     public static function validateMessage($value)
     {
-        return static::validateValue(htmlspeciachars($value,ENT_QUOTES));
+        return static::validateValue(htmlspecialchars($value, ENT_QUOTES));
     }
 
     public static function validateInteger($value)
     {
         return static::validateValue(filter_var($value, FILTER_VALIDATE_INT));
     }
-
 }

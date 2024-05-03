@@ -2,6 +2,7 @@
 
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\ModuleInit;
 use Lynxlab\ADA\Main\Output\Html;
 use Lynxlab\ADA\Main\User\ADAUser;
 
@@ -9,7 +10,6 @@ use function Lynxlab\ADA\Browsing\Functions\menuDetailsFN;
 use function Lynxlab\ADA\Main\AMA\DBRead\readCourseFromDB;
 use function Lynxlab\ADA\Main\AMA\DBRead\readLayoutFromDB;
 use function Lynxlab\ADA\Main\AMA\DBRead\readUserFromDB;
-use function Lynxlab\ADA\Main\ModuleInit\sessionControlFN;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 $ada_config_path = realpath(__DIR__ . '/..');
@@ -17,7 +17,7 @@ $ada_config_path = realpath(__DIR__ . '/..');
 $history = "" ;
 $self = "history";
 
-sessionControlFN();
+ModuleInit::sessionControlFN();
 
 // ******************************************************
 // Clear node and layout variable

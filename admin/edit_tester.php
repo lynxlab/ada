@@ -155,7 +155,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     /*
      * Display the add user form
      */
-    $id_tester= DataValidator::checkInputValues('id_tester','Integer',INPUT_GET);
+    $id_tester = DataValidator::checkInputValues('id_tester', 'Integer', INPUT_GET);
     if ($id_tester !== false) {
         $tester_infoAr = $common_dh->getTesterInfoFromId($id_tester);
         if (AMACommonDataHandler::isError($tester_infoAr)) {

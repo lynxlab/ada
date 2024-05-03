@@ -330,14 +330,15 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
                             ++$counters['alreadySubscribed'];
                         }
                     }
-                    return $counters;
+                    $retval = $counters;
                 } else {
-                    return new StudentsGroupsException(translateFN('ID corso o ID classe non valido'));
+                    $retval = new StudentsGroupsException(translateFN('ID corso o ID classe non valido'));
                 }
             }
         } catch (StudentsGroupsException $e) {
-            return $e;
+            $retval = $e;
         }
+        return $retval;
     }
 
     /**

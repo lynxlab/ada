@@ -1,6 +1,7 @@
 <?php
 
 use Lynxlab\ADA\Admin\AdminHelper;
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
@@ -116,7 +117,7 @@ $files_news = readDir(ROOT_DIR . $filePath . '/docs/' . $reqType, 'txt');
 //print_r($files_news);
 
 
-$codeLang = DataValidator::checkInputValues('codeLang','Language', INPUT_GET, null);
+$codeLang = DataValidator::checkInputValues('codeLang', 'Language', INPUT_GET, null);
 
 if (!isset($op)) {
     $op = null;

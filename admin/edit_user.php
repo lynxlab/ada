@@ -221,7 +221,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     /*
      * Display the add user form
      */
-    $id_user = DataValidator::checkInputValues('id_user','Integer',INPUT_GET);
+    $id_user = DataValidator::checkInputValues('id_user', 'Integer', INPUT_GET);
     if ($id_user === false) {
         $form = new CText('');
     } else {

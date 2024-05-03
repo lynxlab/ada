@@ -1,5 +1,6 @@
 <?php
 
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 
@@ -45,8 +46,8 @@ BrowsingHelper::init($neededObjAr);
 $self =  "index";
 $docDir = "/docs/";
 
-$type = DataValidator::checkInputValues('type','ExtensionType', INPUT_GET, 'html');
-$language = DataValidator::checkInputValues('lan','Language', INPUT_GET, 'en');
+$type = DataValidator::checkInputValues('type', 'ExtensionType', INPUT_GET, 'html');
+$language = DataValidator::checkInputValues('lan', 'Language', INPUT_GET, 'en');
 
 $short_legal_notice_file_name = "legal_notice_$language.$fileext";
 $legal_notice_file = ROOT_DIR . $docDir . $short_legal_notice_file_name;

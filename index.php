@@ -60,7 +60,7 @@ $layout_dataAr = [
     'module_dir'     => null,
 ];
 
-$lang_get = DataValidator::checkInputValues('lang','Language',INPUT_GET,null);
+$lang_get = DataValidator::checkInputValues('lang', 'Language', INPUT_GET, null);
 /**
  * sets language if it is not multiprovider
  * if commented, then language is handled by ranslator::negotiateLoginPageLanguage
@@ -266,11 +266,11 @@ $forget_link = $forget_linkObj->getHtml();
 $status = "";
 
 $message = CDOMElement::create('div');
-$getMessage = DataValidator::checkInputValues('message','Message',INPUT_GET);
-if ($getMessage!== false) {
+$getMessage = DataValidator::checkInputValues('message', 'Message', INPUT_GET);
+if ($getMessage !== false) {
     $message->addChild(new CText($getMessage));
 } else {
-    $expired = DataValidator::checkInputValues('expired','Integer',INPUT_GET);
+    $expired = DataValidator::checkInputValues('expired', 'Integer', INPUT_GET);
     if (($expired !== false) && intval($expired) === 1) {
         $sessExpMsg = '<div class="ui icon error message"><i class="ban circle icon"></i><div class="content">';
         $sessExpMsg .= '<div class="header">' . translateFN('La tua sessione è scaduta') . '</div>';

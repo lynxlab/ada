@@ -15,7 +15,7 @@ use Jawira\CaseConverter\Convert;
 
 // MODULE'S OWN DEFINES HERE
 
-$moduledir = new Convert(str_replace(MODULES_DIR . DIRECTORY_SEPARATOR , '', realpath(__DIR__ . '/..')));
+$moduledir = new Convert(str_replace(MODULES_DIR . DIRECTORY_SEPARATOR, '', realpath(__DIR__ . '/..')));
 
 define('MODULES_CLASSAGENDA', true);
 define('MODULES_CLASSAGENDA_NAME', join('', $moduledir->toArray()));

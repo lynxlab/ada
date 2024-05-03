@@ -15,7 +15,7 @@ use Lynxlab\ADA\Module\ExtractLogger\EventSubscriber;
 
 // MODULE'S OWN DEFINES HERE
 
-$moduledir = new Convert(str_replace(MODULES_DIR . DIRECTORY_SEPARATOR , '', realpath(__DIR__ . '/..')));
+$moduledir = new Convert(str_replace(MODULES_DIR . DIRECTORY_SEPARATOR, '', realpath(__DIR__ . '/..')));
 
 define('MODULES_EXTRACTLOGGER', true);
 define('MODULES_EXTRACTLOGGER_NAME', join('', $moduledir->toArray()));
