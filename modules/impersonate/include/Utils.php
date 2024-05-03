@@ -34,7 +34,7 @@ class Utils
     /**
      * generate the buttons element to be used to activate the impersonate function in the UI
      *
-     * @return \Lynxlab\ADA\CORE\html4\CDOMElement
+     * @return \Lynxlab\ADA\CORE\html4\CBaseElement
      */
     public static function generateMenu()
     {

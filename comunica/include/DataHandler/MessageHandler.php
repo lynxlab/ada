@@ -250,7 +250,7 @@ class MessageHandler
      * @param   $fields_list - list of fields to get  (as an array, or "" or "*")
      * @param   $ordering    - ordering clause (without where)
      *
-     * @return  array a list of messages as an array of hashes
+     * @return  array|AMAError a list of messages as an array of hashes
    }          keys are among these possible values:
      *           id_messaggio, data_ora, tipo, titolo, id_mittente, priorita, testo
      *          an AMAError object if something goes wrong
@@ -307,7 +307,7 @@ class MessageHandler
      * @param   $fields_list - list of fields to get  (as an array, or "" or "*")
      * @param   $ordering    - ordering clause (without where)
      *
-     * @return  array a list of messages as an array of hashes
+     * @return  array|AMAError a list of messages as an array of hashes
    }          keys are among these possible values:
      *           id_messaggio, data_ora, tipo, titolo, id_mittente, priorita, testo
      *          an AMAError object if something goes wrong
