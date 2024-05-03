@@ -21,6 +21,10 @@
 
 namespace Lynxlab\ADA\Main\Helper;
 
+use Exception;
+use Lynxlab\ADA\Main\Logger\ADAFileLogger;
+use Lynxlab\ADA\Main\Logger\ADALogger;
+
 class ModuleLoaderHelper
 {
     /**
@@ -36,6 +40,8 @@ class ModuleLoaderHelper
      * @var string
      */
     protected const DEFAULTFILE = 'config.inc.php';
+
+    protected const PREFIX = 'MODULES_';
 
     /**
      * look for the passed module configuration file
@@ -119,26 +125,35 @@ class ModuleLoaderHelper
         if (is_null($moduledir)) {
             $moduledir = $modulename;
         }
-        $basedefine = strtoupper('MODULES_' . $modulename);
-        if (!defined($basedefine)) {
-            $modConfig = ModuleLoaderHelper::getModuleIncludeConfig($modulename, $moduledir);
-            if (!$forcedisable && !is_null($modConfig) && ModuleLoaderHelper::checkModuleLoadCondtion($modulename, $moduledir)) {
-                $root_dir = ROOT_DIR;
-                $defval = true;
-                define($basedefine . '_NAME', $modulename);
-                define($basedefine . '_PATH', MODULES_DIR . DIRECTORY_SEPARATOR . $moduledir);
-                define($basedefine . '_HTTP', HTTP_ROOT_DIR . str_replace(ROOT_DIR, '', MODULES_DIR) . '/' . $moduledir);
-                if (strlen($modConfig) > 0) {
-                    $tmp = require_once($modConfig);
-                    if (is_bool($tmp)) {
-                        $defval = $tmp;
-                    }
-                }
-                define($basedefine, $defval);
-            } else {
-                define($basedefine, false);
-            }
+        $basedefine = strtoupper(self::PREFIX . $modulename);
+        $defval = false;
+        if (!defined($basedefine) && !$forcedisable && static::checkModuleLoadCondtion($modulename, $moduledir)) {
+                $defval = static::requireAutoloader($modulename, $moduledir);
+                ADAFileLogger::log(sprintf("module %s %s loaded from %s", $modulename, $defval ? '' : 'not', $moduledir));
         }
+        /*
+         * $basedefine should be defined in the required module
+         * config file. If it's not, define it here.
+         */
+        if (!defined($basedefine)) {
+            define($basedefine, $defval);
+        }
+    }
+
+    /**
+     * Check if a module has been loaded.
+     *
+     * Accecpts as parameter the full or short module name (e.g. 'test' and 'MODULES_TEST').
+     * The check is done case-insensitive.
+     *
+     * @param string $module
+     * @return boolean
+     */
+    public static function isLoaded($module) {
+        if (!str_starts_with($module, self::PREFIX)) {
+            $module = strtoupper(self::PREFIX . $module);
+        }
+        return defined($module) && constant($module);
     }
 
     /**
@@ -162,6 +177,42 @@ class ModuleLoaderHelper
                 }
             }
         }
+    }
+
+    private static function requireAutoloader($modulename, $moduledir) {
+        try {
+            if (!@include_once(MODULES_DIR . DIRECTORY_SEPARATOR . $moduledir . '/vendor/autoload.php')) {
+                // @ - to suppress warnings,
+                throw new Exception(
+                    json_encode([
+                        'header' => $modulename . ' module will not work because autoload file cannot be found!',
+                        'message' => 'Please run <code>composer install</code> in the module subdir',
+                    ])
+                );
+            } else {
+                $modConfig = static::getModuleIncludeConfig($modulename, $moduledir);
+                if (strlen($modConfig) > 0) {
+                    // require module own config file.
+                    require_once($modConfig);
+                }
+                return true;
+            }
+        } catch (Exception $e) {
+            $text = json_decode($e->getMessage(), true);
+            // populating $_GET['message'] is a dirty hack to force the error message to appear in the home page at least
+            if (!isset($_GET['message'])) {
+                $_GET['message'] = '';
+            }
+            $_GET['message'] .= '<div class="ui icon error message"><i class="ban circle icon"></i><div class="content">';
+            if (array_key_exists('header', $text) && strlen($text['header']) > 0) {
+                $_GET['message'] .= '<div class="header">' . $text['header'] . '</div>';
+            }
+            if (array_key_exists('message', $text) && strlen($text['message']) > 0) {
+                $_GET['message'] .= '<p>' . $text['message'] . '</p>';
+            }
+            $_GET['message'] .= '</div></div>';
+        }
+        return false;
     }
 
     /**

@@ -11,53 +11,35 @@
  * @version        0.1
  */
 
-try {
-    if (!@include_once(MODULES_FORMMAIL_PATH . '/vendor/autoload.php')) {
-        // @ - to suppress warnings,
-        throw new Exception(
-            json_encode([
-                'header' => 'FormMail module will not work because autoload file cannot be found!',
-                'message' => 'Please run <code>composer install</code> in the module subdir',
-            ])
-        );
-    } else {
-        // phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
-        if (!function_exists('menuEnableFormMail')) {
-            /**
-             * callback function used to check if formmail menu item is to be enabled
-             *
-             * @param array $allowedTypes optional, can be defined in the DB enabledON field or in the function body
-             *
-             * @return true if menu must be enabled
-             */
-            function menuEnableFormMail($allowedTypes = null)
-            {
-                if (is_null($allowedTypes)) {
-                    /**
-                     * Add here user types for which the formmail menu must be enabled
-                     */
-                    $allowedTypes = [AMA_TYPE_SWITCHER];
-                }
+use Jawira\CaseConverter\Convert;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 
-                return defined('MODULES_FORMMAIL') && MODULES_FORMMAIL && isset($_SESSION['sess_userObj']) && in_array($_SESSION['sess_userObj']->getType(), $allowedTypes);
-            }
+// MODULE'S OWN DEFINES HERE
+
+$moduledir = new Convert(str_replace(MODULES_DIR . DIRECTORY_SEPARATOR, '', realpath(__DIR__ . '/..')));
+
+define('MODULES_FORMMAIL', true);
+define('MODULES_FORMMAIL_NAME', join('', $moduledir->toArray()));
+define('MODULES_FORMMAIL_PATH', MODULES_DIR . DIRECTORY_SEPARATOR . $moduledir->getSource());
+define('MODULES_FORMMAIL_HTTP', HTTP_ROOT_DIR . str_replace(ROOT_DIR, '', MODULES_DIR) . '/' . $moduledir->getSource());
+
+if (!function_exists('menuEnableFormMail')) {
+    /**
+     * callback function used to check if formmail menu item is to be enabled
+     *
+     * @param array $allowedTypes optional, can be defined in the DB enabledON field or in the function body
+     *
+     * @return true if menu must be enabled
+     */
+    function menuEnableFormMail($allowedTypes = null)
+    {
+        if (is_null($allowedTypes)) {
+            /**
+             * Add here user types for which the formmail menu must be enabled
+             */
+            $allowedTypes = [AMA_TYPE_SWITCHER];
         }
-        // phpcs:enable
-        return true;
+
+        return ModuleLoaderHelper::isLoaded('formmail') && isset($_SESSION['sess_userObj']) && in_array($_SESSION['sess_userObj']->getType(), $allowedTypes);
     }
-} catch (Exception $e) {
-    $text = json_decode($e->getMessage(), true);
-    // populating $_GET['message'] is a dirty hack to force the error message to appear in the home page at least
-    if (!isset($_GET['message'])) {
-        $_GET['message'] = '';
-    }
-    $_GET['message'] .= '<div class="ui icon error message"><i class="ban circle icon"></i><div class="content">';
-    if (array_key_exists('header', $text) && strlen($text['header']) > 0) {
-        $_GET['message'] .= '<div class="header">' . $text['header'] . '</div>';
-    }
-    if (array_key_exists('message', $text) && strlen($text['message']) > 0) {
-        $_GET['message'] .= '<p>' . $text['message'] . '</p>';
-    }
-    $_GET['message'] .= '</div></div>';
 }
-return false;

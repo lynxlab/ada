@@ -11,7 +11,16 @@
  * @version        0.1
  */
 
-require_once MODULES_CLASSAGENDA_PATH . '/include/AMAClassagendaDataHandler.inc.php';
+use Jawira\CaseConverter\Convert;
+
+// MODULE'S OWN DEFINES HERE
+
+$moduledir = new Convert(str_replace(MODULES_DIR . DIRECTORY_SEPARATOR , '', realpath(__DIR__ . '/..')));
+
+define('MODULES_CLASSAGENDA', true);
+define('MODULES_CLASSAGENDA_NAME', join('', $moduledir->toArray()));
+define('MODULES_CLASSAGENDA_PATH', MODULES_DIR . DIRECTORY_SEPARATOR . $moduledir->getSource());
+define('MODULES_CLASSAGENDA_HTTP', HTTP_ROOT_DIR . str_replace(ROOT_DIR, '', MODULES_DIR) . '/' . $moduledir->getSource());
 
 define('MODULES_CLASSAGENDA_EDIT_CAL', 1); // edit calendar action code
 define('MODULES_CLASSAGENDA_DO_ROLLCALL', 2); // do the class roll call action code
