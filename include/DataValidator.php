@@ -42,7 +42,7 @@ class DataValidator
      * @param  string $pattern
      * @return bool
      */
-    public static function validateValueWithPattern(string $value, string $pattern): bool
+    public static function validateValueWithPattern(?string $value, string $pattern): bool|string
     {
         return match ($value) {
             null,'' => false,
@@ -57,7 +57,7 @@ class DataValidator
      * @param  mixed $value
      * @return mixed
      */
-    public static function validateValue($value): mixed
+    public static function validateValue(?string $value): bool|string
     {
         return match ($value) {
             null,'' => false,
@@ -66,7 +66,7 @@ class DataValidator
     }
 
 
-    public static function validateLocalFilename($filename)
+    public static function validateLocalFilename(?string $filename): bool|string
     {
         if (self::validateNotEmptyString($filename)) {
             $pattern = '/^[a-zA-Z\_]+\.[a-zA-Z0-9\.]+$/';
@@ -75,7 +75,7 @@ class DataValidator
         return false;
     }
 
-    public static function validateString($string)
+    public static function validateString(?string $string): bool|string
     {
         // Caution: this function may return '', a bool or a string
         if (!isset($string) || empty($string)) {
@@ -86,12 +86,12 @@ class DataValidator
         return false;
     }
 
-    public static function validateNotEmptyString($string)
+    public static function validateNotEmptyString(?string $string): bool|string
     {
         return static::validateValue($string);
     }
 
-    public static function validateBirthdate($date): bool
+    public static function validateBirthdate(?string $date): bool
     {
         // Caution: this function may only a bool
         $ok = self::validateDateFormat($date);
@@ -112,25 +112,25 @@ class DataValidator
         return $ok;
     }
 
-    public static function validateDateFormat($date)
+    public static function validateDateFormat(?string $date): bool|string
     {
         $pattern = '/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/';
         return static::validateValueWithPattern($date, $pattern);
     }
 
-    public static function validateEventToken($event_token)
+    public static function validateEventToken(?string $event_token): bool|string
     {
         $pattern = '/^[1-9][0-9]*_[1-9][0-9]*_[1-9][0-9]*_[1-9][0-9]+$/';
         return static::validateValueWithPattern($event_token, $pattern);
     }
 
-    public static function validateActionToken($action_token)
+    public static function validateActionToken(?string $action_token): bool|string
     {
         $pattern = '/^[a-f0-9]{40}$/';
         return static::validateValueWithPattern($action_token, $pattern);
     }
 
-    public static function isUinteger($value)
+    public static function isUinteger($value): bool|int
     {
         if (isset($value) && !empty($value)) {
             if (is_int($value) && $value >= 0) {
@@ -144,13 +144,13 @@ class DataValidator
         return false;
     }
 
-    public static function validateNodeId($nodeId)
+    public static function validateNodeId(?string $nodeId): bool|string
     {
         $pattern = '/^[1-9][0-9]*\_[0-9]*$/';
         return static::validateValueWithPattern($nodeId, $pattern);
     }
 
-    public static function validateTestername($providername, $multiprovider = true)
+    public static function validateTestername(?string $providername, $multiprovider = true): bool|string
     {
         /**
          * giorgio, set proper pattern validation depending on multiprovider environment
@@ -168,19 +168,19 @@ class DataValidator
     }
 
     // TODO: definire minima e massima lunghezza per lo username
-    public static function validateFirstname($firstname)
+    public static function validateFirstname(?string $firstname): bool|string
     {
         return static::validateValue($firstname);
     }
 
     // TODO: definire minima e massima lunghezza per lo username
-    public static function validateLastname($lastname)
+    public static function validateLastname(?string $lastname): bool|string
     {
         return static::validateValue($lastname);
     }
 
     // TODO: definire minima e massima lunghezza per lo username
-    public static function validateUsername($username)
+    public static function validateUsername(?string $username): bool|string
     {
         /* username is the user's email
          * ->  return self::validate_email($username);
@@ -232,16 +232,17 @@ class DataValidator
         return false;
     }
 
-    public static function validatePhone($phone): string
+    public static function validatePhone(?string $phone): string
     {
         // Caution: this function may return '' or a string, not bool
+        // It is not sure that it is invoked always with a string but it is likely
         if (!isset($phone)) {
             return '';
         }
         return $phone;
     }
 
-    public static function validateAge($age)
+    public static function validateAge(?string $age): bool|string
     {
         // Caution: this function may return '', bool or a string representing an integer
         if (!isset($age)) {
@@ -255,13 +256,13 @@ class DataValidator
         return false;
     }
 
-    public static function validateEmail($email)
+    public static function validateEmail(?string $email): bool|string
     {
         $pattern = '/(?:[a-zA-Z0-9_\-\.\+\^!#\$%&*+\/\=\?\`\|\{\}~\'\[\]]+)@(?:(?:(?:[a-z0-9][a-z0-9\-_\[\]]*\.)+(?:aero|arpa|biz|com|cat|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel|mobi|media|[a-z]{2}))|(?:[0-9]{1,3}(?:\.[0-9]{1,3}){3})|(?:[0-9a-fA-F]{1,4}(?:\:[0-9a-fA-F]{1-4}){7}))$/';
         return static::validateValueWithPattern($email, $pattern);
     }
 
-    public static function validateUrl($url)
+    public static function validateUrl(?string $url): bool|string
     {
         /**
          * Regular Expression for URL validation by Diego Perini
@@ -272,7 +273,7 @@ class DataValidator
         return static::validateValueWithPattern($url, $pattern);
     }
 
-    public static function validateIban($iban)
+    public static function validateIban(?string $iban): bool|string
     {
         /**
          * Regular Expression for IBAN validation
@@ -284,7 +285,7 @@ class DataValidator
         return static::validateValueWithPattern($iban, $pattern);
     }
 
-    public static function validateLanguage($language)
+    public static function validateLanguage(?string $language): bool|string
     {
         return match ($language) {
             null => false,
@@ -292,7 +293,7 @@ class DataValidator
         };
     }
 
-    public static function validateExtensionType($value)
+    public static function validateExtensionType(?string $value): bool|string
     {
         return match ($value) {
             'html','htm','pdf' => $value,
@@ -300,12 +301,12 @@ class DataValidator
         };
     }
 
-    public static function validateMessage($value)
+    public static function validateMessage(?string $value): bool|string
     {
         return static::validateValue(htmlspecialchars($value, ENT_QUOTES));
     }
 
-    public static function validateInteger($value)
+    public static function validateInteger(?string $value): bool|int
     {
         return static::validateValue(filter_var($value, FILTER_VALIDATE_INT));
     }
