@@ -179,6 +179,11 @@ class AdminModuleHtmlLib
         $user_phone = FormElementCreator::addTextInput('user_phone', 'Telefono', $user_dataAr, $errorsAr);
         $form->addChild($user_phone);
 
+        // hidden 'user_tester'
+        $form->addChild(
+            CDOMElement::create('hidden', 'id:user_tester, name:user_tester, value:' . $user_dataAr['user_tester'])
+        );
+
         $buttons = FormElementCreator::addSubmitAndResetButtons('ui green button', 'ui red button');
         $form->addChild($buttons);
         return $form;
