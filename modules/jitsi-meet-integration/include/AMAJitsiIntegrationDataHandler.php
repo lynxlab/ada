@@ -12,15 +12,20 @@ namespace Lynxlab\ADA\Module\JitsiIntegration;
 
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\Traits\WithCUD;
 
 class AMAJitsiIntegrationDataHandler extends AMADataHandler
 {
+    use WithCUD;
+
     /**
      * module's own data tables prefix
      *
      * @var string
      */
     public const PREFIX = 'module_jitsi_';
+
+    private const EXCEPTIONCLASS = JitsiIntegrationException::class;
 
     /**
      * Save a row in the meeting table
@@ -100,40 +105,5 @@ class AMAJitsiIntegrationDataHandler extends AMADataHandler
     private static function buildMeetingID($videoroom_dataAr)
     {
         return md5(implode('', $videoroom_dataAr));
-    }
-
-    /**
-     * Builds an sql update query as a string
-     *
-     * @param string $table
-     * @param array $fields
-     * @param string $whereField
-     * @return string
-     */
-    private function sqlUpdate($table, array $fields, $whereField)
-    {
-        return sprintf(
-            "UPDATE `%s` SET %s WHERE `%s`=?;",
-            $table,
-            implode(',', array_map(fn ($el) => "`$el`=?", $fields)),
-            $whereField
-        );
-    }
-
-    /**
-     * Builds an sql insert into query as a string
-     *
-     * @param string $table
-     * @param array $fields
-     * @return string
-     */
-    private function sqlInsert($table, array $fields)
-    {
-        return sprintf(
-            "INSERT INTO `%s` (%s) VALUES (%s);",
-            $table,
-            implode(',', array_map(fn ($el) => "`$el`", array_keys($fields))),
-            implode(',', array_map(fn ($el) => "?", array_keys($fields)))
-        );
     }
 }

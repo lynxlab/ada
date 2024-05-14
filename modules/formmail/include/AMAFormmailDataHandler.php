@@ -16,9 +16,12 @@ namespace Lynxlab\ADA\Module\FormMail;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
+use Lynxlab\ADA\Main\AMA\Traits\WithInstance;
 
 class AMAFormmailDataHandler extends AMADataHandler
 {
+    use WithInstance;
+
     /**
      * module's own data tables prefix
      *
@@ -45,16 +48,5 @@ class AMAFormmailDataHandler extends AMADataHandler
     {
         $sql = 'SELECT * FROM `' . self::$PREFIX . 'helptype` WHERE `user_type` =? ORDER BY `description` ASC';
         return $GLOBALS['dh']->getAllPrepared($sql, $user_type, AMA_FETCH_ASSOC);
-    }
-
-    /**
-     * Returns an instance of AMAFormmailDataHandler.
-     *
-     * @param  string $dsn - optional, a valid data source name
-     * @return self an instance of AMAFormmailDataHandler
-     */
-    public static function instance($dsn = null)
-    {
-        return parent::instance($dsn);
     }
 }

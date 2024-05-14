@@ -10,22 +10,25 @@
 
 namespace Lynxlab\ADA\Module\Badges;
 
-use Jawira\CaseConverter\Convert;
-use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
+use Lynxlab\ADA\Main\AMA\Traits\WithCUD;
+use Lynxlab\ADA\Main\AMA\Traits\WithFind;
+use Lynxlab\ADA\Main\AMA\Traits\WithInstance;
 use Lynxlab\ADA\Module\Badges\Badge;
 use Lynxlab\ADA\Module\Badges\CourseBadge;
 use Lynxlab\ADA\Module\Badges\RewardedBadge;
 use Ramsey\Uuid\Uuid;
-use ReflectionClass;
-use ReflectionProperty;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 class AMABadgesDataHandler extends AMADataHandler
 {
+    use WithInstance;
+    use WithCUD;
+    use WithFind;
+
     /**
      * module's own data tables prefix
      *
@@ -39,6 +42,8 @@ class AMABadgesDataHandler extends AMADataHandler
      * @var string
      */
     public const MODELNAMESPACE = 'Lynxlab\\ADA\\Module\\Badges\\';
+
+    private const EXCEPTIONCLASS = BadgesException::class;
 
     /**
      * get basic course and course instance info needed to build the
@@ -333,17 +338,6 @@ class AMABadgesDataHandler extends AMADataHandler
     }
 
     /**
-     * Returns an instance of AMABadgesDataHandler.
-     *
-     * @param  string $dsn - optional, a valid data source name
-     * @return self an instance of AMABadgesDataHandler
-     */
-    public static function instance($dsn = null)
-    {
-        return parent::instance($dsn);
-    }
-
-    /**
      * Move an uploaded badge png from tmp to actual badges dir
      *
      * @param string $src
@@ -360,217 +354,5 @@ class AMABadgesDataHandler extends AMADataHandler
             umask($oldmask);
         }
         rename($src, $dest);
-    }
-
-    /**
-     * loads an array of objects of the passed className with matching where values
-     * and ordered using the passed values by performing a select query on the DB
-     *
-     * @param string $className to use a class from your namespace, this string must start with "\"
-     * @param array $whereArr
-     * @param array $orderByArr
-     * @param AbstractAMADataHandler $dbToUse object used to run the queries. If null, use 'this'
-     * @throws BadgesException
-     * @return array
-     */
-    public function findBy($className, array $whereArr = null, array $orderByArr = null, AbstractAMADataHandler $dbToUse = null)
-    {
-        if (
-            stripos($className, '\\') !== 0 &&
-            stripos($className, self::MODELNAMESPACE) !== 0
-        ) {
-            $className = self::MODELNAMESPACE . $className;
-        }
-        $reflection = new ReflectionClass($className);
-        $properties =  array_map(
-            fn ($el) => $el->getName(),
-            array_filter(
-                $reflection->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PUBLIC),
-                fn ($refEl) => $className === $refEl->getDeclaringClass()->getName()
-            )
-        );
-
-        // get object properties to be loaded as a kind of join
-        $joined = $className::loadJoined();
-        // and remove them from the query, they will be loaded afterwards
-        $properties = array_diff($properties, $joined);
-        $properties = array_diff($properties, $className::doNotLoad());
-
-        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(fn ($el) => $className::isUuidField($el) ? "`$el" . $className::BINFIELDSUFFIX . "`" : "`$el`", $properties)), $className::TABLE)
-            . $this->buildWhereClause($whereArr, $properties) . $this->buildOrderBy($orderByArr, $properties);
-
-        if (is_null($dbToUse)) {
-            $dbToUse = $this;
-        }
-
-        $result = $dbToUse->getAllPrepared($sql, (!is_null($whereArr) && count($whereArr) > 0) ? array_values($whereArr) : [], AMA_FETCH_ASSOC);
-        if (AMADB::isError($result)) {
-            throw new BadgesException($result->getMessage(), (int)$result->getCode());
-        } else {
-            $retArr = array_map(fn ($el) => new $className($el, $dbToUse), $result);
-            // load properties from $joined array
-            foreach ($retArr as $retObj) {
-                foreach ($joined as $joinKey) {
-                    $sql = sprintf("SELECT `%s` FROM `%s` WHERE `%s`=?", $joinKey, $retObj::TABLE, $retObj::KEY);
-                    $method = new Convert($retObj::GETTERPREFIX . ucfirst($retObj::KEY));
-                    $res = $dbToUse->getAllPrepared($sql, $retObj->{$method->toCamel()}(), AMA_FETCH_ASSOC);
-                    if (!AMADB::isError($res)) {
-                        foreach ($res as $row) {
-                            $method = new Convert($retObj::ADDERPREFIX . ucfirst($joinKey));
-                            $retObj->{$method->toCamel()}($row[$joinKey], $dbToUse);
-                        }
-                    }
-                }
-            }
-            return $retArr;
-        }
-    }
-
-    /**
-     * loads an array holding all of the passed className objects, possibly ordered.
-     * Actually it's an alias for findBy($className, null, $orderby)
-     *
-     * @param string $className
-     * @param array $orderBy
-     * @param AbstractAMADataHandler $dbToUse object used to run the queries. If null, use 'this'
-     * @return array
-     */
-    public function findAll($className, array $orderBy = null, AbstractAMADataHandler $dbToUse = null)
-    {
-        return $this->findBy($className, null, $orderBy, $dbToUse);
-    }
-
-    /**
-     * Builds an sql update query as a string
-     *
-     * @param string $table
-     * @param array $fields
-     * @param array $whereArr
-     * @return string
-     */
-    private function sqlUpdate($table, array $fields, &$whereArr)
-    {
-        return sprintf(
-            "UPDATE `%s` SET %s",
-            $table,
-            implode(',', array_map(fn ($el) => "`$el`=?", $fields))
-        ) . $this->buildWhereClause($whereArr, array_keys($whereArr)) . ';';
-    }
-
-    /**
-     * Builds an sql insert into query as a string
-     *
-     * @param string $table
-     * @param array $fields
-     * @return string
-     */
-    private function sqlInsert($table, array $fields)
-    {
-        return sprintf(
-            "INSERT INTO `%s` (%s) VALUES (%s);",
-            $table,
-            implode(',', array_map(fn ($el) => "`$el`", array_keys($fields))),
-            implode(',', array_map(fn ($el) => "?", array_keys($fields)))
-        );
-    }
-
-    /**
-     * Builds an sql delete query as a string
-     *
-     * @param string $table
-     * @param array $whereArr
-     * @return string
-     */
-    private function sqlDelete($table, &$whereArr)
-    {
-        return sprintf(
-            "DELETE FROM `%s`",
-            $table
-        ) . $this->buildWhereClause($whereArr, array_keys($whereArr)) . ';';
-    }
-
-    /**
-     * Builds an sql where clause
-     *
-     * @param array $whereArr
-     * @param array $properties
-     * @return string
-     */
-    private function buildWhereClause(&$whereArr, $properties)
-    {
-        $sql  = '';
-        $newWhere = [];
-        if (!is_null($whereArr) && count($whereArr) > 0) {
-            $invalidProperties = array_diff(array_keys($whereArr), $properties);
-            if (count($invalidProperties) > 0) {
-                throw new BadgesException(translateFN('Proprietà WHERE non valide: ') . implode(', ', $invalidProperties));
-            } else {
-                $sql .= ' WHERE ';
-                $sql .= implode(' AND ', array_map(function ($el) use (&$newWhere, $whereArr) {
-                    if (is_null($whereArr[$el])) {
-                        unset($whereArr[$el]);
-                        return "`$el` IS NULL";
-                    } else {
-                        if (is_array($whereArr[$el])) {
-                            $retStr = '';
-                            if (array_key_exists('op', $whereArr[$el]) && array_key_exists('value', $whereArr[$el])) {
-                                $whereArr[$el] = [$whereArr[$el]];
-                            }
-                            foreach ($whereArr[$el] as $opArr) {
-                                if (strlen($retStr) > 0) {
-                                    $retStr = $retStr . ' AND ';
-                                }
-                                $retStr .= "`$el` " . $opArr['op'] . ' ' . $opArr['value'];
-                            }
-                            unset($whereArr[$el]);
-                            return '(' . $retStr . ')';
-                        } elseif (is_numeric($whereArr[$el])) {
-                            $op = '=';
-                        } elseif (Uuid::isValid($whereArr[$el])) {
-                            $tmpuuid = UUid::fromString($whereArr[$el]);
-                            $whereArr[$el . '_bin'] = $tmpuuid->getBytes();
-                            unset($whereArr[$el]);
-                            $el .= '_bin';
-                            $op = '=';
-                        } else {
-                            $op = ' LIKE ';
-                            $whereArr[$el] = '%' . $whereArr[$el] . '%';
-                        }
-                        $newWhere[$el] = $whereArr[$el];
-                        return "`$el`$op?";
-                    }
-                }, array_keys($whereArr)));
-            }
-        }
-        $whereArr = $newWhere;
-        return $sql;
-    }
-
-    /**
-     * Builds an sql orderby clause
-     *
-     * @param array $orderByArr
-     * @param array $properties
-     * @return string
-     */
-    private function buildOrderBy(&$orderByArr, $properties)
-    {
-        $sql = '';
-        if (!is_null($orderByArr) && count($orderByArr) > 0) {
-            $invalidProperties = array_diff(array_keys($orderByArr), $properties);
-            if (count($invalidProperties) > 0) {
-                throw new BadgesException(translateFN('Proprietà ORDER BY non valide: ') . implode(', ', $invalidProperties));
-            } else {
-                $sql .= ' ORDER BY ';
-                $sql .= implode(', ', array_map(function ($el) use ($orderByArr) {
-                    if (in_array($orderByArr[$el], ['ASC', 'DESC'])) {
-                        return "`$el` " . $orderByArr[$el];
-                    } else {
-                        throw new BadgesException(sprintf(translateFN("ORDER BY non valido %s per %s"), $orderByArr[$el], $el));
-                    }
-                }, array_keys($orderByArr)));
-            }
-        }
-        return $sql;
     }
 }

@@ -11,25 +11,29 @@
 namespace Lynxlab\ADA\Module\GDPR;
 
 use Exception;
-use Jawira\CaseConverter\Convert;
 use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\AMA\Traits\WithCUD;
+use Lynxlab\ADA\Main\AMA\Traits\WithFind;
+use Lynxlab\ADA\Main\AMA\Traits\WithInstance;
 use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use Lynxlab\ADA\Module\GDPR\GdprBase;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
 use Lynxlab\ADA\Module\GDPR\GdprRequest;
 use Lynxlab\ADA\Module\GDPR\GdprUser;
-use ReflectionClass;
-use ReflectionProperty;
 use stdClass;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 class AMAGdprDataHandler extends AMADataHandler
 {
+    use WithCUD;
+    use WithInstance;
+    use WithFind;
+
     /**
      * module's own data tables prefix
      *
@@ -178,12 +182,23 @@ class AMAGdprDataHandler extends AMADataHandler
 
         if ($request->beforeSave($isUpdate)) {
             $fields = $request->toArray();
+            unset($fields['redirecturl']);
+            unset($fields['redirectlabel']);
+            unset($fields['reloaddata']);
             $fields['type'] = $fields['type']->getId();
             if (!$isUpdate) {
                 $result = $this->executeCriticalPrepared($this->sqlInsert($request::TABLE, $fields), array_values($fields));
             } else {
                 unset($fields['uuid']);
-                $result = $this->queryPrepared($this->sqlUpdate($request::TABLE, array_keys($fields), 'uuid'), array_values($fields + [$request->getUuid()]));
+                $whereArr = ['uuid' => $request->getUuid()];
+                $result = $this->queryPrepared(
+                    $this->sqlUpdate(
+                        $request::TABLE,
+                        array_keys($fields),
+                        $whereArr
+                    ),
+                    array_values($fields + $whereArr)
+                );
             }
 
             if (AMADB::isError($result)) {
@@ -230,9 +245,9 @@ class AMAGdprDataHandler extends AMADataHandler
         }
 
         $policy->setTitle(trim($data['title']))->setContent(trim($data['content']))
-               ->setMandatory((int)(array_key_exists('mandatory', $data) && intval($data['mandatory']) === 1))
-               ->setIsPublished((int)(array_key_exists('isPublished', $data) && intval($data['isPublished']) === 1))
-               ->setLastEditTS($this->dateToTs('now'));
+            ->setMandatory((int)(array_key_exists('mandatory', $data) && intval($data['mandatory']) === 1))
+            ->setIsPublished((int)(array_key_exists('isPublished', $data) && intval($data['isPublished']) === 1))
+            ->setLastEditTS($this->dateToTs('now'));
 
         if (strlen($policy->getTitle()) <= 0) {
             $policy->setTitle(null);
@@ -242,16 +257,33 @@ class AMAGdprDataHandler extends AMADataHandler
         }
 
         $fields = $policy->toArray();
+        unset($fields['redirecturl']);
+        unset($fields['redirectlabel']);
+        unset($fields['reloaddata']);
         if (!$isUpdate) {
             $fields['policy_content_id'] = null;
-            $result = self::getPoliciesDB()->executeCriticalPrepared($this->sqlInsert($policy::TABLE, $fields), array_values($fields));
+            $result = self::getPoliciesDB()->executeCriticalPrepared(
+                $this->sqlInsert(
+                    $policy::TABLE,
+                    $fields
+                ),
+                array_values($fields)
+            );
         } else {
             unset($fields['policy_content_id']);
-            $result = self::getPoliciesDB()->queryPrepared($this->sqlUpdate($policy::TABLE, array_keys($fields), 'policy_content_id'), array_values($fields + [$policy->getPolicyContentId()]));
+            $whereArr = ['policy_content_id' => $policy->getPolicyContentId()];
+            $result = self::getPoliciesDB()->queryPrepared(
+                $this->sqlUpdate(
+                    $policy::TABLE,
+                    array_keys($fields),
+                    $whereArr
+                ),
+                array_values($fields + $whereArr)
+            );
         }
 
         if (AMADB::isError($result)) {
-            throw new GdprException($result->getMessage(), is_numeric($result->getCode()) ? $result->getCode() : null);
+            throw new GdprException($result->getMessage(), is_numeric($result->getCode()) ? $result->getCode() : 0);
         }
 
         $policy->redirecturl = 'listPolicies.php';
@@ -410,9 +442,10 @@ class AMAGdprDataHandler extends AMADataHandler
             $request = reset($tmp);
         }
         if ($request instanceof GdprRequest) {
+            $whereArr = ['uuid' => $request->getUuid()];
             $result = $this->queryPrepared(
-                $this->sqlUpdate(GdprRequest::TABLE, ['closedTs', 'closedBy'], 'uuid'),
-                [$this->dateToTs('now'), $closedBy, $request->getUuid()]
+                $this->sqlUpdate(GdprRequest::TABLE, ['closedTs', 'closedBy'], $whereArr),
+                array_values([$this->dateToTs('now'), $closedBy] + $whereArr)
             );
             if (AMADB::isError($result)) {
                 throw new GdprException($result->getMessage(), $result->getCode());
@@ -431,7 +464,7 @@ class AMAGdprDataHandler extends AMADataHandler
     public function confirmRequest($request)
     {
         if (!($request instanceof GdprRequest)) {
-            $tmp = $this->findBy(self::getObjectClasses()[self::REQUESTCLASSKEY], ['uuid' => $request,'confirmedTs' => null]);
+            $tmp = $this->findBy(self::getObjectClasses()[self::REQUESTCLASSKEY], ['uuid' => $request, 'confirmedTs' => null]);
             $request = reset($tmp);
         }
         if ($request instanceof GdprRequest) {
@@ -486,7 +519,7 @@ class AMAGdprDataHandler extends AMADataHandler
         $retVal = ['uuid' => $uuid];
         $found = false;
 
-        $testers_infoAr = $GLOBALS['common_dh']->getAllTesters(['id_tester','e_mail','responsabile']);
+        $testers_infoAr = $GLOBALS['common_dh']->getAllTesters(['id_tester', 'e_mail', 'responsabile']);
         if (!AMADB::isError($testers_infoAr)) {
             while (!$found && $tester = current($testers_infoAr)) {
                 if (!$found) {
@@ -519,135 +552,6 @@ class AMAGdprDataHandler extends AMADataHandler
         return $retVal;
     }
 
-
-    /**
-     * loads an array of objects of the passed className with matching where values
-     * and ordered using the passed values by performing a select query on the DB
-     *
-     * @param string $className to use a class from your namespace, this string must start with "\"
-     * @param array $whereArr
-     * @param array $orderByArr
-     * @param AbstractAMADataHandler $dbToUse object used to run the queries. If null, use 'this'
-     * @throws GdprException
-     * @return array
-     */
-    public function findBy($className, array $whereArr = null, array $orderByArr = null, AbstractAMADataHandler $dbToUse = null)
-    {
-        if (
-            stripos($className, '\\') !== 0 &&
-            stripos($className, self::MODELNAMESPACE) !== 0
-        ) {
-            $className = self::MODELNAMESPACE . $className;
-        }
-        $reflection = new ReflectionClass($className);
-        $properties =  array_map(
-            fn ($el) => $el->getName(),
-            array_filter(
-                $reflection->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PUBLIC),
-                fn ($refEl) => $className === $refEl->getDeclaringClass()->getName()
-            )
-        );
-
-        // get object properties to be loaded as a kind of join
-        $joined = $className::loadJoined();
-        // and remove them from the query, they will be loaded afterwards
-        $properties = array_diff($properties, $joined);
-
-        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(fn ($el) => "`$el`", $properties)), $className::TABLE);
-
-        if (!is_null($whereArr) && count($whereArr) > 0) {
-            $invalidProperties = array_diff(array_keys($whereArr), $properties);
-            if (count($invalidProperties) > 0) {
-                throw new GdprException(translateFN('Proprietà WHERE non valide: ') . implode(', ', $invalidProperties));
-            } else {
-                $sql .= ' WHERE ';
-                $sql .= implode(' AND ', array_map(function ($el) use (&$whereArr) {
-                    if (is_null($whereArr[$el])) {
-                        unset($whereArr[$el]);
-                        return "`$el` IS NULL";
-                    } else {
-                        if (is_array($whereArr[$el])) {
-                            $retStr = '';
-                            if (array_key_exists('op', $whereArr[$el]) && array_key_exists('value', $whereArr[$el])) {
-                                $whereArr[$el] = [$whereArr[$el]];
-                            }
-                            foreach ($whereArr[$el] as $opArr) {
-                                if (strlen($retStr) > 0) {
-                                    $retStr = $retStr . ' AND ';
-                                }
-                                $retStr .= "`$el` " . $opArr['op'] . ' ' . $opArr['value'];
-                            }
-                            unset($whereArr[$el]);
-                            return '(' . $retStr . ')';
-                        } elseif (is_numeric($whereArr[$el])) {
-                            $op = '=';
-                        } else {
-                            $op = ' LIKE ';
-                            $whereArr[$el] = '%' . $whereArr[$el] . '%';
-                        }
-                        return "`$el`$op?";
-                    }
-                }, array_keys($whereArr)));
-            }
-        }
-
-        if (!is_null($orderByArr) && count($orderByArr) > 0) {
-            $invalidProperties = array_diff(array_keys($orderByArr), $properties);
-            if (count($invalidProperties) > 0) {
-                throw new GdprException(translateFN('Proprietà ORDER BY non valide: ') . implode(', ', $invalidProperties));
-            } else {
-                $sql .= ' ORDER BY ';
-                $sql .= implode(', ', array_map(function ($el) use ($orderByArr) {
-                    if (in_array($orderByArr[$el], ['ASC', 'DESC'])) {
-                        return "`$el` " . $orderByArr[$el];
-                    } else {
-                        throw new GdprException(sprintf(translateFN("ORDER BY non valido %s per %s"), $orderByArr[$el], $el));
-                    }
-                }, array_keys($orderByArr)));
-            }
-        }
-
-        if (is_null($dbToUse)) {
-            $dbToUse = $this;
-        }
-
-        $result = $dbToUse->getAllPrepared($sql, (!is_null($whereArr) && count($whereArr) > 0) ? array_values($whereArr) : [], AMA_FETCH_ASSOC);
-        if (AMADB::isError($result)) {
-            throw new GdprException($result->getMessage(), (int)$result->getCode());
-        } else {
-            $retArr = array_map(fn ($el) => new $className($el, $dbToUse), $result);
-            // load properties from $joined array
-            foreach ($retArr as $retObj) {
-                foreach ($joined as $joinKey) {
-                    $sql = sprintf("SELECT `%s` FROM `%s` WHERE `%s`=?", $joinKey, $retObj::TABLE, $retObj::KEY);
-                    $method = new Convert($retObj::GETTERPREFIX . ucfirst($retObj::KEY));
-                    $res = $dbToUse->getAllPrepared($sql, $retObj->{$method->toCamel()}(), AMA_FETCH_ASSOC);
-                    if (!AMADB::isError($res)) {
-                        foreach ($res as $row) {
-                            $method = new Convert($retObj::ADDERPREFIX . ucfirst($joinKey));
-                            $retObj->{$method->toCamel()}($row[$joinKey], $dbToUse);
-                        }
-                    }
-                }
-            }
-            return $retArr;
-        }
-    }
-
-    /**
-     * loads an array holding all of the passed className objects, possibly ordered.
-     * Actually it's an alias for findBy($className, null, $orderby)
-     *
-     * @param string $className
-     * @param array $orderBy
-     * @param AbstractAMADataHandler $dbToUse object used to run the queries. If null, use 'this'
-     * @return array
-     */
-    public function findAll($className, array $orderBy = null, AbstractAMADataHandler $dbToUse = null)
-    {
-        return $this->findBy($className, null, $orderBy, $dbToUse);
-    }
-
     /**
      * Builds an sql update query as a string
      *
@@ -656,30 +560,13 @@ class AMAGdprDataHandler extends AMADataHandler
      * @param string $whereField
      * @return string
      */
-    private function sqlUpdate($table, array $fields, $whereField)
+    private function REMOVEMEsqlUpdate($table, array $fields, $whereField)
     {
         return sprintf(
             "UPDATE `%s` SET %s WHERE `%s`=?;",
             $table,
             implode(',', array_map(fn ($el) => "`$el`=?", $fields)),
             $whereField
-        );
-    }
-
-    /**
-     * Builds an sql insert into query as a string
-     *
-     * @param string $table
-     * @param array $fields
-     * @return string
-     */
-    private function sqlInsert($table, array $fields)
-    {
-        return sprintf(
-            "INSERT INTO `%s` (%s) VALUES (%s);",
-            $table,
-            implode(',', array_map(fn ($el) => "`$el`", array_keys($fields))),
-            implode(',', array_map(fn ($el) => "?", array_keys($fields)))
         );
     }
 

@@ -14,9 +14,12 @@
 namespace Lynxlab\ADA\Module\ExtractLogger;
 
 use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+use Lynxlab\ADA\Main\AMA\Traits\WithInstance;
 
 class AMAExtractloggerDataHandler extends AMACommonDataHandler
 {
+    use WithInstance;
+
     /**
      * module's own data tables prefix
      *
@@ -72,16 +75,5 @@ class AMAExtractloggerDataHandler extends AMACommonDataHandler
             $retarr[$key] = compact('type', 'value');
         });
         return $retarr;
-    }
-
-    /**
-     * Returns an instance of AMAExtractloggerDataHandler.
-     *
-     * @param  string $dsn - optional, a valid data source name
-     * @return self an instance of AMAExtractloggerDataHandler
-     */
-    public static function instance($dsn = null)
-    {
-        return parent::instance($dsn);
     }
 }

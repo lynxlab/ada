@@ -14,18 +14,25 @@ use Exception;
 use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\AMA\Traits\WithCUD;
+use Lynxlab\ADA\Main\AMA\Traits\WithInstance;
 use Lynxlab\ADA\Main\Token\TokenManager;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 class AMASecretQuestionDataHandler extends AMACommonDataHandler
 {
+    use WithCUD;
+    use WithInstance;
+
     /**
      * module's own data tables prefix
      *
      * @var string
      */
     public const PREFIX = 'module_secretquestion_';
+
+    private const EXCEPTIONCLASS = SecretQuestionException::class;
 
     /**
      * Gets the user question text
@@ -101,17 +108,6 @@ class AMASecretQuestionDataHandler extends AMACommonDataHandler
     }
 
     /**
-     * Returns an instance of AMASecretQuestionDataHandler.
-     *
-     * @param  string $dsn - optional, a valid data source name
-     * @return self an instance of AMASecretQuestionDataHandler
-     */
-    public static function instance($dsn = null)
-    {
-        return parent::instance($dsn);
-    }
-
-    /**
      * Prepares the answer string by applying at least a trim and a hashing function
      *
      * @param string $answer
@@ -124,40 +120,5 @@ class AMASecretQuestionDataHandler extends AMACommonDataHandler
             $answer = strtoupper($answer);
         }
         return sha1($answer);
-    }
-
-    /**
-     * Builds an sql update query as a string
-     *
-     * @param string $table
-     * @param array $fields
-     * @param string $whereField
-     * @return string
-     */
-    private function sqlUpdate($table, array $fields, $whereField)
-    {
-        return sprintf(
-            "UPDATE `%s` SET %s WHERE `%s`=?;",
-            $table,
-            implode(',', array_map(fn ($el) => "`$el`=?", $fields)),
-            $whereField
-        );
-    }
-
-    /**
-     * Builds an sql insert into query as a string
-     *
-     * @param string $table
-     * @param array $fields
-     * @return string
-     */
-    private function sqlInsert($table, array $fields)
-    {
-        return sprintf(
-            "INSERT INTO `%s` (%s) VALUES (%s);",
-            $table,
-            implode(',', array_map(fn ($el) => "`$el`", array_keys($fields))),
-            implode(',', array_map(fn ($el) => "?", array_keys($fields)))
-        );
     }
 }

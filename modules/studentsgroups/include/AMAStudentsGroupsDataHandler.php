@@ -10,22 +10,25 @@
 
 namespace Lynxlab\ADA\Module\StudentsGroups;
 
-use Jawira\CaseConverter\Convert;
-use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\AMA\Traits\WithCUD;
+use Lynxlab\ADA\Main\AMA\Traits\WithFind;
+use Lynxlab\ADA\Main\AMA\Traits\WithInstance;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\User\ADAUser;
 use Lynxlab\ADA\Switcher\Subscription;
-use ReflectionClass;
-use ReflectionProperty;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 class AMAStudentsGroupsDataHandler extends AMADataHandler
 {
+    use WithCUD;
+    use WithFind;
+    use WithInstance;
+
     /**
      * module's own data tables prefix
      *
@@ -40,98 +43,7 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
      */
     public const MODELNAMESPACE = 'Lynxlab\\ADA\\Module\\StudentsGroups\\';
 
-
-    /**
-     * loads an array of objects of the passed className with matching where values
-     * and ordered using the passed values by performing a select query on the DB
-     *
-     * @param string $className to use a class from your namespace, this string must start with "\"
-     * @param array $whereArr
-     * @param array $orderByArr
-     * @param AbstractAMADataHandler $dbToUse object used to run the queries. If null, use 'this'
-     * @throws StudentsGroupsException
-     * @return array
-     */
-    public function findBy($className, array $whereArr = null, array $orderByArr = null, AbstractAMADataHandler $dbToUse = null)
-    {
-        if (
-            stripos($className, '\\') !== 0 &&
-            stripos($className, self::MODELNAMESPACE) !== 0
-        ) {
-            $className = self::MODELNAMESPACE . $className;
-        }
-        $reflection = new ReflectionClass($className);
-        $properties =  array_map(
-            fn ($el) => $el->getName(),
-            array_filter(
-                $reflection->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PUBLIC),
-                fn ($refEl) => $className === $refEl->getDeclaringClass()->getName()
-            )
-        );
-
-        // get object properties to be loaded as a kind of join
-        $joined = $className::loadJoined();
-        // and remove them from the query, they will be loaded afterwards
-        $properties = array_diff($properties, array_keys($joined));
-        // check for customField class const and explode matching propertiy array
-        $properties = $className::explodeArrayProperties($properties);
-
-        $sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(fn ($el) => "`$el`", $properties)), $className::TABLE)
-            . $this->buildWhereClause($whereArr, $properties) . $this->buildOrderBy($orderByArr, $properties);
-
-        if (is_null($dbToUse)) {
-            $dbToUse = $this;
-        }
-
-        $result = $dbToUse->getAllPrepared($sql, (!is_null($whereArr) && count($whereArr) > 0) ? array_values($whereArr) : [], AMA_FETCH_ASSOC);
-        if (AMADB::isError($result)) {
-            throw new StudentsGroupsException($result->getMessage(), (int) $result->getCode());
-        } else {
-            $retArr = array_map(fn ($el) => new $className($el, $dbToUse), $result);
-            // load properties from $joined array
-            foreach ($retArr as $retObj) {
-                foreach ($joined as $joinKey => $joinData) {
-                    if (array_key_exists('idproperty', $joinData)) {
-                        // this is a 1:1 relation, load the linked object using object property
-                        $retObj->{$retObj::ADDERPREFIX . ucfirst($joinKey)}(
-                            $retObj->{$retObj::GETTERPREFIX . ucfirst($joinData['idproperty'])}(),
-                            $dbToUse
-                        );
-                    } elseif (array_key_exists('reltable', $joinData)) {
-                        if (!is_array($joinData['key'])) {
-                            $joinData['key'] = [
-                                'name' => $joinData['key'],
-                                'getter' => (new Convert($retObj::GETTERPREFIX . ucfirst($joinData['key'])))->toCamel(),
-                            ];
-                        }
-                        // this is a 1:n relation, load the linked objects querying the relation table
-                        $sql = sprintf("SELECT `%s` FROM `%s` WHERE `%s`=?", $joinData['extkey'], $joinData['reltable'], $joinData['key']['name']);
-                        $joinRes = $dbToUse->getAllPrepared($sql, [$retObj->{$joinData['key']['getter']}()]);
-                        if (array_key_exists('callback', $joinData)) {
-                            $joinRes = $retObj->{$joinData['callback']}($joinRes);
-                        }
-                        $method = new Convert($retObj::SETTERPREFIX . ucfirst($joinKey));
-                        $retObj->{$method->toCamel()}($joinRes);
-                    }
-                }
-            }
-            return $retArr;
-        }
-    }
-
-    /**
-     * loads an array holding all of the passed className objects, possibly ordered.
-     * Actually it's an alias for findBy($className, null, $orderby)
-     *
-     * @param string $className
-     * @param array $orderBy
-     * @param AbstractAMADataHandler $dbToUse object used to run the queries. If null, use 'this'
-     * @return array
-     */
-    public function findAll($className, array $orderBy = null, AbstractAMADataHandler $dbToUse = null)
-    {
-        return $this->findBy($className, null, $orderBy, $dbToUse);
-    }
+    private const EXCEPTIONCLASS = StudentsGroupsException::class;
 
     /**
      * Saves a Groups object
@@ -362,133 +274,5 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
         } else {
             return new StudentsGroupsException($result->getMessage());
         }
-    }
-
-    /**
-     * Builds an sql update query as a string
-     *
-     * @param string $table
-     * @param array $fields
-     * @param array $whereArr
-     * @return string
-     */
-    private function sqlUpdate($table, array $fields, &$whereArr)
-    {
-        return sprintf(
-            "UPDATE `%s` SET %s",
-            $table,
-            implode(',', array_map(fn ($el) => "`$el`=?", $fields))
-        ) . $this->buildWhereClause($whereArr, array_keys($whereArr)) . ';';
-    }
-
-    /**
-     * Builds an sql insert into query as a string
-     *
-     * @param string $table
-     * @param array $fields
-     * @return string
-     */
-    private function sqlInsert($table, array $fields)
-    {
-        return sprintf(
-            "INSERT INTO `%s` (%s) VALUES (%s);",
-            $table,
-            implode(',', array_map(fn ($el) => "`$el`", array_keys($fields))),
-            implode(',', array_map(fn ($el) => "?", array_keys($fields)))
-        );
-    }
-
-    /**
-     * Builds an sql delete query as a string
-     *
-     * @param string $table
-     * @param array $whereArr
-     * @return string
-     */
-    private function sqlDelete($table, &$whereArr)
-    {
-        return sprintf(
-            "DELETE FROM `%s`",
-            $table
-        ) . $this->buildWhereClause($whereArr, array_keys($whereArr)) . ';';
-    }
-
-    /**
-     * Builds an sql where clause
-     *
-     * @param array $whereArr
-     * @param array $properties
-     * @return string
-     */
-    private function buildWhereClause(&$whereArr, $properties)
-    {
-        $sql  = '';
-        $newWhere = [];
-        if (!is_null($whereArr) && count($whereArr) > 0) {
-            $invalidProperties = array_diff(array_keys($whereArr), $properties);
-            if (count($invalidProperties) > 0) {
-                throw new StudentsGroupsException(translateFN('Proprietà WHERE non valide: ') . implode(', ', $invalidProperties));
-            } else {
-                $sql .= ' WHERE ';
-                $sql .= implode(' AND ', array_map(function ($el) use (&$newWhere, $whereArr) {
-                    if (is_null($whereArr[$el])) {
-                        unset($whereArr[$el]);
-                        return "`$el` IS NULL";
-                    } else {
-                        if (is_array($whereArr[$el])) {
-                            $retStr = '';
-                            if (array_key_exists('op', $whereArr[$el]) && array_key_exists('value', $whereArr[$el])) {
-                                $whereArr[$el] = [$whereArr[$el]];
-                            }
-                            foreach ($whereArr[$el] as $opArr) {
-                                if (strlen($retStr) > 0) {
-                                    $retStr = $retStr . ' AND ';
-                                }
-                                $retStr .= "`$el` " . $opArr['op'] . ' ' . $opArr['value'];
-                            }
-                            unset($whereArr[$el]);
-                            return '(' . $retStr . ')';
-                        } elseif (is_numeric($whereArr[$el])) {
-                            $op = '=';
-                        } else {
-                            $op = ' LIKE ';
-                            $whereArr[$el] = '%' . $whereArr[$el] . '%';
-                        }
-                        $newWhere[$el] = $whereArr[$el];
-                        return "`$el`$op?";
-                    }
-                }, array_keys($whereArr)));
-            }
-        }
-        $whereArr = $newWhere;
-        return $sql;
-    }
-
-    /**
-     * Builds an sql orderby clause
-     *
-     * @param array $orderByArr
-     * @param array $properties
-     * @return string
-     */
-    private function buildOrderBy(&$orderByArr, $properties)
-    {
-        $sql = '';
-        if (!is_null($orderByArr) && count($orderByArr) > 0) {
-            $invalidProperties = array_diff(array_keys($orderByArr), $properties);
-            if (count($invalidProperties) > 0) {
-                throw new StudentsGroupsException(translateFN('Proprietà ORDER BY non valide: ') . implode(', ', $invalidProperties));
-            } else {
-                $sql .= ' ORDER BY ';
-                $sql .= implode(', ', array_map(function ($el) use ($orderByArr) {
-                    if (in_array($orderByArr[$el], ['ASC', 'DESC'])) {
-                        return "`$el` " . $orderByArr[$el];
-                    } else {
-                        throw new StudentsGroupsException(sprintf(translateFN("ORDER BY non valido %s per %s"), $orderByArr[$el], $el));
-                    }
-                }, array_keys($orderByArr)));
-            }
-        }
-        return $sql;
     }
 }

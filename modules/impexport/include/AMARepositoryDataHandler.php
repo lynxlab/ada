@@ -15,6 +15,8 @@ use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\AMA\Traits\WithCUD;
+use Lynxlab\ADA\Main\AMA\Traits\WithInstance;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\ts2dFN;
@@ -22,12 +24,17 @@ use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 
 class AMARepositoryDataHandler extends AMACommonDataHandler
 {
+    use WithCUD;
+    use WithInstance;
+
     /**
      * module's own data tables prefix
      *
      * @var string
      */
     public const PREFIX = 'module_impexport_';
+
+    private const EXCEPTIONCLASS = Exception::class;
 
     /**
      * Saves export data to the repository table
@@ -173,133 +180,5 @@ class AMARepositoryDataHandler extends AMACommonDataHandler
             $testerId = $testerInfo[0];
         }
         return $testerId;
-    }
-
-    /**
-     * Builds an sql update query as a string
-     *
-     * @param string $table
-     * @param array $fields
-     * @param array $whereArr
-     * @return string
-     */
-    private function sqlUpdate($table, array $fields, &$whereArr)
-    {
-        return sprintf(
-            "UPDATE `%s` SET %s",
-            $table,
-            implode(',', array_map(fn ($el) => "`$el`=?", $fields))
-        ) . $this->buildWhereClause($whereArr, array_keys($whereArr)) . ';';
-    }
-
-    /**
-     * Builds an sql insert into query as a string
-     *
-     * @param string $table
-     * @param array $fields
-     * @return string
-     */
-    private function sqlInsert($table, array $fields)
-    {
-        return sprintf(
-            "INSERT INTO `%s` (%s) VALUES (%s);",
-            $table,
-            implode(',', array_map(fn ($el) => "`$el`", array_keys($fields))),
-            implode(',', array_map(fn ($el) => "?", array_keys($fields)))
-        );
-    }
-
-    /**
-     * Builds an sql delete query as a string
-     *
-     * @param string $table
-     * @param array $whereArr
-     * @return string
-     */
-    private function sqlDelete($table, &$whereArr)
-    {
-        return sprintf(
-            "DELETE FROM `%s`",
-            $table
-        ) . $this->buildWhereClause($whereArr, array_keys($whereArr)) . ';';
-    }
-
-    /**
-     * Builds an sql where clause
-     *
-     * @param array $whereArr
-     * @param array $properties
-     * @return string
-     */
-    private function buildWhereClause(&$whereArr, $properties)
-    {
-        $sql  = '';
-        $newWhere = [];
-        if (!is_null($whereArr) && count($whereArr) > 0) {
-            $invalidProperties = array_diff(array_keys($whereArr), $properties);
-            if (count($invalidProperties) > 0) {
-                throw new Exception(translateFN('Proprietà WHERE non valide: ') . implode(', ', $invalidProperties));
-            } else {
-                $sql .= ' WHERE ';
-                $sql .= implode(' AND ', array_map(function ($el) use (&$newWhere, $whereArr) {
-                    if (is_null($whereArr[$el])) {
-                        unset($whereArr[$el]);
-                        return "`$el` IS NULL";
-                    } else {
-                        if (is_array($whereArr[$el])) {
-                            $retStr = '';
-                            if (array_key_exists('op', $whereArr[$el]) && array_key_exists('value', $whereArr[$el])) {
-                                $whereArr[$el] = [$whereArr[$el]];
-                            }
-                            foreach ($whereArr[$el] as $opArr) {
-                                if (strlen($retStr) > 0) {
-                                    $retStr = $retStr . ' AND ';
-                                }
-                                $retStr .= "`$el` " . $opArr['op'] . ' ' . $opArr['value'];
-                            }
-                            unset($whereArr[$el]);
-                            return '(' . $retStr . ')';
-                        } elseif (is_numeric($whereArr[$el])) {
-                            $op = '=';
-                        } else {
-                            $op = ' LIKE ';
-                            $whereArr[$el] = '%' . $whereArr[$el] . '%';
-                        }
-                        $newWhere[$el] = $whereArr[$el];
-                        return "`$el`$op?";
-                    }
-                }, array_keys($whereArr)));
-            }
-        }
-        $whereArr = $newWhere;
-        return $sql;
-    }
-
-    /**
-     * Builds an sql orderby clause
-     *
-     * @param array $orderByArr
-     * @param array $properties
-     * @return string
-     */
-    private function buildOrderBy(&$orderByArr, $properties)
-    {
-        $sql = '';
-        if (!is_null($orderByArr) && count($orderByArr) > 0) {
-            $invalidProperties = array_diff(array_keys($orderByArr), $properties);
-            if (count($invalidProperties) > 0) {
-                throw new Exception(translateFN('Proprietà ORDER BY non valide: ') . implode(', ', $invalidProperties));
-            } else {
-                $sql .= ' ORDER BY ';
-                $sql .= implode(', ', array_map(function ($el) use ($orderByArr) {
-                    if (in_array($orderByArr[$el], ['ASC', 'DESC'])) {
-                        return "`$el` " . $orderByArr[$el];
-                    } else {
-                        throw new Exception(sprintf(translateFN("ORDER BY non valido %s per %s"), $orderByArr[$el], $el));
-                    }
-                }, array_keys($orderByArr)));
-            }
-        }
-        return $sql;
     }
 }

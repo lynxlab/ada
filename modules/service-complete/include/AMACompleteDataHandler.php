@@ -17,11 +17,14 @@ use Exception;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
+use Lynxlab\ADA\Main\AMA\Traits\WithInstance;
 use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
 use Lynxlab\ADA\Module\Servicecomplete\Operation;
 
 class AMACompleteDataHandler extends AMADataHandler
 {
+    use WithInstance;
+
     /**
      * module's own data tables prefix
      *
@@ -348,16 +351,5 @@ class AMACompleteDataHandler extends AMADataHandler
             return false;
         }
         return true;
-    }
-
-    /**
-     * Returns an instance of AMACompleteDataHandler.
-     *
-     * @param  string $dsn - optional, a valid data source name
-     * @return self an instance of AMADataHandler
-     */
-    public static function instance($dsn = null)
-    {
-        return parent::instance($dsn);
     }
 }

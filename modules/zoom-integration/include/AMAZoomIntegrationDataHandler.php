@@ -12,15 +12,20 @@ namespace Lynxlab\ADA\Module\ZoomIntegration;
 
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\Traits\WithCUD;
 
 class AMAZoomIntegrationDataHandler extends AMADataHandler
 {
+    use WithCUD;
+
     /**
      * module's own data tables prefix
      *
      * @var string
      */
     public const PREFIX = 'module_zoomconf_';
+
+    private const EXCEPTIONCLASS = ZoomIntegrationException::class;
 
     /**
      * Save a row in the meeting table
@@ -96,40 +101,5 @@ class AMAZoomIntegrationDataHandler extends AMADataHandler
             throw new ZoomIntegrationException($result->getMessage(), is_numeric($result->getCode()) ? $result->getCode() : null);
         }
         return true;
-    }
-
-    /**
-     * Builds an sql update query as a string
-     *
-     * @param string $table
-     * @param array $fields
-     * @param string $whereField
-     * @return string
-     */
-    private function sqlUpdate($table, array $fields, $whereField)
-    {
-        return sprintf(
-            "UPDATE `%s` SET %s WHERE `%s`=?;",
-            $table,
-            implode(',', array_map(fn ($el) => "`$el`=?", $fields)),
-            $whereField
-        );
-    }
-
-    /**
-     * Builds an sql insert into query as a string
-     *
-     * @param string $table
-     * @param array $fields
-     * @return string
-     */
-    private function sqlInsert($table, array $fields)
-    {
-        return sprintf(
-            "INSERT INTO `%s` (%s) VALUES (%s);",
-            $table,
-            implode(',', array_map(fn ($el) => "`$el`", array_keys($fields))),
-            implode(',', array_map(fn ($el) => "?", array_keys($fields)))
-        );
     }
 }
