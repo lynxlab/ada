@@ -55,6 +55,16 @@ abstract class BadgesBase
         return [];
     }
 
+    public static function arrayProperties()
+    {
+        return [];
+    }
+
+    public static function explodeArrayProperties($properties)
+    {
+        return $properties;
+    }
+
     /**
      * Tells which properties are not to be loaded at all
      *
