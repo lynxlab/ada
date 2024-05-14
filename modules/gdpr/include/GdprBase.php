@@ -32,10 +32,16 @@ abstract class GdprBase
 
     /**
      * base constructor
+     *
+     * @param array $data
+     * @param AMAGdprDataHandler|GDPRApi $dbToUse
      */
-    public function __construct($data = [])
+    public function __construct($data = [], $dbToUse = null)
     {
-        $this->fromArray($data);
+        if (is_null($dbToUse)) {
+            $dbToUse = new GdprAPI();
+        }
+        $this->fromArray($data, $dbToUse);
     }
 
     /**
@@ -84,9 +90,10 @@ abstract class GdprBase
      * NOTE: array keys must match object properties names
      *
      * @param array $data
+     * @param AMAGdprDataHandler|GDPRApi $dbToUse
      * @return \Lynxlab\ADA\Module\GDPR\GdprBase
      */
-    public function fromArray($data = [])
+    public function fromArray($data = [], $dbToUse = null)
     {
         foreach ($data as $key => $val) {
             if (property_exists($this, $key) && method_exists($this, 'set' . ucfirst($key))) {

@@ -28,10 +28,19 @@ class GdprUser extends GdprBase
     protected $id_utente;
     protected $type;
 
-    public function __construct($data = [])
+    private $dbToUse;
+
+    /**
+     * GdprUser constructor.
+     *
+     * @param array $data
+     * @param AMAGdprDataHandler|GDPRApi $dbToUse
+     */
+    public function __construct($data = [], $dbToUse = null)
     {
         $this->type = [];
-        parent::__construct($data);
+        $this->dbToUse = $dbToUse;
+        parent::__construct($data, $dbToUse);
     }
 
     /**
@@ -39,9 +48,9 @@ class GdprUser extends GdprBase
      *
      * @return string[]
      */
-    public static function loadJoined()
+    public static function doNotLoad()
     {
-        return ['type'];
+        return ['dbToUse'];
     }
 
     /**
@@ -50,15 +59,18 @@ class GdprUser extends GdprBase
      *
      * {@inheritDoc}
      * @see \Lynxlab\ADA\Module\GDPR\GdprBase::fromArray()
+     *
+     * @param array $data
+     * @param AMAGdprDataHandler|GDPRApi $dbToUse
      */
-    public function fromArray($data = [])
+    public function fromArray($data = [], $dbToUse = null)
     {
         if (array_key_exists('type', $data)) {
             if (!is_array($data['type'])) {
                 $data['type'] = [$data['type']];
             }
             foreach ($data['type'] as $gdprType) {
-                $this->addType($gdprType);
+                $this->addType($gdprType, $dbToUse ?? $this->$dbToUse);
             }
             unset($data['type']);
         }
@@ -76,8 +88,11 @@ class GdprUser extends GdprBase
     /**
      * @param mixed $type
      */
-    public function setType(array $types)
+    public function setType($types)
     {
+        if (!is_array($types)) {
+            $types = [$types];
+        }
         foreach ($types as $type) {
             $this->addType($type);
         }
@@ -88,13 +103,15 @@ class GdprUser extends GdprBase
      * Adds a GdprUserType to the object type property
      *
      * @param integer|GdprUserType $type
+     * @param AMAGdprDataHandler|GDPRApi $dbToUse
+     *
      * @return \Lynxlab\ADA\Module\GDPR\GdprUser
      */
     public function addType($type, $dbToUse = null)
     {
         if (!($type instanceof GdprUserType)) {
             if (is_null($dbToUse)) {
-                $dbToUse = new GdprAPI();
+                $dbToUse = $this->dbToUse ?? new GdprAPI();
             }
             $type = $dbToUse->findBy('GdprUserType', ['id' => $type]);
             $type = reset($type);

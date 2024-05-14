@@ -125,7 +125,7 @@ try {
                         }
                     }
                     $retArr['actions'] = array_reduce($actions, function ($carry, $item) {
-                        if (strlen($carry) <= 0) {
+                        if (empty($carry)) {
                             $carry = '';
                         }
                         $carry .= ($item instanceof CBase ? $item->getHtml() : '');

@@ -56,6 +56,7 @@ class GdprRequest extends GdprBase
      * constructor will always generate a new uuid for the object
      *
      * @param array $data
+     * @param AMAGdprDataHandler|GDPRApi $$dbToUse
      */
     public function __construct($data = [], $dbToUse = null)
     {
@@ -74,6 +75,9 @@ class GdprRequest extends GdprBase
      * {@inheritDoc}
      * @see \Lynxlab\ADA\Module\GDPR\GdprBase::fromArray()
      *
+     * @param array $data
+     * @param AMAGdprDataHandler|GDPRApi $$dbToUse
+     *
      * @return \Lynxlab\ADA\Module\GDPR\GdprRequest
      */
 
@@ -86,7 +90,7 @@ class GdprRequest extends GdprBase
             }
             unset($data['type']);
         }
-        return parent::fromArray($data);
+        return parent::fromArray($data, $dbToUse);
     }
 
     /**

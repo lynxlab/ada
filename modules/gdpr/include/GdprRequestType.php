@@ -46,14 +46,17 @@ class GdprRequestType extends GdprBase
      *
      * {@inheritDoc}
      * @see \Lynxlab\ADA\Module\GDPR\GdprBase::fromArray()
+     *
+     * @param array $data
+     * @param AMAGdprDataHandler|GDPRApi $dbToUse
      */
-    public function fromArray($data = [])
+    public function fromArray($data = [], $dbToUse = null)
     {
         if (array_key_exists('extra', $data) && strlen($data['extra'] ?? '') > 0) {
             $this->setExtra(json_decode($data['extra'], true));
             unset($data['extra']);
         }
-        return parent::fromArray($data);
+        return parent::fromArray($data, $dbToUse);
     }
 
     /**
