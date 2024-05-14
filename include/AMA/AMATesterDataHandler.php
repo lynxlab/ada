@@ -8428,47 +8428,42 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
     }
 
     /**
-     * de-assign a tutor from the course
+     * De-assign a tutor from the course.
      *
-     * @access public
-     *
-     * @param $id_tutor      the id of the tutor
-     * @param $id_corso      the unique id of the course  instance
-     *
-     * @return an AMAError object if something goes wrong, true on success
+     * @param int $id_course_instance  the unique id of the course instance.
+     * @param int $id_tutor            the id of the tutor.
+     * @return boolean|AMAError an AMAError object if something goes wrong, true on success.
      *
      */
     public function courseInstanceTutorUnsubscribe($id_course_instance, $id_tutor)
     {
-        $db = &$this->getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
-
-        $sql = "delete from tutor_studenti where id_utente_tutor=? and id_istanza_corso=?";
-        $res = $this->executeCriticalPrepared($sql, [$id_tutor, $id_course_instance]);
-        if (AMADB::isError($res)) {
-            // $res is ana AMAError object
-            return $res;
-        }
-        return true;
+        return $this->courseInstanceTutorsUnsubscribe($id_course_instance, $id_tutor);
     }
+
     /**
-     * De-assign all the tutors from this course instance
+     * De-assign all the tutors from the course instance
      *
-     * @param int $id_course_instance
-     * @return true on success, an AMAError object on faulure
+     * @param int $id_course_instance the unique id of the course instance.
+     * @param int|null $id_tutor ID of the tutor to de-assing, or null for all tutors.
+     * @return boolean|AMAError true on success, an AMAError object on faulure.
      */
-    public function courseInstanceTutorsUnsubscribe($id_course_instance)
+    public function courseInstanceTutorsUnsubscribe($id_course_instance, $id_tutor = null)
     {
         $db = &$this->getConnection();
         if (AMADB::isError($db)) {
             return $db;
         }
 
+        $params = [
+            $id_course_instance,
+        ];
+
         $sql = "delete from tutor_studenti where id_istanza_corso=?";
-        $result = $db->query($sql);
-        $result = $this->executeCriticalPrepared($sql, [$id_course_instance]);
+        if (!empty($id_tutor) && is_numeric($id_tutor)) {
+            $sql .= " and id_utente_tutor=?";
+            $params[] = $id_tutor;
+        }
+        $result = $this->queryPrepared($sql, $params);
         if (AMADB::isError($result)) {
             // $result is an AMAError object
             return $result;
