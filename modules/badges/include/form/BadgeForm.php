@@ -44,7 +44,7 @@ class BadgeForm extends BadgesAbstractForm
         $lbl = CDOMElement::create('label', 'for:name');
         $lbl->addChild(new CText(translateFN('Nome') . ' (*)'));
         $input = CDOMElement::create('text', 'id:name,name:name');
-        $input->setAttribute('value', htmlspecialchars(trim($badge->getName()), ENT_QUOTES, ADA_CHARSET));
+        $input->setAttribute('value', htmlspecialchars(trim($badge->getName() ?? ''), ENT_QUOTES, ADA_CHARSET));
         $input->setAttribute('data-notempty', 'true');
         $field->addChild($lbl);
         $field->addChild($input);
@@ -88,7 +88,7 @@ class BadgeForm extends BadgesAbstractForm
         $lbl = CDOMElement::create('label', 'for:description');
         $lbl->addChild(new CText(translateFN('Descriizone') . ' (*)'));
         $input = CDOMElement::create('textarea', 'id:description,name:description');
-        $input->addChild(new CText(htmlspecialchars(trim($badge->getDescription()), ENT_QUOTES, ADA_CHARSET)));
+        $input->addChild(new CText(htmlspecialchars(trim($badge->getDescription() ?? ''), ENT_QUOTES, ADA_CHARSET)));
         $input->setAttribute('data-notempty', 'true');
         $field->addChild($lbl);
         $field->addChild($input);
@@ -99,7 +99,7 @@ class BadgeForm extends BadgesAbstractForm
         $lbl->addChild(new CText(translateFN('Criterio') . ' (*)'));
         $input = CDOMElement::create('textarea', 'id:criteria,name:criteria');
         $input->setAttribute('data-notempty', 'true');
-        $input->addChild(new CText(htmlspecialchars(trim($badge->getCriteria()), ENT_QUOTES, ADA_CHARSET)));
+        $input->addChild(new CText(htmlspecialchars(trim($badge->getCriteria() ?? ''), ENT_QUOTES, ADA_CHARSET)));
         $field->addChild($lbl);
         $field->addChild($input);
 

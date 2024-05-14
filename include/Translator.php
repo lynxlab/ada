@@ -219,7 +219,7 @@ class Translator
 
     public static function negotiateLoginPageLanguage($lang_get = null)
     {
-        $server_http_accept_language = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+        $server_http_accept_language = $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '';
         $dynamicLanguage = ADA_DYNAMIC_LANGUAGE;
         if (!$dynamicLanguage) {
             return ADA_LOGIN_PAGE_DEFAULT_LANGUAGE;

@@ -51,7 +51,7 @@ class EventSubscriber implements EventSubscriberInterface
 
     public function addMenuItems(MenuEvent $event)
     {
-        if (false !== stristr($_SERVER['SCRIPT_FILENAME'], MODULES_CLONEINSTANCE_PATH)) {
+        if (false !== stristr(realpath($_SERVER['SCRIPT_FILENAME']), MODULES_CLONEINSTANCE_PATH)) {
             $menu = $event->getSubject();
             $left = $menu->getLeftItemsArray();
             $item = [
