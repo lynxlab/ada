@@ -7,8 +7,6 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Services\Exercise\ADAEsercizio;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\getMaxIdFN;
-
 /**
  * @name ExerciseDAO
  * This is a Data Acces Object use to get ADA Exercises Object from database,

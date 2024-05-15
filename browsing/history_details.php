@@ -8,9 +8,6 @@ use Lynxlab\ADA\Main\Output\Html;
 use Lynxlab\ADA\Main\User\ADAUser;
 
 use function Lynxlab\ADA\Browsing\Functions\menuDetailsFN;
-use function Lynxlab\ADA\Main\AMA\DBRead\readCourseFromDB;
-use function Lynxlab\ADA\Main\AMA\DBRead\readLayoutFromDB;
-use function Lynxlab\ADA\Main\AMA\DBRead\readUserFromDB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 $ada_config_path = realpath(__DIR__ . '/..');

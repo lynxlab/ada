@@ -20,7 +20,6 @@ use Lynxlab\ADA\Module\Test\ManagementTest;
 use Lynxlab\ADA\Module\Test\SurveyFormTest;
 use Lynxlab\ADA\Module\Test\TestFormTest;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\getMaxIdFN;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\redirect;
 use function Lynxlab\ADA\Main\Utilities\todayDateFN;

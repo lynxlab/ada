@@ -149,7 +149,7 @@ $optionsAr['onload_func'] = 'initDoc(' . $maxFileSize . ',' . $userObj->getId() 
 /*
  * Display error message  if the password is incorrect
  */
-$message = DataValidator::checkInputValues('message','Message',INPUT_GET);
+$message = DataValidator::checkInputValues('message', 'Message', INPUT_GET);
 if ($message !== false) {
     $help = $message;
 }

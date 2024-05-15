@@ -14,8 +14,6 @@
 use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\readUser;
-
 /**
  * Base config file
  */

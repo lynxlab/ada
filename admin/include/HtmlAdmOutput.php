@@ -21,6 +21,7 @@
 
 namespace Lynxlab\ADA\Admin;
 
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\form\PhpOpenFormGen;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -196,7 +197,7 @@ class HtmlAdmOutput
 
         // vito, 15 giugno 2009
         $message = "";
-        $modello = DataValidator::checkInputValues('modello','Integer',INPUT_GET);
+        $modello = DataValidator::checkInputValues('modello', 'Integer', INPUT_GET);
         if ($is_author && (int)$modello == 1) {
             $course_models = readDir(AUTHOR_COURSE_PATH_DEFAULT, 'xml');
 

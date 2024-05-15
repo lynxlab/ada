@@ -9,7 +9,6 @@ use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 use Lynxlab\ADA\Module\Test\SwitcherManagementTest;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\readCourseFromDB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 

@@ -5,6 +5,7 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
@@ -127,10 +128,10 @@ if (!AMADataHandler::isError($courseInstances)) {
      * course instances so that at the end courseInstances array should have one element
      * and the proper page is shown to the logged user (as if she was subscribed to one course only)
      */
-    $id_course = DataValidator::checkInputValues('id_course','CourseId', INPUT_GET);
-    $id_course_instance = DataValidator::checkInputValues('id_course_instance','CourseId', INPUT_GET);
-    
-    if (($id_course!== false) && ($id_course_instance !== false)) {
+    $id_course = DataValidator::checkInputValues('id_course', 'CourseId', INPUT_GET);
+    $id_course_instance = DataValidator::checkInputValues('id_course_instance', 'CourseId', INPUT_GET);
+
+    if (($id_course !== false) && ($id_course_instance !== false)) {
         $courseInstances = array_filter($courseInstances, fn ($courseInstance) => ($courseInstance['id_corso'] == $id_course) &&
             ($courseInstance['id_istanza_corso'] == $id_course_instance));
         /**

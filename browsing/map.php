@@ -15,7 +15,6 @@ use function Lynxlab\ADA\Browsing\Map\returnAdaNodeLink;
 use function Lynxlab\ADA\Browsing\Map\returnAdaNodePos;
 use function Lynxlab\ADA\Browsing\Map\returnAdaNodeType;
 use function Lynxlab\ADA\Browsing\Map\returnMapType;
-use function Lynxlab\ADA\Main\AMA\DBRead\readNodeFromDB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 

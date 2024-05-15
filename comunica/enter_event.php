@@ -1,5 +1,7 @@
 <?php
 
+use Lynxlab\ADA\Main\DataValidator;
+
 use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
@@ -33,7 +35,7 @@ $neededObjAr = [
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami();
 
-$event = DataValidator::checkInputValues('event','Value', INPUT_GET);
+$event = DataValidator::checkInputValues('event', 'Value', INPUT_GET);
 
 if ($event == ADA_CHAT_EVENT) {
     header('Location: ' . HTTP_ROOT_DIR . '/comunica/chat.php');

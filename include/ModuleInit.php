@@ -32,9 +32,6 @@ use Lynxlab\ADA\Main\User\ADAAuthor;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 use Lynxlab\ADA\Main\User\ADAGuest;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\readCourse;
-use function Lynxlab\ADA\Main\AMA\DBRead\readCourseInstanceFromDB;
-use function Lynxlab\ADA\Main\AMA\DBRead\readUser;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**

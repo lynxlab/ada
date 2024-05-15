@@ -153,7 +153,7 @@ $avatar->setAttribute('class', 'img_user_avatar');
 /*
  * Display error message  if the password is incorrect
  */
-$message = DataValidator::checkInputValues('message','Message',INPUT_GET);
+$message = DataValidator::checkInputValues('message', 'Message', INPUT_GET);
 if ($message !== false) {
     $help = $message;
 }

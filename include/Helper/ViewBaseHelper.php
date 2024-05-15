@@ -26,10 +26,6 @@ use Lynxlab\ADA\Main\User\ADAGenericUser;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\readCourse;
-use function Lynxlab\ADA\Main\AMA\DBRead\readCourseInstanceFromDB;
-use function Lynxlab\ADA\Main\AMA\DBRead\readNodeFromDB;
-use function Lynxlab\ADA\Main\AMA\DBRead\readUser;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\GetCallingMethodName;
 

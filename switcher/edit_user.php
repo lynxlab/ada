@@ -187,7 +187,7 @@ if (!$isEditingAStudent) {
     /*
      * Display error message  if the password is incorrect
      */
-    $message = DataValidator::checkInputValues('message','Message',INPUT_GET);
+    $message = DataValidator::checkInputValues('message', 'Message', INPUT_GET);
     if ($message !== false) {
         $help = $message;
     }

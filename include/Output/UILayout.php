@@ -22,6 +22,8 @@
 
 namespace Lynxlab\ADA\Main\Output;
 
+use Lynxlab\ADA\Main\DataValidator;
+
 class UILayout
 {
     public function __construct()
@@ -31,8 +33,8 @@ class UILayout
         } else {
             $this->pathToLayoutDir = ROOT_DIR . DIRECTORY_SEPARATOR . 'layout';
         }
-        $family = DataValidator::checkInputValues('family','Vaue',INPUT_GET);
-        if ($family!== false) {
+        $family = DataValidator::checkInputValues('family', 'Vaue', INPUT_GET);
+        if ($family !== false) {
             $this->layoutsPrecedence[] = $family;
         }
         $this->layoutsPrecedence[] = ADA_TEMPLATE_FAMILY;

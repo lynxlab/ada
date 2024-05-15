@@ -409,7 +409,7 @@ if (!is_null($editUserObj)) {
  * Display error message  if the password is incorrect
  */
 $message = DataValidator::checkInputValues('message', 'Message', INPUT_GET);
-if ($message!== false) {
+if ($message !== false) {
     $help = $message;
 }
 

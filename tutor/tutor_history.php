@@ -10,7 +10,6 @@ use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Output\PdfClass;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\readCourseFromDB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
 use function Lynxlab\ADA\Tutor\Functions\menuDetailsFN;

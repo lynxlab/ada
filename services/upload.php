@@ -11,7 +11,6 @@ use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLException;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\readNodeFromDB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Upload\Functions\uploadFile;
 use function Lynxlab\ADA\Main\Utilities\redirect;

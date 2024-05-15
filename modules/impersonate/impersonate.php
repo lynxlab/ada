@@ -19,8 +19,6 @@ use Lynxlab\ADA\Module\Impersonate\ImpersonateException;
 use Lynxlab\ADA\Module\Impersonate\LinkedUsers;
 use Lynxlab\ADA\Module\Impersonate\Utils;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\readUser;
-
 /**
  * Base config file
  */

@@ -9,7 +9,6 @@ use Lynxlab\ADA\Main\form\PhpOpenFormGen;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\readNodeFromDB;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**

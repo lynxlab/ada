@@ -3,6 +3,7 @@
 use Lynxlab\ADA\CORE\HtmlElements\Table;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 
@@ -83,7 +84,7 @@ if (count($serviceProviders) == 1) {
 }
  *
  */
-$id_course = DataValidator::checkInputValues('id_course','CourseId', INPUT_GET,-1);
+$id_course = DataValidator::checkInputValues('id_course', 'CourseId', INPUT_GET, -1);
 $providerAr = $common_dh->getTesterInfoFromIdCourse($id_course);
 $client = $providerAr['puntatore'];
 $provider_dh = AMADataHandler::instance(MultiPort::getDSN($client));

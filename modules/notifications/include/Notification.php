@@ -16,8 +16,6 @@ use Lynxlab\ADA\Main\Output\Html;
 use Lynxlab\ADA\Module\Notifications\AMANotificationsDataHandler;
 use Lynxlab\ADA\Module\Notifications\NotificationBase;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\readLayoutFromDB;
-
 class Notification extends NotificationBase
 {
     /**

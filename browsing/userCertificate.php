@@ -3,6 +3,7 @@
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Course\CourseInstance;
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 
@@ -96,9 +97,9 @@ if (MULTIPROVIDER === false) {
         }
     }
 }
-$id_user = DataValidator::checkInputValues('id_user','Integer', INPUT_GET);
-$id_instance = DataValidator::checkInputValues('id_instance','Integer', INPUT_GET, $sess_id_instance);
-    
+$id_user = DataValidator::checkInputValues('id_user', 'Integer', INPUT_GET);
+$id_instance = DataValidator::checkInputValues('id_instance', 'Integer', INPUT_GET, $sess_id_instance);
+
 //instance
 if (!(isset($courseInstanceObj) && $courseInstanceObj instanceof CourseInstance)) {
     $courseInstanceObj =  new CourseInstance($id_instance);

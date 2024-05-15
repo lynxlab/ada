@@ -1,13 +1,13 @@
 <?php
 
 use Lynxlab\ADA\Main\AMA\DBRead;
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\ServicesModuleHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 use Lynxlab\ADA\Services\Exercise\ExerciseViewerFactory;
 
-use function Lynxlab\ADA\Main\AMA\DBRead\getMaxIdFN;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Utilities\todayDateFN;
 use function Lynxlab\ADA\Main\Utilities\whoami;
@@ -75,7 +75,7 @@ ServiceHelper::init($neededObjAr);
 */
 
 ####################### recupero variabili dalla get
-$step = DataValidator::checkInputValues('step','Value',INPUT_GET,'1');
+$step = DataValidator::checkInputValues('step', 'Value', INPUT_GET, '1');
 
 $status = translateFN("Aggiunta di un esercizio. Step: " . $step);
 
