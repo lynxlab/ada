@@ -15,12 +15,11 @@ use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Logger\ADAFileLogger;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Impexport\AMAImpExportDataHandler;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 use SimpleXMLElement;
 use ZipArchive;
-
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 class ImportHelper
 {
@@ -553,7 +552,7 @@ class ImportHelper
         $linkArr['id_nodo'] = $this->courseOldID . self::$courseSeparator . $linkArr['id_nodo'];
         $linkArr['id_nodo_to'] = $this->courseOldID . self::$courseSeparator . $linkArr['id_nodo_to'];
         $linkArr['id_utente'] = $this->assignedAuthorID;
-        $linkArr['data_creazione'] = ts2dFN(time());
+        $linkArr['data_creazione'] = Utilities::ts2dFN(time());
 
         $retval = $linkArr;
 
@@ -971,7 +970,7 @@ class ImportHelper
         }
 
         $courseArr['id_autore'] = $this->assignedAuthorID;
-        $courseArr['d_create'] = ts2dFN(time());
+        $courseArr['d_create'] = Utilities::ts2dFN(time());
         $courseArr['d_publish'] = null;
         $courseArr['service_level'] = $this->selectedServiceLevel;
 

@@ -18,9 +18,9 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Bookmark\Bookmark;
 use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\User\ADAUser;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\masort;
 
 abstract class AbstractCourseInstance
 {
@@ -131,7 +131,7 @@ abstract class AbstractCourseInstance
         $out_fields_ar = ['nome', 'tipo'];
         $clause = "";
         $childrenAr = $dh->findCourseNodesList($out_fields_ar, $clause, $sess_id_course);
-        $childrenAr = masort($childrenAr, 1); // il campo 1 �il nome del nodo
+        $childrenAr = Utilities::masort($childrenAr, 1); // il campo 1 �il nome del nodo
         foreach ($childrenAr as $nodeHa) {
             $index_item = "";
             $id_child = $nodeHa[0];
@@ -353,7 +353,7 @@ abstract class AbstractCourseInstance
                         }
                     }
                 }   // end foreach
-                // mydebug(__LINE__,__FILE__,$index);
+                // Utilities::mydebug(__LINE__,__FILE__,$index);
                 return $indexAr;
             } else {
                 if (is_object($childrenAr)) { // is it an error?
@@ -450,8 +450,8 @@ abstract class AbstractCourseInstance
         $out_fields_ar = ['data_creazione', 'tipo'];
         $clause = "id_istanza =  $sess_id_course_instance";
         $childrenAr = $dh->findCourseNodesList($out_fields_ar, $clause, $sess_id_course);
-        // $debug=1; mydebug(__LINE__,__FILE__,$childrenAr);
-        $childrenAr = masort($childrenAr, 1, -1);
+        // $debug=1; Utilities::mydebug(__LINE__,__FILE__,$childrenAr);
+        $childrenAr = Utilities::masort($childrenAr, 1, -1);
         foreach ($childrenAr as $nodeHa) {
             $index_item = "";
             $id_child = $nodeHa[0];

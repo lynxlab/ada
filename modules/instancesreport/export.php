@@ -2,6 +2,7 @@
 
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\History\History;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\InstancesReport\InstancesReportActions;
 use Lynxlab\ADA\Switcher\Subscription;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -10,7 +11,6 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\dt2tsFN;
 
 /**
  * Base config file
@@ -75,7 +75,7 @@ if (is_array($instancesAr) && count($instancesAr) > 0) {
                     if (array_key_exists('Data', $last)) {
                         $lastVisit = new DateTime();
                         // Extract date only.
-                        $lastVisit->setTimestamp(dt2tsFN(explode(" ", $last['Data'])[0]));
+                        $lastVisit->setTimestamp(Utilities::dt2tsFN(explode(" ", $last['Data'])[0]));
                     }
                 }
 

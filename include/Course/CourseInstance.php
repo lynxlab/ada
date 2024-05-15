@@ -14,8 +14,7 @@
 namespace Lynxlab\ADA\Main\Course;
 
 use Lynxlab\ADA\Main\Course\AbstractCourseInstance;
-
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+use Lynxlab\ADA\Main\Utilities;
 
 /**
  * Description of CourseInstance
@@ -43,7 +42,7 @@ class CourseInstance extends AbstractCourseInstance
     public function getStartDate()
     {
         if ($this->data_inizio > 0) {
-            return ts2dFN($this->data_inizio);
+            return Utilities::ts2dFN($this->data_inizio);
         }
         return '';
     }
@@ -54,7 +53,7 @@ class CourseInstance extends AbstractCourseInstance
     public function getScheduledStartDate()
     {
         if ($this->data_inizio_previsto > 0) {
-            return ts2dFN($this->data_inizio_previsto);
+            return Utilities::ts2dFN($this->data_inizio_previsto);
         }
         return '';
     }
@@ -65,7 +64,7 @@ class CourseInstance extends AbstractCourseInstance
     public function getEndDate()
     {
         if ($this->data_fine > 0) {
-            return ts2dFN($this->data_fine);
+            return Utilities::ts2dFN($this->data_fine);
         }
         return '';
     }

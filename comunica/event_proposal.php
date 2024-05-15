@@ -11,11 +11,9 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\getTimezoneOffset;
-use function Lynxlab\ADA\Main\Utilities\sumDateTimeFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -46,7 +44,7 @@ $neededObjAr = [
  * Performs basic controls before entering this module
  */
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = whoami();
+$self = Utilities::whoami();
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -223,9 +221,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $tester_TimeZone = SERVER_TIMEZONE;
         } else {
             $tester_TimeZone = MultiPort::getTesterTimeZone($tester);
-            $offset = getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
+            $offset = Utilities::getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
         }
-        $data_ora = sumDateTimeFN([$date,$time]) - $offset;
+        $data_ora = Utilities::sumDateTimeFN([$date,$time]) - $offset;
 
         $event_token = ADAEventProposal::extractEventToken($subject);
 

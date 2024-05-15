@@ -11,9 +11,9 @@ use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\todayDateFN;
 
 /**
  * Base config file
@@ -82,7 +82,7 @@ if (file_exists(ROOT_DIR . '/browsing/paypal/paypal_conf.inc.php')) {
     $paypal_allowed = true;
 }
 
-$today_date = todayDateFN();
+$today_date = Utilities::todayDateFN();
 $providerId = DataValidator::isUinteger($_POST['provider']);
 $courseId = DataValidator::isUinteger($_POST['course']);
 $instanceId = DataValidator::isUinteger($_POST['instance']);

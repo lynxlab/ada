@@ -6,9 +6,9 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
 * Base config file
@@ -78,7 +78,7 @@ BrowsingHelper::init($neededObjAr);
 $self = 'guest_view'; FIXME: we have to create a guest_search template
 }
 else { */
-// $self = whoami();
+// $self = Utilities::whoami();
 $self = 'search';
 /*} */
 
@@ -410,7 +410,7 @@ $form_dataHa = [
 'value' => translateFN('Cerca'),
 ]];
 $fObj = new Form();
-$action = whoami() . ".php";
+$action = Utilities::whoami() . ".php";
 /*set get method to prevent the confirmation data on back button's browser*/
 $fObj->initForm($action, 'GET');
 $fObj->setForm($form_dataHa);

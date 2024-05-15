@@ -27,6 +27,7 @@ use Lynxlab\ADA\Main\Menu;
 use Lynxlab\ADA\Main\Output\GenericXML;
 use Lynxlab\ADA\Main\Output\Html;
 use Lynxlab\ADA\Main\Output\PDF;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
 use Lynxlab\ADA\Module\EventDispatcher\Events\MenuEvent;
@@ -34,7 +35,6 @@ use Lynxlab\ADA\Module\Impersonate\ImpersonateActions;
 use Lynxlab\ADA\Module\Impersonate\Utils;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\todayDateFN;
 
 /**
  * ARE
@@ -139,7 +139,7 @@ class ARE
                 break;
 
             case ARE_XML_RENDER:
-                $today = todayDateFN();
+                $today = Utilities::todayDateFN();
                 $title = $options['course_title'];
                 $portal =  $options['portal'];
                 $xml_renderer = new GenericXML($portal, $today, $title);

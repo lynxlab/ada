@@ -4,11 +4,11 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Secretquestion\AMASecretQuestionDataHandler;
 use Lynxlab\ADA\Module\Secretquestion\SecretQuestionForm;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 ini_set('display_errors', '0');
 error_reporting(E_ALL);
@@ -37,7 +37,7 @@ $neededObjAr = [AMA_TYPE_VISITOR => ['layout']];
 require_once(ROOT_DIR . '/include/module_init.inc.php');
 BrowsingHelper::init($neededObjAr);
 
-$self = whoami();
+$self = Utilities::whoami();
 
 try {
     $userId = filter_input(INPUT_GET, 'userId', FILTER_SANITIZE_NUMBER_INT);

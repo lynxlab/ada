@@ -7,10 +7,10 @@ use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Newsletter\AMANewsletterDataHandler;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 ini_set('display_errors', '0');
 error_reporting(E_ALL);
@@ -140,7 +140,7 @@ if (!AMADB::isError($newslettersList)) {
 
         $newsletterData[$i] =  [
                 $labels[0] => $newsletterAr['subject'],
-                $labels[1] => ts2dFN($newsletterAr['date']),
+                $labels[1] => Utilities::ts2dFN($newsletterAr['date']),
                 $labels[2] => ($newsletterAr['draft'] == 1) ? translateFN('Sì') : translateFN('No'),
                 $labels[3] => ($isSending) ? translateFN('Invio in corso') . '...' : count($sentDetails),
                 $labels[4] => $linksHtml];

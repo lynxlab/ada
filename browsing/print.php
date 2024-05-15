@@ -3,9 +3,9 @@
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADAGuest;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -75,7 +75,7 @@ BrowsingHelper::init($neededObjAr);
 if ($userObj instanceof ADAGuest) {
     $self = 'guest_view';
 } else {
-    $self = whoami();
+    $self = Utilities::whoami();
 }
 
 /**
@@ -216,7 +216,7 @@ if ($node_type == ADA_GROUP_WORD_TYPE or $node_type == ADA_LEAF_WORD_TYPE) {
     $img_dir = $root_dir.'/browsing/dattilo/img';
     $url_dir = $http_root_dir.'/browsing/dattilo/img';
     if (file_exists($img_dir.'/a.jpg')) {
-        $dattilo = convertiDattiloFN($node_title,$url_dir);
+        $dattilo = Utilities::convertiDattiloFN($node_title,$url_dir);
         $content_dataAr['dattilo'] = $dattilo;
     }
     * */

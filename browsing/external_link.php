@@ -8,10 +8,10 @@ use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\UserModuleHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Translator;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Browsing\Functions\findInClientDir;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -73,7 +73,7 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-$self =  whoami();
+$self =  Utilities::whoami();
 
 $external_link_id = isset($_GET['id']) ? DataValidator::isUinteger($_GET['id']) : false;
 $filename = isset($_GET['file']) ? DataValidator::validateLocalFilename($_GET['file']) : false;

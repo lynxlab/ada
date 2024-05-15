@@ -24,11 +24,9 @@ use Lynxlab\ADA\Main\User\ADAGenericUser;
 use Lynxlab\ADA\Main\User\ADAGuest;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\checkJavascriptFN;
-use function Lynxlab\ADA\Main\Utilities\getTimezoneOffset;
-use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 
 class CommunicationModuleHtmlLib
 {
@@ -257,10 +255,10 @@ class CommunicationModuleHtmlLib
             $tester_TimeZone = SERVER_TIMEZONE;
         } else {
             $tester_TimeZone = MultiPort::getTesterTimeZone($tester);
-            $offset = getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
+            $offset = Utilities::getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
         }
         $now = time() + $offset;
-        $zone = translateFN("Time zone:") . " " . $tester_TimeZone . " " . translateFN("actual time: ") . ts2tmFN($now);
+        $zone = translateFN("Time zone:") . " " . $tester_TimeZone . " " . translateFN("actual time: ") . Utilities::ts2tmFN($now);
         $timezone = CDOMElement::create('div', 'class:proposal_zone');
         $timezone->addChild(new CText($zone));
 
@@ -438,10 +436,10 @@ class CommunicationModuleHtmlLib
             $tester_TimeZone = SERVER_TIMEZONE;
         } else {
             $tester_TimeZone = MultiPort::getTesterTimeZone($tester);
-            $offset = getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
+            $offset = Utilities::getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
         }
         $now = time() + $offset;
-        $zone = translateFN("Time zone:") . " " . $tester_TimeZone . " " . translateFN("actual time: ") . ts2tmFN($now);
+        $zone = translateFN("Time zone:") . " " . $tester_TimeZone . " " . translateFN("actual time: ") . Utilities::ts2tmFN($now);
         $timezone = CDOMElement::create('div', 'class:proposal_zone');
         $timezone->addChild(new CText($zone));
 
@@ -598,7 +596,7 @@ class CommunicationModuleHtmlLib
         }
 
         $common_dh = $GLOBALS['common_dh'];
-        $javascript_ok = checkJavascriptFN($_SERVER['HTTP_USER_AGENT']);
+        $javascript_ok = Utilities::checkJavascriptFN($_SERVER['HTTP_USER_AGENT']);
 
         $appointments_Ar = [];
         /*
@@ -721,7 +719,7 @@ class CommunicationModuleHtmlLib
         foreach ($data_Ar as $tester => $message_dataAr) {
             $tester_id = $testers_dataAr[$tester];
             $tester_TimeZone = MultiPort::getTesterTimeZone($tester);
-            $offset = getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
+            $offset = Utilities::getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
 
             foreach ($message_dataAr as $message_Ar) {
                 // trasform message content into variable names
@@ -767,7 +765,7 @@ class CommunicationModuleHtmlLib
         foreach ($data_Ar as $tester => $message_dataAr) {
             $tester_id = $testers_dataAr[$tester];
             $tester_TimeZone = MultiPort::getTesterTimeZone($tester);
-            $offset = getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
+            $offset = Utilities::getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
 
             foreach ($message_dataAr as $message_id => $message_Ar) {
                 // trasform message content into variable names
@@ -917,7 +915,7 @@ class CommunicationModuleHtmlLib
     private static function displayMessagesAsTable($data_Ar = [], $message_type = ADA_MSG_SIMPLE, $testers_dataAr = [])
     {
         $common_dh = $GLOBALS['common_dh'];
-        $javascript_ok = checkJavascriptFN($_SERVER['HTTP_USER_AGENT']);
+        $javascript_ok = Utilities::checkJavascriptFN($_SERVER['HTTP_USER_AGENT']);
 
         $appointments_Ar = [];
 
@@ -941,7 +939,7 @@ class CommunicationModuleHtmlLib
             //                               NULL,NULL,NULL,NULL,TRUE);
             //       }
             $tester_TimeZone = MultiPort::getTesterTimeZone($tester);
-            $offset = getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
+            $offset = Utilities::getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
 
             foreach ($appointment_data_Ar as $appointment_id => $appointment_Ar) {
                 // trasform message content into variable names
@@ -1001,7 +999,7 @@ class CommunicationModuleHtmlLib
     private static function displayMessagesAsForm($data_Ar = [], $message_type = ADA_MSG_SIMPLE, $testers_dataAr = [])
     {
         $common_dh = $GLOBALS['common_dh'];
-        $javascript_ok = checkJavascriptFN($_SERVER['HTTP_USER_AGENT']);
+        $javascript_ok = Utilities::checkJavascriptFN($_SERVER['HTTP_USER_AGENT']);
 
         $appointments_Ar = [];
 
@@ -1051,7 +1049,7 @@ class CommunicationModuleHtmlLib
             //                              NULL,NULL,NULL,NULL,TRUE);
             //      }
             $tester_TimeZone = MultiPort::getTesterTimeZone($tester);
-            $offset = getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
+            $offset = Utilities::getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
 
             foreach ($appointment_data_Ar as $appointment_id => $appointment_Ar) {
                 // trasform message content into variable names

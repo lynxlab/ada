@@ -9,9 +9,9 @@ use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Service\Service;
 use Lynxlab\ADA\Main\Token\TokenFinder;
 use Lynxlab\ADA\Main\User\ADAUser;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /*
  *
@@ -82,7 +82,7 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-$self =  whoami();
+$self =  Utilities::whoami();
 $error_page = HTTP_ROOT_DIR . "/index.php";
 
 $isRegistration = false; // user is asking  for subscription just after registration ?

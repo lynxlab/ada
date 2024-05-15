@@ -9,12 +9,11 @@ use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADAUser;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Badges\RewardedBadge;
 use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  *
@@ -51,7 +50,7 @@ $neededObjAr = [
 ];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self =  whoami();  // = tutor!
+$self =  Utilities::whoami();  // = tutor!
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -231,7 +230,7 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
             if (is_int($user->getSubscriptionDate())) { //if getSubscriptionDate() return an int, means that it is setted in Subscription costructor to time()
                 $data_iscrizione = '-';
             } else {
-                $data_iscrizione = ts2dFN($user->getSubscriptionDate());
+                $data_iscrizione = Utilities::ts2dFN($user->getSubscriptionDate());
             }
             //            $span_idUser = CDOMElement::create('span');
             //            $span_idUser->setAttribute('class', 'idUser');

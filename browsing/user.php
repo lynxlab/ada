@@ -10,14 +10,13 @@ use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
 use Lynxlab\ADA\Module\Servicecomplete\AMACompleteDataHandler;
 use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
 use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -40,7 +39,7 @@ $neededObjAr = [
     AMA_TYPE_STUDENT => ['layout', 'default_tester'],
 ];
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = whoami();
+$self = Utilities::whoami();
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -320,9 +319,9 @@ if (!AMADataHandler::isError($courseInstances)) {
                 $tbody_dataAr[] = [
                     $c['titolo'],
                     $started,
-                    ts2dFN($start_date),
+                    Utilities::ts2dFN($start_date),
                     sprintf(translateFN('%d giorni'), $duration),
-                    ts2dFN($end_date),
+                    Utilities::ts2dFN($end_date),
                     $access_link,
                 ];
             }

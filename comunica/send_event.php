@@ -11,13 +11,9 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\getTimezoneOffset;
-use function Lynxlab\ADA\Main\Utilities\sumDateTimeFN;
-use function Lynxlab\ADA\Main\Utilities\todayDateFN;
-use function Lynxlab\ADA\Main\Utilities\todayTimeFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -52,7 +48,7 @@ $neededObjAr = [
  * Performs basic controls before entering this module
  */
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = whoami();
+$self = Utilities::whoami();
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -143,8 +139,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             else {
               $ora_evento_a = tm2tsFN($ora_evento);
-              $ora_evento_b = ts2tmFN($ora_evento_a);
-              $data_ora = sumDateTimeFN(array($data_evento,$ora_evento));
+              $ora_evento_b = Utilities::ts2tmFN($ora_evento_a);
+              $data_ora = Utilities::sumDateTimeFN(array($data_evento,$ora_evento));
 
               $sort_field = "data_ora desc";
 
@@ -177,9 +173,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
               $tester_TimeZone = SERVER_TIMEZONE;
             } else {
               $tester_TimeZone = MultiPort::getTesterTimeZone($tester);
-        $offset = getTimezoneOffset($tester_TimeZone,SERVER_TIMEZONE);
+        $offset = Utilities::getTimezoneOffset($tester_TimeZone,SERVER_TIMEZONE);
             }
-            $data_ora = sumDateTimeFN(array($date,$time)) - $offset;
+            $data_ora = Utilities::sumDateTimeFN(array($date,$time)) - $offset;
             */
 
             $message_ha = $form;
@@ -189,9 +185,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $tester_TimeZone = SERVER_TIMEZONE;
             } else {
                 $tester_TimeZone = MultiPort::getTesterTimeZone($sess_selected_tester);
-                $offset = getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
+                $offset = Utilities::getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
             }
-            $data_ora = sumDateTimeFN([$data_evento,$ora_evento]) - $offset;
+            $data_ora = Utilities::sumDateTimeFN([$data_evento,$ora_evento]) - $offset;
             $message_ha['data_ora'] = $data_ora; //"now";
             $message_ha['tipo']     = ADA_MSG_AGENDA;
             //$message_ha['mittente'] = $user_name;
@@ -265,24 +261,24 @@ if ((empty($err_msg)) or (!isset($err_msg))) {
 }
 
 if (!isset($ora_evento)) {
-    $event_time = todayTimeFN();
+    $event_time = Utilities::todayTimeFN();
 } else {
     $event_time = $ora_evento;
 }
 if (!isset($data_evento)) {
-    $event_date = todayDateFN();
+    $event_date = Utilities::todayDateFN();
 } else {
     $event_date = $data_evento;
 }
 /*
-$event_time = todayTimeFN();
-$event_date = todayDateFN();
+$event_time = Utilities::todayTimeFN();
+$event_date = Utilities::todayDateFN();
 */
 
 $ada_address_book = EventsAddressBook::create($userObj);
 
 $tester_TimeZone = MultiPort::getTesterTimeZone($sess_selected_tester);
-$time = time() + getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
+$time = time() + Utilities::getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
 
 /*
 * Last access link

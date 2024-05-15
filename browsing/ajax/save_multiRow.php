@@ -6,9 +6,9 @@ use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\UserExtraModuleHtmlLib;
 use Lynxlab\ADA\Main\Translator;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -36,7 +36,7 @@ $neededObjAr = [
 
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = whoami();
+$self = Utilities::whoami();
 
 /**
  * This will at least import in the current symbol table the following vars.

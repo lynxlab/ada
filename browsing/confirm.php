@@ -17,10 +17,10 @@ use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 use Lynxlab\ADA\Main\User\ADAUser;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\GDPR\GdprAPI;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\redirect;
 
 /**
  * Base config file
@@ -176,7 +176,7 @@ switch ($op) {
                             if ($user_default_tester !== null) {
                                 $_SESSION['sess_selected_tester'] = $user_default_tester;
                             }
-                            redirect($redirectURL);
+                            Utilities::redirect($redirectURL);
                         }
                     }
                 }

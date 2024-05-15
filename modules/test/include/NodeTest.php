@@ -14,6 +14,7 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Node\Node;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 use Lynxlab\ADA\Module\Test\AnswerTest;
 use Lynxlab\ADA\Module\Test\NullTest;
@@ -34,8 +35,6 @@ use Lynxlab\ADA\Module\Test\QuestionTest;
 use Lynxlab\ADA\Module\Test\SurveyTest;
 use Lynxlab\ADA\Module\Test\TestTest;
 use Lynxlab\ADA\Module\Test\TopicTest;
-
-use function Lynxlab\ADA\Main\Utilities\redirect;
 
 abstract class NodeTest
 {
@@ -596,7 +595,7 @@ abstract class NodeTest
         if (strlen($redirectTo) > 0) {
             /*Remove the last item to NavigationHistory to increase the value of back button correctly*/
             $_SESSION['sess_navigation_history']->removeLastItem();
-            redirect($redirectTo);
+            Utilities::redirect($redirectTo);
         }
     }
 

@@ -6,10 +6,9 @@ use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -81,7 +80,7 @@ if (!$forcereturn) {
 }
 
 if (!isset($self)) {
-    $self = whoami();
+    $self = Utilities::whoami();
 }
 
 $title =  translateFN('Attestato di frequenza');
@@ -156,7 +155,7 @@ if (!is_null($testerAr['nome']) && stripos($testerAr['nome'], 'NULL') === false 
     $providerSentence = translateFN('Provider che ha organizzato il corso: ') . '<strong>' . $testerAr['nome'] . '</strong>';
 }
 
-$currentData = ts2dFN(time());
+$currentData = Utilities::ts2dFN(time());
 $luogo = $testerAr['citta'];
 $placeAndDate = $luogo . ' ' . $currentData;
 

@@ -6,11 +6,10 @@ use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\ServicesModuleHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Services\Exercise\ExerciseViewerFactory;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\todayDateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -36,7 +35,7 @@ $neededObjAr = [
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 
-$self =  whoami();
+$self =  Utilities::whoami();
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -215,7 +214,7 @@ if (isset($step) && !isset($verify)) {
             $esercizio['type']           = $_SESSION['add_exercise']['exercise_family'] . $_SESSION['add_exercise']['exercise_interaction'] . $_SESSION['add_exercise']['test_mode'] . $_SESSION['add_exercise']['test_simplification'] . $_SESSION['add_exercise']['test_barrier'];
             $esercizio['parent_id']      = $_SESSION['add_exercise']['parent_node'];
             $esercizio['order']          = $order + 1;
-            $esercizio['creation_date']  = todayDateFN();
+            $esercizio['creation_date']  = Utilities::todayDateFN();
             $esercizio['pos_x0']         = 0;
             $esercizio['pos_y0']         = 0;
             $esercizio['pos_x1']         = 0;
@@ -248,7 +247,7 @@ if (isset($step) && !isset($verify)) {
                     $risp['type']           = 1;
                     $risp['parent_id']      = $node_exercise;
                     $risp['correctness']    = $answer['correctness'];
-                    $risp['creation_date']  = todayDateFN();
+                    $risp['creation_date']  = Utilities::todayDateFN();
                     $risp['pos_x0']         = 0;
                     $risp['pos_y0']         = 0;
                     $risp['pos_x1']         = 0;

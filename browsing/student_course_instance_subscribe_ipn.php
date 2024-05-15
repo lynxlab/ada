@@ -8,9 +8,9 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\todayDateFN;
 
 /**
  * Base config file
@@ -133,7 +133,7 @@ if (!is_file($lockfile)) {
     ini_set("log_errors", 1);
     ini_set("error_log", ROOT_DIR . '/log/paypal/paypal-ipn-error.log');
 
-    $today_date = todayDateFN();
+    $today_date = Utilities::todayDateFN();
     $providerId = DataValidator::isUinteger($_REQUEST['provider']);
     $courseId = DataValidator::isUinteger($_REQUEST['course']);
     $instanceId = DataValidator::isUinteger($_REQUEST['instance']);

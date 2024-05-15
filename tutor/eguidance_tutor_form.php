@@ -9,9 +9,9 @@ use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\TutorHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\TutorModuleHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -45,7 +45,7 @@ if (
     || $sess_navigationHistory->callerModuleWas('list_events')
     || isset($_GET['popup'])
 ) {
-    $self = whoami();
+    $self = Utilities::whoami();
     $is_popup = true;
 } else {
     $self =  'tutor';

@@ -3,11 +3,10 @@
 use Lynxlab\ADA\Comunica\ChatRoom;
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Comunica\Functions\exitWithJSONError;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -35,7 +34,7 @@ $neededObjAr = [];
  * Performs basic controls before entering this module
  */
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = whoami();
+$self = Utilities::whoami();
 
 /*
  * YOUR CODE HERE
@@ -190,7 +189,7 @@ for ($i = 0; $i < $msgs_number; $i++) {
 $json_data = array_map(fn ($message) => [
 'id' => $message['id_messaggio'],
 'tipo' => $message['tipo'],
-'time' => ts2tmFN($message['data_ora']),
+'time' => Utilities::ts2tmFN($message['data_ora']),
 'sender' => $message['nome'],
 'text' => stripslashes($message['testo']),
 ], $messages_display_Ha);

@@ -9,11 +9,9 @@ use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\todayDateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
-use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 
 require_once realpath(__DIR__) . '/../config_path.inc.php';
 
@@ -74,12 +72,12 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  */
 ComunicaHelper::init($neededObjAr);
 
-$self =  "list_chatrooms"; //whoami();
+$self =  "list_chatrooms"; //Utilities::whoami();
 $log_type = "db";
 /* 1. getting data about user
 
 */
-$ymdhms = todayDateFN();
+$ymdhms = Utilities::todayDateFN();
 
 
 /*
@@ -146,7 +144,7 @@ switch ($op) {
                         $message =  $chat_rowAr[2];
                         $chat_msg++;
                         $row = [
-                            translateFN('Data e ora') => ts2dFN($date) . " " . ts2tmFN($date),
+                            translateFN('Data e ora') => Utilities::ts2dFN($date) . " " . Utilities::ts2tmFN($date),
                             translateFN('Utente') => $user,
                             translateFN('Messaggio') => strip_tags($message),
                             ];
@@ -161,7 +159,7 @@ switch ($op) {
                     }
 
                     $user_chat_report = translateFN("Totale messaggi:") . " " . $chat_msg . "<br />";
-                    $user_chat_report .= translateFN("Ultimo messaggio:") . " " . ts2dFN($date) . " " . ts2tmFN($date) . "<br />";
+                    $user_chat_report .= translateFN("Ultimo messaggio:") . " " . Utilities::ts2dFN($date) . " " . Utilities::ts2tmFN($date) . "<br />";
                     $user_chat_report .= translateFN("Utenti / messaggi:") . "<br /><br />";
 
                     foreach ($usersHa as $k => $v) {
@@ -209,7 +207,7 @@ switch ($op) {
 
                             $user = $sender_dataHa['nome'] . ' ' . $sender_dataHa['cognome'];
                             $message = $chat_msgAr[1];
-                            $data_ora = ts2dFN($chat_msgAr[2]) . " " . ts2tmFN($chat_msgAr[2]);
+                            $data_ora = Utilities::ts2dFN($chat_msgAr[2]) . " " . Utilities::ts2tmFN($chat_msgAr[2]);
                             $tbody_data[] = [
                                 $data_ora,
                                 $user,
@@ -303,7 +301,7 @@ switch ($op) {
 
                     $user = $sender_dataHa['nome'] . ' ' . $sender_dataHa['cognome'];
                     $message = $chat_msgAr[1];
-                    $data_ora = ts2dFN($chat_msgAr[2]) . " " . ts2tmFN($chat_msgAr[2]);
+                    $data_ora = Utilities::ts2dFN($chat_msgAr[2]) . " " . Utilities::ts2tmFN($chat_msgAr[2]);
                     /*
                      *
                     $row = array(

@@ -11,10 +11,10 @@ use Lynxlab\ADA\Main\HtmlLibrary\FormElementCreator;
 use Lynxlab\ADA\Main\Output\Layout;
 use Lynxlab\ADA\Main\Output\UILayout;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\GDPR\GdprAPI;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\readDir;
 
 class AdminModuleHtmlLib
 {
@@ -694,7 +694,7 @@ class AdminModuleHtmlLib
 
         $fileAr = [];
         $fileAr['none'] = '--Choose the file--';
-        $file_data = readDir("../db/messaggi", "xml");
+        $file_data = Utilities::readDir("../db/messaggi", "xml");
         /*
         foreach($file_data as $key => $value) {
           $fileAr[$key] = $value;

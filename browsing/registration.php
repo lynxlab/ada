@@ -14,12 +14,12 @@ use Lynxlab\ADA\Main\Token\TokenManager;
 use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Main\User\ADAUser;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\GDPR\GdprAcceptPoliciesForm;
 use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use Lynxlab\ADA\Module\Secretquestion\AMASecretQuestionDataHandler;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -74,7 +74,7 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-$self =  whoami();
+$self =  Utilities::whoami();
 /**
  * Negotiate login page language
  */

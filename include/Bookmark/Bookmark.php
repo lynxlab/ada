@@ -26,9 +26,9 @@ use Lynxlab\ADA\CORE\HtmlElements\Form;
 use Lynxlab\ADA\CORE\HtmlElements\IList;
 use Lynxlab\ADA\CORE\HtmlElements\Table;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 /**************************
 /   bookmark management
@@ -69,8 +69,8 @@ class Bookmark
                 $this->titolo =  $node_title;
                 $this->data = $dataHa['date'];
                 $this->utente = $dataHa['student_id'];
-                //$ts = dt2tsFN($dataHa['date']);
-                //$this->ora =  ts2tmFN($ts);
+                //$ts = Utilities::dt2tsFN($dataHa['date']);
+                //$this->ora =  Utilities::ts2tmFN($ts);
                 $this->descrizione = $dataHa['description'];
             }
         }
@@ -260,7 +260,7 @@ class Bookmark
                 $description =   $bookmark[3];
 
                 $k++;
-                $formatted_dataHa[$k]['data'] =  ts2dFN($date);
+                $formatted_dataHa[$k]['data'] =  Utilities::ts2dFN($date);
                 if (is_array($dh->getTutor($user))) { // bookmarks del tutor
                     $formatted_dataHa[$k]['id_nodo'] = "<a href=\"view.php?id_node=$id_node\"><img src=\"img/check.png\" border=0> $title</a> (" . translateFN("Tutor") . ")";
                     if ($id_profile == AMA_TYPE_TUTOR) {

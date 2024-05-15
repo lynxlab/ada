@@ -26,13 +26,13 @@ use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADAAuthor;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Main\Utilities as MainUtilities;
 use Lynxlab\ADA\Services\NodeEditing\NodeEditing;
 use Lynxlab\ADA\Services\NodeEditing\NodeEditingViewer;
 use Lynxlab\ADA\Services\NodeEditing\PreferenceSelector;
 use Lynxlab\ADA\Services\NodeEditing\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\redirect;
 use function Lynxlab\ADA\Services\Functions\copyNodeFN;
 use function Lynxlab\ADA\Services\Functions\deleteNodeFN;
 use function Lynxlab\ADA\Services\Functions\getNodeData;
@@ -108,7 +108,7 @@ if ($id_profile == 0 || ($id_profile != AMA_TYPE_TUTOR && $id_profile != AMA_TYP
      *
      * if user has the terminated status for the course instance, redirect to view
      */
-    redirect(HTTP_ROOT_DIR . '/browsing/view.php?id_node=' . $parent_id . '&id_course=' . $id_course .
+    MainUtilities::redirect(HTTP_ROOT_DIR . '/browsing/view.php?id_node=' . $parent_id . '&id_course=' . $id_course .
             '&id_course_instance=' . $id_course_instance);
 }
 
@@ -292,7 +292,7 @@ switch ($op) {
                     $node_ha['id_instance'] = "";
 
                     $res = $dh->doEditNode($node_ha);
-                    //$GLOBALS['debug']=1; mydebug(__LINE__,__FILE__,$res); $GLOBALS['debug']=0;
+                    //$GLOBALS['debug']=1; Utilities::mydebug(__LINE__,__FILE__,$res); $GLOBALS['debug']=0;
                     if (!AMADatahandler::isError($res)) {
                         $message = urlencode(translateFN("Nota pubblicata nel corso"));
                         header("Location: " . $http_root_dir . "/browsing/view.php?id_node=$id_node&msg=$message");

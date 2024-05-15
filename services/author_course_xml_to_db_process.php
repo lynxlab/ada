@@ -5,10 +5,9 @@ use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\mydebug;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -34,7 +33,7 @@ $neededObjAr = [
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 
-$self =  whoami();
+$self =  Utilities::whoami();
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -150,7 +149,7 @@ if ($xp->setInit($set_ha)) {
         }
     }
 } else {
-    mydebug(__LINE__, __FILE__, $xp->init_error);
+    Utilities::mydebug(__LINE__, __FILE__, $xp->init_error);
     $dati .= translateFN('ERRORE: Non è stato scelto un file XML o la sintassi non &egrave; corretta.') ;
 }
 

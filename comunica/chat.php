@@ -9,11 +9,9 @@ use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\getTimezoneOffset;
-use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * vito, 24/09/2008
@@ -67,7 +65,7 @@ $neededObjAr = [
  * Performs basic controls before entering this module
  */
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = (isset($_REQUEST['iframe']) && intval($_REQUEST['iframe']) === 1) ? 'chat_iframe' : whoami();
+$self = (isset($_REQUEST['iframe']) && intval($_REQUEST['iframe']) === 1) ? 'chat_iframe' : Utilities::whoami();
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -179,9 +177,9 @@ if ($exit_reason != NO_EXIT_REASON) {
         $tester_TimeZone = SERVER_TIMEZONE;
     } else {
         $tester_TimeZone = MultiPort::getTesterTimeZone($_SESSION['sess_selected_tester']);
-        $offset = getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
+        $offset = Utilities::getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
     }
-    $current_time = ts2tmFN(time() + $offset);
+    $current_time = Utilities::ts2tmFN(time() + $offset);
 
     $close_page_message = addslashes(translateFN("You don't have a chat appointment at this time.")) . " ($current_time)";
     $optionsAr = ['onload_func' => "close_page('$close_page_message');"];

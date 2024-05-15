@@ -14,10 +14,10 @@ use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\HtmlLibrary\EguidanceSession;
 use Lynxlab\ADA\Main\HtmlLibrary\TutorModuleHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Tutor\Eguidance\Utils;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 /**
  * Base config file
@@ -43,7 +43,7 @@ $neededObjAr = [
 ];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self =  'default';//whoami();
+$self =  'default';//Utilities::whoami();
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -167,7 +167,7 @@ if (isset($_GET['op']) && $_GET['op'] == 'csv') {
         $thead_data = [translateFN('Eguidance sessions conducted'), '', '',''];
         $tbody_data = [];
         foreach ($eguidance_sessionsAr as $eguidance_sessionAr) {
-            $eguidance_date = ts2dFN($eguidance_sessionAr['data_ora']);
+            $eguidance_date = Utilities::ts2dFN($eguidance_sessionAr['data_ora']);
             $eguidance_type = EguidanceSession::textForEguidanceType($eguidance_sessionAr['tipo_eguidance']);
             $href = 'eguidance_tutor_form.php?event_token=' . $eguidance_sessionAr['event_token'];
             $eguidance_form = CDOMElement::create('a', "href:$href");
@@ -212,7 +212,7 @@ if (isset($_GET['op']) && $_GET['op'] == 'csv') {
         $thead_data = [translateFN('Date'), translateFN('Appointment type')];
         $tbody_data = [];
         foreach ($msgs_ha as $appointment) {
-            $tbody_data[] = [ts2dFN($appointment[0]), ADAEventProposal::removeEventToken($appointment[1])];
+            $tbody_data[] = [Utilities::ts2dFN($appointment[0]), ADAEventProposal::removeEventToken($appointment[1])];
         }
         $appointments_data = BaseHtmlLib::tableElement('class:' . ADA_SEMANTICUI_TABLECLASS, $thead_data, $tbody_data);
     }

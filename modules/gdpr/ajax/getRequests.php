@@ -2,6 +2,7 @@
 
 use Lynxlab\ADA\CORE\html4\CBase;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
 use Lynxlab\ADA\Module\GDPR\GdprActions;
 use Lynxlab\ADA\Module\GDPR\GdprAPI;
@@ -11,8 +12,6 @@ use Lynxlab\ADA\Module\GDPR\GdprRequestType;
 use Ramsey\Uuid\Uuid;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
-use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 
 /**
  * Base config file
@@ -91,8 +90,8 @@ try {
                 if ($showAll) {
                     $retArr['generatedBy'] = $el->getGeneratedBy();
                 }
-                $retArr['generatedDate'] = ts2dFN($el->getGeneratedTs()) . ' ' . ts2tmFN($el->getGeneratedTs());
-                $retArr['closedDate'] = is_null($el->getClosedTs()) ? null : ts2dFN($el->getClosedTs()) . ' ' . ts2tmFN($el->getClosedTs());
+                $retArr['generatedDate'] = Utilities::ts2dFN($el->getGeneratedTs()) . ' ' . Utilities::ts2tmFN($el->getGeneratedTs());
+                $retArr['closedDate'] = is_null($el->getClosedTs()) ? null : Utilities::ts2dFN($el->getClosedTs()) . ' ' . Utilities::ts2tmFN($el->getClosedTs());
                 $retArr['type'] = $el->getType()->toArray();
                 $actions = [];
 

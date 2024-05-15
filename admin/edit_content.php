@@ -6,11 +6,9 @@ use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Translator;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\dirTree;
-use function Lynxlab\ADA\Main\Utilities\readDir;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -39,7 +37,7 @@ $neededObjAr = [
 ];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = whoami();  // = admin!
+$self = Utilities::whoami();  // = admin!
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -85,12 +83,12 @@ $languages = Translator::getSupportedLanguages();
 if (!MULTIPROVIDER && $userObj->getType() == AMA_TYPE_SWITCHER) {
     $testers = $userObj->getTesters();
     $filePath = '/clients/' . $testers[0];
-    $availableTypes = dirTree(ROOT_DIR . DIRECTORY_SEPARATOR . $filePath . '/docs');
+    $availableTypes = Utilities::dirTree(ROOT_DIR . DIRECTORY_SEPARATOR . $filePath . '/docs');
 } else {
     $filePath = '';
     // @author giorgio 08/mag/2013
     // extract available types from docs subdirectories
-    $availableTypes = dirTree(ROOT_DIR . '/docs');
+    $availableTypes = Utilities::dirTree(ROOT_DIR . '/docs');
 }
 
 
@@ -113,7 +111,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 // @author giorgio 08/mag/2013
 // this must be here to list newly created files possibly generated
 // when handling $_POST datas.
-$files_news = readDir(ROOT_DIR . $filePath . '/docs/' . $reqType, 'txt');
+$files_news = Utilities::readDir(ROOT_DIR . $filePath . '/docs/' . $reqType, 'txt');
 //print_r($files_news);
 
 

@@ -19,10 +19,9 @@ use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Output\PdfClass;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 use function Lynxlab\ADA\Tutor\Functions\getCoursesTutorFN;
 use function Lynxlab\ADA\Tutor\Functions\getStudentCoursesFN;
 use function Lynxlab\ADA\Tutor\Functions\getStudentDataFN;
@@ -51,7 +50,7 @@ $neededObjAr = [
 ];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self =  whoami();
+$self =  Utilities::whoami();
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -207,7 +206,7 @@ switch ($op) {
              * if no class report was ever generated, redirect the user to the mode=update page
              */
             /*
-                redirect("$http_root_dir/tutor/tutor.php?op=student&id_instance=$id_instance&id_course=$id_course&mode=update");
+                Utilities::redirect("$http_root_dir/tutor/tutor.php?op=student&id_instance=$id_instance&id_course=$id_course&mode=update");
             }
             */
         }
@@ -244,7 +243,7 @@ switch ($op) {
             if (isset($report_generation_TS)) {
                 $updateDIV = CDOMElement::create('div', 'class:updatelink');
                 $updateSPAN = CDOMElement::create('span');
-                $updateSPAN->addChild(new CText(translateFN('Report aggiornato al') . ' ' . ts2dFN($report_generation_TS)));
+                $updateSPAN->addChild(new CText(translateFN('Report aggiornato al') . ' ' . Utilities::ts2dFN($report_generation_TS)));
                 $updateBtnCont = CDOMElement::create('div', 'class:updateButtoncont');
                 $updateLink = CDOMElement::create('a', 'class:ui tiny green button,href:javascript:void(0);');
                 $confirmMessage = translateFN('Questa operazione può richiedere qualche minuto');
@@ -278,7 +277,7 @@ switch ($op) {
         if (is_array($all_instance)) {
             $added_nodesHa = [];
             foreach ($all_instance as $one_instance) {
-                //mydebug(__LINE__,__FILE__,$one_instance);
+                //Utilities::mydebug(__LINE__,__FILE__,$one_instance);
                 $id_course_instance = $one_instance[0];
                 //check on tutor:
                 //           $tutorId = $dh->courseInstanceTutorGet($id_course_instance);
@@ -290,7 +289,7 @@ switch ($op) {
                     $data_inizio = $one_instance[2];
                     $data_previsto = $one_instance[3];
                     $sub_courses = $dh->getSubscription($id_student, $id_instance);
-                    //mydebug(__LINE__,__FILE__,$sub_courses);
+                    //Utilities::mydebug(__LINE__,__FILE__,$sub_courses);
                     if ($sub_courses['tipo'] == 2) {
                         $out_fields_ar = ['nome','titolo','id_istanza','data_creazione','testo'];
                         $clause = "tipo = '2' AND id_utente = '$id_student'";
@@ -301,15 +300,15 @@ switch ($op) {
                         foreach ($nodes as $one_node) {
                             $row = [
                                     translateFN('Corso') => $course_title,
-                                    //      translateFN('Edizione')=>$id_course_instance."(".ts2dFN($data_inizio).")",
-                                    translateFN('Data') => ts2dFN($one_node[4]),
+                                    //      translateFN('Edizione')=>$id_course_instance."(".Utilities::ts2dFN($data_inizio).")",
+                                    translateFN('Data') => Utilities::ts2dFN($one_node[4]),
                                     translateFN('Nodo') => $one_node[0],
                                     translateFN('Titolo') => "<a href=\"$http_root_dir/browsing/view.php?id_node=" . $one_node[0] . "&id_course=$id_course&id_course_instance=$id_instance\">" . $one_node[1] . "</a>",
                                     //    translateFN('Keywords')=>$one_node[2]
                             ];
                             array_push($added_nodesHa, $row);
                             // exporting  to RTF
-                            $note =  ts2dFN($one_node[4]) . "\n" .
+                            $note =  Utilities::ts2dFN($one_node[4]) . "\n" .
                                     $one_node[1] . "\n" . // title
                                     $one_node[5] . "\n"; //text
 
@@ -323,7 +322,7 @@ switch ($op) {
 
         /*
              global $debug; $debug=1;
-             mydebug(__LINE__,__FILE__,$added_nodesHa);
+             Utilities::mydebug(__LINE__,__FILE__,$added_nodesHa);
              $debug=0;
         */
 

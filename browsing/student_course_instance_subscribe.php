@@ -9,9 +9,9 @@ use Lynxlab\ADA\Main\Forms\InstancePaypalForm;
 use Lynxlab\ADA\Main\Forms\InstanceTransferForm;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\todayDateFN;
 
 /**
  * Base config file
@@ -80,7 +80,7 @@ if (file_exists(ROOT_DIR . '/browsing/paypal/paypal_conf.inc.php')) {
     $paypal_allowed = true;
 }
 
-$today_date = todayDateFN();
+$today_date = Utilities::todayDateFN();
 
 //$id_course_instance = $_REQUEST['id_instance'];
 //$id_studente = $_REQUEST['id_student'];

@@ -27,12 +27,12 @@ use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
 use TypeError;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\redirect;
 
 abstract class ADALoggableUser extends ADAGenericUser
 {
@@ -414,7 +414,7 @@ abstract class ADALoggableUser extends ADAGenericUser
                 case "T":
                 default:
                     // vito, 11 mar 2009
-                    //return  substr(ts2dFN($last_accessAr[1]),0,5); // es. 10/06
+                    //return  substr(Utilities::ts2dFN($last_accessAr[1]),0,5); // es. 10/06
                     return  substr($last_accessAr[1], 0, 5); // es. 10/06
                     break;
                 case "UT":
@@ -519,7 +519,7 @@ abstract class ADALoggableUser extends ADAGenericUser
         $out_fields_ar = ['id_utente_studente', 'data_visita', 'data_uscita'];
         $history = $dh->findNodesHistoryList($out_fields_ar, $user_id, $course_instance_id, $node_id);
         foreach ($history as $visit) {
-            // $debug=1; mydebug(__LINE__,__FILE__,$visit);$debug=0;
+            // $debug=1; Utilities::mydebug(__LINE__,__FILE__,$visit);$debug=0;
             if ($visit[1] == $user_id) {
                 $visit_count++;
             }
@@ -697,7 +697,7 @@ abstract class ADALoggableUser extends ADAGenericUser
                     $_SESSION[GdprPolicy::SESSIONKEY]['redirectURL'] = !is_null($redirectURL) ? $redirectURL : $userObj->getHomePage();
                     $_SESSION[GdprPolicy::SESSIONKEY]['userId'] = $userObj->getId();
                     $_SESSION[GdprPolicy::SESSIONKEY]['loginRepeaterSubmit'] = is_null($loginProviderObj) ? basename($_SERVER['SCRIPT_NAME']) : 'index.php';
-                    redirect(MODULES_GDPR_HTTP . '/' . GdprPolicy::ACCEPTPOLICIESPAGE);
+                    Utilities::redirect(MODULES_GDPR_HTTP . '/' . GdprPolicy::ACCEPTPOLICIESPAGE);
                 }
             }
 

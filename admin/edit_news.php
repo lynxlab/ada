@@ -6,10 +6,9 @@ use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Translator;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\readDir;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -34,7 +33,7 @@ $neededObjAr = [
 ];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = whoami();  // = admin!
+$self = Utilities::whoami();  // = admin!
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -73,7 +72,7 @@ AdminHelper::init($neededObjAr);
  */
 $options = '';
 $languages = Translator::getSupportedLanguages();
-$files_news = readDir(ROOT_DIR . '/docs/news', 'txt');
+$files_news = Utilities::readDir(ROOT_DIR . '/docs/news', 'txt');
 //print_r($files_news);
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {

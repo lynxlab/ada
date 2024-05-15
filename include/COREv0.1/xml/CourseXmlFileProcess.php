@@ -116,12 +116,12 @@ class CourseXmlFileProcess
             $course_instancesAr = $dh->courseInstanceFindList($field_list_ar, $clause);
 
             //      or else a loop on   courseInstanceGet($id) ...
-            //  mydebug(__LINE__,__FILE__,$course_instancesAr);
+            //  Utilities::mydebug(__LINE__,__FILE__,$course_instancesAr);
             if (count($course_instancesAr)) {
                 // AND (UPGRADE_COURSE_MODE = 1)   ???
                 // Removing all course data
                 $res = $dh->removeCourseContent($id_course);
-                // $debug=1; mydebug(__LINE__,__FILE__,$res);$debug=0;
+                // $debug=1; Utilities::mydebug(__LINE__,__FILE__,$res);$debug=0;
                 if (AMADataHandler::isError($res)) {
                     // ch'aggi'a fa'?
                     $this->initerror = translateFN("Impossibile rimuovere il corso con id:") . $id_course;
@@ -312,7 +312,7 @@ class CourseXmlFileProcess
                 /*
                 global $debug;
                 $debug=1;
-                    mydebug(__LINE__,__FILE__,array($this->livello,$this->dati_nodo_ar[$this->livello]['ID']));
+                    Utilities::mydebug(__LINE__,__FILE__,array($this->livello,$this->dati_nodo_ar[$this->livello]['ID']));
                     $debug=0;
                 */
 
@@ -330,7 +330,7 @@ class CourseXmlFileProcess
                 $this->dati_nodo_ar[$this->livello]['SUPER'] = "$data";
                 break;
             case "PARAGRAPH":
-                // mydebug(__LINE__,__FILE__, $data);
+                // Utilities::mydebug(__LINE__,__FILE__, $data);
                 if (empty($this->dati_nodo_ar[@$this->livello]['TEXT'])) {
                     $this->dati_nodo_ar[$this->livello]['TEXT'] = $data;
                 } else {
@@ -404,9 +404,9 @@ class CourseXmlFileProcess
                 /*
                     global $debug;
                 $debug=1;
-                    mydebug(__LINE__,__FILE__,$this->dati_nodo_ar[$this->livello]['MEDIA'][$this->livellomedia]);
-                mydebug(__LINE__,__FILE__,array($this->livello,$this->livellomedia));
-                    // mydebug(__LINE__,__FILE__,$this->dati_nodo_ar[1]['MEDIA'][1]);
+                    Utilities::mydebug(__LINE__,__FILE__,$this->dati_nodo_ar[$this->livello]['MEDIA'][$this->livellomedia]);
+                Utilities::mydebug(__LINE__,__FILE__,array($this->livello,$this->livellomedia));
+                    // Utilities::mydebug(__LINE__,__FILE__,$this->dati_nodo_ar[1]['MEDIA'][1]);
                 $debug=0;
                 */
 
@@ -473,7 +473,7 @@ class CourseXmlFileProcess
             $data =  preg_replace("(\r\n|\n|\r)", "", $data); //CR
             /*
                     // error handler - !!!!! DA RIVEDERE !!!!!
-                    //  mydebug(__LINE__,__FILE__, $data);
+                    //  Utilities::mydebug(__LINE__,__FILE__, $data);
 
                     // per correggere l'eliminazione delle entit� HTML (di expat??)
                     $trans = get_html_translation_table (HTML_ENTITIES);
@@ -481,10 +481,10 @@ class CourseXmlFileProcess
                     // se arrivassero i dati bruti: $encoded = strtr ($data, $trans);
                     $trans = array_flip ($trans);
                     $trans['&apos;'] = "'";
-                    // mydebug(__LINE__,__FILE__, $trans);
+                    // Utilities::mydebug(__LINE__,__FILE__, $trans);
 
                     $coded_data = strtr ($data, $trans);
-                    // mydebug(__LINE__,__FILE__, $coded_data);
+                    // Utilities::mydebug(__LINE__,__FILE__, $coded_data);
             */
             // parsing del file xml
             //        if(!xml_parse($this->parser, $coded_data, feof($fp))){ // use with coded data
@@ -693,7 +693,7 @@ class CourseXmlFileProcess
                         $positionAr = [0, 0, 100, 100];
                     }
                     $linkAr[$i]['posizione'] = $positionAr;
-                    // mydebug(__LINE__,__FILE__,$linkAr[$i]);
+                    // Utilities::mydebug(__LINE__,__FILE__,$linkAr[$i]);
                 }
             }
         }
@@ -712,7 +712,7 @@ class CourseXmlFileProcess
 
                     /*
                     global $debug; $debug=1;
-                    mydebug(__LINE__,__FILE__,$mediaAr[$i]);
+                    Utilities::mydebug(__LINE__,__FILE__,$mediaAr[$i]);
                     */
                 }
             }

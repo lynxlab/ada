@@ -4,7 +4,7 @@
  * config_install.inc.php file.
  */
 
-use function Lynxlab\ADA\Main\Utilities\getUserIpAddr;
+use Lynxlab\ADA\Main\Utilities;
 
 /**
  * DB and interface constants
@@ -122,7 +122,7 @@ if (!defined('PORTAL_NAME')) {
 $allowedIPs = [];
 if (!defined('MAINTENANCE_MODE')) {
     if (!empty($allowedIPs)) {
-        define('MAINTENANCE_MODE', true !== in_array(getUserIpAddr(), $allowedIPs));
+        define('MAINTENANCE_MODE', true !== in_array(Utilities::getUserIpAddr(), $allowedIPs));
     } else {
         define('MAINTENANCE_MODE', false);
     }

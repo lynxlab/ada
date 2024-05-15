@@ -4,11 +4,9 @@ use Lynxlab\ADA\CORE\HtmlElements\Table;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
-use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -33,7 +31,7 @@ $neededObjAr = [
 ];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self =  whoami();
+$self =  Utilities::whoami();
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -91,8 +89,8 @@ if ($count_visits) {
         $student = $dh->getUserInfo($visit[2]);
         $studentname = $student['username'];
         $visits_dataHa[] = [
-                translateFN('Data') => ts2dFN($visit[1]),
-                translateFN('Ora') => ts2tmFN($visit[1]),
+                translateFN('Data') => Utilities::ts2dFN($visit[1]),
+                translateFN('Ora') => Utilities::ts2tmFN($visit[1]),
                 translateFN('Studente') => $studentname,
                 // translateFN('Edizione del corso')=>$visit[3]
                 // etc etc

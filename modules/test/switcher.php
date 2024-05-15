@@ -6,11 +6,11 @@ use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 use Lynxlab\ADA\Module\Test\SwitcherManagementTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -43,7 +43,7 @@ SwitcherHelper::init($neededObjAr);
 //needed to promote AMADataHandler to AMATestDataHandler. $sess_selected_tester is already present in session
 $GLOBALS['dh'] = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
-$self = whoami();
+$self = Utilities::whoami();
 
 if (!is_a($courseObj, 'Course')) {
     $courseObj = DBRead::readCourseFromDB($_GET['id_course']);

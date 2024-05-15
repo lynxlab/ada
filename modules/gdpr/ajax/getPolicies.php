@@ -2,6 +2,7 @@
 
 use Lynxlab\ADA\CORE\html4\CBase;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
 use Lynxlab\ADA\Module\GDPR\GdprActions;
 use Lynxlab\ADA\Module\GDPR\GdprAPI;
@@ -9,8 +10,6 @@ use Lynxlab\ADA\Module\GDPR\GdprException;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
-use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 
 /**
  * Base config file
@@ -52,7 +51,7 @@ try {
                 $retArr = [];
                 $retArr['id'] = $el->getPolicyContentId();
                 $retArr['title'] = $el->getTitle();
-                $retArr['lastEditTS'] = is_null($el->getLastEditTS()) ? null : ts2dFN($el->getLastEditTS()) . ' ' . ts2tmFN($el->getLastEditTS());
+                $retArr['lastEditTS'] = is_null($el->getLastEditTS()) ? null : Utilities::ts2dFN($el->getLastEditTS()) . ' ' . Utilities::ts2tmFN($el->getLastEditTS());
                 $retArr['mandatory'] = $el->getMandatory() ? true : false;
                 $retArr['isPublished'] = $el->getIsPublished() ? true : false;
                 $retArr['version'] = $el->getVersion();

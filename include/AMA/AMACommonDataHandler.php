@@ -17,8 +17,7 @@ use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Logger\ADALogger;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
-
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+use Lynxlab\ADA\Main\Utilities;
 
 class AMACommonDataHandler extends AbstractAMADataHandler
 {
@@ -335,7 +334,7 @@ class AMACommonDataHandler extends AbstractAMADataHandler
 
         $res_ar['id'] = $id;
         if (isset($res_ar['birthdate'])) {
-            $res_ar['birthdate'] = ts2dFN($res_ar['birthdate']);
+            $res_ar['birthdate'] = Utilities::ts2dFN($res_ar['birthdate']);
         }
         return $res_ar;
     }

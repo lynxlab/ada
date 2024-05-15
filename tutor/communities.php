@@ -7,9 +7,9 @@ use Lynxlab\ADA\Main\Helper\TutorHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 /**
  * Base config file
@@ -185,9 +185,9 @@ if (!AMADataHandler::isError($courseInstances) && is_array($courseInstances) && 
         $tbody_dataAr[] = [
             $c['titolo'] . ' - ' . $c['title'], // titolo is course and title is instance
             $started,
-            ts2dFN($start_date),
+            Utilities::ts2dFN($start_date),
             sprintf(translateFN('%d giorni'), $duration),
-            ts2dFN($end_date),
+            Utilities::ts2dFN($end_date),
             $link,
         ];
     }

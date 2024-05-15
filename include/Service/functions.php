@@ -7,9 +7,9 @@ use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 function getCourseInstanceInfo($id_course, $id_course_instance)
 {
@@ -59,7 +59,7 @@ function getCourseInstanceInfo($id_course, $id_course_instance)
                     $tutor_info =  translateFN('Non assegnato');
                 }
 
-                $start_date = ts2dFN($sub_courses['istanza_ha']['data_inizio']);
+                $start_date = Utilities::ts2dFN($sub_courses['istanza_ha']['data_inizio']);
 
                 // messaggi
                 $messages_list = ""; // FIXME

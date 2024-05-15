@@ -21,11 +21,11 @@ use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Login\AbstractLogin;
 use ReflectionClass;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\redirect;
 
 /**
  * google login provider implementation
@@ -71,7 +71,7 @@ class HybridLogin extends AbstractLogin
      */
     public function doLogin($name, $pass, $remindMe, $language)
     {
-        redirect(MODULES_LOGIN_HTTP . '/hybridLogin.php?id=' . $this->id .
+        Utilities::redirect(MODULES_LOGIN_HTTP . '/hybridLogin.php?id=' . $this->id .
                 '&remindme=' . intval($remindMe) . '&lang=' . $language);
     }
 

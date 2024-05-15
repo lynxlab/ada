@@ -8,14 +8,12 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Bookmark\Bookmark;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\ForumEvent;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\substrGentle;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
-use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 
 /**
  * class CourseViewer
@@ -916,7 +914,7 @@ class CourseViewer
         }
         if (isset($params['node']['data_creazione'])) {
             $notedate = CDOMElement::create('span', 'class:notedate');
-            $notedate->addChild(new CText(ts2dFN($params['node']['data_creazione']) . ', ' . ts2tmFN($params['node']['data_creazione'])));
+            $notedate->addChild(new CText(Utilities::ts2dFN($params['node']['data_creazione']) . ', ' . Utilities::ts2tmFN($params['node']['data_creazione'])));
         }
         if (isset($params['node']['nome_nodo'])) {
             $textlink = $params['node']['nome_nodo'];
@@ -1010,7 +1008,7 @@ class CourseViewer
             $text = strip_tags($params['node']['testo']);
             if (strlen($text) > $char_limit) {
                 $addLink = true;
-                $text = substrGentle($text, $char_limit);
+                $text = Utilities::substrGentle($text, $char_limit);
             } else {
                 $addLink = false;
             }

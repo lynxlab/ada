@@ -18,11 +18,11 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Node\Media;
 use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\Output\Output;
+use Lynxlab\ADA\Main\Utilities as MainUtilities;
 use Lynxlab\ADA\Services\NodeEditing\Utilities;
 
 use function Lynxlab\ADA\Comunica\Functions\exitWithJSONError;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -49,7 +49,7 @@ $neededObjAr = [];
  * Performs basic controls before entering this module
  */
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = whoami();
+$self = MainUtilities::whoami();
 
 /*
  * YOUR CODE HERE

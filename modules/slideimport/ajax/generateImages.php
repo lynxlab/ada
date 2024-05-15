@@ -1,8 +1,7 @@
 <?php
 
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
-
-use function Lynxlab\ADA\Main\Utilities\delTree;
+use Lynxlab\ADA\Main\Utilities;
 
 /**
  * Base config file
@@ -72,7 +71,7 @@ if (isset($_GET['selectedPages']) && is_array($_GET['selectedPages']) && count($
                 //              if ($imagick->writeimage($media_path . DIRECTORY_SEPARATOR . $selectedPage.'.png') !== true) {
                 if ($bg->writeimage($media_path . DIRECTORY_SEPARATOR . $selectedPage . '.' . IMAGE_FORMAT) !== true) {
                     // delete all files and dir on error
-                    delTree($media_path);
+                    Utilities::delTree($media_path);
                     $error = 1;
                     break;
                 }

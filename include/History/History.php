@@ -18,10 +18,9 @@ namespace Lynxlab\ADA\Main\History;
 use Lynxlab\ADA\CORE\HtmlElements\Table;
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
-use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 
 class History
 {
@@ -471,8 +470,8 @@ class History
                 $time_spent = '-';
             }
 
-            $date = ts2dFN($visit_date);
-            $time = ts2tmFN($visit_date);
+            $date = Utilities::ts2dFN($visit_date);
+            $time = Utilities::ts2tmFN($visit_date);
             // $dh = new Node($id_visited_node);
             //$dataHa = $dh->getNodeInfo($id_visited_node);
             // $dataHa = Node::getNodeInfo($id_visited_node);

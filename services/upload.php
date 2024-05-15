@@ -8,13 +8,12 @@ use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\UserModuleHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLException;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Upload\Functions\uploadFile;
-use function Lynxlab\ADA\Main\Utilities\redirect;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -40,7 +39,7 @@ $neededObjAr = [
 ];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self =  whoami();
+$self =  Utilities::whoami();
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -327,7 +326,7 @@ if (isset($_GET['caller']) && $_GET['caller'] == 'editor') {
         if (!is_dir($upload_path) || !is_writable($upload_path)) {
             // restituire un messaggio di errore e saltare la parte di scrittura del file
             $error_code = ADA_FILE_UPLOAD_ERROR_UPLOAD_PATH;
-            redirect(str_replace($_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']) . '?err_code=' . $error_code);
+            Utilities::redirect(str_replace($_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']) . '?err_code=' . $error_code);
         } else {
             // cartella di upload presente e scrivibile
             /*
@@ -396,7 +395,7 @@ if (isset($_GET['caller']) && $_GET['caller'] == 'editor') {
                  */
                 if ($error_code != 0) {
                     // gestire stampa del messaggio di errore
-                    redirect(str_replace($_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']) . '?err_code=' . $error_code);
+                    Utilities::redirect(str_replace($_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']) . '?err_code=' . $error_code);
                 } else {
                     // redirige l'utente alla pagina da cui è arrivato all'upload.
                     $navigation_history = $_SESSION['sess_navigation_history'];
@@ -427,7 +426,7 @@ if (isset($_GET['caller']) && $_GET['caller'] == 'editor') {
                     }
 
                     $_SESSION['uploadOk'] = true;
-                    redirect(str_replace($_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']));
+                    Utilities::redirect(str_replace($_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']));
                 }
             } else {
                 $error_code = ADA_FILE_UPLOAD_ERROR_UPLOAD;
@@ -436,7 +435,7 @@ if (isset($_GET['caller']) && $_GET['caller'] == 'editor') {
                 } elseif (!$accepted_mimetype) {
                     $error_code = ADA_FILE_UPLOAD_ERROR_MIMETYPE;
                 }
-                redirect(str_replace($_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']) . '?err_code=' . $error_code);
+                Utilities::redirect(str_replace($_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']) . '?err_code=' . $error_code);
             }
         }
     } else {

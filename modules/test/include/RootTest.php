@@ -17,10 +17,10 @@ use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Node\Node;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Test\NodeTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\redirect;
 
 abstract class RootTest extends NodeTest
 {
@@ -143,7 +143,7 @@ abstract class RootTest extends NodeTest
                 }
                 $this->rollBack();
             } else {
-                redirect($_SERVER['REQUEST_URI']);
+                Utilities::redirect($_SERVER['REQUEST_URI']);
             }
         }
     }

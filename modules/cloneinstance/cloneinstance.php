@@ -6,13 +6,13 @@ use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\CloneInstance\AMACloneInstanceDataHandler;
 use Lynxlab\ADA\Module\CloneInstance\CloneInstanceActions;
 use Lynxlab\ADA\Module\CloneInstance\CloneInstanceForm;
 use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -153,7 +153,7 @@ if (!AMADB::isError($courses) && $courses !== false && count($courses) > 0) {
     $form = new CText(translateFN('Nessun corso trovato'));
 }
 
-$self = whoami();
+$self = Utilities::whoami();
 
 $content_dataAr = [
     'user_name' => $user_name,

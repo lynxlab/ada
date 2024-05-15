@@ -9,8 +9,7 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\ArrayToXML\ArrayToXML;
 use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
-
-use function Lynxlab\ADA\Main\Utilities\whoami;
+use Lynxlab\ADA\Main\Utilities;
 
 //ini_set("display_errors","1");
 /**
@@ -35,7 +34,7 @@ AMA_TYPE_ADMIN => ['import_lang'],
 ];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self =  whoami();  // = admin!
+$self =  Utilities::whoami();  // = admin!
 
 /**
  * This will at least import in the current symbol table the following vars.

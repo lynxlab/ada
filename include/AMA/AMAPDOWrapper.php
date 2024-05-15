@@ -21,13 +21,12 @@ namespace Lynxlab\ADA\Main\AMA;
 
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Logger\ADALogger;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
 use PDO;
 use PDOException;
 use PDOStatement;
-
-use function Lynxlab\ADA\Main\Utilities\GetCallingMethodName;
 
 /**
  * AMAPDOWrapper maps calls to PEAR::DB or PEAR:MDBS methods to PDO methods.
@@ -219,9 +218,9 @@ class AMAPDOWrapper
                     [
                         'eventClass' => CoreEvent::class,
                         'eventName' => 'AMAPDOPREGETALL',
-                        'eventPrefix' => GetCallingMethodName(),
+                        'eventPrefix' => Utilities::getCallingMethodName(),
                     ],
-                    GetCallingMethodName(),
+                    Utilities::getCallingMethodName(),
                     [
                         'query' => $query,
                         'params' => $params,
@@ -250,9 +249,9 @@ class AMAPDOWrapper
                 [
                     'eventClass' => CoreEvent::class,
                     'eventName' => 'AMAPDOPOSTGETALL',
-                    'eventPrefix' => GetCallingMethodName(),
+                    'eventPrefix' => Utilities::getCallingMethodName(),
                 ],
-                GetCallingMethodName(),
+                Utilities::getCallingMethodName(),
                 [
                     'query' => $query,
                     'params' => $params,

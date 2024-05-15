@@ -12,12 +12,11 @@ namespace Lynxlab\ADA\Module\GDPR;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\GDPR\GdprAbstractForm;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
-use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 
 /**
  * Class for the gpdr accept policies form
@@ -80,8 +79,8 @@ class GdprAcceptPoliciesForm extends GdprAbstractForm
                         $labelTitle = sprintf(
                             translateFN('Accettata in versione %d il %s, %s'),
                             $dataAr['userAccepted'][$policy->getPolicyContentId()]['acceptedVersion'],
-                            ts2dFN($dataAr['userAccepted'][$policy->getPolicyContentId()]['lastmodTS']),
-                            ts2tmFN($dataAr['userAccepted'][$policy->getPolicyContentId()]['lastmodTS'])
+                            Utilities::ts2dFN($dataAr['userAccepted'][$policy->getPolicyContentId()]['lastmodTS']),
+                            Utilities::ts2tmFN($dataAr['userAccepted'][$policy->getPolicyContentId()]['lastmodTS'])
                         );
                         $isAccepted = true;
                     } else {

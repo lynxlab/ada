@@ -22,6 +22,7 @@ use Lynxlab\ADA\Main\Bookmark\Bookmark;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\History\History;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Badges\RewardedBadge;
 use Lynxlab\ADA\Module\Servicecomplete\AMACompleteDataHandler;
 use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
@@ -29,10 +30,6 @@ use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\dt2tsFN;
-use function Lynxlab\ADA\Main\Utilities\masort;
-use function Lynxlab\ADA\Main\Utilities\todayDateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 class Student
 {
@@ -93,8 +90,8 @@ class Student
          * safe to get rid of the following 2 lines of code
          *
          */
-        //         $ymdhms = todayDateFN();
-        //         $utime = dt2tsFN($ymdhms);
+        //         $ymdhms = Utilities::todayDateFN();
+        //         $utime = Utilities::dt2tsFN($ymdhms);
 
         $utime = null;
         $report_dataHa = $this->readClassData($id_course, $id_course_instance, $utime);
@@ -145,7 +142,7 @@ class Student
                 $returnArray[++$row]['id'] = $currentReportRow['id_stud'];
                 $returnArray[$row]['student'] = '<a href="tutor.php?op=zoom_student&id_student=' . $currentReportRow['id_stud'] . '&id_course=' . $id_course . '&id_instance=' . $id_course_instance . '">' . $currentReportRow['student'] . '</a>';
                 $returnArray[$row]['history']  = '<a href="tutor_history.php?id_student=' . $currentReportRow['id_stud'] . '&id_course=' . $id_course . '&id_course_instance=' . $id_course_instance . '">' . $currentReportRow['visits'] . '</a>';
-                $returnArray[$row]['last_access'] = '<a href="tutor_history_details.php?period=1&id_student=' . $currentReportRow['id_stud'] . '&id_course=' . $id_course . '&id_course_instance=' . $id_course_instance . '">' . substr(ts2dFN($currentReportRow['date']), 0, -5) . '</a>';
+                $returnArray[$row]['last_access'] = '<a href="tutor_history_details.php?period=1&id_student=' . $currentReportRow['id_stud'] . '&id_course=' . $id_course . '&id_course_instance=' . $id_course_instance . '">' . substr(Utilities::ts2dFN($currentReportRow['date']), 0, -5) . '</a>';
                 $returnArray[$row]['exercises'] = '<a href="tutor_exercise.php?id_student=' . $currentReportRow['id_stud'] . '&id_course_instance=' . $id_course_instance . '" class="dontwrap">' . $currentReportRow['score'] .
                     ' ' . translateFN('su') . ' ' . $currentReportRow['exercises'] * ADA_MAX_SCORE . '</a>';
 
@@ -327,7 +324,7 @@ class Student
              * to have full date & time generation of report
              * but be warned that table log_classi may grow A LOT!
              */
-            $report_generation_TS = dt2tsFN(todayDateFN());
+            $report_generation_TS = Utilities::dt2tsFN(Utilities::todayDateFN());
             if ($speed_mode === true) {
                 // in  $data_to_get we choose what fields to get back and the order of fields
                 $columns = [
@@ -623,7 +620,7 @@ class Student
                 }
 
                 if (!empty($order)) {
-                    $dati_stude = masort($dati_stude, $order, 1, SORT_NUMERIC);
+                    $dati_stude = Utilities::masort($dati_stude, $order, 1, SORT_NUMERIC);
                 }
                 // TABLE LABELS
                 $table_labels[0] = $tableHeader;
@@ -642,8 +639,8 @@ class Student
                     $status_student = $one_student['status'];
                     $dati['id'] = $id_student;
                     $dati['level'] = $student_level;
-                    $ymdhms = todayDateFN();
-                    $utime = dt2tsFN($ymdhms);
+                    $ymdhms = Utilities::todayDateFN();
+                    $utime = Utilities::dt2tsFN($ymdhms);
                     $dati['date'] = $report_generation_TS;
 
                     $goodStatuses = [ADA_STATUS_SUBSCRIBED, ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, ADA_STATUS_TERMINATED];
@@ -977,7 +974,7 @@ class Student
 
                 if (!empty($order)) {
                     //var_dump($dati_stude);
-                    $dati_stude = masort($dati_stude, $order, 1, SORT_NUMERIC);
+                    $dati_stude = Utilities::masort($dati_stude, $order, 1, SORT_NUMERIC);
                 }
 
                 // TABLE LABELS

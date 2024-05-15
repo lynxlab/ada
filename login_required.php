@@ -10,13 +10,13 @@ use Lynxlab\ADA\Main\HtmlLibrary\UserModuleHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\GDPR\GdprAcceptPoliciesForm;
 use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
 use Lynxlab\ADA\Module\Login\AbstractLogin;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 require_once realpath(__DIR__) . '/config_path.inc.php';
 
@@ -41,7 +41,7 @@ $neededObjAr = [
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 BrowsingHelper::init($neededObjAr);
-$self = whoami();
+$self = Utilities::whoami();
 /*
  * YOUR CODE HERE
  */
@@ -142,7 +142,7 @@ $login_page_language_code = Translator::negotiateLoginPageLanguage($lang_get ?? 
 $_SESSION['sess_user_language'] = $login_page_language_code;
 
 $form_action = HTTP_ROOT_DIR ;
-$form_action .= '/' . whoami() . '.php';
+$form_action .= '/' . Utilities::whoami() . '.php';
 $data = UserModuleHtmlLib::loginForm($form_action, $supported_languages, $login_page_language_code, $login_error_message ?? '');
 
 $registration_action = HTTP_ROOT_DIR . '/browsing/registration.php';

@@ -2,7 +2,7 @@
 
 namespace Lynxlab\ADA\Services\Exercise;
 
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+use Lynxlab\ADA\Main\Utilities;
 
 /**
  * @name ADAEsercizio
@@ -124,7 +124,7 @@ class ADAEsercizio
     public function getExecutionDate()
     {
         if (is_array($this->risposta)) {
-            return ts2dFN($this->risposta['data_visita']);
+            return Utilities::ts2dFN($this->risposta['data_visita']);
         }
     }
     public function getCorrectness($id_node)

@@ -1,9 +1,9 @@
 <?php
 
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -30,7 +30,7 @@ $neededObjAr = [
 
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self =  whoami();
+$self =  Utilities::whoami();
 
 /*
  * YOUR CODE HERE

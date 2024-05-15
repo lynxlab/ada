@@ -6,9 +6,9 @@ use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 /**
  * Base config file
@@ -189,7 +189,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                 $last_date = ' - ';
                 if (count($last_access) > 0) {
                     $last_node = $last_access[0]['id_nodo'];
-                    $last_date = ts2dFN($last_access[0]['data_uscita']);
+                    $last_date = Utilities::ts2dFN($last_access[0]['data_uscita']);
                 }
 
                 if (isset($course['status'])) {
@@ -235,7 +235,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                 }
 
                 if (isset($course['data_iscrizione']) && !is_null($course['data_iscrizione']) && intval($course['data_iscrizione'] > 0)) {
-                    $date = ts2dFN($course['data_iscrizione']);
+                    $date = Utilities::ts2dFN($course['data_iscrizione']);
                 } else {
                     $date = '-';
                 }
@@ -277,13 +277,13 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                 }
 
                 if (isset($course['data_inizio_previsto']) && !is_null($course['data_inizio_previsto']) && intval($course['data_inizio_previsto'] > 0)) {
-                    $startDate = ts2dFN($course['data_inizio_previsto']);
+                    $startDate = Utilities::ts2dFN($course['data_inizio_previsto']);
                 } else {
                     $startDate = '-';
                 }
 
                 if (isset($course['data_fine']) && !is_null($course['data_fine']) && intval($course['data_fine'] > 0)) {
-                    $end_Date = ts2dFN($course['data_fine']);
+                    $end_Date = Utilities::ts2dFN($course['data_fine']);
                 } else {
                     $end_Date = '-';
                 }
@@ -386,13 +386,13 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                 }
 
                 if (isset($course['data_creazione']) && !is_null($course['data_creazione']) && intval($course['data_creazione'] > 0)) {
-                    $creationDate = ts2dFN($course['data_creazione']);
+                    $creationDate = Utilities::ts2dFN($course['data_creazione']);
                 } else {
                     $creationDate = '-';
                 }
 
                 if (isset($course['data_pubblicazione']) && !is_null($course['data_pubblicazione']) && intval($course['data_pubblicazione'] > 0)) {
-                    $publicationDate = ts2dFN($course['data_pubblicazione']);
+                    $publicationDate = Utilities::ts2dFN($course['data_pubblicazione']);
                 } else {
                     $publicationDate = '-';
                 }

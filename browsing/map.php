@@ -8,6 +8,7 @@ use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADAGuest;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Services\NodeEditing\NodeEditing;
 
 use function Lynxlab\ADA\Browsing\Map\returnAdaNodeIcon;
@@ -16,7 +17,6 @@ use function Lynxlab\ADA\Browsing\Map\returnAdaNodePos;
 use function Lynxlab\ADA\Browsing\Map\returnAdaNodeType;
 use function Lynxlab\ADA\Browsing\Map\returnMapType;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -81,7 +81,7 @@ BrowsingHelper::init($neededObjAr);
 if ($userObj instanceof ADAGuest) {
     $self = 'guest_map';
 } else {
-    $self = whoami();
+    $self = Utilities::whoami();
 }
 
 /*

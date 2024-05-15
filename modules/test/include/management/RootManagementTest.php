@@ -14,6 +14,7 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\Node\Node;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 use Lynxlab\ADA\Module\Test\DeleteFormTest;
 use Lynxlab\ADA\Module\Test\ManagementTest;
@@ -21,8 +22,6 @@ use Lynxlab\ADA\Module\Test\SurveyFormTest;
 use Lynxlab\ADA\Module\Test\TestFormTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\redirect;
-use function Lynxlab\ADA\Main\Utilities\todayDateFN;
 
 class RootManagementTest extends ManagementTest
 {
@@ -127,7 +126,7 @@ class RootManagementTest extends ManagementTest
                     $nodo_test['type']              = ADA_CUSTOM_EXERCISE_TEST;
                     $nodo_test['parent_id']         = $nodo->id;
                     $nodo_test['order']             = $order + 1;
-                    $nodo_test['creation_date']     = todayDateFN();
+                    $nodo_test['creation_date']     = Utilities::todayDateFN();
                     $nodo_test['pos_x0']            = 0;
                     $nodo_test['pos_y0']            = 0;
                     $nodo_test['pos_x1']            = 0;
@@ -145,7 +144,7 @@ class RootManagementTest extends ManagementTest
                         }
 
                         if ($res && $dh->testUpdateNode($id_test, $data)) {
-                            redirect(MODULES_TEST_HTTP . '/index.php?id_test=' . $id_test);
+                            Utilities::redirect(MODULES_TEST_HTTP . '/index.php?id_test=' . $id_test);
                         } else {
                             $html = sprintf(translateFN('Errore durante la creazione del %s'), $this->what);
                         }
@@ -227,7 +226,7 @@ class RootManagementTest extends ManagementTest
                     'correttezza' => $_POST['correttezza'],
                 ];
                 if ($dh->testUpdateNode($test['id_nodo'], $data)) {
-                    redirect(MODULES_TEST_HTTP . '/index.php?id_test=' . $test['id_nodo']);
+                    Utilities::redirect(MODULES_TEST_HTTP . '/index.php?id_test=' . $test['id_nodo']);
                 } else {
                     $html = sprintf(translateFN('Errore durante la modifica del %s'), $this->what);
                 }
@@ -273,10 +272,10 @@ class RootManagementTest extends ManagementTest
                 if (AMATestDataHandler::isError($dh->testDeleteNodeTest($this->id))) {
                     $html = sprintf(translateFN('Errore durante la cancellazione del %s'), $this->what);
                 } else {
-                    redirect(HTTP_ROOT_DIR . '/browsing/view.php?id_node=' . $nodo->parent_id);
+                    Utilities::redirect(HTTP_ROOT_DIR . '/browsing/view.php?id_node=' . $nodo->parent_id);
                 }
             } else {
-                redirect(MODULES_TEST_HTTP . '/index.php?id_test=' . $this->id);
+                Utilities::redirect(MODULES_TEST_HTTP . '/index.php?id_test=' . $this->id);
             }
         } else {
             $titolo = $test['titolo'];

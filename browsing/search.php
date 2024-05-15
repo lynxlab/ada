@@ -11,10 +11,10 @@ use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -86,7 +86,7 @@ if ($courseInstanceObj instanceof CourseInstance) {
 if ($userObj->tipo == AMA_TYPE_STUDENT && ($self_instruction)) {
     $self = 'searchSelfInstruction';
 } else {
-    $self = whoami();
+    $self = Utilities::whoami();
 }
 
 if (isset($_REQUEST['submit'])) {
@@ -299,7 +299,7 @@ if (isset($op) && $op == 'lemma') {
 }
 
 $fObj = new Form();
-$action = whoami() . ".php";
+$action = Utilities::whoami() . ".php";
 /*set get method to prevent the confirmation data on back button's browser*/
 $fObj->initForm($action, 'GET');
 $fObj->setForm($form_dataHa);
@@ -321,7 +321,7 @@ if (isset($_GET['s_AdvancedForm'])) {
     }
 } else {
     $form_AdvancedSearch = new AdvancedSearchForm(false, 'search.php');
-    $action = whoami() . ".php";
+    $action = Utilities::whoami() . ".php";
     $advancedSearch_form = $form_AdvancedSearch->getHtml();
 }
 $online_users_listing_mode = 2;

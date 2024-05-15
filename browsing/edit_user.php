@@ -14,10 +14,10 @@ use Lynxlab\ADA\Main\HtmlLibrary\UserExtraModuleHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\User\ADAUser;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Secretquestion\AMASecretQuestionDataHandler;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -45,7 +45,7 @@ $neededObjAr = [
 ];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-//$self = whoami();
+//$self = Utilities::whoami();
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -82,7 +82,7 @@ BrowsingHelper::init($neededObjAr);
 /*
  * YOUR CODE HERE
  */
-$self = whoami();
+$self = Utilities::whoami();
 $languages = Translator::getLanguagesIdAndName();
 
 /**
@@ -180,7 +180,7 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
     // the standard UserProfileForm is always needed.
     // Let's create it
     if ($userObj->tipo == AMA_TYPE_STUDENT && ($self_instruction)) {
-        $self = whoami(); //allowing to build action form
+        $self = Utilities::whoami(); //allowing to build action form
     }
     $form = new UserProfileForm($languages, $allowEditProfile, $allowEditConfirm, $self . '.php');
     unset($user_dataAr['password']);
@@ -380,7 +380,7 @@ $self_instruction = DataValidator::checkInputValues('self_instruction', 'Value',
 if ($userObj->tipo == AMA_TYPE_STUDENT && ($self_instruction)) {
     $self = 'editUserSelfInstruction';
 } else {
-    $self = whoami();
+    $self = Utilities::whoami();
 }
 $maxFileSize = (int) (ADA_FILE_UPLOAD_MAX_FILESIZE / (1024 * 1024));
 if ($userObj->tipo == AMA_TYPE_STUDENT && ($self_instruction)) {

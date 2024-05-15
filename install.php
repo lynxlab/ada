@@ -3,13 +3,11 @@
 use Composer\Console\Application;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADAGuest;
+use Lynxlab\ADA\Main\Utilities;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\StreamOutput;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\delTree;
-use function Lynxlab\ADA\Main\Utilities\redirect;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * INSTALLATION SCRIPT.
@@ -255,7 +253,7 @@ require_once realpath(__DIR__) . '/config_path.inc.php';
  * redirect to homepage if ADA is installed, either with install script or manually
  */
 if (is_dir('clients') && count(glob(ROOT_DIR . "/clients/*/client_conf.inc.php")) > 0) {
-    redirect(HTTP_ROOT_DIR);
+    Utilities::redirect(HTTP_ROOT_DIR);
 }
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -662,7 +660,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             }
 
             sendToBrowser(translateFN('Rimozione file temopranei') . ' ...');
-            delTree(COMPOSER_DIRECTORY) ? sendOK() : sendFail();
+            Utilities::delTree(COMPOSER_DIRECTORY) ? sendOK() : sendFail();
 
             if (is_array($newUsers) && count($newUsers) > 0) {
                 sendToBrowser(PHP_EOL . PHP_EOL . "<div style='font-size:1.2em;color:#ff9d51;'>Trascrivere in un posto sicuro lo username e la password degli utenti generati che sono:<strong>" . PHP_EOL . implode(PHP_EOL, $newUsers) . PHP_EOL . "</strong>la password è quella fornita durante l'installazione.</div>" . PHP_EOL);
@@ -683,7 +681,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 } else {
     session_start();
     $_SESSION['sess_userObj'] = new ADAGuest();
-    $self = whoami();
+    $self = Utilities::whoami();
     $modulesAv = [];
     $modulesDIS = ['secretquestion', 'code_man'];
     $modulesHidden = ['event-dispatcher', 'gdpr', 'login', 'test'];

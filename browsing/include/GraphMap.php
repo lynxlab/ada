@@ -5,8 +5,7 @@
 namespace Lynxlab\ADA\Browsing\GraphMap;
 
 use Lynxlab\ADA\Browsing\ImageDevice;
-
-use function Lynxlab\ADA\Main\Utilities\mydebug;
+use Lynxlab\ADA\Main\Utilities;
 
 function makeImageMapFN($children_ha, $user_level, $id_profile)
 {
@@ -43,7 +42,7 @@ function makeImageMapFN($children_ha, $user_level, $id_profile)
     $src_y = 0;
     $image_map = "<map name=\"Map\">\n";
     foreach ($children_ha as $child) {
-        //mydebug(__LINE__,__FILE__,$child);
+        //Utilities::mydebug(__LINE__,__FILE__,$child);
         $node_type = $child['type_child'];
         $node_level = $child['level_child'];
         $position_child = $child['position_child'];
@@ -62,7 +61,7 @@ function makeImageMapFN($children_ha, $user_level, $id_profile)
         } else {
             $icon_child = "$root_dir/$template_img_dir/$tmp_icon_child";
         }
-        //mydebug(__LINE__,__FILE__,$icon_child);
+        //Utilities::mydebug(__LINE__,__FILE__,$icon_child);
         // $icon_child = $template_img_dir . $child['icon_child'];
         // Get image dimensions
         $size_src = GetImageSize($icon_child);
@@ -100,7 +99,7 @@ function computeMaxFN($children_ha)
     $max_Y = 0;
     foreach ($children_ha as $val) {
         $coordinate_ar = $val['position_child'];
-        //                mydebug(__LINE__,__FILE__,$coordinate_ar);
+        //                Utilities::mydebug(__LINE__,__FILE__,$coordinate_ar);
 
         $icon_child = $val['icon_child'];
         // Get image dimensions
@@ -169,17 +168,17 @@ function copyImageFN($children_ha, $im_dest, $max_X, $max_Y, $user_level)
     // $text_color = ImageColorAllocate ($im_dest, 255, 255, 255);
     $text_color = ImageColorAllocate($im_dest, $foreground_R, $foreground_G, $foreground_B);
 
-    //mydebug(__LINE__,__FILE__,$im_dest);
+    //Utilities::mydebug(__LINE__,__FILE__,$im_dest);
 
     foreach ($children_ha as $child) {
-        //mydebug(__LINE__,__FILE__,$child);
+        //Utilities::mydebug(__LINE__,__FILE__,$child);
         $node_type = $child['type_child'];
         $position_child_ar = $child['position_child'];
         $name_child = $child['name_child'];
         $node_level = $child['level_child'];
         $id_child = $child['id_child'];
         $tmp_icon_child = $child['icon_child'];
-        //  mydebug(__LINE__,__FILE__,$tmp_icon_child);
+        //  Utilities::mydebug(__LINE__,__FILE__,$tmp_icon_child);
 
 
         if ($user_level < $node_level) {
@@ -200,7 +199,7 @@ function copyImageFN($children_ha, $im_dest, $max_X, $max_Y, $user_level)
             }
         }
 
-        //mydebug(__LINE__,__FILE__,$icon_child);
+        //Utilities::mydebug(__LINE__,__FILE__,$icon_child);
         //echo "<img src=$icon_child>";
 
         if (!empty($icon_child)) {
@@ -208,7 +207,7 @@ function copyImageFN($children_ha, $im_dest, $max_X, $max_Y, $user_level)
             if (empty($id->error()) and (file_exists($icon_child))) {
                 // Get image dimensions
                 $size_src = $id->GetImageSizeX($icon_child);
-                // mydebug(__LINE__,__FILE__,$size_src);
+                // Utilities::mydebug(__LINE__,__FILE__,$size_src);
 
                 $height_src = $size_src[1];
                 $width_src = $size_src[0];
@@ -218,13 +217,13 @@ function copyImageFN($children_ha, $im_dest, $max_X, $max_Y, $user_level)
                 // Necessari per ridimensionamento immagine
                 $height_dest = $position_child_ar[3] - $position_child_ar[1];
                 $width_dest = $position_child_ar[2] - $position_child_ar[0];
-                // mydebug(__LINE__,__FILE__,$position_child_ar);
+                // Utilities::mydebug(__LINE__,__FILE__,$position_child_ar);
                 //
 
                 // $extension = $id->type;
 
                 $im_src = $id->imagecreateFromX($icon_child);
-                mydebug(__LINE__, __FILE__, $id->error());
+                Utilities::mydebug(__LINE__, __FILE__, $id->error());
                 // Versione immagini ridimensionate.
                 //                      $im_result =  ImageCopyResized ($im_dest, $im_src, $dest_x, $dest_y, $src_x, $src_y, $width_dest, $height_dest, $width_src, $height_src);
                 // Versione che non ridimensiona
@@ -238,7 +237,7 @@ function copyImageFN($children_ha, $im_dest, $max_X, $max_Y, $user_level)
             ImageString($im_dest, 1, $dest_x, ($dest_y + $height_src + 10), $name_child, $text_color);
         }
     }
-    // mydebug(__LINE__,__FILE__,$position_node);
+    // Utilities::mydebug(__LINE__,__FILE__,$position_node);
     return $position_node; # restituisce un array contenente le posizioni dei nodi figli
 }
 
@@ -270,12 +269,12 @@ function makeLinkFN($children_ha, $im_dest, $position_node)
         if (!empty($linked)) {
             foreach ($linked as $link) {
                 $id_node_to = $link['id_node_to'];
-                mydebug(__LINE__, __FILE__, ['id_node_to' => $id_node_to, 'id_node_from' => $id_node_from]);
+                Utilities::mydebug(__LINE__, __FILE__, ['id_node_to' => $id_node_to, 'id_node_from' => $id_node_from]);
                 foreach ($position_node as $pos) {
                     $id_node = $pos['id_node'];
-                    mydebug(__LINE__, __FILE__, ['id_node_from' => $id_node_from, 'id_node_to' => $id_node_to, 'id_node' => $id_node, 'trovato' => $node_from_found]);
+                    Utilities::mydebug(__LINE__, __FILE__, ['id_node_from' => $id_node_from, 'id_node_to' => $id_node_to, 'id_node' => $id_node, 'trovato' => $node_from_found]);
                     if (($id_node == $id_node_from) and (!$node_from_found)) { // get position of node from
-                        mydebug(__LINE__, __FILE__, $id_node);
+                        Utilities::mydebug(__LINE__, __FILE__, $id_node);
                         $bounds = $pos['bounds'];
                         $bounds = explode(",", $bounds);
                         $xa1 = $bounds[0];

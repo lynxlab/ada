@@ -5,11 +5,11 @@ use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Services\Exercise\ExerciseDAO;
 use Lynxlab\ADA\Services\Exercise\ExerciseViewerFactory;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -67,7 +67,7 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  */
 ServiceHelper::init($neededObjAr);
 
-$self =  whoami();
+$self =  Utilities::whoami();
 /*
  * YOUR CODE HERE
 */

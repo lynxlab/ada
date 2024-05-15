@@ -21,6 +21,7 @@ use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Logger\ADALogger;
 use Lynxlab\ADA\Main\Menu;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CourseEvent;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
@@ -28,8 +29,6 @@ use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\todayDateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 abstract class AMATesterDataHandler extends AbstractAMADataHandler
 {
@@ -2996,7 +2995,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
 
     public function courseInstanceSubscribeableGetList($field_list_ar, $courseId)
     {
-        $today_date = todayDateFN();
+        $today_date = Utilities::todayDateFN();
         $timestamp = AMADataHandler::dateToTs($today_date);
         //        $timestamp = time();
         //        return $this->course_instance_find_list($field_list_ar, "id_corso=$courseId AND self_registration=1 AND data_inizio=0 AND data_inizio_previsto >= $timestamp and durata > 0  ORDER BY data_inizio_previsto ASC");
@@ -3323,7 +3322,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
     {
 
         // prepare variables for insertion
-        //mydebug(__LINE__,__FILE__,$link_ha);
+        //Utilities::mydebug(__LINE__,__FILE__,$link_ha);
         $id_nodo =  DataValidator::validateNodeId($link_ha['id_nodo']);
         $id_nodo_to =  DataValidator::validateNodeId($link_ha['id_nodo_to']);
         $id_utente =  DataValidator::isUinteger($link_ha['id_utente']);
@@ -3385,7 +3384,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         // insert a row into table link
         $sql  = "insert into link (id_link,id_utente,id_nodo,id_nodo_to,id_posizione,tipo,data_creazione,stile,significato,azione)";
         $sql .= " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-        //   mydebug(__LINE__,__FILE__,$sql);
+        //   Utilities::mydebug(__LINE__,__FILE__,$sql);
         $res = $db->query($sql);
         $res = $this->executeCriticalPrepared($sql, [
             '',
@@ -3553,7 +3552,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
 
         $n = count($links_ar);
         ADALogger::logDb("got $n links to add");
-        //mydebug(__LINE__,__FILE__,$links_ar);
+        //Utilities::mydebug(__LINE__,__FILE__,$links_ar);
 
         for ($i = 1; $i <= $n; $i++) {   // links start with 1 !  steve 23/10/01
             $link_ha['id_nodo'] = $links_ar[$i]['id_nodo'];
@@ -3568,7 +3567,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             $link_ha['stile'] = $links_ar[$i]['stile'];
             $link_ha['significato'] = $links_ar[$i]['significato'];
             $link_ha['azione'] = $links_ar[$i]['azione'];
-            //mydebug(__LINE__,__FILE__,$link_ha);
+            //Utilities::mydebug(__LINE__,__FILE__,$link_ha);
 
             ADALogger::logDb("trying to add link $i");
             if (AMADataHandler::isError($res = $this->addLink($link_ha))) {
@@ -3735,7 +3734,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         }
 
         $res = $this->queryPrepared($sql, $params);
-        // global $debug;$debug=1;mydebug(__LINE__,__FILE__,$res); $debug=0;
+        // global $debug;$debug=1;Utilities::mydebug(__LINE__,__FILE__,$res); $debug=0;
         if (AMADB::isError($res)) {
             return new AMAError($this->errorMessage(AMA_ERR_ADD) .
                 " while in add_class_report");
@@ -3793,7 +3792,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
 
         $res = $db->getAll($sql, [$course_instance_id, $date], AMA_FETCH_ASSOC);
 
-        //global $debug;$debug=1;mydebug(__LINE__,__FILE__,$res); $debug=0;
+        //global $debug;$debug=1;Utilities::mydebug(__LINE__,__FILE__,$res); $debug=0;
         if (AMADB::isError($res)) {
             return new AMAError($this->errorMessage(AMA_ERR_GET) . " while in get_class_report");
         }
@@ -3866,7 +3865,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         $sql = "SELECT * from log_classi WHERE id_istanza_corso  = ? AND id_user = ?";
 
         $res = $db->getAll($sql, [$course_instance_id, $student_id]);
-        // global $debug;$debug=1;mydebug(__LINE__,__FILE__,$res); $debug=0;
+        // global $debug;$debug=1;Utilities::mydebug(__LINE__,__FILE__,$res); $debug=0;
         if (AMADB::isError($res)) {
             return new AMAError($this->errorMessage(AMA_ERR_GET) . " while in get_student_report");
         }
@@ -3922,7 +3921,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         // do the query
         $res =  $db->getAll($sql);
 
-        // global $debug;$debug=1;mydebug(__LINE__,__FILE__,$res); $debug=0;
+        // global $debug;$debug=1;Utilities::mydebug(__LINE__,__FILE__,$res); $debug=0;
         if (AMADB::isError($res)) {
             return new AMAError($this->errorMessage(AMA_ERR_GET) . " while in find_student_report");
         }
@@ -9046,7 +9045,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
 
         $res_ar['id'] = $id;
         if (isset($res_ar['birthdate'])) {
-            $res_ar['birthdate'] = ts2dFN($res_ar['birthdate']);
+            $res_ar['birthdate'] = Utilities::ts2dFN($res_ar['birthdate']);
         }
         return $res_ar;
     }
@@ -9925,7 +9924,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
 
         /*
        global $debug; $debug=1;
-       mydebug(__LINE__,__FILE__,$res_ar);
+       Utilities::mydebug(__LINE__,__FILE__,$res_ar);
        $debug=0;
         */
 

@@ -8,12 +8,12 @@ use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Impersonate\AMAImpersonateDataHandler;
 use Lynxlab\ADA\Module\Impersonate\ImpersonateException;
 use Lynxlab\ADA\Module\Impersonate\Utils;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -38,7 +38,7 @@ $neededObjAr = [
 ];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = whoami();  // = admin!
+$self = Utilities::whoami();  // = admin!
 
 /**
  * This will at least import in the current symbol table the following vars.

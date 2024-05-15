@@ -14,6 +14,7 @@ use Lynxlab\ADA\CORE\html4\CBase;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Node\Node;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 use Lynxlab\ADA\Module\Test\AnswersClozeFormTest;
 use Lynxlab\ADA\Module\Test\AnswersMultipleClozeFormTest;
@@ -22,7 +23,6 @@ use Lynxlab\ADA\Module\Test\NodeTest;
 use Lynxlab\ADA\Module\Test\QuestionMultipleClozeTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\redirect;
 
 class AnswersManagementTest
 {
@@ -195,9 +195,9 @@ class AnswersManagementTest
                 if ($result) {
                     $get_topic = (isset($_GET['topic']) ? '&topic=' . $_GET['topic'] : '');
                     if ($_POST['return'] == 'here') {
-                        redirect(MODULES_TEST_HTTP . '/edit_answers.php?id_question=' . $this->question['id_nodo'] . $get_topic);
+                        Utilities::redirect(MODULES_TEST_HTTP . '/edit_answers.php?id_question=' . $this->question['id_nodo'] . $get_topic);
                     } else {
-                        redirect(MODULES_TEST_HTTP . '/index.php?id_test=' . $this->test['id_nodo'] . $get_topic . '#liQuestion' . $this->question['id_nodo']);
+                        Utilities::redirect(MODULES_TEST_HTTP . '/index.php?id_test=' . $this->test['id_nodo'] . $get_topic . '#liQuestion' . $this->question['id_nodo']);
                     }
                 }
             }

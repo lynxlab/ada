@@ -4,9 +4,9 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * This module is responsible for generating client id and client secret pairs for each user
@@ -51,7 +51,7 @@ BrowsingHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS
 
-$self = whoami();
+$self = Utilities::whoami();
 
 /**
  * TODO: Add your own code here

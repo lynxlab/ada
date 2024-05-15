@@ -5,13 +5,13 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Servicecomplete\AMACompleteDataHandler;
 use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
 use Lynxlab\ADA\Module\Servicecomplete\CompleteRulesManagement;
 use Lynxlab\ADA\Module\Servicecomplete\Operation;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 use function Lynxlab\ADA\Module\Servicecomplete\Functions\fixPOSTArray;
 
 ini_set('display_errors', '0');
@@ -43,7 +43,7 @@ $neededObjAr = [
 require_once(ROOT_DIR . '/include/module_init.inc.php');
 BrowsingHelper::init($neededObjAr);
 
-$self = whoami();
+$self = Utilities::whoami();
 
 $GLOBALS['dh'] = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 $data = '';

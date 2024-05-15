@@ -7,11 +7,10 @@ use Lynxlab\ADA\Main\Forms\CourseModelForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Translator;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Services\NodeEditing\NodeEditing;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -36,7 +35,7 @@ $neededObjAr = [
 ];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = whoami();  // = admin!
+$self = Utilities::whoami();  // = admin!
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -93,7 +92,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             'nome' => $_POST['nome'],
             'titolo' => $_POST['titolo'],
             'descr' => $_POST['descrizione'],
-            'd_create' => ts2dFN(time()), //$_POST['data_creazione'],
+            'd_create' => Utilities::ts2dFN(time()), //$_POST['data_creazione'],
             'd_publish' => $_POST['data_pubblicazione'] ?? null,
             'id_autore' => $_POST['id_utente_autore'],
             'id_nodo_toc' => $_POST['id_nodo_toc'],

@@ -17,10 +17,9 @@ use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\AMA\Traits\WithCUD;
 use Lynxlab\ADA\Main\AMA\Traits\WithInstance;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
-use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 
 class AMARepositoryDataHandler extends AMACommonDataHandler
 {
@@ -116,7 +115,7 @@ class AMARepositoryDataHandler extends AMACommonDataHandler
                 }
                 $element['courseProvider'] = $cachedValues['courseProviders'][$element['id_course']];
                 $element['courseTitle'] = $cachedValues['courseTitles'][$element['id_course']];
-                $element['exportDateTime'] = ts2dFN($element['exportTS']) . ' ' . ts2tmFN($element['exportTS']);
+                $element['exportDateTime'] = Utilities::ts2dFN($element['exportTS']) . ' ' . Utilities::ts2tmFN($element['exportTS']);
 
                 return $element;
             }, $res);

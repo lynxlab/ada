@@ -31,8 +31,7 @@ use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMATesterDataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\User\ADAUser;
-
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+use Lynxlab\ADA\Main\Utilities;
 
 /**
  * AMADataHandler.
@@ -267,7 +266,7 @@ class AMADataHandler extends AMATesterDataHandler
                         foreach ($extraArr as $extraKey => $extraElement) {
                             foreach ($extraElement as $key => $val) {
                                 if (stripos($key, "date") !== false) {
-                                    $extraArr[$extraKey][$key] = ts2dFN($val);
+                                    $extraArr[$extraKey][$key] = Utilities::ts2dFN($val);
                                 }
                             }
                         }

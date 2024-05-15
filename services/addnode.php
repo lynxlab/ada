@@ -22,6 +22,7 @@ use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities as MainUtilities;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\NodeEvent;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
@@ -31,8 +32,6 @@ use Lynxlab\ADA\Services\NodeEditing\PreferenceSelector;
 use Lynxlab\ADA\Services\NodeEditing\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\redirect;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -115,7 +114,7 @@ switch ($op) {
     case "add_node":
     case "add_node_author":
     case "save":
-        $self = whoami();//$self="author";
+        $self = MainUtilities::whoami();//$self="author";
         $action = "addnode";
         break;
 
@@ -125,7 +124,7 @@ switch ($op) {
         break;
 
     default:
-        $self = whoami();
+        $self = MainUtilities::whoami();
         $action = 'addnode';
         $op = 'add_node';
 }
@@ -141,7 +140,7 @@ if (($id_profile != AMA_TYPE_AUTHOR) && ($id_profile != AMA_TYPE_STUDENT) && ($i
      *
      * if user has the terminated status for the course instance, redirect to view
      */
-    redirect(HTTP_ROOT_DIR . '/browsing/view.php?id_node=' . $parent_id . '&id_course=' . $id_course .
+    MainUtilities::redirect(HTTP_ROOT_DIR . '/browsing/view.php?id_node=' . $parent_id . '&id_course=' . $id_course .
             '&id_course_instance=' . $id_course_instance);
 }
 

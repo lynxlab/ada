@@ -2,8 +2,7 @@
 
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 use Lynxlab\ADA\Main\Output\ARE;
-
-use function Lynxlab\ADA\Main\Utilities\whoami;
+use Lynxlab\ADA\Main\Utilities;
 
 /**
  * Base config file
@@ -37,7 +36,7 @@ $neededObjAr = [
  * Performs basic controls before entering this module
  */
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = whoami();
+$self = Utilities::whoami();
 
 /**
  * This will at least import in the current symbol table the following vars.

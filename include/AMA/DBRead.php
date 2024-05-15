@@ -304,7 +304,7 @@ class DBRead
         //             }
         //             if (!is_object($userObj))   {
         //                                      $error_msg = translateFN("Errore nella creazione dell'utente $sess_id_user");
-        //                                      //mydebug(__LINE__,__FILE__,array('msg'=>translateFN("ADA: Errore nella creazione dell'utente $sess_id_user")));
+        //                                      //Utilities::mydebug(__LINE__,__FILE__,array('msg'=>translateFN("ADA: Errore nella creazione dell'utente $sess_id_user")));
         //                                      $result = $error_msg; //
         //             } else {
         //                       if  (!$userObj->full) {
@@ -326,7 +326,7 @@ class DBRead
         //            }
         //} else {
         //               $error_msg = translateFN("Errore: utente non specificato");
-        //              //mydebug(__LINE__,__FILE__,array('msg'=>translateFN("ADA: Errore nella creazione dell'utente $sess_id_user")));
+        //              //Utilities::mydebug(__LINE__,__FILE__,array('msg'=>translateFN("ADA: Errore nella creazione dell'utente $sess_id_user")));
         //              $result = $error_msg; //
         //}
         //

@@ -12,14 +12,12 @@ use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLActions;
 use Lynxlab\ADA\Module\CollaboraACL\FileACL;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\leggidir;
-use function Lynxlab\ADA\Main\Utilities\todayDateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -45,7 +43,7 @@ $neededObjAr = [
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 
-$self =  whoami();
+$self =  Utilities::whoami();
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -112,7 +110,7 @@ if ((is_object($userObj)) && (!AMADataHandler::isError($userObj))) {
     $errObj = new ADAError(translateFN("Utente non trovato"), translateFN("Impossibile proseguire."));
 }
 
-$ymdhms = todayDateFN();
+$ymdhms = Utilities::todayDateFN();
 
 $help = translateFN("Da qui lo studente può scaricare i file allegati ai nodi");
 
@@ -168,7 +166,7 @@ if ($file !== false) {
     exit;
 } else {
     // indexing files
-    $elencofile = leggidir($download_path, '', [ 'csv' ]);
+    $elencofile = Utilities::leggidir($download_path, '', [ 'csv' ]);
     if ($elencofile == null) {
         //           $lista = translateFN("Nessun file inviato dagli studenti di questa classe.");
         $html = translateFN("Nessun file inviato dagli studenti di questa classe.");

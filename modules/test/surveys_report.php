@@ -6,11 +6,11 @@ use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 use Lynxlab\ADA\Module\Test\SurveyTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -44,7 +44,7 @@ BrowsingHelper::init($neededObjAr);
 $GLOBALS['dh'] = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 $dh = $GLOBALS['dh'];
 
-$self = whoami();
+$self = Utilities::whoami();
 
 /** @var \Lynxlab\ADA\Main\Course\CourseInstance $course_instanceObj */
 if (!isset($course_instanceObj) || !is_a($course_instanceObj, 'CourseInstance')) {

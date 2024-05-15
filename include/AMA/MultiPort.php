@@ -32,14 +32,12 @@ use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 use Lynxlab\ADA\Main\User\ADASwitcher;
 use Lynxlab\ADA\Main\User\ADAUser;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use PDOException;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Service\Functions\subscriptionType2stringFN;
-use function Lynxlab\ADA\Main\Utilities\todayDateFN;
-use function Lynxlab\ADA\Main\Utilities\todayTimeFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 class MultiPort
 {
@@ -1258,7 +1256,7 @@ class MultiPort
                                 }
 
                                 $course = $tester_dh->getCourse($id_course);
-                                $start_date =  ts2dFN($data_inizio_previsto);
+                                $start_date =  Utilities::ts2dFN($data_inizio_previsto);
                                 $id_start = $id_course . "_0";
                                 if (is_array($course)) {
                                     $id_start = $id_course . "_" . $course['id_nodo_iniziale'];
@@ -1273,16 +1271,16 @@ class MultiPort
                                 switch ($tipo) {
                                     case ADA_SERVICE_SUBSCRIPTION_STATUS_ACCEPTED: //ADA_STATUS_SUBSCRIBED:
                                         // mod steve 17/12/09 suspended while wating for  history module
-                                        $history_link = "<a href='" . HTTP_ROOT_DIR . "/browsing/service_info.php?norequest=1&id_course=$id_course&id_course_instance=$id_course_instance'>$start_date</a> - " . ts2dFN($data_fine);
+                                        $history_link = "<a href='" . HTTP_ROOT_DIR . "/browsing/service_info.php?norequest=1&id_course=$id_course&id_course_instance=$id_course_instance'>$start_date</a> - " . Utilities::ts2dFN($data_fine);
                                         // $history_link =  $start_date;
                                         $toc = "<a href='view.php?id_course=$id_course&id_node=$id_start&id_course_instance=$id_course_instance'>" . translateFN('Entra') . "</a>";
                                         break;
                                     case ADA_SERVICE_SUBSCRIPTION_STATUS_REQUESTED: //ADA_STATUS_PRESUBSCRIBED:
                                         // $toc = "<a href='view.php?$session_id_par"."id_course=$id_course&id_node=$id_start&id_course_instance=$id_course_instance'>".translateFN('Entra'). "</a>";
-                                        $history_link = $start_date . " - " . ts2dFN($data_fine);
+                                        $history_link = $start_date . " - " . Utilities::ts2dFN($data_fine);
                                         break;
                                     case ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED:
-                                        $history_link =  $start_date . " - " . ts2dFN($data_fine);
+                                        $history_link =  $start_date . " - " . Utilities::ts2dFN($data_fine);
                                         break;
                                     case ADA_SERVICE_SUBSCRIPTION_STATUS_SUSPENDED:
                                         $history_link =  $start_date . " - ";
@@ -1317,7 +1315,7 @@ class MultiPort
                                         translateFN('Stato') => $subscription_state,
                                     ];
                                 }
-                                // mydebug(__LINE__,__FILE__,$row);
+                                // Utilities::mydebug(__LINE__,__FILE__,$row);
 
                                 array_push($sub_course_dataHa, $row);
                             } else {
@@ -1682,8 +1680,8 @@ class MultiPort
 
         $msgs_ha = $mh->findMessages($userObj->getId(), ADA_MSG_AGENDA, $fields_list_Ar, $clause, $sort_field);
         if (!AMADataHandler::isError($msgs_ha)) {
-            $today_time = todayTimeFN();
-            $today_date = todayDateFN();
+            $today_time = Utilities::todayTimeFN();
+            $today_date = Utilities::todayDateFN();
             $today_time_date = date(ADA_DATE_FORMAT);
             foreach ($msgs_ha as $one_date) {
                 $time_2_add = 30 * 60; // 30 minuti di arrotondamento.
@@ -1723,8 +1721,8 @@ class MultiPort
 
         $msgs_ha = $mh->findMessages($userObj->getId(), ADA_MSG_AGENDA, $fields_list_Ar, $clause, $sort_field);
         if (!AMADataHandler::isError($msgs_ha)) {
-            $today_time = todayTimeFN();
-            $today_date = todayDateFN();
+            $today_time = Utilities::todayTimeFN();
+            $today_date = Utilities::todayDateFN();
             $today_time_date = date(ADA_DATE_FORMAT);
             foreach ($msgs_ha as $one_date) {
                 $time_2_add = 30 * 60; // 30 minuti di arrotondamento.

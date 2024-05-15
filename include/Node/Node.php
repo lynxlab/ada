@@ -29,11 +29,11 @@ use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Media\MediaViewer;
 use Lynxlab\ADA\Main\Node\Media;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 use Lynxlab\ADA\Services\Exercise\ExerciseDAO;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\readDir;
 
 class Node
 {
@@ -271,7 +271,7 @@ class Node
 
         if ($new_id_node != $this->id) {
             $dataHa = $dh->getNodeInfo($this->id);
-            //mydebug(__LINE__,__FILE__,$dataHa);
+            //Utilities::mydebug(__LINE__,__FILE__,$dataHa);
             if (AMADataHandler::isError($dataHa) || (!is_array($dataHa))) {
                 $msg = $dataHa->getMessage();
                 if (!strstr($msg, 'record was not found')) {
@@ -306,7 +306,7 @@ class Node
         $base = new Node($id_toc, 1);  // da dove parte
         $children = $base->children;
         $type = $base->type;
-        // mydebug(__LINE__,__FILE__,$children);
+        // Utilities::mydebug(__LINE__,__FILE__,$children);
 
         $children_ha = [];
         if (!empty($children) && (($type == ADA_GROUP_TYPE) || ($type == ADA_GROUP_WORD_TYPE))) {
@@ -320,7 +320,7 @@ class Node
                         ADA_GROUP_WORD_TYPE, ADA_PERSONAL_EXERCISE_TYPE, ADA_STANDARD_EXERCISE_TYPE,
                     ];
                     if (in_array(strval($child_dataHa['type'])[0], $nodeTypesToShow)) {
-                        //mydebug(__LINE__,__FILE__,$child_dataHa);
+                        //Utilities::mydebug(__LINE__,__FILE__,$child_dataHa);
                         $linksAr = [];
 
                         $links_result = $dh->getNodeLinks($id_child); // Array
@@ -351,7 +351,7 @@ class Node
                         } else {
                             $icon_child = $child_dataHa['icon'];
                         }
-                        //mydebug(__LINE__,__FILE__,$course_icons_media_path.$child_dataHa['icon']);
+                        //Utilities::mydebug(__LINE__,__FILE__,$course_icons_media_path.$child_dataHa['icon']);
 
                         $array_child = [
                             'id_child' => $id_child,
@@ -366,7 +366,7 @@ class Node
                             'children_count' => $children_count,
                         ];
                         array_push($children_ha, $array_child);
-                        //mydebug(__LINE__,__FILE__,$array_child);
+                        //Utilities::mydebug(__LINE__,__FILE__,$array_child);
                     }
                 }
             }
@@ -797,7 +797,7 @@ class Node
 
                 while ($id_node != $id_toc  && (!empty($id_node)) && ($id_node != "NULL")) {
                     // $debug=1;
-                    //mydebug(__LINE__,__FILE__,array('node'=>$id_node,'parent'=>$id_parent));
+                    //Utilities::mydebug(__LINE__,__FILE__,array('node'=>$id_node,'parent'=>$id_parent));
                     //$debug=0;
                     $dataHa = $dh->getNodeInfo($id_parent);
 
@@ -812,7 +812,7 @@ class Node
                                 $parent_type = $node_parent_dataHa['type'];
                                 //if ($parent_type ==ADA_GROUP_TYPE) {
                                 $pathAr[] = [$id_parent, $name];
-                                //mydebug(__LINE__,__FILE__,array('name'=>$name,'parent'=>$id_node));
+                                //Utilities::mydebug(__LINE__,__FILE__,array('name'=>$name,'parent'=>$id_node));
                             } else {
                             }
                             $id_parent = $id_node;
@@ -885,9 +885,9 @@ class Node
                 $linked_node_level = $tempNodeObj->level;
                 if (($linked_node_level <= $user_level) && (!empty($id_linked_node))) {
                     $ok_link = ['id_link' => $id_link, 'id_node_to' => $id_linked_node, 'meaning_link' => $link_meaning, 'type_link' => $link_type, 'action_link' => $link_action];
-                    //mydebug(__LINE__,__FILE__,$ok_link);
+                    //Utilities::mydebug(__LINE__,__FILE__,$ok_link);
                     array_push($data_Ar, $ok_link);
-                    // mydebug(__LINE__,__FILE__,$data_Ar);
+                    // Utilities::mydebug(__LINE__,__FILE__,$data_Ar);
                 }
             }
             return $data_Ar;
@@ -1535,7 +1535,7 @@ class Node
 
         if (!empty($this->links)) {
             $linkAr = $this->links;
-            // mydebug(__LINE__,__FILE__,$linkAr);
+            // Utilities::mydebug(__LINE__,__FILE__,$linkAr);
             $dataAr = [];
             foreach ($linkAr as $id_link) {
                 $linkObj = new Link($id_link);
@@ -1605,7 +1605,7 @@ class Node
         // HTML EMBEDDED VERSION
         if (!empty($this->children)) {
             $exerc_Ar = $this->children;
-            // mydebug(__LINE__,__FILE__,$exerc_Ar);
+            // Utilities::mydebug(__LINE__,__FILE__,$exerc_Ar);
             $dataAr = [];
             foreach ($exerc_Ar as $id_exerc) {
                 $temp = $dh->getNodeInfo($id_exerc);
@@ -1633,13 +1633,13 @@ class Node
                     // versione che legge nel DB la storia dell'esercizio
                     /*
                      $exercise = $dh->getNodeInfo($id_exerc);
-                    // mydebug(__LINE__,__FILE__,$exercObj);
+                    // Utilities::mydebug(__LINE__,__FILE__,$exercObj);
                     $exerc_title = $exercise['name'];
                     $out_fields_ar = array('data_visita','ripetibile');
                     $history_exerc = $dh->findExHistoryList($out_fields_ar,$sess_id_user, $sess_id_course_instance, $id_exerc);
                     if (is_array($history_exerc)){
                       $h_exerc = array_shift($history_exerc);
-                      // global $debug; $debug = 1; mydebug(__LINE__,__FILE__,$h_exerc); $debug=0;
+                      // global $debug; $debug = 1; Utilities::mydebug(__LINE__,__FILE__,$h_exerc); $debug=0;
                       if (is_array($h_exerc))
                       $already_executed = !$h_exerc[2];
                       else
@@ -1838,7 +1838,7 @@ class Node
 
             foreach ($notes_Ar as $id_note) {
                 $nodeObj = new Node($id_note, 0);
-                //$GLOBALS['debug']=1; mydebug(__LINE__,__FILE__,$nodeObj); $GLOBALS['debug']=0;
+                //$GLOBALS['debug']=1; Utilities::mydebug(__LINE__,__FILE__,$nodeObj); $GLOBALS['debug']=0;
                 $type = $nodeObj->type;
                 $node_instance = $nodeObj->instance;
                 if ($type == ADA_PRIVATE_NOTE_TYPE) { // notes
@@ -1846,7 +1846,7 @@ class Node
                     $level =  $nodeObj->level;
                     //$authorHa = $nodeObj->author;
                     //$autore = $authorHa['id'];
-                    //$GLOBALS['debug']=1; mydebug(__LINE__,__FILE__,$authorHa); $GLOBALS['debug']=0;
+                    //$GLOBALS['debug']=1; Utilities::mydebug(__LINE__,__FILE__,$authorHa); $GLOBALS['debug']=0;
                     // $node_author =  $authorHa['nome']." ". $authorHa['cognome'];
                     /*
                     * vito 12 gennaio2009
@@ -2094,7 +2094,7 @@ class Node
     // functions
     public function readUserDirFN($dir)
     {
-        return readDir($dir); // from utilities.inc.php
+        return Utilities::readDir($dir); // from utilities.inc.php
     }
 
     /* function next_nodeFN
@@ -2116,9 +2116,9 @@ class Node
             $childrenHA = $dh->getNodeChildrenInfo($parent_id, "", $orderParm);
 
             if (is_array($childrenHA)) {
-                //      $childrenAr = masort ($childrenAr, 'ordine',1,SORT_STRING);
+                //      $childrenAr = Utilities::masort ($childrenAr, 'ordine',1,SORT_STRING);
                 // parametric order key
-                //      $childrenHA = masort ($childrenHA, $orderParm,1,SORT_STRING);
+                //      $childrenHA = Utilities::masort ($childrenHA, $orderParm,1,SORT_STRING);
                 // no more needed, we order inside the query
                 // var_dump($childrenHA);
                 foreach ($childrenHA as $child) {

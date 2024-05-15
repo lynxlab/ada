@@ -2,9 +2,7 @@
 
 use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
 use Lynxlab\ADA\Main\Helper\TutorHelper;
-
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
-use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
+use Lynxlab\ADA\Main\Utilities;
 
 /**
  * Base config file
@@ -66,7 +64,7 @@ $data = array_map(function ($el) {
                             'wasnull' => is_null($event[$what]),
                             'timestamp' => is_null($event[$what]) ? $el['details'][$detail] : $event[$what],
                         ];
-                        $u['events'][$i][$what]['display'] = ts2dFN($u['events'][$i][$what]['timestamp']) . ' ' . ts2tmFN($u['events'][$i][$what]['timestamp']);
+                        $u['events'][$i][$what]['display'] = Utilities::ts2dFN($u['events'][$i][$what]['timestamp']) . ' ' . Utilities::ts2tmFN($u['events'][$i][$what]['timestamp']);
                     }
                 }
                 $u['events'] = array_filter($u['events'], fn ($el) => $el['entrata']['timestamp'] != $el['uscita']['timestamp']);

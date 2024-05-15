@@ -2,8 +2,8 @@
 
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Utilities;
 
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 use function Lynxlab\ADA\Module\Slideimport\Functions\generateRandomString;
 
 ini_set('display_errors', '0');
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['courseName']) && strle
             'nome' => generateRandomString(8),
             'titolo' => trim($_POST['courseName']),
             'descr' => '',
-            'd_create' => ts2dFN(time()),
+            'd_create' => Utilities::ts2dFN(time()),
             'd_publish' => null,
             'id_autore' => $userObj->getId(),
             'id_nodo_toc' => 0,

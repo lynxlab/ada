@@ -1,12 +1,12 @@
 <?php
 
 use Lynxlab\ADA\Browsing\ImageDevice;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Browsing\GraphMap\computeMaxFN;
 use function Lynxlab\ADA\Browsing\GraphMap\copyImageFN;
 use function Lynxlab\ADA\Browsing\GraphMap\makeLinkFN;
 use function Lynxlab\ADA\Browsing\GraphMap\showImageFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 $debug = 0;
 $ada_config_path = realpath(__DIR__ . '/..');
@@ -14,7 +14,7 @@ include_once("$ada_config_path/config_path.inc.php");
 //vito 2 feb 2009
 //$encode_children = $_GET['ec'];
 
-$self = whoami();
+$self = Utilities::whoami();
 $ID = new ImageDevice();
 $type = $ID->imageDevice();
 

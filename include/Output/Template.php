@@ -57,7 +57,7 @@ class Template
             //                $GLOBALS['template_family'] = $family;
         }
 
-        // mydebug(__LINE__,__FILE__,"BA $basedir_ada FG $function_group");
+        // Utilities::mydebug(__LINE__,__FILE__,"BA $basedir_ada FG $function_group");
 
         //___________TPL ____________
         // reads templates from filesystem
@@ -126,7 +126,7 @@ class Template
         if (!file_exists($tpl_filename)) {
             //$tpl_dir = $root_dir."/templates/$module_dir/$family/";
             $tpl_filename = $tpl_dir . "default" . $tpl_fileextension;
-            // mydebug(__LINE__,__FILE__, " trying $tpl_filename...<br>");
+            // Utilities::mydebug(__LINE__,__FILE__, " trying $tpl_filename...<br>");
             if (!file_exists($tpl_filename)) {
                 $module_dir = "main";
                 $tpl_dir = $root_dir . "/layout/$family/templates/$module_dir/";
@@ -134,7 +134,7 @@ class Template
                 if (!file_exists($tpl_filename)) {
                     $this->error = "$tpl_filename not found";
                 }
-                //mydebug(__LINE__,__FILE__, "  $tpl_filename...<br>");
+                //Utilities::mydebug(__LINE__,__FILE__, "  $tpl_filename...<br>");
             }
         }
         $this->template = $tpl_filename;

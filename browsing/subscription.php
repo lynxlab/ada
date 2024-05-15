@@ -6,9 +6,9 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /* Questa versione consento solo la sottoscrizione ad un servizio ma non la registrazione
  * deve essere passato l'id del servizio (id_corse?)
@@ -72,7 +72,7 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-$self =  whoami();
+$self =  Utilities::whoami();
 
 
 if ($_REQUEST['id_course']) {

@@ -6,6 +6,7 @@ use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\EtherpadIntegration\AMAEtherpadDataHandler;
 use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadActions;
 use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadException;
@@ -13,7 +14,6 @@ use Lynxlab\ADA\Module\EtherpadIntegration\Pads;
 use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -38,7 +38,7 @@ $variableToClearAR = ['node', 'layout', 'course', 'user'];
  */
 require_once(ROOT_DIR . '/include/module_init.inc.php');
 BrowsingHelper::init($neededObjAr);
-$self = whoami();
+$self = Utilities::whoami();
 
 try {
     $optionsAr = [];

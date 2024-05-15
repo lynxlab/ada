@@ -18,9 +18,9 @@ use Lynxlab\ADA\Main\Output\CSS;
 use Lynxlab\ADA\Main\Output\JS;
 use Lynxlab\ADA\Main\Output\PageWidget;
 use Lynxlab\ADA\Main\Output\Template;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\mydebug;
 
 class Layout
 {
@@ -114,17 +114,17 @@ class Layout
         // forces debug
         //var_dump($this);
         $GLOBALS['debug'] = 1;
-        mydebug(__LINE__, __FILE__, "FDIR: " . $this->family);
-        mydebug(__LINE__, __FILE__, "CSS: " . $this->CSS_filename);
-        mydebug(__LINE__, __FILE__, "CSSDIR: " . $this->CSS_dir);
+        Utilities::mydebug(__LINE__, __FILE__, "FDIR: " . $this->family);
+        Utilities::mydebug(__LINE__, __FILE__, "CSS: " . $this->CSS_filename);
+        Utilities::mydebug(__LINE__, __FILE__, "CSSDIR: " . $this->CSS_dir);
 
-        mydebug(__LINE__, __FILE__, "TPL: " . $this->template);
-        mydebug(__LINE__, __FILE__, "TPLDIR: " . $this->template_dir);
+        Utilities::mydebug(__LINE__, __FILE__, "TPL: " . $this->template);
+        Utilities::mydebug(__LINE__, __FILE__, "TPLDIR: " . $this->template_dir);
 
-        mydebug(__LINE__, __FILE__, "JS: " . $this->JS_filename);
-        mydebug(__LINE__, __FILE__, "JSDIR: " . $this->JS_dir);
+        Utilities::mydebug(__LINE__, __FILE__, "JS: " . $this->JS_filename);
+        Utilities::mydebug(__LINE__, __FILE__, "JSDIR: " . $this->JS_dir);
 
-        mydebug(__LINE__, __FILE__, "MDIR: " . $this->module_dir);
+        Utilities::mydebug(__LINE__, __FILE__, "MDIR: " . $this->module_dir);
 
 
         $GLOBALS['debug'] = 0;

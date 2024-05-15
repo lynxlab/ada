@@ -5,10 +5,9 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\redirect;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -65,14 +64,14 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-$self =  whoami();
+$self =  Utilities::whoami();
 
 if (
     !isset($_GET['instances']) && !isset($_GET['node']) &&
     trim($_GET['instances']) === '' && trim($_GET['node']) === ''
 ) {
     // if no instances list is passed, redirect the user to home page
-    redirect($_SESSION['sess_userObj']->getHomePage());
+    Utilities::redirect($_SESSION['sess_userObj']->getHomePage());
 } else {
     /*
      * Display the select instance page.

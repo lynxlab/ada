@@ -16,12 +16,9 @@ use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\User\ADAUser;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\redirect;
-use function Lynxlab\ADA\Main\Utilities\todayDateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -56,10 +53,10 @@ $neededObjAr = [
 require_once ROOT_DIR . '/include/module_init.inc.php';
 BrowsingHelper::init($neededObjAr);
 $op = DataValidator::checkInputValues('op', 'Value', INPUT_GET);
-$today_date = todayDateFN();
+$today_date = Utilities::todayDateFN();
 
 //$self = 'list_chatrooms'; // x template
-$self = whoami();
+$self = Utilities::whoami();
 
 /**
  * Negotiate page language if needed
@@ -530,7 +527,7 @@ if ($op !== false && $op == 'course_info') {
                             }
 
                             if ($doRedirect) {
-                                redirect($redirectUrl);
+                                Utilities::redirect($redirectUrl);
                             }
 
                             //                        } else if($result->code == AMA_ERR_UNIQUE_KEY) {
@@ -739,7 +736,7 @@ if ($op !== false && $op == 'course_info') {
                                 if (is_numeric($iKey)) {
                                     unset($instancesAr[$instKey][$iKey]);
                                 } elseif (stripos($iKey, 'data') !== false) {
-                                    $instancesAr[$instKey][$iKey] = ts2dFN($iVal);
+                                    $instancesAr[$instKey][$iKey] = Utilities::ts2dFN($iVal);
                                 }
                             }
                             $instancesAr[$instKey]['id_corso'] = $courseId;

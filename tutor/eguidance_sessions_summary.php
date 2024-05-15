@@ -11,10 +11,9 @@ use Lynxlab\ADA\Main\Helper\TutorHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\HtmlLibrary\TutorModuleHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -40,7 +39,7 @@ $neededObjAr = [
 ];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self =  whoami();
+$self =  Utilities::whoami();
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -188,7 +187,7 @@ if (
     $p = 1;
     $page_titles = [];
     foreach ($eguidance_session_datesAr as $d) {
-        $page_titles[$p++] = ts2dFN($d['data_ora']);
+        $page_titles[$p++] = Utilities::ts2dFN($d['data_ora']);
     }
 
     $pagination_bar = BaseHtmlLib::getPaginationBar($page, $page_titles, $base_href);

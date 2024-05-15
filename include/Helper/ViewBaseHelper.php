@@ -23,11 +23,11 @@ use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\GetCallingMethodName;
 
 /**
  * View helper base class
@@ -571,7 +571,7 @@ abstract class ViewBaseHelper
                     'eventClass' => CoreEvent::class,
                     'eventName' => CoreEvent::HELPERINITEXTRACT,
                 ],
-                GetCallingMethodName(),
+                Utilities::getCallingMethodName(),
                 [
                     'data' => self::getHelperData(),
                     'class' => static::class,

@@ -18,10 +18,9 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Bookmark\Bookmark;
 use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\User\ADAUser;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\masort;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 abstract class AbstractCourse
 {
@@ -164,7 +163,7 @@ abstract class AbstractCourse
         $out_fields_ar = ['nome', 'tipo'];
         $clause = "";
         $childrenAr = $dh->findCourseNodesList($out_fields_ar, $clause, $sess_id_course);
-        $childrenAr = masort($childrenAr, 1); // il campo 1 �il nome del nodo
+        $childrenAr = Utilities::masort($childrenAr, 1); // il campo 1 �il nome del nodo
         $k = 0;
         $indexAr = [];
         foreach ($childrenAr as $nodeHa) {
@@ -471,13 +470,13 @@ abstract class AbstractCourse
                                         $already_executed = "";
                                     }
 
-                                    //$debug=1;mydebug(__LINE__,__FILE__,$already_executed[1]); $debug=0;
+                                    //$debug=1;Utilities::mydebug(__LINE__,__FILE__,$already_executed[1]); $debug=0;
                                     if (!$already_executed) {
                                         $alt = translateFN("Esercizio");
                                         $icon = "_exer.png";
                                         $index_item = "<img name=\"esercizio\" alt=\"$alt\" src=\"img/$icon\"> <a href=exercise.php?id_node=" . $id_child . ">" . $child_dataHa['name'] . "</a>";
                                     } else {
-                                        $date = ts2dFN($history_exerc[0][1]);
+                                        $date = Utilities::ts2dFN($history_exerc[0][1]);
                                         $alt = translateFN("Esercizio eseguito il ") . $date;
                                         $icon = "_exerdis.png"; // _gruppodis.png
                                         $index_item = "<img name=\"esercizio\" alt=\"$alt\" src=\"img/$icon\">" . $child_dataHa['name'];
@@ -512,7 +511,7 @@ abstract class AbstractCourse
                         }
                     }
                 }   // end foreach
-                // mydebug(__LINE__,__FILE__,$index);
+                // Utilities::mydebug(__LINE__,__FILE__,$index);
                 return $indexAr;
             } else {
                 if (is_object($childrenAr)) { // is it an error?

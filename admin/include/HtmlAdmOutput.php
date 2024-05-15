@@ -23,11 +23,9 @@ namespace Lynxlab\ADA\Admin;
 
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\form\PhpOpenFormGen;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\dirTree;
-use function Lynxlab\ADA\Main\Utilities\readDir;
-use function Lynxlab\ADA\Main\Utilities\todayDateFN;
 
 class HtmlAdmOutput
 {
@@ -116,7 +114,7 @@ class HtmlAdmOutput
 
         // data creazione
         if ($is_author) {
-            $gma = todayDateFN();
+            $gma = Utilities::todayDateFN();
             $fields["add"][] = "course[d_create]";
             $names["add"][] = "data creazione (GG/MM/AAAA)";
             $edittypes["add"][] = "hidden";
@@ -155,7 +153,7 @@ class HtmlAdmOutput
 
 
         $temp_dir_base = $root_dir . "/layout/";
-        $layout_OK = dirTree($temp_dir_base);
+        $layout_OK = Utilities::dirTree($temp_dir_base);
         $val_sel = "";
         $max = count($layout_OK) ;
         for ($i = 0; $i < $max; $i++) {
@@ -199,7 +197,7 @@ class HtmlAdmOutput
         $message = "";
         $modello = DataValidator::checkInputValues('modello', 'Integer', INPUT_GET);
         if ($is_author && (int)$modello == 1) {
-            $course_models = readDir(AUTHOR_COURSE_PATH_DEFAULT, 'xml');
+            $course_models = Utilities::readDir(AUTHOR_COURSE_PATH_DEFAULT, 'xml');
 
             /*
              * vito, 30 mar 2009
@@ -225,7 +223,7 @@ class HtmlAdmOutput
             //        }
             //        if ($is_author) {
             //        $authors_uploaded_files = UPLOAD_PATH.$authors_ha[0][0];
-            //        $authors_course_models  = readDir($authors_uploaded_files, 'xml');
+            //        $authors_course_models  = Utilities::readDir($authors_uploaded_files, 'xml');
             //        $course_models = array_merge($course_models, $authors_course_models);
             //        }
 

@@ -11,11 +11,9 @@ use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\todayDateFN;
-use function Lynxlab\ADA\Main\Utilities\todayTimeFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -42,7 +40,7 @@ $neededObjAr = [
 ];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-//$self = whoami();
+//$self = Utilities::whoami();
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -82,9 +80,9 @@ if (isset($courseInstanceObj) && $courseInstanceObj instanceof CourseInstance) {
 if ($userObj->tipo == AMA_TYPE_STUDENT && ($self_instruction)) {
     $self = 'defaultSelfInstruction';
 } elseif ($userObj->tipo == AMA_TYPE_AUTHOR) {
-    $self = whoami() . 'Author';
+    $self = Utilities::whoami() . 'Author';
 } else {
-    $self = whoami();
+    $self = Utilities::whoami();
 }
 
 
@@ -93,12 +91,12 @@ $mylog_mode = 0; // default: only one file for user
 //$log_extension = ".txt";
 $log_extension = ".htm";
 
-//$self =  whoami();  // = mylog
+//$self =  Utilities::whoami();  // = mylog
 
 //$classi_dichiarate = get_declared_classes();
-//mydebug(__LINE__,__FILE__,$classi_dichiarate);
+//Utilities::mydebug(__LINE__,__FILE__,$classi_dichiarate);
 
-$ymdhms = todayDateFN();
+$ymdhms = Utilities::todayDateFN();
 
 //import_request_variables("gP","");
 
@@ -200,7 +198,7 @@ if (isset($op) && ($op == "export")) {
     echo $log_text;
     exit;
 } else {
-    $date = todayDateFN() . " " . todayTimeFN() . "\n";
+    $date = Utilities::todayDateFN() . " " . Utilities::todayTimeFN() . "\n";
     $log_form = new Form();
     $log_data = [
     [

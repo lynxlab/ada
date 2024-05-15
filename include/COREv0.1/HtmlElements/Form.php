@@ -15,9 +15,9 @@
 namespace Lynxlab\ADA\CORE\HtmlElements;
 
 use Lynxlab\ADA\CORE\HtmlElements\HTMLElement;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 class Form extends HTMLElement
 {
@@ -66,7 +66,7 @@ $f->printForm();
         // per default prende il nome del file chiamante
         //      $action =  array_pop(split('[/\\]',$PHP_SELF));  // = index
 
-        $action = whoami() . ".php";
+        $action = Utilities::whoami() . ".php";
         $this->initForm($action);
     }
 

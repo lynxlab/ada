@@ -13,11 +13,10 @@ namespace Lynxlab\ADA\Module\GDPR;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\GDPR\GdprAbstractForm;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
-use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 
 /**
  * Class for the gpdr privacy policy form
@@ -76,7 +75,7 @@ class GdprPolicyForm extends GdprAbstractForm
         $this->addTextArea('content', translateFN('Testo policy'))->setValidator(FormValidator::MULTILINE_TEXT_VALIDATOR)->setRequired()->withData($policy->getContent());
 
         if (!is_null($policy->getVersion())) {
-            $text = sprintf(translateFN("Versione %d del %s alle ore %s"), $policy->getVersion(), ts2dFN($policy->getLastEditTS()), ts2tmFN($policy->getLastEditTS()));
+            $text = sprintf(translateFN("Versione %d del %s alle ore %s"), $policy->getVersion(), Utilities::ts2dFN($policy->getLastEditTS()), Utilities::ts2tmFN($policy->getLastEditTS()));
             $vDIV = CDOMElement::create('div', 'class:version container');
             $vSPAN = CDOMElement::create('span', 'class:version content');
             $vSPAN->addChild(new CText($text));

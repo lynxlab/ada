@@ -7,11 +7,9 @@ use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\todayDateFN;
-use function Lynxlab\ADA\Main\Utilities\todayTimeFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -43,7 +41,7 @@ $neededObjAr = [
  * Performs basic controls before entering this module
  */
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = whoami();
+$self = Utilities::whoami();
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -99,7 +97,7 @@ $online_users = ADALoggableUser::getOnlineUsersFN($sess_id_course_instance, $onl
 
 // default status:
 if ((empty($status)) or (!isset($status))) {
-    $status = translateFN('Lista appuntamenti del') . ' ' . todayDateFN() . ' - ' . todayTimeFN();
+    $status = translateFN('Lista appuntamenti del') . ' ' . Utilities::todayDateFN() . ' - ' . Utilities::todayTimeFN();
 } else {
     $status = urldecode($status);
 }

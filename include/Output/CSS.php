@@ -139,7 +139,7 @@ class CSS
         $this->CSS_dir = $CSS_dir;
         $this->family = $family;
 
-        //  mydebug(__LINE__,__FILE__,"CSS DDS: $duplicate_dir_structure fgroup:$function_group mdir:$module_dir bdir:$basedir_ada". $this->CSS_filename."<br>");
+        //  Utilities::mydebug(__LINE__,__FILE__,"CSS DDS: $duplicate_dir_structure fgroup:$function_group mdir:$module_dir bdir:$basedir_ada". $this->CSS_filename."<br>");
 
     } //end function CSS
 

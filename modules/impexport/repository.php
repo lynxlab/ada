@@ -2,9 +2,9 @@
 
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 ini_set('display_errors', '0');
 error_reporting(E_ALL);
@@ -42,7 +42,7 @@ BrowsingHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS
 
-$self = whoami();
+$self = Utilities::whoami();
 
 $data = null;
 

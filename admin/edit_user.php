@@ -36,7 +36,7 @@ $neededObjAr = [
 ];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = 'default';// whoami();  // = admin!
+$self = 'default';// Utilities::whoami();  // = admin!
 
 /**
  * This will at least import in the current symbol table the following vars.

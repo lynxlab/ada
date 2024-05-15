@@ -6,10 +6,9 @@ use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -34,7 +33,7 @@ $neededObjAr = [
 ];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self =  whoami();  // = author!
+$self =  Utilities::whoami();  // = author!
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -111,11 +110,11 @@ if (AMADataHandler::isError($dataHa)) {
     $course_dataHa = [];
 
     foreach ($dataHa as $course) {
-        // mydebug(__LINE__,__FILE__,array('Course'=>$course[1]));
+        // Utilities::mydebug(__LINE__,__FILE__,array('Course'=>$course[1]));
         $id_course = $course[0];
         $nome = $course[1];
         $titolo = $course[2];
-        $data = ts2dFN($course[3]);
+        $data = Utilities::ts2dFN($course[3]);
         $media_path =  $course[4];
         if (!$media_path) {
             $media_path = translateFN("default");

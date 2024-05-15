@@ -14,11 +14,10 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Test\SwitcherFormTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\redirect;
-use function Lynxlab\ADA\Main\Utilities\todayDateFN;
 
 class SwitcherManagementTest
 {
@@ -71,7 +70,7 @@ class SwitcherManagementTest
         $nodo_test['type']              = ADA_CUSTOM_EXERCISE_TEST;
         $nodo_test['parent_id']         = $this->courseObj->id . '_0';
         $nodo_test['order']             = 999;
-        $nodo_test['creation_date']     = todayDateFN();
+        $nodo_test['creation_date']     = Utilities::todayDateFN();
         $nodo_test['pos_x0']            = 0;
         $nodo_test['pos_y0']            = 0;
         $nodo_test['pos_x1']            = 0;
@@ -141,7 +140,7 @@ class SwitcherManagementTest
             if (!empty($_POST['id_test'])) {
                 $this->add($_POST['id_test']);
             }
-            redirect($_SERVER['REQUEST_URI']);
+            Utilities::redirect($_SERVER['REQUEST_URI']);
         }
 
         $form = new SwitcherFormTest($this->courseObj->id);

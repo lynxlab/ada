@@ -27,7 +27,7 @@ $neededObjAr = [
 //extract($_POST,EXTR_OVERWRITE,ADA_GP_VARIABLES_PREFIX);
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-//$self =  whoami();  // = admin!
+//$self =  Utilities::whoami();  // = admin!
 $self =  "switcher";
 
 /**

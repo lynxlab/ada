@@ -7,9 +7,9 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\sumDateTimeFN;
 
 /**
  * Base config file
@@ -43,7 +43,7 @@ $neededObjAr = [
  * Performs basic controls before entering this module
  */
 require_once ROOT_DIR . '/include/module_init.inc.php';
-//$self = whoami();
+//$self = Utilities::whoami();
 $self = 'list_chatrooms'; // x template
 
 /**
@@ -347,10 +347,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
         // create a unix data date format
         $start_data_array =  [$_POST['start_day'],$_POST['start_time']];
-        $start_data = sumDateTimeFN($start_data_array);
+        $start_data = Utilities::sumDateTimeFN($start_data_array);
         // create a unix data date format
         $end_data_array =  [$_POST['end_day'],$_POST['end_time']];
-        $end_data = sumDateTimeFN($end_data_array);
+        $end_data = Utilities::sumDateTimeFN($end_data_array);
 
         // a new chatroom could be created only if no errors were found
         if (count($errors) == 0) {

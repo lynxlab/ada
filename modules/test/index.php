@@ -9,12 +9,11 @@ use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 use Lynxlab\ADA\Module\Test\NodeTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\redirect;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -55,7 +54,7 @@ BrowsingHelper::init($neededObjAr);
 //needed to promote AMADataHandler to AMATestDataHandler. $sess_selected_tester is already present in session
 $GLOBALS['dh'] = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
-$self = whoami();
+$self = Utilities::whoami();
 
 $test = NodeTest::readTest($_GET['id_test']);
 if (!AMATestDataHandler::isError($test)) {
@@ -92,7 +91,7 @@ if (!AMATestDataHandler::isError($test)) {
                 $id_node = $nodeInfo['parent_id'];
             }
         }
-        redirect(HTTP_ROOT_DIR . '/browsing/view.php?id_node=' . $id_node . '&id_course=' . $sess_id_course .
+        Utilities::redirect(HTTP_ROOT_DIR . '/browsing/view.php?id_node=' . $id_node . '&id_course=' . $sess_id_course .
                 '&id_course_instance=' . $sess_id_course_instance);
     }
 

@@ -1,9 +1,9 @@
 <?php
 
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -65,7 +65,7 @@ BrowsingHelper::init($neededObjAr);
 /*
  * YOUR CODE HERE
  */
-$retArray = ['status' => 'ERROR', 'title' => whoami(), 'msg' => translateFN("Errore sconosciuto")];
+$retArray = ['status' => 'ERROR', 'title' => Utilities::whoami(), 'msg' => translateFN("Errore sconosciuto")];
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_SESSION['ada_remote_address'])) {

@@ -5,9 +5,7 @@ namespace Lynxlab\ADA\Comunica\Event;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
-
-use function Lynxlab\ADA\Main\Utilities\getTimezoneOffset;
-use function Lynxlab\ADA\Main\Utilities\sumDateTimeFN;
+use Lynxlab\ADA\Main\Utilities;
 
 /**
  *
@@ -203,10 +201,10 @@ class ADAEventProposal
                 $tester_TimeZone = SERVER_TIMEZONE;
             } else {
                 $tester_TimeZone = MultiPort::getTesterTimeZone($tester);
-                $offset = getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
+                $offset = Utilities::getTimezoneOffset($tester_TimeZone, SERVER_TIMEZONE);
             }
 
-            $timestamp_time_zone = sumDateTimeFN([$date, "$time:00"]);
+            $timestamp_time_zone = Utilities::sumDateTimeFN([$date, "$time:00"]);
             $timestamp = $timestamp_time_zone - $offset;
 
             if ($current_timestamp >= $timestamp) {

@@ -11,6 +11,7 @@
 namespace Lynxlab\ADA\Module\Test;
 
 use Lynxlab\ADA\Main\Node\Node;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 use Lynxlab\ADA\Module\Test\DeleteFormTest;
 use Lynxlab\ADA\Module\Test\ManagementTest;
@@ -28,7 +29,6 @@ use Lynxlab\ADA\Module\Test\QuestionSlotClozeTest;
 use Lynxlab\ADA\Module\Test\QuestionStandardFormTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\redirect;
 
 class QuestionManagementTest extends ManagementTest
 {
@@ -213,7 +213,7 @@ class QuestionManagementTest extends ManagementTest
                     if (!AMATestDataHandler::isError($res)) {
                         unset($new_q);
                         $get_topic = (isset($_GET['topic']) ? '&topic=' . $_GET['topic'] : '');
-                        redirect(MODULES_TEST_HTTP . '/index.php?id_test=' . $this->test['id_nodo'] . $get_topic . '#liQuestion' . $res);
+                        Utilities::redirect(MODULES_TEST_HTTP . '/index.php?id_test=' . $this->test['id_nodo'] . $get_topic . '#liQuestion' . $res);
                     } else {
                         $html = sprintf(translateFN('Errore durante la creazione della %s'), $this->what);
                     }
@@ -315,7 +315,7 @@ class QuestionManagementTest extends ManagementTest
 
                 if ($this->saveQuestion($data, $question['id_nodo'])) {
                     $get_topic = (isset($_GET['topic']) ? '&topic=' . $_GET['topic'] : '');
-                    redirect(MODULES_TEST_HTTP . '/index.php?id_test=' . $question['id_nodo_radice'] . $get_topic . '#liQuestion' . $question['id_nodo']);
+                    Utilities::redirect(MODULES_TEST_HTTP . '/index.php?id_test=' . $question['id_nodo_radice'] . $get_topic . '#liQuestion' . $question['id_nodo']);
                 } else {
                     $html = sprintf(translateFN('Errore durante la modifica del %s'), $this->what);
                 }
@@ -352,11 +352,11 @@ class QuestionManagementTest extends ManagementTest
                     $html = sprintf(translateFN('Errore durante la cancellazione della %s'), $this->what);
                 } else {
                     $get_topic = (isset($_GET['topic']) ? '&topic=' . $_GET['topic'] : '');
-                    redirect(MODULES_TEST_HTTP . '/index.php?id_test=' . $question['id_nodo_radice'] . $get_topic);
+                    Utilities::redirect(MODULES_TEST_HTTP . '/index.php?id_test=' . $question['id_nodo_radice'] . $get_topic);
                 }
             } else {
                 $get_topic = (isset($_GET['topic']) ? '&topic=' . $_GET['topic'] : '');
-                redirect(MODULES_TEST_HTTP . '/index.php?id_test=' . $question['id_nodo_radice'] . $get_topic);
+                Utilities::redirect(MODULES_TEST_HTTP . '/index.php?id_test=' . $question['id_nodo_radice'] . $get_topic);
             }
         } else {
             $titolo = $question['titolo'];

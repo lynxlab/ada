@@ -17,9 +17,9 @@ use Lynxlab\ADA\Main\Token\TokenFinder;
 use Lynxlab\ADA\Main\Token\TokenManager;
 use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\redirect;
 
 require_once realpath(__DIR__) . '/../config_path.inc.php';
 /**
@@ -167,7 +167,7 @@ switch ($op) {
             /**
              * MODULES_SECRETQUESTION will handle questioning and answer check
              */
-            redirect(MODULES_SECRETQUESTION_HTTP . '/askQuestion.php?userId=' . $user_id);
+            Utilities::redirect(MODULES_SECRETQUESTION_HTTP . '/askQuestion.php?userId=' . $user_id);
         } else {
             $admtypeAr = [AMA_TYPE_ADMIN];
             $admList = $common_dh-> getUsersByType($admtypeAr);

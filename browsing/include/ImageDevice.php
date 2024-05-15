@@ -128,7 +128,7 @@ class ImageDevice
         if (file_exists($img_src)) {
             // Get image dimensions
             $size_src = $this->GetImageSizeX($img_src);
-            // mydebug(__LINE__,__FILE__,$size_src);
+            // Utilities::mydebug(__LINE__,__FILE__,$size_src);
 
             $height_src = $size_src[1];
             $width_src = $size_src[0];
@@ -153,7 +153,7 @@ class ImageDevice
 
             $im_src = $this->imagecreateFromX($img_src);
             $im_thumb = imagecreatetruecolor($width_dest, $height_dest);
-            //            mydebug(__LINE__,__FILE__,$id->error);
+            //            Utilities::mydebug(__LINE__,__FILE__,$id->error);
             // Versione immagini ridimensionate.
             $im_result_resized = imagecopyresampled($im_thumb, $im_src, 0, 0, 0, 0, $width_dest, $height_dest, $width_src, $height_src);
             // Versione che non ridimensiona

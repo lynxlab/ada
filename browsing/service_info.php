@@ -8,10 +8,10 @@ use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Service\Service;
 use Lynxlab\ADA\Main\Service\ServiceImplementor;
 use Lynxlab\ADA\Main\User\ADAGuest;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 use function Lynxlab\ADA\Main\Service\Functions\getCourseInstanceInfo;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /* Questa versione è diversa dalla versione ADA;
  * se non è passato nessun parametro,
@@ -94,7 +94,7 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-$self = whoami();   // serve per scegliere il template
+$self = Utilities::whoami();   // serve per scegliere il template
 
 //$dh = AMADataHandler::instance(); // init AMA
 

@@ -16,8 +16,7 @@ namespace Lynxlab\ADA\Module\Newsletter;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
-
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
+use Lynxlab\ADA\Main\Utilities;
 
 class AMANewsletterDataHandler extends AMADataHandler
 {
@@ -410,7 +409,7 @@ class AMANewsletterDataHandler extends AMADataHandler
         $retval = $this->getRowPrepared($sql, $id, AMA_FETCH_ASSOC);
 
         if (!AMADB::isError($retval) && $retval !== false) {
-            $retval['date'] = ts2dFN($retval['date']);
+            $retval['date'] = Utilities::ts2dFN($retval['date']);
         }
 
         return $retval;
@@ -493,7 +492,7 @@ class AMANewsletterDataHandler extends AMADataHandler
 
         if (!AMADB::isError($retval) && $retval !== false) {
             for ($i = 0; $i < count($retval); $i++) {
-                $retval[$i]['datesent'] = ts2dFN($retval[$i]['datesent']);
+                $retval[$i]['datesent'] = Utilities::ts2dFN($retval[$i]['datesent']);
             }
         }
         return $retval;

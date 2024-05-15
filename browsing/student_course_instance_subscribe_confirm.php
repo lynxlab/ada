@@ -12,11 +12,10 @@ use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADAGuest;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\todayDateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -78,7 +77,7 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-$self = whoami(); // to select the right template
+$self = Utilities::whoami(); // to select the right template
 /*
  * INCLUSIONE SPECIFICA PER PAYPAL
  */
@@ -87,7 +86,7 @@ if (file_exists(ROOT_DIR . '/browsing/paypal/paypal_conf.inc.php')) {
     $paypal_allowed = true;
 }
 
-$today_date = todayDateFN();
+$today_date = Utilities::todayDateFN();
 $providerId = DataValidator::isUinteger($_GET['provider']);
 $courseId = DataValidator::isUinteger($_GET['course']);
 $instanceId = DataValidator::isUinteger($_GET['instance']);

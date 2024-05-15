@@ -24,11 +24,9 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\History\History;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\aasort;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
-use function Lynxlab\ADA\Main\Utilities\ts2tmFN;
 
 /**
  * AdaAbstractUser class:
@@ -257,7 +255,7 @@ abstract class ADAAbstractUser extends ADALoggableUser
         if (AMADataHandler::isError($dataHa) || empty($dataHa)) {
             $this->user_ex_historyAr = '';
         } else {
-            aasort($dataHa, ["-1"]) ;
+            Utilities::aasort($dataHa, ["-1"]) ;
             $this->user_ex_historyAr = $dataHa;
         }
     }
@@ -320,7 +318,7 @@ abstract class ADAAbstractUser extends ADALoggableUser
                     $corretto =  translateFN('-');
                 }
 
-                $date = ts2dFN($e['data']) . " " . ts2tmFN($e['data']);
+                $date = Utilities::ts2dFN($e['data']) . " " . Utilities::ts2tmFN($e['data']);
 
                 if ($id_profile == AMA_TYPE_TUTOR) {
                     $zoom_module = "$http_root_dir/tutor/tutor_exercise.php";

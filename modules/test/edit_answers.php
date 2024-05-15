@@ -33,7 +33,7 @@ $neededObjAr = [
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 
-//$self =  whoami();
+//$self =  Utilities::whoami();
 $self = 'answers';
 
 ServiceHelper::init($neededObjAr);

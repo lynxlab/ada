@@ -27,9 +27,9 @@ use Lynxlab\ADA\CORE\HtmlElements\Table;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Bookmark\Bookmark;
 use Lynxlab\ADA\Main\Course\Student;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\ts2dFN;
 
 class Tag extends Bookmark
 {
@@ -65,8 +65,8 @@ class Tag extends Bookmark
                 $this->titolo =  $node_title;
                 $this->data = $dataHa['date'];
                 $this->utente = $dataHa['student_id'];
-                //$ts = dt2tsFN($dataHa['date']);
-                //$this->ora =  ts2tmFN($ts);
+                //$ts = Utilities::dt2tsFN($dataHa['date']);
+                //$this->ora =  Utilities::ts2tmFN($ts);
                 $this->descrizione = $dataHa['description'];
             }
         }
@@ -360,7 +360,7 @@ class Tag extends Bookmark
                 $author_uname = $authorHa['username'];
                 $k++;
                 $formatted_dataHa[$k]['autore'] = "<a href=\"tags.php?op=list_by_user&id_auth=$author_id\">$author_uname</a>";
-                $formatted_dataHa[$k]['data'] =  ts2dFN($date);
+                $formatted_dataHa[$k]['data'] =  Utilities::ts2dFN($date);
                 $formatted_dataHa[$k]['tag'] = "<a href=\"tags.php?op=list_by_tag&id_bk=$id_bk\"><img src=\"img/check.png\" border=0>&nbsp;$description</a>";
 
                 if (is_array($dh->getTutor($author_id))) { // tag del tutor differenziate ??

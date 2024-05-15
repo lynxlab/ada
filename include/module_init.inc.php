@@ -1,8 +1,7 @@
 <?php
 
 use Lynxlab\ADA\Main\ModuleInit;
-
-use function Lynxlab\ADA\Main\Utilities\todayDateFN;
+use Lynxlab\ADA\Main\Utilities;
 
 /**
  * Imports $_GET and $_POST variables
@@ -39,4 +38,4 @@ if (isset($variableToClearAR) && is_array($variableToClearAR)) {
     ModuleInit::clearDataFN($variableToClearAR);
 }
 
-$ymdhms = todayDateFN();
+$ymdhms = Utilities::todayDateFN();

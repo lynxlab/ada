@@ -7,6 +7,7 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLActions;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLException;
@@ -14,7 +15,6 @@ use Lynxlab\ADA\Module\CollaboraACL\FileACL;
 use Lynxlab\ADA\Widgets\Widget;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\leggidir;
 use function Lynxlab\ADA\Widgets\Functions\cleanFileName;
 
 /**
@@ -108,7 +108,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             }
             $download_path = ROOT_DIR . $media_path;
 
-            $elencofile = leggidir($download_path);
+            $elencofile = Utilities::leggidir($download_path);
             $outputArr = [];
             if (is_array($elencofile) && count($elencofile) > 0) {
                 $filesACL = $aclDH->findBy('FileACL', ['id_corso' => $courseId, 'id_istanza' => $courseInstanceId, 'id_nodo' => $nodeId]);

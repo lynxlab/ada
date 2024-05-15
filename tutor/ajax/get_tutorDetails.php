@@ -8,9 +8,9 @@ use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Helper\TutorHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\leggidir;
 
 /**
  * Base config file
@@ -184,7 +184,7 @@ if (
                         $media_path = MEDIA_PATH_DEFAULT . $courseObj->id_autore;
                     }
                     $download_path = $root_dir . $media_path;
-                    $elencofile = leggidir($download_path);
+                    $elencofile = Utilities::leggidir($download_path);
                     // 02. loop the $media_path dir looking for files
                     // uploaded by $id_tutor in the current course and course instance
                     if (!is_string($elencofile) && !is_null($elencofile)) {

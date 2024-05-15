@@ -5,11 +5,11 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\StudentsGroups\Groups;
 use Lynxlab\ADA\Module\StudentsGroups\StudentsGroupsActions;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -35,7 +35,7 @@ $variableToClearAR = ['node', 'layout', 'course', 'user'];
 require_once(ROOT_DIR . '/include/module_init.inc.php');
 BrowsingHelper::init($neededObjAr);
 
-$self = whoami();
+$self = Utilities::whoami();
 
 /**
  * generate HTML for 'New Group' button and the empty table

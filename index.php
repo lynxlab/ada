@@ -9,12 +9,11 @@ use Lynxlab\ADA\Main\HtmlLibrary\UserModuleHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
 use Lynxlab\ADA\Module\Login\AbstractLogin;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\getUserIpAddr;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 if (is_file(realpath(__DIR__) . '/config_path.inc.php')) {
     require_once realpath(__DIR__) . '/config_path.inc.php';
@@ -41,7 +40,7 @@ $allowedUsersAr = [AMA_TYPE_VISITOR, AMA_TYPE_STUDENT,AMA_TYPE_TUTOR, AMA_TYPE_A
  */
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = whoami(); // index
+$self = Utilities::whoami(); // index
 
 /**
  * Template Family
@@ -81,7 +80,7 @@ $_SESSION['sess_user_language'] = $login_page_language_code;
 /**
  *
  */
-$_SESSION['ada_remote_address'] = getUserIpAddr();
+$_SESSION['ada_remote_address'] = Utilities::getUserIpAddr();
 
 /**
  * giorgio 12/ago/2013

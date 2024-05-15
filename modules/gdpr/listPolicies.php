@@ -5,12 +5,12 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\GDPR\GdprActions;
 use Lynxlab\ADA\Module\GDPR\GdprException;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 ini_set('display_errors', '0');
 error_reporting(E_ALL);
@@ -37,7 +37,7 @@ $variableToClearAR = ['node', 'layout', 'course', 'user'];
 require_once(ROOT_DIR . '/include/module_init.inc.php');
 BrowsingHelper::init($neededObjAr);
 
-$self = whoami();
+$self = Utilities::whoami();
 
 try {
     if (!GdprActions::canDo(GdprActions::LIST_POLICIES)) {

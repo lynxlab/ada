@@ -86,5 +86,4 @@ if (isset($videoroomObj)) {
 }
 ?>
 <script type="text/javascript">
-    window.parent.postMessage('endVideochat', '<?php echo HTTP_ROOT_DIR; ?>');
-</script>
+</script>    window.parent.postMessage('endVideochat', '<?php echo HTTP_ROOT_DIR; ?>');

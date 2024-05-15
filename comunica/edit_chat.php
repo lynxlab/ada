@@ -6,9 +6,9 @@ use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\Forms\ChatManagementForm;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\sumDateTimeFN;
 
 require_once realpath(__DIR__) . '/../config_path.inc.php';
 
@@ -38,7 +38,7 @@ $neededObjAr = [
  * Performs basic controls before entering this module
  */
 require_once ROOT_DIR . '/include/module_init.inc.php';
-//$self = whoami();
+//$self = Utilities::whoami();
 $self = 'list_chatrooms'; // x template
 
 /**
@@ -174,10 +174,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
         // create a unix data date format
         $start_data_array =  [$_POST['start_day'],$_POST['start_time']];
-        $start_data = sumDateTimeFN($start_data_array);
+        $start_data = Utilities::sumDateTimeFN($start_data_array);
         // create a unix data date format
         $end_data_array =  [$_POST['end_day'],$_POST['end_time']];
-        $end_data = sumDateTimeFN($end_data_array);
+        $end_data = Utilities::sumDateTimeFN($end_data_array);
 
         $chatroom_ha['id_chat_owner'] = $id_owner;
         $chatroom_ha['chat_title'] = $chat_title;
@@ -240,7 +240,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $chat_room_HA['actual_chat_type'] = $old_chat_type;
 
     //get time and date and transform it to sting format
-    //ts2dFN()
+    //Utilities::ts2dFN()
     $old_start_time = AMADataHandler::tsToDate($chatroom_old_ha['tempo_avvio'], "%H:%M:%S");
     $old_start_day = AMADataHandler::tsToDate($chatroom_old_ha['tempo_avvio']);
     $old_end_time = AMADataHandler::tsToDate($chatroom_old_ha['tempo_fine'], "%H:%M:%S");

@@ -10,12 +10,12 @@ use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\TutorHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Services\Exercise\ADAEsercizio;
 use Lynxlab\ADA\Services\Exercise\ExerciseDAO;
 use Lynxlab\ADA\Services\Exercise\ExerciseViewerFactory;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
-use function Lynxlab\ADA\Main\Utilities\whoami;
 
 /**
  * Base config file
@@ -41,7 +41,7 @@ $neededObjAr = [
 ];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self =  whoami();
+$self =  Utilities::whoami();
 
 /*
  * YOUR CODE HERE
