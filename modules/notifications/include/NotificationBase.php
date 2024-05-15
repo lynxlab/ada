@@ -66,6 +66,16 @@ abstract class NotificationBase
     }
 
     /**
+     * Tells which properties are not to be loaded at all
+     *
+     * @return array
+     */
+    public static function doNotLoad()
+    {
+        return [];
+    }
+
+    /**
      * adds class own properties to the passed form
      *
      * @param \Lynxlab\ADA\Main\Forms\lib\classes\FForm $form
