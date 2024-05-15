@@ -6,6 +6,7 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\CORE\HtmlElements\Form;
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
@@ -122,7 +123,7 @@ $with_icons = 1; // 0 or 1; valid only for forum display
 //}
 // ******************************************************
 // get user object
-$userObj = readUser($sess_id_user);
+$userObj = DBRead::readUser($sess_id_user);
 if (is_object($userObj) && (!AMADataHandler::isError($userObj))) {
     if (isset($_POST['s_node_name'])) {
         header("Location: search.php?submit=1&s_node_text=$s_node_name&l_search=$l_search");

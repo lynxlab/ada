@@ -17,6 +17,7 @@ use Lynxlab\ADA\Browsing\CourseViewer;
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Main\Node\Node;
@@ -173,7 +174,7 @@ if ($op == 'add_node') {
         }
         $node_type = Utilities::getAdaNodeTypeFromString($type);
 
-        $nodeObj = readNodeFromDB($id_parent);
+        $nodeObj = DBRead::readNodeFromDB($id_parent);
         // gestione errore !!!
         // vito, 20 feb 2009
         if ($node_type == ADA_NOTE_TYPE || $node_type == ADA_PRIVATE_NOTE_TYPE) {
@@ -225,7 +226,7 @@ if ($op == 'add_node') {
 
         $default_parent_node = $id_course . "_" . ADA_DEFAULT_NODE;
 
-        $nodeObj = readNodeFromDB($default_parent_node);
+        $nodeObj = DBRead::readNodeFromDB($default_parent_node);
         if (AMADB::isError($nodeObj)) {
             $nodeObj = new Node($default_parent_node);
         }

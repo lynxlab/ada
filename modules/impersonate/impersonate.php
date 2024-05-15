@@ -8,6 +8,7 @@
  * @version     0.1
  */
 
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
@@ -76,7 +77,7 @@ if (isset($_SESSION[Utils::MODULES_IMPERSONATE_SESSBACKDATA])) {
 }
 
 if (!isset($impersonateObj)) {
-    $impersonateObj = $impersonateId > 0 ? readUser($impersonateId) : $userObj;
+    $impersonateObj = $impersonateId > 0 ? DBRead::readUser($impersonateId) : $userObj;
 }
 
 if ($impersonateObj instanceof ADALoggableUser) {

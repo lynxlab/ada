@@ -10,6 +10,7 @@
 
 use Lynxlab\ADA\Admin\AdminUtils;
 use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\User\ADAAuthor;
@@ -82,7 +83,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
      * it's a POST, save the passed data
      */
     if (array_key_exists('sess_userObj', $_SESSION)) {
-        $sourceUser = readUser($passedData['sourceId']);
+        $sourceUser = DBRead::readUser($passedData['sourceId']);
         if ($passedData['linkedType'] > 0) {
             // if the session user has an inactive link, activate it
             $linkedObj = $impDH->findBy('LinkedUsers', [

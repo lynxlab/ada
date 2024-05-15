@@ -2,6 +2,7 @@
 
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\ModuleInit;
 use Lynxlab\ADA\Main\Output\Html;
 use Lynxlab\ADA\Main\User\ADAUser;
@@ -44,7 +45,7 @@ extract($_POST, EXTR_OVERWRITE, ADA_GP_VARIABLES_PREFIX);
 // ******************************************************
 if ($sess_id_course) {
     // get object course
-    $courseObj = readCourseFromDB($sess_id_course);
+    $courseObj = DBRead::readCourseFromDB($sess_id_course);
     if ($dh->isError($courseObj)) {
         $errObj = $courseObj;
         $msg =   $errObj->errorMessage();
@@ -64,7 +65,7 @@ if ($sess_id_course) {
 
 // ******************************************************
 // get user object
-$userObj = readUserFromDB($sess_id_user);
+$userObj = DBRead::readUserFromDB($sess_id_user);
 if ((is_object($userObj)) && (!AMADataHandler::isError($userObj))) {
     $id_profile = $userObj->tipo;
     $user_name =  $userObj->username;
@@ -91,7 +92,7 @@ if ((isset($family))  and (!empty($family))) { // from GET parameters
     $template_family = ADA_TEMPLATE_FAMILY; // default template famliy
 }
 
-$layoutObj = readLayoutFromDB($id_profile, $template_family);
+$layoutObj = DBRead::readLayoutFromDB($id_profile, $template_family);
 $layout_CSS = $layoutObj->CSS_filename;
 $layout_template = $layoutObj->template;
 

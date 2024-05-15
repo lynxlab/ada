@@ -21,6 +21,7 @@ namespace Lynxlab\ADA\Main\Output;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Menu;
 use Lynxlab\ADA\Main\Output\GenericXML;
@@ -81,7 +82,7 @@ class ARE
 
         switch ($renderer) {
             case ARE_PRINT_RENDER:
-                $layoutObj = readLayoutFromDB(
+                $layoutObj = DBRead::readLayoutFromDB(
                     $id_profile,
                     $layout_dataAr['family'] ?? '',
                     $layout_dataAr['node_type'] ?? '',
@@ -150,7 +151,7 @@ class ARE
                 break;
 
             case ARE_FILE_RENDER:
-                $layoutObj = readLayoutFromDB(
+                $layoutObj = DBRead::readLayoutFromDB(
                     $id_profile,
                     $layout_dataAr['family'] ?? null,
                     $layout_dataAr['node_type'] ?? null,
@@ -211,7 +212,7 @@ class ARE
             case ARE_HTML_RENDER:
             case ARE_PDF_RENDER:
             default:
-                $layoutObj = readLayoutFromDB(
+                $layoutObj = DBRead::readLayoutFromDB(
                     $id_profile,
                     $layout_dataAr['family'] ?? null,
                     $layout_dataAr['node_type'] ?? null,

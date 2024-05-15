@@ -17,6 +17,7 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AbstractAMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Course\CourseInstance;
@@ -164,7 +165,7 @@ abstract class ViewBaseHelper
             return $_SESSION['sess_userObj'];
         } else {
             /** @var ADAGenericUser $userObj */
-            $userObj = readUser($sess_id_user);
+            $userObj = DBRead::readUser($sess_id_user);
             if (ADAError::isError($userObj)) {
                 $userObj->handleError();
                 return null;
@@ -262,7 +263,7 @@ abstract class ViewBaseHelper
             /**
              * @var \Lynxlab\ADA\Main\Course\Course $courseObj
              */
-            $courseObj = readCourse($sess_id_course);
+            $courseObj = DBRead::readCourse($sess_id_course);
             if (ADAError::isError($courseObj)) {
                 $courseObj->handleError();
             } else {
@@ -290,7 +291,7 @@ abstract class ViewBaseHelper
                     /**
                      *    @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
                      */
-                    $courseInstanceObj = readCourseInstanceFromDB($sess_id_course_instance);
+                    $courseInstanceObj = DBRead::readCourseInstanceFromDB($sess_id_course_instance);
                     if (ADAError::isError($courseInstanceObj)) {
                         $courseInstanceObj->handleError();
                     } else {
@@ -337,7 +338,7 @@ abstract class ViewBaseHelper
              * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
              * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
              */
-            $nodeObj = readNodeFromDB($id_node ?? null);
+            $nodeObj = DBRead::readNodeFromDB($id_node ?? null);
             if (ADAError::isError($nodeObj)) {
                 $nodeObj->handleError();
             }

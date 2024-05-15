@@ -5,6 +5,7 @@ use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\CORE\HtmlElements\Table;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
@@ -102,7 +103,7 @@ if (is_object($chatroomObj) && !AMADataHandler::isError($chatroomObj)) {
     $id_course = $dh->getCourseIdForCourseInstance($id_course_instance);
     // ******************************************************
     // get  course object
-    $courseObj = readCourse($id_course);
+    $courseObj = DBRead::readCourse($id_course);
     if ((is_object($courseObj)) && (!AMADB::isError($courseObj))) {
         $course_title = $courseObj->titolo; //title
         $id_toc = $courseObj->id_nodo_toc;  //id_toc_node

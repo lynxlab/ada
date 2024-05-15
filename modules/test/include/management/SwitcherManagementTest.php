@@ -12,6 +12,7 @@ namespace Lynxlab\ADA\Module\Test;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Module\Test\SwitcherFormTest;
 
@@ -54,7 +55,7 @@ class SwitcherManagementTest
         }
 
         //creo nodo di riferimento
-        $last_node = explode('_', getMaxIdFN($this->courseObj->id));
+        $last_node = explode('_', DBRead::getMaxIdFN($this->courseObj->id));
         $new_id = $last_node[1] + 1;
         $new_node_id = $this->courseObj->id . '_' . $new_id;
 

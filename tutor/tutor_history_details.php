@@ -3,6 +3,7 @@
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\Helper\TutorHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Output\PdfClass;
@@ -79,7 +80,7 @@ $start_date = AMADataHandler::tsToDate($courseInstanceObj->data_inizio, "%d/%m/%
 $history = '';
 if ($id_course) {
     // get object course
-    $courseObj = readCourseFromDB($id_course);
+    $courseObj = DBRead::readCourseFromDB($id_course);
     if ((is_object($courseObj)) && (!AMADataHandler::isError($courseObj))) {
         $course_title = $courseObj->titolo; //title
         $id_toc = $courseObj->id_nodo_toc;  //id_toc_node
@@ -88,7 +89,7 @@ if ($id_course) {
     }
 }
 
-$studentObj = readUserFromDB($id_student);
+$studentObj = DBRead::readUserFromDB($id_student);
 if ((is_object($studentObj)) && (!AMADataHandler::isError($studentObj))) {
     if ($studentObj instanceof ADAPractitioner) {
         /**

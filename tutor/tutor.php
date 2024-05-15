@@ -7,6 +7,7 @@ use Lynxlab\ADA\CORE\HtmlElements\Table;
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Course\CourseInstance;
@@ -523,7 +524,7 @@ if (!empty($id_instance)) {
         if (!isset($node)) {
             $node = null;
         }
-        $nodeObj = readNodeFromDB($node);
+        $nodeObj = DBRead::readNodeFromDB($node);
     }
 
     if (!ADAError::isError($nodeObj) and isset($courseObj->id)) {

@@ -3,6 +3,7 @@
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Course\CourseInstance;
@@ -82,7 +83,7 @@ TutorHelper::init($neededObjAr);
 
 $history = '';
 
-$studentObj = readUserFromDB($id_student);
+$studentObj = DBRead::readUserFromDB($id_student);
 if ((is_object($studentObj)) && (!AMADataHandler::isError($studentObj))) {
     if ($studentObj instanceof ADAPractitioner) {
         /**
@@ -135,7 +136,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     unset($_SESSION['exercise_object']);
 
     if (isset($messaggio)) {
-        $studentObj = readUserFromDB($exercise->getStudentId());
+        $studentObj = DBRead::readUserFromDB($exercise->getStudentId());
         // controllo errore
         $subject = translateFN('Esercizio: ') . $exercise->getTitle() . "\n";
 
@@ -249,7 +250,7 @@ if (!isset($nodeObj) || !is_object($nodeObj)) {
     if (!isset($node)) {
         $node = null;
     }
-    $nodeObj = readNodeFromDB($node);
+    $nodeObj = DBRead::readNodeFromDB($node);
 }
 if (!ADAError::isError($nodeObj) and isset($courseObj->id)) {
     $_SESSION['sess_id_course'] = $courseObj->id;

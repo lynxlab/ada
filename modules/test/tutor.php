@@ -2,6 +2,7 @@
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
@@ -46,7 +47,7 @@ $GLOBALS['dh'] = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_
 $self = whoami();
 
 if (!isset($course_instanceObj) || !is_a($course_instanceObj, 'CourseInstance')) {
-    $course_instanceObj = readCourseInstanceFromDB($_GET['id_course_instance']);
+    $course_instanceObj = DBRead::readCourseInstanceFromDB($_GET['id_course_instance']);
 }
 
 $management = new TutorManagementTest(

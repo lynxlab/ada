@@ -12,6 +12,7 @@ namespace Lynxlab\ADA\Module\Test;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 use Lynxlab\ADA\Module\Test\DeleteFormTest;
@@ -106,7 +107,7 @@ class RootManagementTest extends ManagementTest
 
                 if (!AMATestDataHandler::isError($id_test)) {
                     //crea nuovo nodo contenente link al test
-                    $last_node = explode('_', getMaxIdFN($id_corso));
+                    $last_node = explode('_', DBRead::getMaxIdFN($id_corso));
                     $new_id = $last_node[1] + 1;
                     $new_node_id = $id_corso . '_' . $new_id;
                     $order = $dh->getOrdineMaxVal($nodo->id);

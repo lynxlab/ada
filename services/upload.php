@@ -2,6 +2,7 @@
 
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
@@ -514,7 +515,7 @@ if (isset($_GET['caller']) && $_GET['caller'] == 'editor') {
         }
     }
 
-    $nodeObj = readNodeFromDB($id_node);
+    $nodeObj = DBRead::readNodeFromDB($id_node);
     if (!AMADataHandler::isError($nodeObj)) {
         $node_title = $nodeObj->name;
         $node_version = $nodeObj->version;

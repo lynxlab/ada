@@ -6,6 +6,7 @@ use Lynxlab\ADA\CORE\HtmlElements\Form;
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
@@ -108,7 +109,7 @@ $log_enabled = true; // link to history
 $mod_enabled = true; // link to modify nod/tes
 $com_enabled = true;  // link to comunicate among users
 // Get user object
-$userObj = readUserFromDB($sess_id_user);
+$userObj = DBRead::readUserFromDB($sess_id_user);
 //print_r($userObj);
 if ((is_object($userObj)) && (!AMADataHandler::isError($userObj))) {
     $id_profile = $userObj->tipo;

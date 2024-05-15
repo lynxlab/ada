@@ -1,6 +1,7 @@
 <?php
 
 use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
@@ -114,7 +115,7 @@ if (!AMADB::isError($nodeList) && is_array($nodeList) && count($nodeList) > 0) {
         if ($userObj->getType() == AMA_TYPE_AUTHOR || $nodeObj->level <= $userObj->livello) {
             //        print_r($key);
             $nodePostId = 'input_' . $key['id_child']; // node id for javascript
-            $childNodeObj = readNodeFromDB($key['id_child']);
+            $childNodeObj = DBRead::readNodeFromDB($key['id_child']);
             if ($childNodeObj instanceof Node) {
                 // saving new positions
                 if (isset($_POST[$nodePostId])) {

@@ -1,5 +1,6 @@
 <?php
 
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\ServicesModuleHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
@@ -197,7 +198,7 @@ if (isset($step) && !isset($verify)) {
             */
             $id_course = explode("_", $_SESSION['add_exercise']['parent_node']);
 
-            $last_node = getMaxIdFN($id_course[0]);
+            $last_node = DBRead::getMaxIdFN($id_course[0]);
             $tempAr = explode("_", $last_node);
             $new_id = $tempAr[1]; // get only the part of node
             $new_id = $new_id + 1;
@@ -225,7 +226,7 @@ if (isset($step) && !isset($verify)) {
             ##### eventuali risposte
             if (sizeof($_SESSION['add_exercise']['answers']) > 0) {
                 foreach ($_SESSION['add_exercise']['answers'] as $answer) {
-                    $last_node = getMaxIdFN($id_course[0]);
+                    $last_node = DBRead::getMaxIdFN($id_course[0]);
                     $tempAr = explode("_", $last_node);
                     $new_id = $tempAr[1]; // get only the part of node
                     $new_id = $new_id + 1;

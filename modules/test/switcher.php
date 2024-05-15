@@ -2,6 +2,7 @@
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\Output\ARE;
@@ -46,7 +47,7 @@ $GLOBALS['dh'] = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_
 $self = whoami();
 
 if (!is_a($courseObj, 'Course')) {
-    $courseObj = readCourseFromDB($_GET['id_course']);
+    $courseObj = DBRead::readCourseFromDB($_GET['id_course']);
 }
 
 $management = new SwitcherManagementTest($courseObj);

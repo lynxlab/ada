@@ -4,6 +4,7 @@ use Lynxlab\ADA\Comunica\ChatRoom;
 use Lynxlab\ADA\CORE\HtmlElements\Table;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
@@ -109,7 +110,7 @@ switch ($id_profile) {
                 $chatroom_ha = $chatroomObj->getInfoChatroomFN($id_chatroom);
                 $id_course_instance = $chatroom_ha['id_istanza_corso'];
                 $id_course = $dh->getCourseIdForCourseInstance($chatroom_ha['id_istanza_corso']);
-                $courseObj = readCourse($id_course);
+                $courseObj = DBRead::readCourse($id_course);
                 if (is_object($courseObj) && !AMADB::isError($courseObj)) {
                     $course_title = $courseObj->titolo; //title
                     $id_toc = $courseObj->id_nodo_toc;  //id_toc_node
@@ -253,7 +254,7 @@ switch ($id_profile) {
                 $chatroom_ha = $chatroomObj->getInfoChatroomFN($id_chatroom);
                 $id_course_instance = $chatroom_ha['id_istanza_corso'];
                 $id_course = $dh->getCourseIdForCourseInstance($chatroom_ha['id_istanza_corso']);
-                $courseObj = readCourse($id_course);
+                $courseObj = DBRead::readCourse($id_course);
                 if ((is_object($courseObj)) && (!AMADataHandler::isError($userObj))) {
                     $course_title = $courseObj->titolo; //title
                     $id_toc = $courseObj->id_nodo_toc;  //id_toc_node

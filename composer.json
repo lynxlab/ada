@@ -27,11 +27,9 @@
             "Lynxlab\\ADA\\Widgets\\" : "widgets/include/"
         },
         "files": [
-            "include/AMA/DBRead.php",
             "include/Output/functions.php",
             "include/Service/functions.php",
             "include/Upload/functions.php",
-            "include/ModuleInit.php",
             "include/Utilities.php",
             "browsing/include/GraphMap.php",
             "browsing/include/MapFunctions.php",

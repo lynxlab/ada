@@ -1,6 +1,7 @@
 <?php
 
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 
@@ -46,7 +47,7 @@ switch ($_GET['mode']) {
             $history = $dh->testGetHistoryTest(['id_history_test' => $answer['id_history_test']]);
             $history = $history[0];
             $test = $dh->testGetNode($history['id_nodo']);
-            $studentObj = readUserFromDB($answer['id_utente']);
+            $studentObj = DBRead::readUserFromDB($answer['id_utente']);
             if (!$dh->isError($studentObj) && !$dh->isError($answer) && !$dh->isError($history) && !$dh->isError($test)) {
                 $what = '';
                 $link = '';

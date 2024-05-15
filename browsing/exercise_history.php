@@ -2,6 +2,7 @@
 
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
@@ -142,7 +143,7 @@ if (!empty($courseInstanceObj->title)) {
 }
 
 if (!is_object($nodeObj)) {
-    $nodeObj = readNodeFromDB($node);
+    $nodeObj = DBRead::readNodeFromDB($node);
 }
 if (!ADAError::isError($nodeObj) and isset($courseObj->id)) {
     $_SESSION['sess_id_course'] = $courseObj->id;

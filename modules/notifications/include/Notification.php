@@ -10,6 +10,7 @@
 
 namespace Lynxlab\ADA\Module\Notifications;
 
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\Output\GenericHtml;
 use Lynxlab\ADA\Main\Output\Html;
 use Lynxlab\ADA\Module\Notifications\AMANotificationsDataHandler;
@@ -101,7 +102,7 @@ class Notification extends NotificationBase
     {
         $oldSelf = $GLOBALS['self'] ?? null;
         $GLOBALS['self'] = pathinfo($fileName, PATHINFO_FILENAME);
-        $layoutObj = readLayoutFromDB(666, ADA_TEMPLATE_FAMILY);
+        $layoutObj = DBRead::readLayoutFromDB(666, ADA_TEMPLATE_FAMILY);
         $GLOBALS['self'] = $oldSelf;
         return $layoutObj;
     }

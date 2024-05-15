@@ -11,6 +11,7 @@
  * @version     0.1
  */
 
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\readUser;
@@ -43,7 +44,7 @@ $neededObjAr = [
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = 'index';
 
-$userObj = readUser($sess_id_user);
+$userObj = DBRead::readUser($sess_id_user);
 if ($userObj instanceof ADAGenericUser) {
     $homepage = $userObj->getHomePage();
     header('Location: ' . $homepage);

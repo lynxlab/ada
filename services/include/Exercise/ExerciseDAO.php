@@ -4,6 +4,7 @@ namespace Lynxlab\ADA\Services\Exercise;
 
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Services\Exercise\ADAEsercizio;
 
 use function Lynxlab\ADA\Main\AMA\DBRead\getMaxIdFN;
@@ -286,7 +287,7 @@ class ExerciseDAO
         $tmpAr = [];
         $tmpAr = explode('_', $exercise->getId());
         $id_course = $tmpAr[0];
-        $last_node = getMaxIdFN($id_course);
+        $last_node = DBRead::getMaxIdFN($id_course);
 
         $tmpAr = [];
         $tempAr = explode('_', $last_node);

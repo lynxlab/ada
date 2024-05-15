@@ -22,6 +22,7 @@ use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\DataValidator;
@@ -278,7 +279,7 @@ final class ModuleInit
      * User object: always load a user
      */
         $sess_id_user = isset($_SESSION['sess_id_user']) ? (int)$_SESSION['sess_id_user'] : 0;
-        $sess_userObj = readUser($sess_id_user);
+        $sess_userObj = DBRead::readUser($sess_id_user);
         if (ADAError::isError($sess_userObj)) {
             $sess_userObj->handleError();
         }
@@ -456,7 +457,7 @@ final class ModuleInit
             if (isset($_SESSION['sess_id_node']) && !$invalid_node && $id_course === false) {
                 //    if ($nodeObj instanceof Node){
                 $courseIdFromNodeId =  substr($_SESSION['sess_id_node'], 0, strpos($_SESSION['sess_id_node'], '_'));
-                $sess_courseObj = readCourse($courseIdFromNodeId);
+                $sess_courseObj = DBRead::readCourse($courseIdFromNodeId);
 
                 if (ADAError::isError($sess_courseObj)) {
                     unset($_SESSION['sess_courseObj']);
@@ -469,7 +470,7 @@ final class ModuleInit
                     $_SESSION['sess_id_course'] = $courseIdFromNodeId;
                 }
             } elseif ($id_course !== false) {
-                $sess_courseObj = readCourse($id_course);
+                $sess_courseObj = DBRead::readCourse($id_course);
                 if (ADAError::isError($sess_courseObj)) {
                     unset($_SESSION['sess_courseObj']);
                     $invalid_course = true;
@@ -481,7 +482,7 @@ final class ModuleInit
                     $_SESSION['sess_id_course'] = $id_course;
                 }
             } elseif ($sess_id_course !== false) {
-                $sess_courseObj = readCourse($sess_id_course);
+                $sess_courseObj = DBRead::readCourse($sess_id_course);
                 if (ADAError::isError($sess_courseObj)) {
                     unset($_SESSION['sess_courseObj']);
                     $invalid_course = true;
@@ -692,7 +693,7 @@ final class ModuleInit
 
                 $sess_id_course_instance = isset($_SESSION['sess_id_course_instance']) ? DataValidator::isUinteger($_SESSION['sess_id_course_instance']) : false;
                 if ($id_course_instance !== false) {
-                    $course_instanceObj = readCourseInstanceFromDB($id_course_instance);
+                    $course_instanceObj = DBRead::readCourseInstanceFromDB($id_course_instance);
                     if (ADAError::isError($course_instanceObj)) {
                         $invalid_course_instance = true;
                     } else {
@@ -775,7 +776,7 @@ final class ModuleInit
                         default:
                             break;
                     } //end switch UserType
-                    $course_instanceObj = readCourseInstanceFromDB($sess_id_course_instance);
+                    $course_instanceObj = DBRead::readCourseInstanceFromDB($sess_id_course_instance);
                     if (ADAError::isError($course_instanceObj)) {
                         $course_instanceObj->handleError();
                     }
@@ -985,7 +986,7 @@ final class ModuleInit
                     } elseif ($objType == 'course') {
                         // set the datahandler
                         $GLOBALS['dh'] = $dh;
-                        $sess_courseObj = readCourse($objID);
+                        $sess_courseObj = DBRead::readCourse($objID);
                         if (AMADB::isError($sess_courseObj) || !$sess_courseObj instanceof Course) {
                             $retval = true;
                             // restore the saved datahandler

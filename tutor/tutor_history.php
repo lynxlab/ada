@@ -3,6 +3,7 @@
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\TutorHelper;
 use Lynxlab\ADA\Main\Output\ARE;
@@ -94,7 +95,7 @@ if (!isset($epar)) {
  *
 */
 
-$courseObj = readCourseFromDB($courseInstanceObj->id_corso);
+$courseObj = DBRead::readCourseFromDB($courseInstanceObj->id_corso);
 if (AMADataHandler::isError($courseObj)) {
 } else {
     $course_title = $courseObj->titolo;

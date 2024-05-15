@@ -13,6 +13,7 @@ namespace Lynxlab\ADA\Module\Test;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\AMAError;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Test\RootTest;
 
@@ -102,7 +103,7 @@ class TestTest extends RootTest
 
                         //Send message to switcher and tutor when the user reaches max course's level
                         //Set course subscription to complete
-                        $userObj = readUser($_SESSION['sess_id_user']);
+                        $userObj = DBRead::readUser($_SESSION['sess_id_user']);
                         $max_level = $dh->getCourseMaxLevel($sess_id_course);
                         if ($level >= $max_level) {
                             // se è l'ultimo esercizio (ovvero se il livello dello studente è il massimo possibile)
@@ -181,7 +182,7 @@ class TestTest extends RootTest
         }
 
         // call helper function to check service completeness using modules/service-complete
-        $userObj = readUser($_SESSION['sess_id_user']);
+        $userObj = DBRead::readUser($_SESSION['sess_id_user']);
         BrowsingHelper::checkServiceComplete($userObj, $sess_id_course, $sess_id_course_instance);
 
         return true;

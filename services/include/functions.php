@@ -4,6 +4,7 @@ namespace Lynxlab\ADA\Services\Functions;
 
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\form\PhpOpenFormGen;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
@@ -34,7 +35,7 @@ function deleteNodeFN($id_node, $id_course, $action)
     /*
      * get object node
      */
-    $nodeObj = readNodeFromDB($id_node);
+    $nodeObj = DBRead::readNodeFromDB($id_node);
     if (is_object($nodeObj) && (!AMADataHandler::isError($nodeObj))) {
         //$sess_id_node = $nodeObj->id;
         $name = $nodeObj->name;
@@ -135,7 +136,7 @@ function copyNodeFN($id_node, $id_course, $action)
     $http_root_dir = $GLOBALS['http_root_dir'];
 
     // get object node
-    $nodeObj = readNodeFromDB($id_node);
+    $nodeObj = DBRead::readNodeFromDB($id_node);
     // per il momento se non e' un oggetto vuol dire che c'e' un errore
     // invece deve COMUQNQUE ritornare un oggetto, ma di tipo diverso: Errore
     if (is_object($nodeObj) && (!AMADataHandler::isError($nodeObj))) {
@@ -378,7 +379,7 @@ function editNodeFN($id_node, $id_course, $action)
     $http_root_dir = $GLOBALS['http_root_dir'];
     $dh = $GLOBALS['dh'];
     // get object node
-    $nodeObj = readNodeFromDB($id_node);
+    $nodeObj = DBRead::readNodeFromDB($id_node);
     if (is_object($nodeObj) && (!AMADataHandler::isError($nodeObj))) {
         $sess_id_node = $nodeObj->id;
         $name = $nodeObj->name;
@@ -401,7 +402,7 @@ function editNodeFN($id_node, $id_course, $action)
         $id_instance = $nodeObj->instance;
 
         //get parent obj node [useful in several tasks]
-        $nodeObjParent = readNodeFromDB($sess_id_node);
+        $nodeObjParent = DBRead::readNodeFromDB($sess_id_node);
         if (is_object($nodeObj) && (!AMADataHandler::isError($nodeObj))) {
             $sess_id_nodeParent = $nodeObjParent->id;
             $nameParent = $nodeObjParent->name;
@@ -686,7 +687,7 @@ function editNodeFN($id_node, $id_course, $action)
 
 function getNodeData($id_node)
 {
-    $nodeObj = readNodeFromDB($id_node);
+    $nodeObj = DBRead::readNodeFromDB($id_node);
     if (AMADataHandler::isError($nodeObj)) {
         return $nodeObj;
     }

@@ -3,6 +3,7 @@
 use Lynxlab\ADA\Comunica\Spools\Mailer;
 use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\DataValidator;
@@ -140,7 +141,7 @@ if (!is_file($lockfile)) {
     $studentId = DataValidator::isUinteger($_REQUEST['student']);
 
     $testerInfoAr = $common_dh->getTesterInfoFromId($providerId, AMA_FETCH_BOTH);
-    $buyerObj = readUser($studentId);
+    $buyerObj = DBRead::readUser($studentId);
     if ((is_object($buyerObj)) && (!AMADataHandler::isError($buyerObj))) {
         if (!AMACommonDataHandler::isError($testerInfoAr)) {
             $provider_name = $testerInfoAr[1];

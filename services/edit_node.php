@@ -20,6 +20,7 @@ use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
+use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Main\Output\ARE;
@@ -159,10 +160,10 @@ switch ($op) {
             isset($_SERVER['REQUEST_METHOD']) and $_SERVER['REQUEST_METHOD'] == 'POST'
                 and isset($new_id_node)
         ) {
-            $nodeObj = readNodeFromDB($sess_id_node);
+            $nodeObj = DBRead::readNodeFromDB($sess_id_node);
             if (is_object($nodeObj)) {
                 $nodeObj->copy($new_id_node);
-                $new_nodeObj = readNodeFromDB($new_id_node);
+                $new_nodeObj = DBRead::readNodeFromDB($new_id_node);
                 if (is_object($new_nodeObj)) {
                     $message = urlencode(translateFN("Nodo copiato"));
                     header("Location: " . $http_root_dir . "/browsing/view.php?id_node=$new_id_node&msg=$message");
@@ -251,7 +252,7 @@ switch ($op) {
     case 'publish': // promote a noTe to noDe (only Tutors) or a private note to a public note (student/tutor)
         // if (isset($submit)){
 
-        $nodeObj = readNodeFromDB($id_node);
+        $nodeObj = DBRead::readNodeFromDB($id_node);
 
         if (is_object($nodeObj) and (!AMADatahandler::isError($nodeObject))) {
             $node_type = $nodeObj->type;
@@ -279,7 +280,7 @@ switch ($op) {
                         ) {
                             $path_element = array_shift($pathAr);
                             $parent_node_id = $path_element[0];
-                            $nodeObjTmp = readNodeFromDB($parent_node_id);
+                            $nodeObjTmp = DBRead::readNodeFromDB($parent_node_id);
                             $parent_node_type = $nodeObjTmp->type;
                         }
                     }
