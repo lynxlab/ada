@@ -6,6 +6,6 @@ parameters:
         - /*/graph/*
         - /*/vendor/*
         - /*/services/media/*
-        - /*/upload_files/*
+        - /*/upload_file/*
         - /*/widgets/cache/*
         - /*/api/*

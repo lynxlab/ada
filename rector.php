@@ -41,7 +41,7 @@ return RectorConfig::configure()
     ])
     ->withSkip([
         __DIR__ . '/browsing/include/graph',
-        __DIR__ . '/services/media',
+        __DIR__ . '/services/media/**/*',
         __DIR__ . '/upload_file',
         __DIR__ . '/widgets/cache',
         __DIR__ . '/api',
