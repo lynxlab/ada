@@ -15,11 +15,7 @@
  */
 
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
-use Lynxlab\ADA\Main\Node\Media;
-use Lynxlab\ADA\Main\Node\Node;
-use Lynxlab\ADA\Main\Output\Output;
-use Lynxlab\ADA\Main\Utilities as MainUtilities;
-use Lynxlab\ADA\Services\NodeEditing\Utilities;
+use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Comunica\Functions\exitWithJSONError;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -27,7 +23,7 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -49,7 +45,7 @@ $neededObjAr = [];
  * Performs basic controls before entering this module
  */
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = MainUtilities::whoami();
+$self = Utilities::whoami();
 
 /*
  * YOUR CODE HERE
