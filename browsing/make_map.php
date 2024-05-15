@@ -1,12 +1,8 @@
 <?php
 
+use Lynxlab\ADA\Browsing\GraphMap;
 use Lynxlab\ADA\Browsing\ImageDevice;
 use Lynxlab\ADA\Main\Utilities;
-
-use function Lynxlab\ADA\Browsing\GraphMap\computeMaxFN;
-use function Lynxlab\ADA\Browsing\GraphMap\copyImageFN;
-use function Lynxlab\ADA\Browsing\GraphMap\makeLinkFN;
-use function Lynxlab\ADA\Browsing\GraphMap\showImageFN;
 
 $debug = 0;
 $ada_config_path = realpath(__DIR__ . '/..');
@@ -53,7 +49,7 @@ $foreground_G = 0;
 $foreground_B = 0;
 
 // Calcola la grandezza dell'immagine di sfondo.
-$max_coordinate_ar = computeMaxFN($children_ha);
+$max_coordinate_ar = GraphMap::computeMaxFN($children_ha);
 $max_X = $max_coordinate_ar[0];
 $max_Y = $max_coordinate_ar[1];
 //echo "$max_X e $max_Y";
@@ -70,7 +66,7 @@ $background_control = ImageColorAllocate($im_dest, $background_R, $background_G,
 // la chiave e' costituita dal id del nodo.
 
 
-$position_node = copyImageFN($children_ha, $im_dest, $max_X, $max_Y, $sess_user_level);
+$position_node = GraphMap::copyImageFN($children_ha, $im_dest, $max_X, $max_Y, $sess_user_level);
 
 // vito, 27 apr 2009
 //print_r($children_ha);
@@ -85,10 +81,10 @@ $position_node = copyImageFN($children_ha, $im_dest, $max_X, $max_Y, $sess_user_
 
 //--------------------------------------------------------------------
 // Genera le frecce che indicano i link
-$result = makeLinkFN($children_ha, $im_dest, $position_node);
+$result = GraphMap::makeLinkFN($children_ha, $im_dest, $position_node);
 
 if ($result) {
-    showImageFN($im_dest);
+    GraphMap::showImageFN($im_dest);
 } else {
     print "GD Error!";
 }
