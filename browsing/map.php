@@ -1,5 +1,6 @@
 <?php
 
+use Lynxlab\ADA\Browsing\MapFunctions;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\Course\CourseInstance;
@@ -10,12 +11,6 @@ use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADAGuest;
 use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Services\NodeEditing\NodeEditing;
-
-use function Lynxlab\ADA\Browsing\Map\returnAdaNodeIcon;
-use function Lynxlab\ADA\Browsing\Map\returnAdaNodeLink;
-use function Lynxlab\ADA\Browsing\Map\returnAdaNodePos;
-use function Lynxlab\ADA\Browsing\Map\returnAdaNodeType;
-use function Lynxlab\ADA\Browsing\Map\returnMapType;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
@@ -106,7 +101,7 @@ $data .= "<div id=\"map_content\" style=\"position:relative;top:0px;left:0px;\">
 
 $nodeList = $nodeObj->graphIndexFN();
 $otherPos = [0,0,0,0];
-$tipo_mappa = returnMapType();
+$tipo_mappa = MapFunctions::returnMapType();
 
 if (!AMADB::isError($nodeList) && is_array($nodeList) && count($nodeList) > 0) {
     // AND HIS CHILDS
@@ -134,10 +129,10 @@ if (!AMADB::isError($nodeList) && is_array($nodeList) && count($nodeList) > 0) {
                         $nodeChildPos = [ $p[0], $p[1], 100, 100 ];
                     } else {
                         // code here
-                        $nodeChildPos = returnAdaNodePos($key['position_child'], $key['id_child']);
+                        $nodeChildPos = MapFunctions::returnAdaNodePos($key['position_child'], $key['id_child']);
                     }
                 } else {
-                    $nodeChildPos = returnAdaNodePos($key['position_child'], $key['id_child']);
+                    $nodeChildPos = MapFunctions::returnAdaNodePos($key['position_child'], $key['id_child']);
                 }
             } else {
                 // code here
@@ -145,10 +140,10 @@ if (!AMADB::isError($nodeList) && is_array($nodeList) && count($nodeList) > 0) {
 
             //settings style, id etc etc etc for javascript
             $thisNodeStyle = 'left:' . $nodeChildPos[0] . 'px;top:' . $nodeChildPos[1] . 'px;width:' . $nodeChildPos[2] . 'px;height:auto;';
-            $node_type = returnAdaNodeType($key['type_child']);
+            $node_type = MapFunctions::returnAdaNodeType($key['type_child']);
             if ((($node_type == "lemma" || $node_type == 'gruppo_lemmi') && $tipo_mappa == "lemma") || (($node_type == "gruppo" || $node_type == 'nodo' || $node_type == 'test') && $tipo_mappa != "lemma")) {
                 $data .= '<div class="newNodeMap" style="position:absolute;' . $thisNodeStyle . '" id="' . $key['id_child'] . '">';
-                $data .= '<img src="' . returnAdaNodeIcon($key['icon_child'], $key['type_child']) . '"/>';
+                $data .= '<img src="' . MapFunctions::returnAdaNodeIcon($key['icon_child'], $key['type_child']) . '"/>';
 
                 // setting icon
                 if ($key['type_child'] == ADA_GROUP_TYPE) {
@@ -174,7 +169,7 @@ if (!AMADB::isError($nodeList) && is_array($nodeList) && count($nodeList) > 0) {
                     $data .= '<a href="' . HTTP_ROOT_DIR . '/browsing/' . $linkFile . '.php?id_node=' . $key['id_child'] . '">' . $key['name_child'] . '</a>';
                 }
                 // hidden div whit information for javascript
-                $data .= '<div style="display:none">' . returnAdaNodeLink($key['linked']) . '</div>';
+                $data .= '<div style="display:none">' . MapFunctions::returnAdaNodeLink($key['linked']) . '</div>';
                 $data .= '</div>';
             };
         }
