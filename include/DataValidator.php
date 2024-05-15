@@ -150,6 +150,13 @@ class DataValidator
         return static::validateValueWithPattern($nodeId, $pattern);
     }
 
+    public static function validateCourseId(?string $courseId): bool|int
+    {
+        return static::validateInteger($courseId);
+    }
+
+
+
     public static function validateTestername(?string $providername, $multiprovider = true): bool|string
     {
         /**
@@ -310,4 +317,5 @@ class DataValidator
     {
         return static::validateValue(filter_var($value, FILTER_VALIDATE_INT));
     }
+ 
 }
