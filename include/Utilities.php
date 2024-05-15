@@ -355,7 +355,7 @@ class Utilities
 
     public static function leggidir($dir, $ext = "", $moreExtension = [])
     {
-        return readDir($dir, $ext, $moreExtension);
+        return static::readDir($dir, $ext, $moreExtension);
     }
 
     protected static function printVars($obj)

@@ -392,7 +392,7 @@ class CourseViewer
     public static function ordered($course_data, $callback, $callback_params = [], $id_toc = null, $dhToUse = null)
     {
         $list = CDOMElement::create('ul');
-        if (is_null($id_toc)) {
+        if (!is_null($id_toc)) {
             /*
              * Ottiene le informazioni sul nodo principale
              */

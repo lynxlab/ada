@@ -138,7 +138,9 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
         $container = $event->getSubject();
         $nodeData = $event->getArguments();
         if (array_key_exists('level', $nodeData['params']) && $nodeData['params']['level'] >= 1) {
-            $container->addChild(self::buildNotificationButton($nodeData['params']['node'], Notification::getNotificationFromNodeType(ADA_NOTE_TYPE)));
+            $container->addChild(self::buildNotificationButton(
+                $nodeData['params']['node'] + ['id_istanza' => $nodeData['external_params']['id_course_instance'] ?? null],
+                Notification::getNotificationFromNodeType(ADA_NOTE_TYPE)));
         }
     }
 

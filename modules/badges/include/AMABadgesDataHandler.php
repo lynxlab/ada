@@ -316,7 +316,7 @@ class AMABadgesDataHandler extends AMADataHandler
         } else {
             $uuid = Uuid::fromString($saveData['uuid']);
             unset($saveData['uuid']);
-            $whereArr = ['uuid' => $uuid->toString()];
+            $whereArr = ['uuid_bin' => $uuid->toString()];
             $result = $this->queryPrepared(
                 $this->sqlUpdate(
                     RewardedBadge::TABLE,
