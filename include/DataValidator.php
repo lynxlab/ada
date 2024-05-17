@@ -155,6 +155,17 @@ class DataValidator
         return static::validateInteger($courseId);
     }
 
+    public static function validateCourseInstanceId(?string $courseInstanceId): bool|int
+    {
+        return static::validateInteger($courseInstanceId);
+    }
+
+    public static function validateUserId(?string $userId): bool|int
+    {
+        return static::validateInteger($userId);
+    }
+
+
 
 
     public static function validateTestername(?string $providername, $multiprovider = true): bool|string
@@ -175,16 +186,23 @@ class DataValidator
     }
 
     // TODO: definire minima e massima lunghezza per lo username
-    public static function validateFirstname(?string $firstname): bool|string
-    {
-        return static::validateValue($firstname);
-    }
-
-    // TODO: definire minima e massima lunghezza per lo username
-    public static function validateLastname(?string $lastname): bool|string
+    public static function validateName(?string $lastname): bool|string
     {
         return static::validateValue($lastname);
     }
+
+    public static function validateFirstname(?string $firstname): bool|string
+    {
+        return static::validateName($firstname);
+    }
+
+    
+    public static function validateLastname(?string $lastname): bool|string
+    {
+        return static::validateName($lastname);
+    }
+
+
 
     // TODO: definire minima e massima lunghezza per lo username
     public static function validateUsername(?string $username): bool|string
@@ -280,6 +298,19 @@ class DataValidator
         return static::validateValueWithPattern($url, $pattern);
     }
 
+    public static function validateIpaddress(?string $ipaddress): bool|string
+    {
+        /**
+         * Regular Expression for IBAN validation
+         * Pls refer to https://ihateregex.io/expr/ip/
+         * for details and upgrades
+         */
+
+        $pattern = '(\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}';
+        return static::validateValueWithPattern($ipaddress, $pattern);
+    }
+
+    
     public static function validateIban(?string $iban): bool|string
     {
         /**
@@ -317,5 +348,70 @@ class DataValidator
     {
         return static::validateValue(filter_var($value, FILTER_VALIDATE_INT));
     }
- 
+     
+    /**
+     * multiValidateValue
+     *
+     * validate an array of requests ($_POST or $_GET) and returns an array with $variables as keys
+     * 
+     * Use:
+     *  these are the names of the variables:
+     *  $variableNames = ['Id_node','Id_course','tipo','messages'];
+     *  these are the parameters' names as an array of key:
+     *  $parameterNames = array_flip(['node_id','courseID','type','message']);
+     *  these are the requests (from $_GET or $_POST)
+     *  (they are filtered by parameters' names so as to guarantee the correct order):
+     *  $requests = array_intersect_key($_GET,$parameterNames,true);
+     *  $validatedValues = DataValidator::multiValidateValue($requests,$variableNames);
+     *  extract($validatedValues);
+     *  Note: $guess can be true or false; if true, tries to guess the validator type from the name of the parameter
+     * 
+     * @param  mixed $parameters
+     * @param  mixed $variables
+     * @return array
+     */
+    public static function multiValidateValue (array $parameters, array $variables, string $defaultValidator = 'validateValue', bool $guess = false) : array 
+    {
+        if (count($parameters) == count($variables)){
+            if ($guess === true){
+                // try to guess the correct validator on the basis of the name of the parameter
+                $values = [];
+                foreach ($parameters as $parameterName=>$value){
+                    $validator = static::guessValidator($parameterName);
+                    $validatedValue = call_user_func($validator,$value);
+                    $validatedValues[] = $validatedValue;
+                }
+            } else {
+                // simply applies the same basic validator to all values do this:
+                $validatedValues = array_map([__CLASS__,$defaultValidator],$parameters);
+            }
+            return array_combine($variables, $valuvalidatedValueses);
+        } else {
+            return array_fill_keys($parameters,null);
+        }
+    }
+
+    public static function guessValidator(string $variableName) : array
+    {
+     $validator =  match ($variableName){
+            'username','user_username'=>'validateUsername',
+            'firstName','lastName'=>'validateName',
+            'nome_file','file_lang','file_edit'=>'validateLocalFilename',
+            'id_utente','user_id','userId','ownerId','studentId','id_utente_autore'=>'validateUserId',
+            'user_type','chatroom','lastMsgId'=>'validateInteger',
+            'id_course_instance','id_instance','instanceId','course_instance_id','course_instance'=>'validateCourseInstanceId',
+            'course_id','courseID','courseId','id_course'=>'validateCourseid',
+            'id_nodo_parent','parent_node','node_id','nodeId','id_node','id_test','id_nodo_toc','id_nodo_iniziale'=>'validateNodeId',
+            'email','receiver_email','payer_email'=>'validateEmail',
+            'date'=>'validateDateFormat',
+            'user_birthdate'=>'validateBirthdate',
+            'language','lan'=> 'validateLanguage',
+            // 'selectLanguage','cod_lang'=> 'validateLanguage', ??
+            'iban','tester_iban'=>'validateIban',
+            'tester'=>'validateTesterName',
+            'message','message_to_send','welcome_msg','msgbody'=>'validateMessage',
+            default=>'validateValue' //anything else...
+        };
+        return  [__CLASS__,$validator];
+    }
 }
