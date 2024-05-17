@@ -30,7 +30,7 @@ class TestFormTest extends RootFormTest
 			var correttezza_regexp = /^[0]|[1-9][0-9]*$/;
 			var barriera_field = "barriera";
 			var livello_field = "livello";
-			document.write(\'<script type="text/javascript" src="' . MODULES_TEST_HTTP . '/js/testForm.js"><\/script>\');';
+			load_js("' . MODULES_TEST_HTTP . '/js/testForm.js");';
         $this->setCustomJavascript($js);
 
         //barriera

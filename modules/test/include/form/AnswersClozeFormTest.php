@@ -63,8 +63,8 @@ class AnswersClozeFormTest extends FormTest
         $div->setAttribute('id', 'clozeDiv');
 
         $div->addChild(new CText('<script type="text/javascript">
-			document.write(\'<script type="text/javascript" src="' . MODULES_TEST_HTTP . '/js/answers_cloze.js"><\/script>\');
-			document.write(\'<script type="text/javascript" src="' . MODULES_TEST_HTTP . '/js/dragdrop.js"><\/script>\')
+			load_js(["' . MODULES_TEST_HTTP . '/js/answers_cloze.js",
+            "' . MODULES_TEST_HTTP . '/js/dragdrop.js"]);
 		</script>'));
 
         $clozeText = preg_replace_callback(QuestionClozeTest::REGEXPCLOZE, [$this,'clozePlaceholder'], $this->question['testo']);

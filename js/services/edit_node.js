@@ -1,2 +1,4 @@
-document.write("<script type='text/javascript' src='../external/fckeditor/fckeditor.js'></script>");
-document.write("<script type='text/javascript' src='../js/include/fckeditor_integration.js'></script>");
+load_js([
+    '../external/fckeditor/fckeditor.js',
+    '../js/include/fckeditor_integration.js',
+]);

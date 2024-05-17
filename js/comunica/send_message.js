@@ -1,5 +1,5 @@
 /**
- * 
+ *
  *
  * @package   comunica
  * @author    Vito Modena <vito@lynxlab.com>
@@ -8,4 +8,4 @@
  * @link
  * @version   0.1
  */
-document.write("<script type='text/javascript' src='../js/comunica/address_book.js'></script>");
+load_js('../js/comunica/address_book.js');

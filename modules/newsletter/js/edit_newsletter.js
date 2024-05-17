@@ -1,4 +1,4 @@
-document.write('<script type="text/javascript" src="../../external/fckeditor/fckeditor.js"></script>');
+load_js('../../external/fckeditor/fckeditor.js');
 
 /**
  * change the following to false if you want standard submit

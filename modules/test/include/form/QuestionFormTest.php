@@ -54,7 +54,7 @@ class QuestionFormTest extends FormTest
 			var field = "' . $didascalia . '";
 			var regexp = /^(?:[\d]+|[\w]+).*$/;
 			var module_http = "' . MODULES_TEST_HTTP . '";
-			document.write(\'<script type="text/javascript" src="' . MODULES_TEST_HTTP . '/js/questionFormStep2.js"><\/script>\');';
+			load_js("' . MODULES_TEST_HTTP . '/js/questionFormStep2.js");';
         $this->setCustomJavascript($js);
 
         //forgetExerciseType
@@ -152,7 +152,7 @@ class QuestionFormTest extends FormTest
 			var ADA_NORMAL_TEST_SIMPLICITY = ' . ADA_NORMAL_TEST_SIMPLICITY . ';
 			var ADA_MEDIUM_TEST_SIMPLICITY = ' . ADA_MEDIUM_TEST_SIMPLICITY . ';
 			var cloze_field = "' . $cloze . '";
-			document.write(\'<script type="text/javascript" src="' . MODULES_TEST_HTTP . '/js/questionForm.js"><\/script>\');';
+			load_js("' . MODULES_TEST_HTTP . '/js/questionForm.js");';
         $this->setCustomJavascript($js);
 
         //tipologia domanda

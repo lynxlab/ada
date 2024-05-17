@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  *
  */
-document.write("<script type='text/javascript' src='js/dropzonei18n.php'></script>");
+load_js('js/dropzonei18n.php');
 (function() {
   var Dropzone, Emitter, camelize, contentLoaded, detectVerticalSquash, drawImageIOSFix, noop, without,
     __slice = [].slice,

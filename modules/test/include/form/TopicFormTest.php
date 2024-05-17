@@ -43,7 +43,7 @@ class TopicFormTest extends FormTest
 			var field = "' . $random_number . '";
 			var regexp = /^[0-9]+$/;
 			var module_http = "' . MODULES_TEST_HTTP . '";
-			document.write(\'<script type="text/javascript" src="' . MODULES_TEST_HTTP . '/js/topicForm.js"><\/script>\');';
+			load_js("' . MODULES_TEST_HTTP . '/js/topicForm.js");';
         $this->setCustomJavascript($js);
 
         //parent

@@ -1,5 +1,4 @@
-document.write("<script type='text/javascript' src='../external/fckeditor/fckeditor.js'></script>");
-//document.write("<script type='text/javascript' src='../js/include/fckeditor_integration.js'></script>");
+load_js('../external/fckeditor/fckeditor.js');
 
 function includeFCKeditor(textarea_name) {
    var oFCKeditor = new FCKeditor( textarea_name );
@@ -83,7 +82,7 @@ function initEditCourse(userID, courseID) {
 			buttonClosure.parents().first().prepend('<div id="uploadErrorMSG" class="uploadMSG">'+response.responseJSON.message+'</div>');
 		});
 	});
-	
+
 	buildCourseAttachmentsTable(courseID, true);
 }
 
@@ -91,7 +90,7 @@ function buildCourseAttachmentsTable(courseID, withTrashLink, context) {
 	var context = context || $j('ol.form').first().children('li.form').last().parents('ol').first();
 	$j('li.form.attachments', context).remove();
 	$j.when(getCourseAttachments(courseID, withTrashLink))
-	  .always(function(responseData) { 
+	  .always(function(responseData) {
 		  var data = responseData.data || 'unknown error';
 		  var error = 'undefined' === typeof responseData.error || responseData.error;
 		  if (error === false) {
@@ -99,11 +98,11 @@ function buildCourseAttachmentsTable(courseID, withTrashLink, context) {
 			  if (Object.keys(tableData).length > 0) {
 				var hasHeaders = false;
 				var htmlArr = [ '<table id="courseAttachments" class="ui padded table">' ];
-				
+
 				if ('udenfined' !== typeof tableData.caption && tableData.caption.length > 0) {
 					htmlArr.push('<caption>'+ tableData.caption +'</caption>');
 				}
-				
+
 				if ('undefined' !== typeof tableData.headers && tableData.headers.length > 0) {
 					hasHeaders = true;
 					htmlArr.push('<thead><tr>');
@@ -119,12 +118,12 @@ function buildCourseAttachmentsTable(courseID, withTrashLink, context) {
 						if (hasHeaders) {
 							for (var i=0; i<tableData.headers.length; i++) {
 								htmlArr.push('<td>'+tableData.resources[resID][tableData.headers[i].property]+'</td>');
-							}							
+							}
 						} else {
 							for (var prop in tableData.resources[resID]) {
 								if (tableData.resources[resID].hasOwnProperty(prop)) {
 									htmlArr.push('<td>'+ tableData.resources[resID][prop] +'</td>');
-									
+
 								}
 							}
 						}
@@ -135,7 +134,7 @@ function buildCourseAttachmentsTable(courseID, withTrashLink, context) {
 				htmlString = htmlArr.join("\n");
 			  }
 		  } else {
-			htmlString = '<span style="color:red;">'+data+'</span>';  
+			htmlString = '<span style="color:red;">'+data+'</span>';
 		  }
 		  $j(context).append('<li class="form attachments">'+htmlString+'</li>');
 	  });
@@ -149,9 +148,9 @@ function getCourseAttachments(courseID, withTrashLink) {
 		data: { courseID : courseID , trashLink: (withTrashLink ? 1 :0) }
 	})
 	.done(function(response) {
-		promise.resolve({error:false, data: response}); 
+		promise.resolve({error:false, data: response});
 	})
-	.fail(function(response) { 
+	.fail(function(response) {
 		var retStr = [];
 		if ('undefined' !== typeof response.responseJSON) {
 			if ('udefined' !== typeof response.responseJSON.data && response.responseJSON.data.length>0) {
@@ -162,9 +161,9 @@ function getCourseAttachments(courseID, withTrashLink) {
 			if ('undefined' !== typeof response.status) retStr.push(response.status);
 			if ('undefined' !== typeof response.statusText) retStr.push(response.statusText);
 		}
-		promise.reject({ error: true, data: retStr.join(' - ') }); 
+		promise.reject({ error: true, data: retStr.join(' - ') });
 	});
-	
+
 	return promise.promise();
 }
 

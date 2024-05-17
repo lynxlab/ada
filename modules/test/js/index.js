@@ -150,7 +150,7 @@ function move(e, id_nodo, direction) {
     });
 }
 
-document.write('<script type="text/javascript" src="js/commons.js"></script>');
+load_js('js/commons.js');
 
 function endsWith(str, suffix) {
     return str.indexOf(suffix, str.length - suffix.length) !== -1;

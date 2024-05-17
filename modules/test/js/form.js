@@ -1,4 +1,4 @@
-document.write('<script type="text/javascript" src="../../external/fckeditor/fckeditor.js"></script>');
+load_js('../../external/fckeditor/fckeditor.js');
 
 function loadFCKeditor(textarea_name, toolbar) {
     if ($j('#' + textarea_name).size() == 1) {
