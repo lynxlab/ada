@@ -85,7 +85,7 @@ class AMANotificationsDataHandler extends AMADataHandler
 
         if (!AMADB::isError($result)) {
             if (!$isUpate) {
-                $saveData['notificationId'] = intval($this->getConnection()->lastInsertID());
+                $saveData['notificationId'] = intval($this->lastInsertID());
             }
             $this->commit();
             return $saveData;
@@ -130,7 +130,7 @@ class AMANotificationsDataHandler extends AMADataHandler
 
         if (!AMADB::isError($result)) {
             if (!$isUpate) {
-                $saveData['id'] = intval($this->getConnection()->lastInsertID());
+                $saveData['id'] = intval($this->lastInsertID());
             }
             $this->commit();
             return $saveData;

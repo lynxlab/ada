@@ -34,13 +34,7 @@ class AMAImpExportDataHandler extends AMADataHandler
      */
     public function &exportGetNodeChildren($node_id, $id_course_instance = "")
     {
-        $db = & $this->getConnection();
-
         $excludeNodeTypes =  [ ADA_NOTE_TYPE, ADA_PRIVATE_NOTE_TYPE ];
-
-        if (AMADB::isError($db)) {
-            return $db;
-        }
 
         $values = [
             $node_id,
@@ -58,7 +52,7 @@ class AMAImpExportDataHandler extends AMADataHandler
 
         $sql .= " ORDER BY ordine ASC";
 
-        $res_ar = & $db->getCol($sql, 0, $values);
+        $res_ar = & $this->getColPrepared($sql, $values);
         if (AMADB::isError($res_ar)) {
             return new AMAError(AMA_ERR_GET);
         }

@@ -81,7 +81,7 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
                 ),
                 array_values($saveData)
             );
-            $saveData['id'] = $this->getConnection()->lastInsertID();
+            $saveData['id'] = $this->lastInsertID();
         } else {
             $whereArr = ['id' => $saveData['id']];
             unset($saveData['id']);

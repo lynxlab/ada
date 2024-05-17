@@ -42,15 +42,10 @@ class AMACompleteDataHandler extends AMADataHandler
      */
     private function getFieldsList($tablename, $backTick = true)
     {
-        $db = & $this->getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
-
         $fields = [];
 
         $sql = "SHOW COLUMNS FROM " . self::$PREFIX . $tablename . " WHERE field NOT LIKE 'id'";
-        $res = $db->getAll($sql, [], AMA_FETCH_ORDERED);
+        $res = $this->getAllPrepared($sql, [], AMA_FETCH_ORDERED);
 
         if (!AMADB::isError($res)) {
             // row index 0 is 'Field' field
@@ -99,12 +94,6 @@ class AMACompleteDataHandler extends AMADataHandler
      */
     public function saveCompleteConditionSet(CompleteConditionSet $cond)
     {
-        // the db is needed to get the last insert id
-        $db = & $this->getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
-
         if (is_null($cond->getID())) {
             $isUpdate = false;
             $sql = 'INSERT INTO `' . self::$PREFIX . 'conditionset` (' . implode(',', $this->getFieldsList('conditionset')) . ') VALUES (?)';
@@ -118,7 +107,7 @@ class AMACompleteDataHandler extends AMADataHandler
         // saves the operation
         if (!AMADB::isError($result)) {
             if ($isUpdate === false) {
-                $id_conditionset = $db->lastInsertID();
+                $id_conditionset = $this->lastInsertID();
             } else {
                 $id_conditionset = $isUpdate;
                 $this->queryPrepared('DELETE FROM `' . self::$PREFIX . 'operations` WHERE `id_conditionset`=?', $id_conditionset);
@@ -186,7 +175,7 @@ class AMACompleteDataHandler extends AMADataHandler
                         $result = $this->queryPrepared($sql, $saveData);
 
                         if (!AMADB::isError($result)) {
-                            $mappedIDs[$currentOperation['id']] = $db->lastInsertID();
+                            $mappedIDs[$currentOperation['id']] = $this->lastInsertID();
                         }
 
                         if ($processed !== false) {

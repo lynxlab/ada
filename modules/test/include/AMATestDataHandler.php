@@ -66,11 +66,6 @@ class AMATestDataHandler extends AMADataHandler
      */
     public function testAddNode($data)
     {
-        $db = & $this->getConnection();
-        if (self::isError($db)) {
-            return $db;
-        }
-
         //validazione campi
         $d = [
             'id_corso','id_posizione','id_utente','id_istanza','nome','titolo','consegna',
@@ -98,7 +93,7 @@ class AMATestDataHandler extends AMADataHandler
         if (self::isError($res)) {
             return new AMAError($this->errorMessage(AMA_ERR_ADD) . " while in test_addNode." . AMA_SEP . ": " . $res->getMessage());
         }
-        return $db->lastInsertID();
+        return $this->lastInsertID();
     }
 
     /**
@@ -387,11 +382,6 @@ class AMATestDataHandler extends AMADataHandler
      */
     public function testGetNodesByParent($id_nodo_parent, $id_nodo = null, $where = [])
     {
-        $db = & $this->getConnection();
-        if (self::isError($db)) {
-            return $db;
-        }
-
         $id_nodo_parent = $this->sqlPrepared($id_nodo_parent);
 
         if (!is_null($id_nodo)) {
@@ -669,11 +659,6 @@ class AMATestDataHandler extends AMADataHandler
      */
     public function testRecordAttempt($id_test, $id_istanza_corso, $id_corso, $id_utente, $domande)
     {
-        $db = & $this->getConnection();
-        if (self::isError($db)) {
-            return $db;
-        }
-
         $sql = "INSERT INTO `" . self::$PREFIX . "history_test` SET
 				`id_nodo` = ?,
 				`id_istanza_corso` = ?,
@@ -691,7 +676,7 @@ class AMATestDataHandler extends AMADataHandler
             return new AMAError(AMA_ERR_ADD);
         }
 
-        return $db->lastInsertID();
+        return $this->lastInsertID();
     }
 
     /**
@@ -852,11 +837,6 @@ class AMATestDataHandler extends AMADataHandler
         if (is_null($id_history_test)) {
             return false;
         }
-        $db = & $this->getConnection();
-        if (self::isError($db)) {
-            return $db;
-        }
-
         $sql = "INSERT INTO `" . self::$PREFIX . "history_answer` SET
 				`id_history_test` = ?,
 				`id_utente` = ?,
@@ -878,7 +858,7 @@ class AMATestDataHandler extends AMADataHandler
             return new AMAError(AMA_ERR_ADD);
         }
 
-        return $db->lastInsertID();
+        return $this->lastInsertID();
     }
 
     /**
@@ -1269,7 +1249,7 @@ class AMATestDataHandler extends AMADataHandler
     {
         $result = parent::addExHistory($student_id, $course_instance_id, $node_id);
         if (!AMADB::isError($result)) {
-            return $this->getConnection()->lastInsertId();
+            return $this->lastInsertId();
         } else {
             return $result;
         }

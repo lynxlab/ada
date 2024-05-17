@@ -86,7 +86,7 @@ class AMACollaboraACLDataHandler extends AMADataHandler
 
             if (!AMADB::isError($result)) {
                 if (!$isUpdate) {
-                    $saveData['fileAclId'] = $this->getConnection()->lastInsertID();
+                    $saveData['fileAclId'] = $this->lastInsertID();
                 }
                 // delete from files_utente table
                 $delData = [

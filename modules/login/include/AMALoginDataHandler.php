@@ -254,7 +254,7 @@ class AMALoginDataHandler extends AMADataHandler
             );
 
             if (!AMADB::isError($res)) {
-                $providerID = self::$dbToUse->getConnection()->lastInsertID();
+                $providerID = self::$dbToUse->lastInsertID();
                 // insert a corresponding row into providers_options
                 $sql = 'INSERT INTO `' . self::$PREFIX . 'providers_options` ' .
                     '(`' . self::$PREFIX . 'providers_id`,`order`) VALUES(?,?)';
@@ -501,7 +501,7 @@ class AMALoginDataHandler extends AMADataHandler
             $res = self::$dbToUse->queryPrepared($sql, [$ldapProviderID, $orderValue]);
 
             if (!AMADB::isError($res)) {
-                $optionID = self::$dbToUse->getConnection()->lastInsertID();
+                $optionID = self::$dbToUse->lastInsertID();
                 /**
                  * Insert actual key/value pairs in the options table
                  */

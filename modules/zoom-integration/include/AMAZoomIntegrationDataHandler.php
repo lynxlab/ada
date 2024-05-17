@@ -66,7 +66,7 @@ class AMAZoomIntegrationDataHandler extends AMADataHandler
         $result = parent::addVideoroom($videoroom_dataAr);
         if (!AMADB::isError($result)) {
             $meetingData = [
-                'openmeetings_room_id' => $this->getConnection()->lastInsertID(),
+                'openmeetings_room_id' => $this->lastInsertID(),
                 'meetingID' => $videoroom_dataAr['meetingID'],
                 'meetingPWD' => $videoroom_dataAr['meetingPWD'],
             ];

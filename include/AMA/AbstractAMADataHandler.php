@@ -723,13 +723,13 @@ abstract class AbstractAMADataHandler
      *
      * @param  string $sql       - the sql query with placeholders
      * @param  array  $values    - the values to bind with the prepared statement
-     * @param  int    $fetchmode - optional, indicates how to retrieve the results.
+     * @param  int    $col - optional, the number of column to get
      * @return mixed  array when no fetchmode is specified or AMA_FETCH_ASSOC is specified,
      *                object when AMA_FETCH_OBJECT is specified.
      */
-    protected function getColPrepared($sql, $values = [])
+    protected function getColPrepared($sql, $values = [], $col = 0)
     {
-        return self::getAllPrepared($sql, $values, PDO::FETCH_COLUMN, 0);
+        return self::getAllPrepared($sql, $values, PDO::FETCH_COLUMN, $col);
     }
 
     /**
@@ -905,6 +905,15 @@ abstract class AbstractAMADataHandler
          */
         // if $res is not an error, return the number of affected rows
         return $db->affectedRows($stmt);
+    }
+
+    protected function lastInsertID()
+    {
+        $db = &$this->getConnection();
+        if (AMADB::isError($db)) {
+            return $db;
+        }
+        return $db->lastInsertID();
     }
 
     /**

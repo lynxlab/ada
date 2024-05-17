@@ -63,11 +63,6 @@ class AMADataHandler extends AMATesterDataHandler
      */
     public function setStudent($id_student, $user_dataAr, $extraTableName = false, $userObj = null, &$idFromPublicTester = null)
     {
-        $db = & $this->getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
-
         /*
          * if we're not saving extra fields, just call the parent
          * BUT: if we're saving extra fields, we do not call the parent because we want
@@ -166,7 +161,7 @@ class AMADataHandler extends AMATesterDataHandler
                         if (MultiPort::getDSN(ADA_PUBLIC_TESTER) === $this->dsn &&  intval($idFromPublicTester) <= 0) {
                             // retrieve the id for the next insert
                             $nextIDQry = "SELECT MAX(" . $uniqueField . ") FROM " . $tblPrefix . $extraTableName;
-                            $nextID = $db->getOne($nextIDQry);
+                            $nextID = $this->getOnePrepared($nextIDQry);
                             $nextID = (is_null($nextID)) ? 1 : ++$nextID;
                             $idFromPublicTester = $nextID;
                         } else {
@@ -202,7 +197,7 @@ class AMADataHandler extends AMATesterDataHandler
                              * If could not geta nextID from the ADA_PUBLIC_TESTER
                              * read it as the lastInsertID and set it as the $idFromPublicTester
                              */
-                            $nextID = $this->getConnection()->lastInsertID();
+                            $nextID = $this->lastInsertID();
                             if (is_null($idFromPublicTester) || intval($idFromPublicTester) === 0) {
                                 $idFromPublicTester = $nextID;
                             }
@@ -229,11 +224,6 @@ class AMADataHandler extends AMATesterDataHandler
      */
     public function getExtraData(ADAUser $userObj)
     {
-        $db = & $this->getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
-
         /**
          * get extras from table ADAUser::getExtraTableKeyProperty()
          */
@@ -294,11 +284,6 @@ class AMADataHandler extends AMATesterDataHandler
      */
     public function removeUserExtraRow($user_id, $extraTableId, $extraTableClass)
     {
-        $db = & $this->getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
-
         $tablesPrefix = ADAUser::getTablesPrefix();
 
         $delQry = "DELETE FROM " . $tablesPrefix . $extraTableClass .

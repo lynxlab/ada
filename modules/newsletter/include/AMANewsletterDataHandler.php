@@ -50,15 +50,10 @@ class AMANewsletterDataHandler extends AMADataHandler
      */
     private function getFieldsList($tablename, $backTick = true)
     {
-        $db = & $this->getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
-
         $fields = [];
 
         $sql = "SHOW COLUMNS FROM " . self::$PREFIX . $tablename . " WHERE field NOT LIKE 'id'";
-        $res = $db->getAll($sql, [], AMA_FETCH_ORDERED);
+        $res = $this->getAllPrepared($sql, [], AMA_FETCH_ORDERED);
 
         if (!AMADB::isError($res)) {
             // row index 0 is 'Field' field
@@ -80,15 +75,10 @@ class AMANewsletterDataHandler extends AMADataHandler
      */
     private function getOneOrGetAll($countOnly, $sql)
     {
-        $db = & $this->getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
-
         if ($countOnly) {
-            $retval = $db->getOne($sql);
+            $retval = $this->getOnePrepared($sql);
         } else {
-            $retval =  $db->getAll($sql);
+            $retval =  $this->getAllPrepared($sql);
         }
 
         if ($countOnly && AMADB::isError($retval)) {
@@ -381,17 +371,12 @@ class AMANewsletterDataHandler extends AMADataHandler
 
         $sql = 'INSERT INTO `' . self::$PREFIX . 'history`  (' . implode(',', $this->getFieldsList('history')) . ') VALUES (?,?,?,?,?)';
 
-        $db = & $this->getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
-
         $result = $this->queryPrepared($sql, $values);
 
         if (AMADB::isError($result)) {
             return new $result();
         }
-        return $db->lastInsertID();
+        return $this->lastInsertID();
     }
 
     /**
