@@ -384,7 +384,7 @@ class CourseViewer
     /**
      * function ordered
      *
-     * @param unknown_type $course_data
+     * @param array $course_data
      * @param unknown_type $callback
      * @param unknown_type $callback_params
      * @return \Lynxlab\ADA\CORE\html4\CBase
@@ -407,8 +407,12 @@ class CourseViewer
             } else {
                 $principale = ['id_nodo' => $id_toc, 'id_nodo_parent' => $id_toc, 'nome' => translateFN('Principale'), 'tipo' => ADA_GROUP_TYPE, 'icona' => 'group.png', 'livello' => 0];
             }
-
-            if (($r = self::$callback(['node' => $principale, 'show_hide_span' => false], $callback_params)) != null) {
+            /*
+             * giorgio 16/may/2024
+             * if node 'id_toc' is not in 'course_data', add its li element.
+             */
+            $hasToc = array_filter($course_data, fn ($el) => $el['id_nodo'] == $id_toc);
+            if (empty($hasToc) && ($r = self::$callback(['node' => $principale, 'show_hide_span' => false], $callback_params)) != null) {
                 $list_element = CDOMElement::create('li', 'class:courseNode');
                 $list_element->addChild($r);
                 $list->addChild($list_element);
@@ -427,7 +431,7 @@ class CourseViewer
     /**
      * function struct:
      *
-     * @param unknown_type $course_data
+     * @param array $course_data
      * @param unknown_type $id_toc
      * @param unknown_type $expand_index
      * @param unknown_type $callback
@@ -456,14 +460,23 @@ class CourseViewer
             $callback_params['id_course_instance'] = null;
         }
         $node_info = $dh->getNodeInfo($id_toc);
-        $node_visits = array_reduce(
-            $dh->findNodesHistoryList(['data_visita', 'data_uscita'], $callback_params['user_id'], $callback_params['id_course_instance'], $id_toc),
-            function ($carry, $item) {
-                $carry += (intval($item[2]) - intval($item[1])) > 0 ? 1 : 0;
-                return $carry;
-            },
-            0
-        );
+        /*
+         * giorgio 16/may/2024
+         * if node 'id_toc' is not in 'course_data', recalc its node visits.
+         */
+        $hasToc = array_filter($course_data, fn ($el) => $el['id_nodo'] == $id_toc);
+        if (empty($hasToc)) {
+            $node_visits = array_reduce(
+                $dh->findNodesHistoryList(['data_visita', 'data_uscita'], $callback_params['user_id'], $callback_params['id_course_instance'], $id_toc),
+                function ($carry, $item) {
+                    $carry += (intval($item[2]) - intval($item[1])) > 0 ? 1 : 0;
+                    return $carry;
+                },
+                0
+            );
+        } else {
+            $node_visits = reset($hasToc)['numero_visite'];
+        }
         if (!AMADataHandler::isError($node_info)) {
             $principale = ['numero_visite' => $node_visits, 'id_nodo' => $id_toc, 'id_nodo_parent' => $id_toc, 'nome' => $node_info['name']/*translateFN('Principale')*/, 'tipo' => ADA_GROUP_TYPE, 'icona' => $node_info['icon']/*'group.png'*/, 'root' => true, 'livello' => $node_info['level']];
         } else {
