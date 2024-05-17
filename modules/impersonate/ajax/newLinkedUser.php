@@ -16,7 +16,6 @@ use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\User\ADAAuthor;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 use Lynxlab\ADA\Main\User\ADASwitcher;
-use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
 use Lynxlab\ADA\Module\Impersonate\AMAImpersonateDataHandler;
 use Lynxlab\ADA\Module\Impersonate\ImpersonateActions;
 use Lynxlab\ADA\Module\Impersonate\ImpersonateException;
@@ -49,7 +48,7 @@ require_once(ROOT_DIR . '/include/module_init.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 /**
- * @var AMACollaboraACLDataHandler $impDH
+ * @var AMAImpersonateDataHandler $impDH
  */
 $impDH = AMAImpersonateDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 

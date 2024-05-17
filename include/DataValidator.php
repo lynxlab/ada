@@ -196,7 +196,7 @@ class DataValidator
         return static::validateName($firstname);
     }
 
-    
+
     public static function validateLastname(?string $lastname): bool|string
     {
         return static::validateName($lastname);
@@ -310,7 +310,7 @@ class DataValidator
         return static::validateValueWithPattern($ipaddress, $pattern);
     }
 
-    
+
     public static function validateIban(?string $iban): bool|string
     {
         /**
@@ -348,12 +348,12 @@ class DataValidator
     {
         return static::validateValue(filter_var($value, FILTER_VALIDATE_INT));
     }
-     
+
     /**
      * multiValidateValue
      *
      * validate an array of requests ($_POST or $_GET) and returns an array with $variables as keys
-     * 
+     *
      * Use:
      *  these are the names of the variables:
      *  $variableNames = ['Id_node','Id_course','tipo','messages'];
@@ -365,53 +365,53 @@ class DataValidator
      *  $validatedValues = DataValidator::multiValidateValue($requests,$variableNames);
      *  extract($validatedValues);
      *  Note: $guess can be true or false; if true, tries to guess the validator type from the name of the parameter
-     * 
+     *
      * @param  mixed $parameters
      * @param  mixed $variables
      * @return array
      */
-    public static function multiValidateValue (array $parameters, array $variables, string $defaultValidator = 'validateValue', bool $guess = false) : array 
+    public static function multiValidateValue(array $parameters, array $variables, string $defaultValidator = 'validateValue', bool $guess = false): array
     {
-        if (count($parameters) == count($variables)){
-            if ($guess === true){
+        if (count($parameters) == count($variables)) {
+            if ($guess === true) {
                 // try to guess the correct validator on the basis of the name of the parameter
                 $values = [];
-                foreach ($parameters as $parameterName=>$value){
+                foreach ($parameters as $parameterName => $value) {
                     $validator = static::guessValidator($parameterName);
-                    $validatedValue = call_user_func($validator,$value);
+                    $validatedValue = call_user_func($validator, $value);
                     $validatedValues[] = $validatedValue;
                 }
             } else {
                 // simply applies the same basic validator to all values do this:
-                $validatedValues = array_map([__CLASS__,$defaultValidator],$parameters);
+                $validatedValues = array_map([self::class,$defaultValidator], $parameters);
             }
-            return array_combine($variables, $valuvalidatedValueses);
+            return array_combine($variables, $validatedValues);
         } else {
-            return array_fill_keys($parameters,null);
+            return array_fill_keys($parameters, null);
         }
     }
 
-    public static function guessValidator(string $variableName) : array
+    public static function guessValidator(string $variableName): array
     {
-     $validator =  match ($variableName){
-            'username','user_username'=>'validateUsername',
-            'firstName','lastName'=>'validateName',
-            'nome_file','file_lang','file_edit'=>'validateLocalFilename',
-            'id_utente','user_id','userId','ownerId','studentId','id_utente_autore'=>'validateUserId',
-            'user_type','chatroom','lastMsgId'=>'validateInteger',
-            'id_course_instance','id_instance','instanceId','course_instance_id','course_instance'=>'validateCourseInstanceId',
-            'course_id','courseID','courseId','id_course'=>'validateCourseid',
-            'id_nodo_parent','parent_node','node_id','nodeId','id_node','id_test','id_nodo_toc','id_nodo_iniziale'=>'validateNodeId',
-            'email','receiver_email','payer_email'=>'validateEmail',
-            'date'=>'validateDateFormat',
-            'user_birthdate'=>'validateBirthdate',
-            'language','lan'=> 'validateLanguage',
+        $validator =  match ($variableName) {
+            'username','user_username' => 'validateUsername',
+            'firstName','lastName' => 'validateName',
+            'nome_file','file_lang','file_edit' => 'validateLocalFilename',
+            'id_utente','user_id','userId','ownerId','studentId','id_utente_autore' => 'validateUserId',
+            'user_type','chatroom','lastMsgId' => 'validateInteger',
+            'id_course_instance','id_instance','instanceId','course_instance_id','course_instance' => 'validateCourseInstanceId',
+            'course_id','courseID','courseId','id_course' => 'validateCourseid',
+            'id_nodo_parent','parent_node','node_id','nodeId','id_node','id_test','id_nodo_toc','id_nodo_iniziale' => 'validateNodeId',
+            'email','receiver_email','payer_email' => 'validateEmail',
+            'date' => 'validateDateFormat',
+            'user_birthdate' => 'validateBirthdate',
+            'language','lan' => 'validateLanguage',
             // 'selectLanguage','cod_lang'=> 'validateLanguage', ??
-            'iban','tester_iban'=>'validateIban',
-            'tester'=>'validateTesterName',
-            'message','message_to_send','welcome_msg','msgbody'=>'validateMessage',
-            default=>'validateValue' //anything else...
+            'iban','tester_iban' => 'validateIban',
+            'tester' => 'validateTesterName',
+            'message','message_to_send','welcome_msg','msgbody' => 'validateMessage',
+            default => 'validateValue' //anything else...
         };
-        return  [__CLASS__,$validator];
+        return  [self::class,$validator];
     }
 }

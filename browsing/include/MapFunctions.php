@@ -31,7 +31,7 @@ class MapFunctions
         $file_pathAR = explode("/", $icon);
         $num_el = count($file_pathAR);
         if ($num_el < 2) {
-            return "img/" . returnAdaNodeType($type) . ".png"; // it is a path to a file
+            return "img/" . static::returnAdaNodeType($type) . ".png"; // it is a path to a file
         }
         //  if(preg_match("/services\/media/",$icon) == 0 ) return "img/".returnAdaNodeType($type).".png";
 
@@ -56,7 +56,7 @@ class MapFunctions
         if (file_exists($icon_thumb)) {
             return preg_replace('#' . ROOT_DIR . '#', HTTP_ROOT_DIR, $icon_thumb);
         } else {
-            return "img/" . returnAdaNodeType($type) . ".png";
+            return "img/" . static::returnAdaNodeType($type) . ".png";
         }
     }
 
