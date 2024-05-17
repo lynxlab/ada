@@ -28,7 +28,7 @@ use Lynxlab\ADA\Main\Translator;
 function translateFN($message, $language_from = null, $language_to = null)
 {
 
-    if (0 !== strcasecmp('install.php', basename($_SERVER['SCRIPT_FILENAME']))) {
+    if (0 === strcasecmp('install.php', basename($_SERVER['SCRIPT_FILENAME']))) {
         return $message;
     }
 
