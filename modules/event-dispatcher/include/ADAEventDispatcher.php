@@ -13,6 +13,9 @@ declare(strict_types=1);
 namespace Lynxlab\ADA\Module\EventDispatcher;
 
 use Exception;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
+use Lynxlab\ADA\Main\Traits\ADASingleton;
+use Lynxlab\ADA\Module\DebugBar\ADADebugBar;
 use Lynxlab\ADA\Module\EventDispatcher\Subscribers\ADAMethodSubscriberInterface;
 use Lynxlab\ADA\Module\EventDispatcher\Subscribers\ADAScriptSubscriberInterface;
 use ReflectionClass;
@@ -27,6 +30,10 @@ use Symfony\Component\Stopwatch\Stopwatch;
  */
 class ADAEventDispatcher extends EventDispatcher implements EventDispatcherInterface
 {
+    use ADASingleton {
+        getInstance as traitGetInstance;
+    }
+
     /**
      * Set to true to have getInstance to return a TraceableEventDispatcher
      * with getCalledListeners and getNotCalledListeners methods
@@ -39,27 +46,6 @@ class ADAEventDispatcher extends EventDispatcher implements EventDispatcherInter
     public const PREFIX_SEPARATOR = '::';
 
     /**
-     * This class is not allowed to call from outside: private!
-     */
-    protected function __construct()
-    {
-    }
-
-    /**
-     * Prevent the object from being cloned.
-     */
-    protected function __clone()
-    {
-    }
-
-    /**
-     * Avoid serialization.
-     */
-    public function __wakeup()
-    {
-    }
-
-    /**
      * Returns a Singleton instance of this class.
      *
      * @return ADAEventDispatcher
@@ -68,9 +54,9 @@ class ADAEventDispatcher extends EventDispatcher implements EventDispatcherInter
     {
         static $instance;
         if (null === $instance) {
-            $instance = new self();
-            if (self::TRACEABLE) {
-                $instance = new TraceableEventDispatcher($instance, new Stopwatch());
+            $instance = static::traitGetInstance();
+            if ((ModuleLoaderHelper::isLoaded('debugbar') && ADADebugBar::getInstance()->hasCollector('dispatcher')) || self::TRACEABLE) {
+                $instance = static::overrideInstance(new TraceableEventDispatcher($instance, new Stopwatch()));
             }
         }
         return $instance;
@@ -107,7 +93,13 @@ class ADAEventDispatcher extends EventDispatcher implements EventDispatcherInter
                     if (!is_null($eventName)) {
                         $event = new $classname($subject, $arguments);
                         $eventPrefix = array_key_exists('eventPrefix', $eventData) ? trim($eventData['eventPrefix']) . self::PREFIX_SEPARATOR : '';
-                        return self::getInstance()->dispatch($event, $eventPrefix . $eventName);
+                        // first dispatch the prefixed event
+                        $event = self::getInstance()->dispatch($event, $eventPrefix . $eventName);
+                        if (!$event->isPropagationStopped() && strlen($eventPrefix) > 0) {
+                            // then dispatch to all, without prefix
+                            $event = self::getInstance()->dispatch($event, $eventName);
+                        }
+                        return $event;
                     } else {
                         throw new ADAEventException(sprintf("Event constant %s is not defined", $eventData['eventName']), ADAEventException::EVENTNAMENOTFOUND);
                     }
@@ -195,7 +187,7 @@ class ADAEventDispatcher extends EventDispatcher implements EventDispatcherInter
 
     /**
      * If $method exists in parent class, call it and return its return value
-     * else throw an Excecptio
+     * else throw an Excecption
      *
      * @param string $method
      * @return mixed
