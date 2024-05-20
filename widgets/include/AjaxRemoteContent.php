@@ -68,8 +68,11 @@ class AjaxRemoteContent
 				.fail(function(response){
 				\$j('#$widgetObj->generatedDIVId').removeClass('loading').addClass('error');
 				\$j('#$widgetObj->generatedDIVId').html('" . translateFN('Errore caricamento') . " " .
-                    basename($widgetObj->ajaxModule) . "');
-				if ('function' === typeof $failCallback) $failCallback(html, \$j('#$widgetObj->generatedDIVId')); });</script>";
+                    basename($widgetObj->ajaxModule) . "');";
+                if ($failCallback !== 'null') {
+                    $ajax_content .= "if ('function' === typeof $failCallback) $failCallback(html, \$j('#$widgetObj->generatedDIVId'));";
+                }
+                $ajax_content .= " });</script>";
             } else {
                 // prototype 1.6 version
                 $ajax_content = "<script type='text/javascript'>
