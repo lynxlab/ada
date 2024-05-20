@@ -10,6 +10,7 @@ ModuleLoaderHelper::loadModuleFromArray([
     // keep eventdispatcher as first module, so others may use it
     [ 'name' => 'eventdispatcher', 'dirname' => 'event-dispatcher' ],
     [ 'name' => 'extractlogger', 'dirname' => 'extract-logger' ],
+    [ 'name' => 'debugbar' ],
     [ 'name' => 'codeman', 'dirname' => 'code_man' ],
     [ 'name' => 'test' ],
     [ 'name' => 'newsletter' ],
