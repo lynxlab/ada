@@ -105,7 +105,7 @@ class ModuleLoaderHelper
                     file_exists(MODULES_DIR . DIRECTORY_SEPARATOR . $moduledir . '/index.php');
                 break;
             default:
-                return true;
+                return null !== static::getModuleIncludeConfig($modulename, $moduledir);
                 break;
         }
     }
@@ -120,20 +120,22 @@ class ModuleLoaderHelper
      */
     public static function loadModule($modulename, $moduledir = null, $forcedisable = false)
     {
-        if (is_null($moduledir)) {
-            $moduledir = $modulename;
-        }
-        $basedefine = strtoupper(self::PREFIX . $modulename);
-        $defval = false;
-        if (!defined($basedefine) && !$forcedisable && static::checkModuleLoadCondtion($modulename, $moduledir)) {
-            $defval = static::requireAutoloader($modulename, $moduledir);
-        }
-        /*
-         * $basedefine should be defined in the required module
-         * config file. If it's not, define it here.
-         */
-        if (!defined($basedefine)) {
-            define($basedefine, $defval);
+        if (!static::isLoaded($modulename)) {
+            if (is_null($moduledir)) {
+                $moduledir = $modulename;
+            }
+            $basedefine = strtoupper(self::PREFIX . $modulename);
+            $defval = false;
+            if (!defined($basedefine) && !$forcedisable && static::checkModuleLoadCondtion($modulename, $moduledir)) {
+                $defval = static::requireAutoloader($modulename, $moduledir);
+            }
+            /*
+             * $basedefine should be defined in the required module
+             * config file. If it's not, define it here.
+             */
+            if (!defined($basedefine)) {
+                define($basedefine, $defval);
+            }
         }
     }
 
