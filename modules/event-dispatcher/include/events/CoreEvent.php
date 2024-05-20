@@ -69,4 +69,56 @@ final class CoreEvent extends GenericEvent
      * @var string
      */
     public const HELPERINITEXTRACT = self::NAMESPACE . '.helperinit.extract';
+
+    /**
+     * The HTMLOUTPUT event occurs before the html is sent to the browser
+     *
+     * This event allows you to add, remove or replace header, body and footer html
+     *
+     * @CoreEvent
+     *
+     * @var string
+     */
+    public const HTMLOUTPUT = self::NAMESPACE . '.page.htmloutput';
+
+    /**
+     * The AMADBPRECONNECT event occurs before a database gets connected
+     *
+     * This event allows you to add, remove or replace the connection dsn
+     *
+     * @CoreEvent
+     *
+     * @var string
+     */
+    public const AMADBPRECONNECT = self::NAMESPACE . '.amadb.preconnect';
+
+
+    /**
+     * The AMADBPOSTCONNECT event occurs after a database gets successfully connected
+     *
+     * This event allows you to add, remove or replace the connection dsn and connection object itself
+     *
+     * @CoreEvent
+     *
+     * @var string
+     */
+    public const AMADBPOSTCONNECT = self::NAMESPACE . '.amadb.postconnect';
+
+    /**
+     * The PREMODULEINIT event occurs before module_init includes all its files and call its methods
+     *
+     * @CoreEvent
+     *
+     * @var string
+     */
+    public const PREMODULEINIT = self::NAMESPACE . '.moduleinit.pre';
+
+    /**
+     * The POSTMODULEINIT event occurs when module_init has done all of its stuff
+     *
+     * @CoreEvent
+     *
+     * @var string
+     */
+    public const POSTMODULEINIT = self::NAMESPACE . '.moduleinit.post';
 }

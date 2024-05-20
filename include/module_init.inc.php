@@ -1,7 +1,24 @@
 <?php
 
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\ModuleInit;
 use Lynxlab\ADA\Main\Utilities;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
+
+if (ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
+    $event = ADAEventDispatcher::buildEventAndDispatch(
+        [
+            'eventClass' => CoreEvent::class,
+            'eventName' => CoreEvent::PREMODULEINIT,
+            'eventPrefix' => basename($_SERVER['SCRIPT_FILENAME']),
+        ],
+        basename($_SERVER['SCRIPT_FILENAME']),
+        [
+            'isAjax' => stripos($_SERVER['SCRIPT_FILENAME'], 'ajax') !== false,
+        ]
+    );
+}
 
 /**
  * Imports $_GET and $_POST variables
@@ -39,3 +56,17 @@ if (isset($variableToClearAR) && is_array($variableToClearAR)) {
 }
 
 $ymdhms = Utilities::todayDateFN();
+
+if (ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
+    $event = ADAEventDispatcher::buildEventAndDispatch(
+        [
+            'eventClass' => CoreEvent::class,
+            'eventName' => CoreEvent::POSTMODULEINIT,
+            'eventPrefix' => basename($_SERVER['SCRIPT_FILENAME']),
+        ],
+        basename($_SERVER['SCRIPT_FILENAME']),
+        [
+            'isAjax' => stripos($_SERVER['SCRIPT_FILENAME'], 'ajax') !== false,
+        ]
+    );
+}

@@ -14,8 +14,11 @@ namespace Lynxlab\ADA\Main\AMA;
 use DateTimeImmutable;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Logger\ADALogger;
 use Lynxlab\ADA\Main\Stack\RBStack;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -97,6 +100,22 @@ abstract class AbstractAMADataHandler
     {
 
         if ($this->db === AMA_DB_NOT_CONNECTED) {
+            if (ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
+                $event = ADAEventDispatcher::buildEventAndDispatch(
+                    [
+                        'eventClass' => CoreEvent::class,
+                        'eventName' => CoreEvent::AMADBPRECONNECT,
+                        'eventPrefix' => basename($_SERVER['SCRIPT_FILENAME']),
+                    ],
+                    basename($_SERVER['SCRIPT_FILENAME']),
+                    [
+                        'dsn' => $this->dsn,
+                    ]
+                );
+                foreach ($event->getArguments() as $key => $val) {
+                    $this->{$key} = $val;
+                }
+            }
             //            ADALogger::logDb('Creating a new database connection '. $this->dsn);
             $db = &AMADB::connect($this->dsn);
             if (AMADB::isError($db)) {
@@ -104,6 +123,23 @@ abstract class AbstractAMADataHandler
                 return $retval;
             }
             $this->db = &$db;
+            if (ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
+                $event = ADAEventDispatcher::buildEventAndDispatch(
+                    [
+                        'eventClass' => CoreEvent::class,
+                        'eventName' => CoreEvent::AMADBPOSTCONNECT,
+                        'eventPrefix' => basename($_SERVER['SCRIPT_FILENAME']),
+                    ],
+                    basename($_SERVER['SCRIPT_FILENAME']),
+                    [
+                        'dsn' => $this->dsn,
+                        'db' => $this->db,
+                    ]
+                );
+                foreach ($event->getArguments() as $key => $val) {
+                    $this->{$key} = $val;
+                }
+            }
         } else {
             //           ADALogger::logDb('Db già connesso '. $this->dsn . ' ' .$this->db->getDSN());
             if ($this->dsn !== $this->db->getDSN()) {

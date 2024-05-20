@@ -20,8 +20,11 @@ namespace Lynxlab\ADA\Main\Output;
 
 use Dompdf\Dompdf;
 use Lynxlab\ADA\CORE\HtmlElements\Table;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Output\Output;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -692,6 +695,24 @@ class GenericHtml extends Output
         switch ($type) {
             case 'page':  // standard
             default:
+                if (ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
+                    $event = ADAEventDispatcher::buildEventAndDispatch(
+                        [
+                            'eventClass' => CoreEvent::class,
+                            'eventName' => CoreEvent::HTMLOUTPUT,
+                            'eventPrefix' => basename($_SERVER['SCRIPT_FILENAME']),
+                        ],
+                        basename($_SERVER['SCRIPT_FILENAME']),
+                        [
+                            'htmlheader' => $this->htmlheader,
+                            'htmlbody' => $this->htmlbody,
+                            'htmlfooter' => $this->htmlfooter,
+                        ]
+                    );
+                    foreach ($event->getArguments() as $key => $val) {
+                        $this->{$key} = $val;
+                    }
+                }
                 $data = $this->htmlheader;
                 $data .= $this->htmlbody;
                 $data .= $this->htmlfooter;
