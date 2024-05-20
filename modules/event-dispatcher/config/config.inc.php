@@ -9,6 +9,7 @@
  */
 
 use Jawira\CaseConverter\Convert;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 
 // MODULE'S OWN DEFINES HERE
@@ -20,4 +21,5 @@ define('MODULES_EVENTDISPATCHER_NAME', join('', $moduledir->toArray()));
 define('MODULES_EVENTDISPATCHER_PATH', MODULES_DIR . DIRECTORY_SEPARATOR . $moduledir->getSource());
 define('MODULES_EVENTDISPATCHER_HTTP', HTTP_ROOT_DIR . str_replace(ROOT_DIR, '', MODULES_DIR) . '/' . $moduledir->getSource());
 
+ModuleLoaderHelper::loadModule('debugbar');
 ADAEventDispatcher::addAllSubscribers();
