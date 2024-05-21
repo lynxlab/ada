@@ -67,7 +67,7 @@ class EventSubscriber implements EventSubscriberInterface
             'CSS_filename' => $cssFiles,
             ] as $assetKey => $assets
         ) {
-            if (!array_key_exists($assetKey, $data['layout_dataAr'])) {
+            if (!array_key_exists($assetKey, $data['layout_dataAr'] ?? [])) {
                 $data['layout_dataAr'][$assetKey] = [];
             }
             $data['layout_dataAr'][$assetKey] = array_merge(
