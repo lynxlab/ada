@@ -16,11 +16,14 @@ use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Logger\ADALogger;
+use Lynxlab\ADA\Main\Traits\ADASingleton;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Main\Utilities;
 
 class AMACommonDataHandler extends AbstractAMADataHandler
 {
+    use ADASingleton;
+
     protected static $instance = null;
     /**
      *
