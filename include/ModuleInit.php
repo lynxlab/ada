@@ -65,7 +65,7 @@ final class ModuleInit
                     $servername = $_SERVER['SERVER_NAME'];
                 }
                 [$client] = explode('.', preg_replace('/(http[s]?:\/\/)/', '', $servername));
-                $tmpcommon = AMACommonDataHandler::instance();
+                $tmpcommon = AMACommonDataHandler::getInstance();
                 $client = $tmpcommon->getPointerFromThirdLevel($client);
                 unset($tmpcommon);
             }
@@ -264,17 +264,13 @@ final class ModuleInit
         $guest_user_not_allowed  = false;
 
         /*
-     * ADA common data handler
-     */
-        $common_dh = $GLOBALS['common_dh'] ?? null;
-        if (!$common_dh instanceof AMACommonDataHandler) {
-            $common_dh = AMACommonDataHandler::instance();
-            $GLOBALS['common_dh'] = $common_dh;
-        }
+         * ADA common data handler
+         */
+        $common_dh = AMACommonDataHandler::getInstance();
 
         /*
-     * User object: always load a user
-     */
+         * User object: always load a user
+         */
         $sess_id_user = isset($_SESSION['sess_id_user']) ? (int)$_SESSION['sess_id_user'] : 0;
         $sess_userObj = DBRead::readUser($sess_id_user);
         if (ADAError::isError($sess_userObj)) {
@@ -932,7 +928,7 @@ final class ModuleInit
      */
     protected static function checkAndSetPublicTester($objType, $objID)
     {
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
         if ($objType !== 'course' || is_null($objID)) {
             $tmp_id_course = isset($_REQUEST['id_course']) ? DataValidator::isUinteger($_REQUEST['id_course']) : false;
             if ($tmp_id_course === false) {
