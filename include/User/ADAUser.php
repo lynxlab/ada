@@ -29,6 +29,7 @@
 
 namespace Lynxlab\ADA\Main\User;
 
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
@@ -463,7 +464,7 @@ class ADAUser extends ADAAbstractUser
      */
     public function setTerminatedStatusForInstance($courseId, $courseInstanceId)
     {
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
         $s = new Subscription($this->getId(), $courseInstanceId);
         $s->setSubscriptionStatus(ADA_STATUS_TERMINATED);
         $s->setStartStudentLevel(null); // null means no level update

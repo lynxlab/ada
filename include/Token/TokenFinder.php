@@ -8,7 +8,7 @@ class TokenFinder
 {
     public static function findTokenForUserRegistration($user_id, $token)
     {
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
 
         $token_dataAr = $common_dh->getToken($token, $user_id, ADA_TOKEN_FOR_REGISTRATION);
         if (AMACommonDataHandler::isError($token_dataAr)) {
@@ -21,7 +21,7 @@ class TokenFinder
 
     public static function findTokenForPasswordChange($user_id, $token)
     {
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
 
         $token_dataAr = $common_dh->getToken($token, $user_id, ADA_TOKEN_FOR_PASSWORD_CHANGE);
         if (AMACommonDataHandler::isError($token_dataAr)) {

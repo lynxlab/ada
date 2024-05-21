@@ -243,7 +243,7 @@ class DBRead
             $sess_userObj = $_SESSION['sess_userObj'];
             if ($sess_userObj instanceof ADAGenericUser && $sess_userObj->getId() == $id_user) {
                 // QUI DEVO VEDERE QUALI SONO I TESTER ASSOCIATI A QUESTO UTENTE.
-                $user_testersAr = $GLOBALS['common_dh']->getTestersForUser($id_user);
+                $user_testersAr = AMACommonDataHandler::getInstance()->getTestersForUser($id_user);
                 if (!AMACommonDataHandler::isError($user_testersAr)) {
                     $sess_userObj->setTesters($user_testersAr);
                     $_SESSION['sess_userObj'] = $sess_userObj;

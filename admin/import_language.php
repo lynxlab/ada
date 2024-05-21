@@ -67,6 +67,7 @@ $self =  Utilities::whoami();  // = admin!
  * e.g.: node_classes.inc.php:990
  */
 AdminHelper::init($neededObjAr);
+$common_dh = AMACommonDataHandler::getInstance();
 
 /*
  * YOUR CODE HERE
@@ -139,7 +140,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             //        $testersAr[$tester_dataAr['puntatore']] = $tester_dataAr['nome'];
 
             $tester_dsn = MultiPort::getDSN($tester);
-            $tester_dh = AMACommonDataHandler::instance($tester_dsn);
+            $tester_dh = AMACommonDataHandler::getInstance($tester_dsn);
             if ($delete_messages == "yes") {
                 $tester_dh->deleteAllMessages($suffix);
             }

@@ -1,5 +1,6 @@
 <?php
 
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Course\CourseInstance;
@@ -82,7 +83,7 @@ if (!$forcereturn) {
 if (!isset($self)) {
     $self = Utilities::whoami();
 }
-
+$common_dh = AMACommonDataHandler::getInstance();
 $title =  translateFN('Attestato di frequenza');
 
 $logo = '<img class="usercredits_logo" src="' . HTTP_ROOT_DIR . '/layout/' . $_SESSION['sess_template_family'] . '/img/header-logo.png"  />';

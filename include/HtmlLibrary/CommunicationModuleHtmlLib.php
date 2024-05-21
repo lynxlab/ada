@@ -17,6 +17,7 @@ namespace Lynxlab\ADA\Main\HtmlLibrary;
 use Lynxlab\ADA\Comunica\Event\ADAEventProposal;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
@@ -595,7 +596,7 @@ class CommunicationModuleHtmlLib
             return new CText('');
         }
 
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
         $javascript_ok = Utilities::checkJavascriptFN($_SERVER['HTTP_USER_AGENT']);
 
         $appointments_Ar = [];
@@ -914,7 +915,7 @@ class CommunicationModuleHtmlLib
 
     private static function displayMessagesAsTable($data_Ar = [], $message_type = ADA_MSG_SIMPLE, $testers_dataAr = [])
     {
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
         $javascript_ok = Utilities::checkJavascriptFN($_SERVER['HTTP_USER_AGENT']);
 
         $appointments_Ar = [];
@@ -998,7 +999,7 @@ class CommunicationModuleHtmlLib
 
     private static function displayMessagesAsForm($data_Ar = [], $message_type = ADA_MSG_SIMPLE, $testers_dataAr = [])
     {
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
         $javascript_ok = Utilities::checkJavascriptFN($_SERVER['HTTP_USER_AGENT']);
 
         $appointments_Ar = [];

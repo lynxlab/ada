@@ -5,6 +5,7 @@ namespace Lynxlab\ADA\Main\HtmlLibrary;
 use Lynxlab\ADA\Admin\AdminHelper;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\HtmlLibrary\FormElementCreator;
@@ -347,7 +348,7 @@ class AdminModuleHtmlLib
 
             if (defined('MODULES_GDPR') && true === MODULES_GDPR && isset($_GET['user_type']) && DataValidator::isUinteger($_GET['user_type']) == AMA_TYPE_SWITCHER) {
                 if (!isset($gdprApi)) {
-                    $tester_info = $GLOBALS['common_dh']->getTesterInfoFromId($id_tester);
+                    $tester_info = AMACommonDataHandler::getInstance()->getTesterInfoFromId($id_tester);
                     $gdprAPI = new GdprAPI($tester_info[10]);
                     $gdprNoneTypes = $gdprAPI->getGdprNoneUserTypes();
                 }

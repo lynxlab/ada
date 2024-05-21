@@ -2,6 +2,7 @@
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
@@ -72,6 +73,7 @@ $self = Utilities::whoami();
  * e.g.: node_classes.inc.php:990
  */
 BrowsingHelper::init($neededObjAr);
+$common_dh = AMACommonDataHandler::getInstance();
 
 $courseInstances = [];
 $serviceProviders = $userObj->getTesters();

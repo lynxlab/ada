@@ -78,6 +78,7 @@ $self =  'switcher';  // = switcher!
  * e.g.: node_classes.inc.php:990
  */
 SwitcherHelper::init($neededObjAr);
+$common_dh = AMACommonDataHandler::getInstance();
 
 /*
  * YOUR CODE HERE

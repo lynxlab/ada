@@ -20,6 +20,7 @@ namespace Lynxlab\ADA\Main\User;
 use Error;
 use Exception;
 use Lynxlab\ADA\Main\ADAError;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
@@ -574,7 +575,7 @@ abstract class ADALoggableUser extends ADAGenericUser
     public function getNewFiles($id_course_instance, $maxFiles = 3)
     {
         $dh        = $GLOBALS['dh'];
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
 
         $retval = null;
 

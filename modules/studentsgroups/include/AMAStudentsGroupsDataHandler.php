@@ -10,6 +10,7 @@
 
 namespace Lynxlab\ADA\Module\StudentsGroups;
 
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
@@ -221,7 +222,7 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
                         'subscribed' => 0,
                     ];
                     $group = reset($result);
-                    $courseProviderAr = $GLOBALS['common_dh']->getTesterInfoFromIdCourse($saveData['courseId']);
+                    $courseProviderAr = AMACommonDataHandler::getInstance()->getTesterInfoFromIdCourse($saveData['courseId']);
                     $subscribedIds = array_map(fn ($s) => $s->getSubscriberId(), Subscription::findSubscriptionsToClassRoom($saveData['instanceId'], true));
                     foreach ($group->getMembers() as $student) {
                         if (!in_array($student->getId(), $subscribedIds)) {

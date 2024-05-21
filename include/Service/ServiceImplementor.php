@@ -15,6 +15,7 @@
 
 namespace Lynxlab\ADA\Main\Service;
 
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 
@@ -56,7 +57,7 @@ class ServiceImplementor
 
     public static function findImplementor($implementorId)
     {
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
 
         //$provider_dataHa = $common_dh->getTesterInfoFromId($id_provider);
         $provider_dataHa = $common_dh->getTesterInfoFromIdCourse($implementorId);
@@ -122,7 +123,7 @@ class ServiceImplementor
         // $this->id_author = $courseAr['id_autore'];
         // $this->id_layout = $courseAr['id_layout'];
         if ($courseAr['descr'] == null) {
-            $common_dh = $GLOBALS['common_dh'];
+            $common_dh = AMACommonDataHandler::getInstance();
             $serviceAr = $common_dh->getServiceInfoFromCourse($courseAr['id_course']);
             $this->descr = level2descriptionFN($serviceAr[3]);
         } else {

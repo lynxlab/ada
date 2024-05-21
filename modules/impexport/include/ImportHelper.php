@@ -180,7 +180,7 @@ class ImportHelper
         $this->recapArray = [];
         $this->linksArray = null;
 
-        $this->common_dh = $GLOBALS['common_dh'];
+        $this->common_dh = AMACommonDataHandler::getInstance();
         $this->dh = AMAImpExportDataHandler::instance(MultiPort::getDSN($this->selectedTester));
 
         $this->importStartTime = $this->dh->dateToTs('now');
@@ -1212,7 +1212,7 @@ class ImportHelper
         if ($tableName == '') {
             return 0;
         }
-        $res = $GLOBALS['common_dh']->findLanguageIdByLangaugeTableIdentifier($tableName);
+        $res = AMACommonDataHandler::getInstance()->findLanguageIdByLangaugeTableIdentifier($tableName);
         return (AMADB::isError($res)) ? 0 : $res;
     }
 

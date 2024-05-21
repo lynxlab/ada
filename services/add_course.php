@@ -176,7 +176,7 @@ if (@$submit) {
                      * Il corso è stato creato correttamente,
                      * inserisce ed associa il corso tra i servizi del provider
                      */
-                    $common_dh = $GLOBALS['common_dh'];
+                    $common_dh = AMACommonDataHandler::getInstance();
                     $service_dataAr['service_name'] = $course['nome'];
                     $service_dataAr['service_description'] = $course['descr'];
                     $service_dataAr['service_level'] = 99;

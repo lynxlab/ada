@@ -16,7 +16,7 @@ class ADAAddressBook
     protected static function fillAddressBook(ADALoggableUser $userObj, $user_types_Ar = [])
     {
         $user_type = $userObj->getType();
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
         $dh = $GLOBALS['dh'];
 
         // this tells getUsersByType method to get nome, cognome....

@@ -15,6 +15,7 @@
 
 namespace Lynxlab\ADA\Main\Service;
 
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Service\ServiceImplementor;
 
@@ -35,7 +36,7 @@ class Service
 
     public static function findServiceFromImplementor($id_course)
     {
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
         $service_dataHa = $common_dh->getServiceInfoFromCourse($id_course);
         $serviceObj = new Service($service_dataHa);
         return $serviceObj;
@@ -43,7 +44,7 @@ class Service
 
     public function __construct($serviceAr)
     {
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
         $this->id_service = $serviceAr[0];
         /*
 

@@ -12,6 +12,7 @@
 
 namespace Lynxlab\ADA\Main;
 
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 
 /**
@@ -45,7 +46,7 @@ class Translator
     {
         //ADALogger::log('Translator::translate');
 
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
 
         $language_code = $user_language_code;
 
@@ -77,7 +78,7 @@ class Translator
     {
         unset($_SESSION['sess_ada_supported_languages']);
 
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
 
         $supported_languages = [];
         $supported_languages = $common_dh->findLanguages();

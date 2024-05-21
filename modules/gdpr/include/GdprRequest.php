@@ -12,6 +12,7 @@ namespace Lynxlab\ADA\Module\GDPR;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
@@ -167,7 +168,7 @@ class GdprRequest extends GdprBase
             /**
              * Check on user type to prevent multiport to do its error handling if no user found
              */
-            if (!AMADB::isError($GLOBALS['common_dh']->getUserType($this->getGeneratedBy()))) {
+            if (!AMADB::isError(AMACommonDataHandler::getInstance()->getUserType($this->getGeneratedBy()))) {
                 $targetUser = MultiPort::findUser(intval($this->getGeneratedBy()));
                 if ($targetUser instanceof ADALoggableUser) {
                     if ($_SESSION['sess_userObj']->getId() != $targetUser->getId()) {

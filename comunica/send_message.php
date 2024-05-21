@@ -5,6 +5,7 @@ use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\ADAError;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
@@ -141,7 +142,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
             //if($sess_selected_tester == NULL || $sess_selected_tester == ADA_PUBLIC_TESTER) {
             if (MultiPort::isUserBrowsingThePublicTester()) {
-                $common_dh = $GLOBALS['common_dh'];
+                $common_dh = AMACommonDataHandler::getInstance();
                 foreach ($destinatari as $username) {
                     $user_tester_Ar = $common_dh->getTestersForUsername($username);
                     /*

@@ -3,6 +3,7 @@
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\Comunica\Event\ADAEventProposal;
 use Lynxlab\ADA\Main\ADAError;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
@@ -76,6 +77,7 @@ $self = Utilities::whoami();
  * e.g.: node_classes.inc.php:990
  */
 ComunicaHelper::init($neededObjAr);
+$common_dh = AMACommonDataHandler::getInstance();
 
 /*
  * YOUR CODE HERE

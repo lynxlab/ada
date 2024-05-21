@@ -4,6 +4,7 @@ use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\ADAError;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
@@ -75,6 +76,7 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  * e.g.: node_classes.inc.php:990
  */
 BrowsingHelper::init($neededObjAr);
+$common_dh = AMACommonDataHandler::getInstance();
 
 $self =  'registration';
 /**

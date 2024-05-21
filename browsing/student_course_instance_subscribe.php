@@ -71,6 +71,7 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  * e.g.: node_classes.inc.php:990
  */
 BrowsingHelper::init($neededObjAr);
+$common_dh = AMACommonDataHandler::getInstance();
 
 /*
  * INCLUSIONE SPECIFICA PER PAYPAL

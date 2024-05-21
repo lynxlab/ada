@@ -52,7 +52,7 @@ class MultiPort
 
     public static function applyFunction($DHfunction, ADAGenericUser $userObj, $field_ar, $clause)
     {
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
         $dataHa = [];
         $user_id = $userObj->getId();
         foreach ($userObj->getTesters() as $tester) {
@@ -312,7 +312,7 @@ class MultiPort
             $tester_dh = null;
         } // if (!MULTIPROVIDER &&.....)
 
-        $common_dh = AMACommonDataHandler::instance();
+        $common_dh = AMACommonDataHandler::getInstance();
 
         if ($user_id == 0) {
             /* If the user isn't in common DB yet
@@ -477,7 +477,7 @@ class MultiPort
             return false;
         }
 
-        $common_dh = AMACommonDataHandler::instance();
+        $common_dh = AMACommonDataHandler::getInstance();
         $user_dataAr = $userObj->toArray();
 
         if ($update_user_data) {
@@ -658,7 +658,7 @@ class MultiPort
      */
     public static function findUser($id_user, $id_course_instance = null)
     {
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
 
 
         /*
@@ -824,7 +824,7 @@ class MultiPort
 
     public static function findUserByUsername($username)
     {
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
 
         $id_user = $common_dh->findUserFromUsername($username);
         if (AMACommonDataHandler::isError($id_user)) {
@@ -984,7 +984,7 @@ class MultiPort
      */
     public static function loginUser($username, $password)
     {
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
 
         $result = $common_dh->checkIdentity($username, $password);
         if (AMACommonDataHandler::isError($result)) {
@@ -1022,7 +1022,7 @@ class MultiPort
 
         $to_sub_course_dataHa = [];
         $course_instances = [];
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
         $testers_list = $common_dh->getAllTesters();
 
         /*
@@ -1159,7 +1159,7 @@ class MultiPort
      */
     public static function findSubServicesData(ADAGenericUser $userObj, $field_ar, $clause, $orderBy = 'service')
     {
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
 
         $sub_course_dataHa = [];
         $user_id = $userObj->getId();
@@ -1338,7 +1338,7 @@ class MultiPort
          * @param  $user_id integer
          * @return $level_ha array
          */
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
         $testers = $common_dh->getAllTesters();
         $level_ha = [];
         foreach ($testers as $testerPointer) {
@@ -1651,7 +1651,7 @@ class MultiPort
 
     public static function getTestersPointersAndIds()
     {
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
         $field_data_Ar = ['id_tester'];
         $result_Ar = $common_dh->getAllTesters($field_data_Ar);
         if (AMACommonDataHandler::isError($result_Ar)) {
@@ -1950,7 +1950,7 @@ class MultiPort
             $tester_id  = $matches[1];
             $message_id = $matches[2];
 
-            $common_dh = $GLOBALS['common_dh'];
+            $common_dh = AMACommonDataHandler::getInstance();
             $tester_infoAr = $common_dh->getTesterInfoFromId($tester_id);
             if (AMACommonDataHandler::isError($tester_infoAr)) {
                 /*
@@ -1981,7 +1981,7 @@ class MultiPort
 
     public static function getDataForTesterActivityReport()
     {
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
 
         $testers_activity_dataAr = [];
         $testers_infoAr = $common_dh->getAllTesters(['id_tester', 'nome']);
@@ -2033,7 +2033,7 @@ class MultiPort
         if ($userObj instanceof ADAGuest) {
             return  0;
         }
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
 
         $testers_activity_dataAr = [];
         $testers_infoAr = $common_dh->getAllTesters(['id_tester', 'nome']);
@@ -2077,7 +2077,7 @@ class MultiPort
         if ($userObj instanceof ADAGuest) {
             return  0;
         }
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
 
         $testers_activity_dataAr = [];
         $testers_infoAr = $common_dh->getAllTesters(['id_tester', 'nome']);
@@ -2135,7 +2135,7 @@ class MultiPort
         if ($userObj instanceof ADAGuest) {
             return  0;
         }
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
 
         $testers_activity_dataAr = [];
         $testers_infoAr = $common_dh->getAllTesters(['id_tester', 'nome']);
@@ -2243,7 +2243,7 @@ class MultiPort
     public static function logReport($pointer = null, $Services_Type = null)
     {
         $log_dataAr = [];
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
         $filedArray = ['nome', 'ragione_sociale', 'id_tester'];
         if (isset($pointer)) {
             $testers_list = $common_dh->getTesterInfoFromPointer($pointer);

@@ -51,6 +51,7 @@ if (isset($_GET['popup'])) {
     $href_suffix = '';
 }
 TutorHelper::init($neededObjAr);
+$common_dh = AMACommonDataHandler::getInstance();
 
 /*
  * YOUR CODE HERE

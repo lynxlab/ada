@@ -18,7 +18,7 @@ class TokenManager
 
     public static function updateToken(ActionToken $token)
     {
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
 
         $token_dataAr = $token->toArray();
         $result = $common_dh->updateToken($token_dataAr);
@@ -41,7 +41,7 @@ class TokenManager
 
     private static function save(ActionToken $token)
     {
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
 
         $token_dataAr = $token->toArray();
         $result = $common_dh->addToken($token_dataAr);

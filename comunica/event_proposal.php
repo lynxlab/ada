@@ -77,6 +77,7 @@ $self = Utilities::whoami();
  * e.g.: node_classes.inc.php:990
  */
 ComunicaHelper::init($neededObjAr);
+$common_dh = AMACommonDataHandler::getInstance();
 
 /*
  * YOUR CODE HERE

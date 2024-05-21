@@ -519,7 +519,7 @@ class AMAGdprDataHandler extends AMADataHandler
         $retVal = ['uuid' => $uuid];
         $found = false;
 
-        $testers_infoAr = $GLOBALS['common_dh']->getAllTesters(['id_tester', 'e_mail', 'responsabile']);
+        $testers_infoAr = AMACommonDataHandler::getInstance()->getAllTesters(['id_tester', 'e_mail', 'responsabile']);
         if (!AMADB::isError($testers_infoAr)) {
             while (!$found && $tester = current($testers_infoAr)) {
                 if (!$found) {
@@ -639,7 +639,7 @@ class AMAGdprDataHandler extends AMADataHandler
         $theInstance = parent::instance($dsn);
 
         if (is_null(self::$policiesDB)) {
-            self::$policiesDB = AMACommonDataHandler::instance();
+            self::$policiesDB = AMACommonDataHandler::getInstance();
             if (!MULTIPROVIDER && !is_null($dsn)) {
                 // must check if passed $dsn has the module login tables
                 // execute this dummy query, if result is not an error table is there

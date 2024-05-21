@@ -3,6 +3,7 @@
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\ADAError;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
@@ -34,6 +35,7 @@ $neededObjAr = [
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self =  Utilities::whoami();  // = admin!
+$common_dh = AMACommonDataHandler::getInstance();
 
 /**
  * This will at least import in the current symbol table the following vars.

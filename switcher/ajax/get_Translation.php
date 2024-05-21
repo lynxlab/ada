@@ -13,6 +13,7 @@
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Forms\TranslationForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
@@ -86,7 +87,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($form->isValid()) {
         $search_text = $_POST['t_name'];
         $language_code = $_POST['selectLanguage'];
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
         $thead_data = [translateFN("Errore")];
         if (is_null($search_text) || $search_text == "") {
             $total_results = [];

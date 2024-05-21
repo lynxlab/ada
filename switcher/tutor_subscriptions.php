@@ -2,6 +2,7 @@
 
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Forms\FileUploadForm;
@@ -83,6 +84,7 @@ $self =  Utilities::whoami();
  * e.g.: node_classes.inc.php:990
  */
 SwitcherHelper::init($neededObjAr);
+$common_dh = AMACommonDataHandler::getInstance();
 
 $label = translateFN('Carica utenti da file');
 

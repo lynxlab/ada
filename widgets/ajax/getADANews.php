@@ -2,6 +2,7 @@
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
@@ -27,6 +28,7 @@ require_once realpath(__DIR__) . '/../../config_path.inc.php';
 $allowedUsersAr = [AMA_TYPE_VISITOR, AMA_TYPE_STUDENT, AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR, AMA_TYPE_ADMIN];
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
+$common_dh = AMACommonDataHandler::getInstance();
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
     extract($_GET);
@@ -75,7 +77,7 @@ if (!MULTIPROVIDER) {
         $errsmsg = translateFN('Nessun fornitore di servizi &egrave; stato configurato');
     }
 } else {
-    $testerInfo = $GLOBALS['common_dh']->getTesterInfoFromIdCourse($course_id);
+    $testerInfo = $common_dh->getTesterInfoFromIdCourse($course_id);
     if (!AMADB::isError($testerInfo) && is_array($testerInfo) && isset($testerInfo['puntatore'])) {
         $testerName = $testerInfo['puntatore'];
     }

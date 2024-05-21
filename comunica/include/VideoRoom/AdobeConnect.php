@@ -21,6 +21,7 @@ use Exception;
 use Lynxlab\ADA\Comunica\VideoRoom\ADAAdobeConnectApiClient;
 use Lynxlab\ADA\Comunica\VideoRoom\IVideoRoom;
 use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -207,7 +208,7 @@ class AdobeConnect extends VideoRoom implements IVideoRoom
 
     public function addUser($userObj)
     {
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
         $userPwd = substr($common_dh->getUserPwd($userObj->getId()), 0, 31);
 
         $principalData = [];
@@ -232,7 +233,7 @@ class AdobeConnect extends VideoRoom implements IVideoRoom
 
     public function userLogin($userObj, $sess_id_user)
     {
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
 
         $userPwd = substr($common_dh->getUserPwd($sess_id_user), 0, 31);
         $userName = $userObj->getUserName();
@@ -394,7 +395,7 @@ class AdobeConnect extends VideoRoom implements IVideoRoom
             $this->apiClient->unsetCookie();
             unset($this->apiClient);
 
-            $common_dh = $GLOBALS['common_dh'];
+            $common_dh = AMACommonDataHandler::getInstance();
             $userObj = $GLOBALS['userObj'];
             $userPwd = substr($common_dh->getUserPwd($sess_id_user), 0, 31);
             $userName = $userObj->getUserName();

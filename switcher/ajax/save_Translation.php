@@ -11,6 +11,7 @@
  * @version     0.1
  */
 
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Forms\EditTranslationForm;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
@@ -84,7 +85,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $message = trim($_POST['TranslationTextArea']);
         $id_message = $_POST['id_record'];
         $cod_lang = $_POST['cod_lang'];
-        $common_dh = $GLOBALS['common_dh'];
+        $common_dh = AMACommonDataHandler::getInstance();
         if (is_null($message) || $message == "") {
             $retArray = ["status" => "ERROR", "msg" =>  translateFN("Nessun input sottomesso"), "title" =>  translateFN('Notifica')];
         } else {

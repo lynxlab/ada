@@ -3690,7 +3690,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
              *
              * call to common dh to get the new id_corso for the course to be inserted
              */
-            (AMACommonDataHandler::instance()->getCourseMaxId() + 1),
+            (AMACommonDataHandler::getInstance()->getCourseMaxId() + 1),
             $nome,
             $titolo,
             $id_autore,
@@ -8667,7 +8667,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
     public function getServiceType($id_user = null)
     {
         $service_sql = "SELECT id_tipo_servizio, livello_servizio,nome_servizio,descrizione_servizio,custom_1,custom_2,custom_3,hiddenFromInfo,isPublic  FROM service_type";
-        $common_dh = AMACommonDataHandler::instance();
+        $common_dh = AMACommonDataHandler::getInstance();
 
         /* if isset $id_user it means that the admin is asking data for log_report.php, and he have to take data from common db */
         if (isset($id_user)) {
@@ -9528,7 +9528,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
 
         $sql = 'SELECT tree_id, script, isVertical, linked_tree_id FROM menu_page WHERE module=? AND script LIKE ? AND user_type=? AND self_instruction=?';
 
-        $common_dh = AMACommonDataHandler::instance();
+        $common_dh = AMACommonDataHandler::getInstance();
 
         /**
          * Rules used to look for a menu:

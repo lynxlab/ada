@@ -57,6 +57,7 @@ $today_date = Utilities::todayDateFN();
 
 //$self = 'list_chatrooms'; // x template
 $self = Utilities::whoami();
+$common_dh = AMACommonDataHandler::getInstance();
 
 /**
  * Negotiate page language if needed

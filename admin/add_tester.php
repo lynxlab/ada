@@ -178,6 +178,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         unset($_POST['submit']);
         $tester_dataAr = $_POST;
+        $common_dh = AMACommonDataHandler::getInstance();
 
         $createProvider = AdminHelper::createProvider(array_map('trim', [
         'host' => $h . (strlen($p) > 0 ? ':' . $p : ''),

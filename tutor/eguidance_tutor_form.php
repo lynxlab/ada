@@ -83,6 +83,7 @@ if (
  * e.g.: node_classes.inc.php:990
  */
 TutorHelper::init($neededObjAr);
+$common_dh = AMACommonDataHandler::getInstance();
 
 /*
  * YOUR CODE HERE

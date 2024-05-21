@@ -10,6 +10,7 @@
 
 namespace Lynxlab\ADA\Module\Impexport;
 
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Logger\ADAFileLogger;
@@ -595,7 +596,7 @@ class ExportHelper
         if (intval($languageID) <= 0) {
             return '';
         }
-        $res = $GLOBALS['common_dh']->findLanguageTableIdentifierByLangaugeId($languageID);
+        $res = AMACommonDataHandler::getInstance()->findLanguageTableIdentifierByLangaugeId($languageID);
         return (AMADB::isError($res)) ? '' : $res;
     }
 

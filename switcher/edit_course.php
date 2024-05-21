@@ -68,6 +68,7 @@ $self = Utilities::whoami();  // = admin!
  * e.g.: node_classes.inc.php:990
  */
 SwitcherHelper::init($neededObjAr);
+$common_dh = AMACommonDataHandler::getInstance();
 
 /*
  * YOUR CODE HERE

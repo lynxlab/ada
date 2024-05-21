@@ -1,5 +1,6 @@
 <?php
 
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
@@ -36,6 +37,7 @@ $variableToClearAR = ['node', 'layout', 'course', 'user'];
 $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR . '/include/module_init.inc.php');
 BrowsingHelper::init($neededObjAr);
+$common_dh = AMACommonDataHandler::getInstance();
 
 /**
  * @var AMAEtherpadDataHandler $etDH
@@ -68,7 +70,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             $tmpUser = $userObj;
         } else {
             // check user, findUser will redirect if not found :(
-            if (AMADB::isError($GLOBALS['common_dh']->getUserType($passedData['userId']))) {
+            if (AMADB::isError($common_dh->getUserType($passedData['userId']))) {
                 throw new EtherpadException(translateFN('Utente sconosciuto'));
             }
             $tmpUser = MultiPort::findUser($passedData['userId']);

@@ -1,5 +1,6 @@
 <?php
 
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Utilities;
@@ -35,6 +36,7 @@ $neededObjAr = [
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
 BrowsingHelper::init($neededObjAr);
+$common_dh = AMACommonDataHandler::getInstance();
 
 $courseID = -1;
 
@@ -78,9 +80,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['courseName']) && strle
         ];
     }
 
-    $id_service = $GLOBALS['common_dh']->addService($service_dataAr);
+    $id_service = $common_dh->addService($service_dataAr);
     if (!AMADB::isError($id_service)) {
-        $tester_infoAr = $GLOBALS['common_dh']->getTesterInfoFromPointer($_SESSION['sess_selected_tester']);
+        $tester_infoAr = $common_dh->getTesterInfoFromPointer($_SESSION['sess_selected_tester']);
         if (!AMADB::isError($tester_infoAr)) {
             $id_tester = $tester_infoAr[0];
             $result = $common_dh->linkServiceToCourse($id_tester, $id_service, $courseNewID);

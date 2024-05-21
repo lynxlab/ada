@@ -4,6 +4,7 @@ namespace Lynxlab\ADA\Main\Service\Functions;
 
 use Lynxlab\ADA\CORE\HtmlElements\Table;
 use Lynxlab\ADA\Main\ADAError;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\HtmlLibrary\CommunicationModuleHtmlLib;
@@ -14,7 +15,7 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 function getCourseInstanceInfo($id_course, $id_course_instance)
 {
 
-    $common_dh = $GLOBALS['common_dh'];
+    $common_dh = AMACommonDataHandler::getInstance();
     $dh = $GLOBALS['dh'];
     $sess_id_user = $_SESSION['sess_id_user'];
     $userObj = $_SESSION['sess_userObj'];

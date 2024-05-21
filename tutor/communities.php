@@ -2,6 +2,7 @@
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Helper\TutorHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
@@ -73,6 +74,7 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
  * e.g.: node_classes.inc.php:990
  */
 TutorHelper::init($neededObjAr);
+$common_dh = AMACommonDataHandler::getInstance();
 
 /**
  * Your inclusion here

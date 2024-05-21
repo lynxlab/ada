@@ -1,6 +1,7 @@
 <?php
 
 use Lynxlab\ADA\CORE\HtmlElements\Table;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
@@ -64,6 +65,7 @@ $self = Utilities::whoami();
  * e.g.: node_classes.inc.php:990
  */
 BrowsingHelper::init($neededObjAr);
+$common_dh = AMACommonDataHandler::getInstance();
 
 // ini_set ("display_errors","1"); error_reporting(E_ALL);
 

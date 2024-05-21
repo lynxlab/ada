@@ -1,6 +1,7 @@
 <?php
 
 use Lynxlab\ADA\Comunica\ChatRoom;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\Forms\ChatManagementForm;
@@ -74,7 +75,7 @@ $self = 'list_chatrooms'; // x template
 ComunicaHelper::init($neededObjAr);
 
 //print_r($GLOBALS);
-$common_dh = $GLOBALS['common_dh'];
+$common_dh = AMACommonDataHandler::getInstance();
 $dh = $GLOBALS['dh'];
 
 
