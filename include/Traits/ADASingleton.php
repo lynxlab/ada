@@ -16,6 +16,8 @@
 namespace Lynxlab\ADA\Main\Traits;
 
 use Exception;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
+use Lynxlab\ADA\Module\DebugBar\ADADebugBar;
 
 /**
  * If you need to support several types of Singletons in your app, you can
@@ -42,11 +44,11 @@ trait ADASingleton
     /**
      * Cloning and unserialization are not permitted for singletons.
      */
-    protected function __clone()
+    final protected function __clone()
     {
     }
 
-    public function __wakeup()
+    final public function __wakeup()
     {
         throw new Exception("Cannot unserialize singleton");
     }
@@ -58,7 +60,7 @@ trait ADASingleton
      *
      * @return self
      */
-    public static function getInstance(mixed ...$params)
+    final public static function getInstance(mixed ...$params)
     {
         $subclass = static::class;
         if (!isset(static::$instances[$subclass])) {
@@ -67,7 +69,17 @@ trait ADASingleton
             // of the current class". That detail is important because when the
             // method is called on the subclass, we want an instance of that
             // subclass to be created here.
-
+            if ($subclass !== ADADebugBar::class && ModuleLoaderHelper::isLoaded('debugbar')) {
+                $debugstr = sprintf("Build singleton new %s() with", $subclass);
+                if (empty($params)) {
+                    $debugstr .= 'out params';
+                } else {
+                    $debugstr .= sprintf(" params: %s", $params);
+                }
+                if (ModuleLoaderHelper::isLoaded('debugbar')) {
+                    ADADebugBar::addMessage($debugstr);
+                }
+            }
             static::$instances[$subclass] = new $subclass(...$params);
         }
         return static::$instances[$subclass];
@@ -78,7 +90,7 @@ trait ADASingleton
      *
      * @return boolean
      */
-    public function hasInstance()
+    final public function hasInstance()
     {
         return in_array(static::class, static::$instances);
     }
