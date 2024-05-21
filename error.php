@@ -76,4 +76,4 @@ $content_dataAr = [
 /**
  * Sends data to the rendering engine
  */
-ARE::render($layout_dataAr, $content_dataAr);
+ARE::render($layout_dataAr ?? [], $content_dataAr);

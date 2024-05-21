@@ -27,7 +27,7 @@ function deleteNodeFN($id_node, $id_course, $action)
     $http_root_dir = $GLOBALS['http_root_dir'];
     $self          = $GLOBALS['self'];
     $dh = $GLOBALS['dh'];
-    $sess_id_course_instance = $_SESSION['sess_id_course_instance'];
+    $sess_id_course_instance = $_SESSION['sess_id_course_instance'] ?? '';
     $sess_id_node            = $_SESSION['sess_id_node'];
 
 

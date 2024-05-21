@@ -90,7 +90,7 @@ class PhpOpenFormGen
                 $addon = "";
             }
 
-            if (($errors[$i]) && ($edittypes[$which][$i] != "hidden")) {
+            if (is_array($errors) && ($errors[$i]) && ($edittypes[$which][$i] != "hidden")) {
                 if ($errors[$i] == "1") {
                     $str .= "<tr><td class=\"error\" colspan=\"2\" align=\"center\">$lang_error</td></tr>";
                 } elseif ($errors[$i] == "2") {
