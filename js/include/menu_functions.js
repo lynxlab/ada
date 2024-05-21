@@ -25,6 +25,7 @@ document.onreadystatechange = () => {
 	// wait for jQuery to be loaded before doing stuff
 	if (document.readyState === "complete") {
 	initMenu();
+	initEffect();
 	}
 };
 
@@ -273,53 +274,54 @@ function navigationPanelToggle(options) {
 	}
 }
 
-/*
- * Per mostrare e nascondere elementi
- */
- Effect.BlindLeft = function(elem) {
-	var element = $(elem);
-	element.makeClipping();
+const initEffect = () => {
+	/*
+	 * Per mostrare e nascondere elementi
+	 */
+	 Effect.BlindLeft = function(elem) {
+		var element = $(elem);
+		element.makeClipping();
 
-	return new Effect.Scale(element, 0,
-		Object.extend({scaleContent: false,
+		return new Effect.Scale(element, 0,
+			Object.extend({scaleContent: false,
+				scaleY: false,
+				scaleMode: 'box',
+				restoreAfterFinish:true,
+				afterSetup: function (effect) {
+					effect.element.makeClipping().setStyle({
+						height: effect.dims[0] + 'px'
+					}).show();
+				},
+				afterFinishInternal: function(effect) {
+					effect.element.hide().undoClipping();
+				}
+			}, arguments[1] || {})
+		);
+	};
+
+	Effect.BlindRight = function(elem) {
+		var element = $(elem);
+		var elementDimensions = $(element).getDimensions();
+
+		return new Effect.Scale(element, 100, Object.extend({
+			scaleContent: false,
 			scaleY: false,
-			scaleMode: 'box',
-			restoreAfterFinish:true,
-			afterSetup: function (effect) {
+			scaleFrom: 0,
+			scaleMode: {originalHeight: elementDimensions.height, originalWidth: elementDimensions.width},
+			restoreAfterFinish: true,
+			afterSetup: function(effect) {
 				effect.element.makeClipping().setStyle({
-					height: effect.dims[0] + 'px'
+					width: '0px',
+					height: effect.dims[0]+'px'
 				}).show();
 			},
 			afterFinishInternal: function(effect) {
-				effect.element.hide().undoClipping();
+				effect.element.undoClipping();
 			}
 		}, arguments[1] || {})
-	);
+		);
+	};
 };
-
-Effect.BlindRight = function(elem) {
-	var element = $(elem);
-	var elementDimensions = $(element).getDimensions();
-
-	return new Effect.Scale(element, 100, Object.extend({
-		scaleContent: false,
-		scaleY: false,
-		scaleFrom: 0,
-		scaleMode: {originalHeight: elementDimensions.height, originalWidth: elementDimensions.width},
-		restoreAfterFinish: true,
-		afterSetup: function(effect) {
-			effect.element.makeClipping().setStyle({
-				width: '0px',
-				height: effect.dims[0]+'px'
-			}).show();
-		},
-		afterFinishInternal: function(effect) {
-			effect.element.undoClipping();
-		}
-	}, arguments[1] || {})
-	);
-};
-
 
 function toggleElementVisibility(element, direction)
 {
