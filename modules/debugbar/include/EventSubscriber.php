@@ -31,11 +31,10 @@ class EventSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            CoreEvent::HTMLOUTPUT => 'addDebugbar',
             CoreEvent::AMADBPOSTCONNECT => 'addPDOCollector',
             CoreEvent::PREMODULEINIT => 'onPreModuleInit',
             CoreEvent::POSTMODULEINIT => 'onPostModuleInit',
-            CoreEvent::PAGEPRERENDER => 'addDebugBarHeader',
+            CoreEvent::PAGEPRERENDER => 'addDebugBar',
         ];
     }
 
@@ -51,7 +50,8 @@ class EventSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * add the dispatch section content and the debugbar code to the page
+     * adds the script and css tags to include the debugbar components.
+     * adds dispatcher and ARE collectors content.
      *
      * @param CoreEvent $event
      * @return void
@@ -59,9 +59,25 @@ class EventSubscriber implements EventSubscriberInterface
     public function addDebugBar(CoreEvent $event)
     {
         $data = $event->getArguments();
-        $this->addDispatcherMsg();
+        [$cssFiles, $jsFiles] = $this->debugBarRender->getAssets();
 
-        $newFooter = str_ireplace(
+        foreach (
+            [
+            'JS_filename' => $jsFiles,
+            'CSS_filename' => $cssFiles,
+            ] as $assetKey => $assets
+        ) {
+            if (!array_key_exists($assetKey, $data['layout_dataAr'])) {
+                $data['layout_dataAr'][$assetKey] = [];
+            }
+            $data['layout_dataAr'][$assetKey] = array_merge(
+                $data['layout_dataAr'][$assetKey],
+                // filter out debugbar own jquery
+                array_filter($assets, fn ($el) => !str_contains(strtolower($el), 'jquery'))
+            );
+        }
+
+        $debugbarCode = str_ireplace(
             sprintf(
                 "%s.ajaxHandler.bindToXHR();",
                 $this->debugBarRender->getVariableName()
@@ -72,43 +88,14 @@ class EventSubscriber implements EventSubscriberInterface
             ),
             $this->debugBarRender->render()
         );
-        $data['htmlfooter'] = $newFooter . $data['htmlfooter'];
-        $event->setArguments($data);
-    }
-
-    /**
-     * adds the script and css tags to include the debugbar components
-     *
-     * @param CoreEvent $event
-     * @return void
-     */
-    public function addDebugBarHeader(CoreEvent $event)
-    {
-        $data = $event->getArguments();
-        [$cssFiles, $jsFiles] = $this->debugBarRender->getAssets();
-
-        $index = -1;
-        if (array_key_exists('JS_filename', $data['layout_dataAr'])) {
-            foreach ($data['layout_dataAr']['JS_filename'] as $index => $value) {
-                if (stripos($value, JQUERY) !== false) {
-                    break;
-                }
-            }
-        } else {
-            $data['layout_dataAr']['JS_filename'] = [];
-        }
-        if ($index > -1) {
-            array_shift($jsFiles); // remove debugBar own Jquery
-        }
-
-        array_splice($data['layout_dataAr']['JS_filename'], $index + 1, 0, $jsFiles);
-        if (!array_key_exists('CSS_filename', $data['layout_dataAr'])) {
-            $data['layout_dataAr']['CSS_filename'] = [];
-        }
-        $data['layout_dataAr']['CSS_filename'] = array_merge($data['layout_dataAr']['CSS_filename'], $cssFiles);
+        $data['content_dataAr']['adadebugbar'] = $debugbarCode;
 
         if ($this->debugbar->hasCollector('ARE')) {
             $this->debugbar['ARE']->setData($data);
+        }
+
+        if ($this->debugbar->hasCollector('dispatcher')) {
+            $this->addDispatcherMsg();
         }
 
         $event->setArguments($data);
