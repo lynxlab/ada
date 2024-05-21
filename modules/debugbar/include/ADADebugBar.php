@@ -58,8 +58,9 @@ class ADADebugBar extends DebugBar
     public static function addMessage(mixed $message)
     {
         $backfiles = debug_backtrace();
-        $line = $backfiles[0]['line'] ? ':' . $backfiles[0]['line'] : '';
-        $file = $backfiles[0]['file'] ? basename($backfiles[0]['file']) . $line : 'info';
+        $i = count(debug_backtrace()) > 1 ? 1 : 0;
+        $line = $backfiles[$i]['line'] ? ':' . $backfiles[$i]['line'] : '';
+        $file = $backfiles[$i]['file'] ? basename($backfiles[$i]['file']) . $line : 'info';
         ADADebugBar::getInstance()['messages']->addMessage($message, $file, is_string($message));
     }
 
