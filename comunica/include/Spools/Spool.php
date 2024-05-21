@@ -88,18 +88,13 @@ class Spool extends AbstractAMADataHandler
         }
         // Fine modifica
 
-        $title     = $this->orNull(/*$this->sqlPrepared(*/$message_ha['titolo'] ?? ''/*)*/);
+        $title     = $this->orNull($message_ha['titolo'] ?? '');
         $id_group  = $this->orZero($message_ha['id_group'] ?? '');
         $priority  = $this->orZero($message_ha['priorita'] ?? '');
-        $body      = $this->orNull(/*$this->sqlPrepared(*/$message_ha['testo']/*)*/);
-        $type      = /*"'".*/ $this->type/*."'"*/;
+        $body      = $this->orNull($message_ha['testo']);
+        $type      = $this->type;
         $sender_id = $this->user_id;
         $flags     = $this->orZero($message_ha['flags'] ?? '');
-
-        $db = &parent::getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
 
 
         /*
@@ -219,10 +214,10 @@ class Spool extends AbstractAMADataHandler
         foreach ($recipients_ids_ar as $rid) {
             // add message to 'destinatari_messaggi' table
             $sql = "insert into destinatari_messaggi (id_messaggio, id_utente) " .
-                "values ($id, $rid)";
+                "values (?, ?)";
 
             // logger("performing query: $sql", 4);
-            $res = $db->query($sql);
+            $res = $this->queryPrepared($sql, [$id, $rid]);
             if (AMADB::isError($res)) {
                 // logger("query failed", 4);
 
@@ -295,13 +290,10 @@ class Spool extends AbstractAMADataHandler
             $language = $message_ha['language'];
         }
 
-        //vito 4 feb 2009
-        $language = $this->sqlPrepared($language);
-
-        $title = $this->orNull($this->sqlPrepared($message_ha['titolo']));
+        $title = $this->orNull($message_ha['titolo']);
         // vito 19 gennaio 2009
         //       $text = sqlPrepared($message_ha['testo']);
-        $text = $this->sqlPrepared($message_ha['testo']);
+        $text = $message_ha['testo'];
 
         $type = "'" . $this->type . "'";
 
@@ -317,15 +309,23 @@ class Spool extends AbstractAMADataHandler
 
         $flags = $this->orZero($message_ha['flags']);
 
-        $db = &parent::getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
-
         // MARK: preparare query
         // insert a row into table utente_messaggio_log
         $sql =  "insert into utente_messaggio_log (tempo, id_mittente, testo, tipo, status, titolo,  id_istanza_corso, id_corso, lingua, id_riceventi, flags)";
-        $sql .= " values ($timestamp, $sender_id, $text, $type, $status, $title, $id_course_instance, $id_course, $language, $recipient_ids, $flags);";
+        $sql .= " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        $values = [
+            $timestamp,
+            $sender_id,
+            $text,
+            $type,
+            $status,
+            $title,
+            $id_course_instance,
+            $id_course,
+            $language,
+            $recipient_ids,
+            $flags,
+        ];
         // logger("performing query: $sql", 4);
 
         /*
@@ -335,7 +335,7 @@ class Spool extends AbstractAMADataHandler
          return new AMAError(AMA_ERR_ADD);
          }// logger("query succeeded", 4);
          */
-        $res = parent::executeCritical($sql);
+        $res = parent::executeCriticalPrepared($sql, [$values]);
         if (AMADB::isError($res)) {
             // $res is an AMAError object
         }
@@ -699,17 +699,12 @@ class Spool extends AbstractAMADataHandler
 
         // logger("entered Spool::get_message_info - [id=$id]", 3);
 
-        $db = &parent::getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
-
         // get info about message
         $sql = "select id_messaggio, data_ora, tipo, titolo, id_mittente, priorita, testo,flags from messaggi " .
-            " where id_messaggio=$id";
+            " where id_messaggio=?";
 
         // logger("performing query: $sql", 4);
-        $res_ar = $db->getRow($sql);
+        $res_ar = $this->getRowPrepared($sql, [$id]);
         if (AMADB::isError($res_ar) || !is_array($res_ar)) {
             $retval = new AMAError(AMA_ERR_GET);
             return $retval;
@@ -727,9 +722,9 @@ class Spool extends AbstractAMADataHandler
 
         // get recipients ids
         $sql = "select id_utente from destinatari_messaggi " .
-            " where id_messaggio=$id";
+            " where id_messaggio=?";
         // logger("performing query: $sql", 4);
-        $res_ar = $db->getAll($sql);
+        $res_ar = $this->getAllPrepared($sql, [$id]);
         if (AMADB::isError($res_ar)) {
             $retval = new AMAError(AMA_ERR_GET);
             return $retval;
@@ -763,12 +758,6 @@ class Spool extends AbstractAMADataHandler
 
         // logger("entered Spool::set_messages - ".
         //        "msgs_ar=".serialize($msgs_ar)." value=$value", 3);
-
-
-        $db = &parent::getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
 
         // convert values to timestamps and
         // get inverse values for rollback
@@ -821,11 +810,6 @@ class Spool extends AbstractAMADataHandler
         // logger("entered Spool::_set_message - ".
         //        "[msg_id=$msg_id, field=$field, value=$value]", 3);
 
-        $db = &parent::getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
-
         switch (strtolower($field)) {
             case 'read':
                 $field_name = "read_timestamp";
@@ -848,11 +832,11 @@ class Spool extends AbstractAMADataHandler
         // update message
         $user_id = $this->user_id;
         $sql = "update destinatari_messaggi" .
-            " set $field_name='$value' where id_messaggio=$msg_id and id_utente=$user_id";
+            " set $field_name=? where id_messaggio=? and id_utente=?";
         // logger("performing query: $sql", 4);
 
 
-        $res =  $db->query($sql);
+        $res =  $this->queryPrepared($sql, [$value, $msg_id, $user_id]);
 
         if (AMADB::isError($res)) {
             $retval = new AMAError(AMA_ERR_UPDATE);
@@ -882,12 +866,6 @@ class Spool extends AbstractAMADataHandler
     {
         // logger("entered Spool::_remove_messages - ".
         //       "[msgs_ar=".serialize($msgs_ar)."]", 3);
-
-        $db = &parent::getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
-
 
         // loop for all messages
         foreach ($msgs_ar as $msg_id) {
@@ -939,11 +917,6 @@ class Spool extends AbstractAMADataHandler
         // logger("entered Spool::_clean_messages - ".
         //       "[msgs_ar=".serialize($msgs_ar)."]", 3);
 
-        $db = &parent::getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
-
         foreach ($msgs_ar as $msg_id) {
             // remove message from user's spool
             $res = $this->cleanMessage($msg_id, $this->user_id);
@@ -953,9 +926,9 @@ class Spool extends AbstractAMADataHandler
             }
 
             // check if message is referenced by any other user
-            $sql = "select count(*) from destinatari_messaggi where id_messaggio=$msg_id";
+            $sql = "select count(*) from destinatari_messaggi where id_messaggio=?";
             // logger("performing query: $sql", 4);
-            $n_refs =  $db->getOne($sql);
+            $n_refs =  $this->getOnePrepared($sql, [$msg_id]);
             if (AMADB::isError($n_refs)) {
                 $retval = new AMAError(AMA_ERR_REMOVE);
                 return $retval;
@@ -995,11 +968,6 @@ class Spool extends AbstractAMADataHandler
 
         // logger("entered Spool::_remove_message", 3);
 
-        $db = &parent::getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
-
         if ($rid == 0) {
             // remove a row from table messaggi
             $sql =  "delete from messaggi where id_messaggio=$id";
@@ -1011,7 +979,7 @@ class Spool extends AbstractAMADataHandler
             if (AMADB::isError($res) || $db->numCols()==0)
             return new AMAError(AMA_ERR_REMOVE);
             */
-            $res = parent::executeCritical($sql);
+            $res = $this->executeCriticalPrepared($sql, [$id]);
             if (AMADB::isError($res)) {
                 // $res is an AMAError object
                 return $res;
@@ -1020,14 +988,14 @@ class Spool extends AbstractAMADataHandler
         } else {
             // remove a row from table destinatari_messaggi
             $sql =  "delete from destinatari_messaggi " .
-                " where id_messaggio=$id and id_utente=$rid";
+                " where id_messaggio=? and id_utente=?";
             // logger("performing query: $sql", 4);
             /*
             $res = $db->query($sql);
             if (AMADB::isError($res) || $db->affectedRows()==0)
             return new AMAError(AMA_ERR_REMOVE);
             */
-            $res = parent::executeCritical($sql);
+            $res = $this->executeCriticalPrepared($sql, [$id, $rid]);
             if (AMADB::isError($res)) {
                 // $res is an AMAError object
                 return $res;

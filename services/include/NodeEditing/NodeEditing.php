@@ -84,9 +84,7 @@ class NodeEditing
 
                         // vito, 27 mar 2009
                         $linked_node = $sess_id_course . '_' . $media;
-                        // vito, 27 mar 2009
-                        //$internal_link = $dh->getLinkId($dh->sqlPrepared($edited_node_id), $dh->sqlPrepared($media));
-                        $internal_link = $dh->getLinkId($dh->sqlPrepared($edited_node_id), $dh->sqlPrepared($linked_node));
+                        $internal_link = $dh->getLinkId($edited_node_id, $linked_node);
                         if (AMADataHandler::isError($internal_link)) {
                             return $internal_link;
                         }
@@ -101,7 +99,7 @@ class NodeEditing
                         if (AMADataHandler::isError($external_resource)) {
                             return $external_resource;
                         }
-                        $result = $dh->delRisorseNodi($dh->sqlPrepared($edited_node_id), $external_resource);
+                        $result = $dh->delRisorseNodi($edited_node_id, $external_resource);
                         if (AMADataHandler::isError($result)) {
                             return $result;
                         }

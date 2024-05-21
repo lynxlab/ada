@@ -33,8 +33,8 @@ class AMACommonDataHandler extends AbstractAMADataHandler
     public function __construct($dsn = null)
     {
         $common_db_dsn = ADA_COMMON_DB_TYPE . '://' . ADA_COMMON_DB_USER . ':'
-                . ADA_COMMON_DB_PASS . '@' . ADA_COMMON_DB_HOST . '/'
-                . ADA_COMMON_DB_NAME;
+            . ADA_COMMON_DB_PASS . '@' . ADA_COMMON_DB_HOST . '/'
+            . ADA_COMMON_DB_NAME;
         parent::__construct($common_db_dsn);
     }
 
@@ -87,7 +87,7 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && strlen($GLOBALS['user_provider']) > 0) {
             $testerAr = $this->getTesterInfoFromPointer($GLOBALS['user_provider']);
             $sql .= ',utente_tester UT WHERE ' .
-                    'U.id_utente = UT.id_utente AND U.username=? AND U.password=? AND UT.id_tester=?';
+                'U.id_utente = UT.id_utente AND U.username=? AND U.password=? AND UT.id_tester=?';
             array_push($sql_params, $testerAr[0]);
         } else {
             $sql .= 'WHERE U.username=? AND U.password=?';
@@ -128,36 +128,36 @@ class AMACommonDataHandler extends AbstractAMADataHandler
                  VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
         $values = [
-                $user_dataAr['nome'],
-                $user_dataAr['cognome'],
-                $user_dataAr['tipo'],
-                $user_dataAr['e_mail'],
-                $user_dataAr['username'],
-                //sha1($user_dataAr['password']),
-                $user_dataAr['password'], // sha1 encoded
-                $user_dataAr['layout'],
-                $user_dataAr['indirizzo'],
-                $user_dataAr['citta'],
-                $user_dataAr['provincia'],
-                $user_dataAr['nazione'],
-                $user_dataAr['codice_fiscale'],
-                AMACommonDataHandler::dateToTs($user_dataAr['birthdate']),
-                $user_dataAr['sesso'],
-                $user_dataAr['telefono'],
-//                $this->orNull($user_dataAr['indirizzo']),
-//                $this->orNull($user_dataAr['citta']),
-//                $this->orNull($user_dataAr['provincia']),
-//                $this->orNull($user_dataAr['nazione']),
-//                $this->orNull($user_dataAr['codice_fiscale']),
-//                $this->orZero($user_dataAr['birthdate']),
-//                $this->orNull($user_dataAr['sesso']),
-//                $this->orNull($user_dataAr['telefono']),
-                $user_dataAr['stato'],
-                $user_dataAr['lingua'],
-                $user_dataAr['timezone'],
-                $user_dataAr['avatar'],
-                $user_dataAr['birthcity'],
-                $user_dataAr['birthprovince'],
+            $user_dataAr['nome'],
+            $user_dataAr['cognome'],
+            $user_dataAr['tipo'],
+            $user_dataAr['e_mail'],
+            $user_dataAr['username'],
+            //sha1($user_dataAr['password']),
+            $user_dataAr['password'], // sha1 encoded
+            $user_dataAr['layout'],
+            $user_dataAr['indirizzo'],
+            $user_dataAr['citta'],
+            $user_dataAr['provincia'],
+            $user_dataAr['nazione'],
+            $user_dataAr['codice_fiscale'],
+            AMACommonDataHandler::dateToTs($user_dataAr['birthdate']),
+            $user_dataAr['sesso'],
+            $user_dataAr['telefono'],
+            //                $this->orNull($user_dataAr['indirizzo']),
+            //                $this->orNull($user_dataAr['citta']),
+            //                $this->orNull($user_dataAr['provincia']),
+            //                $this->orNull($user_dataAr['nazione']),
+            //                $this->orNull($user_dataAr['codice_fiscale']),
+            //                $this->orZero($user_dataAr['birthdate']),
+            //                $this->orNull($user_dataAr['sesso']),
+            //                $this->orNull($user_dataAr['telefono']),
+            $user_dataAr['stato'],
+            $user_dataAr['lingua'],
+            $user_dataAr['timezone'],
+            $user_dataAr['avatar'],
+            $user_dataAr['birthcity'],
+            $user_dataAr['birthprovince'],
 
         ];
 
@@ -209,7 +209,7 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && strlen($GLOBALS['user_provider']) > 0) {
             $testerAr = $this->getTesterInfoFromPointer($GLOBALS['user_provider']);
             $user_id_sql = 'SELECT U.id_utente FROM utente U, utente_tester UT WHERE ' .
-                           'U.id_utente = UT.id_utente AND id_tester=? AND username=?';
+                'U.id_utente = UT.id_utente AND id_tester=? AND username=?';
             $sql_params =  [$testerAr[0], $username];
         } else {
             $user_id_sql = 'SELECT id_utente FROM utente WHERE username=?';
@@ -240,7 +240,7 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && strlen($GLOBALS['user_provider']) > 0) {
             $testerAr = $this->getTesterInfoFromPointer($GLOBALS['user_provider']);
             $user_id_sql = 'SELECT U.id_utente FROM utente U, utente_tester UT WHERE ' .
-                    'U.id_utente = UT.id_utente AND id_tester=? AND e_mail=?';
+                'U.id_utente = UT.id_utente AND id_tester=? AND e_mail=?';
             $sql_params =  [$email, $testerAr[0]];
         } else {
             $user_id_sql = 'SELECT id_utente FROM utente WHERE e_mail=?';
@@ -315,8 +315,8 @@ class AMACommonDataHandler extends AbstractAMADataHandler
     {
         // get a row from table UTENTE
         $query = "select nome, cognome, tipo, e_mail AS email, telefono, username, layout, " .
-                "indirizzo, citta, provincia, nazione, codice_fiscale, birthdate, sesso, " .
-                "telefono, stato, lingua, timezone, cap, matricola, avatar, birthcity, birthprovince from utente where id_utente=?";
+            "indirizzo, citta, provincia, nazione, codice_fiscale, birthdate, sesso, " .
+            "telefono, stato, lingua, timezone, cap, matricola, avatar, birthcity, birthprovince from utente where id_utente=?";
         $res_ar =  $this->getRowPrepared($query, [$id], AMA_FETCH_ASSOC);
         if (AMADB::isError($res_ar)) {
             return new AMAError(AMA_ERR_GET);
@@ -577,60 +577,60 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         $where = ' WHERE id_utente=?';
         if (empty($user_ha['password'])) {
             $update_user_sql = 'UPDATE utente SET nome=?, cognome=?, e_mail=?, telefono=?, layout=?, '
-                    . 'indirizzo=?, citta=?, provincia=?, nazione=?, codice_fiscale=?, birthdate=?, sesso=?, '
-                    . 'telefono=?, stato=?, lingua=?, timezone=?, cap=?, matricola=?, avatar=?, birthcity=?, birthprovince=?';
+                . 'indirizzo=?, citta=?, provincia=?, nazione=?, codice_fiscale=?, birthdate=?, sesso=?, '
+                . 'telefono=?, stato=?, lingua=?, timezone=?, cap=?, matricola=?, avatar=?, birthcity=?, birthprovince=?';
 
             $valuesAr = [
-                    $user_ha['nome'],
-                    $user_ha['cognome'],
-                    $user_ha['e_mail'],  // FIXME: VERIFICARE BENE
-                    $user_ha['telefono'],
-                    $user_ha['layout'],
-                    $user_ha['indirizzo'],
-                    $user_ha['citta'],
-                    $user_ha['provincia'],
-                    $user_ha['nazione'],
-                    $user_ha['codice_fiscale'],
-                    AMACommonDataHandler::dateToTs($user_ha['birthdate']),
-                    $user_ha['sesso'],
-                    $user_ha['telefono'],
-                    $user_ha['stato'],
-                    $user_ha['lingua'],
-                    $user_ha['timezone'],
-                    $user_ha['cap'],
-                    $user_ha['matricola'],
-                    $user_ha['avatar'],
-                    $user_ha['birthcity'],
-                    $user_ha['birthprovince'],
+                $user_ha['nome'],
+                $user_ha['cognome'],
+                $user_ha['e_mail'],  // FIXME: VERIFICARE BENE
+                $user_ha['telefono'],
+                $user_ha['layout'],
+                $user_ha['indirizzo'],
+                $user_ha['citta'],
+                $user_ha['provincia'],
+                $user_ha['nazione'],
+                $user_ha['codice_fiscale'],
+                AMACommonDataHandler::dateToTs($user_ha['birthdate']),
+                $user_ha['sesso'],
+                $user_ha['telefono'],
+                $user_ha['stato'],
+                $user_ha['lingua'],
+                $user_ha['timezone'],
+                $user_ha['cap'],
+                $user_ha['matricola'],
+                $user_ha['avatar'],
+                $user_ha['birthcity'],
+                $user_ha['birthprovince'],
             ];
         } else {
             $update_user_sql = 'UPDATE utente SET nome=?, cognome=?, e_mail=?, password=?, telefono=?, layout=?, '
-                    . 'indirizzo=?, citta=?, provincia=?, nazione=?, codice_fiscale=?, birthdate=?, sesso=?, '
-                    . 'telefono=?, stato=?, lingua=?, timezone=?, cap=?, matricola=?, avatar=?, birthcity=?, birthprovince=?';
+                . 'indirizzo=?, citta=?, provincia=?, nazione=?, codice_fiscale=?, birthdate=?, sesso=?, '
+                . 'telefono=?, stato=?, lingua=?, timezone=?, cap=?, matricola=?, avatar=?, birthcity=?, birthprovince=?';
 
             $valuesAr = [
-                    $user_ha['nome'],
-                    $user_ha['cognome'],
-                    $user_ha['e_mail'],  // FIXME: VERIFICARE BENE
-                    $user_ha['password'], //sha1 encoded
-                    $user_ha['telefono'],
-                    $user_ha['layout'],
-                    $user_ha['indirizzo'],
-                    $user_ha['citta'],
-                    $user_ha['provincia'],
-                    $user_ha['nazione'],
-                    $user_ha['codice_fiscale'],
-                    AMACommonDataHandler::dateToTs($user_ha['birthdate']),
-                    $user_ha['sesso'],
-                    $user_ha['telefono'],
-                    $user_ha['stato'],
-                    $user_ha['lingua'],
-                    $user_ha['timezone'],
-                    $user_ha['cap'],
-                    $user_ha['matricola'],
-                    $user_ha['avatar'],
-                    $user_ha['birthcity'],
-                    $user_ha['birthprovince'],
+                $user_ha['nome'],
+                $user_ha['cognome'],
+                $user_ha['e_mail'],  // FIXME: VERIFICARE BENE
+                $user_ha['password'], //sha1 encoded
+                $user_ha['telefono'],
+                $user_ha['layout'],
+                $user_ha['indirizzo'],
+                $user_ha['citta'],
+                $user_ha['provincia'],
+                $user_ha['nazione'],
+                $user_ha['codice_fiscale'],
+                AMACommonDataHandler::dateToTs($user_ha['birthdate']),
+                $user_ha['sesso'],
+                $user_ha['telefono'],
+                $user_ha['stato'],
+                $user_ha['lingua'],
+                $user_ha['timezone'],
+                $user_ha['cap'],
+                $user_ha['matricola'],
+                $user_ha['avatar'],
+                $user_ha['birthcity'],
+                $user_ha['birthprovince'],
             ];
         }
         /**
@@ -743,7 +743,7 @@ class AMACommonDataHandler extends AbstractAMADataHandler
     public function getTestersForUser($id_user)
     {
         $testers_sql = "SELECT T.puntatore FROM utente_tester AS U, tester AS T "
-                . "WHERE U.id_utente = ? AND T.id_tester = U.id_tester";
+            . "WHERE U.id_utente = ? AND T.id_tester = U.id_tester";
 
         $testers_result = $this->getColPrepared($testers_sql, [$id_user]);
         if (self::isError($testers_result)) {
@@ -756,7 +756,7 @@ class AMACommonDataHandler extends AbstractAMADataHandler
     public function getTestersForUsername($username)
     {
         $testers_sql = "SELECT T.puntatore FROM utente AS U, utente_tester AS UT, tester AS T "
-                . "WHERE U.username = ? AND UT.id_utente= U.id_utente AND T.id_tester = UT.id_tester";
+            . "WHERE U.username = ? AND UT.id_utente= U.id_utente AND T.id_tester = UT.id_tester";
 
         $testers_result = $this->getColPrepared($testers_sql, [$username]);
         if (self::isError($testers_result)) {
@@ -787,7 +787,7 @@ class AMACommonDataHandler extends AbstractAMADataHandler
     public function getTesterInfoFromId($id_tester, $fetchmode = null)
     {
         $testers_sql = "SELECT id_tester,nome,ragione_sociale,indirizzo,citta,provincia,nazione,telefono,e_mail,responsabile,puntatore,descrizione,iban FROM tester "
-                . "WHERE id_tester = ?";
+            . "WHERE id_tester = ?";
 
         $testers_result = $this->getRowPrepared($testers_sql, $id_tester, $fetchmode);
         if (self::isError($testers_result)) {
@@ -800,7 +800,7 @@ class AMACommonDataHandler extends AbstractAMADataHandler
     public function getTesterInfoFromIdCourse($id_course)
     {
         $tester_sql = "SELECT T.id_tester,T.nome,T.ragione_sociale,T.indirizzo,T.citta,T.provincia,T.nazione,T.telefono,T.e_mail,T.responsabile,T.puntatore,T.descrizione,T.iban "
-                . "FROM tester AS T, servizio_tester AS ST WHERE ST.id_corso= ? AND T.id_tester=ST.id_tester";
+            . "FROM tester AS T, servizio_tester AS ST WHERE ST.id_corso= ? AND T.id_tester=ST.id_tester";
 
         $tester_resultAr = $this->getRowPrepared($tester_sql, [$id_course], AMA_FETCH_ASSOC);
         if (self::isError($tester_resultAr)) {
@@ -816,7 +816,7 @@ class AMACommonDataHandler extends AbstractAMADataHandler
     public function getTesterInfoFromService($id_service)
     {
         $tester_sql = "SELECT T.id_tester,T.nome,T.ragione_sociale,T.indirizzo,T.provincia,T.nazione,T.telefono,T.e_mail,T.responsabile,T.puntatore,T.descrizione,T.iban "
-                . "FROM tester AS T, servizio_tester AS ST WHERE ST.id_servizio= ? AND T.id_tester=ST.id_tester";
+            . "FROM tester AS T, servizio_tester AS ST WHERE ST.id_servizio= ? AND T.id_tester=ST.id_tester";
 
         $tester_resultAr = $this->getRowPrepared($tester_sql, [$id_service], AMA_FETCH_ASSOC);
         if (self::isError($tester_resultAr)) {
@@ -833,7 +833,7 @@ class AMACommonDataHandler extends AbstractAMADataHandler
     public function getTesterInfoFromPointer($tester)
     {
         $testers_sql = "SELECT id_tester,nome,ragione_sociale,indirizzo,citta,provincia,nazione,telefono,e_mail,responsabile,puntatore,descrizione,iban FROM tester "
-                . "WHERE puntatore = ?";
+            . "WHERE puntatore = ?";
 
         $testers_result = $this->getRowPrepared($testers_sql, [$tester]);
         if (self::isError($testers_result)) {
@@ -847,21 +847,21 @@ class AMACommonDataHandler extends AbstractAMADataHandler
     {
 
         $tester_sql = 'INSERT INTO tester(nome, ragione_sociale,indirizzo,citta,provincia,nazione,telefono,e_mail,responsabile,puntatore,descrizione,iban) '
-                . 'VALUES (?,?,?,?,?,?,?,?,?,?,?,?)';
+            . 'VALUES (?,?,?,?,?,?,?,?,?,?,?,?)';
 
         $valuesAr = [
-                $tester_dataAr['tester_name'],
-                $tester_dataAr['tester_rs'],
-                $tester_dataAr['tester_address'],
-                $tester_dataAr['tester_city'],
-                $tester_dataAr['tester_province'],
-                $tester_dataAr['tester_country'],
-                $tester_dataAr['tester_phone'],
-                $tester_dataAr['tester_email'],
-                $tester_dataAr['tester_resp'],
-                $tester_dataAr['tester_pointer'],
-                $tester_dataAr['tester_desc'],
-                (array_key_exists('tester_iban', $tester_dataAr) && strlen(trim($tester_dataAr['tester_iban'])) > 0) ? trim($tester_dataAr['tester_iban']) : null,
+            $tester_dataAr['tester_name'],
+            $tester_dataAr['tester_rs'],
+            $tester_dataAr['tester_address'],
+            $tester_dataAr['tester_city'],
+            $tester_dataAr['tester_province'],
+            $tester_dataAr['tester_country'],
+            $tester_dataAr['tester_phone'],
+            $tester_dataAr['tester_email'],
+            $tester_dataAr['tester_resp'],
+            $tester_dataAr['tester_pointer'],
+            $tester_dataAr['tester_desc'],
+            (array_key_exists('tester_iban', $tester_dataAr) && strlen(trim($tester_dataAr['tester_iban'])) > 0) ? trim($tester_dataAr['tester_iban']) : null,
         ];
 
         $result = $this->queryPrepared($tester_sql, $valuesAr);
@@ -878,19 +878,19 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         $tester_sql = 'UPDATE tester SET nome=?, ragione_sociale=?,indirizzo=?,citta=?,provincia=?,nazione=?,telefono=?,e_mail=?,responsabile=?,puntatore=?,descrizione=?,iban=? WHERE id_tester=?';
 
         $valuesAr = [
-                $tester_dataAr['tester_name'],
-                $tester_dataAr['tester_rs'],
-                $tester_dataAr['tester_address'],
-                $tester_dataAr['tester_city'],
-                $tester_dataAr['tester_province'],
-                $tester_dataAr['tester_country'],
-                $tester_dataAr['tester_phone'],
-                $tester_dataAr['tester_email'],
-                $tester_dataAr['tester_resp'],
-                $tester_dataAr['tester_pointer'],
-                $tester_dataAr['tester_desc'],
-                (array_key_exists('tester_iban', $tester_dataAr) && strlen(trim($tester_dataAr['tester_iban'])) > 0) ? trim($tester_dataAr['tester_iban']) : null,
-                $tester_id,
+            $tester_dataAr['tester_name'],
+            $tester_dataAr['tester_rs'],
+            $tester_dataAr['tester_address'],
+            $tester_dataAr['tester_city'],
+            $tester_dataAr['tester_province'],
+            $tester_dataAr['tester_country'],
+            $tester_dataAr['tester_phone'],
+            $tester_dataAr['tester_email'],
+            $tester_dataAr['tester_resp'],
+            $tester_dataAr['tester_pointer'],
+            $tester_dataAr['tester_desc'],
+            (array_key_exists('tester_iban', $tester_dataAr) && strlen(trim($tester_dataAr['tester_iban'])) > 0) ? trim($tester_dataAr['tester_iban']) : null,
+            $tester_id,
         ];
 
         $result = $this->queryPrepared($tester_sql, $valuesAr);
@@ -919,7 +919,7 @@ class AMACommonDataHandler extends AbstractAMADataHandler
     public function getTesterForService($id_service)
     {
         $testers_sql = "SELECT id_tester FROM servizio_tester "
-                . "WHERE id_servizio = ?";
+            . "WHERE id_servizio = ?";
 
         $testers_result = $this->getColPrepared($testers_sql, [$id_service]);
         if (self::isError($testers_result)) {
@@ -943,7 +943,7 @@ class AMACommonDataHandler extends AbstractAMADataHandler
     public function getServicesForTester($id_tester)
     {
         $testers_sql = "SELECT id_servizio FROM servizio_tester "
-                . "WHERE id_tester = ?";
+            . "WHERE id_tester = ?";
 
         $testers_result = $this->getColPrepared($testers_sql, [$id_tester]);
         if (self::isError($testers_result)) {
@@ -1005,7 +1005,7 @@ class AMACommonDataHandler extends AbstractAMADataHandler
     public function getCoursesForTester($id_tester)
     {
         $testers_sql = "SELECT id_corso FROM servizio_tester "
-                . "WHERE id_tester = ?";
+            . "WHERE id_tester = ?";
 
         $testers_result = $this->getColPrepared($testers_sql, [$id_tester]);
         if (self::isError($testers_result)) {
@@ -1053,7 +1053,7 @@ class AMACommonDataHandler extends AbstractAMADataHandler
     public function getServiceInfo($id_servizio)
     {
         $service_sql = "SELECT id_servizio, nome, descrizione, livello, durata_servizio, min_incontri, max_incontri, durata_max_incontro  FROM servizio "
-                . "WHERE id_servizio = ?";
+            . "WHERE id_servizio = ?";
 
         $service_result = $this->getRowPrepared($service_sql, [$id_servizio]);
         if (self::isError($service_result)) {
@@ -1077,7 +1077,7 @@ class AMACommonDataHandler extends AbstractAMADataHandler
     public function getInfoForTesterServices($id_tester)
     {
         $services_sql = "SELECT S.id_servizio, S.nome, S.descrizione, S.livello, S.durata_servizio, S.min_incontri, S.max_incontri, S.durata_max_incontro,"
-                . " ST.id_corso FROM servizio AS S, servizio_tester AS ST WHERE ST.id_tester=? AND S.id_servizio=ST.id_servizio";
+            . " ST.id_corso FROM servizio AS S, servizio_tester AS ST WHERE ST.id_tester=? AND S.id_servizio=ST.id_servizio";
 
         $services_result = $this->getAllPrepared($services_sql, [$id_tester], AMA_FETCH_ASSOC);
         if (self::isError($services_result)) {
@@ -1200,7 +1200,7 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         ];
 
         $courses_sql = "SELECT id_tester, id_corso FROM servizio_tester "
-                . "WHERE id_servizio = ?";
+            . "WHERE id_servizio = ?";
         if ($id_tester != null) {
             $courses_sql .= " AND id_tester = ?";
             $params[] = $id_tester;
@@ -1233,9 +1233,9 @@ class AMACommonDataHandler extends AbstractAMADataHandler
     {
         // FIXME:sistemare query
         $service_sql = "SELECT S.id_servizio, S.nome, S.descrizione, S.livello, S.durata_servizio, S.min_incontri, S.max_incontri, S.durata_max_incontro FROM servizio AS S, "
-                . "  servizio_tester as ST "
-                . "WHERE ST.id_corso = ? "
-                . " AND S.id_servizio = ST.id_servizio";
+            . "  servizio_tester as ST "
+            . "WHERE ST.id_corso = ? "
+            . " AND S.id_servizio = ST.id_servizio";
         //. " AND ST.id_servizio = S.id_servizio";
 
         $service_result = $this->getRowPrepared($service_sql, [$id_course]);
@@ -1261,9 +1261,9 @@ class AMACommonDataHandler extends AbstractAMADataHandler
     {
 
         $sql = "SELECT STYPE.* FROM `service_type` as STYPE, " .
-               "servizio_tester as ST, servizio as S " .
-               "WHERE ST.id_corso=? " .
-               "AND S.id_servizio = ST.id_servizio AND S.livello = STYPE.`livello_servizio`";
+            "servizio_tester as ST, servizio as S " .
+            "WHERE ST.id_corso=? " .
+            "AND S.id_servizio = ST.id_servizio AND S.livello = STYPE.`livello_servizio`";
 
         $result = $this->getRowPrepared($sql, $id_course, AMA_FETCH_ASSOC);
         if (self::isError($result)) {
@@ -1277,13 +1277,13 @@ class AMACommonDataHandler extends AbstractAMADataHandler
     {
         $service_sql = 'INSERT INTO servizio(nome, descrizione, livello, durata_servizio, min_incontri, max_incontri, durata_max_incontro) VALUES(?,?,?,?,?,?,?)';
         $valuesAr = [
-                $service_dataAr['service_name'],
-                $service_dataAr['service_description'],
-                $service_dataAr['service_level'],
-                $service_dataAr['service_duration'],
-                $service_dataAr['service_min_meetings'],
-                $service_dataAr['service_max_meetings'],
-                $service_dataAr['service_meeting_duration'],
+            $service_dataAr['service_name'],
+            $service_dataAr['service_description'],
+            $service_dataAr['service_level'],
+            $service_dataAr['service_duration'],
+            $service_dataAr['service_min_meetings'],
+            $service_dataAr['service_max_meetings'],
+            $service_dataAr['service_meeting_duration'],
         ];
 
         $result = $this->queryPrepared($service_sql, $valuesAr);
@@ -1314,14 +1314,14 @@ class AMACommonDataHandler extends AbstractAMADataHandler
 
         $service_sql = 'UPDATE servizio SET nome=?, descrizione=?, livello=?, durata_servizio=?, min_incontri=?, max_incontri=?, durata_max_incontro=? WHERE id_servizio=?';
         $valuesAr = [
-                $service_dataAr['service_name'],
-                $service_dataAr['service_description'],
-                $service_dataAr['service_level'],
-                $service_dataAr['service_duration'],
-                $service_dataAr['service_min_meetings'],
-                $service_dataAr['service_max_meetings'],
-                $service_dataAr['service_meeting_duration'],
-                $id_service,
+            $service_dataAr['service_name'],
+            $service_dataAr['service_description'],
+            $service_dataAr['service_level'],
+            $service_dataAr['service_duration'],
+            $service_dataAr['service_min_meetings'],
+            $service_dataAr['service_max_meetings'],
+            $service_dataAr['service_meeting_duration'],
+            $id_service,
         ];
 
         $result = $this->queryPrepared($service_sql, $valuesAr);
@@ -1374,8 +1374,8 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         $params = [];
 
         $courses_sql = 'SELECT S.id_servizio, S.nome, S.descrizione, S.durata_servizio FROM servizio AS S ' .
-                'JOIN `service_type` AS STYPE ON STYPE.`livello_servizio`=S.`livello` AND STYPE.`hiddenFromInfo`!=1 ' .
-                'JOIN `servizio_tester` AS ST ON ST.`id_servizio`=S.`id_servizio`';
+            'JOIN `service_type` AS STYPE ON STYPE.`livello_servizio`=S.`livello` AND STYPE.`hiddenFromInfo`!=1 ' .
+            'JOIN `servizio_tester` AS ST ON ST.`id_servizio`=S.`id_servizio`';
         if (!is_null($id_tester) && intval($id_tester) > 0) {
             $courses_sql .= ' WHERE id_tester= ?';
             $params[] = intval($id_tester);
@@ -1455,11 +1455,11 @@ class AMACommonDataHandler extends AbstractAMADataHandler
     {
         $token_sql = 'INSERT INTO token(token, id_utente, timestamp_richiesta, azione, valido) VALUES(?,?,?,?,?)';
         $valuesAr = [
-                $token_dataAr['token'],
-                $token_dataAr['id_utente'],
-                $token_dataAr['timestamp_richiesta'],
-                $token_dataAr['azione'],
-                $token_dataAr['valido'],
+            $token_dataAr['token'],
+            $token_dataAr['id_utente'],
+            $token_dataAr['timestamp_richiesta'],
+            $token_dataAr['azione'],
+            $token_dataAr['valido'],
         ];
 
         $result = $this->queryPrepared($token_sql, $valuesAr);
@@ -1531,13 +1531,12 @@ class AMACommonDataHandler extends AbstractAMADataHandler
             return new AMAError(AMA_ERR_NOT_FOUND);
         }
 
-        $sql_message = $this->sqlPrepared($message_text);
         /*
      * Check if the given message is already in table messaggi_sistema
         */
         $sql_message_id = "SELECT id_messaggio FROM messaggi_sistema WHERE testo_messaggio=?";
 
-        $result = $this->getRowPrepared($sql_message_id, [$sql_message]);
+        $result = $this->getRowPrepared($sql_message_id, [$message_text]);
         if (AMADB::isError($result)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -1546,7 +1545,7 @@ class AMACommonDataHandler extends AbstractAMADataHandler
      * If the given message is not in table messaggi_sistema, add it.
         */
         if ($result ==  null) {
-            $insert = $this->addTranslationMessage($sql_message);
+            $insert = $this->addTranslationMessage($message_text);
             if (AMADB::isError($insert)) {
                 return new AMAError(AMA_ERR_ADD);
             }
@@ -1687,9 +1686,9 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         /**
          * Insert this message in table messaggi_sistema
          */
-        $sql_insert_message    = "INSERT INTO messaggi_sistema(testo_messaggio) VALUES($sql_prepared_message)";
+        $sql_insert_message    = "INSERT INTO messaggi_sistema(testo_messaggio) VALUES(?)";
 
-        $result = $this->queryPrepared($sql_insert_message);
+        $result = $this->queryPrepared($sql_insert_message, [$sql_prepared_message]);
         if (AMADB::isError($result)) {
             return new AMAError(AMA_ERR_ADD);
         }
@@ -1751,9 +1750,8 @@ class AMACommonDataHandler extends AbstractAMADataHandler
             return new AMAError(AMA_ERR_GET);
         }
 
-        $sql_prepared_message_text = $this->sqlPrepared($message_text);
-        $sql_update_message_text = "UPDATE $table_name SET testo_messaggio=$sql_prepared_message_text WHERE id_messaggio=$message_id";
-        $result = $this->queryPrepared($sql_update_message_text);
+        $sql_update_message_text = "UPDATE $table_name SET testo_messaggio=? WHERE id_messaggio=?";
+        $result = $this->queryPrepared($sql_update_message_text, [$message_text, $message_id]);
 
         if (AMADB::isError($result)) {
             return new AMAError(AMA_ERR_UPDATE);
@@ -1777,14 +1775,12 @@ class AMACommonDataHandler extends AbstractAMADataHandler
             return new AMAError(AMA_ERR_GET);
         }
 
-        $sql_prepared_message_text = $this->sqlPrepared($message_text);
-        $sql_prepared_new_message_text = $this->sqlPrepared($new_message_text);
         /*
      * Check if the given message is already in table messaggi_sistema
         */
-        $sql_message_id = "SELECT id_messaggio FROM messaggi_sistema WHERE testo_messaggio=$sql_prepared_message_text";
+        $sql_message_id = "SELECT id_messaggio FROM messaggi_sistema WHERE testo_messaggio=?";
 
-        $result = $this->getRowPrepared($sql_message_id);
+        $result = $this->getRowPrepared($sql_message_id, [$message_text]);
         if (AMADB::isError($result)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -1792,9 +1788,8 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         $message_id = $result[0];
         // FIXME: verificare il valore restituito se il messaggio dato non esiste nella tabella.
 
-        $sql_update_message_text = "UPDATE $table_name SET testo_messaggio=$sql_prepared_new_message_text WHERE id_messaggio=$message_id";
-
-        $result = $this->executeCritical($sql_update_message_text);
+        $sql_update_message_text = "UPDATE $table_name SET testo_messaggio=? WHERE id_messaggio=?";
+        $result = $this->executeCritical($sql_update_message_text, [$new_message_text, $message_id]);
 
         if (AMADB::isError($result)) {
             return $result;
@@ -1817,8 +1812,8 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         /**
          * Insert the messagge in the translation table named $table_name
          */
-        $sql_insert_message_in_translation_table = "INSERT INTO $table_name(id_messaggio, testo_messaggio) VALUES($id, $sql_prepared_message)";
-        $result = $this->queryPrepared($sql_insert_message_in_translation_table);
+        $sql_insert_message_in_translation_table = "INSERT INTO $table_name(id_messaggio, testo_messaggio) VALUES(?,?)";
+        $result = $this->queryPrepared($sql_insert_message_in_translation_table, [$id, $sql_prepared_message]);
         /**
          * If an error occurs while adding the message into this table, then add an empty string, since
          * we don't want to loose identifier one-to-one mapping between this table and table messaggi_sistema
@@ -1978,7 +1973,7 @@ class AMACommonDataHandler extends AbstractAMADataHandler
     {
         if (!MULTIPROVIDER && strlen($thirdleveldomain) > 0) {
             $query = "SELECT `puntatore` FROM `tester` WHERE `3rdleveldomain`=?";
-            $res = $this->getOnePrepared($query, [ $thirdleveldomain ]);
+            $res = $this->getOnePrepared($query, [$thirdleveldomain]);
             if ($res !== false && !AMADB::isError($res) && strlen($res) > 0) {
                 return $res;
             }

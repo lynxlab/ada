@@ -4190,11 +4190,6 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         $crediti = $this->orZero($course_ha['crediti']);
         $duration_hours = $this->orZero($course_ha['duration_hours']);
         $service_type = $this->orNull($course_ha['service_level']);
-        /*
-     modifica 25/07/01 : non devono essere 0 ma ci devono essere
-     $id_nodo_iniziale = $this->orZero($this->sqlPrepared($course_ha['id_nodo_toc']));
-     $id_nodo_toc = $this->orZero($this->sqlPrepared($course_ha['id_nodo_iniziale']));
-        */
 
         if (empty($course_ha['id_nodo_iniziale'])) {
             //$id_nodo_iniziale = $id."_0";      dovrebbe essere una stringa !!!
@@ -4526,38 +4521,37 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
 
         // FIXME: l'id del nodo dovrebbe venire ottenuto qui e non passato nell'array $node_ha
         // Fixed by Graffio 08/11/2011
-        //$id_node = $this->sqlPrepared($node_ha['id']);
         $id_author = $node_ha['id_node_author'];
-        $name = $this->sqlPrepared($this->orNull($node_ha['name'] ?? null));
+        $name = $this->orNull($node_ha['name'] ?? null);
         /**
          * ForkedPaths title must be set before the title
          */
         if (ModuleLoaderHelper::isLoaded('FORKEDPATHS') && isset($node_ha['is_forkedpaths']) && $node_ha['is_forkedpaths'] == 1) {
             $node_ha['title'] = ForkedPathsNode::addMagicKeywordToTitle($node_ha['title']);
         }
-        $title = $this->sqlPrepared($this->orNull($node_ha['title'] ?? null));
+        $title = $this->orNull($node_ha['title'] ?? null);
 
-        $text = $this->sqlPrepared($node_ha['text'] ?? null);
-        $type = $this->sqlPrepared($this->orZero($node_ha['type'] ?? null));
+        $text = $node_ha['text'] ?? null;
+        $type = $this->orZero($node_ha['type'] ?? null);
         $creation_date = $this->dateToTs($this->orNull($node_ha['creation_date'] ?? ''));
-        $parent_id = $this->sqlPrepared($node_ha['parent_id'] ?? null);
-        $order = $this->sqlPrepared($this->orNull($node_ha['order'] ?? null));
-        $level = $this->sqlPrepared($this->orZero($node_ha['level'] ?? null));
-        $version = $this->sqlPrepared($this->orZero($node_ha['version'] ?? null));
-        $n_contacts = $this->sqlPrepared($this->orZero($node_ha['n_contacts'] ?? null));
-        $icon = $this->sqlPrepared($this->orNull($node_ha['icon'] ?? null));
+        $parent_id = $node_ha['parent_id'] ?? null;
+        $order = $this->orNull($node_ha['order'] ?? null);
+        $level = $this->orZero($node_ha['level'] ?? null);
+        $version = $this->orZero($node_ha['version'] ?? null);
+        $n_contacts = $this->orZero($node_ha['n_contacts'] ?? null);
+        $icon = $this->orNull($node_ha['icon'] ?? null);
 
         // modified 7/7/01 ste
         // $color = $this->orZero($node_ha['color']);
-        $bgcolor = $this->sqlPrepared($this->orNull($node_ha['bgcolor'] ?? null));
-        $color = $this->sqlPrepared($this->orNull($node_ha['color'] ?? null));
+        $bgcolor = $this->orNull($node_ha['bgcolor'] ?? null);
+        $color = $this->orNull($node_ha['color'] ?? null);
         // end
-        $correctness = $this->sqlPrepared($this->orZero($node_ha['correctness'] ?? null));
-        $copyright = $this->sqlPrepared($this->orZero($node_ha['copyright'] ?? null));
+        $correctness = $this->orZero($node_ha['correctness'] ?? null);
+        $copyright = $this->orZero($node_ha['copyright'] ?? null);
         // added 6/7/01 ste
-        $id_position = $this->sqlPrepared($node_ha['id_position'] ?? null);
-        $lingua = $this->sqlPrepared($node_ha['lingua'] ?? null);
-        $pubblicato = $this->sqlPrepared($node_ha['pubblicato'] ?? null);
+        $id_position = $node_ha['id_position'] ?? null;
+        $lingua = $this->orZero($node_ha['lingua'] ?? null);
+        $pubblicato = $this->orZero($node_ha['pubblicato'] ?? null);
         // end
         // added 24/7/02 ste
         //  $family = $this->dateToTs($this->orNull($node_ha['family']));
@@ -4565,9 +4559,9 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
 
         // added  2/4/03
         if (array_key_exists('id_instance', $node_ha)) {
-            $id_instance = $this->sqlPrepared($this->orNull($node_ha['id_instance']));
+            $id_instance = $this->orNull($node_ha['id_instance']);
         } else {
-            $id_instance = "''";
+            $id_instance = "";
         }
         //end
         /******
@@ -4592,7 +4586,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
                 $new_node_id = $idCourse . "_" . $newId;
             }
         }
-        $id_node = $this->sqlPrepared($new_node_id);
+        $id_node = $new_node_id;
 
         /***************************/
         // verify key uniqueness on nodo
@@ -4672,30 +4666,30 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
     {
         ADALogger::logDb("entered doEdit_node");
 
-        $id_node = $this->sqlPrepared($node_ha['id']);
-        $name = $this->sqlPrepared($this->orNull($node_ha['name']));
+        $id_node = $node_ha['id'];
+        $name = $this->orNull($node_ha['name']);
         /**
          * ForkedPaths title must be set before the title
          */
         if (ModuleLoaderHelper::isLoaded('FORKEDPATHS') && isset($node_ha['is_forkedpaths']) && $node_ha['is_forkedpaths'] == 1) {
             $node_ha['title'] = ForkedPathsNode::addMagicKeywordToTitle($node_ha['title']);
         }
-        $title = $this->sqlPrepared($this->orNull($node_ha['title'] ?? ''));
+        $title = $this->orNull($node_ha['title'] ?? '');
 
-        $text = $this->sqlPrepared($node_ha['text']);
+        $text = $node_ha['text'];
         //if (isset($node_ha['type'])) {
-        $type = $this->sqlPrepared($this->orZero($node_ha['type']));
+        $type = $this->orZero($node_ha['type']);
         //}
         //if (isset($node_ha['id_instance'])) {
-        $id_instance = $this->sqlPrepared($this->orNull($node_ha['id_instance'] ?? ''));
+        $id_instance = $this->orNull($node_ha['id_instance'] ?? '');
         //}
-        $parent_id = $this->sqlPrepared($this->orNull($node_ha['parent_id']));
+        $parent_id = $this->orNull($node_ha['parent_id']);
 
-        $order = $this->sqlPrepared($this->orZero($node_ha['order']));
-        $level = $this->sqlPrepared($this->orZero($node_ha['level'] ?? ''));
-        $version = $this->sqlPrepared($this->orZero($node_ha['version'] ?? ''));
-        $icon = $this->sqlPrepared($this->orNull($node_ha['icon'] ?? ''));
-        $correctness = $this->sqlPrepared($this->orZero($node_ha['correctness'] ?? ''));
+        $order = $this->orZero($node_ha['order']);
+        $level = $this->orZero($node_ha['level'] ?? '');
+        $version = $this->orZero($node_ha['version'] ?? '');
+        $icon = $this->orNull($node_ha['icon'] ?? '');
+        $correctness = $this->orZero($node_ha['correctness'] ?? '');
 
         /*
      * vito, 23 jan 2009
@@ -4846,13 +4840,13 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         ADALogger::logDb("entered add_extension_node");
 
         // FIXME: l'id del nodo dovrebbe venire ottenuto qui e non passato nell'array $node_ha
-        $id_node = $this->sqlPrepared($node_ha['id']);
-        $hyphenation = $this->sqlPrepared($node_ha['hyphenation']);
-        $grammar = $this->sqlPrepared($node_ha['grammar']);
-        $semantic = $this->sqlPrepared($node_ha['semantic']);
-        $notes = $this->sqlPrepared($node_ha['notes']);
-        $examples = $this->sqlPrepared($node_ha['examples']);
-        $language = $this->sqlPrepared($node_ha['lingua']);
+        $id_node = $node_ha['id'];
+        $hyphenation = $node_ha['hyphenation'];
+        $grammar = $node_ha['grammar'];
+        $semantic = $node_ha['semantic'];
+        $notes = $node_ha['notes'];
+        $examples = $node_ha['examples'];
+        $language = $node_ha['lingua'];
 
         $sql  = "update extended_node set hyphenation = ?, grammar = ?, semantic = ?, notes = ?, examples = ?, language = ?";
         $sql  .= " where id_node = ?";
@@ -5049,8 +5043,6 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             ADALogger::logDb("node added to db, adding instruction to rbs");
             $this->rsAdd("doRemove_node", $node_id);
         }
-        // the sqlPrepared form will be of unvaluable help in the future
-        $sqlnode_id = $this->sqlPrepared($node_id);
 
         /*
      * if exists a parent node for this node, check if it has type ADA_LEAF_TYPE
@@ -5098,7 +5090,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             } else {
                 // add instruction to rollback segment
                 ADALogger::logDb("links added to db, adding instruction to rbs");
-                $this->rsAdd("del_links", $sqlnode_id);
+                $this->rsAdd("del_links", $node_id);
             }
         }
 
@@ -5116,7 +5108,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             } else {
                 // add instruction to rollback segment
                 ADALogger::logDb("links added to db, adding instruction to rbs");
-                $this->rsAdd("del_extended_node", $sqlnode_id);
+                $this->rsAdd("del_extended_node", $node_id);
             }
         }
         // add rows to table "RISORSA_ESTERNA"
@@ -5125,7 +5117,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             // get the resources' infoz
             $resources_ar = $node_ha['resources_ar'];
             // add them to the DB
-            $res = $this->addMedia($resources_ar, $sqlnode_id);
+            $res = $this->addMedia($resources_ar, $node_id);
             if (AMADataHandler::isError($res)) {
                 $err = $this->errorMessage(AMA_ERR_ADD) . "while in add_node($node_id)" .
                     AMA_SEP . $res->getMessage();
@@ -5157,7 +5149,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
          * vito, 23 jan 2009
          * check if node position was given
          */
-        $id_node = $this->sqlPrepared($node_ha['id']);
+        $id_node = $node_ha['id'];
         if (
             isset($node_ha['pos_x0']) && is_numeric($node_ha['pos_x0']) &&
             isset($node_ha['pos_x1']) && is_numeric($node_ha['pos_x1']) &&
@@ -5282,20 +5274,17 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
     {
         ADALogger::logDb("entered remove_node(node_id:$node_id)");
 
-        // prepare $node_id for sql usage (it's a string)
-        $sqlnode_id =  $this->sqlPrepared($node_id);
-
         /*
      * remove resources
         */
-        $risorse_ar = $this->getColPrepared("select id_risorsa_ext from risorse_nodi where id_nodo=?", [$sqlnode_id]);
+        $risorse_ar = $this->getColPrepared("select id_risorsa_ext from risorse_nodi where id_nodo=?", [$node_id]);
         if (AMADB::isError($risorse_ar)) {
             return new AMAError(AMA_ERR_GET);
         }
         ADALogger::logDb("removing " . count($risorse_ar) . " resources");
         if (count($risorse_ar)) {
             // delete all references to $node_id in risorse_nodi
-            $res_risorse = $this->delMedia($risorse_ar, $sqlnode_id);
+            $res_risorse = $this->delMedia($risorse_ar, $node_id);
             if (AMADataHandler::isError($res_risorse)) {
                 $err = $this->errorMessage(AMA_ERR_REMOVE) . "while in remove_node($node_id)" .
                     AMA_SEP .  $res_risorse->getMessage();
@@ -5309,14 +5298,14 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         /*
      * remove links
         */
-        $links_ar = $this->getAllPrepared("select * from link where id_nodo=?", [$sqlnode_id]);
+        $links_ar = $this->getAllPrepared("select * from link where id_nodo=?", [$node_id]);
         if (AMADB::isError($links_ar)) {
             return new AMAError(AMA_ERR_GET);
         }
         ADALogger::logDb("removing " . count($links_ar) . " links");
         if (count($links_ar)) {
             // delete all references to $node_id in link
-            $res_links = $this->delLinks($sqlnode_id);
+            $res_links = $this->delLinks($node_id);
             if (AMADataHandler::isError($res_links)) {
                 $err = $this->errorMessage(AMA_ERR_REMOVE) .  "while in remove_node($node_id)" .
                     AMA_SEP . $res_links->getMessage();
@@ -5332,7 +5321,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
          */
         $sql = "delete from history_nodi where id_nodo=?";
         ADALogger::logDb("cleaning history_nodi: $sql");
-        $res = $this->executeCriticalPrepared($sql, [$sqlnode_id]);
+        $res = $this->executeCriticalPrepared($sql, [$node_id]);
         if (AMADB::isError($res)) {
             ADALogger::logDb($res->getMessage() . " detected, aborting");
             return new AMAError(AMA_ERR_REMOVE);
@@ -5343,7 +5332,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
          */
         $sql = "delete from history_esercizi where id_nodo=?";
         ADALogger::logDb("cleaning history_esercizi: $sql");
-        $res = $this->executeCriticalPrepared($sql, [$sqlnode_id]);
+        $res = $this->executeCriticalPrepared($sql, [$node_id]);
         if (AMADB::isError($res)) {
             ADALogger::logDb($res->getMessage() . " detected, aborting");
             return $res;
@@ -5354,7 +5343,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
          */
         $sql = "delete from bookmark where id_nodo=?";
         ADALogger::logDb("cleaning bookmark: $sql");
-        $res = $this->executeCriticalPrepared($sql, [$sqlnode_id]);
+        $res = $this->executeCriticalPrepared($sql, [$node_id]);
         if (AMADB::isError($res)) {
             ADALogger::logDb($res->getMessage() . " detected, aborting");
             return new AMAError(AMA_ERR_REMOVE);
@@ -5366,7 +5355,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
          */
         $sql = "delete from extended_node where id_node=?";
         ADALogger::logDb("cleaning extended node: $sql");
-        $res = $this->executeCriticalPrepared($sql, [$sqlnode_id]);
+        $res = $this->executeCriticalPrepared($sql, [$node_id]);
         if (AMADB::isError($res)) {
             ADALogger::logDb($res->getMessage() . " detected, aborting");
             return new AMAError(AMA_ERR_REMOVE);
@@ -5376,7 +5365,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         /*
          * node removal
          */
-        $res_node = $this->doRemoveNode($sqlnode_id);
+        $res_node = $this->doRemoveNode($node_id);
         if (AMADataHandler::isError($res_node)) {
             $err = $this->errorMessage(AMA_ERR_REMOVE) . "while in remove_node($node_id)" .
                 AMA_SEP . $res_node->getMessage();
@@ -5384,7 +5373,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             ADALogger::logDb("error: $err");
             return new AMAError($err);
         }
-        ADALogger::logDb("node $sqlnode_id successfully removed");
+        ADALogger::logDb("node $node_id successfully removed");
 
         return true;
     }
@@ -5404,11 +5393,8 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
     {
         ADALogger::logDb("entered remove_node(node_id:$node_id)");
 
-        // prepare $node_id for sql usage (it's a string)
-        $sqlnode_id =  $this->sqlPrepared($node_id);
-
         // retrieve children's ids
-        $ids_ar = $this->getColPrepared("select id_nodo from nodo where id_nodo_parent=?", [$sqlnode_id]);
+        $ids_ar = $this->getColPrepared("select id_nodo from nodo where id_nodo_parent=?", [$node_id]);
         if (AMADB::isError($ids_ar)) {
             ADALogger::logDb($ids_ar->getMessage() . " detected, aborting recursive removal");
             return new AMAError(AMA_ERR_GET);
@@ -5504,7 +5490,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         $sql .= "livello, versione, n_contatti, icona, colore_didascalia, colore_sfondo,";
         $sql .= "correttezza, copyright, id_istanza, lingua, pubblicato";
         $sql .= " from nodo where id_nodo=?";
-        $res_ar =  $this->getRowPrepared($sql, [$node_id]);
+        $res_ar =  $this->getRowPrepared($sql, array_map(fn ($el) => trim($el, "'"), [$node_id]));
         if (AMADB::isError($res_ar)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -5919,8 +5905,8 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         $params = [];
 
         switch ($required_info) {
-            case 1: // get NODE n_contatti field
-                $sql = "SELECT N.id_nodo, N.nome, N.tipo, N.id_nodo_parent, N.n_contatti, N.icona
+            case 1: // get NODE n_contatti field, author has no instance
+                $sql = "SELECT N.id_nodo, N.nome, N.tipo, N.id_nodo_parent, N.n_contatti AS numero_visite, N.icona
                 FROM nodo AS N LEFT JOIN nodo AS N2 ON (N.id_nodo_parent = N2.id_nodo  OR N2.id_nodo_parent = 'NULL' OR N2.id_nodo_parent IS NULL)";
                 break;
 
@@ -5944,7 +5930,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
 
             case null:
             default:
-                $sql = "SELECT N.id_nodo, N.nome, N.tipo, N.id_nodo_parent, N.icona
+                $sql = "SELECT N.id_nodo, N.nome, N.tipo, N.id_nodo_parent, N.icona, N.n_contatti AS numero_visite
                 FROM nodo AS N LEFT JOIN nodo AS N2 ON (N.id_nodo_parent = N2.id_nodo OR N2.id_nodo_parent = 'NULL' OR N2.id_nodo_parent IS NULL)";
                 break;
         }
@@ -6223,15 +6209,15 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
     {
         ADALogger::logDb("entered add_risorsa_esterna");
 
-        $nome_file = $this->sqlPrepared($res_ha['nome_file']);
+        $nome_file = $res_ha['nome_file'];
         $tipo = $res_ha['tipo'];
         $copyright = $this->orZero($res_ha['copyright']);
-        $id_nodo = $this->sqlPrepared($res_ha['id_nodo'] ?? null);
-        $keywords = $this->sqlPrepared($res_ha['keywords']);
-        $titolo = $this->sqlPrepared($res_ha['titolo']);
-        $pubblicato = $this->orZero($res_ha['pubblicato']);
-        $descrizione = $this->sqlPrepared($res_ha['descrizione']);
-        $lingua = $this->sqlPrepared($res_ha['lingua']);
+        $id_nodo = $res_ha['id_nodo'] ?? null;
+        $keywords = $res_ha['keywords'];
+        $titolo = $res_ha['titolo'];
+        $pubblicato = $res_ha['pubblicato'];
+        $descrizione = $res_ha['descrizione'];
+        $lingua = $res_ha['lingua'];
 
         // vito, 19 luglio 2008
         $id_utente = $this->orZero($res_ha['id_utente']);
@@ -6313,15 +6299,15 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      */
     public function addOnlyInRisorsaEsterna($res_ha)
     {
-        $nome_file = $this->sqlPrepared($res_ha['nome_file'] ?? '');
-        $titolo = $this->sqlPrepared($res_ha['titolo'] ?? '');
+        $nome_file = $res_ha['nome_file'] ?? '';
+        $titolo = $res_ha['titolo'] ?? '';
         $tipo      = $res_ha['tipo'] ?? null;
         $copyright = $this->orZero($res_ha['copyright'] ?? '');
         $id_utente = $this->orZero($res_ha['id_utente'] ?? '');
-        $keywords = $this->sqlPrepared($res_ha['keywords'] ?? '');
+        $keywords = $res_ha['keywords'] ?? '';
         $pubblicato = $this->orZero($res_ha['pubblicato'] ?? '');
-        $descrizione = $this->sqlPrepared($res_ha['descrizione'] ?? '');
-        $lingua = $this->sqlPrepared($res_ha['lingua'] ?? '');
+        $descrizione = $res_ha['descrizione'] ?? '';
+        $lingua = $res_ha['lingua'] ?? '';
 
         // check values
         if (empty($nome_file)) {
@@ -6731,8 +6717,6 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
     public function delRisorseNodi($sqlnode_id, $res_id = '')
     {
         ADALogger::logDb("entering del_risorse_nodi (sqlnode_id: $sqlnode_id, res_id: $res_id)");
-        //vito, 23 mar 2009
-        //$sql = "delete from risorse_nodi where id_nodo=".$this->sqlPrepared($sqlnode_id);
         $params = [
             $sqlnode_id,
         ];

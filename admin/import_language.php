@@ -155,8 +155,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 foreach ($array_sistema_lang as $one_message_sitema) {
                     $message_text = $one_message_sitema['message'];
                     $message_id = $one_message_sitema['id'];
-                    $sql_message_prepared = $tester_dh->sqlPrepared($message_text);
-                    $inserted_message = $tester_dh->addTranslatedMessage($sql_message_prepared, $message_id, "sistema");
+                    $inserted_message = $tester_dh->addTranslatedMessage($message_text, $message_id, "sistema");
                 }
             }
             $imported_sentences = 0;
@@ -173,8 +172,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                     }
                 }
                 if ($sent_to_insert) {
-                    $sql_message_prepared = $tester_dh->sqlPrepared($message_text);
-                    $inserted_message = $tester_dh->addTranslatedMessage($sql_message_prepared, $message_id, $suffix);
+                    $inserted_message = $tester_dh->addTranslatedMessage($message_text, $message_id, $suffix);
                     if (!AMACommonDataHandler::isError($inserted_message)) {
                         $imported_sentences++;
                     }
