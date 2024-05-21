@@ -265,10 +265,11 @@ class ARE
                         );
                     }
 
-                    // if jquery noconflict is not included in the script itself, add it at last position
-                    if (!in_array(JQUERY_NO_CONFLICT, $layout_dataAr['JS_filename'])) {
-                        array_push($layout_dataAr['JS_filename'], JQUERY_NO_CONFLICT);
+                    // ensure jquery noconflict is not included in the script itself, add it at last position
+                    if ($nc = array_search(JQUERY_NO_CONFLICT, $layout_dataAr['JS_filename'])) {
+                        unset($layout_dataAr['JS_filename'][$nc]);
                     }
+                    array_push($layout_dataAr['JS_filename'], JQUERY_NO_CONFLICT);
 
                     $tmp = explode(';', $layoutObj->JS_filename);
                     $tmp = array_merge($tmp, $layout_dataAr['JS_filename']);
