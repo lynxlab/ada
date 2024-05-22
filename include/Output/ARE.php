@@ -269,6 +269,9 @@ class ARE
                     if ($nc = array_search(JQUERY_NO_CONFLICT, $layout_dataAr['JS_filename'])) {
                         unset($layout_dataAr['JS_filename'][$nc]);
                     }
+                    if (defined('JQUERY_MIGRATE')) {
+                        array_push($layout_dataAr['JS_filename'], JQUERY_MIGRATE);
+                    }
                     array_push($layout_dataAr['JS_filename'], JQUERY_NO_CONFLICT);
 
                     $tmp = explode(';', $layoutObj->JS_filename);
@@ -277,7 +280,13 @@ class ARE
                     $layoutObj->JS_filename = implode(';', $tmp);
                 } else {
                     // add jquery, semantic and jquery noconflict
-                    $layoutObj->JS_filename .= ';' . JQUERY . ';' . $JSToUse . ';' . JQUERY_NO_CONFLICT;
+                    $layoutObj->JS_filename .= ';' .
+                    join(';', [
+                        JQUERY,
+                        $JSToUse,
+                        defined('JQUERY_MIGRATE') ? JQUERY_MIGRATE : '',
+                        JQUERY_NO_CONFLICT,
+                    ]);
                 }
 
                 $tmp = explode(';', $layoutObj->CSS_filename);

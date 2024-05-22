@@ -342,9 +342,10 @@ define('DB_START', 4); //logging only the beginning of db operations
 
 define('ADA_SECONDS_IN_A_DAY', 86400);
 
-define('JQUERY', ROOT_DIR . '/js/include/jquery/jquery-1.11.1.min.js');
-define('JQUERY_UI', ROOT_DIR . '/js/include/jquery/ui/jquery-ui-1.11.1.custom.min.js');
-define('JQUERY_UI_CSS', ROOT_DIR . '/js/include/jquery/ui/jquery-ui-1.11.1.custom.min.css');
+define('JQUERY', ROOT_DIR . '/js/include/jquery/jquery-3.7.1.min.js');
+define('JQUERY_MIGRATE', ROOT_DIR . '/js/include/jquery/jquery-migrate-1.4.1.min.js');
+define('JQUERY_UI', ROOT_DIR . '/js/include/jquery/ui/1.13.3/jquery-ui.min.js');
+define('JQUERY_UI_CSS', ROOT_DIR . '/js/include/jquery/ui/1.13.3/jquery-ui.min.css');
 define('JQUERY_DATATABLE', ROOT_DIR . '/js/include/jquery/dataTables/datatables.min.js');
 define('SEMANTICUI_DATATABLE', ROOT_DIR . '/js/include/jquery/dataTables/DataTables-1.10.15/js/dataTables.semanticui.js');
 define('JQUERY_MASKEDINPUT', ROOT_DIR . '/js/include/jquery/maskedinput/jquery.maskedinput.min.js');
