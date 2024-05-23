@@ -352,7 +352,7 @@ $layout_dataAr['JS_filename'] = [
     SEMANTICUI_DATATABLE,
     JQUERY_DATATABLE_REDRAW,
     JQUERY_DATATABLE_DATE,
-    ROOT_DIR . '/js/include/jquery/jquery.blockUI.js',
+    JS_VENDOR_DIR . '/jquery-blockui/jquery.blockUI.js',
     ROOT_DIR . '/js/include/jquery/dataTables/selectSortPlugin.js',
     JQUERY_NO_CONFLICT,
 

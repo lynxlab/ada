@@ -4,8 +4,29 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "adfa00a44aa03ff501f4e3873853c239",
+    "content-hash": "2f1e3420aee95401a50edb837095fc44",
     "packages": [
+        {
+            "name": "bower-asset/jquery.maskedinput",
+            "version": "1.4.1",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:digitalBush/jquery.maskedinput.git",
+                "reference": "f19728180c604c1b0c62d6aa97af262c0c04d71c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/digitalBush/jquery.maskedinput/zipball/f19728180c604c1b0c62d6aa97af262c0c04d71c",
+                "reference": "f19728180c604c1b0c62d6aa97af262c0c04d71c"
+            },
+            "require": {
+                "bower-asset/jquery": ">=1.8.3"
+            },
+            "type": "bower-asset",
+            "license": [
+                "MIT"
+            ]
+        },
         {
             "name": "composer/installers",
             "version": "v2.2.0",
@@ -533,6 +554,107 @@
             "time": "2024-03-01T22:28:42+00:00"
         },
         {
+            "name": "npm-asset/datatables.net",
+            "version": "1.13.11",
+            "dist": {
+                "type": "tar",
+                "url": "https://registry.npmjs.org/datatables.net/-/datatables.net-1.13.11.tgz"
+            },
+            "require": {
+                "npm-asset/jquery": ">=1.8,<5.0"
+            },
+            "type": "npm-asset",
+            "license": [
+                "MIT"
+            ]
+        },
+        {
+            "name": "npm-asset/datatables.net-dt",
+            "version": "3.2.2",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:DataTables/Dist-DataTables-DataTables.git",
+                "reference": "6dc8eccf208cd4b5e5f450d9eb23674915c035e6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/DataTables/Dist-DataTables-DataTables/zipball/6dc8eccf208cd4b5e5f450d9eb23674915c035e6",
+                "reference": "6dc8eccf208cd4b5e5f450d9eb23674915c035e6"
+            },
+            "require": {
+                "npm-asset/datatables.net": ">=1.10.9",
+                "npm-asset/jquery": ">=1.7"
+            },
+            "type": "npm-asset",
+            "license": [
+                "MIT"
+            ]
+        },
+        {
+            "name": "npm-asset/datatables.net-rowgroup",
+            "version": "1.5.0",
+            "dist": {
+                "type": "tar",
+                "url": "https://registry.npmjs.org/datatables.net-rowgroup/-/datatables.net-rowgroup-1.5.0.tgz"
+            },
+            "require": {
+                "npm-asset/datatables.net": ">=1.11.0",
+                "npm-asset/jquery": ">=1.7"
+            },
+            "type": "npm-asset",
+            "license": [
+                "MIT"
+            ]
+        },
+        {
+            "name": "npm-asset/datatables.net-rowgroup-se",
+            "version": "1.5.0",
+            "dist": {
+                "type": "tar",
+                "url": "https://registry.npmjs.org/datatables.net-rowgroup-se/-/datatables.net-rowgroup-se-1.5.0.tgz"
+            },
+            "require": {
+                "npm-asset/datatables.net-rowgroup": "1.5.0",
+                "npm-asset/datatables.net-se": ">=1.11.0",
+                "npm-asset/jquery": ">=1.7"
+            },
+            "type": "npm-asset",
+            "license": [
+                "MIT"
+            ]
+        },
+        {
+            "name": "npm-asset/datatables.net-se",
+            "version": "1.13.6",
+            "dist": {
+                "type": "tar",
+                "url": "https://registry.npmjs.org/datatables.net-se/-/datatables.net-se-1.13.6.tgz"
+            },
+            "require": {
+                "npm-asset/datatables.net": ">=1.13.4",
+                "npm-asset/jquery": ">=1.7"
+            },
+            "type": "npm-asset",
+            "license": [
+                "MIT"
+            ]
+        },
+        {
+            "name": "npm-asset/jplayer",
+            "version": "2.9.2",
+            "dist": {
+                "type": "tar",
+                "url": "https://registry.npmjs.org/jplayer/-/jplayer-2.9.2.tgz"
+            },
+            "require": {
+                "npm-asset/jquery": ">1.7.0"
+            },
+            "type": "npm-asset",
+            "license": [
+                "MIT"
+            ]
+        },
+        {
             "name": "npm-asset/jquery",
             "version": "3.7.1",
             "dist": {
@@ -543,6 +665,21 @@
             "license": [
                 "MIT"
             ]
+        },
+        {
+            "name": "npm-asset/jquery-blockui",
+            "version": "2.70",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:coderlrv/blockui.git",
+                "reference": "316f6e5d76a33266970778e80507149d9ef6a02d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/coderlrv/blockui/zipball/316f6e5d76a33266970778e80507149d9ef6a02d",
+                "reference": "316f6e5d76a33266970778e80507149d9ef6a02d"
+            },
+            "type": "npm-asset"
         },
         {
             "name": "npm-asset/jquery-migrate",
@@ -570,6 +707,42 @@
             "license": [
                 "MIT"
             ]
+        },
+        {
+            "name": "npm-asset/nivo-slider",
+            "version": "3.2.0",
+            "dist": {
+                "type": "tar",
+                "url": "https://registry.npmjs.org/nivo-slider/-/nivo-slider-3.2.0.tgz"
+            },
+            "type": "npm-asset",
+            "license": [
+                "MIT"
+            ]
+        },
+        {
+            "name": "npm-asset/pekeupload",
+            "version": "2.0.0",
+            "dist": {
+                "type": "tar",
+                "url": "https://registry.npmjs.org/pekeupload/-/pekeupload-2.0.0.tgz"
+            },
+            "require": {
+                "npm-asset/jquery": ">=1.4.3"
+            },
+            "type": "npm-asset",
+            "license": [
+                "MIT"
+            ]
+        },
+        {
+            "name": "npm-asset/smartmenus",
+            "version": "1.2.1",
+            "dist": {
+                "type": "tar",
+                "url": "https://registry.npmjs.org/smartmenus/-/smartmenus-1.2.1.tgz"
+            },
+            "type": "npm-asset"
         },
         {
             "name": "oomphinc/composer-installers-extender",

@@ -553,7 +553,7 @@ if (!empty($courseInstanceObj->title)) {
 if ($userObj->tipo == AMA_TYPE_STUDENT && ($self_instruction)) {
     $user_type = $user_type . ' livello ' . $user_level;
     $user_level = '';
-    $layout_dataAr['JS_filename'] = [ROOT_DIR . '/js/include/menu_functions.js'];
+    // $layout_dataAr['JS_filename'] = [ROOT_DIR . '/js/include/menu_functions.js'];
 }
 
 /*

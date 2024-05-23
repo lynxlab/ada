@@ -31,50 +31,55 @@ $JS_i18n = [
  */
 ?>
 //main vars
-var HTTP_ROOT_DIR='<?php echo HTTP_ROOT_DIR;?>';
-var HTTP_UPLOAD_PATH='<?php echo HTTP_UPLOAD_PATH;?>';
-var ADA_DEFAULT_AVATAR='<?php echo ADA_DEFAULT_AVATAR; ?>';
+const HTTP_ROOT_DIR='<?php echo HTTP_ROOT_DIR;?>';
+const HTTP_UPLOAD_PATH='<?php echo HTTP_UPLOAD_PATH;?>';
+const ADA_DEFAULT_AVATAR='<?php echo ADA_DEFAULT_AVATAR; ?>';
 <?php if (!empty($_SESSION['sess_template_family'])) : ?>
-var ADA_TEMPLATE_FAMILY = '<?php echo $_SESSION['sess_template_family'];?>';
+const ADA_TEMPLATE_FAMILY = '<?php echo $_SESSION['sess_template_family'];?>';
 <?php else : ?>
-var ADA_TEMPLATE_FAMILY = '<?php echo ADA_TEMPLATE_FAMILY;?>';
+const ADA_TEMPLATE_FAMILY = '<?php echo ADA_TEMPLATE_FAMILY;?>';
 <?php endif; ?>
 <?php if (!empty($_SESSION['sess_user_language'])) : ?>
-var USER_LANGUAGE = '<?php echo $_SESSION['sess_user_language'];?>';
+const USER_LANGUAGE = '<?php echo $_SESSION['sess_user_language'];?>';
 <?php else : ?>
-var USER_LANGUAGE = null;
+const USER_LANGUAGE = null;
 <?php endif; ?>
 <?php if (defined('GCAL_HOLIDAYS_FEED')) : ?>
-var GCAL_HOLIDAYS_FEED = '<?php echo GCAL_HOLIDAYS_FEED; ?>';
+const GCAL_HOLIDAYS_FEED = '<?php echo GCAL_HOLIDAYS_FEED; ?>';
 <?php else :?>
-var GCAL_HOLIDAYS_FEED = '';
+const GCAL_HOLIDAYS_FEED = '';
 <?php endif; ?>
 <?php if (!empty($_SESSION['sess_id_user'])) : ?>
-var USER_ID = <?php echo $_SESSION['sess_id_user'];?>;
+const USER_ID = <?php echo $_SESSION['sess_id_user'];?>;
 <?php else : ?>
-var USER_ID = null;
+const USER_ID = null;
 <?php endif; ?>
 <?php if (isset($_SESSION['IE-version']) && $_SESSION['IE-version'] !== false) : ?>
-var IE_version = <?php echo $_SESSION['IE-version']; ?>;
+const IE_version = <?php echo $_SESSION['IE-version']; ?>;
 <?php else : ?>
-var IE_version = false;
+const IE_version = false;
+<?php endif; ?>
+<?php if (defined('JS_VENDOR_DIR')) : ?>
+const JS_VENDOR_HTTP = '<?php echo str_replace(ROOT_DIR, HTTP_ROOT_DIR, JS_VENDOR_DIR); ?>';
+<?php else : ?>
+const JS_VENDOR_HTTP = '';
 <?php endif; ?>
 
 
 //media type
-var MEDIA_IMAGE = '<?php echo _IMAGE;?>';
-var MEDIA_SOUND = '<?php echo _SOUND;?>';
-var MEDIA_VIDEO = '<?php echo _VIDEO;?>';
-var MEDIA_LINK = '<?php echo _LINK;?>';
-var MEDIA_DOC = '<?php echo _DOC;?>';
-var MEDIA_EXE = '<?php echo _EXE;?>';
-var MEDIA_INTERNAL_LINK = '<?php echo INTERNAL_LINK;?>';
-var MEDIA_POSSIBLE_TYPE = '<?php echo POSSIBLE_TYPE;?>';
-var MEDIA_PRONOUNCE = '<?php echo _PRONOUNCE;?>';
-var MEDIA_FINGER_SPELLING = '<?php echo _FINGER_SPELLING;?>';
-var MEDIA_LABIALE = '<?php echo _LABIALE;?>';
-var MEDIA_LIS = '<?php echo _LIS;?>';
-var MEDIA_MONTESSORI = '<?php echo _MONTESSORI;?>';
+const MEDIA_IMAGE = '<?php echo _IMAGE;?>';
+const MEDIA_SOUND = '<?php echo _SOUND;?>';
+const MEDIA_VIDEO = '<?php echo _VIDEO;?>';
+const MEDIA_LINK = '<?php echo _LINK;?>';
+const MEDIA_DOC = '<?php echo _DOC;?>';
+const MEDIA_EXE = '<?php echo _EXE;?>';
+const MEDIA_INTERNAL_LINK = '<?php echo INTERNAL_LINK;?>';
+const MEDIA_POSSIBLE_TYPE = '<?php echo POSSIBLE_TYPE;?>';
+const MEDIA_PRONOUNCE = '<?php echo _PRONOUNCE;?>';
+const MEDIA_FINGER_SPELLING = '<?php echo _FINGER_SPELLING;?>';
+const MEDIA_LABIALE = '<?php echo _LABIALE;?>';
+const MEDIA_LIS = '<?php echo _LIS;?>';
+const MEDIA_MONTESSORI = '<?php echo _MONTESSORI;?>';
 
 const load_js = function(data, callback) {
   if(typeof data === 'string') {
@@ -107,7 +112,7 @@ const load_js = function(data, callback) {
 //translations
 <?php
 if (!empty($JS_i18n)) {
-    echo "var i18n = Array();\n";
+    echo "const i18n = Array();\n";
     foreach ($JS_i18n as $k => $v) {
         echo "i18n['" . $k . "'] = '" . str_replace("'", "\'", $v) . "';\n";
     }

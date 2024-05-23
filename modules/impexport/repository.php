@@ -73,7 +73,8 @@ $layout_dataAr['JS_filename'] = [
     JQUERY_DATATABLE,
     SEMANTICUI_DATATABLE,
     JQUERY_DATATABLE_DATE,
-    ROOT_DIR . '/js/include/jquery/dataTables/dataTables.rowGroup.min.js',
+    JS_VENDOR_DIR . '/datatables.net-rowgroup/js/dataTables.rowGroup.js',
+    JS_VENDOR_DIR . '/datatables.net-rowgroup-se/js/rowGroup.semanticui.min.js',
     JQUERY_NO_CONFLICT,
 ];
 
@@ -84,7 +85,7 @@ $layout_dataAr['JS_filename'] = [
 $templateFamily = (isset($userObj->template_family) && strlen($userObj->template_family) > 0) ? $userObj->template_family : ADA_TEMPLATE_FAMILY;
 $layout_dataAr['CSS_filename'] = [
     JQUERY_UI_CSS,
-    ROOT_DIR . '/js/include/jquery/dataTables/rowGroup.semanticui.min.css',
+    JS_VENDOR_DIR . '/datatables.net-rowgroup-se/css/rowGroup.semanticui.min.css',
     SEMANTICUI_DATATABLE_CSS,
 ];
 

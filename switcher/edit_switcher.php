@@ -133,16 +133,15 @@ $layout_dataAr['JS_filename'] = [
     JQUERY,
     JQUERY_UI,
     JQUERY_MASKEDINPUT,
-    JQUERY_NO_CONFLICT,
-    ROOT_DIR . '/js/include/jquery/pekeUpload/pekeUpload.js',
+    JS_VENDOR_DIR . '/pekeupload/js/pekeUpload.min.js',
 ];
 
 $layout_dataAr['CSS_filename'] = [
     JQUERY_UI_CSS,
-    ROOT_DIR . '/js/include/jquery/pekeUpload/pekeUpload.css',
+    JS_VENDOR_DIR . '/pekeupload/css/custom.css',
 ];
 
-$maxFileSize = (int) (ADA_FILE_UPLOAD_MAX_FILESIZE / (1024 * 1024));
+$maxFileSize = (int) (ADA_FILE_UPLOAD_MAX_FILESIZE / 1024);
 
 $optionsAr['onload_func'] = 'initDoc(' . $maxFileSize . ',' . $userObj->getId() . ');';
 

@@ -146,13 +146,12 @@ $content_dataAr = [
 $layout_dataAr['JS_filename'] = [
         JQUERY,
         JQUERY_UI,
-        JQUERY_NO_CONFLICT,
         MODULES_IMPEXPORT_PATH . '/js/tree.jquery.js',
         MODULES_IMPEXPORT_PATH . '/js/export.js',
 ];
 $layout_dataAr['CSS_filename'] = [
         JQUERY_UI_CSS,
-        MODULES_IMPEXPORT_PATH . '/layout/pekeUpload.css',
+        JS_VENDOR_DIR . '/pekeupload/css/custom.css',
         MODULES_IMPEXPORT_PATH . '/layout/jqtree.css',
 ];
 

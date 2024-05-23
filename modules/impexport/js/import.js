@@ -23,7 +23,7 @@ function initDoc(maxSize) {
         btnText: "Sfoglia Files",
         // multi: false,
         maxSize: maxSize,
-        field: 'uploaded_file',
+        data: { uploaded_file : 'importfile' },
         url: 'upload.php'
     });
 
