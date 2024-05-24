@@ -367,12 +367,12 @@ $layout_dataAr['JS_filename'] = [
         JQUERY,
         JQUERY_UI,
         JQUERY_MASKEDINPUT,
-        JS_VENDOR_DIR . '/pekeupload/js/pekeUpload.min.js',
+        ROOT_DIR . '/js/include/jquery/pekeUpload/pekeUpload.js',
 ];
 
 $layout_dataAr['CSS_filename'] = [
         JQUERY_UI_CSS,
-        JS_VENDOR_DIR . '/pekeupload/css/custom.css',
+        ROOT_DIR . '/js/include/jquery/pekeUpload/pekeUpload.css',
 ];
 //if a course instance is self_instruction
 $self_instruction = DataValidator::checkInputValues('self_instruction', 'Value', INPUT_GET, null);
@@ -381,7 +381,7 @@ if ($userObj->tipo == AMA_TYPE_STUDENT && ($self_instruction)) {
 } else {
     $self = Utilities::whoami();
 }
-$maxFileSize = (int) (ADA_FILE_UPLOAD_MAX_FILESIZE / 1024);
+$maxFileSize = (int) (ADA_FILE_UPLOAD_MAX_FILESIZE / (1024 * 1024));
 if ($userObj->tipo == AMA_TYPE_STUDENT && ($self_instruction)) {
     $layout_dataAr['CSS_filename'][] =  ROOT_DIR . '/layout/' . $template_family . '/css/browsing/edit_user.css';
     $layout_dataAr['JS_filename'][] =  ROOT_DIR . '/js/browsing/edit_user.js';

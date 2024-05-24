@@ -42,8 +42,8 @@ function initDoc(maxSize,userId) {
 		btnText : "Sfoglia Files..",
 		// multi: false,
 		maxSize : maxSize * 1000,
-		data : { uploaded_file : 'avatarfile' },
-		url : HTTP_ROOT_DIR+'/js/include/jquery/pekeUpload/upload.php?userId='+userId+'&fieldUploadName='+FileNameField
+		field : 'uploaded_file',
+		url : HTTP_ROOT_DIR+'/services/ajax/upload.php?userId='+userId+'&fieldUploadName='+FileNameField
 	});
 
 	progressbar = $j("#progressbar");

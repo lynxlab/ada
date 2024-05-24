@@ -4,6 +4,7 @@
     "description": "ADA stand for Ambiente Digitale di Apprendimento. It is a knowledge and e-learning management system that allows you to create, administer and follow courses via the Internet or intranet with ease, flexibility and customization.",
     "require": {
         "php": ">=8.0",
+        "bower-asset/jquery-ui": "^1.12",
         "bower-asset/jquery.maskedinput": "^1.4",
         "dompdf/dompdf": "^2.0",
         "j7mbo/twitter-api-php": "^1.0",
@@ -21,7 +22,6 @@
         "npm-asset/jquery-migrate": "^3.4",
         "npm-asset/jquery-ui": "^1.13",
         "npm-asset/nivo-slider": "^3.2",
-        "npm-asset/pekeupload": "2.0.0",
         "npm-asset/smartmenus": "^1.2",
         "oomphinc/composer-installers-extender": "^2.0",
         "phpmailer/phpmailer": "^6.9",

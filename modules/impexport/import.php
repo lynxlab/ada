@@ -230,14 +230,14 @@ $content_dataAr = [
 $layout_dataAr['JS_filename'] = [
         JQUERY,
         JQUERY_UI,
-        JS_VENDOR_DIR . '/pekeupload/js/pekeUpload.min.js',
+        ROOT_DIR . '/js/include/jquery/pekeUpload/pekeUpload.js',
         MODULES_IMPEXPORT_PATH . '/js/tree.jquery.js',
         MODULES_IMPEXPORT_PATH . '/js/import.js',
 ];
 $layout_dataAr['CSS_filename'] = [
         JQUERY_UI_CSS,
-        JS_VENDOR_DIR . '/pekeupload/css/custom.css',
-        MODULES_IMPEXPORT_PATH . '/layout/jqtree.css',
+        ROOT_DIR . '/js/include/jquery/pekeUpload/pekeUpload.css',
+        MODULES_IMPEXPORT_PATH.'/layout/jqtree.css',
 ];
 
 $maxFileSize = (int) (ADA_FILE_UPLOAD_MAX_FILESIZE / (1024 * 1024));

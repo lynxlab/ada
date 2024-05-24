@@ -4,8 +4,29 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2f1e3420aee95401a50edb837095fc44",
+    "content-hash": "a3216f105174308cf9d1611d06478960",
     "packages": [
+        {
+            "name": "bower-asset/jquery-ui",
+            "version": "1.12.1",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:components/jqueryui.git",
+                "reference": "44ecf3794cc56b65954cc19737234a3119d036cc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/components/jqueryui/zipball/44ecf3794cc56b65954cc19737234a3119d036cc",
+                "reference": "44ecf3794cc56b65954cc19737234a3119d036cc"
+            },
+            "require": {
+                "bower-asset/jquery": ">=1.6"
+            },
+            "type": "bower-asset",
+            "license": [
+                "MIT"
+            ]
+        },
         {
             "name": "bower-asset/jquery.maskedinput",
             "version": "1.4.1",
@@ -625,14 +646,14 @@
         },
         {
             "name": "npm-asset/datatables.net-se",
-            "version": "1.13.6",
+            "version": "1.13.11",
             "dist": {
                 "type": "tar",
-                "url": "https://registry.npmjs.org/datatables.net-se/-/datatables.net-se-1.13.6.tgz"
+                "url": "https://registry.npmjs.org/datatables.net-se/-/datatables.net-se-1.13.11.tgz"
             },
             "require": {
-                "npm-asset/datatables.net": ">=1.13.4",
-                "npm-asset/jquery": ">=1.7"
+                "npm-asset/datatables.net": "1.13.11",
+                "npm-asset/jquery": ">=1.8,<5.0"
             },
             "type": "npm-asset",
             "license": [
@@ -714,21 +735,6 @@
             "dist": {
                 "type": "tar",
                 "url": "https://registry.npmjs.org/nivo-slider/-/nivo-slider-3.2.0.tgz"
-            },
-            "type": "npm-asset",
-            "license": [
-                "MIT"
-            ]
-        },
-        {
-            "name": "npm-asset/pekeupload",
-            "version": "2.0.0",
-            "dist": {
-                "type": "tar",
-                "url": "https://registry.npmjs.org/pekeupload/-/pekeupload-2.0.0.tgz"
-            },
-            "require": {
-                "npm-asset/jquery": ">=1.4.3"
             },
             "type": "npm-asset",
             "license": [
@@ -2788,16 +2794,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.10.0",
+            "version": "3.10.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "57e09801c2fbae2d257b8b75bebb3deeb7e9deb2"
+                "reference": "8f90f7a53ce271935282967f53d0894f8f1ff877"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/57e09801c2fbae2d257b8b75bebb3deeb7e9deb2",
-                "reference": "57e09801c2fbae2d257b8b75bebb3deeb7e9deb2",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/8f90f7a53ce271935282967f53d0894f8f1ff877",
+                "reference": "8f90f7a53ce271935282967f53d0894f8f1ff877",
                 "shasum": ""
             },
             "require": {
@@ -2864,7 +2870,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2024-05-20T08:11:32+00:00"
+            "time": "2024-05-22T21:24:41+00:00"
         },
         {
             "name": "symfony/console",
