@@ -154,7 +154,7 @@ class ImportHelper
     {
         //      $this->_importFile = $postDatas['importFileName'];
         if (isset($_SESSION['importHelper']['filename'])) {
-            $this->importFile = basename($_SESSION['importHelper']['filename']);
+            $this->importFile = $_SESSION['importHelper']['filename'];
         } else {
             $this->importFile = null;
         }
@@ -173,7 +173,7 @@ class ImportHelper
          * if the selected node does not contain the course separator character,
          * assume that the import is done on the node 0 of the course
          */
-        if (!str_contains($this->selectedNodeID, self::$courseSeparator)) {
+        if (!str_contains($this->selectedNodeID ?? '', self::$courseSeparator)) {
             $this->selectedNodeID .= self::$courseSeparator . '0';
         }
 
@@ -222,7 +222,11 @@ class ImportHelper
     {
         $count = 0;
 
-        $zipFileName = ADA_UPLOAD_PATH . $this->importFile;
+        $zipFileName = $this->importFile;
+        if (!str_starts_with($zipFileName, ADA_UPLOAD_PATH)) {
+            $zipFileName = ADA_UPLOAD_PATH . $zipFileName;
+        }
+
         $zip = new ZipArchive();
 
         if ($zip->open($zipFileName)) {
@@ -1076,7 +1080,7 @@ class ImportHelper
             $search = [];
             $replace = [];
 
-            foreach ($this->courseNodeIDMapping as $oldID => $newID) {
+            foreach ($this->courseNodeIDMapping ?? [] as $oldID => $newID) {
                 $oldID = str_replace($this->courseOldID . self::$courseSeparator, '', $oldID);
                 $newID = str_replace($courseNewID . self::$courseSeparator, '', $newID);
 

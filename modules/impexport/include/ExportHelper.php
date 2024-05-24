@@ -412,7 +412,7 @@ class ExportHelper
                 if ($name === 'id_nodo') {
                     $name = 'id_nodoTestEsportato';
                 }
-                $XMLTest->setAttribute($name, $value);
+                $XMLTest->setAttribute($name, $value ?? '');
             } elseif (in_array($name, self::$cDataElementNameForTest)) {
                 // substitute url path with specail tag
                 // $value = str_replace (parse_url(HTTP_ROOT_DIR, PHP_URL_PATH),'<http_path/>',$value);
@@ -425,7 +425,7 @@ class ExportHelper
 
                 $XMLTest->appendChild(self::buildCDATASection($domtree, $name, $value));
             } else {
-                $XMLTest->appendChild($domtree->createElement($name, $value));
+                $XMLTest->appendChild($domtree->createElement($name, $value ?? ''));
             }
         }
 
@@ -654,14 +654,14 @@ class ExportHelper
         if ($name === 'text') {
             // remove HTTP_ROOT_DIR so that it'll become
             // a relative path (no more, it will be substituted with other abs path)
-            $value = str_replace(HTTP_ROOT_DIR, '<http_root/>', $value);
+            $value = str_replace(HTTP_ROOT_DIR, '<http_root/>', $value ?? '');
             $value = str_replace((string) parse_url(HTTP_ROOT_DIR, PHP_URL_PATH), '<http_path/>', $value);
 
             $regExp = '/\/?(' . preg_quote($this->mediaFilesPath, '/') . ')(\d+)\/([^\"]+)/';
         } elseif ($name === 'icon') {
             // substitute ROOT_DIR with a special tag that will
             // be used to restore ROOT_DIR in the import environment
-            $value = str_replace(ROOT_DIR, '<root_dir/>', $value);
+            $value = str_replace(ROOT_DIR, '<root_dir/>', $value ?? '');
             $regExp = '/\/?(' . preg_quote($this->mediaFilesPath, '/') . ')(\d+)\/([^\"]+)/';
         }
 

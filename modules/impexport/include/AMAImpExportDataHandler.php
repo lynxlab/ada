@@ -52,7 +52,7 @@ class AMAImpExportDataHandler extends AMADataHandler
 
         $sql .= " ORDER BY ordine ASC";
 
-        $res_ar = & $this->getColPrepared($sql, $values);
+        $res_ar = $this->getColPrepared($sql, $values);
         if (AMADB::isError($res_ar)) {
             return new AMAError(AMA_ERR_GET);
         }

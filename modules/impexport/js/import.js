@@ -23,7 +23,7 @@ function initDoc(maxSize) {
         btnText: "Sfoglia Files",
         // multi: false,
         maxSize: maxSize,
-        data: { uploaded_file : 'importfile' },
+        field : 'uploaded_file',
         url: 'upload.php'
     });
 
@@ -275,7 +275,7 @@ function goToImportSelectNode() {
                 var rootNode = tree.tree('getNodeById', courseID + "_0");
                 tree.tree('selectNode', rootNode);
                 tree.slideDown('slow', function () {
-                    $j('#courseTreeLoading').hide(function () { $j('.importSN2buttons').effect('fade'); });
+                    $j('#courseTreeLoading').hide(function () { $j('.importSN2buttons').show(); });
 
                 });
             });

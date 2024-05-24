@@ -57,7 +57,7 @@ function goToExportStepTwo(visibleStep) {
                 var rootNode = tree.tree('getNodeById', courseID + "_0");
                 tree.tree('selectNode', rootNode);
                 tree.slideDown('slow', function () {
-                    $j('#courseTreeLoading').hide(function () { $j('.step2buttons').effect('fade'); });
+                    $j('#courseTreeLoading').hide(function () { $j('.step2buttons').show(); });
 
                 });
             });
