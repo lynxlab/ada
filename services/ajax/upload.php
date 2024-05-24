@@ -18,7 +18,7 @@ use Lynxlab\ADA\Main\Upload\FileUploader;
 /**
  * Base config file
  */
-require_once(realpath(__DIR__) . '/../../../../config_path.inc.php');
+require_once(realpath(__DIR__) . '/../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -58,4 +58,5 @@ if ($fileUploader->upload(true) == false) {
     $response['success'] = 1;
 }
 
-echo json_encode($response);
+echo $response['success'] == 0 ? $response['error'] : $response['success'];
+die();
