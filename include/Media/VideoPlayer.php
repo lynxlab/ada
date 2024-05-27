@@ -103,8 +103,8 @@ class VideoPlayer
 							</object>';
                         break;
 
-                    case 'flv':
-                    case 'avi':
+                    case 'ogg':
+                    case 'mpg':
                     case 'mp4':
                         if (defined('USE_MEDIA_CLASS') && class_exists(USE_MEDIA_CLASS, false)) {
                             $className = USE_MEDIA_CLASS;
@@ -112,36 +112,11 @@ class VideoPlayer
                         } else {
                             $file_name = Media::getPathForFile($file_name);
                         }
-
-                        /**
-                         * old code to be used for flowplayer
-                         */
-                        // if (!$_SESSION['mobile-detect']->isMobile()) $playerAttr = ' data-engine="flash" ';
-                        // else $playerAttr = '';
-
-                        if (!$id3Error && $fileInfo['fileformat'] == 'mp4') {
-                            /**
-                             * old code to be used for flowplayer
-                             */
-                            // $exploded_video = '<div class="ADAflowplayer color-light no-background" style="width:'.$width.'px; height:'.$height.'px;"'.
-                            //      $playerAttr.'data-swf="'.HTTP_ROOT_DIR.'/external/mediaplayer/flowplayer-5.4.3/flowplayer.swf" data-embed="false">
-                            //      <video>
-                            //          <source src="'.$http_file_path.$file_name.'" type="video/mp4" />
-                            //      </video></div>';
-                            $exploded_video = MediaViewingHtmlLib::jplayerMp4Viewer($http_file_path . $file_name, $file_name, $width, $height);
-                        } else {
-                            $exploded_video = '
-							<object id="flowplayer" width="' . $width . '" height="' . $height . '" data="' . HTTP_ROOT_DIR . '/external/mediaplayer/flowplayer/flowplayer.swf"	type="application/x-shockwave-flash">
-							<param name="movie" value="' . HTTP_ROOT_DIR . '/external/mediaplayer/flowplayer/flowplayer.swf" />
-							<param name="allowfullscreen" value="true" />
-							<param name="flashvars" value="config={\'clip\':{\'url\':\'' . $http_file_path . $file_name . '\', \'autoPlay\':false, \'autoBuffering\':true}}" />
-						</object>';
-                        }
+                        $exploded_video = MediaViewingHtmlLib::jplayerMp4Viewer($http_file_path . $file_name, $file_name, $width, $height);
                         break;
 
-                    case 'mpg':
                     default:
-                        $exploded_video = '<embed src="' . $http_file_path . $file_name . '" controls="smallconsole" width="' . $width . '" height="' . $height . '" loop="false" autostart="false">';
+                        $exploded_video = translateFN("Nessun riproduttore video per"). " " . $http_file_path . $file_name;
                         break;
                 }
                 break;

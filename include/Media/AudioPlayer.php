@@ -51,20 +51,7 @@ class AudioPlayer
             case 1:
             case 2:
             default:
-                if ($fileInfo['fileformat'] == 'mp3') { // use jplayer if mp3
-                    $exploded_audio = MediaViewingHtmlLib::jplayerMp3Viewer($http_file_path . $file_name, $audioTitle);
-                } else {
-                    $url = $http_root_dir . "/external/mediaplayer/1pixelout/1pixelout.swf";
-                    $exploded_audio = '
-					<object type="application/x-shockwave-flash" data="' . $url . '" width="290" height="24" >
-						<param name="movie" value="' . $url . '" />
-						<param name="wmode" value="transparent" />
-						<param name="menu" value="false" />
-						<param name="quality" value="high" />
-						<param name="FlashVars" value="soundFile=' . $http_file_path . $file_name . '" />
-						<embed src="' . $url . '" flashvars="soundFile=' . $http_file_path . $file_name . '" width="290" height="24" />
-					</object>';
-                }
+                $exploded_audio = MediaViewingHtmlLib::jplayerMp3Viewer($http_file_path . $file_name, $audioTitle);
                 break;
         }
         return $exploded_audio;

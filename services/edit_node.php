@@ -391,7 +391,6 @@ switch ($op) {
         }
 
         $layout_dataAr['CSS_filename'][] = JQUERY_UI_CSS;
-        $layout_dataAr['CSS_filename'][] = ROOT_DIR . '/external/mediaplayer/flowplayer-5.4.3/skin/minimalist.css';
         $layout_dataAr['CSS_filename'][] = JQUERY_NIVOSLIDER_CSS;
         $layout_dataAr['CSS_filename'][] = ROOT_DIR . '/js/include/jquery/nivo-slider/themes/default/default.css';
         $layout_dataAr['CSS_filename'][] = JQUERY_JPLAYER_CSS;
@@ -402,7 +401,6 @@ switch ($op) {
                 JQUERY_NIVOSLIDER,
                 JQUERY_JPLAYER,
                 JQUERY_NO_CONFLICT,
-                ROOT_DIR . '/external/mediaplayer/flowplayer-5.4.3/flowplayer.js',
                 ROOT_DIR . '/js/browsing/view.js',
         ]);
 

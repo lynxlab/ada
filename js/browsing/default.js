@@ -1,7 +1,6 @@
 load_js([
 	'../js/include/basic.js',
 	'../js/include/menu_functions.js',
-	'../external/mediaplayer/flowplayer/flowplayer.min.js'
 ]);
 
 function toggleVisibilityByDiv(className, mode)
@@ -81,8 +80,6 @@ function openInRightPanel(httpFilePath, fileExtension) {
     	.done(function (htmlcode){
     		if (htmlcode && htmlcode.length>0) {
     			$j('#flvplayer').html(htmlcode);
-    			if ($j("#flvplayer .ADAflowplayer").length > 0)
-    				$j("#flvplayer .ADAflowplayer").flowplayer();
     		}
     	})
     	.always(function() { $j(rightPanel + ' .loader-wrapper .loader').toggleClass('active').hide(); }) ;

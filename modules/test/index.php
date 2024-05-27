@@ -209,11 +209,9 @@ $layout_dataAr['JS_filename'] = [
     MODULES_TEST_PATH . '/js/variation.js',
     MODULES_TEST_PATH . '/js/erasehighlight.js',
     ROOT_DIR . '/js/browsing/virtual_keyboard.js',
-    ROOT_DIR . '/external/mediaplayer/flowplayer-5.4.3/flowplayer.js',
 ];
 $layout_dataAr['CSS_filename'] = [
     JQUERY_UI_CSS,
-    ROOT_DIR . '/external/mediaplayer/flowplayer-5.4.3/skin/minimalist.css',
 ];
 
 /**

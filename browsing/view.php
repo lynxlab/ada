@@ -584,7 +584,7 @@ switch ($op) {
     default:
         // Sends data to the rendering engine
 
-        // giorgio 06/set/2013, jquery and flowplayer inclusion
+        // giorgio 06/set/2013, jquery inclusion
 
         $layout_dataAR['JS_filename'] = [
             JQUERY,
@@ -592,7 +592,6 @@ switch ($op) {
             JQUERY_NIVOSLIDER,
             JQUERY_JPLAYER,
             JQUERY_NO_CONFLICT,
-            ROOT_DIR . '/external/mediaplayer/flowplayer-5.4.3/flowplayer.js',
         ];
         if ($userObj->tipo == AMA_TYPE_STUDENT && ($self_instruction || $nodeObj->isForkedPaths)) {
             //$self='viewSelfInstruction';
@@ -616,7 +615,6 @@ switch ($op) {
             $layout_dataAR['CSS_filename'] = [];
         }
 
-        array_push($layout_dataAR['CSS_filename'], ROOT_DIR . '/external/mediaplayer/flowplayer-5.4.3/skin/minimalist.css');
         array_push($layout_dataAR['CSS_filename'], JQUERY_NIVOSLIDER_CSS);
         array_push($layout_dataAR['CSS_filename'], ROOT_DIR . '/js/include/jquery/nivo-slider/themes/default/default.css');
         array_push($layout_dataAR['CSS_filename'], JQUERY_JPLAYER_CSS);
