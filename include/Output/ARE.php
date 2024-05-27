@@ -253,10 +253,15 @@ class ARE
                         $layout_dataAr['JS_filename'] = array_merge([JQUERY], $layout_dataAr['JS_filename']);
                     }
 
-                    // if $JSToUse is not included in the script itself, add it just after JQUERY
+                    // if $JSToUse is not included in the script itself, add it just after JQUERY_UI or JQUERY
                     if (!in_array($JSToUse, $layout_dataAr['JS_filename'])) {
-                        // find the key for JQUERY
-                        $key = array_search(JQUERY, $layout_dataAr['JS_filename']);
+                        // find the key for JQUERY_UI
+                        $key = array_search(JQUERY_UI, $layout_dataAr['JS_filename']);
+                        if ($key === false) {
+                            // if not found, find the key for JQUERY
+                            $key = array_search(JQUERY, $layout_dataAr['JS_filename']);
+                        }
+                        $key = $key === false ? 0 : $key;
                         // add $JSToUse after JQUERY slicing the original array
                         $layout_dataAr['JS_filename'] = array_merge(
                             array_slice($layout_dataAr['JS_filename'], 0, $key + 1),
