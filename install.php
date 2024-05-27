@@ -1,6 +1,8 @@
 <?php
 
 use Composer\Console\Application;
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADAGuest;
 use Lynxlab\ADA\Main\Utilities;
@@ -282,11 +284,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if (array_key_exists('HTTP_ROOT_DIR', $postData)) {
         $postData['HTTP_ROOT_DIR'] = rtrim($postData['HTTP_ROOT_DIR'], '/') . '/';
     }
-    $disabledModules = [];
+    $disabledModules = ['debugbar'];
     $modulesSQL = [];
 
     if (array_key_exists('MODULES_DISABLE', $postData)) {
-        $disabledModules = explode(',', $postData['MODULES_DISABLE']);
+        $disabledModules = array_merge($disabledModules, explode(',', $postData['MODULES_DISABLE']));
         $disabledModules = array_map('trim', $disabledModules);
     }
 
@@ -684,7 +686,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $self = Utilities::whoami();
     $modulesAv = [];
     $modulesDIS = ['secretquestion', 'code_man'];
-    $modulesHidden = ['event-dispatcher', 'gdpr', 'login', 'test'];
+    $modulesHidden = ['event-dispatcher', 'gdpr', 'login', 'test', 'debugbar'];
     if (is_dir(MODULES_DIR)) {
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(MODULES_DIR . DIRECTORY_SEPARATOR));
         $regIter = new RegexIterator($iterator, '/^[a-z:|\/].+[\/|\\\]config\_DEFAULT\.inc\.php$/i', RecursiveRegexIterator::GET_MATCH);
@@ -704,6 +706,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     sort($modulesDIS);
     $modulesDIS = array_intersect($modulesDIS, $modulesAv);
 
+    $modMessage = CDOMElement::create('div','class:ui visible warning small message');
+    $modMessage->addChild(new CText(translateFN("ATTENZIONE: se si sta installando il modulo 'slideimport' leggere il suo README per informazioni sull'uso di ImageMagick e Ghostscript.")));
+
     /**
      * Sends data to the rendering engine
      */
@@ -718,6 +723,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         [
             'modsavailable' => count($modulesAv) > 0 ? translateFN('Moduli disabilitabili') . ': ' . implode(', ', $modulesAv) : null,
             'modsdisabled' => implode(', ', $modulesDIS),
+            'modmessage' => $modMessage->getHtml(),
         ],
         null,
         [
