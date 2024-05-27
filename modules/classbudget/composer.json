@@ -1,0 +1,20 @@
+{
+    "name": "lynxlab/ada-module-classbudget",
+    "description": "This is the ada classbudget module.",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Giorgio Consorti",
+            "email": "g.consorti@lynxlab.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Lynxlab\\ADA\\Module\\Classbudget\\": [
+                "include/",
+                "include/form",
+                "include/management"
+            ]
+        }
+    }
+}
