@@ -13,6 +13,7 @@ $finder = (new PhpCsFixer\Finder())
     ]);
 
 return (new PhpCsFixer\Config())
+    ->setParallelConfig(PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect())
     ->setRules([
         '@PSR12' => true,
         'ordered_imports' => [
