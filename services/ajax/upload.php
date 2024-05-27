@@ -3,12 +3,12 @@
 /**
  * EXPORT TEST.
  *
- * @package		export/import course
- * @author			giorgio <g.consorti@lynxlab.com>
- * @copyright		Copyright (c) 2009, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link			impexport
- * @version		0.1
+ * @package     export/import course
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2009, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @link        impexport
+ * @version     0.1
  */
 
 use Lynxlab\ADA\Main\DataValidator;
