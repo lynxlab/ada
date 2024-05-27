@@ -869,7 +869,7 @@ class NodeEditingViewer
             $div_media_properties = CDOMElement::create('div', 'id:jsid_div_media_properties');
         }
         if ($flags & EDITOR_UPLOAD_FILE) {
-            $div_error_file_upload = CDOMElement::create('div', 'id:jserror_file_upload');
+            $div_error_file_upload = CDOMElement::create('div', 'id:jserror_file_upload,class:ui error message');
 
             $form = CDOMElement::create('form', "id:uploadfile, name:uploadfileform, enctype:multipart/form-data,
       action:$php_file_uploader, method:post");
