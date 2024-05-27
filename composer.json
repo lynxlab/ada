@@ -6,6 +6,7 @@
         "php": ">=8.0",
         "bower-asset/jquery-ui": "^1.12",
         "bower-asset/jquery.maskedinput": "^1.4",
+        "cweagans/composer-patches": "^1.7",
         "dompdf/dompdf": "^2.0",
         "j7mbo/twitter-api-php": "^1.0",
         "james-heinrich/getid3": "^1.9",
@@ -88,7 +89,8 @@
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "composer/installers": true,
-            "oomphinc/composer-installers-extender": true
+            "oomphinc/composer-installers-extender": true,
+            "cweagans/composer-patches": true
         }
     },
     "replace": {
@@ -104,6 +106,11 @@
                 "type:npm-asset",
                 "type:bower-asset"
             ]
+        },
+        "patches" : {
+            "npm-asset/datatables.net-se": {
+                "datatables patch for semantic-ui" : "patches/dataTables.semanticui.js.patch"
+            }
         }
     },
     "scripts": {
