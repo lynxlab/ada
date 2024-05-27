@@ -2781,7 +2781,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         if (strlen($id_corso) <= 0) {
             return $this->courseInstanceFindList($field_list_ar, "data_inizio is not null and durata is not null");
         } else {
-            return $this->courseInstanceFindList($field_list_ar, "id__corso=$id_corso AND data_inizio is not null and durata is not null");
+            return $this->courseInstanceFindList($field_list_ar, "id_corso=$id_corso AND data_inizio is not null and durata is not null");
         }
     }
 

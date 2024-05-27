@@ -168,7 +168,7 @@ class NodeEditing
                         if (AMADataHandler::isError($external_resource)) {
                             return $external_resource;
                         }
-                        $result_ext = $dh->addRisorseNodi("'$edited_node_id'", $external_resource);
+                        $result_ext = $dh->addRisorseNodi($edited_node_id, $external_resource);
                         if (AMADataHandler::isError($result_ext)) {
                             return $result_ext;
                         }
