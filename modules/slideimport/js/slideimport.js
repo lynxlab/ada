@@ -108,11 +108,11 @@ function initDoc(userId, userType, preselectedCourseID, uploadSessionVar) {
                                         displayPreview();
                                     });
                                 } else {
-                                    $j.when(showHideDiv(JSONObj.title, JSONObj.msg, false)).then(function () {
-                                        $j('#importLoader').fadeOut('slow', function () {
-                                            $j('#slideImportDZ').fadeIn();
-                                        })
+                                    $j('#importLoader').fadeOut('fast', function () {
                                         that.removeFile(file);
+                                        $j.when(showHideDiv(JSONObj.title, JSONObj.msg, false, 5000)).then(function () {
+                                            $j('#slideImportContainer').fadeIn('fast');
+                                        });
                                     });
                                 }
                             } else {

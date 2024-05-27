@@ -67,17 +67,22 @@ if (isset($_SESSION[$sessionVar]['filename']) && strlen($_SESSION[$sessionVar]['
     $data = translateFN('Nessun file da elaborare');
 }
 
-if (!$error) {
-    $data = getFileData($_SESSION[$sessionVar]['filename']);
-    $retArray['data'] = $data;
-    $retArray['status'] = 'OK';
-    unset($retArray['title']);
-} else {
-    unlink($_SESSION[$sessionVar]['filename']);
-    if (strlen($data) <= 0) {
-        $data = translateFN('Errore sconosciuto');
+try {
+    if (!$error) {
+        $data = getFileData($_SESSION[$sessionVar]['filename']);
+        $retArray['data'] = $data;
+        $retArray['status'] = 'OK';
+        unset($retArray['title']);
+    } else {
+        unlink($_SESSION[$sessionVar]['filename']);
+        if (strlen($data) <= 0) {
+            $data = translateFN('Errore sconosciuto');
+        }
+        $retArray['msg'] = $data;
     }
-    $retArray['msg'] = $data;
+} catch (\Exception $e) {
+    $retArray['title'] = get_class($e);
+    $retArray['msg'] = $e->getMessage();
 }
 
 header('Content-Type: application/json');
