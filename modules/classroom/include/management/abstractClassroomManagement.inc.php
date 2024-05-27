@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Base Management Class
  *
@@ -10,6 +11,8 @@
  * @version			0.1
  */
 
+namespace Lynxlab\ADA\Module\Classroom\Management;
+
 /**
  * base class for module
  *
@@ -19,15 +22,16 @@
 abstract class abstractClassRoomManagement
 {
 
-	/**
+    /**
      * name constructor
      */
-    public function __construct($data=array()) {
-    	if (is_array($data) && count($data)>0) {
-    		$this->_fillFromArray($data);
-    	}
+    public function __construct($data = array())
+    {
+        if (is_array($data) && count($data) > 0) {
+            $this->_fillFromArray($data);
+        }
     }
-    
+
     /**
      * build, manage and display the module's pages
      *
@@ -35,30 +39,33 @@ abstract class abstractClassRoomManagement
      *
      * @access public
      */
-    public function run($action=null) {}
-    		
-	/**
-	 * fills object properties from an array
-	 * 
-	 * @param array $data assoc array to get values from
-	 * 
-	 * @access private
-	 */
-	protected function _fillFromArray($data) {
-		foreach ($data as $key=>$val) {
-			if (property_exists($this, $key)) $this->{$key} = trim($val);
-		}
-	}
-	
-	/**
-	 * returns object properties as an array
-	 * 
-	 * @return array
-	 * 
-	 * @access public
-	 */
-	public function toArray() {
-		return (array) $this;
-	}
-	
+    public function run($action = null)
+    {
+    }
+
+    /**
+     * fills object properties from an array
+     *
+     * @param array $data assoc array to get values from
+     *
+     * @access private
+     */
+    protected function _fillFromArray($data)
+    {
+        foreach ($data as $key => $val) {
+            if (property_exists($this, $key)) $this->{$key} = trim($val);
+        }
+    }
+
+    /**
+     * returns object properties as an array
+     *
+     * @return array
+     *
+     * @access public
+     */
+    public function toArray()
+    {
+        return (array) $this;
+    }
 } // class ends here

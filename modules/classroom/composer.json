@@ -1,0 +1,19 @@
+{
+    "name": "lynxlab/ada-module-classroom",
+    "description": "This is the ada classroom module.",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Giorgio Consorti",
+            "email": "g.consorti@lynxlab.com"
+        }
+    ],
+    "autoload" : {
+        "psr-4" : {
+            "Lynxlab\\ADA\\Module\\Classroom\\" : ["include/"]
+	    },
+        "files": [
+            "include/functions.php"
+        ]
+    }
+}

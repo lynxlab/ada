@@ -10,6 +10,10 @@
  * @version			0.1
  */
 
+ namespace Lynxlab\ADA\Module\Classroom;
+
+use Lynxlab\ADA\Main\AMA\MultiPort;
+
 /**
  * class for managing Classroom
  *

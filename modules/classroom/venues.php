@@ -10,6 +10,19 @@
  * @version			0.1
  */
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
+use Lynxlab\ADA\Module\Classroom\AMAClassroomDataHandler;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 ini_set('display_errors', '0'); error_reporting(E_ALL);
 /**
  * Base config file
@@ -36,12 +49,11 @@ $neededObjAr = array(
  * Performs basic controls before entering this module
 */
 require_once(ROOT_DIR.'/include/module_init.inc.php');
-require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS
 
-$self = whoami();
+$self = Utilities::whoami();
 
 $GLOBALS['dh'] = AMAClassroomDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
@@ -62,7 +74,7 @@ $venuesIndexDIV->addChild(CDOMElement::create('div','class:clearfix'));
 $venuesData = array();
 $venuesList = $GLOBALS['dh']->classroom_getAllVenues();
 
-if (!AMA_DB::isError($venuesList)) {
+if (!AMADB::isError($venuesList)) {
 
 	$labels = array (translateFN('nome'), translateFN('Nominativo di contatto'),
 					 translateFN('Telefono del contatto'), translateFN('E-Mail del contatto'),
@@ -105,7 +117,7 @@ if (!AMA_DB::isError($venuesList)) {
 			$linksHtml = $linksul->getHtml();
 		} else $linksHtml = '';
 
-		if (DataValidator::validate_email($venueAr['contact_email'])) {
+		if (DataValidator::validateEmail($venueAr['contact_email'])) {
 			$emailHref = CDOMElement::create('a');
 			$emailHref->setAttribute('href', 'mailto:'.$venueAr['contact_email']);
 			$emailHref->addChild(new CText($venueAr['contact_email']));
@@ -153,7 +165,6 @@ $layout_dataAr['JS_filename'] = array(
 		SEMANTICUI_DATATABLE,
 		JQUERY_DATATABLE_DATE,
 		JQUERY_UI,
-		JQUERY_NO_CONFLICT
 );
 
 $layout_dataAr['CSS_filename'] = array(
@@ -165,4 +176,3 @@ $layout_dataAr['CSS_filename'] = array(
 $optionsAr['onload_func'] = 'initDoc();';
 
 ARE::render($layout_dataAr, $content_dataAr, NULL, $optionsAr);
-?>
