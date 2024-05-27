@@ -3,12 +3,12 @@
 /**
  * CLASSROOM MODULE.
  *
- * @package			classroom module
- * @author			Giorgio Consorti <g.consorti@lynxlab.com>
- * @copyright		Copyright (c) 2014, Lynx s.r.l.
- * @license			http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link			classroom
- * @version			0.1
+ * @package         classroom module
+ * @author          Giorgio Consorti <g.consorti@lynxlab.com>
+ * @copyright       Copyright (c) 2014, Lynx s.r.l.
+ * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @link            classroom
+ * @version         0.1
  */
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
@@ -28,23 +28,23 @@ error_reporting(E_ALL);
 /**
  * Base config file
  */
-require_once(realpath(dirname(__FILE__)) . '/../../config_path.inc.php');
+require_once(realpath(__DIR__) . '/../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+$allowedUsersAr = [AMA_TYPE_SWITCHER];
 
 /**
  * Get needed objects
  */
-$neededObjAr = array(
-    AMA_TYPE_SWITCHER => array('layout')
-);
+$neededObjAr = [
+    AMA_TYPE_SWITCHER => ['layout'],
+];
 
 /**
  * Performs basic controls before entering this module
@@ -70,19 +70,18 @@ $newButton->addChild(new CText(translateFN('Nuova Aula')));
 $classroomsIndexDIV->addChild($newButton);
 $classroomsIndexDIV->addChild(CDOMElement::create('div', 'class:clearfix'));
 
-$classRoomsData = array();
-$classroomsList = $GLOBALS['dh']->classroom_getAllClassrooms();
+$classRoomsData = [];
+$classroomsList = $GLOBALS['dh']->classroomGetAllClassrooms();
 
 if (!AMADB::isError($classroomsList)) {
-
-    $labels = array(
+    $labels = [
         translateFN('nome'), translateFN('Luogo'),
         translateFN('Posti'), translateFN('Computer'),
-        translateFN('Comodità'), translateFN('azioni')
-    );
+        translateFN('Comodità'), translateFN('azioni'),
+    ];
 
     foreach ($classroomsList as $i => $classroomAr) {
-        $links = array();
+        $links = [];
         $linksHtml = "";
 
         for ($j = 0; $j < 2; $j++) {
@@ -114,9 +113,13 @@ if (!AMADB::isError($classroomsList)) {
 
         if (!empty($links)) {
             $linksul = CDOMElement::create('ul', 'class:ulactions');
-            foreach ($links as $link) $linksul->addChild($link);
+            foreach ($links as $link) {
+                $linksul->addChild($link);
+            }
             $linksHtml = $linksul->getHtml();
-        } else $linksHtml = '';
+        } else {
+            $linksHtml = '';
+        }
 
         $commonIconClass = 'tooltip';
 
@@ -139,21 +142,23 @@ if (!AMADB::isError($classroomsList)) {
 
         if (isset($facilities) && count($facilities) > 0) {
             $spanFacilities = CDOMElement::create('span', 'class:facilities');
-            foreach ($facilities as $facility) $spanFacilities->addChild($facility);
+            foreach ($facilities as $facility) {
+                $spanFacilities->addChild($facility);
+            }
             unset($facilities);
         } else {
             unset($spanFacilities);
         }
 
 
-        $classroomsData[$i] = array(
+        $classroomsData[$i] = [
             $labels[0] => $classroomAr['name'],
             $labels[1] => $classroomAr['venue_name'],
             $labels[2] => $classroomAr['seats'],
             $labels[3] => $classroomAr['computers'],
             $labels[4] => (isset($spanFacilities)) ? $spanFacilities->getHtml() : 'N/A',
-            $labels[5] => $linksHtml
-        );
+            $labels[5] => $linksHtml,
+        ];
     }
 
     $classroomsTable = BaseHtmlLib::tableElement('id:completeClassroomsList', $labels, $classroomsData, '', translateFN('Elenco delle aule'));
@@ -170,7 +175,7 @@ if (!AMADB::isError($classroomsList)) {
 
 $data = $classroomsIndexDIV->getHtml();
 
-$content_dataAr = array(
+$content_dataAr = [
     'user_name' => $user_name,
     'user_type' => $user_type,
     'messages' => $user_messages->getHtml(),
@@ -178,23 +183,23 @@ $content_dataAr = array(
     'status' => $status,
     'title' => translateFN('classroom'),
     'data' => $data,
-);
+];
 
-$layout_dataAr['JS_filename'] = array(
+$layout_dataAr['JS_filename'] = [
     JQUERY,
     JQUERY_DATATABLE,
     SEMANTICUI_DATATABLE,
     JQUERY_DATATABLE_DATE,
     JQUERY_UI,
-    JQUERY_NO_CONFLICT
-);
+    JQUERY_NO_CONFLICT,
+];
 
-$layout_dataAr['CSS_filename'] = array(
+$layout_dataAr['CSS_filename'] = [
     JQUERY_UI_CSS,
     SEMANTICUI_DATATABLE_CSS,
-    MODULES_CLASSROOM_PATH . '/layout/tooltips.css'
-);
+    MODULES_CLASSROOM_PATH . '/layout/tooltips.css',
+];
 
 $optionsAr['onload_func'] = 'initDoc();';
 
-ARE::render($layout_dataAr, $content_dataAr, NULL, $optionsAr);
+ARE::render($layout_dataAr, $content_dataAr, null, $optionsAr);

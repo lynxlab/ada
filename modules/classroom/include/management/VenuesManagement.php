@@ -3,17 +3,17 @@
 /**
  * Venues Management Class
  *
- * @package			classroom module
- * @author			Giorgio Consorti <g.consorti@lynxlab.com>
- * @copyright		Copyright (c) 2014, Lynx s.r.l.
- * @license			http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link			classroom
- * @version			0.1
+ * @package         classroom module
+ * @author          Giorgio Consorti <g.consorti@lynxlab.com>
+ * @copyright       Copyright (c) 2014, Lynx s.r.l.
+ * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @link            classroom
+ * @version         0.1
  */
 
-namespace Lynxlab\ADA\Module\Classroom\Management;
+namespace Lynxlab\ADA\Module\Classroom;
 
-use Lynxlab\ADA\Module\Classroom\Form\FormVenues;
+use Lynxlab\ADA\Module\Classroom\FormVenues;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -23,7 +23,7 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
  * @author giorgio
  */
 
-class venuesManagement extends abstractClassroomManagement
+class VenuesManagement extends AbstractClassRoomManagement
 {
     public $id_venue;
     public $name;
@@ -43,11 +43,11 @@ class venuesManagement extends abstractClassroomManagement
      */
     public function run($action = null)
     {
-        /* @var $html	string holds html code to be retuned */
+        /* @var $html   string holds html code to be retuned */
         $htmlObj = null;
-        /* @var $path	string  path var to render in the help message */
+        /* @var $path   string  path var to render in the help message */
         $help = translateFN('Da qui puoi inserire o modifcare un logo dove ci sono le aule in cui si terranno i corsi');
-        /* @var $status	string status var to render in the breadcrumbs */
+        /* @var $status string status var to render in the breadcrumbs */
         $title = translateFN('Luoghi');
 
         switch ($action) {
@@ -56,6 +56,7 @@ class venuesManagement extends abstractClassroomManagement
                  * edit action, display the form with passed data
                  */
                 $htmlObj = new FormVenues($this->toArray());
+                // no break
             default:
                 /**
                  * return an empty page as default action
@@ -63,10 +64,10 @@ class venuesManagement extends abstractClassroomManagement
                 break;
         }
 
-        return array(
+        return [
             'htmlObj'   => $htmlObj,
             'help'      => $help,
             'title'     => $title,
-        );
+        ];
     }
-} // class ends here
+}

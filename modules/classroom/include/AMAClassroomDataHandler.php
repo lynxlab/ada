@@ -3,13 +3,14 @@
 /**
  * CLASSROOM MODULE.
  *
- * @package			classroom module
- * @author			Giorgio Consorti <g.consorti@lynxlab.com>
- * @copyright		Copyright (c) 2014, Lynx s.r.l.
- * @license			http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link			classroom
- * @version			0.1
+ * @package         classroom module
+ * @author          Giorgio Consorti <g.consorti@lynxlab.com>
+ * @copyright       Copyright (c) 2014, Lynx s.r.l.
+ * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @link            classroom
+ * @version         0.1
  */
+
 namespace Lynxlab\ADA\Module\Classroom;
 
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
@@ -18,7 +19,6 @@ use Lynxlab\ADA\Main\AMA\AMAError;
 
 class AMAClassroomDataHandler extends AMADataHandler
 {
-
     /**
      * module's own data tables prefix
      *
@@ -31,26 +31,26 @@ class AMAClassroomDataHandler extends AMADataHandler
      *
      * @param number $id if null gets all rows
      *
-     * @return AMA_Error|array
+     * @return AMAError|array
      *
      * @access public
      */
-    public function classroom_getVenue($id)
+    public function classroomGetVenue($id)
     {
-        return $this->_getRecord($id, 'venues', 'id_venue');
+        return $this->getRecord($id, 'venues', 'id_venue');
     }
 
     /**
      * gets all the venues, it's an alias for
-     * classroom_getVenue(null)
+     * classroomGetVenue(null)
      *
-     * @return AMA_Error|array
+     * @return AMAError|array
      *
      * @access public
      */
-    public function classroom_getAllVenues()
+    public function classroomGetAllVenues()
     {
-        return $this->classroom_getVenue(null);
+        return $this->classroomGetVenue(null);
     }
 
     /**
@@ -58,20 +58,20 @@ class AMAClassroomDataHandler extends AMADataHandler
      *
      * @param array $data data to be saved
      *
-     * @return AMA_Error|number inserted or updated id
+     * @return AMAError|number inserted or updated id
      *
      * @access public
      */
-    public function classroom_saveVenue($data)
+    public function classroomSaveVenue($data)
     {
 
-        $fields = array(
+        $fields = [
             'name', 'addressline1', 'addressline2', 'contact_name',
-            'contact_phone', 'contact_email', 'map_url'
-        );
+            'contact_phone', 'contact_email', 'map_url',
+        ];
         $primaryKey = 'id_venue';
 
-        return $this->_saveRecord('venues', $fields, $primaryKey, $data);
+        return $this->saveRecord('venues', $fields, $primaryKey, $data);
     }
 
     /**
@@ -79,7 +79,7 @@ class AMAClassroomDataHandler extends AMADataHandler
      *
      * @param number $id_venue
      */
-    public function classroom_deleteVenue($id_venue)
+    public function classroomDeleteVenue($id_venue)
     {
         $sql = 'DELETE FROM `' . self::$PREFIX . 'venues` WHERE `id_venue`=?';
         // TODO: delete classroom
@@ -92,58 +92,68 @@ class AMAClassroomDataHandler extends AMADataHandler
      * @param number $id if null gets all rows
      * @param number $id_venue id of venue to get classrooms for
      *
-     * @return AMA_Error|array
+     * @return AMAError|array
      *
      * @access public
      */
-    public function classroom_getClassroom($id, $id_venue = null)
+    public function classroomGetClassroom($id, $id_venue = null)
     {
-        $tablesData = array(
+        $tablesData = [
             self::$PREFIX . 'classrooms' =>
-            array(
-                'fields' => array(
+            [
+                'fields' => [
                     'id_classroom', 'id_venue', 'name', 'seats', 'computers',
                     'internet', 'wifi', 'projector', 'mobility_impaired',
-                    'hourly_rate'
-                ),
-                'join_field' => 'id_venue'
-            ),
+                    'hourly_rate',
+                ],
+                'join_field' => 'id_venue',
+            ],
             self::$PREFIX . 'venues' =>
-            array(
-                'fields' => array('name'),
-                'aliasfields' => array('venue_name'),
-                'join_field' => 'id_venue'
-            )
-        );
+            [
+                'fields' => ['name'],
+                'aliasfields' => ['venue_name'],
+                'join_field' => 'id_venue',
+            ],
+        ];
 
-        if (!is_null($id)) $whereClause  = 'id_classroom=' . $id;
-        else $whereClause = null;
+        if (!is_null($id)) {
+            $whereClause  = 'id_classroom=' . $id;
+        } else {
+            $whereClause = null;
+        }
 
         if (!is_null($id_venue)) {
-            if (!is_null($whereClause)) $whereClause .=  ' AND ';
-            else $whereClause = '';
+            if (!is_null($whereClause)) {
+                $whereClause .=  ' AND ';
+            } else {
+                $whereClause = '';
+            }
 
             $whereClause .= self::$PREFIX . 'venues.id_venue=' . $id_venue;
         }
 
         $res = $this->getJoined($tablesData, $whereClause);
 
-        if (AMADB::isError($res)) return $res;
-        else if (count($res) === 1 && !is_null($whereClause)) return reset($res);
-        else return $res;
+        if (AMADB::isError($res)) {
+            return $res;
+        } elseif (count($res) === 1 && !is_null($whereClause)) {
+            return reset($res);
+        } else {
+            return $res;
+        }
     }
 
     /**
      * gets all the classrooms, it's an alias for
-     * classroom_getClassroom(null)
+     * classroomGetClassroom(null)
      *
-     * @return AMA_Error|array
+     * @return AMAError|array
      *
      * @access public
      */
-    public function classroom_getAllClassrooms()
+    public function classroomGetAllClassrooms()
     {
-        return $this->classroom_getClassroom(null);
+        return $this->classroomGetClassroom(null);
     }
 
     /**
@@ -151,23 +161,26 @@ class AMAClassroomDataHandler extends AMADataHandler
      *
      * @param array $data data to be saved
      *
-     * @return AMA_Error|number inserted or updated id
+     * @return AMAError|number inserted or updated id
      *
      * @access public
      */
-    public function classroom_saveClassroom($data)
+    public function classroomSaveClassroom($data)
     {
-        $fields = array(
+        $fields = [
             'id_venue', 'name', 'seats', 'computers', 'internet',
-            'wifi', 'projector', 'mobility_impaired', 'hourly_rate'
-        );
+            'wifi', 'projector', 'mobility_impaired', 'hourly_rate',
+        ];
         $primaryKey = 'id_classroom';
 
         if (!isset($data['id_venue']) || intval($data['id_venue']) <= 0) {
             // venue id was not passed, must save a new venue and use that one
-            $tmpID = $this->classroom_saveVenue(array('name' => $data['venue_name']));
-            if (AMADB::isError($tmpID)) return $tmpID;
-            else $data['id_venue'] = intval($tmpID);
+            $tmpID = $this->classroomSaveVenue(['name' => $data['venue_name']]);
+            if (AMADB::isError($tmpID)) {
+                return $tmpID;
+            } else {
+                $data['id_venue'] = intval($tmpID);
+            }
         }
 
         if (isset($data[$primaryKey]) && intval($data[$primaryKey]) > 0) {
@@ -177,7 +190,7 @@ class AMAClassroomDataHandler extends AMADataHandler
             $this->executeCriticalPrepared($sql, $data[$primaryKey]);
         }
 
-        return $this->_saveRecord('classrooms', $fields, $primaryKey, $data);
+        return $this->saveRecord('classrooms', $fields, $primaryKey, $data);
     }
 
     /**
@@ -185,7 +198,7 @@ class AMAClassroomDataHandler extends AMADataHandler
      *
      * @param number $id_classroom
      */
-    public function classroom_deleteClassroom($id_classroom)
+    public function classroomDeleteClassroom($id_classroom)
     {
         $sql = 'DELETE FROM `' . self::$PREFIX . 'classrooms` WHERE `id_classroom`=?';
         // TODO: delete calendar (?)
@@ -215,7 +228,7 @@ class AMAClassroomDataHandler extends AMADataHandler
 
         $sql .= 'FROM `' . self::$PREFIX . $tableName . '` WHERE `' . $fieldName . "` LIKE ?";
 
-        $result = $this->getAllPrepared($sql, array('%' . $term . '%'), AMA_FETCH_ASSOC);
+        $result = $this->getAllPrepared($sql, ['%' . $term . '%'], AMA_FETCH_ASSOC);
 
         if (!AMADB::isError($result)) {
             $count = -1;
@@ -233,19 +246,19 @@ class AMAClassroomDataHandler extends AMADataHandler
      * gets the join result of two (or more) tables
      *
      * @param array $tablesData tables parameters to use, e.g.
-     * 		array (
-				'classrooms'=>	// table name is the array key
-					array(
-						'fields'=>array('id_classroom','name','seats','computers'), // fields to select
-						'join_field'=>'id_venue' // field to join on
-					),
-				'venues'=> // table name is the array key
-					array(
-						'fields'=>array('name'), // fields to select
-						'aliasfields'=>array('venuename'), // name shall be selected as venuename
-						'join_field'=>'id_venue' // field to join on
-					)
-		)
+     *      array (
+                'classrooms'=>  // table name is the array key
+                    array(
+                        'fields'=>array('id_classroom','name','seats','computers'), // fields to select
+                        'join_field'=>'id_venue' // field to join on
+                    ),
+                'venues'=> // table name is the array key
+                    array(
+                        'fields'=>array('name'), // fields to select
+                        'aliasfields'=>array('venuename'), // name shall be selected as venuename
+                        'join_field'=>'id_venue' // field to join on
+                    )
+        )
      * @param string $whereClause
      * @param string $orderBY
      *
@@ -277,26 +290,32 @@ class AMAClassroomDataHandler extends AMADataHandler
                             $sql .= ', ';
                         }
                     }
-                } else if ($type === 'join_field') {
+                } elseif ($type === 'join_field') {
                     $joinON .= '`' . $tableName . '`.`' . $tableFields[$type] . '`';
                 }
             }
             if (($nextTable = next($tablesData)) !== false) {
-                if (count($nextTable['fields']) > 0) $sql  .= ', ';
+                if (count($nextTable['fields']) > 0) {
+                    $sql  .= ', ';
+                }
                 $from .= ' JOIN ';
                 $joinON .= ' = ';
             }
         }
         $sql .= $from . $joinON;
-        if (!is_null($whereClause)) $sql .= ' WHERE 1 AND ' . $whereClause;
-        if (!is_null($orderBY))     $sql .= ' ORDER BY ' . $orderBY;
+        if (!is_null($whereClause)) {
+            $sql .= ' WHERE 1 AND ' . $whereClause;
+        }
+        if (!is_null($orderBY)) {
+            $sql .= ' ORDER BY ' . $orderBY;
+        }
 
         $res = $this->getAllPrepared($sql, null, AMA_FETCH_ASSOC);
 
         // if an error is detected, an error is generated and reported
         if (AMADB::isError($res)) {
             return $this->generateError(AMA_ERR_GET, __FUNCTION__, $res);
-        } else if (count($res) <= 0 || $res === false) {
+        } elseif (count($res) <= 0 || $res === false) {
             return $this->generateError(AMA_ERR_NOT_FOUND, __FUNCTION__, $res);
         } else {
             return $res;
@@ -310,14 +329,16 @@ class AMAClassroomDataHandler extends AMADataHandler
      * @param string $tableName name of the table
      * @param string $primaryKey name of the table's own primary key
      *
-     * @return AMA_Error|array
+     * @return AMAError|array
      *
      * @access private
      */
-    private function _getRecord($id, $tableName, $primaryKey)
+    private function getRecord($id, $tableName, $primaryKey)
     {
         $sql = 'SELECT * FROM `' . self::$PREFIX . $tableName . '`';
-        if (!is_null($id)) $sql .= ' WHERE `' . $primaryKey . '`=?';
+        if (!is_null($id)) {
+            $sql .= ' WHERE `' . $primaryKey . '`=?';
+        }
         $sql .= ' ORDER BY `' . $primaryKey . '` ASC';
 
         if (!is_null($id)) {
@@ -329,7 +350,7 @@ class AMAClassroomDataHandler extends AMADataHandler
         // if an error is detected, an error is generated and reported
         if (AMADB::isError($res)) {
             return $this->generateError(AMA_ERR_GET, __FUNCTION__, $res);
-        } else if (count($res) <= 0 || $res === false) {
+        } elseif (count($res) <= 0 || $res === false) {
             return $this->generateError(AMA_ERR_NOT_FOUND, __FUNCTION__, $res);
         } else {
             return $res;
@@ -344,31 +365,37 @@ class AMAClassroomDataHandler extends AMADataHandler
      * @param string $primaryKey name of the table's own primary key
      * @param array  $data assoc array of data to be saved
      *
-     * @return AMA_Error|number inserted or updated id
+     * @return AMAError|number inserted or updated id
      *
      * @access private
      */
-    private function _saveRecord($what, $fields, $primaryKey, $data)
+    private function saveRecord($what, $fields, $primaryKey, $data)
     {
         $isInsert = false;
 
         // unset invalid $data array keys
         foreach ($data as $key => $val) {
-            if (!in_array($key, $fields) && $key != $primaryKey) unset($data[$key]);
+            if (!in_array($key, $fields) && $key != $primaryKey) {
+                unset($data[$key]);
+            }
         }
 
         // unset data that are not a field
         foreach ($fields as $key => $val) {
-            if (!isset($data[$val]) || strlen($data[$val]) <= 0) unset($data[$val]);
+            if (!isset($data[$val]) || strlen($data[$val]) <= 0) {
+                unset($data[$val]);
+            }
         }
 
         if (!isset($data[$primaryKey]) || $data[$primaryKey] == 0 || strlen($data[$primaryKey]) <= 0) {
             // it's an insert
-            if (isset($data[$primaryKey])) unset($data[$primaryKey]);
+            if (isset($data[$primaryKey])) {
+                unset($data[$primaryKey]);
+            }
 
             $sql = 'INSERT INTO `' . self::$PREFIX . $what . '` (';
             $sql .= implode(',', array_keys($data));
-            $sql .= ') VALUES (' . $this->_buildQuestionMarksString(count(array_keys($data)));
+            $sql .= ') VALUES (' . $this->buildQuestionMarksString(count(array_keys($data)));
             $sql .= ')';
 
             $params = array_values($data);
@@ -387,7 +414,7 @@ class AMAClassroomDataHandler extends AMADataHandler
                 $sql .= implode(',', $setValues);
                 $sql .= ' WHERE `' . $primaryKey . '`= ?';
 
-                $params = array_merge(array_values($data), array($primaryKeyVal));
+                $params = array_merge(array_values($data), [$primaryKeyVal]);
             }
             $errorCode = AMA_ERR_UPDATE;
         }
@@ -413,15 +440,17 @@ class AMAClassroomDataHandler extends AMADataHandler
      *
      * @access private
      */
-    private function _buildQuestionMarksString($count)
+    private function buildQuestionMarksString($count)
     {
-        return sprintf("?%s", str_repeat(",?", ($count  ? $count - 1 : 0)));
+        return sprintf("?%s", str_repeat(",?", ($count ? $count - 1 : 0)));
     }
 
     private function generateError($errorCode, $functionName, $res)
     {
         $errStr = $this->errorMessage(new AMAError($errorCode)) . " in " . $functionName;
-        if (AMADB::isError($res)) $errStr .= ":" . AMA_SEP . $res->getMessage();
+        if (AMADB::isError($res)) {
+            $errStr .= ":" . AMA_SEP . $res->getMessage();
+        }
         return new AMAError($errorCode, $errStr);
     }
-} // class ends here
+}

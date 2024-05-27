@@ -3,15 +3,15 @@
 /**
  * Base Management Class
  *
- * @package			classroom module
- * @author			Giorgio Consorti <g.consorti@lynxlab.com>
- * @copyright		Copyright (c) 2014, Lynx s.r.l.
- * @license			http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link			classroom
- * @version			0.1
+ * @package         classroom module
+ * @author          Giorgio Consorti <g.consorti@lynxlab.com>
+ * @copyright       Copyright (c) 2014, Lynx s.r.l.
+ * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @link            classroom
+ * @version         0.1
  */
 
-namespace Lynxlab\ADA\Module\Classroom\Management;
+namespace Lynxlab\ADA\Module\Classroom;
 
 /**
  * base class for module
@@ -19,16 +19,15 @@ namespace Lynxlab\ADA\Module\Classroom\Management;
  * @author giorgio
  */
 
-abstract class abstractClassRoomManagement
+abstract class AbstractClassRoomManagement
 {
-
     /**
      * name constructor
      */
-    public function __construct($data = array())
+    public function __construct($data = [])
     {
         if (is_array($data) && count($data) > 0) {
-            $this->_fillFromArray($data);
+            $this->fillFromArray($data);
         }
     }
 
@@ -41,6 +40,11 @@ abstract class abstractClassRoomManagement
      */
     public function run($action = null)
     {
+        return [
+            'htmlObj'   => '',
+            'help'      => '',
+            'title'     => '',
+        ];
     }
 
     /**
@@ -50,10 +54,12 @@ abstract class abstractClassRoomManagement
      *
      * @access private
      */
-    protected function _fillFromArray($data)
+    protected function fillFromArray($data)
     {
         foreach ($data as $key => $val) {
-            if (property_exists($this, $key)) $this->{$key} = trim($val);
+            if (property_exists($this, $key)) {
+                $this->{$key} = trim($val);
+            }
         }
     }
 
@@ -68,4 +74,4 @@ abstract class abstractClassRoomManagement
     {
         return (array) $this;
     }
-} // class ends here
+}

@@ -3,18 +3,18 @@
 /**
  * CLASSROOM MODULE.
  *
- * @package			classroom module
- * @author			Giorgio Consorti <g.consorti@lynxlab.com>
- * @copyright		Copyright (c) 2014, Lynx s.r.l.
- * @license			http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link			classroom
- * @version			0.1
+ * @package         classroom module
+ * @author          Giorgio Consorti <g.consorti@lynxlab.com>
+ * @copyright       Copyright (c) 2014, Lynx s.r.l.
+ * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @link            classroom
+ * @version         0.1
  */
 
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Module\Classroom\AMAClassroomDataHandler;
-use Lynxlab\ADA\Module\Classroom\Management\venuesManagement;
+use Lynxlab\ADA\Module\Classroom\VenuesManagement;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -23,23 +23,23 @@ error_reporting(E_ALL);
 /**
  * Base config file
  */
-require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
+require_once(realpath(__DIR__) . '/../../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+$allowedUsersAr = [AMA_TYPE_SWITCHER];
 
 /**
  * Get needed objects
  */
-$neededObjAr = array(
-    AMA_TYPE_SWITCHER => array('layout')
-);
+$neededObjAr = [
+    AMA_TYPE_SWITCHER => ['layout'],
+];
 
 /**
  * Performs basic controls before entering this module
@@ -50,16 +50,16 @@ $self = 'venues';
 
 $GLOBALS['dh'] = AMAClassroomDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
-$retArray = array('status' => 'ERROR');
+$retArray = ['status' => 'ERROR'];
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     /**
      * it's a POST, save the passed venue data
      */
     // build a venue with passed POST data
-    $venuesManager = new venuesManagement($_POST);
+    $venuesManager = new VenuesManagement($_POST);
     // try to save it
-    $res = $GLOBALS['dh']->classroom_saveVenue($venuesManager->toArray());
+    $res = $GLOBALS['dh']->classroomSaveVenue($venuesManager->toArray());
 
     if (AMADB::isError($res)) {
         // if it's an error display the error message
@@ -70,7 +70,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $retArray['status'] = "OK";
         $retArray['msg'] = translateFN('Luogo salvato');
     }
-} else if (
+} elseif (
     isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
     isset($_GET['id_venue']) && intval(trim($_GET['id_venue'])) > 0
 ) {
@@ -79,7 +79,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
      */
     $id_venue = intval(trim($_GET['id_venue']));
     // try to load it
-    $res = $GLOBALS['dh']->classroom_getVenue($id_venue);
+    $res = $GLOBALS['dh']->classroomGetVenue($id_venue);
 
     if (AMADB::isError($res)) {
         // if it's an error display the error message without the form
@@ -87,7 +87,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $retArray['msg'] = $res->getMessage();
     } else {
         // display the form with loaded data
-        $venuesManager = new venuesManagement($res);
+        $venuesManager = new VenuesManagement($res);
         $data = $venuesManager->run(MODULES_CLASSROOM_EDIT_VENUE);
 
         $retArray['status'] = "OK";
@@ -98,7 +98,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     /**
      * it's a get without an id_venue, display the empty form
      */
-    $venuesManager = new venuesManagement();
+    $venuesManager = new VenuesManagement();
     $data = $venuesManager->run(MODULES_CLASSROOM_EDIT_VENUE);
 
     $retArray['status'] = "OK";

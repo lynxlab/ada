@@ -3,12 +3,12 @@
 /**
  * CLASSROOM MODULE.
  *
- * @package			classroom module
- * @author			Giorgio Consorti <g.consorti@lynxlab.com>
- * @copyright		Copyright (c) 2014, Lynx s.r.l.
- * @license			http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link			classroom
- * @version			0.1
+ * @package         classroom module
+ * @author          Giorgio Consorti <g.consorti@lynxlab.com>
+ * @copyright       Copyright (c) 2014, Lynx s.r.l.
+ * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @link            classroom
+ * @version         0.1
  */
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
@@ -19,23 +19,23 @@ error_reporting(E_ALL);
 /**
  * Base config file
  */
-require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
+require_once(realpath(__DIR__) . '/../../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array();
+$variableToClearAR = [];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+$allowedUsersAr = [AMA_TYPE_SWITCHER];
 
 /**
  * Get needed objects
  */
-$neededObjAr = array(
-    AMA_TYPE_SWITCHER => array('layout')
-);
+$neededObjAr = [
+    AMA_TYPE_SWITCHER => ['layout'],
+];
 
 /**
  * Performs basic controls before entering this module

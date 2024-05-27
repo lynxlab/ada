@@ -3,15 +3,15 @@
 /**
  * CLASSROOM MODULE.
  *
- * @package			classroom module
- * @author			Giorgio Consorti <g.consorti@lynxlab.com>
- * @copyright		Copyright (c) 2014, Lynx s.r.l.
- * @license			http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link			classroom
- * @version			0.1
+ * @package         classroom module
+ * @author          Giorgio Consorti <g.consorti@lynxlab.com>
+ * @copyright       Copyright (c) 2014, Lynx s.r.l.
+ * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @link            classroom
+ * @version         0.1
  */
 
-namespace Lynxlab\ADA\Module\Classroom\Form;
+namespace Lynxlab\ADA\Module\Classroom;
 
 use Lynxlab\ADA\Main\Forms\lib\classes\FForm;
 use Lynxlab\ADA\Main\Forms\lib\classes\FormControl;
@@ -26,7 +26,6 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
  */
 class FormClassrooms extends FForm
 {
-
     public function __construct($data, $formName = null, $action = null)
     {
         parent::__construct();
@@ -48,7 +47,9 @@ class FormClassrooms extends FForm
 
             $this->setCustomJavascript($semanticToggleCheckBoxJS);
         }
-        if (!is_null($action)) $this->setAction($action);
+        if (!is_null($action)) {
+            $this->setAction($action);
+        }
 
         $this->addHidden('id_classroom');
         $this->addHidden('id_venue');
@@ -71,7 +72,7 @@ class FormClassrooms extends FForm
         $mobility = FormControl::create(FormControl::INPUT_CHECKBOX, 'mobility_impaired', translateFN('Accesso disabili'))->withData(1);
 
         $fieldSet = FormControl::create(FormControl::FIELDSET, 'options', translateFN('Comodità'));
-        $fieldSet->withData(array($internet, $wifi, $projector, $mobility));
+        $fieldSet->withData([$internet, $wifi, $projector, $mobility]);
 
         $this->addControl($fieldSet);
 
@@ -81,4 +82,4 @@ class FormClassrooms extends FForm
 
         $this->fillWithArrayData($data);
     }
-} // class ends here
+}

@@ -10,10 +10,7 @@
     ],
     "autoload" : {
         "psr-4" : {
-            "Lynxlab\\ADA\\Module\\Classroom\\" : ["include/"]
-	    },
-        "files": [
-            "include/functions.php"
-        ]
+            "Lynxlab\\ADA\\Module\\Classroom\\" : ["include/", "include/form", "include/management"]
+	    }
     }
 }
