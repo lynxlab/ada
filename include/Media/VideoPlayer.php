@@ -58,6 +58,7 @@ class VideoPlayer
         $getID3 = new getID3();
         $toAnalyze = (!empty($http_file_path) ? $http_file_path : ROOT_DIR) . $file_name;
         $fileInfo = $getID3->analyze(urldecode(str_replace(HTTP_ROOT_DIR, ROOT_DIR, $toAnalyze)));
+        $id3Error = array_key_exists('error', $fileInfo);
 
         if (empty($width)) {
             $width = self::DEFAULT_WIDTH;
@@ -65,8 +66,8 @@ class VideoPlayer
         //      if (empty($height)) {
         //          $height = self::DEFAULT_HEIGHT;
         //      }
-        $mediaWidth = (intval($fileInfo['video']['resolution_x']) > 0) ? intval($fileInfo['video']['resolution_x']) : null;
-        $mediaHeight = (intval($fileInfo['video']['resolution_y']) > 0) ? intval($fileInfo['video']['resolution_y']) : null;
+        $mediaWidth = (!$id3Error && intval($fileInfo['video']['resolution_x']) > 0) ? intval($fileInfo['video']['resolution_x']) : null;
+        $mediaHeight = (!$id3Error && intval($fileInfo['video']['resolution_y']) > 0) ? intval($fileInfo['video']['resolution_y']) : null;
         $height = VideoPlayer::heightCalc($width, $mediaWidth, $mediaHeight);
 
         if ((empty($width) || empty($height)) && isset($fileInfo['video']) && !empty($fileInfo['video'])) {
@@ -118,7 +119,7 @@ class VideoPlayer
                         // if (!$_SESSION['mobile-detect']->isMobile()) $playerAttr = ' data-engine="flash" ';
                         // else $playerAttr = '';
 
-                        if ($fileInfo['fileformat'] == 'mp4') {
+                        if (!$id3Error && $fileInfo['fileformat'] == 'mp4') {
                             /**
                              * old code to be used for flowplayer
                              */
