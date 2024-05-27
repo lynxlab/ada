@@ -10,7 +10,13 @@
 
 namespace Lynxlab\ADA\Module\EtherpadIntegration;
 
-use DataValidator;
+use Exception;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Module\EtherpadIntegration\AMAEtherpadDataHandler;
+use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadActions;
+use Lynxlab\ADA\Module\EtherpadIntegration\Groups;
+use Lynxlab\ADA\Module\EtherpadIntegration\Pads;
 
 class Utils
 {
@@ -47,13 +53,13 @@ class Utils
              * it should be safe to assume that $params is [ 'nodeId' => id_node|Pads::instancePadId ]
              */
             if (array_key_exists('nodeId', $params)) {
-                $nodeId = ($params['nodeId'] === Pads::instancePadId)  ? Pads::instancePadId : DataValidator::validate_node_id($params['nodeId']);
-            } else if (array_key_exists('sess_id_node', $_SESSION)) {
+                $nodeId = ($params['nodeId'] === Pads::INSTANCEPADID) ? Pads::INSTANCEPADID : DataValidator::validateNodeId($params['nodeId']);
+            } elseif (array_key_exists('sess_id_node', $_SESSION)) {
                 // if no $params['nodeId'] then use session node
                 $nodeId = $_SESSION['sess_id_node'];
             }
             if (array_key_exists('sess_selected_tester', $_SESSION) && array_key_exists('sess_id_course_instance', $_SESSION)) {
-                $etDH = AMAEtherpadDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+                $etDH = AMAEtherpadDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
                 if (EtherpadActions::canDo(EtherpadActions::ACCESS_PAD)) {
                     $hasPad = false;
                     // load getherpad group mapped to the session course instance
@@ -72,10 +78,10 @@ class Utils
                 }
             }
             if ($hasPad || (!$hasPad && EtherpadActions::canDo(EtherpadActions::CREATE_PAD))) {
-                $enabled = $nodeId === Pads::instancePadId ? MODULES_ETHERPAD_INSTANCEPAD : MODULES_ETHERPAD_NODEPAD;
+                $enabled = $nodeId === Pads::INSTANCEPADID ? MODULES_ETHERPAD_INSTANCEPAD : MODULES_ETHERPAD_NODEPAD;
             }
             return $enabled;
-        } catch (\Exception $e) {
+        } catch (Exception) {
             return false;
         }
     }

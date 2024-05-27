@@ -1,65 +1,32 @@
 <?php
-/**
- * Actions perfomed at the start of each ADA module.
- *
- * This file contains all the actions that a ADA module has to perform before
- * doing anything else.
- *
- * PHP version >= 5.0
- *
- * @package
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2009, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link		module_init
- * @version		0.1
- */
 
-/**
- * utility functions
- */
-require_once ROOT_DIR.'/include/utilities.inc.php';
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
+use Lynxlab\ADA\Main\ModuleInit;
+use Lynxlab\ADA\Main\Utilities;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
 
-/**
- * Database and data validator classes
- */
-require_once ROOT_DIR.'/include/database_includes.inc.php';
-
-/**
- * Functions used in this module
- */
-require_once ROOT_DIR.'/include/module_init_functions.inc.php';
-
-/**
- * Ada Rendering Engine, used to render module output data
- */
-require_once ROOT_DIR.'/include/layout_classes.inc.php';
-require_once ROOT_DIR.'/include/output_classes.inc.php';
-
-
-require_once ROOT_DIR.'/include/translator_class.inc.php';
-require_once ROOT_DIR.'/include/output_funcs.inc.php';
-//require_once ROOT_DIR.'/include/layout_classes.inc.php';
-
-// provvisoriamente includiamo anche le vecchie classi di oggetti HTML:
-require_once ROOT_DIR . '/include/HTML_element_classes.inc.php';
-require_once ROOT_DIR . '/include/navigation_history.inc.php';
-
-/**
- * giorgio 06/set/2013
- * detect mobile device feature
- */
-require_once ROOT_DIR . '/include/MobileDetect/Mobile_Detect.php';
-
+if (ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
+    $event = ADAEventDispatcher::buildEventAndDispatch(
+        [
+            'eventClass' => CoreEvent::class,
+            'eventName' => CoreEvent::PREMODULEINIT,
+            'eventPrefix' => basename($_SERVER['SCRIPT_FILENAME']),
+        ],
+        basename($_SERVER['SCRIPT_FILENAME']),
+        [
+            'isAjax' => stripos($_SERVER['SCRIPT_FILENAME'], 'ajax') !== false,
+        ]
+    );
+}
 
 /**
  * Imports $_GET and $_POST variables
  */
+
 //import_request_variables('GP',ADA_GP_VARIABLES_PREFIX);
-extract($_GET,EXTR_OVERWRITE,ADA_GP_VARIABLES_PREFIX);
-extract($_POST,EXTR_OVERWRITE,ADA_GP_VARIABLES_PREFIX);
+extract($_GET, EXTR_OVERWRITE, ADA_GP_VARIABLES_PREFIX);
+extract($_POST, EXTR_OVERWRITE, ADA_GP_VARIABLES_PREFIX);
 
 /**
  * Graffio 19/08/2014
@@ -69,24 +36,37 @@ extract($_POST,EXTR_OVERWRITE,ADA_GP_VARIABLES_PREFIX);
 $GLOBALS['simpleCleaned'] = true;
 
 /**
- *	Validates $_SESSION data
+ *  Validates $_SESSION data
  */
-if(!isset($neededObjAr) || !is_array($neededObjAr)) {
-  $neededObjAr = array();
+if (!isset($neededObjAr) || !is_array($neededObjAr)) {
+    $neededObjAr = [];
 }
-if(!isset($allowedUsersAr) || !is_array($allowedUsersAr)) {
-  $allowedUsersAr = array();
+if (!isset($allowedUsersAr) || !is_array($allowedUsersAr)) {
+    $allowedUsersAr = [];
 }
 if (!isset($trackPageToNavigationHistory)) {
-	$trackPageToNavigationHistory = true;
+    $trackPageToNavigationHistory = true;
 }
-session_controlFN($neededObjAr, $allowedUsersAr, $trackPageToNavigationHistory);
+ModuleInit::sessionControlFN($neededObjAr, $allowedUsersAr, $trackPageToNavigationHistory);
 /**
  * Clears variables specified in $whatAR
  */
-if(isset($variableToClearAR) && is_array($variableToClearAR)) {
-  clear_dataFN($variableToClearAR);
+if (isset($variableToClearAR) && is_array($variableToClearAR)) {
+    ModuleInit::clearDataFN($variableToClearAR);
 }
 
-$ymdhms = today_dateFN();
-?>
+$ymdhms = Utilities::todayDateFN();
+
+if (ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
+    $event = ADAEventDispatcher::buildEventAndDispatch(
+        [
+            'eventClass' => CoreEvent::class,
+            'eventName' => CoreEvent::POSTMODULEINIT,
+            'eventPrefix' => basename($_SERVER['SCRIPT_FILENAME']),
+        ],
+        basename($_SERVER['SCRIPT_FILENAME']),
+        [
+            'isAjax' => stripos($_SERVER['SCRIPT_FILENAME'], 'ajax') !== false,
+        ]
+    );
+}

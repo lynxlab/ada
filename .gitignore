@@ -9,3 +9,8 @@
 /docs/
 /nbproject/
 /log/
+/vendor/
+/js/vendor/
+*.cache
+*.bak
+*.code-workspace

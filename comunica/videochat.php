@@ -1,26 +1,22 @@
 <?php
-/**
- * VIDEOCHAT.
- *
- * @package		videochat
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2009, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link		view
- * @version		0.1
- */
+
+use Lynxlab\ADA\CORE\html4\CBase;
+use Lynxlab\ADA\Main\Helper\ComunicaHelper;
+use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array();
+$variableToClearAR = [];
 array_push($variableToClearAR, 'layout');
 array_push($variableToClearAR, 'user');
 array_push($variableToClearAR, 'course');
@@ -29,23 +25,21 @@ array_push($variableToClearAR, 'course_instance');
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_STUDENT, AMA_TYPE_TUTOR);
+$allowedUsersAr = [AMA_TYPE_STUDENT, AMA_TYPE_TUTOR];
 
 /**
  * Performs basic controls before entering this module
  */
-$neededObjAr = array(
-  AMA_TYPE_STUDENT => array('layout','tutor','course','course_instance', 'videoroom'),
-  AMA_TYPE_TUTOR => array('layout','tutor','course','course_instance','videoroom')
-);
+$neededObjAr = [
+  AMA_TYPE_STUDENT => ['layout','tutor','course','course_instance', 'videoroom'],
+  AMA_TYPE_TUTOR => ['layout','tutor','course','course_instance','videoroom'],
+];
 
 /**
  * Performs basic controls before entering this module
  */
-require_once ROOT_DIR.'/include/module_init.inc.php';
-$self = whoami();
-
-include_once 'include/comunica_functions.inc.php';
+require_once ROOT_DIR . '/include/module_init.inc.php';
+$self = Utilities::whoami();
 
 /**
  * Specific Openmeetings config file
@@ -68,15 +62,16 @@ require_once 'include/videochat_config.inc.php';
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
+ * @var object $user_messages
+ * @var object $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -86,17 +81,17 @@ ComunicaHelper::init($neededObjAr);
 /*
  * Redirect to correct home if comunication not enabled
  */
- if ($userObj->getType() == AMA_TYPE_VISITOR){
-  $homepage = $userObj->getHomepage();
-  $msg =   translateFN("Utente non autorizzato");
-  header("Location: $homepage?err_msg=$msg");
-  exit;
- }
+if ($userObj->getType() == AMA_TYPE_VISITOR) {
+    $homepage = $userObj->getHomepage();
+    $msg =   translateFN("Utente non autorizzato");
+    header("Location: $homepage?err_msg=$msg");
+    exit;
+}
 /*
  * FINE Redirect to correct home if comunication not enabled
  */
 $date = date('l jS \of F Y h:i:s A');
-$label = "Video Chat on ".$date;
+$label = "Video Chat on " . $date;
 // $content = "<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" codebase=\"http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0\" width=\"100%\" height=\"600\">
 //                         <param name=movie value=\"$videoroomObj->link_to_room\">
 //                         <param name=quality value=high>
@@ -110,44 +105,42 @@ $logEnter = false;
 
 if ($videoroomObj->link_to_room instanceof CBase) {
     $iframe = $videoroomObj->link_to_room->getHtml();
-    $className = get_class($videoroomObj);
-    if (defined($className.'::onload_js')) {
-      $options_Ar = array('onload_func' => constant($className.'::onload_js'));
+    $className = $videoroomObj::class;
+    if (defined($className . '::ONLOAD_JS')) {
+        $options_Ar = ['onload_func' => constant($className . '::ONLOAD_JS')];
     }
     $logEnter = true;
-} else if (is_string($videoroomObj->link_to_room) && strlen($videoroomObj->link_to_room)>0) {
-    $className = get_class($videoroomObj);
+} elseif (is_string($videoroomObj->link_to_room) && strlen($videoroomObj->link_to_room) > 0) {
+    $className = $videoroomObj::class;
     $iframe = "<iframe src='$videoroomObj->link_to_room' width='$width' height = '$height'";
-    if (defined($className.'::iframeAttr')) {
-      $iframe .= constant($className.'::iframeAttr');
+    if (defined($className . '::IFRAMEATTR')) {
+        $iframe .= constant($className . '::IFRAMEATTR');
     }
-    $iframe .= " data-logout='".urlencode($videoroomObj->getLogoutUrlParams())."'";
+    $iframe .= " data-logout='" . urlencode($videoroomObj->getLogoutUrlParams()) . "'";
     $iframe .= "></iframe>";
     $logEnter = true;
 } else {
-  $iframe = '';
-  $status = addslashes(translateFN("ops, there was a problem!"));
-  if (!isset($GLOBALS['options_Ar'])) {
-    $options_Ar = array('onload_func' => "close_page('$status');");
-  }
+    $iframe = '';
+    $status = addslashes(translateFN("ops, there was a problem!"));
+    if (!isset($GLOBALS['options_Ar'])) {
+        $options_Ar = ['onload_func' => "close_page('$status');"];
+    }
 }
 
 if ($logEnter) {
-  $videoroomObj->logEnter();
+    $videoroomObj->logEnter();
 }
 
-$menu_01 = "<a href=\"close_videochat.php?id_room=".$videoroomObj->id_room ."&event_token=$event_token\">" . translateFN("Chiudi") . "</a>";
-$content_dataAr = array (
-//	'data'      => $content,
-	'label' => $label,
-	'menu_01'   => $menu_01,
-	'user_name' =>isset($user_uname) ? $user_uname : '',
-	'user_type' =>$user_type,
-	'status' => $status,
-	'data'      => $iframe
-);
+$menu_01 = "<a href=\"close_videochat.php?id_room=" . $videoroomObj->id_room . "&event_token=$event_token\">" . translateFN("Chiudi") . "</a>";
+$content_dataAr =  [
+//  'data'      => $content,
+    'label' => $label,
+    'menu_01'   => $menu_01,
+    'user_name' => $user_uname ?? '',
+    'user_type' => $user_type,
+    'status' => $status,
+    'data'      => $iframe,
+];
 
 
-ARE::render($layout_dataAr,$content_dataAr,NULL,isset($options_Ar) ? $options_Ar : null);
-
-?>
+ARE::render($layout_dataAr, $content_dataAr, null, $options_Ar ?? null);

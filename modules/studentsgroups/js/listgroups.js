@@ -78,10 +78,10 @@ function initDropZone() {
                     });
 
                     this.on("removedfile", function (file) {
-    					/**
-    					 * set value of dropzone associated text to empty and trigger change to revalidate
-    					 * if text has attribute data-validate="mandatoryDropzone" proper actions will be taken
-    					 */
+                        /**
+                         * set value of dropzone associated text to empty and trigger change to revalidate
+                         * if text has attribute data-validate="mandatoryDropzone" proper actions will be taken
+                         */
                         $j('input[type="text"][name="' + $j(that.element).attr('id') + '"]').val('').trigger('change');
                     });
                 }
@@ -100,16 +100,16 @@ function initDataTables() {
                 'cache': false,
                 'data': { object: 'Groups' }
             })
-            .done(function (response) {
-                callback(response);
-            })
-            .fail(function (response) {
-                if (debugForm) console.debug('dataTable ajax fail ', response);
-                const errmsg = ('responseJSON' in response && 'error' in response.responseJSON) ? response.responseJSON.error : response.statusText;
-                const callBackParam = ('responseJSON' in response) ? response.responseJSON : { data: [] };
-                $j.when(showHideDiv("(" + response.status + ") " + errmsg, false))
-                    .then(() => { callback(callBackParam); });
-            });
+                .done(function (response) {
+                    callback(response);
+                })
+                .fail(function (response) {
+                    if (debugForm) console.debug('dataTable ajax fail ', response);
+                    const errmsg = ('responseJSON' in response && 'error' in response.responseJSON) ? response.responseJSON.error : response.statusText;
+                    const callBackParam = ('responseJSON' in response) ? response.responseJSON : { data: [] };
+                    $j.when(showHideDiv("(" + response.status + ") " + errmsg, false))
+                        .then(() => { callback(callBackParam); });
+                });
         },
         "deferRender": true,
         "processing": true,
@@ -317,21 +317,21 @@ function deleteGroup(jqueryObj, id_group, message) {
             data: { id: id_group },
             dataType: 'json'
         })
-        .done(function (JSONObj) {
-            if (JSONObj) {
-                if (JSONObj.status == 'OK') {
-                    // deletes the corresponding row from the DOM with a fadeout effect
-                    showHideDiv('', JSONObj.msg, true);
-                    jqueryObj.parents("tr").fadeOut("slow", function () {
-                        var pos = $j('#completeGropusList').dataTable().fnGetPosition(this);
-                        $j('#completeGropusList').dataTable().fnDeleteRow(pos);
-                    });
-                } else {
-                    showHideDiv('', JSONObj.msg, false);
+            .done(function (JSONObj) {
+                if (JSONObj) {
+                    if (JSONObj.status == 'OK') {
+                        // deletes the corresponding row from the DOM with a fadeout effect
+                        showHideDiv('', JSONObj.msg, true);
+                        jqueryObj.parents("tr").fadeOut("slow", function () {
+                            var pos = $j('#completeGropusList').dataTable().fnGetPosition(this);
+                            $j('#completeGropusList').dataTable().fnDeleteRow(pos);
+                        });
+                    } else {
+                        showHideDiv('', JSONObj.msg, false);
+                    }
                 }
-            }
-        })
-        .fail(function () { showHideDiv('', 'Server Error', false) });
+            })
+            .fail(function () { showHideDiv('', 'Server Error', false) });
     }
 }
 
@@ -350,29 +350,29 @@ function toggleGroupDetails(groupId, imgObj) {
         $j.ajax({
             method: 'GET',
             url: 'ajax/getData.php',
-            data: { object: 'Groups' , id: groupId}
+            data: { object: 'Groups', id: groupId }
         })
-        .done(function (JSONObj) {
-            if ('data' in JSONObj && JSONObj.data.length>0 && 'members' in JSONObj.data[0] && JSONObj.data[0].members.length>0) {
-                row.child( ()=>{
-                    const html = ["<ol class='group-users-details ui list'>"];
-                    JSONObj.data[0].members.map((el) => {
-                        html.push(`<li class='group-users-item'>${el.nome} ${el.cognome} (${el.username})</li>`)
-                    });
-                    html.push('</ol>');
-                    return html.join("\n");
-                } ).show();
-            }
+            .done(function (JSONObj) {
+                if ('data' in JSONObj && JSONObj.data.length > 0 && 'members' in JSONObj.data[0] && JSONObj.data[0].members.length > 0) {
+                    row.child(() => {
+                        const html = ["<ol class='group-users-details ui list'>"];
+                        JSONObj.data[0].members.map((el) => {
+                            html.push(`<li class='group-users-item'>${el.nome} ${el.cognome} (${el.username})</li>`)
+                        });
+                        html.push('</ol>');
+                        return html.join("\n");
+                    }).show();
+                }
 
 
 
-        })
-        .fail(function () {
-            console.log("ajax call has failed");
-        })
-        .always(function () {
-            imageReference.src = HTTP_ROOT_DIR + "/layout/" + ADA_TEMPLATE_FAMILY + "/img/details_close.png";
-        });
+            })
+            .fail(function () {
+                console.log("ajax call has failed");
+            })
+            .always(function () {
+                imageReference.src = HTTP_ROOT_DIR + "/layout/" + ADA_TEMPLATE_FAMILY + "/img/details_close.png";
+            });
 
     }
 }

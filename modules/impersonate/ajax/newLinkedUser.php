@@ -8,43 +8,51 @@
  * @version     0.1
  */
 
-use Lynxlab\ADA\Module\GDPR\GdprAPI;
+use Lynxlab\ADA\Admin\AdminUtils;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\DBRead;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\User\ADAAuthor;
+use Lynxlab\ADA\Main\User\ADAPractitioner;
+use Lynxlab\ADA\Main\User\ADASwitcher;
 use Lynxlab\ADA\Module\Impersonate\AMAImpersonateDataHandler;
 use Lynxlab\ADA\Module\Impersonate\ImpersonateActions;
 use Lynxlab\ADA\Module\Impersonate\ImpersonateException;
 use Lynxlab\ADA\Module\Impersonate\LinkedUsers;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Base config file
  */
-require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
+require_once(realpath(__DIR__) . '/../../../config_path.inc.php');
 
 // MODULE's OWN IMPORTS
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 
 /**
  * Get Users (types) allowed to access this module and needed objects
  */
-list($allowedUsersAr, $neededObjAr) = array_values(ImpersonateActions::getAllowedAndNeededAr());
+[$allowedUsersAr, $neededObjAr] = array_values(ImpersonateActions::getAllowedAndNeededAr());
 
 /**
  * Performs basic controls before entering this module
  */
 $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR . '/include/module_init.inc.php');
-require_once(ROOT_DIR . '/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 /**
- * @var AMACollaboraACLDataHandler $impDH
+ * @var AMAImpersonateDataHandler $impDH
  */
-$impDH = AMAImpersonateDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+$impDH = AMAImpersonateDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
-$retArray = array('status' => 'ERROR');
+$retArray = ['status' => 'ERROR'];
 session_write_close();
 
 // sanitizie data
@@ -52,15 +60,11 @@ $passedData = [];
 $needed = [
     [
         'key' => 'linkedType',
-        'sanitize' => function ($v) {
-            return intval($v);
-        },
+        'sanitize' => fn ($v) => intval($v),
     ],
     [
         'key' => 'sourceId',
-        'sanitize' => function ($v) {
-            return intval($v);
-        },
+        'sanitize' => fn ($v) => intval($v),
     ],
 ];
 
@@ -77,7 +81,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
      * it's a POST, save the passed data
      */
     if (array_key_exists('sess_userObj', $_SESSION)) {
-        $sourceUser = read_user($passedData['sourceId']);
+        $sourceUser = DBRead::readUser($passedData['sourceId']);
         if ($passedData['linkedType'] > 0) {
             // if the session user has an inactive link, activate it
             $linkedObj = $impDH->findBy('LinkedUsers', [
@@ -88,23 +92,21 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             ]);
             if (is_array($linkedObj) && count($linkedObj) > 0) {
                 $linkedObj = reset($linkedObj);
-                $linkedObj->setIs_active(true);
+                $linkedObj->setIsActive(true);
                 $linkUpdate = true;
             } else {
                 // create a new user
                 $targetArr = $sourceUser->toArray();
-                $targetArr['username'] = LinkedUsers::getNewUserPrefix()[$passedData['linkedType']].$targetArr['username'];
+                $targetArr['username'] = LinkedUsers::getNewUserPrefix()[$passedData['linkedType']] . $targetArr['username'];
                 // fix a weirdness in object constructor
                 $targetArr['email'] = $targetArr['e_mail'];
-                $targetArr = array_map(function($el) {
-                    return strlen(trim($el))>0 ? trim($el) : null;
-                }, $targetArr);
+                $targetArr = array_map(fn ($el) => strlen(trim($el ?? '')) > 0 ? trim($el ?? '') : null, $targetArr);
                 if ($passedData['linkedType'] == AMA_TYPE_SWITCHER) {
-                    $targetUser = new \ADASwitcher($targetArr);
-                } else if ($passedData['linkedType'] == AMA_TYPE_AUTHOR) {
-                    $targetUser = new \ADAAuthor($targetArr);
-                } else if ($passedData['linkedType'] == AMA_TYPE_TUTOR) {
-                    $targetUser = new \ADAPractitioner($targetArr);
+                    $targetUser = new ADASwitcher($targetArr);
+                } elseif ($passedData['linkedType'] == AMA_TYPE_AUTHOR) {
+                    $targetUser = new ADAAuthor($targetArr);
+                } elseif ($passedData['linkedType'] == AMA_TYPE_TUTOR) {
+                    $targetUser = new ADAPractitioner($targetArr);
                 }
                 // set a random password, 24 char length
                 $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._";
@@ -114,30 +116,29 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 // fix the type that was copied from the sourceUser
                 $targetUser->setType($passedData['linkedType']);
                 // save the new user
-                $result = \MultiPort::addUser($targetUser, array($_SESSION['sess_selected_tester']));
+                $result = MultiPort::addUser($targetUser, [$_SESSION['sess_selected_tester']]);
                 if ($result > 0) {
                     $targetUser->setUserId($result);
-                    if ($targetUser instanceof \ADAAuthor) {
-                        require_once ROOT_DIR . '/admin/include/AdminUtils.inc.php';
-                        \AdminUtils::performCreateAuthorAdditionalSteps($targetUser->getId());
-                    } else if ($targetUser instanceof \ADASwitcher || $targetUser instanceof \ADAPractitioner) {
-                        require_once ROOT_DIR . '/admin/include/AdminUtils.inc.php';
-                        \AdminUtils::createUploadDirForUser($targetUser->getId());
+                    if ($targetUser instanceof ADAAuthor) {
+                        AdminUtils::performCreateAuthorAdditionalSteps($targetUser->getId());
+                    } elseif ($targetUser instanceof ADASwitcher || $targetUser instanceof ADAPractitioner) {
+                        AdminUtils::createUploadDirForUser($targetUser->getId());
                     }
-                } else $res = new ImpersonateException(translateFN("Impossibile creare l'utente collegato"));
+                } else {
+                    $res = new ImpersonateException(translateFN("Impossibile creare l'utente collegato"));
+                }
 
-                if ($sourceUser->getId()>0 && $targetUser->getId()>0) {
+                if ($sourceUser->getId() > 0 && $targetUser->getId() > 0) {
                     $linkedObj = new LinkedUsers();
                     $linkUpdate = false;
-                    $linkedObj->setSource_id($sourceUser->getId())->setLinked_id($targetUser->getId())
-                              ->setSource_type($sourceUser->getType())->setLinked_type($targetUser->getType())->setIs_active(true);
+                    $linkedObj->setSourceId($sourceUser->getId())->setLinkedId($targetUser->getId())
+                              ->setSourceType($sourceUser->getType())->setLinkedType($targetUser->getType())->setIsActive(true);
                 }
             }
 
             if (isset($linkedObj) && $linkedObj instanceof LinkedUsers) {
                 $res = $impDH->saveLinkedUsers($linkedObj->toArray(), $linkUpdate);
             }
-
         } else {
             $res = new ImpersonateException(translateFN('Passare il tipo di utente da collegare'));
         }
@@ -146,7 +147,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-if (AMA_DB::isError($res) || $res instanceof ImpersonateException) {
+if (AMADB::isError($res) || $res instanceof ImpersonateException) {
     // if it's an error display the error message
     $retArray['status'] = "ERROR";
     $retArray['msg'] = $res->getMessage();

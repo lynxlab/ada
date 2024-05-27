@@ -10,9 +10,10 @@
 
 namespace Lynxlab\ADA\Module\EtherpadIntegration;
 
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Module\EtherpadIntegration\AMAEtherpadDataHandler;
+use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadBase;
 use Ramsey\Uuid\Uuid;
-
-if (!defined('MODULES_ETHERPAD_HASHKEYTABLE')) define('MODULES_ETHERPAD_HASHKEYTABLE', AMAEtherpadDataHandler::PREFIX . 'hashkey');
 
 /**
  * Store ADA unique key to hash ADA ids to Etherpad ids
@@ -24,20 +25,21 @@ class HashKey extends EtherpadBase
      *
      * @var string
      */
-    public const table = MODULES_ETHERPAD_HASHKEYTABLE;
+    public const TABLE = AMAEtherpadDataHandler::PREFIX . 'hashkey';
 
     protected $uuid;
     protected $isActive;
 
-    public function __construct($data = array())
+    public function __construct($data = [])
     {
         parent::__construct($data);
     }
 
-    public static function build() {
-        if (array_key_exists('sess_selected_tester',$_SESSION)) {
-            $etDH = AMAEtherpadDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
-            $retval = $etDH->findOneBy('HashKey',[ 'isActive' => true ]);
+    public static function build()
+    {
+        if (array_key_exists('sess_selected_tester', $_SESSION)) {
+            $etDH = AMAEtherpadDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+            $retval = $etDH->findOneBy('HashKey', [ 'isActive' => true ]);
             $tester = $_SESSION['sess_selected_tester'];
         } else {
             $etDH = null;
@@ -51,7 +53,7 @@ class HashKey extends EtherpadBase
             if (!is_null($etDH)) {
                 try {
                     $saveResult = $etDH->saveHashKey($retval->toArray());
-                } catch (EtherpadException $e) {
+                } catch (EtherpadException) {
                     $saveResult = false;
                     $retval = new self();
                 }

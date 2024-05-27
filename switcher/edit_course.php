@@ -1,46 +1,41 @@
 <?php
 
-/**
- * File edit_course.php
- *
- * The switcher can use this module to update the informations about an existing
- * course.
- *
- *
- * @package
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2010, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link
- * @version		0.1
- */
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Forms\CourseModelForm;
+use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Translator;
+use Lynxlab\ADA\Main\Utilities;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'course_instance');
+$variableToClearAR = ['node', 'layout', 'course', 'course_instance'];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+$allowedUsersAr = [AMA_TYPE_SWITCHER];
 
 /**
  * Performs basic controls before entering this module
  */
-$neededObjAr = array(
-    AMA_TYPE_SWITCHER => array('layout', 'course')
-);
+$neededObjAr = [
+    AMA_TYPE_SWITCHER => ['layout', 'course'],
+];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = whoami();  // = admin!
-
-include_once 'include/switcher_functions.inc.php';
+$self = Utilities::whoami();  // = admin!
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -58,38 +53,35 @@ include_once 'include/switcher_functions.inc.php';
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
+ * @var object $user_messages
+ * @var object $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
  */
 SwitcherHelper::init($neededObjAr);
-
-include_once ROOT_DIR . '/services/include/NodeEditing.inc.php';
+$common_dh = AMACommonDataHandler::getInstance();
 
 /*
  * YOUR CODE HERE
  */
-require_once ROOT_DIR . '/include/Forms/CourseModelForm.inc.php';
-
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
-
-    $providerAuthors = $dh->find_authors_list(array('username'), '');
-    $authors = array();
+    $providerAuthors = $dh->findAuthorsList(['username'], '');
+    $authors = [];
     foreach ($providerAuthors as $author) {
         $authors[$author[0]] = $author[1];
     }
 
     $availableLanguages = Translator::getSupportedLanguages();
-    $languages = array();
+    $languages = [];
     foreach ($availableLanguages as $language) {
         $languages[$language['id_lingua']] = $language['nome_lingua'];
     }
@@ -97,39 +89,39 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $form = new CourseModelForm($authors, $languages);
     $form->fillWithPostData();
     if ($form->isValid()) {
-        $course = array(
-            'nome' => isset($_POST['nome']) ? $_POST['nome'] : null,
-            'titolo' => isset($_POST['titolo']) ? $_POST['titolo'] : null,
-            'descr' => isset($_POST['descrizione']) ? $_POST['descrizione'] : null,
-            'd_create' => isset($_POST['data_creazione']) ? $_POST['data_creazione'] : null,
-            'd_publish' => isset($_POST['data_pubblicazione']) ? $_POST['data_pubblicazione'] : null,
-            'id_autore' => isset($_POST['id_utente_autore']) ? $_POST['id_utente_autore'] : null,
-            'id_nodo_toc' => isset($_POST['id_nodo_toc']) ? $_POST['id_nodo_toc'] : null,
-            'id_nodo_iniziale' => isset($_POST['id_nodo_iniziale']) ? $_POST['id_nodo_iniziale'] : null,
-            'media_path' => isset($_POST['media_path']) ? $_POST['media_path'] : null,
-            'id_lingua' => isset($_POST['id_lingua']) ? $_POST['id_lingua'] : null,
-            'static_mode' => isset($_POST['static_mode']) ? $_POST['static_mode'] : null,
-            'crediti' => isset($_POST['crediti']) ? $_POST['crediti'] : null,
-            'duration_hours' => isset($_POST['duration_hours']) ? $_POST['duration_hours'] : null,
-            'service_level' => isset($_POST['service_level']) ? $_POST['service_level'] : null
-        );
-        $result = $dh->set_course($_POST['id_corso'], $course);
+        $course = [
+            'nome' => $_POST['nome'] ?? null,
+            'titolo' => $_POST['titolo'] ?? null,
+            'descr' => $_POST['descrizione'] ?? null,
+            'd_create' => $_POST['data_creazione'] ?? null,
+            'd_publish' => $_POST['data_pubblicazione'] ?? null,
+            'id_autore' => $_POST['id_utente_autore'] ?? null,
+            'id_nodo_toc' => $_POST['id_nodo_toc'] ?? null,
+            'id_nodo_iniziale' => $_POST['id_nodo_iniziale'] ?? null,
+            'media_path' => $_POST['media_path'] ?? null,
+            'id_lingua' => $_POST['id_lingua'] ?? null,
+            'static_mode' => $_POST['static_mode'] ?? null,
+            'crediti' => $_POST['crediti'] ?? null,
+            'duration_hours' => $_POST['duration_hours'] ?? null,
+            'service_level' => $_POST['service_level'] ?? null,
+        ];
+        $result = $dh->setCourse($_POST['id_corso'], $course);
 
-        if (!AMA_DataHandler::isError($result)) {
-            $service_dataAr = $common_dh->get_service_info_from_course($_POST['id_corso']);
-            if (!AMA_Common_DataHandler::isError($service_dataAr)) {
-                $update_serviceDataAr = array(
+        if (!AMADataHandler::isError($result)) {
+            $service_dataAr = $common_dh->getServiceInfoFromCourse($_POST['id_corso']);
+            if (!AMACommonDataHandler::isError($service_dataAr)) {
+                $update_serviceDataAr = [
                     'service_name' => $_POST['titolo'],
                     'service_description' => $_POST['descrizione'],
                     'service_level' => $_POST['service_level'],
                     'service_duration' => $service_dataAr[4],
                     'service_min_meetings' => $service_dataAr[5],
                     'service_max_meetings' => $service_dataAr[6],
-                    'service_meeting_duration' => $service_dataAr[7]
-                );
-                $result = $common_dh->set_service($service_dataAr[0], $update_serviceDataAr);
-                if (AMA_Common_DataHandler::isError($result)) {
-                     $form = new CText("Si è verificato un errore durante l'aggiornamento dei dati del corso");
+                    'service_meeting_duration' => $service_dataAr[7],
+                ];
+                $result = $common_dh->setService($service_dataAr[0], $update_serviceDataAr);
+                if (AMACommonDataHandler::isError($result)) {
+                    $form = new CText("Si è verificato un errore durante l'aggiornamento dei dati del corso");
                 } else {
                     // AGGIORNARE l'oggetto corso in sessione e poi fare il redirect a view_course.php
                     //header('Location: view_course.php?id_course=' . $_POST['id_corso']);
@@ -138,7 +130,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
             }
         } else {
-             $form = new CText("Si è verificato un errore durante l'aggiornamento dei dati del corso");
+            $form = new CText("Si è verificato un errore durante l'aggiornamento dei dati del corso");
         }
     } else {
         $form = new CText('Form non valido');
@@ -147,14 +139,14 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
         $form = new CText(translateFN('Corso non trovato'));
     } else {
-        $providerAuthors = $dh->find_authors_list(array('username'), '');
-        $authors = array();
+        $providerAuthors = $dh->findAuthorsList(['username'], '');
+        $authors = [];
         foreach ($providerAuthors as $author) {
             $authors[$author[0]] = $author[1];
         }
 
         $availableLanguages = Translator::getSupportedLanguages();
-        $languages = array();
+        $languages = [];
         foreach ($availableLanguages as $language) {
             $languages[$language['id_lingua']] = $language['nome_lingua'];
         }
@@ -163,7 +155,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $form->addFileSection();
 
         if ($courseObj instanceof Course && $courseObj->isFull()) {
-            $formData = array(
+            $formData = [
                 'id_corso' => $courseObj->getId(),
                 'id_utente_autore' => $courseObj->getAuthorId(),
                 'id_lingua' => $courseObj->getLanguageId(),
@@ -179,8 +171,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 'data_pubblicazione' => $courseObj->getPublicationDate(),
                 'crediti' =>  $courseObj->getCredits(), // modifica in Course
                 'duration_hours' => $courseObj->getDurationHours(),
-                'service_level'  =>$courseObj->getServiceLevel()
-            );
+                'service_level'  => $courseObj->getServiceLevel(),
+            ];
             $form->fillWithArrayData($formData);
         } else {
             $form = new CText(translateFN('Corso non trovato'));
@@ -191,26 +183,26 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 $label = translateFN('Modifica dei dati del corso');
 $help = translateFN('Da qui il provider admin può modificare un corso esistente');
 
-$content_dataAr = array(
+$content_dataAr = [
     'user_name' => $user_name,
     'user_type' => $user_type,
     'status' => $status,
     'label' => $label,
     'help' => $help,
     'data' => $form->getHtml(),
-    'module' => isset($module) ? $module : '',
-    'messages' => $user_messages->getHtml()
-);
+    'module' => $module ?? '',
+    'messages' => $user_messages->getHtml(),
+];
 
-$layout_dataAr['JS_filename'] = array(
-		JQUERY,
-		JQUERY_MASKEDINPUT,
-		JQUERY_NO_CONFLICT,
-		ROOT_DIR .'/js/switcher/edit_content.js'
-);
+$layout_dataAr['JS_filename'] = [
+    JQUERY,
+    JQUERY_MASKEDINPUT,
+    JQUERY_NO_CONFLICT,
+    ROOT_DIR . '/js/switcher/edit_content.js',
+];
 
 $optionsAr['onload_func'] = 'initDateField();  includeFCKeditor(\'descrizione\');';
 if ($courseObj instanceof Course && $courseObj->isFull()) {
-	$optionsAr['onload_func'] .= 'initEditCourse('.$userObj->getId().','.$courseObj->getId().');';
+    $optionsAr['onload_func'] .= 'initEditCourse(' . $userObj->getId() . ',' . $courseObj->getId() . ');';
 }
 ARE::render($layout_dataAr, $content_dataAr, null, $optionsAr);

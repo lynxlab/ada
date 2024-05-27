@@ -10,8 +10,11 @@
 * @version		  0.1
 */
 namespace AdaApi;
+
+use Lynxlab\ADA\Main\ArrayToXML\ArrayToXML;
+
 class XmlView extends \Slim\View {
-	
+
 	public function render($rootName)
 	{
 		/**
@@ -20,11 +23,10 @@ class XmlView extends \Slim\View {
 		 * else the element name is going to be the root name and the
 		 * root name shall have a _info appended
 		 */
-		
+
 		if (substr($rootName, -1)==='s') $elementName = substr($rootName, 0, strlen($rootName)-1);
 		else { $elementName = $rootName; $rootName .= '_info'; }
-				
-		require_once ROOT_DIR.'/include/ArrayToXML/array2xml.inc.php';		
+
 		$this->data['app']->response()->header('Content-Type', 'application/xml');
 
 		/**
@@ -32,13 +34,13 @@ class XmlView extends \Slim\View {
 		 * of array (to nicely nest the produced XML)
 		 * else it's enough to nest one level
 		 */
-		
+
 		if (is_array(reset($this->data['output'])))
 		{
 			foreach ($this->data['output'] as $element) $outArr[$elementName][] = $element;
 		} else $outArr[$elementName] = $this->data['output'];
-		
-		echo \ArrayToXML::toXml($outArr,$rootName);
+
+		echo ArrayToXML::toXml($outArr,$rootName);
 	}
 }
 ?>

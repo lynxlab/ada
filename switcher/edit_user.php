@@ -1,43 +1,42 @@
 <?php
 
-/**
- * Edit user - this module provides edit user functionality
- *
- *
- * @package
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2009, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link
- * @version		0.1
- */
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\Forms\UserProfileForm;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
+use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
+use Lynxlab\ADA\Module\Secretquestion\AMASecretQuestionDataHandler;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'course_instance');
+$variableToClearAR = ['node', 'layout', 'course', 'course_instance'];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+$allowedUsersAr = [AMA_TYPE_SWITCHER];
 
 /**
  * Performs basic controls before entering this module
  */
-$neededObjAr = array(
-    AMA_TYPE_SWITCHER => array('layout')
-);
+$neededObjAr = [
+    AMA_TYPE_SWITCHER => ['layout'],
+];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = whoami();
-
-include_once 'include/switcher_functions.inc.php';
+$self = Utilities::whoami();
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -55,172 +54,170 @@ include_once 'include/switcher_functions.inc.php';
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
+ * @var object $user_messages
+ * @var object $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
  */
 SwitcherHelper::init($neededObjAr);
 
-include_once ROOT_DIR . '/admin/include/AdminUtils.inc.php';
 /*
  * YOUR CODE HERE
  */
-require_once ROOT_DIR . '/include/Forms/UserProfileForm.inc.php';
 
 /**
  * Check if the switcher is editing a student profile
  */
-$isEditingAStudent = (DataValidator::is_uinteger(isset($_GET['usertype']) ? $_GET['usertype'] : null) === AMA_TYPE_STUDENT);
-$isEditingATutor = (DataValidator::is_uinteger(isset($_GET['usertype']) ? $_GET['usertype'] : null) === AMA_TYPE_TUTOR);
+$isEditingAStudent = (DataValidator::isUinteger($_GET['usertype'] ?? null) === AMA_TYPE_STUDENT);
+$isEditingATutor = (DataValidator::isUinteger($_GET['usertype'] ?? null) === AMA_TYPE_TUTOR);
 
 if (!$isEditingAStudent) {
-	/**
-	 * Code to execute when the switcher is not editing a student
-	 */
-	if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+    /**
+     * Code to execute when the switcher is not editing a student
+     */
+    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
-		/**
-		 * @author giorgio 29/mag/2013
-		 *
-		 * added parameters to force allowEditConfirm
-		 */
-	    $form = new UserProfileForm(array(), $isEditingATutor, true);
-	    $form->fillWithPostData();
-	    $password = trim($_POST['password']);
-	    $passwordcheck = trim($_POST['passwordcheck']);
-	    if(DataValidator::validate_password_modified($password, $passwordcheck) === FALSE) {
-	    	$message = translateFN('Le password digitate non corrispondono o contengono caratteri non validi.');
-	    	header("Location: edit_user.php?message=$message&id_user=".$_POST['id_utente']);
-	    	exit();
-	    }
-	    if ($form->isValid()) {
-	        if(isset($_POST['layout']) && $_POST['layout'] != 'none') {
-	            $user_layout = $_POST['layout'];
-	        } else {
-	            $user_layout = '';
-	        }
-	        $userId = DataValidator::is_uinteger($_POST['id_utente']);
-	        if($userId > 0) {
-	            $editedUserObj = MultiPort::findUser($userId);
-				$editedUserObj->fillWithArrayData($_POST);
-				if($password != '') {
-					$editedUserObj->setPassword($password);
-				}
-				if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
-					if (array_key_exists('secretquestion', $_POST) &&
-						array_key_exists('secretanswer', $_POST) &&
-						strlen($_POST['secretquestion'])>0 && strlen($_POST['secretanswer'])>0) {
-							/**
-							 * Save secret question and answer and set the registration as successful
-							 */
-							$sqdh = \AMASecretQuestionDataHandler::instance();
-							$sqdh->saveUserQandA($editedUserObj->getId(), $_POST['secretquestion'], $_POST['secretanswer']);
-						}
-				}
-	            $result = MultiPort::setUser($editedUserObj, array(), true);
-	        }
+        /**
+         * @author giorgio 29/mag/2013
+         *
+         * added parameters to force allowEditConfirm
+         */
+        $form = new UserProfileForm([], $isEditingATutor, true);
+        $form->fillWithPostData();
+        $password = trim($_POST['password']);
+        $passwordcheck = trim($_POST['passwordcheck']);
+        if (DataValidator::validatePasswordModified($password, $passwordcheck) === false) {
+            $message = translateFN('Le password digitate non corrispondono o contengono caratteri non validi.');
+            header("Location: edit_user.php?message=$message&id_user=" . $_POST['id_utente']);
+            exit();
+        }
+        if ($form->isValid()) {
+            if (isset($_POST['layout']) && $_POST['layout'] != 'none') {
+                $user_layout = $_POST['layout'];
+            } else {
+                $user_layout = '';
+            }
+            $userId = DataValidator::isUinteger($_POST['id_utente']);
+            if ($userId > 0) {
+                $editedUserObj = MultiPort::findUser($userId);
+                $editedUserObj->fillWithArrayData($_POST);
+                if ($password != '') {
+                    $editedUserObj->setPassword($password);
+                }
+                if (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) {
+                    if (
+                        array_key_exists('secretquestion', $_POST) &&
+                        array_key_exists('secretanswer', $_POST) &&
+                        strlen($_POST['secretquestion']) > 0 && strlen($_POST['secretanswer']) > 0
+                    ) {
+                        /**
+                         * Save secret question and answer and set the registration as successful
+                         */
+                        $sqdh = AMASecretQuestionDataHandler::instance();
+                        $sqdh->saveUserQandA($editedUserObj->getId(), $_POST['secretquestion'], $_POST['secretanswer']);
+                    }
+                }
+                $result = MultiPort::setUser($editedUserObj, [], true);
+            }
 
-	        if(!AMA_DataHandler::isError($result)) {
-	            header('Location: view_user.php?id_user=' . $editedUserObj->getId());
-	            exit();
-	        }
+            if (!AMADataHandler::isError($result)) {
+                header('Location: view_user.php?id_user=' . $editedUserObj->getId());
+                exit();
+            }
 
 
 
 
-	//        if($result > 0) {
-	//          if($userObj instanceof ADAAuthor) {
-	//              AdminUtils::performCreateAuthorAdditionalSteps($userObj->getId());
-	//          }
-	//
-	//          $message = translateFN('Utente aggiunto con successo');
-	//          header('Location: ' . $userObj->getHomePage($message));
-	//          exit();
-	//        } else {
-	//            $form = new CText(translateFN('Si sono verificati dei problemi durante la creazione del nuovo utente'));
-	//        }
+            //        if($result > 0) {
+            //          if($userObj instanceof ADAAuthor) {
+            //              AdminUtils::performCreateAuthorAdditionalSteps($userObj->getId());
+            //          }
+            //
+            //          $message = translateFN('Utente aggiunto con successo');
+            //          header('Location: ' . $userObj->getHomePage($message));
+            //          exit();
+            //        } else {
+            //            $form = new CText(translateFN('Si sono verificati dei problemi durante la creazione del nuovo utente'));
+            //        }
+        } else {
+            $form = new CText(translateFN('I dati inseriti nel form non sono validi'));
+        }
+    } else {
+        $userId = DataValidator::isUinteger($_GET['id_user']);
+        if ($userId === false) {
+            $data = new CText('Utente non trovato');
+        } else {
+            $editedUserObj = MultiPort::findUser($userId);
+            $formData = $editedUserObj->toArray();
+            $formData['email'] = $formData['e_mail'];
+            $formData['uname'] = $formData['username'];
+            unset($formData['e_mail']);
+            /**
+             * @author giorgio 29/mag/2013
+             *
+             * added parameters to force allowEditConfirm
+             */
+            $data = new UserProfileForm([], $isEditingATutor, true);
+            $data->fillWithArrayData($formData);
+        }
+    }
 
-	    } else {
-	        $form = new CText(translateFN('I dati inseriti nel form non sono validi'));
-	    }
-	} else {
-	    $userId = DataValidator::is_uinteger($_GET['id_user']);
-	    if($userId === false) {
-	        $data = new CText('Utente non trovato');
-	    }
-	    else {
-	        $editedUserObj = MultiPort::findUser($userId);
-	        $formData = $editedUserObj->toArray();
-			$formData['email'] = $formData['e_mail'];
-			$formData['uname'] = $formData['username'];
-	        unset($formData['e_mail']);
-	        /**
-	         * @author giorgio 29/mag/2013
-	         *
-	         * added parameters to force allowEditConfirm
-	         */
-	        $data = new UserProfileForm(array(), $isEditingATutor, true);
-	        $data->fillWithArrayData($formData);
-	    }
-	}
+    $label = translateFN('Modifica utente');
+    $help = translateFN('Da qui il provider admin può modificare il profilo di un utente esistente');
+    if (!is_null($editedUserObj)) {
+        $label .= ': ' . $editedUserObj->getUserName() . ' (' . $editedUserObj->getFullName() . ')';
+    }
 
-	$label = translateFN('Modifica utente');
-	$help = translateFN('Da qui il provider admin può modificare il profilo di un utente esistente');
-	if (!is_null($editedUserObj)) {
-		$label .= ': '.$editedUserObj->getUserName().' ('.$editedUserObj->getFullName().')';
-	}
+    $layout_dataAr['JS_filename'] = [
+        JQUERY,
+        JQUERY_MASKEDINPUT,
+        JQUERY_NO_CONFLICT,
+    ];
 
-	$layout_dataAr['JS_filename'] = array(
-			JQUERY,
-			JQUERY_MASKEDINPUT,
-			JQUERY_NO_CONFLICT
-	);
+    $optionsAr['onload_func'] = 'initDateField();';
 
-	$optionsAr['onload_func'] = 'initDateField();';
+    /*
+     * Display error message  if the password is incorrect
+     */
+    $message = DataValidator::checkInputValues('message', 'Message', INPUT_GET);
+    if ($message !== false) {
+        $help = $message;
+    }
 
-	/*
-	 * Display error message  if the password is incorrect
-	 */
-	if(isset($_GET['message']))
-	{
-		$help= $_GET['message'];
-
-	}
-
-	$content_dataAr = array(
-	    'user_name' => $user_name,
-	    'user_type' => $user_type,
-	    'status' => $status,
-	    'label' => $label,
-	    'help' => $help,
-	    'data' => $data->getHtml(),
-	    'module' => isset($module) ? $module : '',
-	    'messages' => $user_messages->getHtml()
-	);
+    $content_dataAr = [
+        'user_name' => $user_name,
+        'user_type' => $user_type,
+        'status' => $status,
+        'label' => $label,
+        'help' => $help,
+        'data' => $data->getHtml(),
+        'module' => $module ?? '',
+        'messages' => $user_messages->getHtml(),
+    ];
 } else {
-	/**
-	 * If the switcher is editing a student, use browsing/edit_user.php
-	 */
-	include realpath(dirname(__FILE__)).'/../browsing/edit_user.php';
+    /**
+     * If the switcher is editing a student, use browsing/edit_user.php
+     */
+    include realpath(__DIR__) . '/../browsing/edit_user.php';
 
-	$label = translateFN('Modifica utente');
-	$help = translateFN('Da qui il provider admin può modificare il profilo di un utente esistente');
+    $label = translateFN('Modifica utente');
+    $help = translateFN('Da qui il provider admin può modificare il profilo di un utente esistente');
 
-	if (!is_null($editUserObj)) {
-		$label .= ': '.$editUserObj->getUserName().' ('.$editUserObj->getFullName().')';
-	}
+    if (!is_null($editUserObj)) {
+        $label .= ': ' . $editUserObj->getUserName() . ' (' . $editUserObj->getFullName() . ')';
+    }
 
-	$content_dataAr['label'] = $label;
-	$content_dataAr['help'] = $help;
+    $content_dataAr['label'] = $label;
+    $content_dataAr['help'] = $help;
 }
 
-ARE::render($layout_dataAr, $content_dataAr,NULL,$optionsAr);
+ARE::render($layout_dataAr, $content_dataAr, null, $optionsAr);

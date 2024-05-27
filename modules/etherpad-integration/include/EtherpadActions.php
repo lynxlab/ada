@@ -17,18 +17,17 @@ namespace Lynxlab\ADA\Module\EtherpadIntegration;
  */
 class EtherpadActions
 {
-
     /**
      * global actions
      *
      * @var integer
      */
-    const USER_MAP = 1;
-    const INSTANCE_GROUP_MAP = 2;
-    const CREATE_PAD = 4;
-    const DELETE_PAD = 8;
-    const ACCESS_PAD = 16;
-    const CREATE_SESSION = 32;
+    public const USER_MAP = 1;
+    public const INSTANCE_GROUP_MAP = 2;
+    public const CREATE_PAD = 4;
+    public const DELETE_PAD = 8;
+    public const ACCESS_PAD = 16;
+    public const CREATE_SESSION = 32;
 
     /**
      * array that defines who can do what
@@ -44,26 +43,14 @@ class EtherpadActions
      */
     protected static function getCanDoArr()
     {
-        return array(
-            self::USER_MAP => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR, AMA_TYPE_STUDENT]);
-            },
-            self::INSTANCE_GROUP_MAP => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR]);
-            },
-            self::CREATE_PAD => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR]);
-            },
-            self::DELETE_PAD => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR]);
-            },
-            self::CREATE_SESSION => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR, AMA_TYPE_STUDENT]);
-            },
-            self::ACCESS_PAD => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR, AMA_TYPE_STUDENT]);
-            },
-        );
+        return [
+            self::USER_MAP => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR, AMA_TYPE_STUDENT]),
+            self::INSTANCE_GROUP_MAP => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR]),
+            self::CREATE_PAD => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR]),
+            self::DELETE_PAD => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR]),
+            self::CREATE_SESSION => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR, AMA_TYPE_STUDENT]),
+            self::ACCESS_PAD => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR, AMA_TYPE_STUDENT]),
+        ];
     }
 
     /**
@@ -74,7 +61,7 @@ class EtherpadActions
      */
     public static function getConstantFromString($stringConstant)
     {
-        return defined(__CLASS__ . '::' . $stringConstant) ? constant(__CLASS__ . '::' . $stringConstant) : null;
+        return defined(self::class . '::' . $stringConstant) ? constant(self::class . '::' . $stringConstant) : null;
     }
 
     /**
@@ -89,18 +76,26 @@ class EtherpadActions
      */
     public static function canDo($actionID, $object = null, $userType = null)
     {
-        if (is_null(self::$CANDOARR)) self::$CANDOARR = self::getCanDoArr();
-        if (is_null($userType) && array_key_exists('sess_userObj', $_SESSION)) $userType = $_SESSION['sess_userObj']->getType();
-        if (is_null($userType) || intval($userType) <= 0) return false;
+        if (is_null(self::$CANDOARR)) {
+            self::$CANDOARR = self::getCanDoArr();
+        }
+        if (is_null($userType) && array_key_exists('sess_userObj', $_SESSION)) {
+            $userType = $_SESSION['sess_userObj']->getType();
+        }
+        if (is_null($userType) || intval($userType) <= 0) {
+            return false;
+        }
         if (is_array($actionID)) {
             foreach ($actionID as $anAction) {
-                if (self::canDo($anAction, $object, $userType)) return true;
+                if (self::canDo($anAction, $object, $userType)) {
+                    return true;
+                }
             }
             return false;
         } else {
             if (array_key_exists($actionID, self::$CANDOARR)) {
                 if (is_callable(self::$CANDOARR[$actionID])) {
-                    return call_user_func_array(self::$CANDOARR[$actionID], array($object, $userType));
+                    return call_user_func_array(self::$CANDOARR[$actionID], [$object, $userType]);
                 } else {
                     return in_array(intval($userType), self::$CANDOARR[$actionID]);
                 }
@@ -118,30 +113,32 @@ class EtherpadActions
      */
     public static function getAllowedAndNeededAr($fileName = null)
     {
-        $retArr = array(
-            'allowedUsers' => array(),
-            'neededObjects' => array()
-        );
-        if (is_null($fileName)) $fileName = realpath($_SERVER['SCRIPT_FILENAME']);
+        $retArr = [
+            'allowedUsers' => [],
+            'neededObjects' => [],
+        ];
+        if (is_null($fileName)) {
+            $fileName = realpath($_SERVER['SCRIPT_FILENAME']);
+        }
         $fileName = trim(str_replace([ MODULES_ETHERPAD_PATH, ROOT_DIR ], '', $fileName), '/');
         if (strlen($fileName) > 0) {
             // admin, coordinator, author and editor have access to everything by default
-            $retArr['neededObjects'] = array(
-                AMA_TYPE_ADMIN => array('layout'),
-                AMA_TYPE_SWITCHER => array('layout'),
-                AMA_TYPE_TUTOR => array('layout'),
-                AMA_TYPE_SUPERTUTOR => array('layout'),
-                AMA_TYPE_AUTHOR => array('layout'),
-                AMA_TYPE_STUDENT => array('layout'),
-            );
+            $retArr['neededObjects'] = [
+                AMA_TYPE_ADMIN => ['layout'],
+                AMA_TYPE_SWITCHER => ['layout'],
+                AMA_TYPE_TUTOR => ['layout'],
+                AMA_TYPE_SUPERTUTOR => ['layout'],
+                AMA_TYPE_AUTHOR => ['layout'],
+                AMA_TYPE_STUDENT => ['layout'],
+            ];
             switch ($fileName) {
                 // separate index.php from default, prevents too many redirect error
                 case 'index.php':
-                    $retArr['neededObjects'] = array(
-                        AMA_TYPE_TUTOR => array('layout', 'course', 'course_instance'),
-                        AMA_TYPE_SUPERTUTOR => array('layout', 'course', 'course_instance'),
-                        AMA_TYPE_STUDENT => array('layout', 'course', 'course_instance'),
-                    );
+                    $retArr['neededObjects'] = [
+                        AMA_TYPE_TUTOR => ['layout', 'course', 'course_instance'],
+                        AMA_TYPE_SUPERTUTOR => ['layout', 'course', 'course_instance'],
+                        AMA_TYPE_STUDENT => ['layout', 'course', 'course_instance'],
+                    ];
                     break;
                 default:
                     // everybody allowed
@@ -149,7 +146,9 @@ class EtherpadActions
             }
         }
         // if no allowedUsers specified, use the neededObjects keys
-        if (count($retArr['allowedUsers']) <= 0) $retArr['allowedUsers'] = array_keys($retArr['neededObjects']);
+        if (count($retArr['allowedUsers']) <= 0) {
+            $retArr['allowedUsers'] = array_keys($retArr['neededObjects']);
+        }
         return $retArr;
     }
 }

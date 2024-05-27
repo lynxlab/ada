@@ -6,16 +6,10 @@
  * @version		0.1
  */
 
-[
-    // load js files
+load_js([
     '../../js/include/basic.js',
     '../../js/include/menu_functions.js',
-].forEach((srcjs) => {
-    const script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src = srcjs;
-    document.getElementsByTagName("head")[0].appendChild(script);
-});
+]);
 
 /**
  * shows and after 500ms removes the div to give feedback to the user about

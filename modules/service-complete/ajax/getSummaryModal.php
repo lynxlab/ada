@@ -1,49 +1,44 @@
 <?php
 
-/**
- * SERVICE-COMPLETE MODULE.
- *
- * @package        service-complete module
- * @author         Giorgio Consorti <g.consorti@lynxlab.com>
- * @copyright      Copyright (c) 2021, Lynx s.r.l.
- * @license        http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link           service-complete
- * @version        0.1
- */
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Module\Servicecomplete\AMACompleteDataHandler;
+use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 ini_set('display_errors', '0');
 error_reporting(E_ALL);
 /**
  * Base config file
  */
-require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
+require_once(realpath(__DIR__) . '/../../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array();
+$variableToClearAR = [];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR);
+$allowedUsersAr = [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR];
 
 /**
  * Get needed objects
  */
-$neededObjAr = array(
-    AMA_TYPE_SWITCHER => array('layout'),
-    AMA_TYPE_TUTOR => array('layout'),
-);
+$neededObjAr = [
+    AMA_TYPE_SWITCHER => ['layout'],
+    AMA_TYPE_TUTOR => ['layout'],
+];
 
 /**
  * Performs basic controls before entering this module
  */
 $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR . '/include/module_init.inc.php');
-require_once(ROOT_DIR . '/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
-
-// MODULE's OWN IMPORTS
-require_once MODULES_SERVICECOMPLETE_PATH . '/include/init.inc.php';
 
 $GLOBALS['dh'] = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
@@ -52,57 +47,55 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
     $courseInstanceId = isset($_GET['instanceId']) ? (int) $_GET['instanceId'] : 0;
     $studentId = isset($_GET['studentId']) ? (int) $_GET['studentId'] : 0;
 
-    $modal = \CDOMElement::create('div', 'class:ui small modal');
+    $modal = CDOMElement::create('div', 'class:ui small modal');
 
-    $header = \CDOMElement::create('div', 'class:header');
-    $header->addChild(new \CText(translateFN('Resoconto condizioni di completamento')));
+    $header = CDOMElement::create('div', 'class:header');
+    $header->addChild(new CText(translateFN('Resoconto condizioni di completamento')));
 
-    $contentDIV = \CDOMElement::create('div', 'class:content');
-    $content = new \CText(translateFN('Erroe nella generazione del resoconto'));
+    $contentDIV = CDOMElement::create('div', 'class:content');
+    $content = new CText(translateFN('Erroe nella generazione del resoconto'));
 
-    $actions = \CDOMElement::create('div', 'class:actions');
-    $okbtn = \CDOMElement::create('div', 'class:ui green button');
-    $okbtn->addChild(new \CText(translateFN('OK')));
+    $actions = CDOMElement::create('div', 'class:actions');
+    $okbtn = CDOMElement::create('div', 'class:ui green button');
+    $okbtn->addChild(new CText(translateFN('OK')));
     $actions->addChild($okbtn);
 
     $modal->addChild($header);
     $modal->addChild($contentDIV);
     $modal->addChild($actions);
 
-    if ($courseId>0 && $instanceId>0 && $studentId>0) {
-		// load the conditionset for this course
-		$conditionSet = $GLOBALS['dh']->get_linked_conditionset_for_course($courseId);
-		if ($conditionSet instanceof CompleteConditionSet) {
+    if ($courseId > 0 && $instanceId > 0 && $studentId > 0) {
+        // load the conditionset for this course
+        $conditionSet = $GLOBALS['dh']->getLinkedConditionsetForCourse($courseId);
+        if ($conditionSet instanceof CompleteConditionSet) {
             $condString = $conditionSet->toString();
-            if (strlen($condString)>0) {
-
-                $codeCont = \CDOMElement::create('div', 'id:conditionCodeCont');
-                $codeBtn = \CDOMElement::create('button','class:ui icon blue small right floated button');
-                $codeBtn->setAttribute('onclick','javascript:$j(\'#conditionCode\').slideToggle();');
-                $codeBtn->addChild(\CDOMElement::create('i','class:code icon'));
+            if (strlen($condString) > 0) {
+                $codeCont = CDOMElement::create('div', 'id:conditionCodeCont');
+                $codeBtn = CDOMElement::create('button', 'class:ui icon blue small right floated button');
+                $codeBtn->setAttribute('onclick', 'javascript:$j(\'#conditionCode\').slideToggle();');
+                $codeBtn->addChild(CDOMElement::create('i', 'class:code icon'));
                 $codeCont->addChild($codeBtn);
-                $codeCont->addChild(\CDOMElement::create('div','class:clearfix'));
+                $codeCont->addChild(CDOMElement::create('div', 'class:clearfix'));
 
-                $codeDIV = \CDOMElement::create('div','id:conditionCode');
-                $h3 = \CDOMElement::create('h3');
-                $h3->addChild(new \CText(translateFN('Codice della condizione')));
-                $pre = \CDOMElement::create('span','class:pre');
-                $pre->addChild(new \CText(str_replace('::buildAndCheck','', $condString)));
+                $codeDIV = CDOMElement::create('div', 'id:conditionCode');
+                $h3 = CDOMElement::create('h3');
+                $h3->addChild(new CText(translateFN('Codice della condizione')));
+                $pre = CDOMElement::create('span', 'class:pre');
+                $pre->addChild(new CText(str_replace('::buildAndCheck', '', $condString)));
                 $codeDIV->addChild($h3);
                 $codeDIV->addChild($pre);
                 $codeCont->addChild($codeDIV);
                 $contentDIV->addChild($codeCont);
             }
-			// evaluate the conditionset for this instance ID and course ID
-			$summary = $conditionSet->buildSummary(array($courseInstanceId, $studentId));
-			if (is_array($summary) && count($summary)>0) {
-				$content = \CDOMElement::create('div','class:ui large list');
-				foreach($summary as $condition=>$condData) {
-					$content->addChild($condition::getCDOMSummary($condData));
-				}
-			}
-		}
-
+            // evaluate the conditionset for this instance ID and course ID
+            $summary = $conditionSet->buildSummary([$courseInstanceId, $studentId]);
+            if (is_array($summary) && count($summary) > 0) {
+                $content = CDOMElement::create('div', 'class:ui large list');
+                foreach ($summary as $condition => $condData) {
+                    $content->addChild($condition::getCDOMSummary($condData));
+                }
+            }
+        }
     }
 
     $contentDIV->addChild($content);

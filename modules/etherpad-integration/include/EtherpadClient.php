@@ -10,6 +10,8 @@
 
 namespace Lynxlab\ADA\Module\EtherpadIntegration;
 
+use EtherpadLite\Client;
+
 /**
  * extend \EtherpadLite\Client to have a hash prepended to etherpad groups and author mapper
  *
@@ -19,9 +21,9 @@ namespace Lynxlab\ADA\Module\EtherpadIntegration;
  * to potentially conflicting ids such as ada user (mapped to etherpad author) and
  * course instance (mapped to etherpad goups)
  */
-class EtherpadClient extends \EtherpadLite\Client
+class EtherpadClient extends Client
 {
-    const separator = '#';
+    public const SEPARATOR = '#';
     private static $hashKey = null;
 
     public function __construct($apiKey, $baseUrl = null)
@@ -35,7 +37,7 @@ class EtherpadClient extends \EtherpadLite\Client
     private function getHashed($val)
     {
         if (self::$hashKey instanceof HashKey) {
-            $val = self::$hashKey->getUuid() . self::separator . $val;
+            $val = self::$hashKey->getUuid() . self::SEPARATOR . $val;
         }
         return $val;
     }

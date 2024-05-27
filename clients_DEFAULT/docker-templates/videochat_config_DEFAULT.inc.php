@@ -1,4 +1,5 @@
 <?php
+
 /**
  * client own video chat configuration
  *

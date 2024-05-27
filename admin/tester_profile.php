@@ -1,44 +1,44 @@
 <?php
-/**
- * ADMIN.
- *
- *
- * @package
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2009, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link
- * @version		0.1
- */
+
+use Lynxlab\ADA\Admin\AdminHelper;
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\ADAError;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
+use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'course_instance');
+$variableToClearAR = ['node', 'layout', 'course', 'course_instance'];
 
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_ADMIN);
+$allowedUsersAr = [AMA_TYPE_ADMIN];
 
 /**
  * Performs basic controls before entering this module
  */
-$neededObjAr = array(
-  AMA_TYPE_ADMIN => array('layout')
-);
+$neededObjAr = [
+  AMA_TYPE_ADMIN => ['layout'],
+];
 
-require_once ROOT_DIR.'/include/module_init.inc.php';
-$self =  whoami();  // = admin!
-
-include_once 'include/admin_functions.inc.php';
+require_once ROOT_DIR . '/include/module_init.inc.php';
+$self =  Utilities::whoami();  // = admin!
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -56,20 +56,22 @@ include_once 'include/admin_functions.inc.php';
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
+ * @var object $user_messages
+ * @var object $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
  */
 AdminHelper::init($neededObjAr);
+$common_dh = AMACommonDataHandler::getInstance();
 
 /*
  * YOUR CODE HERE
@@ -80,68 +82,68 @@ AdminHelper::init($neededObjAr);
  * 3. link a lista utenti presenti sul tester
  */
 
-$id_tester = DataValidator::is_uinteger($_GET['id_tester']);
+$id_tester = DataValidator::checkInputValues('id_tester', 'Integer', INPUT_GET);
 
-if($id_tester !== FALSE) {
-  $tester_infoAr = $common_dh->get_tester_info_from_id($id_tester);
-  if(AMA_Common_DataHandler::isError($tester_infoAr)) {
-    $errObj = new ADA_Error($tester_infoAr);
-  }
-  else {
-    $testersAr = array();
-    $tester_dataAr = array(
-      array(translateFN('id')       , $tester_infoAr[0]),
-      array(translateFN('Nome')     , $tester_infoAr[1]),
-      array(translateFN('Ragione Sociale')       , $tester_infoAr[2]),
-      array(translateFN('Indirizzo')  , $tester_infoAr[3]),
-      array(translateFN('Citt&agrave')     , $tester_infoAr[4]),
-      array(translateFN('Provincia') , $tester_infoAr[5]),
-      array(translateFN('Nazione')  , $tester_infoAr[6]),
-      array(translateFN('Telefono')    , $tester_infoAr[7]),
-      array(translateFN('E-mail')    , $tester_infoAr[8]),
-      array(translateFN('Descrizione')     , $tester_infoAr[11]),
-      array(translateFN('Responsabile')     , $tester_infoAr[9]),
-      array(translateFN('IBAN')     , $tester_infoAr[12]),
-      array(translateFN('Puntatore al database')  , $tester_infoAr[10])
-      );
-    //$tester_data = BaseHtmlLib::tableElement('',array(),$tester_dataAr);
-
+if ($id_tester !== false) {
+    $tester_infoAr = $common_dh->getTesterInfoFromId($id_tester);
+    if (AMACommonDataHandler::isError($tester_infoAr)) {
+        $errObj = new ADAError($tester_infoAr);
+    } else {
+        $testersAr = [];
+        $tester_dataAr = [
+        [translateFN('id'), $tester_infoAr[0]],
+        [translateFN('Nome'), $tester_infoAr[1]],
+        [translateFN('Ragione Sociale'), $tester_infoAr[2]],
+        [translateFN('Indirizzo'), $tester_infoAr[3]],
+        [translateFN('Citt&agrave'), $tester_infoAr[4]],
+        [translateFN('Provincia'), $tester_infoAr[5]],
+        [translateFN('Nazione'), $tester_infoAr[6]],
+        [translateFN('Telefono'), $tester_infoAr[7]],
+        [translateFN('E-mail'), $tester_infoAr[8]],
+        [translateFN('Descrizione'), $tester_infoAr[11]],
+        [translateFN('Responsabile'), $tester_infoAr[9]],
+        [translateFN('IBAN'), $tester_infoAr[12]],
+        [translateFN('Puntatore al database'), $tester_infoAr[10]],
+        ];
+        //$tester_data = BaseHtmlLib::tableElement('',array(),$tester_dataAr);
 
 
+
+        /*
+        $services_dataAr = $common_dh->getInfoForTesterServices($id_tester);
+        if(AMACommonDataHandler::isError($services_dataAr)) {
+        $errObj = new ADAError($services_dataAr);
+        }
+        else {
+        $tester_services = AdminModuleHtmlLib::displayServicesOnThisTester($id_tester, $services_dataAr);
+        }
+        */
+
+        $tester_dsn = MultiPort::getDSN($tester_infoAr[10]);
+        if ($tester_dsn != null) {
+            $tester_dh = AMADataHandler::instance($tester_dsn);
+            $users_on_this_tester = $tester_dh->countUsersByType([AMA_TYPE_STUDENT,AMA_TYPE_AUTHOR,AMA_TYPE_TUTOR,AMA_TYPE_SWITCHER,AMA_TYPE_ADMIN]);
+            if (AMADataHandler::isError($users_on_this_tester)) {
+                $errObj = new ADAError($users_on_this_tester);
+            } else {
+                // $users_list_link = CDOMElement::create('div','id:tester_users');
+                $tester_dataAr[] = [translateFN('Numero di utenti presenti sul provider: '),  $users_on_this_tester];
+            }
+        }
+        $tester_data = AdminModuleHtmlLib::displayTesterInfo($id_tester, $tester_dataAr);
+        if (isset($users_on_this_tester) && intval($users_on_this_tester) > 0) {
+            $link = CDOMElement::create('a', 'class:ui button,href:list_users.php?id_tester=' . $id_tester);
+            $link->addChild(new CText(translateFN('Lista utenti')));
+            $tester_data->addChild($link);
+        }
+    }
+    $data = $tester_data->getHtml();
+    $menuOptions['id_tester'] = $id_tester;
+} else {
     /*
-    $services_dataAr = $common_dh->get_info_for_tester_services($id_tester);
-    if(AMA_Common_DataHandler::isError($services_dataAr)) {
-      $errObj = new ADA_Error($services_dataAr);
-    }
-    else {
-      $tester_services = AdminModuleHtmlLib::displayServicesOnThisTester($id_tester, $services_dataAr);
-    }
-    */
-
-    $tester_dsn = MultiPort::getDSN($tester_infoAr[10]);
-    if($tester_dsn != NULL) {
-      $tester_dh = AMA_DataHandler::instance($tester_dsn);
-      $users_on_this_tester = $tester_dh->count_users_by_type(array(AMA_TYPE_STUDENT,AMA_TYPE_AUTHOR,AMA_TYPE_TUTOR,AMA_TYPE_SWITCHER,AMA_TYPE_ADMIN));
-      if(AMA_DataHandler::isError($users_on_this_tester)) {
-        $errObj = new ADA_Error($users_on_this_tester);
-      }
-      else {
-        // $users_list_link = CDOMElement::create('div','id:tester_users');
-        $tester_dataAr[] = [translateFN('Numero di utenti presenti sul provider: '),  $users_on_this_tester];
-      }
-    }
-    $tester_data = AdminModuleHtmlLib::displayTesterInfo($id_tester, $tester_dataAr);
-    if (isset($users_on_this_tester) && intval($users_on_this_tester)>0) {
-      $link = CDOMElement::create('a','class:ui button,href:list_users.php?id_tester='.$id_tester);
-      $link->addChild(new CText(translateFN('Lista utenti')));
-      $tester_data->addChild($link);
-    }
-  }
-}
-else {
-  /*
-   * non e' stato passato id_tester
-   */
+     * non e' stato passato id_tester
+     */
+    $data = '';
 }
 
 
@@ -154,26 +156,25 @@ else {
 
 $label = translateFN("Profilo del provider");
 
-$home_link = CDOMElement::create('a','href:admin.php');
+$home_link = CDOMElement::create('a', 'href:admin.php');
 $home_link->addChild(new CText(translateFN("Home dell'Amministratore")));
 $module = $home_link->getHtml() . ' > ' . $label;
 
 // $help  = translateFN("Profilo del provider");
 
-$content_dataAr = array(
+$content_dataAr = [
   'user_name'    => $user_name,
   'user_type'    => $user_type,
   'status'       => $status,
   'label'        => $label,
   // 'help'         => $help,
-  'data'         => $tester_data->getHtml(),
+  'data'         => $data,
                     // $tester_services->getHtml() .
                     // $users_list_link->getHtml(),
   'module'       => $module,
-);
+];
 
 
-$menuOptions['id_tester'] = $_GET['id_tester'];
 
-ARE::render($layout_dataAr, $content_dataAr,NULL,NULL,$menuOptions);
-?>
+
+ARE::render($layout_dataAr, $content_dataAr, null, null, $menuOptions);

@@ -10,8 +10,6 @@
 
 namespace Lynxlab\ADA\Module\EtherpadIntegration;
 
-if (!defined('MODULES_ETHERPAD_PADSTABLE')) define('MODULES_ETHERPAD_PADSTABLE', AMAEtherpadDataHandler::PREFIX . 'pads');
-
 /**
  * Etherpad pads
  */
@@ -22,14 +20,14 @@ class Pads extends EtherpadBase
      *
      * @var string
      */
-    public const table = MODULES_ETHERPAD_PADSTABLE;
-    public const groupPadsSeparator = "$";
-    public const instancePadId = 'all';
-    public const instancePadName = 'Documento condiviso di classe';
-    public const nodePadName = "Documento condiviso per il nodo %s";
+    public const TABLE = AMAEtherpadDataHandler::PREFIX . 'pads';
+    public const GROUPPADSSEPARATOR = "$";
+    public const INSTANCEPADID = 'all';
+    public const INSTANCEPADNAME = 'Documento condiviso di classe';
+    public const NODEPADNAME = "Documento condiviso per il nodo %s";
 
-    private const emptyNodePadText = 'nodeemptypad.txt';
-    private const emptyInstancePadText = 'instanceemptypad.txt';
+    private const EMPTYNODEPADTEXT = 'nodeemptypad.txt';
+    private const EMPTYINSTANCEPADTEXT = 'instanceemptypad.txt';
 
     protected $padId;
     protected $groupId;
@@ -39,13 +37,14 @@ class Pads extends EtherpadBase
     protected $isActive;
     protected $creationDate;
 
-    public function __construct($data = array())
+    public function __construct($data = [])
     {
         parent::__construct($data);
     }
 
 
-    public static function getEmptyPadText($nodeData) {
+    public static function getEmptyPadText($nodeData)
+    {
         $text = '';
         $prefix = MODULES_ETHERPAD_PATH . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR;
         if (!MULTIPROVIDER && isset($GLOBALS['user_provider'])) {
@@ -53,8 +52,8 @@ class Pads extends EtherpadBase
         } else {
             $clientPrefix = '';
         }
-        $isNodePad = is_array($nodeData) && count($nodeData)>0;
-        $loadfile = $isNodePad ? self::emptyNodePadText : self::emptyInstancePadText;
+        $isNodePad = is_array($nodeData) && count($nodeData) > 0;
+        $loadfile = $isNodePad ? self::EMPTYNODEPADTEXT : self::EMPTYINSTANCEPADTEXT;
 
         $filename = $clientPrefix . $loadfile;
         // check for $loadfile in provider dir
@@ -70,7 +69,7 @@ class Pads extends EtherpadBase
             if ($isNodePad) {
                 $replaceArr = array_filter($nodeData, 'is_scalar');
                 // placeholder support: replace every occurence of $nodeData keys surrounded by percent sign with its value
-                $searchArr = array_map(function($el) {return '%'.$el.'%'; }, array_keys($replaceArr));
+                $searchArr = array_map(fn ($el) => '%' . $el . '%', array_keys($replaceArr));
                 $text = str_replace($searchArr, $replaceArr, $text);
             }
         }

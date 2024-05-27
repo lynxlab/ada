@@ -1,0 +1,125 @@
+{
+    "name": "lynxlab/ada",
+    "type": "project",
+    "description": "ADA stand for Ambiente Digitale di Apprendimento. It is a knowledge and e-learning management system that allows you to create, administer and follow courses via the Internet or intranet with ease, flexibility and customization.",
+    "require": {
+        "php": ">=8.0",
+        "bower-asset/jquery-ui": "^1.12",
+        "bower-asset/jquery.maskedinput": "^1.4",
+        "cweagans/composer-patches": "^1.7",
+        "dompdf/dompdf": "^2.0",
+        "j7mbo/twitter-api-php": "^1.0",
+        "james-heinrich/getid3": "^1.9",
+        "jawira/case-converter": "^3.5",
+        "mobiledetect/mobiledetectlib": "^4.8",
+        "npm-asset/datatables.net": "^1.13",
+        "npm-asset/datatables.net-dt": "^3.2",
+        "npm-asset/datatables.net-rowgroup": "^1.5",
+        "npm-asset/datatables.net-rowgroup-se": "^1.5",
+        "npm-asset/datatables.net-se": "^1.13",
+        "npm-asset/jplayer": "^2.9",
+        "npm-asset/jquery": "^3.7",
+        "npm-asset/jquery-blockui": "^2.70",
+        "npm-asset/jquery-migrate": "^3.4",
+        "npm-asset/jquery-ui": "^1.13",
+        "npm-asset/nivo-slider": "^3.2",
+        "npm-asset/smartmenus": "^1.2",
+        "oomphinc/composer-installers-extender": "^2.0",
+        "phpmailer/phpmailer": "^6.9",
+        "platforg/adobe-connect": "^0.2.4",
+        "rospdf/pdf-php": "^0.12.67",
+        "simplepie/simplepie": "^1.8"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Lynxlab\\ADA\\Admin\\": "admin/include/",
+            "Lynxlab\\ADA\\ADAPHPMailer\\": "include/phpMailer/",
+            "Lynxlab\\ADA\\Main\\": "include/",
+            "Lynxlab\\ADA\\CORE\\": "include/COREv0.1/",
+            "Lynxlab\\ADA\\Browsing\\": "browsing/include/",
+            "Lynxlab\\ADA\\Comunica\\": "comunica/include/",
+            "Lynxlab\\ADA\\Services\\": "services/include/",
+            "Lynxlab\\ADA\\Switcher\\": "switcher/include/",
+            "Lynxlab\\ADA\\Tutor\\": "tutor/include/",
+            "Lynxlab\\ADA\\Widgets\\": "widgets/include/"
+        },
+        "files": [
+            "include/Output/functions.php",
+            "include/Service/functions.php",
+            "include/Upload/functions.php",
+            "browsing/include/functions.php",
+            "comunica/include/functions.php",
+            "services/include/functions.php",
+            "switcher/include/functions.php",
+            "tutor/include/functions.php",
+            "widgets/include/functions.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Stefano Penge",
+            "email": "steve@lynxlab.com"
+        },
+        {
+            "name": "Maurizio Mazzoneschi",
+            "email": "graffio@lynxlab.com"
+        },
+        {
+            "name": "Giorgio Consorti",
+            "email": "g.consorti@lynxlab.com"
+        }
+    ],
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.51",
+        "phpcompatibility/php-compatibility": "^9.3",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "rector/rector": "^1.0",
+        "phpstan/phpstan": "^1.10"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "composer/installers": true,
+            "oomphinc/composer-installers-extender": true,
+            "cweagans/composer-patches": true
+        }
+    },
+    "replace": {
+        "bower-asset/jquery": "*"
+    },
+    "extra": {
+        "installer-types": [
+            "npm-asset",
+            "bower-asset"
+        ],
+        "installer-paths": {
+            "js/vendor/{$name}/": [
+                "type:npm-asset",
+                "type:bower-asset"
+            ]
+        },
+        "patches" : {
+            "npm-asset/datatables.net-se": {
+                "datatables patch for semantic-ui" : "patches/dataTables.semanticui.js.patch"
+            }
+        }
+    },
+    "scripts": {
+        "cs": "vendor/bin/phpcs",
+        "cbf": "vendor/bin/phpcbf",
+        "cs-fixer-dry-run": "vendor/bin/php-cs-fixer fix --dry-run --verbose --diff --path-mode=intersection",
+        "cs-fixer": "vendor/bin/php-cs-fixer fix --verbose --diff --path-mode=intersection",
+        "rector-dry-run": "vendor/bin/rector process --dry-run",
+        "rector": "vendor/bin/rector process",
+        "stan": "vendor/bin/phpstan analyze"
+    }
+}

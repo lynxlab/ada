@@ -1,13 +1,16 @@
 <?php
+
 /**
- * @package 	badges module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2019, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     badges module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2019, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
 
 namespace Lynxlab\ADA\Module\Badges;
+
+use Ramsey\Uuid\Uuid;
 
 /**
  * Badge class
@@ -15,17 +18,14 @@ namespace Lynxlab\ADA\Module\Badges;
  * @author giorgio
  *
  */
-
- if (!defined('CourseBadgeTable')) define('CourseBadgeTable', AMABadgesDataHandler::PREFIX . 'course_badges');
-
-class CourseBadge extends BadgesBase {
-
-	/**
-	 * table name for this class
-	 *
-	 * @var string
-	 */
-    const table =  CourseBadgeTable;
+class CourseBadge extends BadgesBase
+{
+    /**
+     * table name for this class
+     *
+     * @var string
+     */
+    public const TABLE =  AMABadgesDataHandler::PREFIX . 'course_badges';
 
     protected $badge_uuid;
     protected $id_corso;
@@ -34,7 +34,7 @@ class CourseBadge extends BadgesBase {
     /**
      * Get the value of badge_uuid
      */
-    public function getBadge_uuid()
+    public function getBadgeUuid()
     {
         return $this->badge_uuid;
     }
@@ -44,7 +44,7 @@ class CourseBadge extends BadgesBase {
      *
      * @return  self
      */
-    public function setBadge_uuid($badge_uuid)
+    public function setBadgeUuid($badge_uuid)
     {
         $this->badge_uuid = $badge_uuid;
 
@@ -58,16 +58,16 @@ class CourseBadge extends BadgesBase {
      *
      * @return self
      */
-    public function setBadge_uuid_bin($uuid)
+    public function setBadgeUuidBin($uuid)
     {
-        $tmpuuid = \Ramsey\Uuid\Uuid::fromBytes($uuid);
-        return $this->setBadge_uuid($tmpuuid->toString());
+        $tmpuuid = Uuid::fromBytes($uuid);
+        return $this->setBadgeUuid($tmpuuid->toString());
     }
 
     /**
      * Get the value of id_corso
      */
-    public function getId_corso()
+    public function getIdCorso()
     {
         return $this->id_corso;
     }
@@ -77,7 +77,7 @@ class CourseBadge extends BadgesBase {
      *
      * @return  self
      */
-    public function setId_corso($id_corso)
+    public function setIdCorso($id_corso)
     {
         $this->id_corso = $id_corso;
 
@@ -87,7 +87,7 @@ class CourseBadge extends BadgesBase {
     /**
      * Get the value of id_conditionset
      */
-    public function getId_conditionset()
+    public function getIdConditionset()
     {
         return $this->id_conditionset;
     }
@@ -97,7 +97,7 @@ class CourseBadge extends BadgesBase {
      *
      * @return  self
      */
-    public function setId_conditionset($id_conditionset)
+    public function setIdConditionset($id_conditionset)
     {
         $this->id_conditionset = $id_conditionset;
 

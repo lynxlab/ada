@@ -28,8 +28,8 @@ limitations under the License.
     SimpleWidget.prototype.defaults = {};
 
     function SimpleWidget(el, options) {
-      this.$el = $j(el);
-      this.options = $j.extend({}, this.defaults, options);
+      this.$el = $(el);
+      this.options = $.extend({}, this.defaults, options);
     }
 
     SimpleWidget.prototype.destroy = function() {
@@ -55,8 +55,8 @@ limitations under the License.
         for (_i = 0, _len = $el.length; _i < _len; _i++) {
           el = $el[_i];
           widget = new widget_class(el, options);
-          if (!$j.data(el, data_key)) {
-            $j.data(el, data_key, widget);
+          if (!$.data(el, data_key)) {
+            $.data(el, data_key, widget);
           }
           widget._init();
         }
@@ -68,11 +68,11 @@ limitations under the License.
         _results = [];
         for (_i = 0, _len = $el.length; _i < _len; _i++) {
           el = $el[_i];
-          widget = $j.data(el, data_key);
+          widget = $.data(el, data_key);
           if (widget && (widget instanceof SimpleWidget)) {
             widget.destroy();
           }
-          _results.push($j.removeData(el, data_key));
+          _results.push($.removeData(el, data_key));
         }
         return _results;
       };
@@ -81,7 +81,7 @@ limitations under the License.
         result = null;
         for (_i = 0, _len = $el.length; _i < _len; _i++) {
           el = $el[_i];
-          widget = $j.data(el, getDataKey());
+          widget = $.data(el, getDataKey());
           if (widget && (widget instanceof SimpleWidget)) {
             widget_function = widget[function_name];
             if (widget_function && (typeof widget_function === 'function')) {
@@ -91,7 +91,7 @@ limitations under the License.
         }
         return result;
       };
-      return $j.fn[widget_name] = function() {
+      return $.fn[widget_name] = function() {
         var $el, args, argument1, function_name, options;
         argument1 = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
         $el = this;
@@ -131,8 +131,8 @@ limitations under the License.
     MouseWidget.is_mouse_handled = false;
 
     MouseWidget.prototype._init = function() {
-      this.$el.bind('mousedown.mousewidget', $j.proxy(this._mouseDown, this));
-      this.$el.bind('touchstart.mousewidget', $j.proxy(this._touchStart, this));
+      this.$el.bind('mousedown.mousewidget', $.proxy(this._mouseDown, this));
+      this.$el.bind('touchstart.mousewidget', $.proxy(this._touchStart, this));
       this.is_mouse_started = false;
       this.mouse_delay = 0;
       this._mouse_delay_timer = null;
@@ -144,7 +144,7 @@ limitations under the License.
       var $document;
       this.$el.unbind('mousedown.mousewidget');
       this.$el.unbind('touchstart.mousewidget');
-      $document = $j(document);
+      $document = $(document);
       $document.unbind('mousemove.mousewidget');
       return $document.unbind('mouseup.mousewidget');
     };
@@ -179,11 +179,11 @@ limitations under the License.
 
     MouseWidget.prototype._handleStartMouse = function() {
       var $document;
-      $document = $j(document);
-      $document.bind('mousemove.mousewidget', $j.proxy(this._mouseMove, this));
-      $document.bind('touchmove.mousewidget', $j.proxy(this._touchMove, this));
-      $document.bind('mouseup.mousewidget', $j.proxy(this._mouseUp, this));
-      $document.bind('touchend.mousewidget', $j.proxy(this._touchEnd, this));
+      $document = $(document);
+      $document.bind('mousemove.mousewidget', $.proxy(this._mouseMove, this));
+      $document.bind('touchmove.mousewidget', $.proxy(this._touchMove, this));
+      $document.bind('mouseup.mousewidget', $.proxy(this._mouseUp, this));
+      $document.bind('touchend.mousewidget', $.proxy(this._touchEnd, this));
       if (this.mouse_delay) {
         return this._startMouseDelayTimer();
       }
@@ -236,7 +236,7 @@ limitations under the License.
 
     MouseWidget.prototype._handleMouseUp = function(position_info) {
       var $document;
-      $document = $j(document);
+      $document = $(document);
       $document.unbind('mousemove.mousewidget');
       $document.unbind('touchmove.mousewidget');
       $document.unbind('mouseup.mousewidget');
@@ -390,7 +390,7 @@ limitations under the License.
 
     /*
     Create tree from data.
-    
+
     Structure of data is:
     [
         {
@@ -423,7 +423,7 @@ limitations under the License.
 
     /*
     Add child.
-    
+
     tree.addChild(
         new Node('child1')
     );
@@ -437,7 +437,7 @@ limitations under the License.
 
     /*
     Add child at position. Index starts at 0.
-    
+
     tree.addChildAtPosition(
         new Node('abc'),
         1
@@ -458,7 +458,7 @@ limitations under the License.
 
     /*
     Remove child. This also removes the children of the node.
-    
+
     tree.removeChild(tree.children[0]);
     */
 
@@ -475,18 +475,18 @@ limitations under the License.
 
     /*
     Get child index.
-    
+
     var index = getChildIndex(node);
     */
 
 
     Node.prototype.getChildIndex = function(node) {
-      return $j.inArray(node, this.children);
+      return $.inArray(node, this.children);
     };
 
     /*
     Does the tree have children?
-    
+
     if (tree.hasChildren()) {
         //
     }
@@ -503,15 +503,15 @@ limitations under the License.
 
     /*
     Iterate over all the nodes in the tree.
-    
+
     Calls callback with (node, level).
-    
+
     The callback must return true to continue the iteration on current node.
-    
+
     tree.iterate(
         function(node, level) {
            console.log(node.name);
-    
+
            // stop iteration after level 2
            return (level <= 2);
         }
@@ -542,9 +542,9 @@ limitations under the License.
 
     /*
     Move node relative to another node.
-    
+
     Argument position: Position.BEFORE, Position.AFTER or Position.Inside
-    
+
     // move node1 after node2
     tree.moveNode(node1, node2, Position.AFTER);
     */
@@ -756,13 +756,13 @@ limitations under the License.
 
   /*
   Copyright 2013 Marco Braak
-  
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
       http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -888,7 +888,7 @@ limitations under the License.
     };
 
     JqTreeWidget.prototype.loadDataFromUrl = function(url, parent_node, on_finished) {
-      if ($j.type(url) !== 'string') {
+      if ($.type(url) !== 'string') {
         on_finished = parent_node;
         parent_node = url;
         url = null;
@@ -916,7 +916,7 @@ limitations under the License.
         }
       };
       parseUrlInfo = function() {
-        if ($j.type(url_info) === 'string') {
+        if ($.type(url_info) === 'string') {
           url_info = {
             url: url_info
           };
@@ -930,7 +930,7 @@ limitations under the License.
         url_info = this._getDataUrlInfo(parent_node);
       }
       parseUrlInfo();
-      return $j.ajax({
+      return $.ajax({
         url: url_info.url,
         data: url_info.data,
         type: url_info.method.toUpperCase(),
@@ -938,14 +938,14 @@ limitations under the License.
         dataType: 'json',
         success: function(response) {
           var data;
-          if ($j.isArray(response) || typeof response === 'object') {
+          if ($.isArray(response) || typeof response === 'object') {
             data = response;
           } else {
-            data = $j.parseJSON(response);
+            data = $.parseJSON(response);
           }
           removeLoadingClass();
           _this._loadData(data, parent_node);
-          if (on_finished && $j.isFunction(on_finished)) {
+          if (on_finished && $.isFunction(on_finished)) {
             return on_finished();
           }
         },
@@ -1152,7 +1152,7 @@ limitations under the License.
 
     JqTreeWidget.prototype.scrollToNode = function(node) {
       var $element, top;
-      $element = $j(node.element);
+      $element = $(node.element);
       top = $element.offset().top - this.$el.offset().top;
       return this.scroll_handler.scrollTo(top);
     };
@@ -1191,9 +1191,9 @@ limitations under the License.
         this.key_handler = new KeyHandler(this);
       }
       this._initData();
-      this.element.click($j.proxy(this._click, this));
+      this.element.click($.proxy(this._click, this));
       if (this.options.useContextMenu) {
-        return this.element.bind('contextmenu', $j.proxy(this._contextmenu, this));
+        return this.element.bind('contextmenu', $.proxy(this._contextmenu, this));
       }
     };
 
@@ -1216,9 +1216,9 @@ limitations under the License.
     JqTreeWidget.prototype._getDataUrlInfo = function(node) {
       var data, data_url, url_info;
       data_url = this.options.dataUrl || this.element.data('url');
-      if ($j.isFunction(data_url)) {
+      if ($.isFunction(data_url)) {
         return data_url(node);
-      } else if ($j.type(data_url) === 'string') {
+      } else if ($.type(data_url) === 'string') {
         url_info = {
           url: data_url
         };
@@ -1290,7 +1290,7 @@ limitations under the License.
         } else {
           class_string = '';
         }
-        return $j("<ul class=\"jqtree_common " + class_string + "\"></ul>");
+        return $("<ul class=\"jqtree_common " + class_string + "\"></ul>");
       };
       createLi = function(node) {
         var $li;
@@ -1312,7 +1312,7 @@ limitations under the License.
         }
         class_string = li_classes.join(' ');
         escaped_name = escapeIfNecessary(node.name);
-        return $j("<li class=\"" + class_string + "\"><div class=\"jqtree-element jqtree_common\"><span class=\"jqtree-title jqtree_common\">" + escaped_name + "</span></div></li>");
+        return $("<li class=\"" + class_string + "\"><div class=\"jqtree-element jqtree_common\"><span class=\"jqtree-title jqtree_common\">" + escaped_name + "</span></div></li>");
       };
       createFolderLi = function(node) {
         var button_char, button_classes, escaped_name, folder_classes, getButtonClasses, getFolderClasses;
@@ -1343,7 +1343,7 @@ limitations under the License.
         } else {
           button_char = _this.options.closedIcon;
         }
-        return $j("<li class=\"jqtree_common " + folder_classes + "\"><div class=\"jqtree-element jqtree_common\"><a class=\"jqtree_common " + button_classes + "\">" + button_char + "</a><span class=\"jqtree_common jqtree-title\">" + escaped_name + "</span></div></li>");
+        return $("<li class=\"jqtree_common " + folder_classes + "\"><div class=\"jqtree-element jqtree_common\"><a class=\"jqtree_common " + button_classes + "\">" + button_char + "</a><span class=\"jqtree_common jqtree-title\">" + escaped_name + "</span></div></li>");
       };
       doCreateDomElements = function($element, children, is_root_node, is_open) {
         var $li, $ul, child, _i, _len;
@@ -1378,7 +1378,7 @@ limitations under the License.
 
     JqTreeWidget.prototype._click = function(e) {
       var $button, $el, $target, event, node;
-      $target = $j(e.target);
+      $target = $(e.target);
       $button = $target.closest('.jqtree-toggler');
       if ($button.length) {
         node = this._getNode($button);
@@ -1433,7 +1433,7 @@ limitations under the License.
 
     JqTreeWidget.prototype._contextmenu = function(e) {
       var $div, node;
-      $div = $j(e.target).closest('ul.jqtree-tree .jqtree-element');
+      $div = $(e.target).closest('ul.jqtree-tree .jqtree-element');
       if ($div.length) {
         node = this._getNode($div);
         if (node) {
@@ -1493,8 +1493,8 @@ limitations under the License.
 
     JqTreeWidget.prototype._triggerEvent = function(event_name, values) {
       var event;
-      event = $j.Event(event_name);
-      $j.extend(event, values);
+      event = $.Event(event_name);
+      $.extend(event, values);
       this.element.trigger(event);
       return event;
     };
@@ -1538,7 +1538,7 @@ limitations under the License.
     NodeElement.prototype.init = function(node, tree_widget) {
       this.node = node;
       this.tree_widget = tree_widget;
-      return this.$element = $j(node.element);
+      return this.$element = $(node.element);
     };
 
     NodeElement.prototype.getUl = function() {
@@ -1762,9 +1762,9 @@ limitations under the License.
         return this.tree_widget.options.onSetStateFromStorage(state);
       } else if (typeof localStorage !== "undefined" && localStorage !== null) {
         return localStorage.setItem(this.getCookieName(), state);
-      } else if ($j.cookie) {
-        $j.cookie.raw = true;
-        return $j.cookie(this.getCookieName(), state, {
+      } else if ($.cookie) {
+        $.cookie.raw = true;
+        return $.cookie(this.getCookieName(), state, {
           path: '/'
         });
       }
@@ -1774,7 +1774,7 @@ limitations under the License.
       var state;
       state = this.getStateFromStorage();
       if (state) {
-        this.setState($j.parseJSON(state));
+        this.setState($.parseJSON(state));
         return true;
       } else {
         return false;
@@ -1786,9 +1786,9 @@ limitations under the License.
         return this.tree_widget.options.onGetStateFromStorage();
       } else if (typeof localStorage !== "undefined" && localStorage !== null) {
         return localStorage.getItem(this.getCookieName());
-      } else if ($j.cookie) {
-        $j.cookie.raw = true;
-        return $j.cookie(this.getCookieName());
+      } else if ($.cookie) {
+        $.cookie.raw = true;
+        return $.cookie(this.getCookieName());
       } else {
         return null;
       }
@@ -1938,7 +1938,7 @@ limitations under the License.
 
     DragAndDropHandler.prototype.mouseCapture = function(position_info) {
       var $element, node_element;
-      $element = $j(position_info.target);
+      $element = $(position_info.target);
       if (this.tree_widget.options.onIsMoveHandle && !this.tree_widget.options.onIsMoveHandle($element)) {
         return null;
       }
@@ -1955,7 +1955,7 @@ limitations under the License.
     DragAndDropHandler.prototype.mouseStart = function(position_info) {
       var offset;
       this.refreshHitAreas();
-      offset = $j(position_info.target).offset();
+      offset = $(position_info.target).offset();
       this.drag_element = new DragElement(this.current_item.node, position_info.page_x - offset.left, position_info.page_y - offset.top, this.tree_widget.element);
       this.is_dragging = true;
       this.current_item.$element.addClass('jqtree-moving');
@@ -2111,7 +2111,7 @@ limitations under the License.
       };
       handleFirstNode = function(node, $element) {
         if (node !== _this.current_item.node) {
-          return addPosition(node, Position.BEFORE, getTop($j(node.element)));
+          return addPosition(node, Position.BEFORE, getTop($(node.element)));
         }
       };
       this.iterateVisibleNodes(handleNode, handleOpenFolder, handleClosedFolder, handleAfterOpenFolder, handleFirstNode);
@@ -2143,7 +2143,7 @@ limitations under the License.
         var $element, child, children_length, i, must_iterate_inside, _i, _len, _ref3;
         must_iterate_inside = (node.is_open || !node.element) && node.hasChildren();
         if (node.element) {
-          $element = $j(node.element);
+          $element = $(node.element);
           if (!$element.is(':visible')) {
             return;
           }
@@ -2277,7 +2277,7 @@ limitations under the License.
     function DragElement(node, offset_x, offset_y, $tree) {
       this.offset_x = offset_x;
       this.offset_y = offset_y;
-      this.$element = $j("<span class=\"jqtree-title jqtree-dragging\">" + node.name + "</span>");
+      this.$element = $("<span class=\"jqtree-title jqtree-dragging\">" + node.name + "</span>");
       this.$element.css("position", "absolute");
       $tree.append(this.$element);
     }
@@ -2301,7 +2301,7 @@ limitations under the License.
     function GhostDropHint(node, $element, position) {
       this.$element = $element;
       this.node = node;
-      this.$ghost = $j('<li class="jqtree_common jqtree-ghost"><span class="jqtree_common jqtree-circle"></span><span class="jqtree_common jqtree-line"></span></li>');
+      this.$ghost = $('<li class="jqtree_common jqtree-ghost"><span class="jqtree_common jqtree-circle"></span><span class="jqtree_common jqtree-line"></span></li>');
       if (position === Position.AFTER) {
         this.moveAfter();
       } else if (position === Position.BEFORE) {
@@ -2328,7 +2328,7 @@ limitations under the License.
     };
 
     GhostDropHint.prototype.moveInsideOpenFolder = function() {
-      return $j(this.node.children[0].element).before(this.$ghost);
+      return $(this.node.children[0].element).before(this.$ghost);
     };
 
     GhostDropHint.prototype.moveInside = function() {
@@ -2345,7 +2345,7 @@ limitations under the License.
       var $div, width;
       $div = $element.children('.jqtree-element');
       width = $element.width() - 4;
-      this.$hint = $j('<span class="jqtree-border"></span>');
+      this.$hint = $('<span class="jqtree-border"></span>');
       $div.append(this.$hint);
       this.$hint.css({
         width: width,
@@ -2380,8 +2380,8 @@ limitations under the License.
           parent = _ref3[_i];
           for (_j = 0, _len1 = css_values.length; _j < _len1; _j++) {
             css_value = css_values[_j];
-            if ((_ref4 = $j.css(parent, css_value)) === 'auto' || _ref4 === 'scroll') {
-              return $j(parent);
+            if ((_ref4 = $.css(parent, css_value)) === 'auto' || _ref4 === 'scroll') {
+              return $(parent);
             }
           }
         }
@@ -2432,11 +2432,11 @@ limitations under the License.
 
     ScrollHandler.prototype._handleScrollingWithDocument = function(area) {
       var distance_top;
-      distance_top = area.top - $j(document).scrollTop();
+      distance_top = area.top - $(document).scrollTop();
       if (distance_top < 20) {
-        return $j(document).scrollTop($j(document).scrollTop() - 20);
-      } else if ($j(window).height() - (area.bottom - $j(document).scrollTop()) < 20) {
-        return $j(document).scrollTop($j(document).scrollTop() + 20);
+        return $(document).scrollTop($(document).scrollTop() - 20);
+      } else if ($(window).height() - (area.bottom - $(document).scrollTop()) < 20) {
+        return $(document).scrollTop($(document).scrollTop() + 20);
       }
     };
 
@@ -2446,21 +2446,21 @@ limitations under the License.
         return this.$scroll_parent[0].scrollTop = top;
       } else {
         tree_top = this.tree_widget.$el.offset().top;
-        return $j(document).scrollTop(top + tree_top);
+        return $(document).scrollTop(top + tree_top);
       }
     };
 
     ScrollHandler.prototype.isScrolledIntoView = function(element) {
       var $element, element_bottom, element_top, view_bottom, view_top;
-      $element = $j(element);
+      $element = $(element);
       if (this.$scroll_parent) {
         view_top = 0;
         view_bottom = this.$scroll_parent.height();
         element_top = $element.offset().top - this.scroll_parent_top;
         element_bottom = element_top + $element.height();
       } else {
-        view_top = $j(window).scrollTop();
-        view_bottom = view_top + $j(window).height();
+        view_top = $(window).scrollTop();
+        view_bottom = view_top + $(window).height();
         element_top = $element.offset().top;
         element_bottom = element_top + $element.height();
       }
@@ -2484,11 +2484,11 @@ limitations under the License.
 
     function KeyHandler(tree_widget) {
       this.tree_widget = tree_widget;
-      $j(document).bind('keydown.jqtree', $j.proxy(this.handleKeyDown, this));
+      $(document).bind('keydown.jqtree', $.proxy(this.handleKeyDown, this));
     }
 
     KeyHandler.prototype.deinit = function() {
-      return $j(document).unbind('keydown.jqtree');
+      return $(document).unbind('keydown.jqtree');
     };
 
     KeyHandler.prototype.handleKeyDown = function(e) {
@@ -2498,7 +2498,7 @@ limitations under the License.
       selectNode = function(node) {
         if (node) {
           _this.tree_widget.selectNode(node);
-          if (_this.tree_widget.scroll_handler && (!_this.tree_widget.scroll_handler.isScrolledIntoView($j(node.element).find('.jqtree-element')))) {
+          if (_this.tree_widget.scroll_handler && (!_this.tree_widget.scroll_handler.isScrolledIntoView($(node.element).find('.jqtree-element')))) {
             _this.tree_widget.scrollToNode(node);
           }
           return false;

@@ -10,16 +10,18 @@
 
 namespace Lynxlab\ADA\Module\Impersonate;
 
+use Exception;
+
 /**
  * ImpersonateException class to handle custom exceptions
  *
  * @author giorgio
  */
-class ImpersonateException extends \Exception
+class ImpersonateException extends Exception
 {
     // custom string representation of object
-    public function __toString()
+    public function __toString(): string
     {
-        return __CLASS__ . ": [{$this->code}]: {$this->message}\n";
+        return self::class . ": [{$this->code}]: {$this->message}\n";
     }
 }

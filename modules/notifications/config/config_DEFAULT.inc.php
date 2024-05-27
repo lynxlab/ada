@@ -8,38 +8,21 @@
  * @version     0.1
  */
 
+use Jawira\CaseConverter\Convert;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\Notifications\EventSubscriber;
 
-try {
-    if (!@include_once(MODULES_NOTIFICATIONS_PATH . '/vendor/autoload.php')) {
-        // @ - to suppress warnings,
-        throw new Exception(
-            json_encode(array(
-                'header' => 'Notifications module will not work because autoload file cannot be found!',
-                'message' => 'Please run <code>composer install</code> in the module subdir'
-            ))
-        );
-    } else {
-        // MODULE'S OWN DEFINES HERE
-		if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
-			ADAEventDispatcher::getInstance()->addSubscriber(new Lynxlab\ADA\Module\Notifications\EventSubscriber());
-		}
+// MODULE'S OWN DEFINES HERE
 
-        define('MODULES_NOTIFICATIONS_EMAILPERHOUR', 1800);
+$moduledir = new Convert(str_replace(MODULES_DIR . DIRECTORY_SEPARATOR, '', realpath(__DIR__ . '/..')));
 
-        return true;
-    }
-} catch (Exception $e) {
-    $text = json_decode($e->getMessage(), true);
-    // populating $_GET['message'] is a dirty hack to force the error message to appear in the home page at least
-    if (!isset($_GET['message'])) $_GET['message'] = '';
-    $_GET['message'] .= '<div class="ui icon error message"><i class="ban circle icon"></i><div class="content">';
-    if (array_key_exists('header', $text) && strlen($text['header']) > 0) {
-        $_GET['message'] .= '<div class="header">' . $text['header'] . '</div>';
-    }
-    if (array_key_exists('message', $text) && strlen($text['message']) > 0) {
-        $_GET['message'] .= '<p>' . $text['message'] . '</p>';
-    }
-    $_GET['message'] .= '</div></div>';
+define('MODULES_NOTIFICATIONS', true);
+define('MODULES_NOTIFICATIONS_NAME', join('', $moduledir->toArray()));
+define('MODULES_NOTIFICATIONS_PATH', MODULES_DIR . DIRECTORY_SEPARATOR . $moduledir->getSource());
+define('MODULES_NOTIFICATIONS_HTTP', HTTP_ROOT_DIR . str_replace(ROOT_DIR, '', MODULES_DIR) . '/' . $moduledir->getSource());
+
+if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+    ADAEventDispatcher::getInstance()->addSubscriber(new EventSubscriber());
 }
-return false;
+define('MODULES_NOTIFICATIONS_EMAILPERHOUR', 1800);

@@ -1,50 +1,48 @@
 <?php
 
-/**
- * @package     collabora-access-list module
- * @author      giorgio <g.consorti@lynxlab.com>
- * @copyright   Copyright (c) 2020, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version     0.1
- */
-
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLActions;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLException;
 use Lynxlab\ADA\Module\CollaboraACL\FileACL;
 use Lynxlab\ADA\Module\CollaboraACL\GrantAccessForm;
+use Lynxlab\ADA\Switcher\Subscription;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * Base config file
  */
-require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
+
+require_once(realpath(__DIR__) . '/../../../config_path.inc.php');
 
 // MODULE's OWN IMPORTS
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 
 /**
  * Get Users (types) allowed to access this module and needed objects
  */
-list($allowedUsersAr, $neededObjAr) = array_values(CollaboraACLActions::getAllowedAndNeededAr());
+[$allowedUsersAr, $neededObjAr] = array_values(CollaboraACLActions::getAllowedAndNeededAr());
 
 /**
  * Performs basic controls before entering this module
  */
 $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR . '/include/module_init.inc.php');
-require_once(ROOT_DIR . '/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 /**
  * @var AMACollaboraACLDataHandler $GLOBALS['dh']
  */
-$GLOBALS['dh'] = AMACollaboraACLDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+$GLOBALS['dh'] = AMACollaboraACLDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
-$retArray = array('status' => 'ERROR');
+$retArray = ['status' => 'ERROR'];
 session_write_close();
 
 // sanitizie data
@@ -52,49 +50,37 @@ $passedData = [];
 $needed = [
     [
         'key' => 'courseId',
-        'sanitize' => function ($v) {
-            return intval($v);
-        },
+        'sanitize' => fn ($v) => intval($v),
     ],
     [
         'key' => 'instanceId',
-        'sanitize' => function ($v) {
-            return intval($v);
-        },
+        'sanitize' => fn ($v) => intval($v),
     ],
     [
         'key' => 'fileAclId',
-        'sanitize' => function ($v) {
-            return intval($v);
-        },
+        'sanitize' => fn ($v) => intval($v),
     ],
     [
         'key' => 'ownerId',
-        'sanitize' => function ($v) {
-            return intval($v);
-        },
+        'sanitize' => fn ($v) => intval($v),
     ],
     [
         'key' => 'nodeId',
-        'sanitize' => function ($v) {
-            return (is_string($v) ? strval(trim($v)) : null);
-        },
+        'sanitize' => fn ($v) => is_string($v) ? strval(trim($v)) : null,
     ],
     [
         'key' => 'filename',
-        'sanitize' => function ($v) {
-            return (is_string($v) ? strval(trim($v)) : null);
-        },
+        'sanitize' => fn ($v) => is_string($v) ? strval(trim($v)) : null,
     ],
     [
         'key' => 'grantedUsers',
-        'sanitize' => function($v) {
-            if (is_array($v) && count($v)>0) {
+        'sanitize' => function ($v) {
+            if (is_array($v) && count($v) > 0) {
                 return array_map('intval', $v);
             } else {
                 return [];
             }
-        }
+        },
     ],
 ];
 
@@ -112,7 +98,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
      */
     $res = $GLOBALS['dh']->saveGrantedUsers($passedData);
 
-    if (AMA_DB::isError($res) || $res instanceof CollaboraACLException) {
+    if (AMADB::isError($res) || $res instanceof CollaboraACLException) {
         // if it's an error display the error message
         $retArray['status'] = "ERROR";
         $retArray['msg'] = $res->getMessage();
@@ -121,9 +107,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $retArray['msg'] = translateFN('Preferenze salvate');
         $retArray['fileAclId'] = $res['fileAclId'];
     }
-} else if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
+} elseif (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
     // load data needed by the form
-    require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
     $allUsers = Subscription::findSubscriptionsToClassRoom($passedData['instanceId']);
     $acl = $GLOBALS['dh']->findBy('FileACL', ['id' => $passedData['fileAclId']]);
     if (is_array($acl) && count($acl) == 1) {
@@ -152,9 +137,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $allUsers
     );
     // sort by lastname asc
-    usort($allUsers, function ($a, $b) {
-        return strcasecmp($a['cognome'], $b['cognome']);
-    });
+    usort($allUsers, fn ($a, $b) => strcasecmp($a['cognome'], $b['cognome']));
     // display the form with loaded data
     $formData = [
         'fileAclId' => $passedData['fileAclId'] > 0 ? $passedData['fileAclId'] : 0,

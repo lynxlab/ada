@@ -1,101 +1,110 @@
 <?php
+
 /**
- * @package 	badges module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2019, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     badges module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2019, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
 
 namespace Lynxlab\ADA\Module\Badges;
 
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Module\Badges\BadgesAbstractForm;
 use Ramsey\Uuid\Uuid;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * Class for the badge object form
  *
  * @author giorgio
  */
-class BadgeForm extends BadgesAbstractForm {
+class BadgeForm extends BadgesAbstractForm
+{
+    public function __construct(Badge $badge, $formName = null, $action = null)
+    {
+        parent::__construct($formName, $action);
+        if (!is_null($formName)) {
+            $this->setId($formName);
+            $this->setName($formName);
+        }
+        if (!is_null($action)) {
+            $this->setAction($action);
+        }
 
-	public function __construct($formName = null, $action = null, Badge $badge) {
-		parent::__construct($formName, $action);
-		if (!is_null($formName)) {
-			$this->setId($formName);
-			$this->setName($formName);
-		}
-		if (!is_null($action)) $this->setAction($action);
+        // 1st row
+        $row = CDOMElement::create('div'); // ,'class:two fields');
+        $this->addCDOM($row);
 
-		// 1st row
-		$row = \CDOMElement::create('div'); // ,'class:two fields');
-		$this->addCDOM($row);
+        $field = CDOMElement::create('div', 'class:field');
+        $row->addChild($field);
+        $lbl = CDOMElement::create('label', 'for:name');
+        $lbl->addChild(new CText(translateFN('Nome') . ' (*)'));
+        $input = CDOMElement::create('text', 'id:name,name:name');
+        $input->setAttribute('value', htmlspecialchars(trim($badge->getName() ?? ''), ENT_QUOTES, ADA_CHARSET));
+        $input->setAttribute('data-notempty', 'true');
+        $field->addChild($lbl);
+        $field->addChild($input);
 
-		$field = \CDOMElement::create('div','class:field');
-		$row->addChild($field);
-		$lbl = \CDOMElement::create('label','for:name');
-		$lbl->addChild(new \CText(translateFN('Nome').' (*)'));
-		$input = \CDOMElement::create('text','id:name,name:name');
-		$input->setAttribute('value', htmlspecialchars(trim($badge->getName()), ENT_QUOTES, ADA_CHARSET));
-		$input->setAttribute('data-notempty','true');
-		$field->addChild($lbl);
-		$field->addChild($input);
+        // 2nd row
+        $row = CDOMElement::create('div'); // ,'class:two fields');
+        if (!is_null($badge->getUuid()) && Uuid::isValid($badge->getUuid())) {
+            $row->setAttribute('class', 'two fields');
+            $message = 'Trascina qui il file o clicca per sostituirlo';
+            $imgdiv = CDOMElement::create('div', 'class:field, style:text-align:center');
+            $imgdiv->addChild(CDOMElement::create('img', 'style:width:160px,src:' . $badge->getImageUrl() . '?t=' . time()));
+            $row->addChild($imgdiv);
+        } else {
+            $message = 'Trascina qui il file o clicca per caricarlo';
+        }
+        $this->addCDOM($row);
+        $field = CDOMElement::create('div', 'class:dz container field');
+        $row->addChild($field);
 
-		// 2nd row
-		$row = \CDOMElement::create('div'); // ,'class:two fields');
-		if (!is_null($badge->getUuid()) && Uuid::isValid($badge->getUuid())) {
-			$row->setAttribute('class','two fields');
-			$message = 'Trascina qui il file o clicca per sostituirlo';
-			$imgdiv = \CDOMElement::create('div','class:field, style:text-align:center');
-			$imgdiv->addChild(\CDOMElement::create('img','style:width:160px,src:'.$badge->getImageUrl().'?t='.time()));
-			$row->addChild($imgdiv);
-		} else {
-			$message = 'Trascina qui il file o clicca per caricarlo';
-		}
-		$this->addCDOM($row);
-		$field = \CDOMElement::create('div','class:dz container field');
-		$row->addChild($field);
+        $dz = CDOMElement::create('div', 'id:badgefile,class:dropzone');
+        $dz->setAttribute('data-type', 'image');
+        $field->addChild($dz);
+        $input = CDOMElement::create('text', 'name:badgefile');
+        $input->setAttribute('style', 'display:none;');
+        $span = CDOMElement::create('span', 'class:dz-message');
+        $span->addChild(CDOMElement::create('i', 'class:photo large icon'));
+        $span->addChild(new CText(translateFN($message)));
+        $dz->addChild($input);
+        $dz->addChild($span);
 
-		$dz = \CDOMElement::create('div','id:badgefile,class:dropzone');
-		$dz->setAttribute('data-type','image');
-		$field->addChild($dz);
-		$input = \CDOMElement::create('text','name:badgefile');
-		$input->setAttribute('style','display:none;');
-		$span = \CDOMElement::create('span','class:dz-message');
-		$span->addChild(\CDOMElement::create('i','class:photo large icon'));
-		$span->addChild(new \CText(translateFN($message)));
-		$dz->addChild($input);
-		$dz->addChild($span);
+        $dzlegend = CDOMElement::create('span', 'class:small');
+        $dzlegend->addChild(new CText(translateFN('File in formato png, misure minime 96px x 96px e peso massimo 256Kb')));
+        $row->addChild($dzlegend);
 
-		$dzlegend = \CDOMElement::create('span','class:small');
-		$dzlegend->addChild(new \CText(translateFN('File in formato png, misure minime 96px x 96px e peso massimo 256Kb')));
-		$row->addChild($dzlegend);
+        // 3rd row
+        $row = CDOMElement::create('div', 'class:two fields');
+        $this->addCDOM($row);
 
-		// 3rd row
-		$row = \CDOMElement::create('div','class:two fields');
-		$this->addCDOM($row);
+        $field = CDOMElement::create('div', 'class:field');
+        $row->addChild($field);
+        $lbl = CDOMElement::create('label', 'for:description');
+        $lbl->addChild(new CText(translateFN('Descriizone') . ' (*)'));
+        $input = CDOMElement::create('textarea', 'id:description,name:description');
+        $input->addChild(new CText(htmlspecialchars(trim($badge->getDescription() ?? ''), ENT_QUOTES, ADA_CHARSET)));
+        $input->setAttribute('data-notempty', 'true');
+        $field->addChild($lbl);
+        $field->addChild($input);
 
-		$field = \CDOMElement::create('div','class:field');
-		$row->addChild($field);
-		$lbl = \CDOMElement::create('label','for:description');
-		$lbl->addChild(new \CText(translateFN('Descriizone').' (*)'));
-		$input = \CDOMElement::create('textarea','id:description,name:description');
-		$input->addChild(new \CText(htmlspecialchars(trim($badge->getDescription()), ENT_QUOTES, ADA_CHARSET)));
-		$input->setAttribute('data-notempty','true');
-		$field->addChild($lbl);
-		$field->addChild($input);
+        $field = CDOMElement::create('div', 'class:field');
+        $row->addChild($field);
+        $lbl = CDOMElement::create('label', 'for:criteria');
+        $lbl->addChild(new CText(translateFN('Criterio') . ' (*)'));
+        $input = CDOMElement::create('textarea', 'id:criteria,name:criteria');
+        $input->setAttribute('data-notempty', 'true');
+        $input->addChild(new CText(htmlspecialchars(trim($badge->getCriteria() ?? ''), ENT_QUOTES, ADA_CHARSET)));
+        $field->addChild($lbl);
+        $field->addChild($input);
 
-		$field = \CDOMElement::create('div','class:field');
-		$row->addChild($field);
-		$lbl = \CDOMElement::create('label','for:criteria');
-		$lbl->addChild(new \CText(translateFN('Criterio').' (*)'));
-		$input = \CDOMElement::create('textarea','id:criteria,name:criteria');
-		$input->setAttribute('data-notempty','true');
-		$input->addChild(new \CText(htmlspecialchars(trim($badge->getCriteria()), ENT_QUOTES, ADA_CHARSET)));
-		$field->addChild($lbl);
-		$field->addChild($input);
-
-		if (!is_null($badge->getUuid()) && Uuid::isValid($badge->getUuid())) {
-			$this->addHidden('badgeuuid')->withData($badge->getUuid());
-		}
-	}
+        if (!is_null($badge->getUuid()) && Uuid::isValid($badge->getUuid())) {
+            $this->addHidden('badgeuuid')->withData($badge->getUuid());
+        }
+    }
 }

@@ -1,46 +1,45 @@
 <?php
 
-/**
- * File edit_instance.php
- *
- * The switcher can use this module to update the informations about an existing
- * course instance.
- *
- *
- * @package
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2010, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link
- * @version		0.1
- */
+use Lynxlab\ADA\Comunica\ChatRoom;
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Course\CourseInstance;
+use Lynxlab\ADA\Main\Forms\CourseInstanceForm;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
+use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'course_instance');
+$variableToClearAR = ['node', 'layout', 'course', 'course_instance'];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+$allowedUsersAr = [AMA_TYPE_SWITCHER];
 
 /**
  * Performs basic controls before entering this module
  */
-$neededObjAr = array(
-    AMA_TYPE_SWITCHER => array('layout','course', 'course_instance')
-);
+$neededObjAr = [
+    AMA_TYPE_SWITCHER => ['layout', 'course', 'course_instance'],
+];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = whoami();  // = admin!
-
-include_once 'include/switcher_functions.inc.php';
+$self = Utilities::whoami();  // = admin!
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -58,59 +57,55 @@ include_once 'include/switcher_functions.inc.php';
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
+ * @var object $user_messages
+ * @var object $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
  */
 SwitcherHelper::init($neededObjAr);
 
-include_once("$root_dir/comunica/include/ChatRoom.inc.php");
-
-
 /*
  * YOUR CODE HERE
  */
-require_once ROOT_DIR . '/include/Forms/CourseInstanceForm.inc.php';
-if (defined('MODULES_CLASSBUDGET') && MODULES_CLASSBUDGET) {
-	$hasBudget = true;
-	require_once MODULES_CLASSBUDGET_PATH.'/include/form/formModuleBudgetCourseInstance.php';
-	require_once MODULES_CLASSBUDGET_PATH . '/include/management/budgetCourseInstanceManagement.inc.php';
-	require_once MODULES_CLASSBUDGET_PATH . '/include/classbudgetAPI.inc.php';
-	$form = new FormModuleBudgetCourseInstance();
+if (ModuleLoaderHelper::isLoaded('MODULES_CLASSBUDGET')) {
+    $hasBudget = true;
+    require_once MODULES_CLASSBUDGET_PATH . '/include/form/formModuleBudgetCourseInstance.php';
+    require_once MODULES_CLASSBUDGET_PATH . '/include/management/budgetCourseInstanceManagement.inc.php';
+    require_once MODULES_CLASSBUDGET_PATH . '/include/classbudgetAPI.inc.php';
+    $form = new FormModuleBudgetCourseInstance();
 } else {
-	$hasBudget = false;
-	$form = new CourseInstanceForm();
+    $hasBudget = false;
+    $form = new CourseInstanceForm();
 }
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
         $data = new CText(translateFN('Corso non trovato'));
-    } else if(!($courseInstanceObj instanceof Course_instance) || !$courseInstanceObj->isFull()) {
+    } elseif (!($courseInstanceObj instanceof CourseInstance) || !$courseInstanceObj->isFull()) {
         $data = new CText(translateFN('Classe non trovata'));
     } else {
         if (!isset($form)) $form = new CourseInstanceForm();
         $form->fillWithPostData();
-        if($form->isValid()) {
-
-            if($_POST['started'] == 0) {
+        if ($form->isValid()) {
+            if ($_POST['started'] == 0) {
                 $start_date = 0;
-            } elseif($courseInstanceObj->isStarted()) {
-                $start_date = dt2tsFN($courseInstanceObj->getStartDate());
+            } elseif ($courseInstanceObj->isStarted()) {
+                $start_date = Utilities::dt2tsFN($courseInstanceObj->getStartDate());
             } else {
                 $start_date = time();
             }
-            $course_instanceAr = array(
+            $course_instanceAr = [
                 'data_inizio' => $start_date,
-                'data_inizio_previsto' => dt2tsFN($_POST['data_inizio_previsto']),
+                'data_inizio_previsto' => Utilities::dt2tsFN($_POST['data_inizio_previsto']),
                 'durata' => $_POST['durata'],
                 'price' => $_POST['price'],
                 'self_instruction' => $_POST['self_instruction'],
@@ -119,118 +114,110 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 'duration_subscription' => $_POST['duration_subscription'],
                 'start_level_student' => $_POST['start_level_student'],
                 'open_subscription' => $_POST['open_subscription'],
-            	'duration_hours' => $_POST['duration_hours'],
-            	'service_level' => $_POST['service_level']
-            );
-            $result = $dh->course_instance_set($_POST['id_course_instance'], $course_instanceAr);
-            if(AMA_DataHandler::isError($result)) {
+                'duration_hours' => $_POST['duration_hours'],
+                'service_level' => $_POST['service_level'],
+            ];
+            $result = $dh->courseInstanceSet($_POST['id_course_instance'], $course_instanceAr);
+            if (AMADataHandler::isError($result)) {
                 $data = new CText(translateFN("Si sono verificati degli errori durante l'aggiornamento") . '(1)');
             } else {
-            	
-            	/**
-            	 * save budget details if needed
-            	 */
-            	if ($hasBudget) {
-            		$dataAr['id_istanza_corso'] = $_POST['id_course_instance'];
-            		foreach ($_POST as $key=>$value) {
-            			/**
-            			 * remove $form->prefix from the passed _POST array keys
-            			 * and build array to be used as data for the instance budget
-            			 */
-            			if (strpos($key, $form->prefix)!==false) {
-            				$dataAr[str_ireplace($form->prefix, '', $key)] = $value;
-            			}
-            		}
-            		$budgetObj = new budgetCourseInstanceManagement($dataAr);
-            		$budgetAPI = new classbudgetAPI();
-            		$budget_id = $budgetAPI->saveBudgetCourseInstance($budgetObj);
-            		if (AMA_DB::isError($budget_id) || intval($budget_id)<=0) {
-            			// handle save budget error here if you wish
-            		}
-            	}
-
-
-
-               /*
-                * For each course instance, a class chatroom with the same duration
-                * is made available. Every time there is an update in the course instance
-                * duration, this chatroom needs to be updated too.
-                */
-               $id_instance = $_POST['id_course_instance'];
-               $start_time = $start_date;
-               $end_time = $dh->add_number_of_days($_POST['durata'],$start_time);
-//               $end_time   = $course_instance_data_before_update['data_fine'];
-//               $id_chatroom = ChatRoom::get_class_chatroom_with_durationFN($id_instance,$start_time,$end_time);
-               $id_chatroom = ChatRoom::get_class_chatroom_for_instance($id_instance,'C');
-
-               if(AMA_DataHandler::isError($id_chatroom)) {
-
-                 if($id_chatroom->code == AMA_ERR_NOT_FOUND) {
-                   /*
-                    * if a class chatroom with the same duration of the course instance does not exist,
-                    * create it.
-                    */
-                    $id_course = $dh->get_course_id_for_course_instance($id_instance);
-                    if (AMA_DataHandler::isError($id_course)){
-                      // gestire l'errore
+                /**
+                 * save budget details if needed
+                 */
+                if ($hasBudget) {
+                    $dataAr['id_istanza_corso'] = $_POST['id_course_instance'];
+                    foreach ($_POST as $key => $value) {
+                        /**
+                         * remove $form->prefix from the passed _POST array keys
+                         * and build array to be used as data for the instance budget
+                         */
+                        if (strpos($key, $form->prefix) !== false) {
+                            $dataAr[str_ireplace($form->prefix, '', $key)] = $value;
+                        }
                     }
-
-                    $course_data = $dh->get_course($id_course);
-                    if (AMA_DataHandler::isError($course_data)){
-                      // gestire l'errore
+                    $budgetObj = new budgetCourseInstanceManagement($dataAr);
+                    $budgetAPI = new classbudgetAPI();
+                    $budget_id = $budgetAPI->saveBudgetCourseInstance($budgetObj);
+                    if (AMADB::isError($budget_id) || intval($budget_id) <= 0) {
+                        // handle save budget error here if you wish
                     }
+                }
+                /*
+                 * For each course instance, a class chatroom with the same duration
+                 * is made available. Every time there is an update in the course instance
+                 * duration, this chatroom needs to be updated too.
+                 */
+                $id_instance = $_POST['id_course_instance'];
+                $start_time = $start_date;
+                $end_time = $dh->addNumberOfDays($_POST['durata'], $start_time);
+                //               $end_time   = $course_instance_data_before_update['data_fine'];
+                //               $id_chatroom = ChatRoom::getClassChatroomWithDurationFN($id_instance,$start_time,$end_time);
+                $id_chatroom = ChatRoom::getClassChatroomForInstance($id_instance, 'C');
 
-                    $id_tutor = $dh->course_instance_tutor_get($id_instance);
-                    if (!AMA_DataHandler::isError($id_tutor)) {
-                        $chatroom_ha['id_chat_owner'] = $id_tutor;
+                if (AMADataHandler::isError($id_chatroom)) {
+                    if ($id_chatroom->code == AMA_ERR_NOT_FOUND) {
+                        /*
+                         * if a class chatroom with the same duration of the course instance does not exist,
+                         * create it.
+                         */
+                        $id_course = $dh->getCourseIdForCourseInstance($id_instance);
+                        if (AMADataHandler::isError($id_course)) {
+                            // gestire l'errore
+                        }
+
+                        $course_data = $dh->getCourse($id_course);
+                        if (AMADataHandler::isError($course_data)) {
+                            // gestire l'errore
+                        }
+
+                        $id_tutor = $dh->courseInstanceTutorGet($id_instance);
+                        if (!AMADataHandler::isError($id_tutor)) {
+                            $chatroom_ha['id_chat_owner'] = $id_tutor;
+                        } else {
+                            $chatroom_ha['id_chat_owner'] = $sess_id_user;
+                        }
+
+
+                        $chatroom_ha = [
+                            'chat_title'    => $course_data['titolo'],
+                            'chat_topic'    => translateFN('Discussione sui contenuti del corso'),
+                            'start_time'    => $start_time,
+                            'end_time'      => $end_time,
+                            'max_utenti'    => '999',
+                            'id_course_instance' => $id_instance,
+                        ];
+
+                        $result = ChatRoom::addChatroomFN($chatroom_ha);
+                        if (AMADataHandler::isError($result)) {
+                            // gestire l'errore
+                        }
                     } else {
-                        $chatroom_ha['id_chat_owner'] = $sess_id_user;
+                        // e' un errore, gestire
                     }
-
-
-                    $chatroom_ha = array(
-                      'chat_title'    => $course_data['titolo'],
-                      'chat_topic'    => translateFN('Discussione sui contenuti del corso'),
-                      'start_time'    => $start_time,
-                      'end_time'      => $end_time,
-                      'max_utenti'    => '999',
-                      'id_course_instance' => $id_instance
-                    );
-
-                    $result = ChatRoom::add_chatroomFN($chatroom_ha);
-                    if (AMA_DataHandler::isError($result)){
-                      // gestire l'errore
-                    }
-
-                 }
-                 else {
-                   // e' un errore, gestire
-                 }
-               }
-               else {
-                 /*
-                  * An existing chatroom with duration == class duration
-                  * already exists, so update this chatroom start and end time.
-                  */
-                 $chatroomObj = new Chatroom($id_chatroom,MultiPort::getDSN($_SESSION['sess_selected_tester']));
-                 $id_tutor = $dh->course_instance_tutor_get($id_instance);
-                 if (!AMA_DataHandler::isError($id_tutor)) {
+                } else {
+                    /*
+                     * An existing chatroom with duration == class duration
+                     * already exists, so update this chatroom start and end time.
+                     */
+                    $chatroomObj = new Chatroom($id_chatroom, MultiPort::getDSN($_SESSION['sess_selected_tester']));
+                    $id_tutor = $dh->courseInstanceTutorGet($id_instance);
+                    if (!AMADataHandler::isError($id_tutor)) {
                         $chatroom_data['id_chat_owner'] = $id_tutor;
-                 } else {
+                    } else {
                         $chatroom_data['id_chat_owner'] = $sess_id_user;
-                 }
-                 $chatroom_data = array(
-                    'start_time' => $start_time,
-                    'end_time' => $end_time,
-                    'max_utenti'    => '999'
-                 );
+                    }
+                    $chatroom_data = [
+                        'start_time' => $start_time,
+                        'end_time' => $end_time,
+                        'max_utenti'    => '999',
+                    ];
 
-                 $result = $chatroomObj->set_chatroomFN($chatroomObj->id_chatroom, $chatroom_data);
+                    $result = $chatroomObj->setChatroomFN($chatroomObj->id_chatroom, $chatroom_data);
 
-                 if (AMA_DataHandler::isError($result)){
-                    // gestire l'errore
-                  }
-               }
+                    if (AMADataHandler::isError($result)) {
+                        // gestire l'errore
+                    }
+                }
 
 
                 header('Location: list_instances.php?id_course=' . $courseObj->getId());
@@ -243,15 +230,14 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 } else {
     if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
         $data = new CText(translateFN('Corso non trovato'));
-    } else if(!($courseInstanceObj instanceof Course_instance) || !$courseInstanceObj->isFull()) {
+    } elseif (!($courseInstanceObj instanceof CourseInstance) || !$courseInstanceObj->isFull()) {
         $data = new CText(translateFN('Classe non trovata'));
     } else {
+        if (is_null($courseInstanceObj->getServiceLevel())) {
+            $courseInstanceObj->service_level = $courseObj->getServiceLevel();
+        }
 
-    	if (is_null($courseInstanceObj->getServiceLevel())) {
-    		$courseInstanceObj->service_level = $courseObj->getServiceLevel();
-    	}
-
-        $formData = array(
+        $formData = [
             'id_course' => $courseObj->getId(),
             'id_course_instance' => $courseInstanceObj->getId(),
             'data_inizio_previsto' => $courseInstanceObj->getScheduledStartDate(),
@@ -264,45 +250,45 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             'duration_subscription' => $courseInstanceObj->getDurationSubscription(),
             'start_level_student' => $courseInstanceObj->getStartLevelStudent(),
             'open_subscription' => $courseInstanceObj->getOpenSubscription() ? 1 : 0,
-        	'duration_hours' => $courseInstanceObj->getDurationHours(),
-        	'service_level' => $courseInstanceObj->getServiceLevel()
-        );
-        
+            'duration_hours' => $courseInstanceObj->getDurationHours(),
+            'service_level' => $courseInstanceObj->getServiceLevel(),
+        ];
+
         /**
          * load budget details if needed
          */
         if ($hasBudget) {
-        	$budgetAPI = new classbudgetAPI();
-        	$budgetObj = $budgetAPI->getBudgetCourseInstance($courseInstanceObj->getId());
-        	if ($budgetObj instanceof budgetCourseInstanceManagement) {
-	        	foreach ($budgetObj->toArray() as $key=>$value) {
-	        		$formData[$form->prefix.$key] = $value;
-	        	}
-        	}
+            $budgetAPI = new classbudgetAPI();
+            $budgetObj = $budgetAPI->getBudgetCourseInstance($courseInstanceObj->getId());
+            if ($budgetObj instanceof budgetCourseInstanceManagement) {
+                foreach ($budgetObj->toArray() as $key => $value) {
+                    $formData[$form->prefix . $key] = $value;
+                }
+            }
         }
-        
+
         if (!isset($form)) $form = new CourseInstanceForm();
         $form->fillWithArrayData($formData);
         $data = $form;
     }
 }
-    $help = translateFN('Da qui il provider admin può modificare una istanza corso esistente');
-    $error_div = CDOMElement::create('DIV', 'id:error_form');
-    $error_div->setAttribute('class', 'hide_error');
-    $error_div->addChild(new CText(translateFN("ATTENZIONE: Ci sono degli errori nel modulo!")));
-    $help .= $error_div->getHtml();
+$help = translateFN('Da qui il provider admin può modificare una istanza corso esistente');
+$error_div = CDOMElement::create('DIV', 'id:error_form');
+$error_div->setAttribute('class', 'hide_error');
+$error_div->addChild(new CText(translateFN("ATTENZIONE: Ci sono degli errori nel modulo!")));
+$help .= $error_div->getHtml();
 
 $label = translateFN('Modifica istanza corso');
 
-$content_dataAr = array(
+$content_dataAr = [
     'user_name' => $user_name,
     'user_type' => $user_type,
     'status' => $status,
     'label' => $label,
     'help' => $help,
     'data' => $data->getHtml(),
-    'module' => isset($module) ? $module : '',
-    'messages' => $user_messages->getHtml()
-);
+    'module' => $module ?? '',
+    'messages' => $user_messages->getHtml(),
+];
 
 ARE::render($layout_dataAr, $content_dataAr);

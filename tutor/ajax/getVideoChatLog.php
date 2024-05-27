@@ -1,43 +1,36 @@
 <?php
 
-/**
- * gets videoroom log data
- *
- * @package		tutor
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2020, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
- */
+use Lynxlab\ADA\Comunica\VideoRoom\VideoRoom;
+use Lynxlab\ADA\Main\Helper\TutorHelper;
+use Lynxlab\ADA\Main\Utilities;
 
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_TUTOR);
+$allowedUsersAr = [AMA_TYPE_TUTOR];
 
 /**
  * Get needed objects
  */
-$neededObjAr = array(
-    AMA_TYPE_TUTOR => array('layout', 'course', 'course_instance'),
-);
+$neededObjAr = [
+    AMA_TYPE_TUTOR => ['layout', 'course', 'course_instance'],
+];
 
 /**
  * Performs basic controls before entering this module
  */
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
-require_once ROOT_DIR . '/tutor/include/tutor_functions.inc.php';
-require_once ROOT_DIR . '/comunica/include/videoroom.classes.inc.php';
 
 TutorHelper::init($neededObjAr);
 
@@ -47,10 +40,10 @@ $data = null;
 $id_user = (array_key_exists('id_user', $_GET) && intval($_GET['id_user']) > 0) ? intval($_GET['id_user']) : null;
 $id_room = (array_key_exists('id_room', $_GET) && intval($_GET['id_room']) > 0) ? intval($_GET['id_room']) : null;
 
-$data = videoroom::getInstanceLog($courseInstanceObj->getId(), $id_room, $id_user);
+$data = VideoRoom::getInstanceLog($courseInstanceObj->getId(), $id_room, $id_user);
 $data = array_map(function ($el) {
     $el['details']['rowId'] = 'row_' . $el['details']['id_room'];
-    $el['details']['tipo_videochat_descr'] = videoroom::initialToDescr($el['details']['tipo_videochat']);
+    $el['details']['tipo_videochat_descr'] = VideoRoom::initialToDescr($el['details']['tipo_videochat']);
     if (array_key_exists('users', $el)) {
         $el['users'] = array_map(function ($u) use ($el) {
             if (array_key_exists('events', $u)) {
@@ -69,14 +62,12 @@ $data = array_map(function ($el) {
                     foreach (['entrata' => 'inizio', 'uscita' => 'fine'] as $what => $detail) {
                         $u['events'][$i][$what] = [
                             'wasnull' => is_null($event[$what]),
-                            'timestamp' => is_null($event[$what]) ? $el['details'][$detail] : $event[$what]
+                            'timestamp' => is_null($event[$what]) ? $el['details'][$detail] : $event[$what],
                         ];
-                        $u['events'][$i][$what]['display'] = ts2dFN($u['events'][$i][$what]['timestamp']) . ' ' . ts2tmFN($u['events'][$i][$what]['timestamp']);
+                        $u['events'][$i][$what]['display'] = Utilities::ts2dFN($u['events'][$i][$what]['timestamp']) . ' ' . Utilities::ts2tmFN($u['events'][$i][$what]['timestamp']);
                     }
                 }
-                $u['events'] = array_filter($u['events'], function($el) {
-                    return $el['entrata']['timestamp'] != $el['uscita']['timestamp'];
-                });
+                $u['events'] = array_filter($u['events'], fn ($el) => $el['entrata']['timestamp'] != $el['uscita']['timestamp']);
             }
             return $u;
         }, $el['users']);

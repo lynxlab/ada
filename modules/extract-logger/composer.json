@@ -1,0 +1,16 @@
+{
+    "name": "lynxlab/ada-extract-logger",
+    "description": "This is the ada extract logger module.",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Giorgio Consorti",
+            "email": "g.consorti@lynxlab.com"
+        }
+    ],
+    "autoload" : {
+        "psr-4" : {
+            "Lynxlab\\ADA\\Module\\ExtractLogger\\" : ["include/"]
+	    }
+    }
+}

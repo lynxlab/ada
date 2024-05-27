@@ -1,46 +1,43 @@
 <?php
 
-/**
- * List instances - this module provides list instances functionality
- *
- *
- * @package
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2010, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link
- * @version		0.1
- */
-
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
+use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\ActionsEvent;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'course_instance');
+$variableToClearAR = ['node', 'layout', 'course', 'course_instance'];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+$allowedUsersAr = [AMA_TYPE_SWITCHER];
 
 /**
  * Performs basic controls before entering this module
  */
-$neededObjAr = array(
-    AMA_TYPE_SWITCHER => array('layout', 'course')
-);
+$neededObjAr = [
+    AMA_TYPE_SWITCHER => ['layout', 'course'],
+];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = whoami();  // = admin!
-
-include_once 'include/switcher_functions.inc.php';
+$self = Utilities::whoami();  // = admin!
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -58,15 +55,16 @@ include_once 'include/switcher_functions.inc.php';
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
+ * @var object $user_messages
+ * @var object $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -77,21 +75,20 @@ SwitcherHelper::init($neededObjAr);
  * YOUR CODE HERE
  */
 
-//$courseId = DataValidator::is_uinteger($_GET['course']);
+//$courseId = DataValidator::isUinteger($_GET['course']);
 //if($courseId !== false && $courseId > 0) {
 
 
 if ($courseObj instanceof Course && $courseObj->isFull()) {
-
     $courseId = $courseObj->getId();
     $course_title = $courseObj->getTitle();
 
 
 
-    $fieldsAr = array('data_inizio', 'data_inizio_previsto', 'durata', 'data_fine', 'title');
-    $instancesAr = $dh->course_instance_get_list($fieldsAr, $courseId);
+    $fieldsAr = ['data_inizio', 'data_inizio_previsto', 'durata', 'data_fine', 'title'];
+    $instancesAr = $dh->courseInstanceGetList($fieldsAr, $courseId);
     if (is_array($instancesAr) && count($instancesAr) > 0) {
-        $thead_data = array(
+        $thead_data = [
             translateFN('id'),
             translateFN('classe'),
             translateFN('data inizio previsto'),
@@ -100,29 +97,28 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
             translateFN('data fine'),
             translateFN('tutor'),
             translateFN('iscritti'),
-            translateFN('azioni')
-        );
-        $tbody_data = array();
+            translateFN('azioni'),
+        ];
+        $tbody_data = [];
 
         $edit_img = CDOMElement::create('img', 'src:img/edit.png,alt:edit');
         $delete_img = CDOMElement::create('img', 'src:img/trash.png,alt:' . translateFN('Delete instance'));
         //$view_img = CDOMElement::create('img', 'src:img/zoom.png,alt:view');
-        if (defined('MODULES_STUDENTSGROUPS') && MODULES_STUDENTSGROUPS) {
+        if (ModuleLoaderHelper::isLoaded('STUDENTSGROUPS')) {
             $subscribeGroup_img = CDOMElement::create('img', 'class:subscribe-group-icon,src:img/add_instances.png,alt:' . translateFN('Iscrivi gruppo'));
         }
 
         foreach ($instancesAr as $instance) {
             $instanceId = $instance[0];
-            $actionsArray = array();
 
             /*
              * Da migliorare, spostare l'ottenimento dei dati necessari in un'unica query
-             * per ogni istanza corso (qualcosa che vada a sostituire course_instance_get_list solo in questo caso.
+             * per ogni istanza corso (qualcosa che vada a sostituire courseInstanceGetList solo in questo caso.
              */
-            $tutorId = $dh->course_instance_tutor_get($instanceId);
-            if (!AMA_DataHandler::isError($tutorId) && $tutorId !== false) {
-                $tutor_infoAr = $dh->get_tutor($tutorId);
-                if (!AMA_DataHandler::isError($tutor_infoAr)) {
+            $tutorId = $dh->courseInstanceTutorGet($instanceId);
+            if (!AMADataHandler::isError($tutorId) && $tutorId !== false) {
+                $tutor_infoAr = $dh->getTutor($tutorId);
+                if (!AMADataHandler::isError($tutor_infoAr)) {
                     $tutorFullName = $tutor_infoAr['nome'] . ' ' . $tutor_infoAr['cognome'];
                 } else {
                     $tutorFullName = translateFN('Utente non trovato');
@@ -139,9 +135,9 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
             $actionsArr = [
                 $edit_link,
                 // $view_link,
-                $delete_link
+                $delete_link,
             ];
-            if (defined('MODULES_CLASSBUDGET') && MODULES_CLASSBUDGET) {
+            if (ModuleLoaderHelper::isLoaded('MODULES_CLASSBUDGET')) {
             	$budgetImg = CDOMElement::create('img','alt:'.translateFN('budget').',title:'.translateFN('budget'));
             	$budgetImg->setAttribute('src', MODULES_CLASSBUDGET_HTTP.'/layout/'.$template_family.'/img/budget_icon.png');
             	$budget_link = BaseHtmlLib::link(MODULES_CLASSBUDGET_HTTP."/index.php?id_course=$courseId&id_course_instance=$instanceId", $budgetImg->getHtml());
@@ -151,7 +147,7 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
                 array_splice($actionsArr, count($actionsArr)-1, 0, [ $budget_link ]);
             }
 
-            if (defined('MODULES_STUDENTSGROUPS') && MODULES_STUDENTSGROUPS) {
+            if (ModuleLoaderHelper::isLoaded('STUDENTSGROUPS')) {
                 $subscribeGroup_link = BaseHtmlLib::link('javascript:void(0)', $subscribeGroup_img);
                 $subscribeGroup_link->setAttribute('class', 'subscribe-group');
                 $subscribeGroup_link->setAttribute('data-courseid', $courseId);
@@ -163,8 +159,8 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
                 array_splice($actionsArr, count($actionsArr) - 1, 0, [$subscribeGroup_link]);
             }
 
-            if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
-                $event = \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch(
+            if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+                $event = ADAEventDispatcher::buildEventAndDispatch(
                     [
                         'eventClass' => ActionsEvent::class,
                         'eventName' => ActionsEvent::LIST_INSTANCES,
@@ -174,7 +170,7 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
                 );
                 try {
                     $actionsArr = $event->getArgument('actionsArr');
-                } catch (InvalidArgumentException $e) {
+                } catch (InvalidArgumentException) {
                     // do nothing
                 }
             }
@@ -182,13 +178,13 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
             $actions = BaseHtmlLib::plainListElement('class:actions inline_menu', $actionsArr);
 
             if ($instance[1] > 0) {
-                $start_date = AMA_DataHandler::ts_to_date($instance[1]);
+                $start_date = AMADataHandler::tsToDate($instance[1]);
             } else {
                 $start_date = translateFN('Non iniziato');
             }
             $duration = sprintf("%d giorni", $instance[3]);
-            $scheduled = AMA_DataHandler::ts_to_date($instance[2]);
-            $end_date =  AMA_DataHandler::ts_to_date($instance[4]);
+            $scheduled = AMADataHandler::tsToDate($instance[2]);
+            $end_date =  AMADataHandler::tsToDate($instance[4]);
             $title = $instance[5];
 
             $assign_tutor_link = BaseHtmlLib::link("assign_tutor.php?id_course=$courseId&id_course_instance=$instanceId", $tutorFullName);
@@ -196,7 +192,7 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
                 "course_instance.php?id_course=$courseId&id_course_instance=$instanceId",
                 translateFN('Lista studenti')
             );
-            $tbody_data[] = array(
+            $tbody_data[] = [
                 $instanceId,
                 $title,
                 $scheduled,
@@ -205,8 +201,8 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
                 $end_date,
                 $assign_tutor_link,
                 $subscriptions_link,
-                $actions
-            );
+                $actions,
+            ];
         }
         $data = BaseHtmlLib::tableElement('id:list_instances, class:' . ADA_SEMANTICUI_TABLECLASS, $thead_data, $tbody_data);
     } else {
@@ -220,24 +216,24 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
 $label = translateFN('Lista istanze del corso') . ' ' . $course_title;
 $help = translateFN('Da qui il provider admin può vedere la lista delle istanze del corso selezionato');
 
-$layout_dataAr['CSS_filename'] = array(
+$layout_dataAr['CSS_filename'] = [
     JQUERY_UI_CSS,
     SEMANTICUI_DATATABLE_CSS,
-);
-$layout_dataAr['JS_filename'] = array(
+];
+$layout_dataAr['JS_filename'] = [
     JQUERY,
     JQUERY_UI,
     JQUERY_DATATABLE,
     SEMANTICUI_DATATABLE,
     JQUERY_DATATABLE_DATE,
-    JQUERY_NO_CONFLICT
-);
+    JQUERY_NO_CONFLICT,
+];
 
 $dataForJS = [
     'datatables' => ['list_instances'],
 ];
 
-if (defined('MODULES_STUDENTSGROUPS') && MODULES_STUDENTSGROUPS) {
+if (ModuleLoaderHelper::isLoaded('STUDENTSGROUPS')) {
     $layout_dataAr['JS_filename'][] = MODULES_STUDENTSGROUPS_PATH . '/js/instanceSubscribe.js';
     $layout_dataAr['CSS_filename'][] = MODULES_STUDENTSGROUPS_PATH . '/layout/ada_blu/css/showHideDiv.css';
     $dataForJS['loadModuleJS'] = [
@@ -249,9 +245,9 @@ if (defined('MODULES_STUDENTSGROUPS') && MODULES_STUDENTSGROUPS) {
 }
 
 
-$optionsAr = array('onload_func' => 'initDoc(' . htmlentities(json_encode($dataForJS), ENT_COMPAT, ADA_CHARSET) . ');');
+$optionsAr = ['onload_func' => 'initDoc(' . htmlentities(json_encode($dataForJS), ENT_COMPAT, ADA_CHARSET) . ');'];
 
-$content_dataAr = array(
+$content_dataAr = [
     'user_name' => $user_name,
     'user_type' => $user_type,
     'status' => $status,
@@ -259,8 +255,8 @@ $content_dataAr = array(
     'help' => $help,
     'edit_profile' => $userObj->getEditProfilePage(),
     'data' => $data->getHtml(),
-    'module' => isset($module) ? $module : '',
-    'messages' => $user_messages->getHtml()
-);
+    'module' => $module ?? '',
+    'messages' => $user_messages->getHtml(),
+];
 
 ARE::render($layout_dataAr, $content_dataAr, null, $optionsAr);

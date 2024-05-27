@@ -1,10 +1,11 @@
 <?php
+
 /**
- * @package 	gdpr module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2018, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     gdpr module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2018, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
 
 namespace Lynxlab\ADA\Module\GDPR;
@@ -17,23 +18,26 @@ namespace Lynxlab\ADA\Module\GDPR;
  *
  * @author giorgio
  */
-class GdprLoginRepeaterForm extends GdprAbstractForm {
+class GdprLoginRepeaterForm extends GdprAbstractForm
+{
+    public function __construct($formName = null, $action = null, $dataAr = [])
+    {
+        parent::__construct($formName, $action);
+        if (!is_null($formName)) {
+            $this->setId($formName);
+            $this->setName($formName);
+        }
 
-	public function __construct($formName=null, $action=null, $dataAr = array()) {
-		parent::__construct($formName, $action);
-		if (!is_null($formName)) {
-			$this->setId($formName);
-			$this->setName($formName);
-		}
+        if (!is_null($action)) {
+            $this->setAction($action);
+        }
 
-		if (!is_null($action)) $this->setAction($action);
+        $this->addHidden('gdprAccepted')->withData(1);
 
-		$this->addHidden('gdprAccepted')->withData(1);
-
-		if (is_array($dataAr) && count($dataAr)>0) {
-			foreach ($dataAr as $key=>$value) {
-				$this->addHidden(htmlentities($key))->withData(htmlentities($value));
-			}
-		}
-	}
+        if (is_array($dataAr) && count($dataAr) > 0) {
+            foreach ($dataAr as $key => $value) {
+                $this->addHidden(htmlentities($key))->withData(htmlentities($value));
+            }
+        }
+    }
 }

@@ -1,78 +1,54 @@
 <?php
 
-/**
- * ADA collabora node attachments widget
- *
- * @package		module/collaboraacl
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		giorgio <g.consorti@lynxlab.com>
- *
- * @copyright	Copyright (c) 2020, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link 		widget
- * @version		0.1
- *
- * supported params you can pass either via XML or php array:
- *
- *  name="courseId"         optional,  value: course id from which to load the attachments
- *  name="courseInstanceId" optional,  value: course instance id from which to load the attachments
- *  name="nodeId"           mandatory,  value: node id from which to load the attachments
- *	name="userId"           mandatory, value: user id from which to load the attachments
- */
-
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
+use Lynxlab\ADA\Main\Utilities;
+use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLActions;
 use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLException;
 use Lynxlab\ADA\Module\CollaboraACL\FileACL;
+use Lynxlab\ADA\Widgets\Widget;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+use function Lynxlab\ADA\Widgets\Functions\cleanFileName;
 
 /**
  * Common initializations and include files
  */
+
 ini_set('display_errors', '0');
 error_reporting(E_ALL);
 
-require_once realpath(dirname(__FILE__)) . '/../../config_path.inc.php';
-require_once ROOT_DIR . '/widgets/include/widget_includes.inc.php';
+require_once realpath(__DIR__) . '/../../config_path.inc.php';
 
 /**
  * Users (types) allowed to access this module.
  */
-list($allowedUsersAr, $neededObjAr) = array_values(CollaboraACLActions::getAllowedAndNeededAr());
+[$allowedUsersAr, $neededObjAr] = array_values(CollaboraACLActions::getAllowedAndNeededAr());
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
-include_once ROOT_DIR . '/browsing/include/browsing_functions.inc.php';
 extract(BrowsingHelper::init($neededObjAr));
-
-function cleanFilename($complete_file_name)
-{
-    $filename = $complete_file_name;
-    $filenameAr = explode('_', $complete_file_name);
-    $stop = count($filenameAr) - 1;
-    // $course_instance = isset($filenameAr[0]) ? $filenameAr[0] : null;
-    $id_sender  = isset($filenameAr[1]) ? $filenameAr[1] : null;
-    // $id_course = isset($filenameAr[2]) ? $filenameAr[2] : null;
-    if (is_numeric($id_sender)) {
-        // $id_node =  $filenameAr[2]."_".$filenameAr[3];
-        $filename = '';
-        for ($k = 5; $k <= $stop; $k++) {
-            $filename .=  $filenameAr[$k];
-            if ($k < $stop)
-                $filename .= "_";
-        }
-    }
-    return $filename;
-}
+$common_dh = AMACommonDataHandler::getInstance();
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
     // session_write_close();
     extract($_GET);
-    if (!isset($widgetMode)) $widgetMode = ADA_WIDGET_ASYNC_MODE;
+    if (!isset($widgetMode)) {
+        $widgetMode = Widget::ADA_WIDGET_ASYNC_MODE;
+    }
     /**
      * checks and inits to be done if this has been called in async mode
      * (i.e. with a get request)
      */
     if (isset($_SERVER['HTTP_REFERER'])) {
         if (
-            $widgetMode != ADA_WIDGET_SYNC_MODE &&
+            $widgetMode != Widget::ADA_WIDGET_SYNC_MODE &&
             preg_match("#^" . trim(HTTP_ROOT_DIR, "/") . "($|/.*)#", $_SERVER['HTTP_REFERER']) != 1
         ) {
             die('Only local execution allowed.');
@@ -82,8 +58,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
      * Your code starts here
      */
     try {
-        if (!isset($userId)) throw new CollaboraACLException(translateFN("Specificare un id studente"));
-        if (!isset($nodeId)) throw new CollaboraACLException(translateFN("Specificare un id nodo"));
+        if (!isset($userId)) {
+            throw new CollaboraACLException(translateFN("Specificare un id studente"));
+        }
+        if (!isset($nodeId)) {
+            throw new CollaboraACLException(translateFN("Specificare un id nodo"));
+        }
         if (!isset($courseId)) {
             $courseId = $_SESSION['sess_id_course'];
             $courseObj = $_SESSION['sess_courseObj'];
@@ -101,23 +81,25 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             } else {
                 throw new CollaboraACLException(translateFN('Nessun fornitore di servizi &egrave; stato configurato'));
             }
-        } else if (isset($courseId)) {
-            $testerInfo = $GLOBALS['common_dh']->get_tester_info_from_id_course($courseId);
-            if (!AMA_DB::isError($testerInfo) && is_array($testerInfo) && isset($testerInfo['puntatore'])) {
+        } elseif (isset($courseId)) {
+            $testerInfo = $common_dh->getTesterInfoFromIdCourse($courseId);
+            if (!AMADB::isError($testerInfo) && is_array($testerInfo) && isset($testerInfo['puntatore'])) {
                 $testerName = $testerInfo['puntatore'];
             }
         } // end if (!MULTIPROVIDER)
 
-        if (!isset($testerName)) throw new CollaboraACLException(translateFN('Spiacente, non so a che fornitore di servizi sei collegato'));
+        if (!isset($testerName)) {
+            throw new CollaboraACLException(translateFN('Spiacente, non so a che fornitore di servizi sei collegato'));
+        }
 
-        if (defined('MODULES_COLLABORAACL') && MODULES_COLLABORAACL) {
-            $aclDH = \Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler::instance(\MultiPort::getDSN($testerName));
+        if (ModuleLoaderHelper::isLoaded('COLLABORAACL')) {
+            $aclDH = AMACollaboraACLDataHandler::instance(MultiPort::getDSN($testerName));
 
             if (!isset($courseObj)) {
                 $courseObj = new Course($courseId);
             }
 
-            if (!($courseObj instanceof \Course)) {
+            if (!($courseObj instanceof Course)) {
                 throw new CollaboraACLException(translateFN('Impossibile caricare il corso'));
             }
 
@@ -128,7 +110,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             }
             $download_path = ROOT_DIR . $media_path;
 
-            $elencofile = leggidir($download_path);
+            $elencofile = Utilities::leggidir($download_path);
             $outputArr = [];
             if (is_array($elencofile) && count($elencofile) > 0) {
                 $filesACL = $aclDH->findBy('FileACL', ['id_corso' => $courseId, 'id_istanza' => $courseInstanceId, 'id_nodo' => $nodeId]);
@@ -140,7 +122,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                 }
                 $elencofile = array_filter($elencofile, function ($singleFile) use ($nodeId, $courseInstanceId) {
                     $filenameAr = explode('_', $singleFile['file']);
-                    $file_courseInstanceId = isset($filenameAr[0]) ? $filenameAr[0] : null;
+                    $file_courseInstanceId = $filenameAr[0] ?? null;
                     $file_nodeId = null;
                     if (isset($filenameAr[2]) && isset($filenameAr[3])) {
                         $file_nodeId =  $filenameAr[2] . "_" . $filenameAr[3];
@@ -149,10 +131,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                 });
 
                 if (is_array($elencofile) && count($elencofile) > 0) {
-
-                    usort($elencofile, function($a, $b) {
-                        return strcasecmp(cleanFileName($a['file']), cleanFileName($b['file']));
-                    });
+                    usort($elencofile, fn ($a, $b) => strcasecmp(cleanFileName($a['file']), cleanFileName($b['file'])));
 
                     $icongeneric = 'attachment';
                     $iconcls = [
@@ -162,12 +141,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                         _VIDEO => 'video',
                         _DOC => 'text file outline',
                     ];
-                    $title = CDOMElement::create('div','class:nodeattachments title');
-                    $title->addChild(CDOMElement::create('i','class:dropdown icon'));
+                    $title = CDOMElement::create('div', 'class:nodeattachments title');
+                    $title->addChild(CDOMElement::create('i', 'class:dropdown icon'));
                     $title->addChild(new CText(translateFN('Files allegati al nodo')));
                     $outputArr[] = $title;
 
-                    $maincontent = CDOMElement::create('div','class:nodeattachments content');
+                    $maincontent = CDOMElement::create('div', 'class:nodeattachments content');
                     $cont = CDOMElement::create('div', 'class:ui feed basic segment');
                     $maincontent->addChild($cont);
 
@@ -197,32 +176,32 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                     $outputArr[] = $maincontent;
                 }
             }
-            $output = implode(PHP_EOL, array_map(function ($el) {
-                return $el->getHtml();
-            }, $outputArr));
+            $output = implode(PHP_EOL, array_map(fn ($el) => $el->getHtml(), $outputArr));
         }
     } catch (CollaboraACLException $e) {
         $divClass = 'error';
         $divMessage = basename($_SERVER['PHP_SELF']) . ': ' . $e->getMessage();
-        $outDIV = \CDOMElement::create('div', "class:ui $divClass message");
-        $closeIcon = \CDOMElement::create('i', 'class:close icon');
+        $outDIV = CDOMElement::create('div', "class:ui $divClass message");
+        $closeIcon = CDOMElement::create('i', 'class:close icon');
         $closeIcon->setAttribute('onclick', 'javascript:$j(this).parents(\'.ui.message\').remove();');
         $outDIV->addChild($closeIcon);
-        $errorSpan = \CDOMElement::create('span');
-        $errorSpan->addChild(new \CText($divMessage));
+        $errorSpan = CDOMElement::create('span');
+        $errorSpan->addChild(new CText($divMessage));
         $outDIV->addChild($errorSpan);
         $output = $outDIV->getHtml();
     }
 
-    if (!isset($output)) $output = '';
+    if (!isset($output)) {
+        $output = '';
+    }
     /**
      * Common output in sync or async mode
      */
     switch ($widgetMode) {
-        case ADA_WIDGET_SYNC_MODE:
+        case Widget::ADA_WIDGET_SYNC_MODE:
             return $output;
             break;
-        case ADA_WIDGET_ASYNC_MODE:
+        case Widget::ADA_WIDGET_ASYNC_MODE:
         default:
             die($output);
     }

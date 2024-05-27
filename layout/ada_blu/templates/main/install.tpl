@@ -150,6 +150,7 @@
                                 <template_field class="template_field" name="modsavailable">modsavailable</template_field>
                             </span>
                         </div>
+                        <template_field class="template_field" name="modmessage">modmessage</template_field>
                         <div class="ui two fields">
                             <div class="field">
                                 <label><i18n>Titolo pagina</i18n></label>

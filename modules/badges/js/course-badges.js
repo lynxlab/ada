@@ -24,14 +24,14 @@ function initDataTables(courseId) {
                 'cache': false,
                 'data': { object: 'CourseBadge', courseId: courseId }
             })
-            .done(function (response) {
-                callback(response);
-            })
-            .fail(function (response) {
-                if (debugForm) console.debug('dataTable ajax fail ', response.responseJSON);
-                $j.when(showHideDiv("(" + response.status + ") " + response.statusText, ('error' in response.responseJSON) ? response.responseJSON.error : 'unkown error', false))
-                  .then(function () { callback(response.responseJSON); });
-            });
+                .done(function (response) {
+                    callback(response);
+                })
+                .fail(function (response) {
+                    if (debugForm) console.debug('dataTable ajax fail ', response.responseJSON);
+                    $j.when(showHideDiv("(" + response.status + ") " + response.statusText, ('error' in response.responseJSON) ? response.responseJSON.error : 'unkown error', false))
+                        .then(function () { callback(response.responseJSON); });
+                });
         },
         "deferRender": true,
         "processing": true,
@@ -48,7 +48,7 @@ function initDataTables(courseId) {
             "url": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
         },
     });
-    table.on('draw', function() { initButtons(); });
+    table.on('draw', function () { initButtons(); });
 }
 
 function ajaxSubmitBadgeForm(button) {
@@ -60,23 +60,23 @@ function ajaxSubmitBadgeForm(button) {
             url: 'ajax/saveCourseBadge.php',
             data: theForm.serialize(),
             dataType: 'json',
-            beforeSend: function() { button.addClass('disabled'); }
+            beforeSend: function () { button.addClass('disabled'); }
         })
-        .done(function (JSONObj) {
-            if (JSONObj.status.length > 0) {
-                $j.when(showHideDiv('', JSONObj.msg, JSONObj.status == 'OK')).then(function () {
-                    if (JSONObj.status == 'OK') {
-                        if (null !== table) table.ajax.reload(null, false);
-                        else self.document.location.reload();
-                    }
-                    button.removeClass('disabled');
-                });
-            }
-        })
-        .fail(function () {
-            $j.when(showHideDiv('', 'Server Error', false)).
-            done(function() { button.removeClass('disabled'); });
-        });
+            .done(function (JSONObj) {
+                if (JSONObj.status.length > 0) {
+                    $j.when(showHideDiv('', JSONObj.msg, JSONObj.status == 'OK')).then(function () {
+                        if (JSONObj.status == 'OK') {
+                            if (null !== table) table.ajax.reload(null, false);
+                            else self.document.location.reload();
+                        }
+                        button.removeClass('disabled');
+                    });
+                }
+            })
+            .fail(function () {
+                $j.when(showHideDiv('', 'Server Error', false)).
+                    done(function () { button.removeClass('disabled'); });
+            });
     }
 }
 
@@ -90,20 +90,20 @@ function deleteCourseBadge(jqueryObj, data, message) {
             data: data,
             dataType: 'json'
         })
-        .done(function (JSONObj) {
-            if (JSONObj) {
-                if (JSONObj.status == 'OK') {
-                    // deletes the corresponding row from the DOM with a fadeout effect
-                    showHideDiv('', JSONObj.msg, true);
-                    jqueryObj.parents("tr").fadeOut("slow", function () {
-                        var pos = $j('#completeCourseBadgesList').dataTable().fnGetPosition(this);
-                        $j('#completeCourseBadgesList').dataTable().fnDeleteRow(pos);
-                    });
-                } else {
-                    showHideDiv('', JSONObj.msg, false);
+            .done(function (JSONObj) {
+                if (JSONObj) {
+                    if (JSONObj.status == 'OK') {
+                        // deletes the corresponding row from the DOM with a fadeout effect
+                        showHideDiv('', JSONObj.msg, true);
+                        jqueryObj.parents("tr").fadeOut("slow", function () {
+                            var pos = $j('#completeCourseBadgesList').dataTable().fnGetPosition(this);
+                            $j('#completeCourseBadgesList').dataTable().fnDeleteRow(pos);
+                        });
+                    } else {
+                        showHideDiv('', JSONObj.msg, false);
+                    }
                 }
-            }
-        })
-        .fail(function () { showHideDiv('', 'Server Error', false) });
+            })
+            .fail(function () { showHideDiv('', 'Server Error', false) });
     }
 }

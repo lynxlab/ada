@@ -1,22 +1,29 @@
 <?php
 
 /**
- * @package 	jitsi integration module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2020, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     jitsi integration module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2020, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
+
+use Lynxlab\ADA\CORE\html4\CBase;
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Helper\ComunicaHelper;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../../config_path.inc.php';
+require_once realpath(__DIR__) . '/../../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array();
+$variableToClearAR = [];
 array_push($variableToClearAR, 'layout');
 array_push($variableToClearAR, 'user');
 array_push($variableToClearAR, 'course');
@@ -25,30 +32,31 @@ array_push($variableToClearAR, 'course_instance');
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_STUDENT, AMA_TYPE_TUTOR);
+$allowedUsersAr = [AMA_TYPE_STUDENT, AMA_TYPE_TUTOR];
 
 /**
  * Performs basic controls before entering this module
  */
-$neededObjAr = array(
-  AMA_TYPE_STUDENT => array('layout', 'tutor', 'course', 'course_instance', 'videoroom'),
-  AMA_TYPE_TUTOR => array('layout', 'tutor', 'course', 'course_instance', 'videoroom')
-);
+$neededObjAr = [
+    AMA_TYPE_STUDENT => ['layout', 'tutor', 'course', 'course_instance', 'videoroom'],
+    AMA_TYPE_TUTOR => ['layout', 'tutor', 'course', 'course_instance', 'videoroom'],
+];
 
+// phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
 if (!defined('CONFERENCE_TO_INCLUDE')) {
-  define('CONFERENCE_TO_INCLUDE', 'Jitsi');
+    define('CONFERENCE_TO_INCLUDE', 'Jitsi');
 }
 
 if (!defined('DATE_CONTROL')) {
-  define('DATE_CONTROL', FALSE);
+    define('DATE_CONTROL', false);
 }
+// phpcs:enable
 
 /**
  * Performs basic controls before entering this module
  */
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
-require_once ROOT_DIR . '/comunica/include/comunica_functions.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -66,15 +74,16 @@ require_once ROOT_DIR . '/comunica/include/comunica_functions.inc.php';
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
+ * @var object $user_messages
+ * @var object $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -85,30 +94,30 @@ ComunicaHelper::init($neededObjAr);
  * Redirect to correct home if comunication not enabled
  */
 if ($userObj->getType() == AMA_TYPE_VISITOR) {
-  $homepage = $userObj->getHomepage();
-  $msg =   translateFN("Utente non autorizzato");
-  header("Location: $homepage?err_msg=$msg");
-  exit;
+    $homepage = $userObj->getHomepage();
+    $msg =   translateFN("Utente non autorizzato");
+    header("Location: $homepage?err_msg=$msg");
+    exit;
 }
 $width = FRAME_WIDTH;
 $height = FRAME_HEIGHT;
 
 if (is_null($videoroomObj->link_to_room)) {
-  $errdiv = CDOMElement::create('div','class:ui icon error message');
-  $errdiv->addChild(CDOMElement::create('i','class: ban circle icon'));
-  $content = CDOMElement::create('div','class:content');
-  $header = CDOMElement::create('div','class:header');
-  $header->addChild(new CText(translateFN('Video Conferenza')));
-  $content->addChild($header);
-  $content->addChild(new \CText('<p>'.translateFN('Video Conferenza non ancora iniziata').'</p>'));
-  $errdiv->addChild($content);
-  die($errdiv->getHtml());
-} else if ($videoroomObj->link_to_room instanceof CBase) {
-  $className = get_class($videoroomObj);
-  if (defined($className.'::onload_js')) {
-    $videoroomObj->logEnter();
-    die ("<script>". constant($className.'::onload_js') ."</script>");
-  }
+    $errdiv = CDOMElement::create('div', 'class:ui icon error message');
+    $errdiv->addChild(CDOMElement::create('i', 'class: ban circle icon'));
+    $content = CDOMElement::create('div', 'class:content');
+    $header = CDOMElement::create('div', 'class:header');
+    $header->addChild(new CText(translateFN('Video Conferenza')));
+    $content->addChild($header);
+    $content->addChild(new CText('<p>' . translateFN('Video Conferenza non ancora iniziata') . '</p>'));
+    $errdiv->addChild($content);
+    die($errdiv->getHtml());
+} elseif ($videoroomObj->link_to_room instanceof CBase) {
+    $className = $videoroomObj::class;
+    if (defined($className . '::ONLOAD_JS')) {
+        $videoroomObj->logEnter();
+        die("<script>" . constant($className . '::ONLOAD_JS') . "</script>");
+    }
 } else {
-  header(' ', true, 500);
+    header(' ', true, 500);
 }

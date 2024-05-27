@@ -18,31 +18,30 @@ use Symfony\Component\EventDispatcher\GenericEvent;
  */
 final class CourseEvent extends GenericEvent
 {
-  use ADAEventTrait;
+    use ADAEventTrait;
 
-  /**
-   * event own namespace
-   */
-  const namespace = 'course';
+    /**
+     * event own namespace
+     */
+    public const NAMESPACE = 'course';
 
-  /**
-   * The PRESAVE event occurs before the course is saved in the DB
-   *
-   * This event allows you to add, remove or replace course data
-   *
-   * @CourseEvent
-   *
-   * @var string
-   */
-  const PRESAVE = self::namespace . '.presave';
+    /**
+     * The PRESAVE event occurs before the course is saved in the DB
+     *
+     * This event allows you to add, remove or replace course data
+     *
+     * @CourseEvent
+     *
+     * @var string
+     */
+    public const PRESAVE = self::NAMESPACE . '.presave';
 
-  /**
-   * The POSTSAVE event occurs after the course is saved in the DB
-   *
-   * @CourseEvent
-   *
-   * @var string
-   */
-  const POSTSAVE = self::namespace . '.postsave';
-
+    /**
+     * The POSTSAVE event occurs after the course is saved in the DB
+     *
+     * @CourseEvent
+     *
+     * @var string
+     */
+    public const POSTSAVE = self::NAMESPACE . '.postsave';
 }

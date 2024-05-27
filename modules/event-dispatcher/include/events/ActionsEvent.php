@@ -18,16 +18,15 @@ use Symfony\Component\EventDispatcher\GenericEvent;
  */
 final class ActionsEvent extends GenericEvent
 {
-  use ADAEventTrait;
+    use ADAEventTrait;
 
-  /**
-   * event own namespace
-   */
-  const namespace = 'actions';
+    /**
+     * event own namespace
+     */
+    public const NAMESPACE = 'actions';
 
-  /**
-   * occurs before the actions menu in the switcher/list_instances.php is rendered
-   */
-  const LIST_INSTANCES = self::namespace . '.listinstances';
-
+    /**
+     * occurs before the actions menu in the switcher/list_instances.php is rendered
+     */
+    public const LIST_INSTANCES = self::NAMESPACE . '.listinstances';
 }

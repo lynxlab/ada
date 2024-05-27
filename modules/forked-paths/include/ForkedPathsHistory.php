@@ -1,10 +1,11 @@
 <?php
+
 /**
- * @package 	forked-paths module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2019, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     forked-paths module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2019, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
 
 namespace Lynxlab\ADA\Module\ForkedPaths;
@@ -16,15 +17,14 @@ namespace Lynxlab\ADA\Module\ForkedPaths;
  *
  */
 
-if (!defined('ForkedPathsHistoryTable')) define('ForkedPathsHistoryTable', AMAForkedPathsDataHandler::PREFIX . 'history');
-
-class ForkedPathsHistory extends ForkedPathsBase {
-	/**
-	 * table name for this class
-	 *
-	 * @var string
-	 */
-    const table =  ForkedPathsHistoryTable;
+class ForkedPathsHistory extends ForkedPathsBase
+{
+    /**
+     * table name for this class
+     *
+     * @var string
+     */
+    public const TABLE =  AMAForkedPathsDataHandler::PREFIX . 'history';
 
     protected $userId;
     protected $courseInstanceId;
@@ -178,7 +178,7 @@ class ForkedPathsHistory extends ForkedPathsBase {
     /**
      * Get the value of session_id
      */
-    public function getSession_id()
+    public function getSessionId()
     {
         return $this->session_id;
     }
@@ -188,7 +188,7 @@ class ForkedPathsHistory extends ForkedPathsBase {
      *
      * @return  self
      */
-    public function setSession_id($session_id)
+    public function setSessionId($session_id)
     {
         $this->session_id = $session_id;
 

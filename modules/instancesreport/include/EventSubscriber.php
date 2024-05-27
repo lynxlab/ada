@@ -1,11 +1,11 @@
 <?php
 
 /**
- * @package 	instancesreport module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2022, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     instancesreport module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2022, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
 
 namespace Lynxlab\ADA\Module\InstancesReport;
@@ -13,7 +13,10 @@ namespace Lynxlab\ADA\Module\InstancesReport;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
 use Lynxlab\ADA\Module\EventDispatcher\Events\MenuEvent;
 use Lynxlab\ADA\Module\EventDispatcher\Subscribers\ADAScriptSubscriberInterface;
+use Lynxlab\ADA\Module\InstancesReport\InstancesReportActions;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * EventSubscriber Class, defines node events names and handlers for this module
@@ -40,7 +43,7 @@ class EventSubscriber implements EventSubscriberInterface, ADAScriptSubscriberIn
     {
         $renderData = $event->getArguments();
         $renderData['menuoptions'] = [
-            'id_course' => isset($_SESSION['sess_id_course']) ? $_SESSION['sess_id_course'] : null,
+            'id_course' => $_SESSION['sess_id_course'] ?? null,
         ];
         $event->setArguments($renderData);
     }
@@ -48,7 +51,6 @@ class EventSubscriber implements EventSubscriberInterface, ADAScriptSubscriberIn
     public function addMenuItems(MenuEvent $event)
     {
         if (false !== stristr($_SERVER['SCRIPT_FILENAME'], 'list_instances.php')) {
-
             $enabledOn = [
                 'func' => [
                     InstancesReportActions::class,
@@ -58,7 +60,7 @@ class EventSubscriber implements EventSubscriberInterface, ADAScriptSubscriberIn
                     'value1' => [
                         'func' => [
                             InstancesReportActions::class,
-                            'getConstantFromString'
+                            'getConstantFromString',
                         ],
                         'params' => 'EXPORT',
                     ],
@@ -66,13 +68,13 @@ class EventSubscriber implements EventSubscriberInterface, ADAScriptSubscriberIn
             ];
 
             $menu = $event->getSubject();
-            $left = $menu->get_leftItemsArray();
-            $item = array_filter($left, fn($el) => 0===strcasecmp($el['label'], 'agisci'));
+            $left = $menu->getLeftItemsArray();
+            $item = array_filter($left, fn ($el) => 0 === strcasecmp($el['label'], 'agisci'));
             $itemkey = key($item);
 
             $additem = [
                 'item_id' => null,
-                'label' => 'Report classi',
+                'label' => translateFN('Report classi'),
                 'extraHTML' => null,
                 'icon' => 'download disk',
                 'icon_size' => null,
@@ -86,12 +88,12 @@ class EventSubscriber implements EventSubscriberInterface, ADAScriptSubscriberIn
                 'order' => 29,
                 'enabledON' => json_encode($enabledOn),
                 'menuExtraClass' => '',
-                'children' => null
+                'children' => null,
             ];
             // Insert additem as item child.
             array_push($left[$itemkey]['children'], $additem);
-            usort($left[$itemkey]['children'], fn($a,$b) => (int)$a['order']-(int)$b['order']);
-            $menu->set_leftItemsArray($left);
+            usort($left[$itemkey]['children'], fn ($a, $b) => (int)$a['order'] - (int)$b['order']);
+            $menu->setLeftItemsArray($left);
         }
     }
 }

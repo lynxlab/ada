@@ -1,4 +1,7 @@
 <?php
+
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
+
 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
 header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");          // always modified
 header("Cache-Control: no-store, no-cache, must-revalidate");  // HTTP/1.1
@@ -8,29 +11,27 @@ header("Content-type: application/x-javascript");
 //header("Content-Disposition: attachment; filename=javascript_conf.js");
 
 require_once '../../config_path.inc.php';
-$allowedUsersAr = array(AMA_TYPE_STUDENT, AMA_TYPE_TUTOR); //, AMA_TYPE_AUTHOR, AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER);
+$allowedUsersAr = [AMA_TYPE_STUDENT, AMA_TYPE_TUTOR]; //, AMA_TYPE_AUTHOR, AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER);
 /**
  * Get needed objects
  */
-$neededObjAr = array(
+$neededObjAr = [
     // AMA_TYPE_VISITOR => array('node', 'layout', 'course'),
-    AMA_TYPE_STUDENT => array('node', 'layout', 'tutor', 'course', 'course_instance', 'videoroom'),
-    AMA_TYPE_TUTOR => array('node', 'layout', 'course', 'course_instance', 'videoroom'),
+    AMA_TYPE_STUDENT => ['node', 'layout', 'tutor', 'course', 'course_instance', 'videoroom'],
+    AMA_TYPE_TUTOR => ['node', 'layout', 'course', 'course_instance', 'videoroom'],
     // AMA_TYPE_AUTHOR => array('node', 'layout', 'course'),
     // AMA_TYPE_SWITCHER => array('node', 'layout', 'course')
-);
+];
 $trackPageToNavigationHistory = false;
 
 if (!defined('CONFERENCE_TO_INCLUDE')) {
     define('CONFERENCE_TO_INCLUDE', 'ZoomConf'); // Zoom conference
 }
 if (!defined('DATE_CONTROL')) {
-    define('DATE_CONTROL', FALSE);
+    define('DATE_CONTROL', false);
 }
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-require_once ROOT_DIR . '/browsing/include/browsing_functions.inc.php';
-require_once ROOT_DIR . '/comunica/include/videoroom.classes.inc.php';
 
 if (!isset($_SESSION['ada-zoom-bridge']) || (isset($_SESSION['ada-zoom-bridge']) && true !== $_SESSION['ada-zoom-bridge'])) {
     die("only running from ada zoom is allowed!");
@@ -52,15 +53,16 @@ if (!isset($_SESSION['ada-zoom-bridge']) || (isset($_SESSION['ada-zoom-bridge'])
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
+ * @var object $user_messages
+ * @var object $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990

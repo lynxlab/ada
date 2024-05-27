@@ -1,16 +1,23 @@
 <?php
 
 /**
- * @package 	ADA BigBlueButton Integration
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2020, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     ADA BigBlueButton Integration
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2020, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
 
 namespace Lynxlab\ADA\Module\BBBIntegration;
 
-class ADABBBApi extends \BigBlueButton\BigBlueButton
+use BigBlueButton\BigBlueButton;
+use BigBlueButton\Parameters\CreateMeetingParameters;
+use BigBlueButton\Parameters\GetMeetingInfoParameters;
+use Exception;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Module\BBBIntegration\AMABBBIntegrationDataHandler;
+
+class ADABBBApi extends BigBlueButton
 {
     /**
      * @var AMABBBIntegrationDataHandler
@@ -25,11 +32,11 @@ class ADABBBApi extends \BigBlueButton\BigBlueButton
             if (is_null($tester)) {
                 if (isset($_SESSION) && array_key_exists('sess_selected_tester', $_SESSION)) {
                     $tester = $_SESSION['sess_selected_tester'];
-                } else if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && strlen($GLOBALS['user_provider']) > 0) {
+                } elseif (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && strlen($GLOBALS['user_provider']) > 0) {
                     $tester = $GLOBALS['user_provider'];
                 }
             }
-            $this->dh = AMABBBIntegrationDataHandler::instance(\MultiPort::getDSN($tester));
+            $this->dh = AMABBBIntegrationDataHandler::instance(MultiPort::getDSN($tester));
         }
 
         if (defined('BBB_SERVER_BASE_URL') && strlen('BBB_SERVER_BASE_URL') > 0) {
@@ -44,9 +51,9 @@ class ADABBBApi extends \BigBlueButton\BigBlueButton
     public function create($meetingData)
     {
         try {
-            $meetingData = $this->dh->add_videoroom($meetingData);
+            $meetingData = $this->dh->addVideoroom($meetingData);
 
-            $createParams = new \BigBlueButton\Parameters\CreateMeetingParameters(
+            $createParams = new CreateMeetingParameters(
                 $meetingData['meetingID']->toString(),
                 $meetingData['room_name']
             );
@@ -56,29 +63,34 @@ class ADABBBApi extends \BigBlueButton\BigBlueButton
                 ->setRecord(true);
             $this->createMeeting($createParams);
             return $meetingData;
-        } catch (\Exception $e) {
+        } catch (Exception) {
             return false;
         }
     }
 
-    public function getInfo($roomId) {
+    public function getInfo($roomId)
+    {
         try {
             // load meetingID and passwords from the DB
             $meetingData = $this->dh->getInfo($roomId);
             // check if the meetingID is still at the BBB server
-            $meetingParams = new \BigBlueButton\Parameters\GetMeetingInfoParameters(
-                isset($meetingData['meetingID']) ? $meetingData['meetingID'] : null,
-                isset($meetingData['attendeePW']) ? $meetingData['attendeePW'] : null
+            $meetingParams = new GetMeetingInfoParameters(
+                $meetingData['meetingID'] ?? null,
+                $meetingData['attendeePW'] ?? null
             );
             $serverData = $this->getMeetingInfo($meetingParams);
             if ($serverData->failed()) {
                 $meetingData['meetingID'] = null;
-                if (isset($meetingData['moderatorPW'])) unset($meetingData['moderatorPW']);
-                if (isset($meetingData['attendeePW'])) unset($meetingData['attendeePW']);
-                // $this->dh->delete_videoroom($roomId);
+                if (isset($meetingData['moderatorPW'])) {
+                    unset($meetingData['moderatorPW']);
+                }
+                if (isset($meetingData['attendeePW'])) {
+                    unset($meetingData['attendeePW']);
+                }
+                // $this->dh->deleteVideoroom($roomId);
             }
             return $meetingData;
-        } catch (\Exception $e) {
+        } catch (Exception) {
             return [];
         }
     }

@@ -17,16 +17,15 @@ namespace Lynxlab\ADA\Module\Impersonate;
  */
 class ImpersonateActions
 {
-
     /**
      * global actions
      *
      * @var integer
      */
-    const IMPERSONATE = 1;
-    const NEW_LINKEDUSER = 2;
-    const SAVE_LINKEDUSER = 4;
-    const DELETE_LINKEDUSER = 8;
+    public const IMPERSONATE = 1;
+    public const NEW_LINKEDUSER = 2;
+    public const SAVE_LINKEDUSER = 4;
+    public const DELETE_LINKEDUSER = 8;
 
     /**
      * array that defines who can do what
@@ -42,20 +41,12 @@ class ImpersonateActions
      */
     protected static function getCanDoArr()
     {
-        return array(
-            self::IMPERSONATE => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR]);
-            },
-            self::NEW_LINKEDUSER => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER]);
-            },
-            self::SAVE_LINKEDUSER => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER]);
-            },
-            self::DELETE_LINKEDUSER => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER]);
-            },
-        );
+        return [
+            self::IMPERSONATE => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR]),
+            self::NEW_LINKEDUSER => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER]),
+            self::SAVE_LINKEDUSER => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER]),
+            self::DELETE_LINKEDUSER => fn ($object = null, $userType = null) => in_array($userType, [AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER]),
+        ];
     }
 
     /**
@@ -66,7 +57,7 @@ class ImpersonateActions
      */
     public static function getConstantFromString($stringConstant)
     {
-        return defined(__CLASS__ . '::' . $stringConstant) ? constant(__CLASS__ . '::' . $stringConstant) : null;
+        return defined(self::class . '::' . $stringConstant) ? constant(self::class . '::' . $stringConstant) : null;
     }
 
     /**
@@ -81,18 +72,26 @@ class ImpersonateActions
      */
     public static function canDo($actionID, $object = null, $userType = null)
     {
-        if (is_null(self::$CANDOARR)) self::$CANDOARR = self::getCanDoArr();
-        if (is_null($userType) && array_key_exists('sess_userObj', $_SESSION)) $userType = $_SESSION['sess_userObj']->getType();
-        if (is_null($userType) || intval($userType) <= 0) return false;
+        if (is_null(self::$CANDOARR)) {
+            self::$CANDOARR = self::getCanDoArr();
+        }
+        if (is_null($userType) && array_key_exists('sess_userObj', $_SESSION)) {
+            $userType = $_SESSION['sess_userObj']->getType();
+        }
+        if (is_null($userType) || intval($userType) <= 0) {
+            return false;
+        }
         if (is_array($actionID)) {
             foreach ($actionID as $anAction) {
-                if (self::canDo($anAction, $object, $userType)) return true;
+                if (self::canDo($anAction, $object, $userType)) {
+                    return true;
+                }
             }
             return false;
         } else {
             if (array_key_exists($actionID, self::$CANDOARR)) {
                 if (is_callable(self::$CANDOARR[$actionID])) {
-                    return call_user_func_array(self::$CANDOARR[$actionID], array($object, $userType));
+                    return call_user_func_array(self::$CANDOARR[$actionID], [$object, $userType]);
                 } else {
                     return in_array(intval($userType), self::$CANDOARR[$actionID]);
                 }
@@ -110,38 +109,42 @@ class ImpersonateActions
      */
     public static function getAllowedAndNeededAr($fileName = null)
     {
-        $retArr = array(
-            'allowedUsers' => array(),
-            'neededObjects' => array()
-        );
-        if (is_null($fileName)) $fileName = realpath($_SERVER['SCRIPT_FILENAME']);
+        $retArr = [
+            'allowedUsers' => [],
+            'neededObjects' => [],
+        ];
+        if (is_null($fileName)) {
+            $fileName = realpath($_SERVER['SCRIPT_FILENAME']);
+        }
         $fileName = trim(str_replace([ MODULES_IMPERSONATE_PATH, ROOT_DIR ], '', $fileName), '/');
         if (strlen($fileName) > 0) {
             // admin, coordinator, author and editor have access to everything by default
-            $retArr['neededObjects'] = array(
-                AMA_TYPE_ADMIN => array('layout'),
-                AMA_TYPE_SWITCHER => array('layout'),
-                AMA_TYPE_TUTOR => array('layout'),
-                AMA_TYPE_SUPERTUTOR => array('layout'),
-                AMA_TYPE_AUTHOR => array('layout'),
-                AMA_TYPE_STUDENT => array('layout'),
-            );
+            $retArr['neededObjects'] = [
+                AMA_TYPE_ADMIN => ['layout'],
+                AMA_TYPE_SWITCHER => ['layout'],
+                AMA_TYPE_TUTOR => ['layout'],
+                AMA_TYPE_SUPERTUTOR => ['layout'],
+                AMA_TYPE_AUTHOR => ['layout'],
+                AMA_TYPE_STUDENT => ['layout'],
+            ];
             switch ($fileName) {
                 case 'impersonate.php':
                     // keep the above value: all users allowed
                     break;
-                // separate index.php from default, prevents too many redirect error
+                    // separate index.php from default, prevents too many redirect error
                 case 'index.php':
                 default:
-                    $retArr['neededObjects'] = array(
-                        AMA_TYPE_ADMIN => array('layout'),
-                        AMA_TYPE_SWITCHER => array('layout'),
-                    );
+                    $retArr['neededObjects'] = [
+                        AMA_TYPE_ADMIN => ['layout'],
+                        AMA_TYPE_SWITCHER => ['layout'],
+                    ];
                     break;
             }
         }
         // if no allowedUsers specified, use the neededObjects keys
-        if (count($retArr['allowedUsers']) <= 0) $retArr['allowedUsers'] = array_keys($retArr['neededObjects']);
+        if (count($retArr['allowedUsers']) <= 0) {
+            $retArr['allowedUsers'] = array_keys($retArr['neededObjects']);
+        }
         return $retArr;
     }
 }

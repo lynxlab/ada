@@ -1,4 +1,4 @@
-document.write("<script type='text/javascript' src='../external/fckeditor/fckeditor.js'></script>");
+load_js('../external/fckeditor/fckeditor.js');
 //document.write("<script type='text/javascript' src='../js/include/fckeditor_integration.js'></script>");
 
 function includeFCKeditor(textarea_name) {
@@ -7,8 +7,8 @@ function includeFCKeditor(textarea_name) {
    oFCKeditor.Width = '90%';
    oFCKeditor.Height = '250';
    oFCKeditor.ToolbarSet = 'Basic';
-   oFCKeditor.ReplaceTextarea(); 
-  } 
+   oFCKeditor.ReplaceTextarea();
+  }
 
 
 /**
@@ -16,7 +16,7 @@ function includeFCKeditor(textarea_name) {
  *
  * creates and returns an instance of FCKeditor.
  * .@param FCKeditorID - the id of the textarea to be replaced by FCKeditor
- * .@return oFCKeditor - FCKeditor instance 
+ * .@return oFCKeditor - FCKeditor instance
  */
 function createEditor(FCKeditorID, Plain_textID) {
 	$(FCKeditorID).value = ADAToFCKeditor($(Plain_textID).value);

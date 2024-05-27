@@ -18,32 +18,32 @@ use Symfony\Component\EventDispatcher\GenericEvent;
  */
 final class MenuEvent extends GenericEvent
 {
-  use ADAEventTrait;
+    use ADAEventTrait;
 
-  /**
-   * event own namespace
-   */
-  const namespace = 'menu';
+    /**
+     * event own namespace
+     */
+    public const NAMESPACE = 'menu';
 
-  /**
-   * The PRERENDER event occurs before the menu tree is rendered.
-   *
-   * This event allows you to add, remove or replace menu items
-   *
-   * @Event
-   *
-   * @var string
-   */
-  const PRERENDER = self::namespace . '.prerender';
+    /**
+     * The PRERENDER event occurs before the menu tree is rendered.
+     *
+     * This event allows you to add, remove or replace menu items
+     *
+     * @Event
+     *
+     * @var string
+     */
+    public const PRERENDER = self::NAMESPACE . '.prerender';
 
-  /**
-   * The POSTRENDER event occurs after the menu tree is rendered.
-   *
-   * This event allows you to add actions after the menu tree has been rendered.
-   *
-   * @Event
-   *
-   * @var string
-   */
-  const POSTRENDER = self::namespace . '.postrender';
+    /**
+     * The POSTRENDER event occurs after the menu tree is rendered.
+     *
+     * This event allows you to add actions after the menu tree has been rendered.
+     *
+     * @Event
+     *
+     * @var string
+     */
+    public const POSTRENDER = self::NAMESPACE . '.postrender';
 }

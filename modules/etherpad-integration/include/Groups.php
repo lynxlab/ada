@@ -10,8 +10,6 @@
 
 namespace Lynxlab\ADA\Module\EtherpadIntegration;
 
-if (!defined('MODULES_ETHERPAD_GROUPSTABLE')) define('MODULES_ETHERPAD_GROUPSTABLE', AMAEtherpadDataHandler::PREFIX . 'groups');
-
 /**
  * Maps Etherpad groups to ADA courses instances
  */
@@ -22,14 +20,14 @@ class Groups extends EtherpadBase
      *
      * @var string
      */
-    public const table = MODULES_ETHERPAD_GROUPSTABLE;
+    public const TABLE = AMAEtherpadDataHandler::PREFIX . 'groups';
 
     protected $groupId;
     protected $instanceId;
     protected $isActive;
     protected $creationDate;
 
-    public function __construct($data = array())
+    public function __construct($data = [])
     {
         parent::__construct($data);
     }

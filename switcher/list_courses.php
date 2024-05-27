@@ -1,43 +1,39 @@
 <?php
 
-/**
- * List courses - this module provides list courses functionality
- *
- *
- * @package
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2010, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link
- * @version		0.1
- */
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
+use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'course_instance');
+$variableToClearAR = ['node', 'layout', 'course', 'course_instance'];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+$allowedUsersAr = [AMA_TYPE_SWITCHER];
 
 /**
  * Performs basic controls before entering this module
  */
-$neededObjAr = array(
-    AMA_TYPE_SWITCHER => array('layout')
-);
+$neededObjAr = [
+    AMA_TYPE_SWITCHER => ['layout'],
+];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = whoami();
-
-include_once 'include/switcher_functions.inc.php';
+$self = Utilities::whoami();
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -55,15 +51,16 @@ include_once 'include/switcher_functions.inc.php';
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
+ * @var object $user_messages
+ * @var object $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -74,45 +71,45 @@ SwitcherHelper::init($neededObjAr);
  * YOUR CODE HERE
  */
 
-$coursesAr = $dh->get_courses_list(array('nome', 'titolo', 'descrizione','tipo_servizio'));
-if(is_array($coursesAr) && count($coursesAr) > 0) {
-    $thead_data = array(
-       null,
-       translateFN('id'),
-       translateFN('codice'),
-       translateFN('tipo'),
-       translateFN('titolo'),
-       translateFN('descrizione'),
-       translateFN('azioni')
-    );
-    $tbody_data = array();
+$coursesAr = $dh->getCoursesList(['nome', 'titolo', 'descrizione', 'tipo_servizio']);
+if (is_array($coursesAr) && count($coursesAr) > 0) {
+    $thead_data = [
+        null,
+        translateFN('id'),
+        translateFN('codice'),
+        translateFN('tipo'),
+        translateFN('titolo'),
+        translateFN('descrizione'),
+        translateFN('azioni'),
+    ];
+    $tbody_data = [];
 
     $edit_img = CDOMElement::create('img', 'src:img/edit.png,alt:edit');
     $view_img = CDOMElement::create('img', 'src:img/zoom.png,alt:view');
     $instances_img = CDOMElement::create('img', 'src:img/instances.png,alt:view');
-    $add_instance_img= CDOMElement::create('img', 'src:img/add_instances.png,alt:view');
-    $survey_img= CDOMElement::create('img', 'src:img/_exer.png,alt:view');
-    $delete_img= CDOMElement::create('img', 'src:img/trash.png,alt:view');
-    if (defined('MODULES_BADGES') && MODULES_BADGES) {
-        $coursebadges_img = CDOMElement::create('img','src:'.MODULES_BADGES_HTTP.'/layout/'.$_SESSION['sess_template_family'].'/img/course-badges.png');
+    $add_instance_img = CDOMElement::create('img', 'src:img/add_instances.png,alt:view');
+    $survey_img = CDOMElement::create('img', 'src:img/_exer.png,alt:view');
+    $delete_img = CDOMElement::create('img', 'src:img/trash.png,alt:view');
+    if (ModuleLoaderHelper::isLoaded('BADGES')) {
+        $coursebadges_img = CDOMElement::create('img', 'src:' . MODULES_BADGES_HTTP . '/layout/' . $_SESSION['sess_template_family'] . '/img/course-badges.png');
     }
-    if (defined('MODULES_IMPEXPORT') && MODULES_IMPEXPORT && defined('MODULES_IMPEXPORT_REPODIR') && strlen(MODULES_IMPEXPORT_REPODIR)>0) {
-        $exporttorepo_img = CDOMElement::create('img','src:'.MODULES_IMPEXPORT_HTTP.'/layout/'.$_SESSION['sess_template_family'].'/img/export-to-repo.png');
+    if (ModuleLoaderHelper::isLoaded('IMPEXPORT') && defined('MODULES_IMPEXPORT_REPODIR') && strlen(MODULES_IMPEXPORT_REPODIR) > 0) {
+        $exporttorepo_img = CDOMElement::create('img', 'src:' . MODULES_IMPEXPORT_HTTP . '/layout/' . $_SESSION['sess_template_family'] . '/img/export-to-repo.png');
     }
 
-    foreach($coursesAr as $course) {
-    	$isPublicCourse = isset($_SESSION['service_level_info'][$course['tipo_servizio']]['isPublic']) &&
-    					  ($_SESSION['service_level_info'][$course['tipo_servizio']]['isPublic']!=0);
-        $imgDetails = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/details_open.png');
+    foreach ($coursesAr as $course) {
+        $isPublicCourse = isset($_SESSION['service_level_info'][$course['tipo_servizio']]['isPublic']) &&
+            ($_SESSION['service_level_info'][$course['tipo_servizio']]['isPublic'] != 0);
+        $imgDetails = CDOMElement::create('img', 'src:' . HTTP_ROOT_DIR . '/layout/' . $_SESSION['sess_template_family'] . '/img/details_open.png');
         $imgDetails->setAttribute('class', 'imgDetls tooltip');
         $imgDetails->setAttribute('title', translateFN('visualizza/nasconde la descrizione del corso'));
 
         $courseId = $course[0];
-        $actions = array();
+        $actions = [];
         $edit_link = BaseHtmlLib::link("edit_course.php?id_course=$courseId", $edit_img->getHtml());
 
-        if(isset($edit_link)){
-            $title=translateFN('Clicca per modificare il corso');
+        if (isset($edit_link)) {
+            $title = translateFN('Clicca per modificare il corso');
             $div_edit = CDOMElement::create('div');
             $div_edit->setAttribute('title', $title);
             $div_edit->setAttribute('class', 'tooltip');
@@ -122,8 +119,8 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
 
         $view_link = BaseHtmlLib::link("view_course.php?id_course=$courseId", $view_img->getHtml());
 
-        if(isset($view_link)){
-            $title=translateFN('Clicca per visualizzare il corso');
+        if (isset($view_link)) {
+            $title = translateFN('Clicca per visualizzare il corso');
             $div_view = CDOMElement::create('div');
             $div_view->setAttribute('title', $title);
             $div_view->setAttribute('class', 'tooltip');
@@ -131,10 +128,12 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
             $actions[] = $div_view;
         }
 
-        if(!$isPublicCourse) $instances_link = BaseHtmlLib::link("list_instances.php?id_course=$courseId", $instances_img->getHtml());
+        if (!$isPublicCourse) {
+            $instances_link = BaseHtmlLib::link("list_instances.php?id_course=$courseId", $instances_img->getHtml());
+        }
 
-        if(isset($instances_link)){
-            $title=translateFN('Gestione classi');
+        if (isset($instances_link)) {
+            $title = translateFN('Gestione classi');
             $div_instances = CDOMElement::create('div');
             $div_instances->setAttribute('title', $title);
             $div_instances->setAttribute('class', 'tooltip');
@@ -143,8 +142,8 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
         }
 
         if (!$isPublicCourse && MODULES_TEST) {
-            $survey_link = BaseHtmlLib::link(MODULES_TEST_HTTP.'/switcher.php?id_course='.$courseId, $survey_img->getHtml());
-            $title=translateFN('Sondaggi');
+            $survey_link = BaseHtmlLib::link(MODULES_TEST_HTTP . '/switcher.php?id_course=' . $courseId, $survey_img->getHtml());
+            $title = translateFN('Sondaggi');
             $div_survey = CDOMElement::create('div');
             $div_survey->setAttribute('title', $title);
             $div_survey->setAttribute('class', 'tooltip');
@@ -153,18 +152,18 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
         }
 
         if (!$isPublicCourse) {
-            if (defined('MODULES_BADGES') && MODULES_BADGES) {
-                $badges_link = BaseHtmlLib::link(MODULES_BADGES_HTTP.'/course-badges.php?id_course='.$courseId, $coursebadges_img->getHtml());
-                $title=translateFN('Badges');
+            if (ModuleLoaderHelper::isLoaded('BADGES')) {
+                $badges_link = BaseHtmlLib::link(MODULES_BADGES_HTTP . '/course-badges.php?id_course=' . $courseId, $coursebadges_img->getHtml());
+                $title = translateFN('Badges');
                 $div_badges = CDOMElement::create('div');
                 $div_badges->setAttribute('title', ucfirst($title));
                 $div_badges->setAttribute('class', 'tooltip');
                 $div_badges->addChild(($badges_link));
                 $actions[] = $div_badges;
             }
-            if (defined('MODULES_IMPEXPORT') && MODULES_IMPEXPORT && defined('MODULES_IMPEXPORT_REPODIR') && strlen(MODULES_IMPEXPORT_REPODIR)>0) {
-                $extorepo_link = BaseHtmlLib::link(MODULES_IMPEXPORT_HTTP.'/export.php?exporttorepo=1&id_course='.$courseId, $exporttorepo_img->getHtml());
-                $title=translateFN('Esporta nel repository');
+            if (ModuleLoaderHelper::isLoaded('IMPEXPORT') && defined('MODULES_IMPEXPORT_REPODIR') && strlen(MODULES_IMPEXPORT_REPODIR) > 0) {
+                $extorepo_link = BaseHtmlLib::link(MODULES_IMPEXPORT_HTTP . '/export.php?exporttorepo=1&id_course=' . $courseId, $exporttorepo_img->getHtml());
+                $title = translateFN('Esporta nel repository');
                 $div_extorepo = CDOMElement::create('div');
                 $div_extorepo->setAttribute('title', ucfirst($title));
                 $div_extorepo->setAttribute('class', 'tooltip');
@@ -173,10 +172,12 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
             }
         }
 
-        if(!$isPublicCourse) $add_instance_link = BaseHtmlLib::link("add_instance.php?id_course=$courseId", $add_instance_img->getHtml());
+        if (!$isPublicCourse) {
+            $add_instance_link = BaseHtmlLib::link("add_instance.php?id_course=$courseId", $add_instance_img->getHtml());
+        }
 
-        if(isset($add_instance_link)){
-            $title=translateFN('Aggiungi classe');
+        if (isset($add_instance_link)) {
+            $title = translateFN('Aggiungi classe');
             $div_AddInstances = CDOMElement::create('div');
             $div_AddInstances->setAttribute('title', $title);
             $div_AddInstances->setAttribute('class', 'tooltip');
@@ -186,8 +187,8 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
 
         $delete_course_link = BaseHtmlLib::link("delete_course.php?id_course=$courseId", $delete_img->getHtml());
 
-        if(isset($delete_course_link)){
-            $title=translateFN('Cancella corso');
+        if (isset($delete_course_link)) {
+            $title = translateFN('Cancella corso');
             $div_delete = CDOMElement::create('div');
             $div_delete->setAttribute('title', $title);
             $div_delete->setAttribute('class', 'tooltip');
@@ -195,61 +196,64 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
             $actions[] = $div_delete;
         }
 
-        $actions = BaseHtmlLib::plainListElement('class:inline_menu',$actions);
-        $servicelevel=null;
-         /* if isset $_SESSION['service_level'] it means that the istallation supports course type */
-        if(isset($_SESSION['service_level'][$course[4]])){
-            $servicelevel=$_SESSION['service_level'][$course[4]];
+        $actions = BaseHtmlLib::plainListElement('class:inline_menu', $actions);
+        $servicelevel = null;
+        /* if isset $_SESSION['service_level'] it means that the istallation supports course type */
+        if (isset($_SESSION['service_level'][$course[4]])) {
+            $servicelevel = $_SESSION['service_level'][$course[4]];
         }
-        if(!isset($servicelevel)){$servicelevel=DEFAULT_SERVICE_TYPE_NAME;}
+        if (!isset($servicelevel)) {
+            $servicelevel = DEFAULT_SERVICE_TYPE_NAME;
+        }
 
 
-        $tbody_data[] = array($imgDetails,$courseId, $course[1],translateFN($servicelevel),  $course[2], $course[3], $actions);
+        $tbody_data[] = [$imgDetails, $courseId, $course[1], translateFN($servicelevel),  $course[2], $course[3], $actions];
     }
     $data = BaseHtmlLib::tableElement('id:table_list_courses', $thead_data, $tbody_data);
-    $data->setAttribute('class', $data->getAttribute('class').' '.ADA_SEMANTICUI_TABLECLASS);
+    $data->setAttribute('class', $data->getAttribute('class') . ' ' . ADA_SEMANTICUI_TABLECLASS);
 } else {
     $data = new CText(translateFN('Non sono stati trovati corsi'));
 }
 
-$filter=null;
-if(isset($_GET['filter']) && isset($_SESSION['service_level'])){
-    $filter=$_SESSION['service_level'][$_GET['filter']];
-    $label = translateFN('Lista corsi di tipo "').$filter.'"';
+$filter = null;
+if (isset($_GET['filter']) && isset($_SESSION['service_level'])) {
+    $filter = $_SESSION['service_level'][$_GET['filter']];
+    $label = translateFN('Lista corsi di tipo "') . $filter . '"';
+} else {
+    $label = translateFN('Lista corsi');
 }
-else{ $label = translateFN('Lista corsi'); }
 
 $help = translateFN('Da qui il provider admin può vedere la lista dei corsi presenti sul provider');
-$Li_edit_home_page="";
+$Li_edit_home_page = "";
 
-$content_dataAr = array(
+$content_dataAr = [
     'user_name' => $user_name,
     'user_type' => $user_type,
     'status' => $status,
     'label' => $label,
     'help' => $help,
     'data' => $data->getHtml(),
-    'module' => isset($module) ? $module : '',
-    'edit_profile'=>$userObj->getEditProfilePage(),
-    'messages' => $user_messages->getHtml()
-);
+    'module' => $module ?? '',
+    'edit_profile' => $userObj->getEditProfilePage(),
+    'messages' => $user_messages->getHtml(),
+];
 
-$layout_dataAr['JS_filename'] = array(
-                JQUERY,
-                JQUERY_UI,
-                JQUERY_DATATABLE,
-				SEMANTICUI_DATATABLE,
-                JQUERY_DATATABLE_DATE,
-                JQUERY_NO_CONFLICT
-        );
+$layout_dataAr['JS_filename'] = [
+    JQUERY,
+    JQUERY_UI,
+    JQUERY_DATATABLE,
+    SEMANTICUI_DATATABLE,
+    JQUERY_DATATABLE_DATE,
+    JQUERY_NO_CONFLICT,
+];
 
-$layout_dataAr['CSS_filename']= array(
-                JQUERY_UI_CSS,
-                SEMANTICUI_DATATABLE_CSS
-        );
+$layout_dataAr['CSS_filename'] = [
+    JQUERY_UI_CSS,
+    SEMANTICUI_DATATABLE_CSS,
+];
 
 $render = null;
-$filter="'".$filter."'";
-$options['onload_func'] = 'initDoc('.$filter.')';
+$filter = "'" . $filter . "'";
+$options['onload_func'] = 'initDoc(' . $filter . ')';
 
-ARE::render($layout_dataAr, $content_dataAr,$render,$options);
+ARE::render($layout_dataAr, $content_dataAr, $render, $options);

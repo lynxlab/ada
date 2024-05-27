@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<ruleset name="ADA ruleset">
+    <description>ADA rules for PHP CodeSniffer</description>
+
+    <!-- Run against the PHPCompatibility ruleset -->
+    <rule ref="PHPCompatibility"/>
+     <!-- Check for cross-version support for PHP 7.2 and higher. -->
+    <config name="testVersion" value="7.4-"/>
+
+    <!--Ignore -->
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>browsing/include/graph/*</exclude-pattern>
+    <exclude-pattern>services/media/*</exclude-pattern>
+    <exclude-pattern>upload_file/*</exclude-pattern>
+    <exclude-pattern>widgets/cache/*</exclude-pattern>
+    <exclude-pattern>api/*</exclude-pattern>
+    <exclude-pattern>*/**/*.css</exclude-pattern>
+    <exclude-pattern>*/**/*.js</exclude-pattern>
+
+    <arg value="ps"/>
+    <arg name="colors"/>
+    <arg name="encoding" value="utf-8"/>
+
+    <!-- Strip the filepaths down to the relevant bit. -->
+    <arg name="basepath" value="./"/>
+
+    <!-- Check up to 8 files simultaneously. -->
+    <arg name="parallel" value="8"/>
+
+    <!-- Enable caching to a fixed file. -->
+    <arg name="cache" value=".phpcs.cache"/>
+
+    <!-- Run against a second ruleset -->
+    <rule ref="PSR12"/>
+    <!-- <rule ref="PSR2"/> -->
+
+    <rule ref="Generic.Files.LineLength.TooLong">
+        <severity>0</severity>
+    </rule>
+
+    <rule ref="PHPCompatibility.Operators.NewOperators.t_coalesce_equalFound">
+        <severity>0</severity>
+    </rule>
+
+    <rule ref="PSR12.Files.FileHeader.IncorrectOrder">
+        <severity>0</severity>
+    </rule>
+
+    <rule ref="PSR1.Files.SideEffects.FoundWithSymbols">
+        <severity>0</severity>
+    </rule>
+
+</ruleset>

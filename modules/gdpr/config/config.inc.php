@@ -1,32 +1,20 @@
 <?php
+
 /**
- * @package 	gdpr module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2018, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     gdpr module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2018, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
 
-try {
-	if (! @include_once(MODULES_GDPR_PATH.'/vendor/autoload.php')) {
-		// @ - to suppress warnings,
-		throw new Exception (
-			json_encode(array(
-				'header' => 'GDPR module will not work because autoload file cannot be found!',
-				'message' => 'Please run <code>composer install</code> in the module subdir'
-		)));
-	} else return true;
-} catch(Exception $e) {
-	$text = json_decode($e->getMessage(), true);
-	// populating $_GET['message'] is a dirty hack to force the error message to appear in the home page at least
-	if (!isset($_GET['message'])) $_GET['message'] = '';
-	$_GET['message'] .= '<div class="ui icon error message"><i class="ban circle icon"></i><div class="content">';
-	if (array_key_exists('header', $text) && strlen($text['header'])>0) {
-		$_GET['message'] .= '<div class="header">'.$text['header'].'</div>';
-	}
-	if (array_key_exists('message', $text) && strlen($text['message'])>0) {
-		$_GET['message'] .= '<p>'.$text['message'].'</p>';
-	}
-	$_GET['message'] .= '</div></div>';
-}
-return false;
+use Jawira\CaseConverter\Convert;
+
+// MODULE'S OWN DEFINES HERE
+
+$moduledir = new Convert(str_replace(MODULES_DIR . DIRECTORY_SEPARATOR, '', realpath(__DIR__ . '/..')));
+
+define('MODULES_GDPR', true);
+define('MODULES_GDPR_NAME', join('', $moduledir->toArray()));
+define('MODULES_GDPR_PATH', MODULES_DIR . DIRECTORY_SEPARATOR . $moduledir->getSource());
+define('MODULES_GDPR_HTTP', HTTP_ROOT_DIR . str_replace(ROOT_DIR, '', MODULES_DIR) . '/' . $moduledir->getSource());

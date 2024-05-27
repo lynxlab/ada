@@ -1,23 +1,36 @@
 <?php
 
 /**
- * @package 	notifications module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2021, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     notifications module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2021, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
 
 namespace Lynxlab\ADA\Module\Notifications;
 
-use PHPSQLParser\PHPSQLCreator;
-use PHPSQLParser\PHPSQLParser;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
 use Lynxlab\ADA\Module\EventDispatcher\Events\ForumEvent;
 use Lynxlab\ADA\Module\EventDispatcher\Events\NodeEvent;
 use Lynxlab\ADA\Module\EventDispatcher\Subscribers\ADAMethodSubscriberInterface;
 use Lynxlab\ADA\Module\EventDispatcher\Subscribers\ADAScriptSubscriberInterface;
+use Lynxlab\ADA\Module\Notifications\AMANotificationsDataHandler;
+use Lynxlab\ADA\Module\Notifications\EmailQueueItem;
+use Lynxlab\ADA\Module\Notifications\Notification;
+use Lynxlab\ADA\Module\Notifications\NotificationActions;
+use Lynxlab\ADA\Module\Notifications\QueueManager;
+use PHPSQLParser\PHPSQLCreator;
+use PHPSQLParser\PHPSQLParser;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * EventSubscriber Class, defines node events names and handlers for this module
@@ -35,7 +48,7 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
     public static function getSubscribedMethods()
     {
         return [
-            'AMA_Tester_DataHandler::get_notes_for_this_course_instance' => [
+            'AMATesterDataHandler::getNotesForThisCourseInstance' => [
                 CoreEvent::AMAPDOPREGETALL => 'preGetNotes',
                 CoreEvent::AMAPDOPOSTGETALL => 'postGetNotes',
             ],
@@ -89,7 +102,7 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
         $args = $event->getArguments();
         $values = $args['retval'];
         $id_instance = intval(reset($values)['id_istanza']);
-        $ntDH = AMANotificationsDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+        $ntDH = AMANotificationsDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
         $result = $ntDH->findBy('Notification', [
             'userId' => $_SESSION['sess_userObj']->getId(),
             'instanceId' => $id_instance,
@@ -125,7 +138,12 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
         $container = $event->getSubject();
         $nodeData = $event->getArguments();
         if (array_key_exists('level', $nodeData['params']) && $nodeData['params']['level'] >= 1) {
-            $container->addChild(self::buildNotificationButton($nodeData['params']['node'], Notification::getNotificationFromNodeType(ADA_NOTE_TYPE)));
+            $container->addChild(
+                self::buildNotificationButton(
+                    $nodeData['params']['node'] + ['id_istanza' => $nodeData['external_params']['id_course_instance'] ?? null],
+                    Notification::getNotificationFromNodeType(ADA_NOTE_TYPE)
+                )
+            );
         }
     }
 
@@ -143,10 +161,9 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
          */
         if (array_key_exists('nodeObj', $GLOBALS) && array_key_exists('userObj', $GLOBALS) && array_key_exists('courseInstanceObj', $GLOBALS)) {
             if (NotificationActions::canDo(NotificationActions::ADDNOTIFICATION, null, $GLOBALS['userObj']->getType())) {
-
                 $renderData = $event->getArguments();
 
-                $ntDH = AMANotificationsDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+                $ntDH = AMANotificationsDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
                 $notification = $ntDH->findOneBy('Notification', [
                     'userId' => $GLOBALS['userObj']->getId(),
                     'nodeId' => $GLOBALS['nodeObj']->id,
@@ -165,9 +182,9 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
                 } else {
                     $nodeData['hasNotifications'] = false;
                 }
-                $container = \CDOMElement::create('div','class:noteActions');
-                $span = \CDOMElement::create('span');
-                $span->addChild(new \CText(\translateFN('Notifiche')));
+                $container = CDOMElement::create('div', 'class:noteActions');
+                $span = CDOMElement::create('span');
+                $span->addChild(new CText(translateFN('Notifiche')));
                 $button = self::buildNotificationButton($nodeData, Notification::getNotificationFromNodeType(ADA_NOTE_TYPE));
                 $container->addChild($span);
                 $container->addChild($button);
@@ -198,9 +215,7 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
                     'options' => [
                         'onload_func' => [
                             'initval' => '',
-                            'additems' => function ($v) {
-                                return $v . '; new NotificationsManager().addSubscribeHandler(\'.noteActions\',\'button.noteSubscribe\');';
-                            }
+                            'additems' => fn ($v) => $v . '; new NotificationsManager().addSubscribeHandler(\'.noteActions\',\'button.noteSubscribe\');',
                         ],
                     ],
                 ];
@@ -243,9 +258,7 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
             'options' => [
                 'onload_func' => [
                     'initval' => '',
-                    'additems' => function ($v) {
-                        return $v . '; new NotificationsManager().addSubscribeHandler(\'.noteActions\',\'button.noteSubscribe\');';
-                    }
+                    'additems' => fn ($v) => $v . '; new NotificationsManager().addSubscribeHandler(\'.noteActions\',\'button.noteSubscribe\');',
                 ],
             ],
         ];
@@ -275,7 +288,7 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
                 $addItems = $renderVal['additems'];
                 if (is_callable($addItems)) {
                     $renderData[$renderKey][$renderSubKey] = $addItems($renderData[$renderKey][$renderSubKey]);
-                } else if (is_array($renderData[$renderKey][$renderSubKey])) {
+                } elseif (is_array($renderData[$renderKey][$renderSubKey])) {
                     if (is_array($addItems)) {
                         $renderData[$renderKey][$renderSubKey] = array_merge($renderData[$renderKey][$renderSubKey], $addItems);
                     } else {
@@ -292,7 +305,7 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
     /**
      * Closes the browser connection, then enqueues the forum note notification and runs the queue
      *
-     * @param NodeEvent $event
+     * @param \Lynxlab\ADA\Module\EventDispatcher\Events\NodeEvent $event
      *
      * @return void
      */
@@ -309,7 +322,7 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
      * Enquues a notification email for each student and tutor subscribed to note instance
      * and having set their notification preferences to receive emails
      *
-     * @param NodeEvent $event
+     * @param \Lynxlab\ADA\Module\EventDispatcher\Events\NodeEvent $event
      * @param boolean $isNewNode
      *
      * @return void
@@ -318,37 +331,33 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
     {
         $nodeData = $event->getSubject();
         if ($isNewNode) {
-            $nodeId = $nodeData['id'];
-            $instanceId = array_key_exists('id_instance', $nodeData) ? $nodeData['id_instance'] : $_SESSION['sess_id_course_instance'];
-            $instanceSubscribedList = [];
-            $notifyUserList = [];
             if (in_array($nodeData['type'], [ADA_NOTE_TYPE])) {
-                $ntDH = AMANotificationsDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+                $nodeId = $nodeData['id'];
+                $instanceId = array_key_exists('id_instance', $nodeData) ? $nodeData['id_instance'] : $_SESSION['sess_id_course_instance'];
+                $instanceSubscribedList = [];
+                $notifyUserList = [];
+                $ntDH = AMANotificationsDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
                 // load all students and tutors of the course instance
-                $students =  $ntDH->get_students_for_course_instance($instanceId);
-                if (!\AMA_DB::isError($students)) {
-                    $instanceSubscribedList = array_merge($instanceSubscribedList, array_map(function ($el) {
-                        return [
-                            'id_utente' => intval($el['id_utente']),
-                            'nome' => $el['nome'],
-                            'cognome' => $el['cognome'],
-                            'e_mail' => $el['e_mail'],
-                            'type' => AMA_TYPE_STUDENT,
-                        ];
-                    }, $students));
+                $students =  $ntDH->getStudentsForCourseInstance($instanceId);
+                if (!AMADB::isError($students)) {
+                    $instanceSubscribedList = array_merge($instanceSubscribedList, array_map(fn ($el) => [
+                        'id_utente' => intval($el['id_utente']),
+                        'nome' => $el['nome'],
+                        'cognome' => $el['cognome'],
+                        'e_mail' => $el['e_mail'],
+                        'type' => AMA_TYPE_STUDENT,
+                    ], $students));
                 }
 
-                $tutors = $ntDH->course_instance_tutor_info_get($instanceId);
-                if (!\AMA_DB::isError($tutors)) {
-                    $instanceSubscribedList = array_merge($instanceSubscribedList, array_map(function ($el) {
-                        return [
-                            'id_utente' => intval($el['id_utente_tutor']),
-                            'nome' => $el['nome'],
-                            'cognome' => $el['cognome'],
-                            'e_mail' => $el['e_mail'],
-                            'type' => AMA_TYPE_TUTOR,
-                        ];
-                    }, $tutors));
+                $tutors = $ntDH->courseInstanceTutorInfoGet($instanceId);
+                if (!AMADB::isError($tutors)) {
+                    $instanceSubscribedList = array_merge($instanceSubscribedList, array_map(fn ($el) => [
+                        'id_utente' => intval($el['id_utente_tutor']),
+                        'nome' => $el['nome'],
+                        'cognome' => $el['cognome'],
+                        'e_mail' => $el['e_mail'],
+                        'type' => AMA_TYPE_TUTOR,
+                    ], $tutors));
                 }
 
                 if (count($instanceSubscribedList) > 0) {
@@ -356,9 +365,7 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
                     $notifyUserList = $ntDH->findBy('Notification', [
                         'userId' => [
                             'op' => 'IN',
-                            'value' => sprintf("(%s)", implode(', ', array_map(function ($el) {
-                                return $el['id_utente'];
-                            }, $instanceSubscribedList))),
+                            'value' => sprintf("(%s)", implode(', ', array_map(fn ($el) => $el['id_utente'], $instanceSubscribedList))),
                         ],
                         'nodeId' => $nodeData['parent_id'],
                         'instanceId' => $instanceId,
@@ -369,8 +376,8 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
                         $qItem = new EmailQueueItem();
                         $qItem->setEmailType(EmailQueueItem::NEWFORUMNOTE);
                         // prepare data for the emailqueue: course, course instance, layout objects
-                        $instanceObj = new \Course_instance($instanceId);
-                        $courseObj = new \Course($instanceObj->getCourseId());
+                        $instanceObj = new CourseInstance($instanceId);
+                        $courseObj = new Course($instanceObj->getCourseId());
                         $layoutObj = Notification::getLayoutObj(EmailQueueItem::getEmailConfigFromType($qItem->getEmailType())['template']);
                         $qItem->setSubject(
                             trim(
@@ -387,9 +394,7 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
                         $saveData = [];
                         // foreach notifyUserList, build an EmailQueueItem with rendered template fields
                         foreach ($notifyUserList as $notifyUser) {
-                            $userData = array_filter($instanceSubscribedList, function ($el) use ($notifyUser) {
-                                return $notifyUser->getUserId() == $el['id_utente'] && strlen($el['e_mail']) > 0;
-                            });
+                            $userData = array_filter($instanceSubscribedList, fn ($el) => $notifyUser->getUserId() == $el['id_utente'] && strlen($el['e_mail']) > 0);
                             if (is_array($userData) && count($userData) > 0) {
                                 $userData = reset($userData);
                                 $qItem->setUserId($userData['id_utente']);
@@ -464,7 +469,9 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
         ob_end_flush();
         flush();
         @ob_end_clean();
-        if (function_exists('fastcgi_finish_request')) fastcgi_finish_request();
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        }
     }
 
     /**
@@ -473,10 +480,11 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
      * @param array $nodeData
      * @param int $notificationType
      *
-     * @return \CDOMElement
+     * @return \Lynxlab\ADA\CORE\html4\CBase
      */
-    private static function buildNotificationButton($nodeData, $notificationType) {
-        $button = \CDOMElement::create('button', 'class:ui tiny icon button noteSubscribe');
+    private static function buildNotificationButton($nodeData, $notificationType)
+    {
+        $button = CDOMElement::create('button', 'class:ui tiny icon button noteSubscribe');
         $title = [
             'red' => translateFN('Non ricevi notifiche; clicca per attivarle'),
             'green' => translateFN('Ricevi notifiche; clicca per disattivarle'),
@@ -487,14 +495,14 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
             $color = 'green';
             $isActive = true;
         }
-        $button->addChild(\CDOMElement::create('i', 'class:bell outline icon'));
+        $button->addChild(CDOMElement::create('i', 'class:bell outline icon'));
         if (array_key_exists('notificationId', $nodeData)) {
             $button->setAttribute('data-notification-id', $nodeData['notificationId']);
         }
         foreach ($title as $k => $v) {
-            $button->setAttribute('data-title-'.$k, $v);
+            $button->setAttribute('data-title-' . $k, $v);
         }
-        $button->setAttribute('class', $button->getAttribute('class').' '.$color);
+        $button->setAttribute('class', $button->getAttribute('class') . ' ' . $color);
         $button->setAttribute('title', $title[$color]);
         $button->setAttribute('data-node-id', $nodeData['id_nodo']);
         $button->setAttribute('data-instance-id', $nodeData['id_istanza']);

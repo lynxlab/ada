@@ -1,46 +1,44 @@
 <?php
 
-/**
- * View user - this module shows the profile of an existing user
- *
- *
- * @package
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2009, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link
- * @version		0.1
- */
+use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\Helper\SwitcherHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\User\ADALoggableUser;
+use Lynxlab\ADA\Main\Utilities;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'course_instance');
+$variableToClearAR = ['node', 'layout', 'course', 'course_instance'];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_STUDENT, AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR, AMA_TYPE_SWITCHER);
+$allowedUsersAr = [AMA_TYPE_STUDENT, AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR, AMA_TYPE_SWITCHER];
 
 /**
  * Performs basic controls before entering this module
  */
-$neededObjAr = array(
-	AMA_TYPE_STUDENT => array('layout'),
-	AMA_TYPE_TUTOR => array('layout'),
-	AMA_TYPE_AUTHOR => array('layout'),
-    AMA_TYPE_SWITCHER => array('layout')
-);
+$neededObjAr = [
+    AMA_TYPE_STUDENT => ['layout'],
+    AMA_TYPE_TUTOR => ['layout'],
+    AMA_TYPE_AUTHOR => ['layout'],
+    AMA_TYPE_SWITCHER => ['layout'],
+];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = whoami();
-
-include_once 'include/switcher_functions.inc.php';
+$self = Utilities::whoami();
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -58,53 +56,50 @@ include_once 'include/switcher_functions.inc.php';
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
+ * @var object $user_messages
+ * @var object $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
  */
 SwitcherHelper::init($neededObjAr);
 
-include_once ROOT_DIR . '/admin/include/AdminUtils.inc.php';
 /*
  * YOUR CODE HERE
  */
-require_once ROOT_DIR . '/include/Forms/UserProfileForm.inc.php';
 $userId = false;
 if ($_SESSION['sess_userObj']->getType() == AMA_TYPE_SWITCHER) {
-	$userId = DataValidator::is_uinteger($_GET['id_user']);
+    $userId = DataValidator::isUinteger($_GET['id_user']);
 }
 
 if ($userId === false && isset($_SESSION['sess_userObj']) && $_SESSION['sess_userObj'] instanceof ADALoggableUser) {
-	$userId = $_SESSION['sess_userObj']->getId();
+    $userId = $_SESSION['sess_userObj']->getId();
 }
 
-if($userId === false) {
+if ($userId === false) {
     $data = new CText('Utente non trovato');
-}
-else {
-
-    $user_info = $dh->_get_user_info($userId);
-    if(AMA_DataHandler::isError($userId)) {
+} else {
+    $user_info = $dh->getUserInfo($userId);
+    if (AMADataHandler::isError($userId)) {
         $data = new CText('Utente non trovato');
     } else {
         $viewedUserObj = MultiPort::findUser($userId);
         $viewedUserObj->toArray();
-        $user_dataAr = array(
+        $user_dataAr = [
             'id' => $viewedUserObj->getId(),
             'tipo' => $viewedUserObj->getTypeAsString(),
             'nome e cognome' => $viewedUserObj->getFullName(),
             'data di nascita' => $viewedUserObj->getBirthDate(),
-        	'Comune o stato estero di nascita' => $viewedUserObj->getBirthCity(),
-        	'Provincia di nascita' => $viewedUserObj->getBirthProvince(),
+            'Comune o stato estero di nascita' => $viewedUserObj->getBirthCity(),
+            'Provincia di nascita' => $viewedUserObj->getBirthProvince(),
             'genere' => $viewedUserObj->getGender(),
             'email' => $viewedUserObj->getEmail(),
             'telefono' => $viewedUserObj->getPhoneNumber(),
@@ -112,8 +107,8 @@ else {
             'citta' => $viewedUserObj->getCity(),
             'provincia' => $viewedUserObj->getProvince(),
             'nazione' => $viewedUserObj->getCountry(),
-        	'confermato' => ($viewedUserObj->getStatus()==ADA_STATUS_REGISTERED) ? translateFN("Si") : translateFN("No")
-        );
+            'confermato' => ($viewedUserObj->getStatus() == ADA_STATUS_REGISTERED) ? translateFN("Si") : translateFN("No"),
+        ];
 
         $data = BaseHtmlLib::labeledListElement('class:view_info', $user_dataAr);
     }
@@ -122,22 +117,21 @@ else {
 $label = translateFN('Profilo utente');
 $help = translateFN('Da qui il provider admin può visualizzare il profilo di un utente esistente');
 
-$content_dataAr = array(
+$content_dataAr = [
     'user_name' => $user_name,
     'user_type' => $user_type,
     'status' => $status,
     'label' => $label,
     'help' => $help,
     'data' => $data->getHtml(),
-    'edit_profile'=>$userObj->getEditProfilePage(),
-    'module' => isset($module) ? $module : '',
-    'messages' => $user_messages->getHtml()
-);
+    'edit_profile' => $userObj->getEditProfilePage(),
+    'module' => $module ?? '',
+    'messages' => $user_messages->getHtml(),
+];
 $options = null;
-if (isset($_GET['pdfExport']) && intval($_GET['pdfExport'])===1) {
-	$options['outputfile'] = $viewedUserObj->getFullName().'-'.date("d m Y");
-	$options['forcedownload'] = true;
+if (isset($_GET['pdfExport']) && intval($_GET['pdfExport']) === 1) {
+    $options['outputfile'] = $viewedUserObj->getFullName() . '-' . date("d m Y");
+    $options['forcedownload'] = true;
 }
 
-ARE::render($layout_dataAr, $content_dataAr, NULL, $options);
-
+ARE::render($layout_dataAr, $content_dataAr, null, $options);

@@ -8,11 +8,6 @@ var MAIN_INDEX_CONTAINER_IDENTIFIER   = 'contentcontent';
 var EFFECT_BLIND_DURATION_IN_SECONDS = 0.3;
 
 /**
- * display the unread messages badge if it's needed
- */
-setUnreadMessagesBadge();
-
-/**
  * hides the sidebar (aka menuright) from an
  * href onclick event generated inside the sidebar
  */
@@ -26,7 +21,35 @@ function hideSideBarFromSideBar() {
 
 }
 
-document.observe('dom:loaded', function() {
+document.onreadystatechange = () => {
+	// wait for jQuery to be loaded before doing stuff
+	if (document.readyState === "complete") {
+	initMenu();
+	initEffect();
+	}
+};
+
+const initMenu = function() {
+	/**
+	 * display the unread messages badge if it's needed
+	 */
+	if($j('#unreadmsgbadge').length) {
+		$j.ajax({
+			type: 'GET',
+			url: HTTP_ROOT_DIR + '/comunica/ajax/getUnreadMessagesCount.php',
+			cache: false,
+			dataType: 'json'
+		})
+		.done(function (JSONObj) {
+			if (JSONObj) {
+				const value = parseInt (JSONObj.value);
+				if (!isNaN(value) && value>0) {
+					$j('#unreadmsgbadge').html(value);
+					$j('#msglabel').show();
+				}
+			}
+		});
+	}
 
 	/**
 	 * add trim method to String object
@@ -220,7 +243,7 @@ document.observe('dom:loaded', function() {
     	$j('#help').remove();
     }
 
-});
+}
 
 function navigationPanelToggle(options) {
 	if ('undefined' === typeof options) options = {};
@@ -251,53 +274,54 @@ function navigationPanelToggle(options) {
 	}
 }
 
-/*
- * Per mostrare e nascondere elementi
- */
- Effect.BlindLeft = function(elem) {
-	var element = $(elem);
-	element.makeClipping();
+const initEffect = () => {
+	/*
+	 * Per mostrare e nascondere elementi
+	 */
+	 Effect.BlindLeft = function(elem) {
+		var element = $(elem);
+		element.makeClipping();
 
-	return new Effect.Scale(element, 0,
-		Object.extend({scaleContent: false,
+		return new Effect.Scale(element, 0,
+			Object.extend({scaleContent: false,
+				scaleY: false,
+				scaleMode: 'box',
+				restoreAfterFinish:true,
+				afterSetup: function (effect) {
+					effect.element.makeClipping().setStyle({
+						height: effect.dims[0] + 'px'
+					}).show();
+				},
+				afterFinishInternal: function(effect) {
+					effect.element.hide().undoClipping();
+				}
+			}, arguments[1] || {})
+		);
+	};
+
+	Effect.BlindRight = function(elem) {
+		var element = $(elem);
+		var elementDimensions = $(element).getDimensions();
+
+		return new Effect.Scale(element, 100, Object.extend({
+			scaleContent: false,
 			scaleY: false,
-			scaleMode: 'box',
-			restoreAfterFinish:true,
-			afterSetup: function (effect) {
+			scaleFrom: 0,
+			scaleMode: {originalHeight: elementDimensions.height, originalWidth: elementDimensions.width},
+			restoreAfterFinish: true,
+			afterSetup: function(effect) {
 				effect.element.makeClipping().setStyle({
-					height: effect.dims[0] + 'px'
+					width: '0px',
+					height: effect.dims[0]+'px'
 				}).show();
 			},
 			afterFinishInternal: function(effect) {
-				effect.element.hide().undoClipping();
+				effect.element.undoClipping();
 			}
 		}, arguments[1] || {})
-	);
+		);
+	};
 };
-
-Effect.BlindRight = function(elem) {
-	var element = $(elem);
-	var elementDimensions = $(element).getDimensions();
-
-	return new Effect.Scale(element, 100, Object.extend({
-		scaleContent: false,
-		scaleY: false,
-		scaleFrom: 0,
-		scaleMode: {originalHeight: elementDimensions.height, originalWidth: elementDimensions.width},
-		restoreAfterFinish: true,
-		afterSetup: function(effect) {
-			effect.element.makeClipping().setStyle({
-				width: '0px',
-				height: effect.dims[0]+'px'
-			}).show();
-		},
-		afterFinishInternal: function(effect) {
-			effect.element.undoClipping();
-		}
-	}, arguments[1] || {})
-	);
-};
-
 
 function toggleElementVisibility(element, direction)
 {
@@ -460,61 +484,6 @@ function dropDownMenuHide(element, direction) {
 	else {
 		$(element).hide();
 	}
-}
-
-function setUnreadMessagesBadge () {
-	document.observe('dom:loaded', function() {
-		// do something only if there is the 'comunica' menu item
-		/**
-		 * @author giorgio 21/ago/2014
-		 * FIXME:
-		 * when all templates menu are turned into semantic-ui
-		 * it is safe to remove all the $('com') related stuff
-		 */
-		if ($('com')!=undefined || $('unreadmsgbadge')!=undefined) {
-			new Ajax.Request( HTTP_ROOT_DIR+ '/comunica/ajax/getUnreadMessagesCount.php', {
-				method: 'get',
-				onComplete: function(transport) {
-					var json = transport.responseText.evalJSON(true);
-					var value = parseInt (json.value);
-					if (!isNaN(value) && value>0) {
-						if ($('com')!=undefined) {
-							var msgCounter = new Element('span',{
-								id:'newMsgCount'
-							});
-							msgCounter.style.display = 'none';
-							msgCounter.update("<span class='arrow'></span>"+value);
-							$('com').insert(msgCounter);
-							$('com').style.paddingRight = '0';
-							Effect.Appear('newMsgCount',{ duration: 0.4 });
-						} else if($('unreadmsgbadge')!=undefined) { // update span id
-							$('msglabel').show();
-							$('unreadmsgbadge').update(value);
-						}
-					}
-				}
-			});
-//			PLEASE FIND BELOW A MOCK-UP CODE TO BE USED WITH jQuery/NOCONFLICT
-//			$j.ajax({
-//				type	: 'GET',
-//				url		: HTTP_ROOT_DIR+ '/comunica/ajax/getUnreadMessagesCount.php',
-//				dataType:'json'
-//				})
-//				.done   (function( JSONObj ) {
-//					if (JSONObj)
-//						{
-//							console.log (JSONObj);
-//						}
-//				});
-			// decrease some padding for nice rendering
-//			$j('#com').css('padding-right','10px');
-			// generate the new message counter to the 'comunica' menu iten
-//			var msgCounter = $j('<span>').attr('id','newMsgCount').html("<span class='arrow'></span>"+messageCount).hide();
-			// show the counter with effect
-//			$j('#com').append(msgCounter);
-//			msgCounter.fadeIn();
-		}
-	});
 }
 
 var index_loaded=false;

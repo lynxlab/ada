@@ -1,1 +1,1 @@
-document.write("<script type='text/javascript' src='../js/services/author.js'></script>");
+load_js('../js/services/author.js');

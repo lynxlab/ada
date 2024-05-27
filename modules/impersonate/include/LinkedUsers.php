@@ -10,7 +10,9 @@
 
 namespace Lynxlab\ADA\Module\Impersonate;
 
-if (!defined('linkedUsersTable')) define('linkedUsersTable', AMAImpersonateDataHandler::PREFIX . 'linkedusers');
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Module\Impersonate\AMAImpersonateDataHandler;
+use Lynxlab\ADA\Module\Impersonate\ImpersonateBase;
 
 class LinkedUsers extends ImpersonateBase
 {
@@ -19,7 +21,7 @@ class LinkedUsers extends ImpersonateBase
      *
      * @var string
      */
-    const table = linkedUsersTable;
+    public const TABLE = AMAImpersonateDataHandler::PREFIX . 'linkedusers';
 
     protected $source_id;
     protected $linked_id;
@@ -27,7 +29,7 @@ class LinkedUsers extends ImpersonateBase
     protected $linked_type;
     protected $is_active;
 
-    public function __construct($data = array())
+    public function __construct($data = [])
     {
         parent::__construct($data);
     }
@@ -37,7 +39,8 @@ class LinkedUsers extends ImpersonateBase
      *
      * @return array user type as key, prefix string as value
      */
-    public static function getNewUserPrefix() {
+    public static function getNewUserPrefix()
+    {
         return [
             AMA_TYPE_SWITCHER => 'sw.',
             AMA_TYPE_TUTOR => 'tu.',
@@ -50,7 +53,8 @@ class LinkedUsers extends ImpersonateBase
      *
      * @return array user type as key, array of linkable user types as value
      */
-    public static function getSupportedLinks() {
+    public static function getSupportedLinks()
+    {
         return [
             AMA_TYPE_ADMIN => [],
             AMA_TYPE_SWITCHER => [],
@@ -71,14 +75,15 @@ class LinkedUsers extends ImpersonateBase
      * @param int $userType
      * @return array of LinkedUsers objects
      */
-    public static function getUsersWithLinkedUserType($userType = null) {
+    public static function getUsersWithLinkedUserType($userType = null)
+    {
         if (is_null($userType)) {
             $userType = -1;
         }
         /**
          * @var AMAImpersonateDataHandler $impDH
          */
-        $impDH = AMAImpersonateDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+        $impDH = AMAImpersonateDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
         $res = $impDH->findBy('LinkedUsers', [
             'linked_type' => intval($userType),
             'is_active' => true,
@@ -93,17 +98,18 @@ class LinkedUsers extends ImpersonateBase
      * @param array $options opitonal whereArr passed to the findBy method
      * @return void
      */
-    public static function setSessionLinkedUser($options = []) {
-        $_SESSION[MODULES_IMPERSONATE_SESSLINKEDOBJ] = [];
+    public static function setSessionLinkedUser($options = [])
+    {
+        $_SESSION[Utils::MODULES_IMPERSONATE_SESSLINKEDOBJ] = [];
         $default = [
             'source_id' => isset($_SESSION['sess_userObj']) ? $_SESSION['sess_userObj']->getId() : -1,
             'is_active' => true,
         ];
         $supportedLinks = self::getSupportedLinks()[$_SESSION['sess_userObj']->getType()];
-        if (count($supportedLinks)>1) {
+        if (count($supportedLinks) > 1) {
             $default['linked_type'] = [
                 'op' => 'IN',
-                'value' => '('.implode(',', $supportedLinks).')',
+                'value' => '(' . implode(',', $supportedLinks) . ')',
             ];
         } else {
             $default['linked_type'] = reset($supportedLinks);
@@ -112,10 +118,10 @@ class LinkedUsers extends ImpersonateBase
         /**
          * @var AMAImpersonateDataHandler $impDH
          */
-        $impDH = AMAImpersonateDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+        $impDH = AMAImpersonateDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
         $res = $impDH->findBy('LinkedUsers', array_merge($options, $default));
-        if (is_array($res) && count($res)>0) {
-            $_SESSION[MODULES_IMPERSONATE_SESSLINKEDOBJ] = $res;
+        if (is_array($res) && count($res) > 0) {
+            $_SESSION[Utils::MODULES_IMPERSONATE_SESSLINKEDOBJ] = $res;
         } else {
             throw new ImpersonateException('Zero linked users found');
         }
@@ -127,17 +133,18 @@ class LinkedUsers extends ImpersonateBase
      *
      * @return array
      */
-    public static function getSessionLinkedUser() {
-        if (!isset ($_SESSION[MODULES_IMPERSONATE_SESSLINKEDOBJ])) {
+    public static function getSessionLinkedUser()
+    {
+        if (!isset($_SESSION[Utils::MODULES_IMPERSONATE_SESSLINKEDOBJ])) {
             self::setSessionLinkedUser();
         }
-        return $_SESSION[MODULES_IMPERSONATE_SESSLINKEDOBJ];
+        return $_SESSION[Utils::MODULES_IMPERSONATE_SESSLINKEDOBJ];
     }
 
     /**
      * Get the value of source_id
      */
-    public function getSource_id()
+    public function getSourceId()
     {
         return $this->source_id;
     }
@@ -147,7 +154,7 @@ class LinkedUsers extends ImpersonateBase
      *
      * @return  self
      */
-    public function setSource_id($source_id)
+    public function setSourceId($source_id)
     {
         $this->source_id = $source_id;
 
@@ -157,7 +164,7 @@ class LinkedUsers extends ImpersonateBase
     /**
      * Get the value of linked_id
      */
-    public function getLinked_id()
+    public function getLinkedId()
     {
         return $this->linked_id;
     }
@@ -167,7 +174,7 @@ class LinkedUsers extends ImpersonateBase
      *
      * @return  self
      */
-    public function setLinked_id($linked_id)
+    public function setLinkedId($linked_id)
     {
         $this->linked_id = $linked_id;
 
@@ -177,7 +184,7 @@ class LinkedUsers extends ImpersonateBase
     /**
      * Get the value of source_type
      */
-    public function getSource_type()
+    public function getSourceType()
     {
         return $this->source_type;
     }
@@ -187,7 +194,7 @@ class LinkedUsers extends ImpersonateBase
      *
      * @return  self
      */
-    public function setSource_type($source_type)
+    public function setSourceType($source_type)
     {
         $this->source_type = $source_type;
 
@@ -197,7 +204,7 @@ class LinkedUsers extends ImpersonateBase
     /**
      * Get the value of linked_type
      */
-    public function getLinked_type()
+    public function getLinkedType()
     {
         return $this->linked_type;
     }
@@ -207,7 +214,7 @@ class LinkedUsers extends ImpersonateBase
      *
      * @return  self
      */
-    public function setLinked_type($linked_type)
+    public function setLinkedType($linked_type)
     {
         $this->linked_type = $linked_type;
 
@@ -217,7 +224,7 @@ class LinkedUsers extends ImpersonateBase
     /**
      * Get the value of is_active
      */
-    public function getIs_active()
+    public function getIsActive()
     {
         return $this->is_active;
     }
@@ -227,11 +234,10 @@ class LinkedUsers extends ImpersonateBase
      *
      * @return  self
      */
-    public function setIs_active($is_active)
+    public function setIsActive($is_active)
     {
         $this->is_active = $is_active;
 
         return $this;
     }
-
 }

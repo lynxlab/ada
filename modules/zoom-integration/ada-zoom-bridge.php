@@ -1,24 +1,24 @@
 <?php
 require_once '../../config_path.inc.php';
-$allowedUsersAr = array(AMA_TYPE_STUDENT, AMA_TYPE_TUTOR); //, AMA_TYPE_AUTHOR, AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER);
+$allowedUsersAr = [AMA_TYPE_STUDENT, AMA_TYPE_TUTOR]; //, AMA_TYPE_AUTHOR, AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER);
 /**
  * Get needed objects
  */
-$neededObjAr = array(
+$neededObjAr = [
     // AMA_TYPE_VISITOR => array('node', 'layout', 'course'),
-    AMA_TYPE_STUDENT => array('node', 'layout', 'tutor', 'course', 'course_instance', 'videoroom'),
-    AMA_TYPE_TUTOR => array('node', 'layout', 'course', 'course_instance', 'videoroom'),
+    AMA_TYPE_STUDENT => ['node', 'layout', 'tutor', 'course', 'course_instance', 'videoroom'],
+    AMA_TYPE_TUTOR => ['node', 'layout', 'course', 'course_instance', 'videoroom'],
     // AMA_TYPE_AUTHOR => array('node', 'layout', 'course'),
-	// AMA_TYPE_SWITCHER => array('node', 'layout', 'course')
-);
+    // AMA_TYPE_SWITCHER => array('node', 'layout', 'course')
+];
 $trackPageToNavigationHistory = false;
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 require_once ROOT_DIR . '/comunica/include/ZoomConf.config.inc.php';
 
 if (!isset($_SESSION['ada-zoom-bridge'])) {
-  // the ada-zoom.js will be served only if the session var is found
-  $_SESSION['ada-zoom-bridge'] = true;
+    // the ada-zoom.js will be served only if the session var is found
+    $_SESSION['ada-zoom-bridge'] = true;
 }
 
 ?>

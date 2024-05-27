@@ -1,43 +1,37 @@
 <?php
-/**
- * ADMIN.
- *
- *
- * @package
- * @author		Stefano Penge <steve@lynxlab.com>
- * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
- * @author		Vito Modena <vito@lynxlab.com>
- * @copyright	Copyright (c) 2009, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link
- * @version		0.1
- */
+
+use Lynxlab\ADA\Admin\AdminHelper;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\HtmlLibrary\AdminModuleHtmlLib;
+use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'course_instance');
+$variableToClearAR = ['node', 'layout', 'course', 'course_instance'];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_ADMIN);
+$allowedUsersAr = [AMA_TYPE_ADMIN];
 
 /**
  * Performs basic controls before entering this module
  */
-$neededObjAr = array(
-  AMA_TYPE_ADMIN => array('layout')
-);
+$neededObjAr = [
+  AMA_TYPE_ADMIN => ['layout'],
+];
 
-require_once ROOT_DIR.'/include/module_init.inc.php';
-$self =  whoami();  // = admin!
-
-include_once 'include/admin_functions.inc.php';
+require_once ROOT_DIR . '/include/module_init.inc.php';
+$self =  Utilities::whoami();  // = admin!
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -55,15 +49,16 @@ include_once 'include/admin_functions.inc.php';
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
+ * @var object $user_messages
+ * @var object $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -81,7 +76,7 @@ $table = AdminModuleHtmlLib::getTestersActivityReport($testers_dataAr);
 $label = translateFN("Home dell'amministratore");
 $help  = translateFN("Report sintetico dell'attivit&agrave; dei provider");
 
-$content_dataAr = array(
+$content_dataAr = [
   'user_name'    => $user_name,
   'user_type'    => $user_type,
   'status'       => $status,
@@ -89,10 +84,9 @@ $content_dataAr = array(
   'help'         => $help,
   'data'         => $table->getHtml(),
   'module'       => $label,
-);
+];
 
 /**
  * Sends data to the rendering engine
  */
-ARE::render($layout_dataAr,$content_dataAr);
-?>
+ARE::render($layout_dataAr, $content_dataAr);

@@ -1,13 +1,8 @@
 <?php
 
-/**
- * @package     etherpad module
- * @author      giorgio <g.consorti@lynxlab.com>
- * @copyright   Copyright (c) 2021, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version     0.1
- */
-
+use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\EtherpadIntegration\AMAEtherpadDataHandler;
 use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadActions;
 use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadClient;
@@ -15,37 +10,39 @@ use Lynxlab\ADA\Module\EtherpadIntegration\EtherpadException;
 use Lynxlab\ADA\Module\EtherpadIntegration\Groups;
 use Lynxlab\ADA\Module\EtherpadIntegration\Utils;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Base config file
  */
-require_once(realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
+
+require_once(realpath(__DIR__) . '/../../../config_path.inc.php');
 
 // MODULE's OWN IMPORTS
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = ['node', 'layout', 'course', 'user'];
 
 /**
  * Get Users (types) allowed to access this module and needed objects
  */
-list($allowedUsersAr, $neededObjAr) = array_values(EtherpadActions::getAllowedAndNeededAr());
+[$allowedUsersAr, $neededObjAr] = array_values(EtherpadActions::getAllowedAndNeededAr());
 
 /**
  * Performs basic controls before entering this module
  */
 $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR . '/include/module_init.inc.php');
-require_once(ROOT_DIR . '/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 /**
  * @var AMAEtherpadDataHandler $etDH
  */
-$etDH = AMAEtherpadDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+$etDH = AMAEtherpadDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
-$retArray = array('status' => 'ERROR');
+$retArray = ['status' => 'ERROR'];
 session_write_close();
 
 // sanitizie data
@@ -53,9 +50,7 @@ $passedData = [];
 $needed = [
     [
         'key' => 'instanceId',
-        'sanitize' => function ($v) {
-            return intval($v);
-        },
+        'sanitize' => fn ($v) => intval($v),
     ],
 ];
 
@@ -69,7 +64,7 @@ foreach ($needed as $n) {
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' && !is_null($passedData['instanceId'])) {
     try {
-        $res = $etDH->findOneBy('Groups',[
+        $res = $etDH->findOneBy('Groups', [
             'instanceId' => $passedData['instanceId'],
             'isActive' => true,
         ]);
@@ -79,17 +74,19 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' && 
         } else {
             if (EtherpadActions::canDo(EtherpadActions::INSTANCE_GROUP_MAP)) {
                 // check instance existence
-                $instanceAr = $etDH->course_instance_get($passedData['instanceId']);
-                if (!AMA_DB::isError($instanceAr)) {
+                $instanceAr = $etDH->courseInstanceGet($passedData['instanceId']);
+                if (!AMADB::isError($instanceAr)) {
                     // create an etherpad group and save its id locally
                     $ethClient = new EtherpadClient(MODULES_ETHERPAD_APIKEY, Utils::getEtherpadURL());
                     $rawGroup = $ethClient->createGroupIfNotExistsFor($passedData['instanceId']);
                     if (property_exists($rawGroup, 'groupID')) {
-                        if ($etDH->saveGroupMapping([
+                        if (
+                            $etDH->saveGroupMapping([
                             'groupId' => $rawGroup->groupID,
                             'instanceId' => $passedData['instanceId'],
                             'isActive' => true,
-                        ])) {
+                            ])
+                        ) {
                             $groupId = $rawGroup->groupID;
                         }
                     } else {
@@ -102,11 +99,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' && 
                 throw new EtherpadException(translateFN('Utente non abilitato a creare gruppi di lavoro per documenti condivisi'));
             }
         }
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         $res = $e;
     }
 
-    if (AMA_DB::isError($res) || $res instanceof \Exception) {
+    if (AMADB::isError($res) || $res instanceof Exception) {
         // if it's an error display the error message
         $retArray['status'] = "ERROR";
         $retArray['msg'] = $res->getMessage();

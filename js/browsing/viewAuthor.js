@@ -9,4 +9,4 @@
  * @version		0.1
  */
 
-document.write("<script type='text/javascript' src='../js/browsing/view.js'></script>");
+load_js('../js/browsing/view.js');

@@ -9,26 +9,26 @@
  * @version        0.1
  */
 
- function initSummaryModal(modulePath) {
-     const summaryModalId = 'summaryModal';
-     $j('.servicecomplete-summary-modal.button').on('click', function() {
-         $j.ajax({
-             method: 'GET',
-             url: `${modulePath}/ajax/getSummaryModal.php`,
-             data: $j(this).data(),
-             dataType: 'html',
-         })
-         .done(function(html){
-             if (html.length>0) {
-                 $j('body').append($j(html).attr('id', summaryModalId));
-                 $j(`#${summaryModalId}`).modal('setting', {
-                     onHidden: function() {
-                         $j(`#${summaryModalId}`).parent().remove();
-                     }
-                 }).modal('show');
-             }
-         })
-         .fail(function(resp){
-         });
-     });
- }
+function initSummaryModal(modulePath) {
+    const summaryModalId = 'summaryModal';
+    $j('.servicecomplete-summary-modal.button').on('click', function () {
+        $j.ajax({
+            method: 'GET',
+            url: `${modulePath}/ajax/getSummaryModal.php`,
+            data: $j(this).data(),
+            dataType: 'html',
+        })
+            .done(function (html) {
+                if (html.length > 0) {
+                    $j('body').append($j(html).attr('id', summaryModalId));
+                    $j(`#${summaryModalId}`).modal('setting', {
+                        onHidden: function () {
+                            $j(`#${summaryModalId}`).parent().remove();
+                        }
+                    }).modal('show');
+                }
+            })
+            .fail(function (resp) {
+            });
+    });
+}

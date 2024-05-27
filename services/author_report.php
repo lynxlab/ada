@@ -1,40 +1,37 @@
 <?php
-/**
- * AUTHOR REPORT.
- *
- * @package
- * @author		Stefano Penge <steve@lynxlab.com>
- * @copyright	Copyright (c) 2009, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link
- * @version		0.1
- */
+
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\Helper\ServiceHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Main\Output\ARE;
+use Lynxlab\ADA\Main\Utilities;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * Base config file
  */
-require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
+
+require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('node', 'layout', 'course', 'course_instance');
+$variableToClearAR = ['node', 'layout', 'course', 'course_instance'];
 
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_AUTHOR);
+$allowedUsersAr = [AMA_TYPE_AUTHOR];
 /**
  * Performs basic controls before entering this module
  */
-$neededObjAr = array(
-        AMA_TYPE_AUTHOR => array('layout','course')
-);
+$neededObjAr = [
+        AMA_TYPE_AUTHOR => ['layout','course'],
+];
 
-require_once ROOT_DIR.'/include/module_init.inc.php';
-$self =  whoami();  // = author_report!
-
-include_once 'include/author_functions.inc.php';
+require_once ROOT_DIR . '/include/module_init.inc.php';
+$self =  Utilities::whoami();  // = author_report!
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -52,15 +49,16 @@ include_once 'include/author_functions.inc.php';
  * @var string $media_path
  * @var string $template_family
  * @var string $status
- * @var array $user_messages
- * @var array $user_agenda
+ * @var object $user_messages
+ * @var object $user_agenda
  * @var array $user_events
  * @var array $layout_dataAr
- * @var History $user_history
- * @var Course $courseObj
- * @var Course_Instance $courseInstanceObj
- * @var ADAPractitioner $tutorObj
- * @var Node $nodeObj
+ * @var \Lynxlab\ADA\Main\History\History $user_history
+ * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+ * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+ * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+ * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+ * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990
@@ -71,74 +69,70 @@ $menu = '';
 /*
  * 2. Building nodes summary
 */
-if ((empty($id_node)) OR (!isset($mode))) {
-    $mode='summary';
+if ((empty($id_node)) or (!isset($mode))) {
+    $mode = 'summary';
 }
 
 switch ($mode) {
-
     case 'zoom':
-
         $status = translateFN('zoom di un nodo');
         $help = translateFN("Da qui l'Autore del corso può vedere  in dettaglio le caratteristiche di un nodo.");
 
-        $out_fields_ar = array('data_visita','id_utente_studente','id_istanza_corso');
-        $clause ="id_nodo = '$id_node'";
+        $out_fields_ar = ['data_visita','id_utente_studente','id_istanza_corso'];
+        $clause = "id_nodo = '$id_node'";
 
-        $visits_ar = $dh->_find_nodes_history_list($out_fields_ar,$clause);
-        if (AMA_DataHandler::isError($visits_ar)) {
+        $visits_ar = $dh->findNodesHistoryList($out_fields_ar, $clause);
+        if (AMADataHandler::isError($visits_ar)) {
             $msg = $visits_ar->getMessage();
             print '$msg';
             //header('Location: $error?err_msg=$msg');
             //exit;
         }
-        $visits_dataHa = array();
+        $visits_dataHa = [];
         $count_visits = count($visits_ar);
         if ($count_visits) {
             foreach ($visits_ar as $visit) {
                 $user_id = $visit[2];
-                if($user_id > 0) {
-                    $student = $dh->_get_user_info($visit[2]);
-                    //global $debug;$debug=1;mydebug(__LINE__,__FILE__,$student);$debug=0;
+                if ($user_id > 0) {
+                    $student = $dh->getUserInfo($visit[2]);
+                    //global $debug;$debug=1;Utilities::mydebug(__LINE__,__FILE__,$student);$debug=0;
                     $studentname = $student['username'];
-                }
-                else {
+                } else {
                     $studentname = translateFN('Guest');
                 }
-                $visits_dataHa[] = array(
-                        translateFN('Data')=>ts2dFN($visit[1]),
-                        translateFN('Ora')=>ts2tmFN($visit[1]),
-                        translateFN('Studente')=>$studentname,
-                        translateFN('Edizione del corso')=>$visit[3]
+                $visits_dataHa[] = [
+                        translateFN('Data') => Utilities::ts2dFN($visit[1]),
+                        translateFN('Ora') => Utilities::ts2tmFN($visit[1]),
+                        translateFN('Studente') => $studentname,
+                        translateFN('Edizione del corso') => $visit[3],
                         // etc etc
-                );
+                ];
             }
-            $caption = translateFN('Dettaglio delle visite al nodo').' '.$id_node;
-            $tObj = BaseHtmlLib::tableElement('id:authorZoom',array_keys(reset($visits_dataHa)),$visits_dataHa,null,$caption);
-            $tObj->setAttribute('class', 'default_table doDataTable '.ADA_SEMANTICUI_TABLECLASS);
+            $caption = translateFN('Dettaglio delle visite al nodo') . ' ' . $id_node;
+            $tObj = BaseHtmlLib::tableElement('id:authorZoom', array_keys(reset($visits_dataHa)), $visits_dataHa, null, $caption);
+            $tObj->setAttribute('class', 'default_table doDataTable ' . ADA_SEMANTICUI_TABLECLASS);
             $tabled_visits_dataHa = $tObj->getHtml();
             $optionsAr['onload_func'] = 'initDoc();';
-            $layout_dataAr['CSS_filename'] = array (
-            		JQUERY_UI_CSS,
-            		SEMANTICUI_DATATABLE_CSS,
-            );
-            $layout_dataAr['JS_filename'] = array(
-            		JQUERY,
-            		JQUERY_UI,
-            		JQUERY_DATATABLE,
-            		SEMANTICUI_DATATABLE,
-            		JQUERY_DATATABLE_DATE,
-            		JQUERY_NO_CONFLICT
-            );
-        }
-        else {
+            $layout_dataAr['CSS_filename'] =  [
+                    JQUERY_UI_CSS,
+                    SEMANTICUI_DATATABLE_CSS,
+            ];
+            $layout_dataAr['JS_filename'] = [
+                    JQUERY,
+                    JQUERY_UI,
+                    JQUERY_DATATABLE,
+                    SEMANTICUI_DATATABLE,
+                    JQUERY_DATATABLE_DATE,
+                    JQUERY_NO_CONFLICT,
+            ];
+        } else {
             $tabled_visits_dataHa = translateFN('Nessun dato disponibile');
         }
-        $menu .= '<a href="author_report.php?mode=summary">'.translateFN('report').'</a>';
+        $menu .= '<a href="author_report.php?mode=summary">' . translateFN('report') . '</a>';
         break;
 
     case 'xml':
-        $filename = $id_course.'.xml';
+        $filename = $id_course . '.xml';
         header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');    // Date in the past
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');          // always modified
         header('Cache-Control: no-store, no-cache, must-revalidate');  // HTTP/1.1
@@ -153,41 +147,39 @@ switch ($mode) {
         break;
 
     case 'summary':
-    default;
-
+    default:
         $status = translateFN('elenco dei nodi');
         $help = translateFN("Da qui l'Autore del corso può vedere la lista dei nodi di cui è autore.");
-		$course_id = isset($_GET['id_course']) ? intval($_GET['id_course']) : null;
-        $courseHa = $dh->get_course($course_id);
-        if (AMA_DataHandler::isError($courseHa)) {
+        $course_id = isset($_GET['id_course']) ? intval($_GET['id_course']) : null;
+        $courseHa = $dh->getCourse($course_id);
+        if (AMADataHandler::isError($courseHa)) {
             $err_msg = $courseHa->getMessage();
             //header('Location: $error?err_msg=$msg');
             //exit;
-        }
-        else {
+        } else {
             $course_title = $courseHa['titolo'];
             $clause = "id_nodo LIKE '{$course_id}\_%' AND ";
-            $field_list_ar = array('nome','id_utente');
+            $field_list_ar = ['nome','id_utente'];
             $clause .= "id_utente='$sess_id_user'";
-            $dataHa = $dh->_find_nodes_list($field_list_ar, $clause);
-            if (AMA_DataHandler::isError($dataHa)) {
+            $dataHa = $dh->doFindNodesList($field_list_ar, $clause);
+            if (AMADataHandler::isError($dataHa)) {
                 $err_msg = $dataHa->getMessage();
                 //header('Location: $error?err_msg=$msg');
                 //exit;
             }
             $total_visits = 0;
-            $visits_dataHa = array();
+            $visits_dataHa = [];
             foreach ($dataHa as $visited_node) {
                 $id_node = $visited_node[0];
                 $nome =  $visited_node[1];
-                $out_fields_ar = array('data_visita');
-                $clause ="id_nodo = '$id_node'";
+                $out_fields_ar = ['data_visita'];
+                $clause = "id_nodo = '$id_node'";
 
                 // FIXME: verificare quale fra queste due usare
-                //         $visits = $dh->find_nodes_history_list($out_fields_ar,'', '', $node_id);
-                $visits = $dh->_find_nodes_history_list($out_fields_ar,$clause);
+                //         $visits = $dh->findNodesHistoryList($out_fields_ar,'', '', $node_id);
+                $visits = $dh->findNodesHistoryList($out_fields_ar, $clause);
 
-                if (AMA_DataHandler::isError($visits)) {
+                if (AMADataHandler::isError($visits)) {
                     $msg = $visits->getMessage();
                     print '$msg';
                     //header('Location: $error?err_msg=$msg');
@@ -196,55 +188,51 @@ switch ($mode) {
                 $count_visits = count($visits);
 
                 $total_visits = $total_visits + count($visits);
-                $row = array(
+                $row = [
                         translateFN('Id')     => $id_node,
                         translateFN('Nome')   => $nome,
                         translateFN('Visite') => $count_visits,
-                );
+                ];
 
-                if ($count_visits>0) {
-                    $row[translateFN('Zoom')]="<a href=\"author_report.php?mode=zoom&id_node=$id_node\"><img src=\"img/magnify.png\"' border=0></a>";
+                if ($count_visits > 0) {
+                    $row[translateFN('Zoom')] = "<a href=\"author_report.php?mode=zoom&id_node=$id_node\"><img src=\"img/magnify.png\"' border=0></a>";
+                } else {
+                    $row[translateFN('Zoom')] = '&nbsp;';
                 }
-                else {
-                    $row[translateFN('Zoom')]='&nbsp;';
-                }
-                $id_course_and_nodeAr = explode('_',$id_node);
+                $id_course_and_nodeAr = explode('_', $id_node);
                 $id_course = $id_course_and_nodeAr[0];
-                $row[translateFN('Naviga')]="<a href=\"$http_root_dir/browsing/view.php?id_course=$id_course&id_node=$id_node\"><img src=\"img/timon.png\" border=0></a>";
-                array_push($visits_dataHa,$row);
+                $row[translateFN('Naviga')] = "<a href=\"$http_root_dir/browsing/view.php?id_course=$id_course&id_node=$id_node\"><img src=\"img/timon.png\" border=0></a>";
+                array_push($visits_dataHa, $row);
             }
         }
 
-        if (isset($err_msg) || !is_array($visits_dataHa) || count($visits_dataHa)<=0) {
+        if (isset($err_msg) || !is_array($visits_dataHa) || count($visits_dataHa) <= 0) {
             $tabled_visits_dataHa = translateFN("Nessun corso assegnato all'autore.");
-        }
-        else {
-            $caption = translateFN('Corso:')." <strong>$course_title</strong> ".translateFN('- Report al ')." <strong>$ymdhms</strong>";
-            $tObj = BaseHtmlLib::tableElement('id:authorReport, class: doDataTable',array_keys($visits_dataHa[0]),$visits_dataHa,null,$caption);
-            $tObj->setAttribute('class', 'default_table doDataTable '.ADA_SEMANTICUI_TABLECLASS);
+        } else {
+            $caption = translateFN('Corso:') . " <strong>$course_title</strong> " . translateFN('- Report al ') . " <strong>$ymdhms</strong>";
+            $tObj = BaseHtmlLib::tableElement('id:authorReport, class: doDataTable', array_keys($visits_dataHa[0]), $visits_dataHa, null, $caption);
+            $tObj->setAttribute('class', 'default_table doDataTable ' . ADA_SEMANTICUI_TABLECLASS);
             $tabled_visits_dataHa = $tObj->getHtml();
             $optionsAr['onload_func'] = 'initDoc();';
-            $layout_dataAr['CSS_filename'] = array (
-            		JQUERY_UI_CSS,
-            		SEMANTICUI_DATATABLE_CSS,
-            );
-            $layout_dataAr['JS_filename'] = array(
-            		JQUERY,
-            		JQUERY_UI,
-            		JQUERY_DATATABLE,
-            		SEMANTICUI_DATATABLE,
-            		ROOT_DIR . '/js/include/jquery/dataTables/formattedNumberSortPlugin.js',
-            		JQUERY_NO_CONFLICT
-            );
+            $layout_dataAr['CSS_filename'] =  [
+                    JQUERY_UI_CSS,
+                    SEMANTICUI_DATATABLE_CSS,
+            ];
+            $layout_dataAr['JS_filename'] = [
+                    JQUERY,
+                    JQUERY_UI,
+                    JQUERY_DATATABLE,
+                    SEMANTICUI_DATATABLE,
+                    ROOT_DIR . '/js/include/jquery/dataTables/formattedNumberSortPlugin.js',
+                    JQUERY_NO_CONFLICT,
+            ];
         }
 }
 
 // SERVICE:  BANNER
-$banner = include ROOT_DIR.'/include/banner.inc.php';
 
-$content_dataAr = array(
+$content_dataAr = [
         'course_title' => translateFN('Report del corso'),
-        'banner'       => $banner,
         'menu'         => $menu,
         'user_name'    => $user_name,
         'user_type'    => $user_type,
@@ -253,7 +241,7 @@ $content_dataAr = array(
         //'head'         => translateFN('Report'),
         'dati'         => $tabled_visits_dataHa,
         'agenda'       => $user_agenda->getHtml(),
-        'messages'     => $user_messages->getHtml()
-);
+        'messages'     => $user_messages->getHtml(),
+];
 
-ARE::render($layout_dataAr, $content_dataAr, null, (isset($optionsAr) ? $optionsAr : null));
+ARE::render($layout_dataAr, $content_dataAr, null, ($optionsAr ?? null));

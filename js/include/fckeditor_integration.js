@@ -217,6 +217,9 @@ function FCKeditor_OnComplete(FCKEDITOR_INSTANCE_NAME) {
 	if ($(PARENT_NODE_DIV) != null) {
 		$(PARENT_NODE_DIV).hide();
 	}
+	if ($(FILE_UPLOAD_ERROR_DIV) != null) {
+		$(FILE_UPLOAD_ERROR_DIV).hide();
+	}
 
 }
 
@@ -939,6 +942,9 @@ function printErrorMessage(error, filename) {
 		$(FILE_UPLOAD_ERROR_DIV).innerHTML = 'Errore nell\'upload del file.';
 		break;
 	}
+	document.querySelector('input[type="file"][name="file_up"]').value = "";
+	$(FILE_UPLOAD_ERROR_DIV).show();
+
 }
 
 function getFileDataFromSelect(id_select) {
