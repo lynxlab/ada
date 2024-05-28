@@ -10,6 +10,7 @@ use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Utilities;
+use Lynxlab\ADA\Module\Classbudget\ClassbudgetAPI;
 use Lynxlab\ADA\Switcher\Subscription;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -93,8 +94,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                              * delete budget details if needed
                              */
                             if (ModuleLoaderHelper::isLoaded('MODULES_CLASSBUDGET')) {
-                                require_once MODULES_CLASSBUDGET_PATH . '/include/classbudgetAPI.inc.php';
-                                $budgetAPI = new classbudgetAPI();
+                                $budgetAPI = new ClassbudgetAPI();
                                 if (AMADB::isError($budgetAPI->deleteBudgetCourseInstance($courseInstanceId))) {
                                     // handle delete budget error here if you wish
                                 }

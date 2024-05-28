@@ -137,16 +137,6 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
                 // $view_link,
                 $delete_link,
             ];
-            if (ModuleLoaderHelper::isLoaded('MODULES_CLASSBUDGET')) {
-            	$budgetImg = CDOMElement::create('img','alt:'.translateFN('budget').',title:'.translateFN('budget'));
-            	$budgetImg->setAttribute('src', MODULES_CLASSBUDGET_HTTP.'/layout/'.$template_family.'/img/budget_icon.png');
-            	$budget_link = BaseHtmlLib::link(MODULES_CLASSBUDGET_HTTP."/index.php?id_course=$courseId&id_course_instance=$instanceId", $budgetImg->getHtml());
-                /**
-                 * insert budget link before deletelink
-                 */
-                array_splice($actionsArr, count($actionsArr)-1, 0, [ $budget_link ]);
-            }
-
             if (ModuleLoaderHelper::isLoaded('STUDENTSGROUPS')) {
                 $subscribeGroup_link = BaseHtmlLib::link('javascript:void(0)', $subscribeGroup_img);
                 $subscribeGroup_link->setAttribute('class', 'subscribe-group');

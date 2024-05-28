@@ -13,6 +13,9 @@ use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Utilities;
+use Lynxlab\ADA\Module\Classbudget\BudgetCourseInstanceManagement;
+use Lynxlab\ADA\Module\Classbudget\ClassbudgetAPI;
+use Lynxlab\ADA\Module\Classbudget\FormModuleBudgetCourseInstance;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -78,9 +81,6 @@ SwitcherHelper::init($neededObjAr);
  */
 if (ModuleLoaderHelper::isLoaded('MODULES_CLASSBUDGET')) {
     $hasBudget = true;
-    require_once MODULES_CLASSBUDGET_PATH . '/include/form/formModuleBudgetCourseInstance.php';
-    require_once MODULES_CLASSBUDGET_PATH . '/include/management/budgetCourseInstanceManagement.inc.php';
-    require_once MODULES_CLASSBUDGET_PATH . '/include/classbudgetAPI.inc.php';
     $form = new FormModuleBudgetCourseInstance();
 } else {
     $hasBudget = false;
@@ -93,7 +93,6 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     } elseif (!($courseInstanceObj instanceof CourseInstance) || !$courseInstanceObj->isFull()) {
         $data = new CText(translateFN('Classe non trovata'));
     } else {
-        if (!isset($form)) $form = new CourseInstanceForm();
         $form->fillWithPostData();
         if ($form->isValid()) {
             if ($_POST['started'] == 0) {
@@ -135,8 +134,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                             $dataAr[str_ireplace($form->prefix, '', $key)] = $value;
                         }
                     }
-                    $budgetObj = new budgetCourseInstanceManagement($dataAr);
-                    $budgetAPI = new classbudgetAPI();
+                    $budgetObj = new BudgetCourseInstanceManagement($dataAr);
+                    $budgetAPI = new ClassbudgetAPI();
                     $budget_id = $budgetAPI->saveBudgetCourseInstance($budgetObj);
                     if (AMADB::isError($budget_id) || intval($budget_id) <= 0) {
                         // handle save budget error here if you wish
@@ -260,14 +259,20 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($hasBudget) {
             $budgetAPI = new classbudgetAPI();
             $budgetObj = $budgetAPI->getBudgetCourseInstance($courseInstanceObj->getId());
-            if ($budgetObj instanceof budgetCourseInstanceManagement) {
+            if ($budgetObj instanceof BudgetCourseInstanceManagement) {
                 foreach ($budgetObj->toArray() as $key => $value) {
                     $formData[$form->prefix . $key] = $value;
                 }
             }
         }
 
-        if (!isset($form)) $form = new CourseInstanceForm();
+        if (!isset($form)) {
+            if ($hasBudget) {
+                $form = new FormModuleBudgetCourseInstance();
+            } else {
+                $form = new CourseInstanceForm();
+            }
+        }
         $form->fillWithArrayData($formData);
         $data = $form;
     }

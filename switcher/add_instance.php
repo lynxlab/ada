@@ -7,9 +7,13 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Forms\CourseInstanceForm;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Utilities;
+use Lynxlab\ADA\Module\Classbudget\BudgetCourseInstanceManagement;
+use Lynxlab\ADA\Module\Classbudget\ClassbudgetAPI;
+use Lynxlab\ADA\Module\Classbudget\FormModuleBudgetCourseInstance;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -72,8 +76,13 @@ SwitcherHelper::init($neededObjAr);
 /*
  * YOUR CODE HERE
  */
+$hasBudget = ModuleLoaderHelper::isLoaded('MODULES_CLASSBUDGET');
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (!isset($form)) $form = new CourseInstanceForm();
+    if ($hasBudget) {
+        $form = new FormModuleBudgetCourseInstance ();
+    } else {
+        $form = new CourseInstanceForm();
+    }
     $form->fillWithPostData();
     if ($form->isValid()) {
         $course_instanceAr = [
@@ -131,8 +140,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             			$dataAr[str_ireplace($form->prefix, '', $key)] = $value;
             		}
             	}
-            	$budgetObj = new budgetCourseInstanceManagement($dataAr);
-            	$budgetAPI = new classbudgetAPI();
+            	$budgetObj = new BudgetCourseInstanceManagement($dataAr);
+            	$budgetAPI = new ClassbudgetAPI();
             	$budget_id = $budgetAPI->saveBudgetCourseInstance($budgetObj);
             	if (AMADB::isError($budget_id) || intval($budget_id)<=0) {
             		// handle save budget error here if you wish
@@ -153,7 +162,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             'service_level' => $courseObj->getServiceLevel(),
         ];
         $course_title = $courseObj->getTitle();
-        if (!isset($form)) $form = new CourseInstanceForm();
+        if ($hasBudget) {
+            $form = new FormModuleBudgetCourseInstance ();
+        } else {
+            $form = new CourseInstanceForm();
+        }
         $form->fillWithArrayData($formData);
     } else {
         $form = new CText(translateFN('Corso non trovato'));
