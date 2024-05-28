@@ -11,7 +11,6 @@
 /log/
 /vendor/
 /js/vendor/
-/modules/class*/
 *.cache
 *.bak
 *.code-workspace
