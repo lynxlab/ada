@@ -116,7 +116,7 @@ class VideoPlayer
                         break;
 
                     default:
-                        $exploded_video = translateFN("Nessun riproduttore video per"). " " . $http_file_path . $file_name;
+                        $exploded_video = translateFN("Nessun riproduttore video per") . " " . $http_file_path . $file_name;
                         break;
                 }
                 break;

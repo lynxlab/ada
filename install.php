@@ -706,7 +706,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     sort($modulesDIS);
     $modulesDIS = array_intersect($modulesDIS, $modulesAv);
 
-    $modMessage = CDOMElement::create('div','class:ui visible warning small message');
+    $modMessage = CDOMElement::create('div', 'class:ui visible warning small message');
     $modMessage->addChild(new CText(translateFN("ATTENZIONE: se si sta installando il modulo 'slideimport' leggere il suo README per informazioni sull'uso di ImageMagick e Ghostscript.")));
 
     /**
