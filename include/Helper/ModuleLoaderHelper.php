@@ -83,6 +83,10 @@ class ModuleLoaderHelper
      */
     protected static function checkModuleLoadCondtion($modulename, $moduledir)
     {
+        $hasConfig = null !== static::getModuleIncludeConfig($modulename, $moduledir);
+        if (!$hasConfig) {
+            return false;
+        }
         switch ($modulename) {
             case 'test':
                 return
@@ -105,7 +109,7 @@ class ModuleLoaderHelper
                     file_exists(MODULES_DIR . DIRECTORY_SEPARATOR . $moduledir . '/index.php');
                 break;
             default:
-                return null !== static::getModuleIncludeConfig($modulename, $moduledir);
+                return true;
                 break;
         }
     }
