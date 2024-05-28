@@ -1,0 +1,20 @@
+{
+    "name": "lynxlab/ada-module-classagenda",
+    "description": "This is the ada classagenda module.",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Giorgio Consorti",
+            "email": "g.consorti@lynxlab.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Lynxlab\\ADA\\Module\\Classagenda\\": [
+                "include/",
+                "include/form",
+                "include/management"
+            ]
+        }
+    }
+}
