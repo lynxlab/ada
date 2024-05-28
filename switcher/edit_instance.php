@@ -211,7 +211,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                         'max_utenti'    => '999',
                     ];
 
-                    $result = $chatroomObj->setChatroomFN($chatroomObj->id_chatroom, $chatroom_data);
+                    $result = $chatroomObj->setChatroomFN($chatroomObj::$id_chatroom, $chatroom_data);
 
                     if (AMADataHandler::isError($result)) {
                         // gestire l'errore

@@ -679,6 +679,7 @@ class Menu
      */
     public function setLeftItemsArray(array $_leftItemsArray)
     {
+        uasort($_leftItemsArray, fn($a, $b) => $a['order'] - $b['order']);
         $this->leftItemsArray = $_leftItemsArray;
 
         return $this;
@@ -703,6 +704,7 @@ class Menu
      */
     public function setRightItemsArray(array $_rightItemsArray)
     {
+        uasort($_rightItemsArray, fn($a, $b) => $a['order'] - $b['order']);
         $this->rightItemsArray = $_rightItemsArray;
 
         return $this;

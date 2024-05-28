@@ -9,6 +9,9 @@
  */
 
 use Jawira\CaseConverter\Convert;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\StudentsGroups\EventSubscriber;
 
 // MODULE'S OWN DEFINES HERE
 
@@ -21,3 +24,14 @@ define('MODULES_STUDENTSGROUPS_HTTP', HTTP_ROOT_DIR . str_replace(ROOT_DIR, '', 
 
 // how many fields are expected in each imported csv file row
 define('MODULES_STUDENTSGROUPS_FIELDS_IN_CSVROW', 4);
+
+if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+    ADAEventDispatcher::getInstance()->addSubscriber(new EventSubscriber());
+} else {
+    throw new Exception(
+        json_encode([
+            'header' => MODULES_STUDENTSGROUPS_NAME . ' module will not work because Event dispatcher module is not working!',
+            'message' => 'Please install <code>Event dispatcher</code> module first',
+        ])
+    );
+}

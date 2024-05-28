@@ -127,7 +127,7 @@ if (
                         $chatroomObj = new Chatroom($id_chatroom);
                         $chatroom_data['id_chat_owner'] = $id_tutor_new;
 
-                        $result = $chatroomObj->setChatroomFN($chatroomObj->id_chatroom, $chatroom_data);
+                        $result = $chatroomObj->setChatroomFN($chatroomObj::$id_chatroom, $chatroom_data);
 
                         if (AMADataHandler::isError($result)) {
                             // gestire l'errore

@@ -267,6 +267,10 @@ $forget_link = $forget_linkObj->getHtml();
 $status = "";
 
 $message = CDOMElement::create('div');
+if (isset($GLOBALS['moduleerrors'])) {
+    $message->addChild(new CText($GLOBALS['moduleerrors']));
+    unset($GLOBALS['moduleerrors']);
+}
 $getMessage = DataValidator::checkInputValues('message', 'Message', INPUT_GET);
 if ($getMessage !== false) {
     $message->addChild(new CText($getMessage));
