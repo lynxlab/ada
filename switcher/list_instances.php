@@ -104,9 +104,6 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
         $edit_img = CDOMElement::create('img', 'src:img/edit.png,alt:edit');
         $delete_img = CDOMElement::create('img', 'src:img/trash.png,alt:' . translateFN('Delete instance'));
         //$view_img = CDOMElement::create('img', 'src:img/zoom.png,alt:view');
-        if (ModuleLoaderHelper::isLoaded('STUDENTSGROUPS')) {
-            $subscribeGroup_img = CDOMElement::create('img', 'class:subscribe-group-icon,src:img/add_instances.png,alt:' . translateFN('Iscrivi gruppo'));
-        }
 
         foreach ($instancesAr as $instance) {
             $instanceId = $instance[0];
@@ -137,17 +134,6 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
                 // $view_link,
                 $delete_link,
             ];
-            if (ModuleLoaderHelper::isLoaded('STUDENTSGROUPS')) {
-                $subscribeGroup_link = BaseHtmlLib::link('javascript:void(0)', $subscribeGroup_img);
-                $subscribeGroup_link->setAttribute('class', 'subscribe-group');
-                $subscribeGroup_link->setAttribute('data-courseid', $courseId);
-                $subscribeGroup_link->setAttribute('data-instanceid', $instanceId);
-                $subscribeGroup_link->setAttribute('title', translateFN('Iscrivi gruppo'));
-                /**
-                 * insert subscribeGroup link before deletelink
-                 */
-                array_splice($actionsArr, count($actionsArr) - 1, 0, [$subscribeGroup_link]);
-            }
 
             if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
                 $event = ADAEventDispatcher::buildEventAndDispatch(
