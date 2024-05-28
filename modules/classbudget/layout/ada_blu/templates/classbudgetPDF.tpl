@@ -4,6 +4,7 @@
 <script type="text/php">
 
 if ( isset($pdf) ) {
+  require_once ROOT_DIR . '/vendor/autoload.php';
 
   $font = $fontMetrics->getFont("dejavu");
   // If verdana isn't available, we'll use sans-serif.
@@ -26,7 +27,9 @@ if ( isset($pdf) ) {
   $text = $GLOBALS['adafooter'];
   $pdf->text(16, $y, $text, $font, $size, $color);
 
-  $text = translateFN("Pagina")." {PAGE_NUM} ".translateFN("di")." {PAGE_COUNT}";
+  $text = \Lynxlab\ADA\Main\Output\Functions\translateFN("Pagina").
+    " {PAGE_NUM} ".
+    \Lynxlab\ADA\Main\Output\Functions\translateFN("di")." {PAGE_COUNT}";
 
   // Center the text
   $width = $fontMetrics->getTextWidth($text, $font, $size);
