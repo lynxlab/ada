@@ -394,7 +394,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
                 . 'indirizzo=?, citta=?, provincia=?, nazione=?, codice_fiscale=?, birthdate=?, sesso=?, '
                 . 'stato=?, lingua=?, timezone=?, cap=?, matricola=?, avatar=?, birthcity=?, birthprovince=? WHERE id_utente=?';
 
-            $result = $this->executeCriticalPrepared($update_user_sql, $valuesAr);
+            $result = $this->queryPrepared($update_user_sql, $valuesAr);
             // qui andrebbe differenziato il tipo di errore
             if (AMADB::isError($result)) {
                 return new AMAError(AMA_ERR_UPDATE);
@@ -1957,7 +1957,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         }
 
         // update the records
-        $affected_rows = $this->executeCriticalPrepared($sql, $params);
+        $affected_rows = $this->queryPrepared($sql, $params);
         if (AMADB::isError($affected_rows)) {
             return $affected_rows;
         }
@@ -2189,7 +2189,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             $sql .= " and id_utente_studente=? ";
             $params[] = $studente;
         }
-        $affected_rows = $this->executeCriticalPrepared($sql, $params);
+        $affected_rows = $this->queryPrepared($sql, $params);
         if (AMADB::isError($affected_rows)) {
             return $affected_rows;
         }
@@ -2849,7 +2849,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         $sql .= "data_fine=?, self_instruction=?, title=?, self_registration=?, ";
         $sql .= "price=?, duration_subscription=?, start_level_student=?, open_subscription=?, ";
         $sql .= "duration_hours=?, tipo_servizio=? where id_istanza_corso=?";
-        $res = $this->executeCriticalPrepared($sql, [
+        $res = $this->queryPrepared($sql, [
             $data_inizio,
             $durata,
             $data_inizio_previsto,
@@ -4231,7 +4231,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
 
         // update the rows in the tables
         $sql1  = "update modello_corso set nome=?, titolo=?, descrizione=?, data_creazione=?, data_pubblicazione=?, id_utente_autore=?, id_nodo_toc=?, id_nodo_iniziale=?, media_path=?, id_layout=?, id_lingua=?, crediti=?, duration_hours=?,tipo_servizio=? where id_corso=?";
-        $res = $this->executeCriticalPrepared($sql1, [
+        $res = $this->queryPrepared($sql1, [
             $nome,
             $titolo,
             $descr,
@@ -4767,7 +4767,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
 
         ADALogger::logDb("trying updating the node: $sql");
 
-        $res = $this->executeCriticalPrepared($sql, $params);
+        $res = $this->queryPrepared($sql, $params);
         // if an error is detected, an error is created and reported
         if (AMADB::isError($res)) {
             ADALogger::logDb("error while updating node id $id_node result:" . $res->getMessage());
@@ -4851,7 +4851,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         $sql  = "update extended_node set hyphenation = ?, grammar = ?, semantic = ?, notes = ?, examples = ?, language = ?";
         $sql  .= " where id_node = ?";
         ADALogger::logDb("trying updating the extended_node: $sql");
-        $res = $this->executeCriticalPrepared($sql, [
+        $res = $this->queryPrepared($sql, [
             $hyphenation,
             $grammar,
             $semantic,
@@ -5194,7 +5194,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         $sql  .= " where id_nodo = ?";
         ADALogger::logDb("trying updating the node position: $sql");
 
-        $res = $this->executeCriticalPrepared($sql, [
+        $res = $this->queryPrepared($sql, [
             $id_node,
         ]);
         // if an error is detected, an error is created and reported
@@ -5219,7 +5219,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
     {
         $sql = "UPDATE nodo SET tipo=? WHERE id_nodo=?";
 
-        $result = $this->executeCriticalPrepared($sql, [
+        $result = $this->queryPrepared($sql, [
             $type,
             $node_id,
         ]);
@@ -7668,7 +7668,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
                 . 'indirizzo=?, citta=?, provincia=?, nazione=?, codice_fiscale=?, birthdate=?, sesso=?, '
                 . 'stato=?, lingua=?,timezone=?,cap=?,matricola=?,avatar=?, birthcity=?, birthprovince=? WHERE id_utente=?';
 
-            $result = $this->executeCriticalPrepared($update_user_sql, $valuesAr);
+            $result = $this->queryPrepared($update_user_sql, $valuesAr);
             // qui andrebbe differenziato il tipo di errore
             if (AMADB::isError($result)) {
                 return new AMAError(AMA_ERR_UPDATE);
@@ -9391,7 +9391,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
     public function raiseStudentLevel($id_student, $id_course_instance, $increment)
     {
         $sql = "UPDATE iscrizioni SET livello=livello+? WHERE id_utente_studente=? AND id_istanza_corso=?";
-        $result = $this->executeCriticalPrepared($sql, [$increment, $id_student, $id_course_instance]);
+        $result = $this->queryPrepared($sql, [$increment, $id_student, $id_course_instance]);
         return $result;
     }
 

@@ -1496,7 +1496,7 @@ class AMACommonDataHandler extends AbstractAMADataHandler
 
         $sql = "UPDATE token SET valido=? WHERE token=?";
 
-        $result = $this->executeCriticalPrepared($sql, [$valido, $token]);
+        $result = $this->queryPrepared($sql, [$valido, $token]);
         if (AMADB::isError($result)) {
             return new AMAError(AMA_ERR_UPDATE);
         }
@@ -1789,7 +1789,7 @@ class AMACommonDataHandler extends AbstractAMADataHandler
         // FIXME: verificare il valore restituito se il messaggio dato non esiste nella tabella.
 
         $sql_update_message_text = "UPDATE $table_name SET testo_messaggio=? WHERE id_messaggio=?";
-        $result = $this->executeCritical($sql_update_message_text, [$new_message_text, $message_id]);
+        $result = $this->queryPrepared($sql_update_message_text, [$new_message_text, $message_id]);
 
         if (AMADB::isError($result)) {
             return $result;
