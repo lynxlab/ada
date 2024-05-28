@@ -200,18 +200,17 @@ class ModuleLoaderHelper
             }
         } catch (Exception $e) {
             $text = json_decode($e->getMessage(), true);
-            // populating $_GET['message'] is a dirty hack to force the error message to appear in the home page at least
-            if (!isset($_GET['message'])) {
-                $_GET['message'] = '';
+            if (!isset($GLOBALS['moduleerrors'])) {
+                $GLOBALS['moduleerrors'] = '';
             }
-            $_GET['message'] .= '<div class="ui icon error message"><i class="ban circle icon"></i><div class="content">';
+            $GLOBALS['moduleerrors'] .= '<div class="ui icon error message"><i class="ban circle icon"></i><div class="content">';
             if (array_key_exists('header', $text) && strlen($text['header']) > 0) {
-                $_GET['message'] .= '<div class="header">' . $text['header'] . '</div>';
+                $GLOBALS['moduleerrors'] .= '<div class="header">' . $text['header'] . '</div>';
             }
             if (array_key_exists('message', $text) && strlen($text['message']) > 0) {
-                $_GET['message'] .= '<p>' . $text['message'] . '</p>';
+                $GLOBALS['moduleerrors'] .= '<p>' . $text['message'] . '</p>';
             }
-            $_GET['message'] .= '</div></div>';
+            $GLOBALS['moduleerrors'] .= '</div></div>';
         }
         return false;
     }
