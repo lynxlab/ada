@@ -80,8 +80,8 @@ try {
         }
         $retArray['msg'] = $data;
     }
-} catch (\Exception $e) {
-    $retArray['title'] = get_class($e);
+} catch (Exception $e) {
+    $retArray['title'] = $e::class;
     $retArray['msg'] = $e->getMessage();
 }
 

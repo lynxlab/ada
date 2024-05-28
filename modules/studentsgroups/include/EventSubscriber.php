@@ -8,7 +8,6 @@
  * @version     0.1
  */
 
-
 namespace Lynxlab\ADA\Module\StudentsGroups;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
