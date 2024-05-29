@@ -20,18 +20,18 @@ require_once realpath(__DIR__) . '/../config_path.inc.php';
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = ['node', 'layout', 'user','course', 'course_instance'];
+$variableToClearAR = ['node', 'layout', 'user', 'course', 'course_instance'];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = [AMA_TYPE_SWITCHER,AMA_TYPE_STUDENT];
+$allowedUsersAr = [AMA_TYPE_SWITCHER, AMA_TYPE_STUDENT];
 
 /**
  * Get needed objects
  */
 $neededObjAr = [
-   AMA_TYPE_SWITCHER => ['layout', 'user'], // ,'course','course_instance'),
-   AMA_TYPE_STUDENT => ['layout', 'course','course_instance'],
+    AMA_TYPE_SWITCHER => ['layout', 'user'], // ,'course','course_instance'),
+    AMA_TYPE_STUDENT => ['layout', 'course', 'course_instance'],
 ];
 
 if (isset($_GET['forcereturn'])) {
@@ -42,41 +42,41 @@ if (isset($_GET['forcereturn'])) {
 
 if (!$forcereturn) {
     /**
-    * Performs basic controls before entering this module
-    */
+     * Performs basic controls before entering this module
+     */
 
     require_once ROOT_DIR . '/include/module_init.inc.php';
 
     /**
-    * This will at least import in the current symbol table the following vars.
-    * For a complete list, please var_dump the array returned by the init method.
-    *
-    * @var boolean $reg_enabled
-    * @var boolean $log_enabled
-    * @var boolean $mod_enabled
-    * @var boolean $com_enabled
-    * @var string $user_level
-    * @var string $user_score
-    * @var string $user_name
-    * @var string $user_type
-    * @var string $user_status
-    * @var string $media_path
-    * @var string $template_family
-    * @var string $status
-    * @var \Lynxlab\ADA\CORE\html4\CElement $user_messages
-    * @var \Lynxlab\ADA\CORE\html4\CElement $user_agenda
-    * @var \Lynxlab\ADA\CORE\html4\CElement $user_events
-    * @var array $layout_dataAr
-    * @var \Lynxlab\ADA\Main\History\History $user_history
-    * @var \Lynxlab\ADA\Main\Course\Course $courseObj
-    * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
-    * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
-    * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
- * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
-    *
-    * WARNING: $media_path is used as a global somewhere else,
-    * e.g.: node_classes.inc.php:990
-    */
+     * This will at least import in the current symbol table the following vars.
+     * For a complete list, please var_dump the array returned by the init method.
+     *
+     * @var boolean $reg_enabled
+     * @var boolean $log_enabled
+     * @var boolean $mod_enabled
+     * @var boolean $com_enabled
+     * @var string $user_level
+     * @var string $user_score
+     * @var string $user_name
+     * @var string $user_type
+     * @var string $user_status
+     * @var string $media_path
+     * @var string $template_family
+     * @var string $status
+     * @var \Lynxlab\ADA\CORE\html4\CElement $user_messages
+     * @var \Lynxlab\ADA\CORE\html4\CElement $user_agenda
+     * @var \Lynxlab\ADA\CORE\html4\CElement $user_events
+     * @var array $layout_dataAr
+     * @var \Lynxlab\ADA\Main\History\History $user_history
+     * @var \Lynxlab\ADA\Main\Course\Course $courseObj
+     * @var \Lynxlab\ADA\Main\Course\CourseInstance $courseInstanceObj
+     * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
+     * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
+     * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
+     *
+     * WARNING: $media_path is used as a global somewhere else,
+     * e.g.: node_classes.inc.php:990
+     */
     BrowsingHelper::init($neededObjAr);
 }
 
@@ -97,8 +97,9 @@ if (MULTIPROVIDER === false) {
         }
     }
 }
-$id_user = DataValidator::checkInputValues('id_user', 'Integer', INPUT_GET);
-$id_instance = DataValidator::checkInputValues('id_instance', 'Integer', INPUT_GET, $sess_id_instance);
+
+$id_user = DataValidator::checkInputValues('id_user', 'Integer', INPUT_GET, $_SESSION['sess_id_user'] ?? null);
+$id_instance = DataValidator::checkInputValues('id_instance', 'Integer', INPUT_GET, $_SESSION['sess_id_course_instance'] ?? null);
 
 //instance
 if (!(isset($courseInstanceObj) && $courseInstanceObj instanceof CourseInstance)) {
@@ -164,21 +165,21 @@ $responsabile = $testerAr['responsabile'];
 $signature = translateFN('Il Rappresentante Legale del Provider: ') . $responsabile;
 
 $content_dataAr   = [
- 'logo' => $logo,
- 'title' => $title,
- 'logoProvider' => $logoProvider,
- 'userFullName' => $userFullName,
- 'birthSentence' => $birthSentence ?? null,
- 'CodeFiscSentence' => $CodeFiscSentence ?? null,
- 'mainSentence' => $mainSentence,
- 'timeSentence' => $timeSentence,
- 'data_Sentence' => $data_Sentence,
- 'providerSentence' => $providerSentence,
- 'placeAndDate' => $placeAndDate,
- 'signature' => $signature,
- 'courseDescription' => (isset($courseObj) && $courseObj instanceof Course) ? $courseObj->getDescription() : null,
- 'courseDurationSentence' => $courseDurationSentence ?? null,
- ];
+    'logo' => $logo,
+    'title' => $title,
+    'logoProvider' => $logoProvider,
+    'userFullName' => $userFullName,
+    'birthSentence' => $birthSentence ?? null,
+    'CodeFiscSentence' => $CodeFiscSentence ?? null,
+    'mainSentence' => $mainSentence,
+    'timeSentence' => $timeSentence,
+    'data_Sentence' => $data_Sentence,
+    'providerSentence' => $providerSentence,
+    'placeAndDate' => $placeAndDate,
+    'signature' => $signature,
+    'courseDescription' => (isset($courseObj) && $courseObj instanceof Course) ? $courseObj->getDescription() : null,
+    'courseDurationSentence' => $courseDurationSentence ?? null,
+];
 
 /**
  * Look for a certificate template to use, can be either:
@@ -210,8 +211,8 @@ foreach ([$userObj->template_family, $_SESSION['sess_template_family']] as $tpld
 
 if ($forcereturn) {
     return [
-       'filename' => translateFN('Attestato') . '-[' . $codice_corso . ']-[' . $id_user . '].pdf',
-       'content' => ARE::render($layout_dataAr, $content_dataAr, ARE_PDF_RENDER, ['returnasstring' => true,'outputfile' => translateFN('Attestato') . '-[' . $codice_corso . ']-[' . $id_user . ']']),
+        'filename' => translateFN('Attestato') . '-[' . $codice_corso . ']-[' . $id_user . '].pdf',
+        'content' => ARE::render($layout_dataAr, $content_dataAr, ARE_PDF_RENDER, ['returnasstring' => true, 'outputfile' => translateFN('Attestato') . '-[' . $codice_corso . ']-[' . $id_user . ']']),
     ];
 } else {
     ARE::render($layout_dataAr, $content_dataAr, ARE_PDF_RENDER, ['outputfile' => translateFN('Attestato') . '-[' . $codice_corso . ']-[' . $id_user . ']']);
