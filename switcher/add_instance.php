@@ -79,7 +79,7 @@ SwitcherHelper::init($neededObjAr);
 $hasBudget = ModuleLoaderHelper::isLoaded('MODULES_CLASSBUDGET');
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($hasBudget) {
-        $form = new FormModuleBudgetCourseInstance ();
+        $form = new FormModuleBudgetCourseInstance();
     } else {
         $form = new CourseInstanceForm();
     }
@@ -130,22 +130,22 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
              * save budget details if needed
              */
             if ($hasBudget) {
-            	$dataAr['id_istanza_corso'] = $id_istanza_corso;
-            	foreach ($_POST as $key=>$value) {
-            		/**
-            		 * remove $form->prefix from the passed _POST array keys
-            		 * and build array to be used as data for the instance budget
-            		 */
-            		if (strpos($key, $form->prefix)!==false) {
-            			$dataAr[str_ireplace($form->prefix, '', $key)] = $value;
-            		}
-            	}
-            	$budgetObj = new BudgetCourseInstanceManagement($dataAr);
-            	$budgetAPI = new ClassbudgetAPI();
-            	$budget_id = $budgetAPI->saveBudgetCourseInstance($budgetObj);
-            	if (AMADB::isError($budget_id) || intval($budget_id)<=0) {
-            		// handle save budget error here if you wish
-            	}
+                $dataAr['id_istanza_corso'] = $id_istanza_corso;
+                foreach ($_POST as $key => $value) {
+                    /**
+                     * remove $form->prefix from the passed _POST array keys
+                     * and build array to be used as data for the instance budget
+                     */
+                    if (str_contains($key, $form->prefix)) {
+                        $dataAr[str_ireplace($form->prefix, '', $key)] = $value;
+                    }
+                }
+                $budgetObj = new BudgetCourseInstanceManagement($dataAr);
+                $budgetAPI = new ClassbudgetAPI();
+                $budget_id = $budgetAPI->saveBudgetCourseInstance($budgetObj);
+                if (AMADB::isError($budget_id) || intval($budget_id) <= 0) {
+                    // handle save budget error here if you wish
+                }
             }
 
             header('Location: list_instances.php?id_course=' . $_POST['id_course']);
@@ -163,7 +163,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         ];
         $course_title = $courseObj->getTitle();
         if ($hasBudget) {
-            $form = new FormModuleBudgetCourseInstance ();
+            $form = new FormModuleBudgetCourseInstance();
         } else {
             $form = new CourseInstanceForm();
         }

@@ -55,9 +55,9 @@ function getCoursesTutorFN($id_user, $isSuper = false)
                             '<img src="img/timon.png"  alt="' . translateFN('naviga') . '" title="' . translateFN('naviga') . '" class="tooltip" border="0"></a>';
                         $valuta = '<a href="' . $http_root_dir . '/tutor/tutor.php?op=student&id_instance=' . $id_instance . '&id_course=' . $id_course . '">' .
                             '<img src="img/magnify.png"  alt="' . translateFN('valuta') . '" title="' . translateFN('valuta') . '" class="tooltip" border="0"></a>';
-                        if(ModuleLoaderHelper::isLoaded('MODULES_CLASSAGENDA')) {
-                            $presenze = '<a href="'.MODULES_CLASSAGENDA_HTTP.'/rollcall.php?id_course='.$id_course.'&id_course_instance='.$id_instance.'"><img src="img/badge.png"  alt="'.translateFN('presenze').'"  title="'.translateFN('presenze').'" class="tooltip" border="0"></a>';
-                            $registro = '<a href="'.MODULES_CLASSAGENDA_HTTP.'/rollcallhistory.php?id_course='.$id_course.'&id_course_instance='.$id_instance.'"><img src="img/registro.png"  alt="'.translateFN('registro').'" title="'.translateFN('registro').'" class="tooltip" border="0"></a>';
+                        if (ModuleLoaderHelper::isLoaded('MODULES_CLASSAGENDA')) {
+                            $presenze = '<a href="' . MODULES_CLASSAGENDA_HTTP . '/rollcall.php?id_course=' . $id_course . '&id_course_instance=' . $id_instance . '"><img src="img/badge.png"  alt="' . translateFN('presenze') . '"  title="' . translateFN('presenze') . '" class="tooltip" border="0"></a>';
+                            $registro = '<a href="' . MODULES_CLASSAGENDA_HTTP . '/rollcallhistory.php?id_course=' . $id_course . '&id_course_instance=' . $id_instance . '"><img src="img/registro.png"  alt="' . translateFN('registro') . '" title="' . translateFN('registro') . '" class="tooltip" border="0"></a>';
                         }
                         $data_inizio = AMADataHandler::tsToDate($instance_course_ha['data_inizio'], "%d/%m/%Y");
 

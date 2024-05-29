@@ -1,11 +1,14 @@
 <?php
 
 /**
- * @package     cloneinstance module
- * @author      giorgio <g.consorti@lynxlab.com>
- * @copyright   Copyright (c) 2022, Lynx s.r.l.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version     0.1
+ * CLASSBUDGET MODULE.
+ *
+ * @package        classbudget module
+ * @author         Giorgio Consorti <g.consorti@lynxlab.com>
+ * @copyright      Copyright (c) 2015, Lynx s.r.l.
+ * @license        http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @link           classbudget
+ * @version        0.1
  */
 
 namespace Lynxlab\ADA\Module\Classbudget;
@@ -59,7 +62,7 @@ class EventSubscriber implements EventSubscriberInterface
                 'label' => '',
                 'extraHTML' => null,
                 'icon' => '',
-                'icon_size' => 'large',
+                'icon_size' => null,
                 'href_properties' => null,
                 'href_prefix' => '%MODULES_CLASSBUDGET_HTTP%',
                 'href_path' => null,
@@ -91,6 +94,7 @@ class EventSubscriber implements EventSubscriberInterface
             $item = array_merge($baseItem, [
                 'label' => 'esporta',
                 'icon' => 'basic export',
+                'icon_size' => 'large',
                 'order' => 0,
                 'children' => [$exportPDF, $exportCSV],
             ]);

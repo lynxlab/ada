@@ -130,7 +130,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                          * remove $form->prefix from the passed _POST array keys
                          * and build array to be used as data for the instance budget
                          */
-                        if (strpos($key, $form->prefix) !== false) {
+                        if (str_contains($key, $form->prefix)) {
                             $dataAr[str_ireplace($form->prefix, '', $key)] = $value;
                         }
                     }

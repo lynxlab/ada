@@ -590,9 +590,9 @@ if ($displayTable) {
     }
 
     if ($layout_dataAr['widgets']['instanceReminder']['isActive']) {
-		$layout_dataAr['widgets']['instanceReminder']['id_course'] =  $courseId;
-		$layout_dataAr['widgets']['instanceReminder']['id_course_instance'] = $courseInstanceId;
-	}
+        $layout_dataAr['widgets']['instanceReminder']['id_course'] =  $courseId;
+        $layout_dataAr['widgets']['instanceReminder']['id_course_instance'] = $courseInstanceId;
+    }
 
     if (!isset($content_dataAr['completeSummary'])) {
         $userObj->setCourseInstanceForHistory($courseInstanceId);

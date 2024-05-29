@@ -108,7 +108,7 @@ class ClassroomAPI
      *
      * @param array $classroomAr
      *
-     * @return CDOMElement|NULL
+     * @return \Lynxlab\ADA\CORE\html4\CElement|NULL
      *
      * @access public
      */
