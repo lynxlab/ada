@@ -262,6 +262,15 @@ class ARE
                             $key = array_search(JQUERY, $layout_dataAr['JS_filename']);
                         }
                         $key = $key === false ? 0 : $key;
+                        if (defined('JQUERY_MIGRATE')) {
+                            // add $JSToUse after JQUERY slicing the original array
+                            $layout_dataAr['JS_filename'] = array_merge(
+                                array_slice($layout_dataAr['JS_filename'], 0, $key + 1),
+                                [JQUERY_MIGRATE],
+                                array_slice($layout_dataAr['JS_filename'], $key + 1)
+                            );
+                            $key++;
+                        }
                         // add $JSToUse after JQUERY slicing the original array
                         $layout_dataAr['JS_filename'] = array_merge(
                             array_slice($layout_dataAr['JS_filename'], 0, $key + 1),
@@ -274,9 +283,6 @@ class ARE
                     if ($nc = array_search(JQUERY_NO_CONFLICT, $layout_dataAr['JS_filename'])) {
                         unset($layout_dataAr['JS_filename'][$nc]);
                     }
-                    if (defined('JQUERY_MIGRATE')) {
-                        array_push($layout_dataAr['JS_filename'], JQUERY_MIGRATE);
-                    }
                     array_push($layout_dataAr['JS_filename'], JQUERY_NO_CONFLICT);
 
                     $tmp = explode(';', $layoutObj->JS_filename);
@@ -288,8 +294,8 @@ class ARE
                     $layoutObj->JS_filename .= ';' .
                     join(';', [
                         JQUERY,
-                        $JSToUse,
                         defined('JQUERY_MIGRATE') ? JQUERY_MIGRATE : '',
+                        $JSToUse,
                         JQUERY_NO_CONFLICT,
                     ]);
                 }
