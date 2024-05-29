@@ -1,4 +1,5 @@
 /vendor/
+/js/vendor/
 /composer.phar
 *.bak*
 /config/config.inc.php

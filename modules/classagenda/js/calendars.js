@@ -12,13 +12,15 @@
 /**
  * include files
  */
-document.write("<script type='text/javascript' src='"+HTTP_ROOT_DIR+"/external/fckeditor/fckeditor.js'></script>");
+load_js([
+    HTTP_ROOT_DIR + '/external/fckeditor/fckeditor.js',
+]);
 
 /**
  * global vars
  */
 var hasVenues = false;
-var calendar  = undefined;
+var calendar = undefined;
 var mustSave = false;
 var canDelete = false;
 var reminderDialog = null;
@@ -39,82 +41,82 @@ var UIEvents = [];
 var UIDeletedEvents = [];
 
 function initDoc(passedUserType) {
-	// save passed user type in its own global
-	userType = passedUserType;
-	// hook instance select change to update number of students
-	updateStudentCountOnInstanceChange();
-	// hook instance select change to update service (aka course) type
-	updateServiceTypeOnInstanceChange();
-	// ask a save confirmation before changing course instance
-	askChangeInstanceOrVenueConfirm();
-	// hook instance select change to update tutors list
-	updateTutorsListOnInstanceChange();
-	// init buttons
-	initSaveButton();
-	initCancelButton();
+    // save passed user type in its own global
+    userType = passedUserType;
+    // hook instance select change to update number of students
+    updateStudentCountOnInstanceChange();
+    // hook instance select change to update service (aka course) type
+    updateServiceTypeOnInstanceChange();
+    // ask a save confirmation before changing course instance
+    askChangeInstanceOrVenueConfirm();
+    // hook instance select change to update tutors list
+    updateTutorsListOnInstanceChange();
+    // init buttons
+    initSaveButton();
+    initCancelButton();
 
-	hasVenues = $j('#venuesList').length>0;
-	if (hasVenues) {
-		// hook instance select change to update venues list
-		updateVenuesListOnInstanceChange();
-		// hook venues select change to update classroom list
-		updateClassroomsOnVenueChange();
-		// trigger onchange event to update classroom list when page loads
-		// $j('#venuesList').trigger('change');
-	}
+    hasVenues = $j('#venuesList').length > 0;
+    if (hasVenues) {
+        // hook instance select change to update venues list
+        updateVenuesListOnInstanceChange();
+        // hook venues select change to update classroom list
+        updateClassroomsOnVenueChange();
+        // trigger onchange event to update classroom list when page loads
+        // $j('#venuesList').trigger('change');
+    }
 
-	if ($j('#filterInstanceState').length>0 || $j('#onlySelectedInstance').length>0) {
-		$j('#filterInstanceState, #onlySelectedInstance, #onlySelectedVenue').on('change',function() {
-			/**
-			 * reload course instances list only when #filterInstanceState changes
-			 */
-			if ($j(this).attr('id')=='filterInstanceState') {
-				$j.when(loadCourseInstances()).done(function() {
-					if (getSelectedCourseInstance()!=0) calendar.fullCalendar( 'refetchEvents' );
-				});
-			} else calendar.fullCalendar( 'refetchEvents' );
+    if ($j('#filterInstanceState').length > 0 || $j('#onlySelectedInstance').length > 0) {
+        $j('#filterInstanceState, #onlySelectedInstance, #onlySelectedVenue').on('change', function () {
+            /**
+             * reload course instances list only when #filterInstanceState changes
+             */
+            if ($j(this).attr('id') == 'filterInstanceState') {
+                $j.when(loadCourseInstances()).done(function () {
+                    if (getSelectedCourseInstance() != 0) calendar.fullCalendar('refetchEvents');
+                });
+            } else calendar.fullCalendar('refetchEvents');
 
-		});
+        });
 
-		$j('#filterInstanceState, label[for="filterInstanceState"],'+
-		   '#onlySelectedInstance, label[for="onlySelectedInstance"],'+
-		   '#onlySelectedVenue, label[for="onlySelectedVenue"]').on('mousedown',function() {
-			if (mustSave) {
-				event.preventDefault();
-				jQueryConfirm('#confirmDialog', '#filterInstanceStatequestion',
-						function() { saveClassRoomEvents(); },
-						function() { event.preventDefault(); });
-			}
-		});
-	}
+        $j('#filterInstanceState, label[for="filterInstanceState"],' +
+            '#onlySelectedInstance, label[for="onlySelectedInstance"],' +
+            '#onlySelectedVenue, label[for="onlySelectedVenue"]').on('mousedown', function () {
+                if (mustSave) {
+                    event.preventDefault();
+                    jQueryConfirm('#confirmDialog', '#filterInstanceStatequestion',
+                        function () { saveClassRoomEvents(); },
+                        function () { event.preventDefault(); });
+                }
+            });
+    }
 
-	// handle export menu items
-	if ($j('li.calendarexportmenuitem a').length>0) {
-		$j('li.calendarexportmenuitem a').on ('click',function(){
-			aHref = $j(this).attr('href') + '&id_course='+$j('#courseID').text()+'&id_course_instance='+getSelectedCourseInstance();
+    // handle export menu items
+    if ($j('li.calendarexportmenuitem a').length > 0) {
+        $j('li.calendarexportmenuitem a').on('click', function () {
+            aHref = $j(this).attr('href') + '&id_course=' + $j('#courseID').text() + '&id_course_instance=' + getSelectedCourseInstance();
 
-			if ('undefined' != typeof $j(this).data('type') && $j(this).data('type')=='pdf') {
-				openNewWindow(aHref,0,0,'',true,true);
-			} else {
-				location.href = aHref;
-			}
-			return false;
-		});
-	}
+            if ('undefined' != typeof $j(this).data('type') && $j(this).data('type') == 'pdf') {
+                openNewWindow(aHref, 0, 0, '', true, true);
+            } else {
+                location.href = aHref;
+            }
+            return false;
+        });
+    }
 
-	/**
-	 * to initialize, call loadCourseInstances() that will fire
-	 * an #instancesList change event causing the execution of:
-	 * 1. updateStudentCountOnInstanceChange();
-	 * 2. updateServiceTypeOnInstanceChange();
-	 * 3. updateTutorsListOnInstanceChange();
-	 *
-	 * the update tutor will cause fullcalendar events to be
-	 * loaded if the global calendar variable is not undefined
-	 * or the fullcalendar to be initialized.
-	 */
-	loadCourseInstances();
-	$j('#deleteAllButton').button();
+    /**
+     * to initialize, call loadCourseInstances() that will fire
+     * an #instancesList change event causing the execution of:
+     * 1. updateStudentCountOnInstanceChange();
+     * 2. updateServiceTypeOnInstanceChange();
+     * 3. updateTutorsListOnInstanceChange();
+     *
+     * the update tutor will cause fullcalendar events to be
+     * loaded if the global calendar variable is not undefined
+     * or the fullcalendar to be initialized.
+     */
+    loadCourseInstances();
+    $j('#deleteAllButton').button();
 }
 
 /**
@@ -122,222 +124,222 @@ function initDoc(passedUserType) {
  * radio button mouserover
  */
 function initFacilitiesTooltips() {
-	if ($j('.classroomradio').length>0) {
-		$j(document).tooltip({
-			items : '#classroomlist label',
-			content: function() {
-				var classroomID = parseInt($j(this).attr('for').match(/(\d+)$/)[0]);
-				return ($j('#facilities'+classroomID).length>0) ? $j('#facilities'+classroomID).html() : null;
-			}
-		});
-	}
+    if ($j('.classroomradio').length > 0) {
+        $j(document).tooltip({
+            items: '#classroomlist label',
+            content: function () {
+                var classroomID = parseInt($j(this).attr('for').match(/(\d+)$/)[0]);
+                return ($j('#facilities' + classroomID).length > 0) ? $j('#facilities' + classroomID).html() : null;
+            }
+        });
+    }
 }
 
 function initCalendar() {
-	if ($j('#classcalendar').length>0) {
-		calendar = $j('#classcalendar').fullCalendar({
-			// put your options and callbacks here
-			theme 	 : true,	// enables jQuery UI theme
-			firstDay : 1,		// monday is the first day
-			minTime  : "08:00",	// events starts at 08AM ,
-			maxTime  : "20:00",	// events ends at 08PM
-			weekends : false,	// hide weekends
-			defaultEventMinutes: 60,
-			height : 564,
-			editable : (userType == AMA_TYPE_SWITCHER) || (userType == AMA_TYPE_TUTOR),
-			eventStartEditable : (userType == AMA_TYPE_SWITCHER),
-			eventDurationEditable : (userType == AMA_TYPE_SWITCHER),
-			selectable : (userType == AMA_TYPE_SWITCHER),
-			selectHelper : (userType == AMA_TYPE_SWITCHER),
-			allDaySlot : false,
-			slotEventOverlap : false,
-			defaultView : 'agendaWeek',
-			/**
-			 * selected or deselect the clicked event
-			 */
-			eventClick: function(calEvent, jsEvent, view) {
+    if ($j('#classcalendar').length > 0) {
+        calendar = $j('#classcalendar').fullCalendar({
+            // put your options and callbacks here
+            theme: true,	// enables jQuery UI theme
+            firstDay: 1,		// monday is the first day
+            minTime: "08:00",	// events starts at 08AM ,
+            maxTime: "20:00",	// events ends at 08PM
+            weekends: false,	// hide weekends
+            defaultEventMinutes: 60,
+            height: 564,
+            editable: (userType == AMA_TYPE_SWITCHER) || (userType == AMA_TYPE_TUTOR),
+            eventStartEditable: (userType == AMA_TYPE_SWITCHER),
+            eventDurationEditable: (userType == AMA_TYPE_SWITCHER),
+            selectable: (userType == AMA_TYPE_SWITCHER),
+            selectHelper: (userType == AMA_TYPE_SWITCHER),
+            allDaySlot: false,
+            slotEventOverlap: false,
+            defaultView: 'agendaWeek',
+            /**
+             * selected or deselect the clicked event
+             */
+            eventClick: function (calEvent, jsEvent, view) {
 
-				if (!calEvent.editable || isCheckingReminder) return;
+                if (!calEvent.editable || isCheckingReminder) return;
 
-				var doSelection = true;
+                var doSelection = true;
 
-				// get previously selected event
-				var selEvent = getSelectedEvent();
+                // get previously selected event
+                var selEvent = getSelectedEvent();
 
-				// unselect previously selected event
-				if (selEvent!=null) {
-					doSelection = selEvent._id != calEvent._id;
-					unselectSelectedEvent(!doSelection);
-				}
+                // unselect previously selected event
+                if (selEvent != null) {
+                    doSelection = selEvent._id != calEvent._id;
+                    unselectSelectedEvent(!doSelection);
+                }
 
-				// select clicked element if needed
-				if (doSelection) {
-					setSelectedEvent(calEvent);
-				} else {
-					if (canDelete) setCanDelete(false);
-				}
-			},
-			/**
-			 * creates a new event
-			 */
-			select :
-				function( startDate, endDate, jsEvent, view ) {
-				if (startDate.hasTime() && endDate.hasTime()) {
-					buildAndPlaceEvent({
-						start: startDate.format(),
-						end: endDate.format(),
-						isSelected : false,
-						editable : true,
-						instanceID : getSelectedCourseInstance(),
-						classroomID : getSelectedClassroom(),
-						tutorID : getSelectedTutor()
-					}, true);
-				}
-			},
-			eventRender: function(event, element, view) {
-				// allows html to be used inside the title
-				var htmlEl = ('month' != view.name) ? 'div' : 'span';
-				element.find(htmlEl+'.fc-title').html(element.find(htmlEl+'.fc-title').text());
-			},
-			eventDrop: function ( event, delta, revertFunc) {
+                // select clicked element if needed
+                if (doSelection) {
+                    setSelectedEvent(calEvent);
+                } else {
+                    if (canDelete) setCanDelete(false);
+                }
+            },
+            /**
+             * creates a new event
+             */
+            select:
+                function (startDate, endDate, jsEvent, view) {
+                    if (startDate.hasTime() && endDate.hasTime()) {
+                        buildAndPlaceEvent({
+                            start: startDate.format(),
+                            end: endDate.format(),
+                            isSelected: false,
+                            editable: true,
+                            instanceID: getSelectedCourseInstance(),
+                            classroomID: getSelectedClassroom(),
+                            tutorID: getSelectedTutor()
+                        }, true);
+                    }
+                },
+            eventRender: function (event, element, view) {
+                // allows html to be used inside the title
+                var htmlEl = ('month' != view.name) ? 'div' : 'span';
+                element.find(htmlEl + '.fc-title').html(element.find(htmlEl + '.fc-title').text());
+            },
+            eventDrop: function (event, delta, revertFunc) {
 
-				var data = prepareDataForCheckTutorOverlap(event);
+                var data = prepareDataForCheckTutorOverlap(event);
 
-				var placeEvent = function() {
-					if (parseInt(delta.as('minutes'))!=0 && !mustSave) setMustSave(true);
-					if (data.tutorID>0) addToUIEvents(data);
-				}
-				/**
-				 * do the checkTutorOverlap only if a tutor is there
-				 */
-				if (data.tutorID>0) {
-					$j.when(checkTutorOverlap(data)).done(function(overlaps) {
-						if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
-							placeEvent();
-						} else {
-							jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
-									function() { placeEvent(); },
-									function() { revertFunc(); });
-						}
-					}).fail(function() {
-						console.log ('error while checking overlapping events in eventDrop');
-						revertFunc();
-					});
-				} else placeEvent();
+                var placeEvent = function () {
+                    if (parseInt(delta.as('minutes')) != 0 && !mustSave) setMustSave(true);
+                    if (data.tutorID > 0) addToUIEvents(data);
+                }
+                /**
+                 * do the checkTutorOverlap only if a tutor is there
+                 */
+                if (data.tutorID > 0) {
+                    $j.when(checkTutorOverlap(data)).done(function (overlaps) {
+                        if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
+                            placeEvent();
+                        } else {
+                            jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
+                                function () { placeEvent(); },
+                                function () { revertFunc(); });
+                        }
+                    }).fail(function () {
+                        console.log('error while checking overlapping events in eventDrop');
+                        revertFunc();
+                    });
+                } else placeEvent();
 
-			},
-			eventResize: function( event, delta, revertFunc, jsEvent, ui, view ) {
+            },
+            eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {
 
-				data = prepareDataForCheckTutorOverlap(event);
+                data = prepareDataForCheckTutorOverlap(event);
 
-				var placeEvent = function() {
-					if (parseInt(delta.as('minutes'))!=0 && !mustSave) setMustSave(true);
-					updateAllocatedHours(delta.asMilliseconds(), 0);
-					if (data.tutorID>0) addToUIEvents(data);
-				}
+                var placeEvent = function () {
+                    if (parseInt(delta.as('minutes')) != 0 && !mustSave) setMustSave(true);
+                    updateAllocatedHours(delta.asMilliseconds(), 0);
+                    if (data.tutorID > 0) addToUIEvents(data);
+                }
 
-				/**
-				 * do the checkTutorOverlap only if a tutor is there
-				 */
-				if (data.tutorID>0) {
-					$j.when(checkTutorOverlap(data)).done(function(overlaps) {
-						if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
-							placeEvent();
-						} else {
-							jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
-									function() { placeEvent(); },
-									function() { revertFunc(); });
-						}
-					}).fail(function() {
-						console.log ('error while checking overlapping events in eventResize');
-						revertFunc();
-					});
-				} else placeEvent();
+                /**
+                 * do the checkTutorOverlap only if a tutor is there
+                 */
+                if (data.tutorID > 0) {
+                    $j.when(checkTutorOverlap(data)).done(function (overlaps) {
+                        if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
+                            placeEvent();
+                        } else {
+                            jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
+                                function () { placeEvent(); },
+                                function () { revertFunc(); });
+                        }
+                    }).fail(function () {
+                        console.log('error while checking overlapping events in eventResize');
+                        revertFunc();
+                    });
+                } else placeEvent();
 
-			},
-			header: {
-				left: 'prev,next today',
-				center: 'title',
-				right: 'month,agendaWeek,agendaDay'
-			},
-			events: function(start, end, timezone, callback) {
-				$j.when(reloadClassRoomEvents()).done(function(events) {
-					callback(events);
-				});
-			},
-			loading: function (isLoading, view) {
-				if (isLoading) showLoading();
-				else hideLoading();
-			}
-		});
+            },
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek,agendaDay'
+            },
+            events: function (start, end, timezone, callback) {
+                $j.when(reloadClassRoomEvents()).done(function (events) {
+                    callback(events);
+                });
+            },
+            loading: function (isLoading, view) {
+                if (isLoading) showLoading();
+                else hideLoading();
+            }
+        });
 
-		// initialize save button and set must save to false
-		setMustSave(false);
-		// initialize delete button and set can delete to false
-		setCanDelete(false);
+        // initialize save button and set must save to false
+        setMustSave(false);
+        // initialize delete button and set can delete to false
+        setCanDelete(false);
 
-		moveInsideCalendarHeader('onlySelectedInstance');
-	}
+        moveInsideCalendarHeader('onlySelectedInstance');
+    }
 }
 
 function buildAndPlaceEvent(newEvent, doCheckTutorOverlap) {
 
-	var placeEvent = function() {
-		const startDate = moment(newEvent.start);
-		const endDate = moment(newEvent.end);
-		newEvent.title = buildEventTitle(newEvent);
-		if (newEvent.tutorID>0) newEvent.eventID = addToUIEvents(newEvent);
-		calendar.fullCalendar('renderEvent', newEvent, true);
-		calendar.fullCalendar('unselect');
-		if(!mustSave) setMustSave(true);
-		updateAllocatedHours(moment.duration(endDate.subtract(startDate)).asMilliseconds(), 1);
-	}
+    var placeEvent = function () {
+        const startDate = moment(newEvent.start);
+        const endDate = moment(newEvent.end);
+        newEvent.title = buildEventTitle(newEvent);
+        if (newEvent.tutorID > 0) newEvent.eventID = addToUIEvents(newEvent);
+        calendar.fullCalendar('renderEvent', newEvent, true);
+        calendar.fullCalendar('unselect');
+        if (!mustSave) setMustSave(true);
+        updateAllocatedHours(moment.duration(endDate.subtract(startDate)).asMilliseconds(), 1);
+    }
 
-	/**
-	 * do the checkTutorOverlap only if a tutor is there
-	 */
-	if (doCheckTutorOverlap && newEvent.tutorID>0) {
-		$j.when(checkTutorOverlap(newEvent)).done(function(overlaps) {
-			if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
-				placeEvent();
-			} else {
-				jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
-						function() { placeEvent(); },
-						function() { calendar.fullCalendar('unselect'); });
-			}
-		}).fail(function() {
-			console.log ('error while checking overlapping events in select');
-			calendar.fullCalendar('unselect');
-		});
-	} else placeEvent();
+    /**
+     * do the checkTutorOverlap only if a tutor is there
+     */
+    if (doCheckTutorOverlap && newEvent.tutorID > 0) {
+        $j.when(checkTutorOverlap(newEvent)).done(function (overlaps) {
+            if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
+                placeEvent();
+            } else {
+                jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
+                    function () { placeEvent(); },
+                    function () { calendar.fullCalendar('unselect'); });
+            }
+        }).fail(function () {
+            console.log('error while checking overlapping events in select');
+            calendar.fullCalendar('unselect');
+        });
+    } else placeEvent();
 }
 
 function initSaveButton() {
-	$j('#saveCalendar').on('click', function ( event ) {
-		saveClassRoomEvents();
-		event.preventDefault();
-	});
+    $j('#saveCalendar').on('click', function (event) {
+        saveClassRoomEvents();
+        event.preventDefault();
+    });
 }
 
 function initCancelButton() {
-	// initialize cancel button
-	$j('#cancelCalendar').button().on('click', function ( event ) {
-		event.preventDefault();
+    // initialize cancel button
+    $j('#cancelCalendar').button().on('click', function (event) {
+        event.preventDefault();
 
-		var doReset = function() {
-			// refetch calendar events
-			if ('undefined' != typeof calendar) calendar.fullCalendar('refetchEvents');
-			// reload instance details: allocated_hours and lessons_count
-			$j('#instancesList').trigger('change');
-			setMustSave(false);
-		};
+        var doReset = function () {
+            // refetch calendar events
+            if ('undefined' != typeof calendar) calendar.fullCalendar('refetchEvents');
+            // reload instance details: allocated_hours and lessons_count
+            $j('#instancesList').trigger('change');
+            setMustSave(false);
+        };
 
-		if (mustSave) {
-			jQueryConfirm('#confirmDialog', '#'+$j(this).attr('id')+'question',
-					function() { doReset(); },
-					function() { event.preventDefault(); });
-		} else doReset();
-	});
+        if (mustSave) {
+            jQueryConfirm('#confirmDialog', '#' + $j(this).attr('id') + 'question',
+                function () { doReset(); },
+                function () { event.preventDefault(); });
+        } else doReset();
+    });
 }
 
 /**
@@ -346,7 +348,7 @@ function initCancelButton() {
  * @param classroomid the id of the classroom to be checked
  */
 function setSelectedClassroom(classroomid) {
-	if ($j('input[name="classroomradio"]').length>0) $j('input[name="classroomradio"][value='+classroomid+']').prop('checked',true);
+    if ($j('input[name="classroomradio"]').length > 0) $j('input[name="classroomradio"][value=' + classroomid + ']').prop('checked', true);
 }
 
 /**
@@ -355,7 +357,7 @@ function setSelectedClassroom(classroomid) {
  * @param tutorid the id of the tutor to be checked
  */
 function setSelectedTutor(tutorid) {
-	if ($j('#tutorSelect').length>0) $j('#tutorSelect option[value="'+tutorid+'"]').attr('selected','selected');
+    if ($j('#tutorSelect').length > 0) $j('#tutorSelect option[value="' + tutorid + '"]').attr('selected', 'selected');
 }
 
 /**
@@ -364,8 +366,8 @@ function setSelectedTutor(tutorid) {
  * @returns selected venue id or null
  */
 function getSelectedVenue() {
-	return ($j('#venuesList').length>0 && $j('input[name="classroomradio"]').length>0
-			&& $j('#onlySelectedVenue').is(':checked')) ? $j('#venuesList').val() : null;
+    return ($j('#venuesList').length > 0 && $j('input[name="classroomradio"]').length > 0
+        && $j('#onlySelectedVenue').is(':checked')) ? $j('#venuesList').val() : null;
 }
 
 /**
@@ -374,7 +376,7 @@ function getSelectedVenue() {
  * @returns selected course instance id or null
  */
 function getSelectedCourseInstance() {
-	return ($j('#instancesList').length>0) ? $j('#instancesList').val() : null;
+    return ($j('#instancesList').length > 0) ? $j('#instancesList').val() : null;
 }
 
 /**
@@ -383,7 +385,7 @@ function getSelectedCourseInstance() {
  * @returns selected course id or null
  */
 function getSelectedCourseFromInstance() {
-	return ($j('#instancesList').find(':selected').data('idcourse')>0) ? $j('#instancesList').find(':selected').data('idcourse') : null;
+    return ($j('#instancesList').find(':selected').data('idcourse') > 0) ? $j('#instancesList').find(':selected').data('idcourse') : null;
 }
 
 /**
@@ -392,7 +394,7 @@ function getSelectedCourseFromInstance() {
  * @returns selected classroom id or null
  */
 function getSelectedClassroom() {
-	return ($j('input[name="classroomradio"]').is(':visible') && $j('input[name="classroomradio"]').length>0) ? $j('input[name="classroomradio"]:checked').val() : null;
+    return ($j('input[name="classroomradio"]').is(':visible') && $j('input[name="classroomradio"]').length > 0) ? $j('input[name="classroomradio"]:checked').val() : null;
 }
 
 /**
@@ -401,7 +403,7 @@ function getSelectedClassroom() {
  * @returns selected tutor id or null
  */
 function getSelectedTutor() {
-	return ($j('#tutorSelect').is(':visible') && $j('#tutorSelect').length>0) ? $j('#tutorSelect').val() : null;
+    return ($j('#tutorSelect').is(':visible') && $j('#tutorSelect').length > 0) ? $j('#tutorSelect').val() : null;
 }
 
 /**
@@ -411,8 +413,8 @@ function getSelectedTutor() {
  *
  * @returns string the retreived label or null
  */
-function getTutorFromSelect(tutorid)  {
-	return ($j('#tutorSelect').is(':visible') && $j('#tutorSelect').length>0) ? $j('#tutorSelect option[value="'+tutorid+'"]').text() : null;
+function getTutorFromSelect(tutorid) {
+    return ($j('#tutorSelect').is(':visible') && $j('#tutorSelect').length > 0) ? $j('#tutorSelect option[value="' + tutorid + '"]').text() : null;
 }
 
 /**
@@ -423,7 +425,7 @@ function getTutorFromSelect(tutorid)  {
  * @returns string the retreived label
  */
 function getClassroomRadioLabel(classroomid) {
-	return $j('input[name="classroomradio"][value='+classroomid+']+ label').text();
+    return $j('input[name="classroomradio"][value=' + classroomid + ']+ label').text();
 }
 
 /**
@@ -432,21 +434,21 @@ function getClassroomRadioLabel(classroomid) {
  * @returns event if one is found, or null
  */
 function getSelectedEvent() {
-	// get selected event
-	var selEvent = calendar.fullCalendar('clientEvents', function (clEvent) {
-		return (typeof clEvent.isSelected != "undefined" && clEvent.isSelected==true);
-		});
-	return (selEvent.length > 0) ? selEvent[0] : null;
+    // get selected event
+    var selEvent = calendar.fullCalendar('clientEvents', function (clEvent) {
+        return (typeof clEvent.isSelected != "undefined" && clEvent.isSelected == true);
+    });
+    return (selEvent.length > 0) ? selEvent[0] : null;
 }
 
 function getFilterInstanceState() {
-	return ($j('#filterInstanceState').length>0) ? $j('#filterInstanceState').val() : null;
+    return ($j('#filterInstanceState').length > 0) ? $j('#filterInstanceState').val() : null;
 }
 
 function getShowSelectedInstance() {
-	if (($j('#onlySelectedInstance-cloned').length>0)) return $j('#onlySelectedInstance-cloned').is(':checked');
-	else if (($j('#onlySelectedInstance').length>0)) return $j('#onlySelectedInstance').is(':checked');
-	else return false;
+    if (($j('#onlySelectedInstance-cloned').length > 0)) return $j('#onlySelectedInstance-cloned').is(':checked');
+    else if (($j('#onlySelectedInstance').length > 0)) return $j('#onlySelectedInstance').is(':checked');
+    else return false;
 }
 
 /**
@@ -455,28 +457,28 @@ function getShowSelectedInstance() {
  * @param event the clicked event to be set as selected
  */
 function updateSelectedEvent(event) {
-	// get selected event
-	var selEvent = calendar.fullCalendar('clientEvents', function (clEvent) {
-		return (typeof clEvent.isSelected != "undefined" && clEvent.isSelected==true);
-		});
-	if (selEvent.length > 0) {
-		selEvent[0] = event;
-		calendar.fullCalendar('updateEvent', event);
-	}
+    // get selected event
+    var selEvent = calendar.fullCalendar('clientEvents', function (clEvent) {
+        return (typeof clEvent.isSelected != "undefined" && clEvent.isSelected == true);
+    });
+    if (selEvent.length > 0) {
+        selEvent[0] = event;
+        calendar.fullCalendar('updateEvent', event);
+    }
 }
 
 function unselectSelectedEvent(checkReminder) {
-	// get selected event
-	var selEvent = calendar.fullCalendar('clientEvents', function (clEvent) {
-		return (typeof clEvent.isSelected != "undefined" && clEvent.isSelected==true);
-		});
-	if (selEvent.length > 0) {
-		selEvent[0].isSelected = false;
-		selEvent[0].className = '';
-		calendar.fullCalendar('updateEvent', selEvent[0]);
-	}
+    // get selected event
+    var selEvent = calendar.fullCalendar('clientEvents', function (clEvent) {
+        return (typeof clEvent.isSelected != "undefined" && clEvent.isSelected == true);
+    });
+    if (selEvent.length > 0) {
+        selEvent[0].isSelected = false;
+        selEvent[0].className = '';
+        calendar.fullCalendar('updateEvent', selEvent[0]);
+    }
 
-	if (checkReminder) checkReminderSent();
+    if (checkReminder) checkReminderSent();
 }
 
 /**
@@ -484,32 +486,32 @@ function unselectSelectedEvent(checkReminder) {
  * @param event
  */
 function setSelectedEvent(event) {
-	// get event to be selected
-	var selEvent = calendar.fullCalendar('clientEvents', function (clEvent) {
-			if ('undefined' != typeof event.id) {
-				return clEvent.id==event.id;
-			} else {
-				/**
-				 * it's a new (non saved) event, must
-				 * compare _id since id would be undefined
-				 */
-				return clEvent._id==event._id;
-			}
-		});
-	if (selEvent.length > 0) {
-		selEvent[0].className = 'selectedClassroomEvent';
-		selEvent[0].isSelected = true;
-		setSelectedClassroom(selEvent[0].classroomID);
-		setSelectedTutor(selEvent[0].tutorID);
-		if (!canDelete) setCanDelete(true);
-		calendar.fullCalendar('updateEvent', selEvent[0]);
-		/**
-		 * check if the selected event has a reminder
-		 */
-		$j.when(checkReminderSent()).always(function() {
-			$j('#reminderButton').button({ disabled: !canDelete });
-		});
-	}
+    // get event to be selected
+    var selEvent = calendar.fullCalendar('clientEvents', function (clEvent) {
+        if ('undefined' != typeof event.id) {
+            return clEvent.id == event.id;
+        } else {
+            /**
+             * it's a new (non saved) event, must
+             * compare _id since id would be undefined
+             */
+            return clEvent._id == event._id;
+        }
+    });
+    if (selEvent.length > 0) {
+        selEvent[0].className = 'selectedClassroomEvent';
+        selEvent[0].isSelected = true;
+        setSelectedClassroom(selEvent[0].classroomID);
+        setSelectedTutor(selEvent[0].tutorID);
+        if (!canDelete) setCanDelete(true);
+        calendar.fullCalendar('updateEvent', selEvent[0]);
+        /**
+         * check if the selected event has a reminder
+         */
+        $j.when(checkReminderSent()).always(function () {
+            $j('#reminderButton').button({ disabled: !canDelete });
+        });
+    }
 }
 
 /**
@@ -520,42 +522,42 @@ function setSelectedEvent(event) {
  * @returns string, the event title
  */
 function buildEventTitle(event) {
-	var title = '';
-	title += ($j('#instancesList').length>0) ? ($j('#instancesList option[value='+event.instanceID+']').text()) : '';
+    var title = '';
+    title += ($j('#instancesList').length > 0) ? ($j('#instancesList option[value=' + event.instanceID + ']').text()) : '';
 
-	// add room and tutor name to the event title
+    // add room and tutor name to the event title
 
-	if ($j('input[name="classroomradio"]').is(':visible') && $j('input[name="classroomradio"]').length>0) {
-		// remove (xx seats) from radiobutton label and use it
-		var roomName = getClassroomRadioLabel(event.classroomID).replace(/ \(.*\)/,'');
-		title += '<span class="roomnameInEvent">' + roomName + '</span>';
-	}
+    if ($j('input[name="classroomradio"]').is(':visible') && $j('input[name="classroomradio"]').length > 0) {
+        // remove (xx seats) from radiobutton label and use it
+        var roomName = getClassroomRadioLabel(event.classroomID).replace(/ \(.*\)/, '');
+        title += '<span class="roomnameInEvent">' + roomName + '</span>';
+    }
 
-	if ($j('#tutorSelect').is(':visible') && $j('#tutorSelect').length>0) {
-		title += '<span class="tutornameInEvent">'+
-				 getTutorFromSelect(event.tutorID)+'</span>';
-	}
+    if ($j('#tutorSelect').is(':visible') && $j('#tutorSelect').length > 0) {
+        title += '<span class="tutornameInEvent">' +
+            getTutorFromSelect(event.tutorID) + '</span>';
+    }
 
-	return title;
+    return title;
 }
 
 function rerenderAllEvents() {
-	// get event to be selected
-	var allEvents = calendar.fullCalendar('clientEvents');
+    // get event to be selected
+    var allEvents = calendar.fullCalendar('clientEvents');
 
-	if (allEvents.length > 0) {
-		var selectedInstanceID = getSelectedCourseInstance();
-		for (var i=0; i<allEvents.length; i++) {
-			allEvents[i].title = buildEventTitle(allEvents[i]);
-			// set as editable only events of the selected course instance
-			if ((userType == AMA_TYPE_SWITCHER) || (userType == AMA_TYPE_TUTOR)) {
-				allEvents[i].editable = (allEvents[i].instanceID==selectedInstanceID);
-			} else allEvents[i].editable = false;
-			allEvents[i].className = (!allEvents[i].editable) ? 'noteditableClassroomEvent' : 'editableClassroomEvent';
-			if (allEvents[i].isSelected) allEvents[i].className = 'selectedClassroomEvent';
-		}
-		calendar.fullCalendar( 'rerenderEvents' );
-	}
+    if (allEvents.length > 0) {
+        var selectedInstanceID = getSelectedCourseInstance();
+        for (var i = 0; i < allEvents.length; i++) {
+            allEvents[i].title = buildEventTitle(allEvents[i]);
+            // set as editable only events of the selected course instance
+            if ((userType == AMA_TYPE_SWITCHER) || (userType == AMA_TYPE_TUTOR)) {
+                allEvents[i].editable = (allEvents[i].instanceID == selectedInstanceID);
+            } else allEvents[i].editable = false;
+            allEvents[i].className = (!allEvents[i].editable) ? 'noteditableClassroomEvent' : 'editableClassroomEvent';
+            if (allEvents[i].isSelected) allEvents[i].className = 'selectedClassroomEvent';
+        }
+        calendar.fullCalendar('rerenderEvents');
+    }
 
 }
 
@@ -563,31 +565,33 @@ function rerenderAllEvents() {
  * updates classroom radio buttons on venue change
  */
 function updateClassroomsOnVenueChange() {
-	if (hasVenues) {
-		$j('#venuesList').on('change', function(){
-			$j.ajax({
-				type	:	'GET',
-				url		:	'ajax/getClassrooms.php',
-				data	:	{ venueID: $j(this).val(),
-							  courseID: getSelectedCourseFromInstance() },
-				dataType:	'html'
-			}).done (function(htmlcode){
-				if (htmlcode && htmlcode.length>0) {
-					$j('#classroomlist').html(htmlcode);
-					initFacilitiesTooltips();
-					if (getSelectedVenue()==null) rerenderAllEvents();
-					else calendar.fullCalendar( 'refetchEvents' );
-					// select the first radio button
-					if ($j('input[name="classroomradio"]').length>0) {
-						$j('input[name="classroomradio"]').first().prop('checked',true);
-						$j('input[name="classroomradio"]').on('change', function(userEvent) {
-							updateEventOnClassRoomChange();
-						});
-					}
-				}
-			});
-		});
-	}
+    if (hasVenues) {
+        $j('#venuesList').on('change', function () {
+            $j.ajax({
+                type: 'GET',
+                url: 'ajax/getClassrooms.php',
+                data: {
+                    venueID: $j(this).val(),
+                    courseID: getSelectedCourseFromInstance()
+                },
+                dataType: 'html'
+            }).done(function (htmlcode) {
+                if (htmlcode && htmlcode.length > 0) {
+                    $j('#classroomlist').html(htmlcode);
+                    initFacilitiesTooltips();
+                    if (getSelectedVenue() == null) rerenderAllEvents();
+                    else calendar.fullCalendar('refetchEvents');
+                    // select the first radio button
+                    if ($j('input[name="classroomradio"]').length > 0) {
+                        $j('input[name="classroomradio"]').first().prop('checked', true);
+                        $j('input[name="classroomradio"]').on('change', function (userEvent) {
+                            updateEventOnClassRoomChange();
+                        });
+                    }
+                }
+            });
+        });
+    }
 }
 
 /**
@@ -595,57 +599,59 @@ function updateClassroomsOnVenueChange() {
  * update service (aka course) type
  */
 function updateServiceTypeOnInstanceChange() {
-	if ($j('#instancesList').length>0) {
-		$j('#instancesList').on('change', function(){
+    if ($j('#instancesList').length > 0) {
+        $j('#instancesList').on('change', function () {
 
-			if ($j('#headerInstanceTitle').length >0) {
-				$j('#headerInstanceTitle').text($j(this).find('option:selected').text());
-			}
+            if ($j('#headerInstanceTitle').length > 0) {
+                $j('#headerInstanceTitle').text($j(this).find('option:selected').text());
+            }
 
-			if ($j('#servicetype').length>0) {
-				$j.ajax({
-					type	:	'GET',
-					url		:	'ajax/getServiceDetails.php',
-					data	:	{ instanceID: $j(this).val(),
-								  courseID: getSelectedCourseFromInstance() },
-					dataType:	'json'
-				}).done (function(JSONObj){
-					if (JSONObj) {
-						$j('#servicetype').html(JSONObj.serviceTypeString);
+            if ($j('#servicetype').length > 0) {
+                $j.ajax({
+                    type: 'GET',
+                    url: 'ajax/getServiceDetails.php',
+                    data: {
+                        instanceID: $j(this).val(),
+                        courseID: getSelectedCourseFromInstance()
+                    },
+                    dataType: 'json'
+                }).done(function (JSONObj) {
+                    if (JSONObj) {
+                        $j('#servicetype').html(JSONObj.serviceTypeString);
 
-						if ('undefined' != typeof JSONObj.courseID) $j('#courseID').text(JSONObj.courseID);
-						else $j('#courseID').text('0');
+                        if ('undefined' != typeof JSONObj.courseID) $j('#courseID').text(JSONObj.courseID);
+                        else $j('#courseID').text('0');
 
-						if ($j('#enddate').length>0 && 'undefined' != typeof JSONObj.endDate) $j('#enddate').text(JSONObj.endDate);
-						else $j('#enddate').text('');
+                        if ($j('#enddate').length > 0 && 'undefined' != typeof JSONObj.endDate) $j('#enddate').text(JSONObj.endDate);
+                        else $j('#enddate').text('');
 
-						if('undefined' != typeof JSONObj.isOnline && JSONObj.isOnline===true) {
-							$j('#classroomlist').html('');
-							$j('#classrooms').hide();
-							$j('#serviceduration').hide();
-						} else if('undefined' != typeof JSONObj.isPresence && JSONObj.isPresence===true) {
-							// show classrooms div
-							if ($j('#classrooms').length>0 && !$j('#classrooms').is(':visible')) {
-								if (userType==AMA_TYPE_SWITCHER) $j('#classrooms').show();
-								// trigger venues change to update classroom list
-								if (hasVenues) $j('#venuesList').trigger('change');
-							}
-							if ($j('#serviceduration').length>0 && 'undefined' != typeof JSONObj.duration_hours) {
-								$j('#serviceduration').show();
-								$j('#duration_hours').text(JSONObj.duration_hours);
+                        if ('undefined' != typeof JSONObj.isOnline && JSONObj.isOnline === true) {
+                            $j('#classroomlist').html('');
+                            $j('#classrooms').hide();
+                            $j('#serviceduration').hide();
+                        } else if ('undefined' != typeof JSONObj.isPresence && JSONObj.isPresence === true) {
+                            // show classrooms div
+                            if ($j('#classrooms').length > 0 && !$j('#classrooms').is(':visible')) {
+                                if (userType == AMA_TYPE_SWITCHER) $j('#classrooms').show();
+                                // trigger venues change to update classroom list
+                                if (hasVenues) $j('#venuesList').trigger('change');
+                            }
+                            if ($j('#serviceduration').length > 0 && 'undefined' != typeof JSONObj.duration_hours) {
+                                $j('#serviceduration').show();
+                                $j('#duration_hours').text(JSONObj.duration_hours);
 
-								if ($j('#allocated_hours').length>0 && 'undefined' != typeof JSONObj.allocated_hours)
-									$j('#allocated_hours').text(millisecondsToHourMin(JSONObj.allocated_hours));
+                                if ($j('#allocated_hours').length > 0 && 'undefined' != typeof JSONObj.allocated_hours)
+                                    $j('#allocated_hours').text(millisecondsToHourMin(JSONObj.allocated_hours));
 
-								if ($j('#lessons_count').length>0 && 'undefined' != typeof JSONObj.lessons_count)
-									$j('#lessons_count').text(JSONObj.lessons_count);
-							}
-						}
-					}
-				});
-			}
-		});
-	}
+                                if ($j('#lessons_count').length > 0 && 'undefined' != typeof JSONObj.lessons_count)
+                                    $j('#lessons_count').text(JSONObj.lessons_count);
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
 }
 
 /**
@@ -653,65 +659,67 @@ function updateServiceTypeOnInstanceChange() {
  * update studentcount and calendar events
  */
 function updateStudentCountOnInstanceChange() {
-	if ($j('#instancesList').length>0) {
-		$j('#instancesList').on('change', function(){
-			if ($j('#studentcount').length>0) {
-				$j.ajax({
-					type	:	'GET',
-					url		:	'ajax/getStudentsCount.php',
-					data	:	{ instanceID: $j(this).val(),
-								  courseID: getSelectedCourseFromInstance() },
-					dataType:	'json'
-				}).done (function(JSONObj){
-					if (JSONObj) {
-						$j('#studentcount').html(JSONObj.value);
-					}
-				});
-			}
-		});
-	}
+    if ($j('#instancesList').length > 0) {
+        $j('#instancesList').on('change', function () {
+            if ($j('#studentcount').length > 0) {
+                $j.ajax({
+                    type: 'GET',
+                    url: 'ajax/getStudentsCount.php',
+                    data: {
+                        instanceID: $j(this).val(),
+                        courseID: getSelectedCourseFromInstance()
+                    },
+                    dataType: 'json'
+                }).done(function (JSONObj) {
+                    if (JSONObj) {
+                        $j('#studentcount').html(JSONObj.value);
+                    }
+                });
+            }
+        });
+    }
 }
 
 /**
  * updates selected event on classroom radio button change
  */
 function updateEventOnClassRoomChange() {
-	var event = getSelectedEvent(), classroomid = getSelectedClassroom();
-	if (event!=null && classroomid>0) {
-		event.classroomID = classroomid;
-		event.title = buildEventTitle(event);
-		updateSelectedEvent(event);
-		if(!mustSave) setMustSave(true);
-	}
+    var event = getSelectedEvent(), classroomid = getSelectedClassroom();
+    if (event != null && classroomid > 0) {
+        event.classroomID = classroomid;
+        event.title = buildEventTitle(event);
+        updateSelectedEvent(event);
+        if (!mustSave) setMustSave(true);
+    }
 }
 
 /**
  * updates selected event on tutor radio button change
  */
 function updateEventOnTutorChange() {
-	var event = getSelectedEvent(), tutorid = getSelectedTutor();
-	var setTutor = function() {
-		event.tutorID = tutorid;
-		event.title = buildEventTitle(event);
-		updateSelectedEvent(event);
-		if(!mustSave) setMustSave(true);
-	};
+    var event = getSelectedEvent(), tutorid = getSelectedTutor();
+    var setTutor = function () {
+        event.tutorID = tutorid;
+        event.title = buildEventTitle(event);
+        updateSelectedEvent(event);
+        if (!mustSave) setMustSave(true);
+    };
 
-	if (event!=null && tutorid>0) {
-		event.tutorID = tutorid;
-		data = prepareDataForCheckTutorOverlap(event);
-		$j.when(checkTutorOverlap(data)).done(function(overlaps) {
-			if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
-				 setTutor();
-			} else {
-				jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
-						function() { setTutor(); },
-						function() { return null; });
-			}
-		}).fail(function() {
-			console.log ('error while checking overlapping events in updateEventOnTutorChange');
-		});
-	}
+    if (event != null && tutorid > 0) {
+        event.tutorID = tutorid;
+        data = prepareDataForCheckTutorOverlap(event);
+        $j.when(checkTutorOverlap(data)).done(function (overlaps) {
+            if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
+                setTutor();
+            } else {
+                jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
+                    function () { setTutor(); },
+                    function () { return null; });
+            }
+        }).fail(function () {
+            console.log('error while checking overlapping events in updateEventOnTutorChange');
+        });
+    }
 }
 
 /**
@@ -719,78 +727,82 @@ function updateEventOnTutorChange() {
  * wants to change course instance or venue, ask to save
  */
 function askChangeInstanceOrVenueConfirm() {
-	var selector = '';
-	if ($j('#instancesList').length>0) selector += '#instancesList';
-	if ($j('#venuesList').length>0) selector += ',#venuesList';
+    var selector = '';
+    if ($j('#instancesList').length > 0) selector += '#instancesList';
+    if ($j('#venuesList').length > 0) selector += ',#venuesList';
 
-	if (selector.length>0) {
-		$j(selector).on('mousedown', function(event){
-			// check if there's something to save here
-			if (mustSave) {
-				event.preventDefault();
-				jQueryConfirm('#confirmDialog', '#'+$j(this).attr('id')+'question',
-						function() { saveClassRoomEvents(); },
-						function() { event.preventDefault(); });
-			}
-		});
-	}
+    if (selector.length > 0) {
+        $j(selector).on('mousedown', function (event) {
+            // check if there's something to save here
+            if (mustSave) {
+                event.preventDefault();
+                jQueryConfirm('#confirmDialog', '#' + $j(this).attr('id') + 'question',
+                    function () { saveClassRoomEvents(); },
+                    function () { event.preventDefault(); });
+            }
+        });
+    }
 }
 
 /**
  * set instancesList select dropdown to update venues list
  */
 function updateVenuesListOnInstanceChange() {
-	if (hasVenues) {
-		$j('#instancesList').on('change', function(){
-			$j.ajax({
-				type	:	'GET',
-				url		:	'ajax/getVenues.php',
-				data	:	{ instanceID: $j(this).val(),
-							  courseID: getSelectedCourseFromInstance() },
-				dataType:	'html'
-			}).done (function(htmlcode){
-				if (htmlcode && htmlcode.length>0) {
-					$j('#venuesList').html($j(htmlcode).html()).trigger('change');
-				}
-			});
-		});
-	}
+    if (hasVenues) {
+        $j('#instancesList').on('change', function () {
+            $j.ajax({
+                type: 'GET',
+                url: 'ajax/getVenues.php',
+                data: {
+                    instanceID: $j(this).val(),
+                    courseID: getSelectedCourseFromInstance()
+                },
+                dataType: 'html'
+            }).done(function (htmlcode) {
+                if (htmlcode && htmlcode.length > 0) {
+                    $j('#venuesList').html($j(htmlcode).html()).trigger('change');
+                }
+            });
+        });
+    }
 }
 
 /**
  * set instancesList select dropdown to update tutors list
  */
 function updateTutorsListOnInstanceChange() {
-	if ($j('#instancesList').length>0 && $j('#tutorsListContainer').length>0) {
-		$j('#instancesList').on('change', function(){
-			$j.ajax({
-				type	:	'GET',
-				url		:	'ajax/getTutors.php',
-				data	:	{ instanceID: $j(this).val(),
-							  courseID: getSelectedCourseFromInstance() },
-				dataType:	'html'
-			}).done (function(htmlcode){
-				if (htmlcode && htmlcode.length>0) {
-					$j('#tutorslist').html(htmlcode);
-					// reload classroom events
-					if (typeof calendar != 'undefined'){
-						if (getShowSelectedInstance()) {
-							calendar.fullCalendar( 'refetchEvents' );
-						} else {
-							rerenderAllEvents();
-						}
-					} else initCalendar();
-					// select the first radio button
-					if ($j('#tutorSelect').length>0) {
-						$j("#tutorSelect option:first").attr('selected','selected');
-						$j('#tutorSelect').on('change', function() {
-							updateEventOnTutorChange();
-						});
-					}
-				}
-			});
-		});
-	}
+    if ($j('#instancesList').length > 0 && $j('#tutorsListContainer').length > 0) {
+        $j('#instancesList').on('change', function () {
+            $j.ajax({
+                type: 'GET',
+                url: 'ajax/getTutors.php',
+                data: {
+                    instanceID: $j(this).val(),
+                    courseID: getSelectedCourseFromInstance()
+                },
+                dataType: 'html'
+            }).done(function (htmlcode) {
+                if (htmlcode && htmlcode.length > 0) {
+                    $j('#tutorslist').html(htmlcode);
+                    // reload classroom events
+                    if (typeof calendar != 'undefined') {
+                        if (getShowSelectedInstance()) {
+                            calendar.fullCalendar('refetchEvents');
+                        } else {
+                            rerenderAllEvents();
+                        }
+                    } else initCalendar();
+                    // select the first radio button
+                    if ($j('#tutorSelect').length > 0) {
+                        $j("#tutorSelect option:first").attr('selected', 'selected');
+                        $j('#tutorSelect').on('change', function () {
+                            updateEventOnTutorChange();
+                        });
+                    }
+                }
+            });
+        });
+    }
 }
 
 /**
@@ -798,224 +810,224 @@ function updateTutorsListOnInstanceChange() {
  */
 function saveClassRoomEvents() {
 
-	var calEvents = calendar.fullCalendar('clientEvents');
-	var eventsToPass = [];
-	var selectedCourseInstance = getSelectedCourseInstance();
+    var calEvents = calendar.fullCalendar('clientEvents');
+    var eventsToPass = [];
+    var selectedCourseInstance = getSelectedCourseInstance();
 
-	for (var i=0, j=0; i<calEvents.length; i++) {
-		if (calEvents[i].instanceID==selectedCourseInstance) {
-			eventsToPass[j++] = {
-					tempID: calEvents[i].eventID,
-					id : (typeof calEvents[i].id == 'undefined' || null == calEvents[i].id) ? null : calEvents[i].id,
-					wasSelected : (calEvents[i].isSelected ? 1 : 0),
-					start : calEvents[i].start.format(),
-					end : calEvents[i].end.format(),
-					classroomID : calEvents[i].classroomID,
-					tutorID : calEvents[i].tutorID
-			};
-		}
-	}
+    for (var i = 0, j = 0; i < calEvents.length; i++) {
+        if (calEvents[i].instanceID == selectedCourseInstance) {
+            eventsToPass[j++] = {
+                tempID: calEvents[i].eventID,
+                id: (typeof calEvents[i].id == 'undefined' || null == calEvents[i].id) ? null : calEvents[i].id,
+                wasSelected: (calEvents[i].isSelected ? 1 : 0),
+                start: calEvents[i].start.format(),
+                end: calEvents[i].end.format(),
+                classroomID: calEvents[i].classroomID,
+                tutorID: calEvents[i].tutorID
+            };
+        }
+    }
 
-	return $j.ajax({
-				type	:	'POST',
-				url		:	'ajax/saveClassroomEvents.php',
-				data	:	{
-					venueID : getSelectedVenue(),
-					instanceID : selectedCourseInstance,
-					events : eventsToPass
-				},
-				dataType:	'json'
-			}).done (function(JSONObj){
-				var popupMsg = 'Unknown Error';
-				var popupErr = false;
-				if (JSONObj && JSONObj.status.length>0) {
-					if ('undefined' != typeof JSONObj.generatedIDs) {
-						calEvents.map((curEvent) => {
-							if (curEvent.instanceID == selectedCourseInstance) {
-								if ('eventID' in curEvent && 'undefined' == typeof curEvent.id && 'undefined' !== typeof JSONObj.generatedIDs[curEvent.eventID]) {
-									curEvent.id = parseInt(JSONObj.generatedIDs[curEvent.eventID]);
-									delete curEvent.eventID;
-								}
-							}
-							return curEvent;
-						});
-						calendar.fullCalendar('updateEvents', calEvents);
-					}
-					if ('undefined' != typeof JSONObj.newSelectedID) {
-						// must look for the event having id==newSelectedID
-						// and set its isSelected to true, so it will be re-selected
-						var selEvent = getSelectedEvent();
-						if (selEvent!=null) {
-							selEvent.id = JSONObj.newSelectedID;
-							updateSelectedEvent(selEvent);
-						}
-					}
-					popupMsg = JSONObj.msg;
-					popupErr = JSONObj.status==='OK';
-				}
+    return $j.ajax({
+        type: 'POST',
+        url: 'ajax/saveClassroomEvents.php',
+        data: {
+            venueID: getSelectedVenue(),
+            instanceID: selectedCourseInstance,
+            events: eventsToPass
+        },
+        dataType: 'json'
+    }).done(function (JSONObj) {
+        var popupMsg = 'Unknown Error';
+        var popupErr = false;
+        if (JSONObj && JSONObj.status.length > 0) {
+            if ('undefined' != typeof JSONObj.generatedIDs) {
+                calEvents.map((curEvent) => {
+                    if (curEvent.instanceID == selectedCourseInstance) {
+                        if ('eventID' in curEvent && 'undefined' == typeof curEvent.id && 'undefined' !== typeof JSONObj.generatedIDs[curEvent.eventID]) {
+                            curEvent.id = parseInt(JSONObj.generatedIDs[curEvent.eventID]);
+                            delete curEvent.eventID;
+                        }
+                    }
+                    return curEvent;
+                });
+                calendar.fullCalendar('updateEvents', calEvents);
+            }
+            if ('undefined' != typeof JSONObj.newSelectedID) {
+                // must look for the event having id==newSelectedID
+                // and set its isSelected to true, so it will be re-selected
+                var selEvent = getSelectedEvent();
+                if (selEvent != null) {
+                    selEvent.id = JSONObj.newSelectedID;
+                    updateSelectedEvent(selEvent);
+                }
+            }
+            popupMsg = JSONObj.msg;
+            popupErr = JSONObj.status === 'OK';
+        }
 
-				/**
-				 * disable save button
-				 */
-				setMustSave(false);
-				/**
-				 * display popup message and reload calendar data
-				 */
-				$j.when(showHideDiv('',popupMsg, popupErr)).then(function() {
-					rerenderAllEvents();
-				});
-			});
+        /**
+         * disable save button
+         */
+        setMustSave(false);
+        /**
+         * display popup message and reload calendar data
+         */
+        $j.when(showHideDiv('', popupMsg, popupErr)).then(function () {
+            rerenderAllEvents();
+        });
+    });
 }
 
 function loadCourseInstances() {
-	if ($j('#instancesList').length>0) {
+    if ($j('#instancesList').length > 0) {
 
-		var oldSelectedInstance = getSelectedCourseInstance();
+        var oldSelectedInstance = getSelectedCourseInstance();
 
-		$j('#instancesList').prop('disabled','disabled');
-		return $j.ajax({
-			type	:	'GET',
-			url		:	'ajax/getInstances.php',
-			data	:	{ filterInstanceState : getFilterInstanceState() },
-			dataType:	'html'
-		}).done (function(htmlcode){
-			if (htmlcode.length>0){
-				$j('#instancesList').html(htmlcode);
-				/**
-				 * if oldSelectedInstance is still in the returned <select> element,
-				 * select id. Else select the first returned <option>
-				 */
-				if (typeof $j('#instancesList option[value="'+oldSelectedInstance+'"]').val() == 'undefined') {
-					// mark the first option as selected
-					$j("#instancesList option:first").attr('selected','selected');
-				} else {
-					$j('#instancesList option[value="'+oldSelectedInstance+'"]').attr('selected','selected');
-				}
-				if (getSelectedCourseInstance()!=0) {
-					// trigger onchange event to update number of students when page loads
-					$j('#instancesList').trigger('change');
-				} else {
-					$j('#servicetype').text('--');
-					$j('#studentcount').text('--');
-					$j('#tutorslist').text('--');
-					$j('#headerInstanceTitle').text('--');
-					$j('#classroomlist').html('');
-					$j('#classrooms').hide();
-					$j('#serviceduration').hide();
-					calendar.fullCalendar('removeEvents');
-				}
-			}
-		}).always(function() {
-			$j('#instancesList').prop('disabled',false);
-		});
-	}
+        $j('#instancesList').prop('disabled', 'disabled');
+        return $j.ajax({
+            type: 'GET',
+            url: 'ajax/getInstances.php',
+            data: { filterInstanceState: getFilterInstanceState() },
+            dataType: 'html'
+        }).done(function (htmlcode) {
+            if (htmlcode.length > 0) {
+                $j('#instancesList').html(htmlcode);
+                /**
+                 * if oldSelectedInstance is still in the returned <select> element,
+                 * select id. Else select the first returned <option>
+                 */
+                if (typeof $j('#instancesList option[value="' + oldSelectedInstance + '"]').val() == 'undefined') {
+                    // mark the first option as selected
+                    $j("#instancesList option:first").attr('selected', 'selected');
+                } else {
+                    $j('#instancesList option[value="' + oldSelectedInstance + '"]').attr('selected', 'selected');
+                }
+                if (getSelectedCourseInstance() != 0) {
+                    // trigger onchange event to update number of students when page loads
+                    $j('#instancesList').trigger('change');
+                } else {
+                    $j('#servicetype').text('--');
+                    $j('#studentcount').text('--');
+                    $j('#tutorslist').text('--');
+                    $j('#headerInstanceTitle').text('--');
+                    $j('#classroomlist').html('');
+                    $j('#classrooms').hide();
+                    $j('#serviceduration').hide();
+                    calendar.fullCalendar('removeEvents');
+                }
+            }
+        }).always(function () {
+            $j('#instancesList').prop('disabled', false);
+        });
+    }
 }
 
 /**
  * reloads calendar events for select instance id
  */
 function reloadClassRoomEvents() {
-	var data = {
-			filterInstanceState : getFilterInstanceState()
-		};
-	var venueID = getSelectedVenue();
-	var selectedInstanceID = getSelectedCourseInstance();
+    var data = {
+        filterInstanceState: getFilterInstanceState()
+    };
+    var venueID = getSelectedVenue();
+    var selectedInstanceID = getSelectedCourseInstance();
 
-	if (getShowSelectedInstance()) {
-		$j.extend (data, {
-			instanceID: selectedInstanceID,
-			courseID: getSelectedCourseFromInstance()
-		});
-	}
+    if (getShowSelectedInstance()) {
+        $j.extend(data, {
+            instanceID: selectedInstanceID,
+            courseID: getSelectedCourseFromInstance()
+        });
+    }
 
-	/**
-	 * ajax-load events
-	 */
-	var deferred = $j.Deferred();
+    /**
+     * ajax-load events
+     */
+    var deferred = $j.Deferred();
 
-	$j.ajax({
-		type	:	'GET',
-		url		:	'ajax/getCalendarForInstance.php',
-		data	:	data,
-		dataType:	'json'
-	}).done (function(JSONObj){
-		/**
-		 * store the selected event in a var
-		 */
-		var selectedEvent = getSelectedEvent();
-		if (null != selectedEvent) unselectSelectedEvent(false);
+    $j.ajax({
+        type: 'GET',
+        url: 'ajax/getCalendarForInstance.php',
+        data: data,
+        dataType: 'json'
+    }).done(function (JSONObj) {
+        /**
+         * store the selected event in a var
+         */
+        var selectedEvent = getSelectedEvent();
+        if (null != selectedEvent) unselectSelectedEvent(false);
 
-		if (!mustSave) calendar.fullCalendar('removeEvents');
+        if (!mustSave) calendar.fullCalendar('removeEvents');
 
-		if (JSONObj) {
-			/**
-			 * add all loaded events to the calendar
-			 */
-			var selectedIndex = -1;
-			var eventsToDraw = [];
-			for (var i=0; i<JSONObj.length; i++) {
-				if (venueID==null || (venueID!=null && JSONObj[i].venueID==venueID)) {
-					if (null != selectedEvent && JSONObj[i].id == selectedEvent.id) selectedIndex = i;
-					JSONObj[i].title = buildEventTitle(JSONObj[i]);
-					// set as editable only events of the selected course instance
-					if ((userType == AMA_TYPE_SWITCHER) || (userType == AMA_TYPE_TUTOR)) {
-						JSONObj[i].editable = (JSONObj[i].instanceID==selectedInstanceID);
-					} else JSONObj[i].eidtable = false;
-					JSONObj[i].className = (!JSONObj[i].editable) ? 'noteditableClassroomEvent' : 'editableClassroomEvent';
+        if (JSONObj) {
+            /**
+             * add all loaded events to the calendar
+             */
+            var selectedIndex = -1;
+            var eventsToDraw = [];
+            for (var i = 0; i < JSONObj.length; i++) {
+                if (venueID == null || (venueID != null && JSONObj[i].venueID == venueID)) {
+                    if (null != selectedEvent && JSONObj[i].id == selectedEvent.id) selectedIndex = i;
+                    JSONObj[i].title = buildEventTitle(JSONObj[i]);
+                    // set as editable only events of the selected course instance
+                    if ((userType == AMA_TYPE_SWITCHER) || (userType == AMA_TYPE_TUTOR)) {
+                        JSONObj[i].editable = (JSONObj[i].instanceID == selectedInstanceID);
+                    } else JSONObj[i].eidtable = false;
+                    JSONObj[i].className = (!JSONObj[i].editable) ? 'noteditableClassroomEvent' : 'editableClassroomEvent';
 
-					calendar.fullCalendar('unselect');
-					eventsToDraw.push(JSONObj[i]);
-				}
-			}
+                    calendar.fullCalendar('unselect');
+                    eventsToDraw.push(JSONObj[i]);
+                }
+            }
 
-			if (selectedIndex>-1) {
-				if (JSONObj[selectedIndex].editable) setSelectedEvent(JSONObj[selectedIndex]);
-			}
+            if (selectedIndex > -1) {
+                if (JSONObj[selectedIndex].editable) setSelectedEvent(JSONObj[selectedIndex]);
+            }
 
-			$j('a.noteditableClassroomEvent').on ('click', function(event){
-				event.preventDefault();
-			});
+            $j('a.noteditableClassroomEvent').on('click', function (event) {
+                event.preventDefault();
+            });
 
-			/**
-			 * resolve the promise returning the events to be rendered
-			 */
-			deferred.resolve(eventsToDraw);
+            /**
+             * resolve the promise returning the events to be rendered
+             */
+            deferred.resolve(eventsToDraw);
 
-		}
-	}).fail(deferred.reject).always(function() {
-		if (getSelectedEvent()==null) setCanDelete(false);
-		UIEvents = [];
-		UIDeletedEvents = [];
-	});
+        }
+    }).fail(deferred.reject).always(function () {
+        if (getSelectedEvent() == null) setCanDelete(false);
+        UIEvents = [];
+        UIDeletedEvents = [];
+    });
 
-	return deferred.promise();
+    return deferred.promise();
 }
 
 function millisecondsToHourMin(millis) {
-	var minutes = Math.floor (millis/(1000*60));
-	var hours = (Math.floor (minutes / 60)) + ''; // converted to string by +''
-	var realminutes = (minutes % 60)+ ''; // converted to string by +''
-	// zero-pad strings to a fixed length of 2
-	hours = (hours.length < 2) ? '0'+hours : hours;
-	realminutes = (realminutes.length < 2) ? '0'+realminutes : realminutes;
+    var minutes = Math.floor(millis / (1000 * 60));
+    var hours = (Math.floor(minutes / 60)) + ''; // converted to string by +''
+    var realminutes = (minutes % 60) + ''; // converted to string by +''
+    // zero-pad strings to a fixed length of 2
+    hours = (hours.length < 2) ? '0' + hours : hours;
+    realminutes = (realminutes.length < 2) ? '0' + realminutes : realminutes;
 
-	return hours+':'+realminutes;
+    return hours + ':' + realminutes;
 }
 
 function updateAllocatedHours(durationDelta, lessonsDelta) {
-	if ($j('#allocated_hours').length>0 && $j('#allocated_hours').text().length>0) {
-		var allocatedDuration = moment.duration($j('#allocated_hours').text());
-		if (lessonsDelta>=0) {
-			allocatedDuration.add(durationDelta);
-		} else if (lessonsDelta<0) {
-			allocatedDuration.subtract(durationDelta);
-		}
-		$j('#allocated_hours').text(millisecondsToHourMin(allocatedDuration.asMilliseconds()));
-	}
+    if ($j('#allocated_hours').length > 0 && $j('#allocated_hours').text().length > 0) {
+        var allocatedDuration = moment.duration($j('#allocated_hours').text());
+        if (lessonsDelta >= 0) {
+            allocatedDuration.add(durationDelta);
+        } else if (lessonsDelta < 0) {
+            allocatedDuration.subtract(durationDelta);
+        }
+        $j('#allocated_hours').text(millisecondsToHourMin(allocatedDuration.asMilliseconds()));
+    }
 
-	if ($j('#lessons_count').length>0) {
-		$j('#lessons_count').text(parseInt($j('#lessons_count').text())+lessonsDelta);
-	}
+    if ($j('#lessons_count').length > 0) {
+        $j('#lessons_count').text(parseInt($j('#lessons_count').text()) + lessonsDelta);
+    }
 }
 
 /**
@@ -1026,39 +1038,39 @@ function updateAllocatedHours(durationDelta, lessonsDelta) {
  * @return boolean
  */
 function checkTutorOverlapOnUIEvents(event) {
-	if (objectSize(UIEvents)>0) {
+    if (objectSize(UIEvents) > 0) {
 
-		newStart = moment(event.start);
-		newEnd = moment(event.end);
+        newStart = moment(event.start);
+        newEnd = moment(event.end);
 
-		for (var prop in UIEvents) {
-			if (UIEvents.hasOwnProperty(prop)) {
-				var currentEvent = UIEvents[prop];
-			} else continue;
+        for (var prop in UIEvents) {
+            if (UIEvents.hasOwnProperty(prop)) {
+                var currentEvent = UIEvents[prop];
+            } else continue;
 
-			loadedStart = moment(currentEvent.start);
-			loadedEnd = moment(currentEvent.end);
+            loadedStart = moment(currentEvent.start);
+            loadedEnd = moment(currentEvent.end);
 
-			if (event.tutorID==currentEvent.tutorID && event.eventID != currentEvent.eventID &&
-				   ( loadedStart.isSame(newStart) || loadedEnd.isSame(newEnd)   ||
-					 loadedStart.isSame(newEnd)   || loadedEnd.isSame(newStart) ||
-					(newStart.isBefore(loadedStart) && newEnd.isAfter(loadedStart)) ||
-					(newStart.isAfter(loadedStart)  && newStart.isBefore(loadedEnd))
-			   )) {
+            if (event.tutorID == currentEvent.tutorID && event.eventID != currentEvent.eventID &&
+                (loadedStart.isSame(newStart) || loadedEnd.isSame(newEnd) ||
+                    loadedStart.isSame(newEnd) || loadedEnd.isSame(newStart) ||
+                    (newStart.isBefore(loadedStart) && newEnd.isAfter(loadedStart)) ||
+                    (newStart.isAfter(loadedStart) && newStart.isBefore(loadedEnd))
+                )) {
 
-				prepareTutorOverlapDialog({
-					instanceName : ($j('#instancesList').length>0) ? ($j('#instancesList option[value='+event.instanceID+']').text()) : '',
-					id_utente_tutor : event.tutorID,
-					date: newStart.format('L'),
-					start: loadedStart.format('HH:mm'),
-					end: loadedEnd.format('HH:mm')
-				});
+                prepareTutorOverlapDialog({
+                    instanceName: ($j('#instancesList').length > 0) ? ($j('#instancesList option[value=' + event.instanceID + ']').text()) : '',
+                    id_utente_tutor: event.tutorID,
+                    date: newStart.format('L'),
+                    start: loadedStart.format('HH:mm'),
+                    end: loadedEnd.format('HH:mm')
+                });
 
-				return true;
-			}
-		}
-	}
-	return false;
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 /**
@@ -1069,33 +1081,33 @@ function checkTutorOverlapOnUIEvents(event) {
  * @return jQuery promise
  */
 function checkTutorOverlapOnServer(event) {
-	return $j.ajax({
-		type	:	'GET',
-		url		:	'ajax/checkTutorOverlap.php',
-		data	:	event,
-		dataType:	'json'
-	}).done (function(JSONObj){
-		if ('undefined' != typeof JSONObj.isOverlap) {
-			if (JSONObj.isOverlap==true) {
-				if (UIDeletedEvents.indexOf(JSONObj.data.module_classagenda_calendars_id)!=-1) {
-					/**
-					 * If the server reports an overlap on an event that has been
-					 * deleted but not saved yet, then force it not to be an overlap
-					 */
-					JSONObj.isOverlap = false;
-				} else if ('undefined' != typeof UIEvents[JSONObj.data.module_classagenda_calendars_id]) {
-					/**
-					 * If the server reports an overlap on an event that has been
-					 * moved or resized but not saved yet, then check it against the UIEvents array
-					 */
-					JSONObj.isOverlap = checkTutorOverlapOnUIEvents(event);
-				} else {
-					prepareTutorOverlapDialog(JSONObj.data);
-				}
+    return $j.ajax({
+        type: 'GET',
+        url: 'ajax/checkTutorOverlap.php',
+        data: event,
+        dataType: 'json'
+    }).done(function (JSONObj) {
+        if ('undefined' != typeof JSONObj.isOverlap) {
+            if (JSONObj.isOverlap == true) {
+                if (UIDeletedEvents.indexOf(JSONObj.data.module_classagenda_calendars_id) != -1) {
+                    /**
+                     * If the server reports an overlap on an event that has been
+                     * deleted but not saved yet, then force it not to be an overlap
+                     */
+                    JSONObj.isOverlap = false;
+                } else if ('undefined' != typeof UIEvents[JSONObj.data.module_classagenda_calendars_id]) {
+                    /**
+                     * If the server reports an overlap on an event that has been
+                     * moved or resized but not saved yet, then check it against the UIEvents array
+                     */
+                    JSONObj.isOverlap = checkTutorOverlapOnUIEvents(event);
+                } else {
+                    prepareTutorOverlapDialog(JSONObj.data);
+                }
 
-			}
-		}
-	}).fail(function() {});
+            }
+        }
+    }).fail(function () { });
 }
 
 /**
@@ -1104,19 +1116,19 @@ function checkTutorOverlapOnServer(event) {
  * @param event
  */
 function prepareTutorOverlapDialog(event) {
-	$j('#overlapTutorName').text(getTutorFromSelect(event.id_utente_tutor));
-	if ('undefined' != typeof event.instanceName) {
-		$j('#overlapInstanceName').html(($j('#instancesList').length>0) ? event.instanceName : '');
-	}
-	if ('undefined' != event.date)  {
-		$j('#overlapDate').text(event.date);
-	}
-	if ('undefined' != event.start)  {
-		$j('#overlapStartTime').text(event.start);
-	}
-	if ('undefined' != event.end)  {
-		$j('#overlapEndTime').text(event.end);
-	}
+    $j('#overlapTutorName').text(getTutorFromSelect(event.id_utente_tutor));
+    if ('undefined' != typeof event.instanceName) {
+        $j('#overlapInstanceName').html(($j('#instancesList').length > 0) ? event.instanceName : '');
+    }
+    if ('undefined' != event.date) {
+        $j('#overlapDate').text(event.date);
+    }
+    if ('undefined' != event.start) {
+        $j('#overlapStartTime').text(event.start);
+    }
+    if ('undefined' != event.end) {
+        $j('#overlapEndTime').text(event.end);
+    }
 }
 
 /**
@@ -1125,17 +1137,17 @@ function prepareTutorOverlapDialog(event) {
  * @param event
  */
 function prepareDataForCheckTutorOverlap(event) {
-	var theEventID = null;
-	if ('undefined' != typeof event.eventID) theEventID = event.eventID;
-	else if ('undefind' != typeof event.id) theEventID = event.id;
+    var theEventID = null;
+    if ('undefined' != typeof event.eventID) theEventID = event.eventID;
+    else if ('undefind' != typeof event.id) theEventID = event.id;
 
-	return ({
-			start: event.start.format(),
-			end  : event.end.format(),
-			tutorID: parseInt(event.tutorID),
-			instanceID : getSelectedCourseInstance(),
-			eventID : theEventID
-	});
+    return ({
+        start: event.start.format(),
+        end: event.end.format(),
+        tutorID: parseInt(event.tutorID),
+        instanceID: getSelectedCourseInstance(),
+        eventID: theEventID
+    });
 }
 
 /**
@@ -1148,48 +1160,48 @@ function prepareDataForCheckTutorOverlap(event) {
  * @returns jQuery promise
  */
 function checkTutorOverlap(event) {
-	if (checkTutorOverlapOnUIEvents(event)) {
-		var aDeferred = $j.Deferred();
-		aDeferred.resolve({
-			isOverlap : true
-		});
-		return aDeferred.promise();
-	} else {
-		return checkTutorOverlapOnServer(event);
-	}
+    if (checkTutorOverlapOnUIEvents(event)) {
+        var aDeferred = $j.Deferred();
+        aDeferred.resolve({
+            isOverlap: true
+        });
+        return aDeferred.promise();
+    } else {
+        return checkTutorOverlapOnServer(event);
+    }
 }
 
 /**
  * deletes the select calendar event
  */
 function deleteSelectedEvent() {
-	var selectedDuration = null;
-	var eventID = null;
-	calendar.fullCalendar('removeEvents', function (clEvent) {
-		if (typeof clEvent.isSelected != "undefined" && clEvent.isSelected==true) {
-			if (selectedDuration==null) {
-				selectedDuration = moment.duration();
-				selectedDuration.add(clEvent.end.subtract(clEvent.start));
-			}
-			if (eventID == null) {
-				if ('undefined' != typeof clEvent.eventID) eventID = clEvent.eventID;
-				else if ('undefined' != typeof clEvent.id) eventID = clEvent.id+'';
-			}
-			return true;
-		} else return false;
-	});
+    var selectedDuration = null;
+    var eventID = null;
+    calendar.fullCalendar('removeEvents', function (clEvent) {
+        if (typeof clEvent.isSelected != "undefined" && clEvent.isSelected == true) {
+            if (selectedDuration == null) {
+                selectedDuration = moment.duration();
+                selectedDuration.add(clEvent.end.subtract(clEvent.start));
+            }
+            if (eventID == null) {
+                if ('undefined' != typeof clEvent.eventID) eventID = clEvent.eventID;
+                else if ('undefined' != typeof clEvent.id) eventID = clEvent.id + '';
+            }
+            return true;
+        } else return false;
+    });
 
-	setCanDelete(false);
-	if (!mustSave) setMustSave(true);
-	if (selectedDuration != null) updateAllocatedHours(selectedDuration, -1);
-	if (eventID != null) {
-		/**
-		 * add event to UIDeletedEvents array only if
-		 * it was not a new event and has not been previously added
-		 */
-		if (eventID.search('tmp_')==-1 && UIDeletedEvents.indexOf(eventID)==-1) UIDeletedEvents.push(eventID);
-		if ('undefined' != typeof UIEvents[eventID]) delete UIEvents[eventID];
-	}
+    setCanDelete(false);
+    if (!mustSave) setMustSave(true);
+    if (selectedDuration != null) updateAllocatedHours(selectedDuration, -1);
+    if (eventID != null) {
+        /**
+         * add event to UIDeletedEvents array only if
+         * it was not a new event and has not been previously added
+         */
+        if (eventID.search('tmp_') == -1 && UIDeletedEvents.indexOf(eventID) == -1) UIDeletedEvents.push(eventID);
+        if ('undefined' != typeof UIEvents[eventID]) delete UIEvents[eventID];
+    }
 }
 
 /**
@@ -1197,73 +1209,73 @@ function deleteSelectedEvent() {
  */
 function deleteAllEvents() {
 
-	const doDeleteAllEvents = () => {
-		const selectedInstance = getSelectedCourseInstance();
-		if (null != selectedInstance) {
-			var selectedDuration = null;
-			var eventIDs = [];
-			calendar.fullCalendar('removeEvents', function (clEvent) {
-				if (clEvent.instanceID == selectedInstance) {
-					if (selectedDuration == null) {
-						selectedDuration = moment.duration();
-					}
-					selectedDuration.add(clEvent.end.subtract(clEvent.start));
-					if ('undefined' != typeof clEvent.eventID) eventIDs.push(clEvent.eventID);
-					else if ('undefined' != typeof clEvent.id) eventIDs.push(clEvent.id+'');
-					console.log(clEvent);
-					return true;
-				} else return false;
-			});
+    const doDeleteAllEvents = () => {
+        const selectedInstance = getSelectedCourseInstance();
+        if (null != selectedInstance) {
+            var selectedDuration = null;
+            var eventIDs = [];
+            calendar.fullCalendar('removeEvents', function (clEvent) {
+                if (clEvent.instanceID == selectedInstance) {
+                    if (selectedDuration == null) {
+                        selectedDuration = moment.duration();
+                    }
+                    selectedDuration.add(clEvent.end.subtract(clEvent.start));
+                    if ('undefined' != typeof clEvent.eventID) eventIDs.push(clEvent.eventID);
+                    else if ('undefined' != typeof clEvent.id) eventIDs.push(clEvent.id + '');
+                    // console.log(clEvent);
+                    return true;
+                } else return false;
+            });
 
-			setCanDelete(false);
-			if (!mustSave) setMustSave(true);
-			if (selectedDuration != null) updateAllocatedHours(selectedDuration, -1 * eventIDs.length);
-			if (eventIDs.length>0) {
-				/**
-				 * add events to UIDeletedEvents array only if
-				 * it was not a new event and has not been previously added
-				 */
-				eventIDs.map(eventID => {
-					if (eventID.search('tmp_')==-1 && UIDeletedEvents.indexOf(eventID)==-1) UIDeletedEvents.push(eventID);
-					if ('undefined' != typeof UIEvents[eventID]) delete UIEvents[eventID];
-				});
-			}
-		}
-	};
+            setCanDelete(false);
+            if (!mustSave) setMustSave(true);
+            if (selectedDuration != null) updateAllocatedHours(selectedDuration, -1 * eventIDs.length);
+            if (eventIDs.length > 0) {
+                /**
+                 * add events to UIDeletedEvents array only if
+                 * it was not a new event and has not been previously added
+                 */
+                eventIDs.map(eventID => {
+                    if (eventID.search('tmp_') == -1 && UIDeletedEvents.indexOf(eventID) == -1) UIDeletedEvents.push(eventID);
+                    if ('undefined' != typeof UIEvents[eventID]) delete UIEvents[eventID];
+                });
+            }
+        }
+    };
 
-	$j('#deleteAllButtonInstanceName').text('');
-	if ($j('#headerInstanceTitle').length>0 && $j('#headerInstanceTitle').text().length>0) {
-		$j('#deleteAllButtonInstanceName').text($j('#headerInstanceTitle').text().split('>').slice(-1)[0].trim());
-	}
+    $j('#deleteAllButtonInstanceName').text('');
+    if ($j('#headerInstanceTitle').length > 0 && $j('#headerInstanceTitle').text().length > 0) {
+        $j('#deleteAllButtonInstanceName').text($j('#headerInstanceTitle').text().split('>').slice(-1)[0].trim());
+    }
 
-	jQueryConfirm('#confirmDialog', '#deleteAllButtonquestion', doDeleteAllEvents, () => {} );
+    jQueryConfirm('#confirmDialog', '#deleteAllButtonquestion', doDeleteAllEvents, () => { });
 }
 
 function repeatSelectedEvent() {
-	if ($j('#enddate').text().length>0) {
-		const sourceEvent = getSelectedEvent();
-		var start = moment(sourceEvent.start.format());
-		var end = moment(sourceEvent.end.format());
-		const oneWeek = moment.duration(1, 'week');
-		const repeatEnd = moment($j('#enddate').text(),'DD/MM/YYYY');
-		const oneYear = moment(end.format()).add(moment.duration(1, 'year'));
-		const doCheckTutorOverlap = false;
-		start = start.add(oneWeek);
-		end = end.add(oneWeek);
-		while(end.isBefore(oneYear) && end.isBefore(repeatEnd)) {
-			buildAndPlaceEvent({
-				start: start.format('YYYY-MM-DDTHH:mm:ss'),
-				end: end.format('YYYY-MM-DDTHH:mm:ss'),
-				isSelected : false,
-				editable : true,
-				instanceID : getSelectedCourseInstance(),
-				classroomID : getSelectedClassroom(),
-				tutorID : getSelectedTutor()
-			}, doCheckTutorOverlap);
-			start = start.add(oneWeek);
-			end = end.add(oneWeek);
-		}
-	}
+    if ($j('#enddate').text().length > 0) {
+        const sourceEvent = getSelectedEvent();
+        var start = moment(sourceEvent.start.format());
+        var end = moment(sourceEvent.end.format());
+        const oneWeek = moment.duration(1, 'week');
+        const repeatEnd = moment($j('#enddate').text(), 'DD/MM/YYYY');
+        const oneYear = moment(end.format()).add(moment.duration(1, 'year'));
+        const doCheckTutorOverlap = false;
+        start = start.add(oneWeek);
+        end = end.add(oneWeek);
+        while (end.isBefore(oneYear) && end.isBefore(repeatEnd)) {
+            buildAndPlaceEvent({
+                start: start.format('YYYY-MM-DDTHH:mm:ss'),
+                end: end.format('YYYY-MM-DDTHH:mm:ss'),
+                isSelected: false,
+                editable: true,
+                instanceID: getSelectedCourseInstance(),
+                classroomID: getSelectedClassroom(),
+                tutorID: getSelectedTutor()
+            }, doCheckTutorOverlap);
+            start = start.add(oneWeek);
+            end = end.add(oneWeek);
+        }
+    }
 }
 
 /**
@@ -1272,165 +1284,165 @@ function repeatSelectedEvent() {
  */
 function reminderSelectedEvent(buttonObj) {
 
-	var selectedEvent = getSelectedEvent();
-	const emailReminder = buttonObj.data('email-reminder') || false;
+    var selectedEvent = getSelectedEvent();
+    const emailReminder = buttonObj.data('email-reminder') || false;
 
-	if (userType==AMA_TYPE_SWITCHER && ('undefined' == typeof selectedEvent.id || mustSave)) {
-		// ask to save events if needed
-		jQueryConfirm('#confirmDialog', '#reminderNonSavedEventquestion',
-				function() {
-					$j.when(saveClassRoomEvents()).then(function() {
-						displayReminderDialog(getSelectedEvent(), emailReminder);
-					});
-				},
-				function() { return null; }
-		);
-	} else displayReminderDialog(selectedEvent, emailReminder);
+    if (userType == AMA_TYPE_SWITCHER && ('undefined' == typeof selectedEvent.id || mustSave)) {
+        // ask to save events if needed
+        jQueryConfirm('#confirmDialog', '#reminderNonSavedEventquestion',
+            function () {
+                $j.when(saveClassRoomEvents()).then(function () {
+                    displayReminderDialog(getSelectedEvent(), emailReminder);
+                });
+            },
+            function () { return null; }
+        );
+    } else displayReminderDialog(selectedEvent, emailReminder);
 }
 
 function displayReminderDialog(selectedEvent, emailReminder) {
 
-	if (reminderDialog == null) reminderDialog = prepareReminderDialog('#reminderDialog', emailReminder);
+    if (reminderDialog == null) reminderDialog = prepareReminderDialog('#reminderDialog', emailReminder);
 
-	$j.ajax({
-				type	:	'GET',
-				url		:	'ajax/getEventReminderForm.php',
-				dataType:	'json',
-				beforeSend : function() { $j('#reminderDialogContent').html(''); },
-				data : { eventID: selectedEvent.id }
-	}).
-	done (function(JSONObj){
-		if ('undefined' != typeof JSONObj) {
-			if (JSONObj.status=='OK') {
-				$j('#reminderDialogContent').html(JSONObj.html);
-				if (oFCKeditor==null) {
-					oFCKeditor = new FCKeditor( 'reminderEventHTML' );
-					oFCKeditor.BasePath = HTTP_ROOT_DIR+'/external/fckeditor/';
-					oFCKeditor.Width = '100%';
-					oFCKeditor.Height = '350';
-					oFCKeditor.ToolbarSet = 'Basic';
-				}
-				oFCKeditor.ReplaceTextarea();
-				setTimeout(function () {
-					if ('undefined' != typeof FCKeditorAPI) {
-						FCKeditorAPI.GetInstance(oFCKeditor.InstanceName).Focus();
-					}
-				},350);
+    $j.ajax({
+        type: 'GET',
+        url: 'ajax/getEventReminderForm.php',
+        dataType: 'json',
+        beforeSend: function () { $j('#reminderDialogContent').html(''); },
+        data: { eventID: selectedEvent.id }
+    }).
+        done(function (JSONObj) {
+            if ('undefined' != typeof JSONObj) {
+                if (JSONObj.status == 'OK') {
+                    $j('#reminderDialogContent').html(JSONObj.html);
+                    if (oFCKeditor == null) {
+                        oFCKeditor = new FCKeditor('reminderEventHTML');
+                        oFCKeditor.BasePath = HTTP_ROOT_DIR + '/external/fckeditor/';
+                        oFCKeditor.Width = '100%';
+                        oFCKeditor.Height = '350';
+                        oFCKeditor.ToolbarSet = 'Basic';
+                    }
+                    oFCKeditor.ReplaceTextarea();
+                    setTimeout(function () {
+                        if ('undefined' != typeof FCKeditorAPI) {
+                            FCKeditorAPI.GetInstance(oFCKeditor.InstanceName).Focus();
+                        }
+                    }, 350);
 
-				$j('#reminderOkButton').show();
-				reminderDialog.dialog('open');
+                    $j('#reminderOkButton').show();
+                    reminderDialog.dialog('open');
 
-			} else {
-				showHideDiv('',JSONObj.html, false);
-			}
-		} else showHideDiv('','Unknow error', false);
-	});
+                } else {
+                    showHideDiv('', JSONObj.html, false);
+                }
+            } else showHideDiv('', 'Unknow error', false);
+        });
 }
 /**
  * prepares the reminder dialog to show the form
  */
 function prepareReminderDialog(id, emailReminder) {
-	var okLbl = $j(id + ' .confirmOKLbl').html();
-	var cancelLbl = $j(id + ' .confirmCancelLbl').html();
+    var okLbl = $j(id + ' .confirmOKLbl').html();
+    var cancelLbl = $j(id + ' .confirmCancelLbl').html();
 
-	if ($j(id + ' li.tooltip').length>0) {
-		/**
-		 * set the tooltip on the legend
-		 */
-		$j(id + ' li.tooltip').tooltip();
-		/**
-		 * set the double click handler for the legend
-		 */
-		$j(id + ' li.tooltip').on('dblclick', function() {
-			if ('undefined' != typeof FCKeditorAPI && oFCKeditor!=null) {
-				FCKeditorAPI.GetInstance(oFCKeditor.InstanceName).InsertHtml($j(this).text());
-			}
-		});
-	}
+    if ($j(id + ' li.tooltip').length > 0) {
+        /**
+         * set the tooltip on the legend
+         */
+        $j(id + ' li.tooltip').tooltip();
+        /**
+         * set the double click handler for the legend
+         */
+        $j(id + ' li.tooltip').on('dblclick', function () {
+            if ('undefined' != typeof FCKeditorAPI && oFCKeditor != null) {
+                FCKeditorAPI.GetInstance(oFCKeditor.InstanceName).InsertHtml($j(this).text());
+            }
+        });
+    }
 
-	return $j(id).dialog({
-		resizable : false,
-		autoOpen : false,
-		width: "80%",
-		modal : true,
-		show: {
-			effect: "fade",
-			easing: "easeInSine",
-			duration: 250
-		},
-		hide: {
-			effect: "fade",
-			easing: "easeOutSine",
-			duration: 250
-		},
-		buttons : [ {
-			text : okLbl,
-			id   : 'reminderOkButton',
-			click : function() {
-				/**
-				 * if there's a form inside the passed div id submit it
-				 */
-				if ($j(id + ' form').length>0) {
-					/**
-					 * run required fields validation before submit
-					 */
-					if ($j(id + ' form input[type="submit"]').length>0) {
-						// get form submit button onclick code
-						var onClickDefaultAction = $j(id + ' form input[type="submit"]').attr('onclick');
-						// execute it, to hava ADA's own form validator
-						var okToSubmit = (onClickDefaultAction.length > 0) ? new Function(onClickDefaultAction)() : false;
-						// and if ok submit the form
-						if (okToSubmit) {
-							var that = this;
-							$j('#reminderEventHTML').val(FCKeditorAPI.GetInstance(oFCKeditor.InstanceName).GetHTML(true));
-							$j.when(saveAndSendReminder($j(id + ' form').serialize(), emailReminder)).
-								done (function(JSONObj) {
-									if (JSONObj && JSONObj.status=='OK') {
-										$j(that).dialog("close");
-										/**
-										 * check if the selected event has a reminder
-										 */
-										$j.when(checkReminderSent()).always(function() {
-											$j('#reminderButton').button({ disabled: !canDelete });
-										});
-									}
-								});
-						}
-					}
-				}
-			}
-		}, {
-			text : cancelLbl,
-			id   : 'reminderCancelButton',
-			click : function() {
-				$j(this).dialog("close");
-			}
-		} ]
-	});
+    return $j(id).dialog({
+        resizable: false,
+        autoOpen: false,
+        width: "80%",
+        modal: true,
+        show: {
+            effect: "fade",
+            easing: "easeInSine",
+            duration: 250
+        },
+        hide: {
+            effect: "fade",
+            easing: "easeOutSine",
+            duration: 250
+        },
+        buttons: [{
+            text: okLbl,
+            id: 'reminderOkButton',
+            click: function () {
+                /**
+                 * if there's a form inside the passed div id submit it
+                 */
+                if ($j(id + ' form').length > 0) {
+                    /**
+                     * run required fields validation before submit
+                     */
+                    if ($j(id + ' form input[type="submit"]').length > 0) {
+                        // get form submit button onclick code
+                        var onClickDefaultAction = $j(id + ' form input[type="submit"]').attr('onclick');
+                        // execute it, to hava ADA's own form validator
+                        var okToSubmit = (onClickDefaultAction.length > 0) ? new Function(onClickDefaultAction)() : false;
+                        // and if ok submit the form
+                        if (okToSubmit) {
+                            var that = this;
+                            $j('#reminderEventHTML').val(FCKeditorAPI.GetInstance(oFCKeditor.InstanceName).GetHTML(true));
+                            $j.when(saveAndSendReminder($j(id + ' form').serialize(), emailReminder)).
+                                done(function (JSONObj) {
+                                    if (JSONObj && JSONObj.status == 'OK') {
+                                        $j(that).dialog("close");
+                                        /**
+                                         * check if the selected event has a reminder
+                                         */
+                                        $j.when(checkReminderSent()).always(function () {
+                                            $j('#reminderButton').button({ disabled: !canDelete });
+                                        });
+                                    }
+                                });
+                        }
+                    }
+                }
+            }
+        }, {
+            text: cancelLbl,
+            id: 'reminderCancelButton',
+            click: function () {
+                $j(this).dialog("close");
+            }
+        }]
+    });
 }
 
 /**
  * handles reminder saving and sending with an ajax call
  */
 function saveAndSendReminder(data, emailReminder) {
-	return $j.ajax({
-				type	:	'POST',
-				url		:	'ajax/saveReminder.php',
-				data	:	data,
-				dataType:	'json'
-	}).done (function(JSONObj){
-		if (JSONObj) {
-			showHideDiv('',JSONObj.msg,JSONObj.status=='OK');
-			if (emailReminder && 'undefined' != typeof JSONObj.reminderID && parseInt(JSONObj.reminderID)>0) {
-				$j.ajax({
-					type	: 'POST',
-					url		: 'ajax/sendReminder.php',
-					data	: { reminderID : JSONObj.reminderID },
-					dataType: 'html'
-				}).done(function (html) {});
-			}
-		} else showHideDiv('','Unknown error', false);
-	});
+    return $j.ajax({
+        type: 'POST',
+        url: 'ajax/saveReminder.php',
+        data: data,
+        dataType: 'json'
+    }).done(function (JSONObj) {
+        if (JSONObj) {
+            showHideDiv('', JSONObj.msg, JSONObj.status == 'OK');
+            if (emailReminder && 'undefined' != typeof JSONObj.reminderID && parseInt(JSONObj.reminderID) > 0) {
+                $j.ajax({
+                    type: 'POST',
+                    url: 'ajax/sendReminder.php',
+                    data: { reminderID: JSONObj.reminderID },
+                    dataType: 'html'
+                }).done(function (html) { });
+            }
+        } else showHideDiv('', 'Unknown error', false);
+    });
 }
 
 /**
@@ -1438,46 +1450,46 @@ function saveAndSendReminder(data, emailReminder) {
  * reminder for the selected event exists in the DB
  */
 function checkReminderSent() {
-	var animDuration = 200;
+    var animDuration = 200;
 
-	$j.when($j('.reminderDetailsContainer').slideUp(animDuration/2)).then(
-		function() {
-			var selectedEvent = getSelectedEvent();
-			if (!isCheckingReminder && selectedEvent != null) {
-				$j('.reminderDetailsContainer').remove();
-				return $j.ajax({
-					type	:	'GET',
-					url		:	'ajax/checkReminderSent.php',
-					data	:	{ reminderEventID: selectedEvent.id },
-					dataType:	'json',
-					beforeSend : function () { isCheckingReminder = true; }
-				}).done (function(JSONObj){
-					if ('undefined' != typeof JSONObj && 'undefined' != typeof JSONObj.html) {
-						if ($j('#reminderButton').is(':visible')) $j('#reminderButton').slideUp(animDuration/2);
-						$j('#reminderButtonContainer').prepend(JSONObj.html);
-						$j('.reminderDetailsContainer').find('button').button();
-						$j('.reminderDetailsContainer').slideDown(animDuration, function() { isCheckingReminder = false; });
-						$j('.reminderDetailsContainer').append(JSONObj.content);
-					} else {
-						if (!$j('#reminderButton').is(':visible')) $j('#reminderButton').slideDown(animDuration);
-						isCheckingReminder = false;
-					}
-				}).fail(function() { isCheckingReminder = false; });
-			} else {
-				if (!$j('#reminderButton').is(':visible')) return $j('#reminderButton').slideDown(animDuration);
-			}
-		}
-	);
+    $j.when($j('.reminderDetailsContainer').slideUp(animDuration / 2)).then(
+        function () {
+            var selectedEvent = getSelectedEvent();
+            if (!isCheckingReminder && selectedEvent != null) {
+                $j('.reminderDetailsContainer').remove();
+                return $j.ajax({
+                    type: 'GET',
+                    url: 'ajax/checkReminderSent.php',
+                    data: { reminderEventID: selectedEvent.id },
+                    dataType: 'json',
+                    beforeSend: function () { isCheckingReminder = true; }
+                }).done(function (JSONObj) {
+                    if ('undefined' != typeof JSONObj && 'undefined' != typeof JSONObj.html) {
+                        if ($j('#reminderButton').is(':visible')) $j('#reminderButton').slideUp(animDuration / 2);
+                        $j('#reminderButtonContainer').prepend(JSONObj.html);
+                        $j('.reminderDetailsContainer').find('button').button();
+                        $j('.reminderDetailsContainer').slideDown(animDuration, function () { isCheckingReminder = false; });
+                        $j('.reminderDetailsContainer').append(JSONObj.content);
+                    } else {
+                        if (!$j('#reminderButton').is(':visible')) $j('#reminderButton').slideDown(animDuration);
+                        isCheckingReminder = false;
+                    }
+                }).fail(function () { isCheckingReminder = false; });
+            } else {
+                if (!$j('#reminderButton').is(':visible')) return $j('#reminderButton').slideDown(animDuration);
+            }
+        }
+    );
 }
 
 /**
  * shows the reminder content loaded by checkReminderSent
  */
 function openReminder(id) {
-	if (reminderDialog == null) reminderDialog = prepareReminderDialog('#reminderDialog');
-	$j('#reminderDialogContent').html($j(id).html());
-	$j('#reminderOkButton').hide();
-	reminderDialog.dialog('open');
+    if (reminderDialog == null) reminderDialog = prepareReminderDialog('#reminderDialog');
+    $j('#reminderDialogContent').html($j(id).html());
+    $j('#reminderOkButton').hide();
+    reminderDialog.dialog('open');
 }
 
 /**
@@ -1485,9 +1497,9 @@ function openReminder(id) {
  *
  * @param status boolean, true to enable save button
  */
-function setMustSave (status) {
-	mustSave = status;
-	$j('#saveCalendar').button({ disabled: !mustSave });
+function setMustSave(status) {
+    mustSave = status;
+    $j('#saveCalendar').button({ disabled: !mustSave });
 }
 
 /**
@@ -1496,9 +1508,9 @@ function setMustSave (status) {
  *
  * @param status boolean, true to enable delete button
  */
-function setCanDelete (status) {
-	canDelete = status;
-	$j('#deleteButton, #repeatButton, #reminderButton').button({ disabled: !canDelete });
+function setCanDelete(status) {
+    canDelete = status;
+    $j('#deleteButton, #repeatButton, #reminderButton').button({ disabled: !canDelete });
 }
 
 /**
@@ -1507,78 +1519,78 @@ function setCanDelete (status) {
  * @param windowId id of the div containing the dialog
  * @param spanId id of the span containing the text to set
  */
-function setModalDialogText (windowId, spanId) {
-	// hides all spans that do not contain a variable
-	$j(windowId + ' span').not('[id^="var"]').hide();
-	// shows the passed span that holds the message to be shown
-	$j(spanId).show();
-	$j(spanId).children().show();
+function setModalDialogText(windowId, spanId) {
+    // hides all spans that do not contain a variable
+    $j(windowId + ' span').not('[id^="var"]').hide();
+    // shows the passed span that holds the message to be shown
+    $j(spanId).show();
+    $j(spanId).children().show();
 }
 
-function moveInsideCalendarHeader (elementID) {
-	var targetElement = '#classcalendar > .fc-toolbar';
-	var customClass = 'fc-custom';
+function moveInsideCalendarHeader(elementID) {
+    var targetElement = '#classcalendar > .fc-toolbar';
+    var customClass = 'fc-custom';
 
-	var moveElement = false;
+    var moveElement = false;
 
-	if ($j(targetElement).length>0 && $j('#'+elementID).length>0) {
+    if ($j(targetElement).length > 0 && $j('#' + elementID).length > 0) {
 
-		/**
-		 * add a customClass div to the calendar toolbar before last children
-		 */
-		if ($j(targetElement + ' > .' + customClass).length<=0) {
-			var childCount = $j(targetElement).children().length;
+        /**
+         * add a customClass div to the calendar toolbar before last children
+         */
+        if ($j(targetElement + ' > .' + customClass).length <= 0) {
+            var childCount = $j(targetElement).children().length;
 
-			$j(targetElement+' :nth-child('+childCount+')').before('<div class="'+customClass+'"></div>');
-		}
+            $j(targetElement + ' :nth-child(' + childCount + ')').before('<div class="' + customClass + '"></div>');
+        }
 
-		/**
-		 * clone, inspect and remove passed element
-		 */
-		var cloned = $j('#'+elementID).clone(true);
-		var clonedID = elementID+'-cloned';
-		// change cloned id attr
-		$j(cloned).attr('id',clonedID);
+        /**
+         * clone, inspect and remove passed element
+         */
+        var cloned = $j('#' + elementID).clone(true);
+        var clonedID = elementID + '-cloned';
+        // change cloned id attr
+        $j(cloned).attr('id', clonedID);
 
-		if ($j('#'+elementID).is('input')) {
-			// change the cloned name attr
-			$j(cloned).attr('name',$j(cloned).attr('name')+'-cloned');
-			// if passed ID is an input and has a label, clone and move the label as well
-			if ($j('label[for="'+elementID+'"]').length>0) {
-				var clonedLabel = $j('label[for="'+elementID+'"]').clone(true);
-				// change the cloned label for attr
-				$j(clonedLabel).attr('for',clonedID);
-				 if (moveElement) $j('label[for="'+elementID+'"]').remove();
-				 else $j('label[for="'+elementID+'"]').hide();
-			}
-		}
+        if ($j('#' + elementID).is('input')) {
+            // change the cloned name attr
+            $j(cloned).attr('name', $j(cloned).attr('name') + '-cloned');
+            // if passed ID is an input and has a label, clone and move the label as well
+            if ($j('label[for="' + elementID + '"]').length > 0) {
+                var clonedLabel = $j('label[for="' + elementID + '"]').clone(true);
+                // change the cloned label for attr
+                $j(clonedLabel).attr('for', clonedID);
+                if (moveElement) $j('label[for="' + elementID + '"]').remove();
+                else $j('label[for="' + elementID + '"]').hide();
+            }
+        }
 
-		if (moveElement) $j('#'+elementID).remove();
-		else $j('#'+elementID).hide();
+        if (moveElement) $j('#' + elementID).remove();
+        else $j('#' + elementID).hide();
 
-		targetElement += ' > .' + customClass;
-		$j(targetElement).html(cloned);
-		/**
-		 * add the clonedLabel if it's there
-		 */
-		if ('undefined' != typeof clonedLabel) $j(targetElement).append(clonedLabel);
-	}
+        targetElement += ' > .' + customClass;
+        $j(targetElement).html(cloned);
+        /**
+         * add the clonedLabel if it's there
+         */
+        if ('undefined' != typeof clonedLabel) $j(targetElement).append(clonedLabel);
+    }
 }
 
 function addToUIEvents(event) {
-	if (event.eventID == null) {
-		/**
-		 * if it's a new event, generate a temporary ID
-		 * using an UTC timestamp.
-		 * Code is made compatibile with IE8 with the Date.now check
-		 */
-	    var timestamp = (!Date.now) ? new Date().getTime() : Date.now();
-		event.eventID = 'tmp_'+timestamp;
-	}
+    if (event.eventID == null) {
+        /**
+         * if it's a new event, generate a temporary ID
+         * using an UTC timestamp.
+         * Code is made compatibile with IE8 with the Date.now check
+         */
+        var timestamp = (!Date.now) ? new Date().getTime() : Date.now();
+        event.eventID = 'tmp_' + timestamp;
+    }
 
-	UIEvents[event.eventID] = event;
+    UIEvents[event.eventID] = event;
 
-	return event.eventID;
+    return event.eventID;
 }
 
 /**
@@ -1590,43 +1602,43 @@ function addToUIEvents(event) {
  * @param CancelCallBack cancel button callback
  */
 function jQueryConfirm(id, questionId, OKcallback, CancelCallBack) {
-	var okLbl = $j(id + ' .confirmOKLbl').html();
-	var cancelLbl = $j(id + ' .confirmCancelLbl').html();
+    var okLbl = $j(id + ' .confirmOKLbl').html();
+    var cancelLbl = $j(id + ' .confirmCancelLbl').html();
 
-	setModalDialogText(id, questionId);
+    setModalDialogText(id, questionId);
 
-	$j(id).dialog({
-		resizable : false,
-		width: "auto",
-		modal : true,
-		show: {
-			effect: "fade",
-			easing: "easeInSine",
-			duration: 250
-		},
-		hide: {
-			effect: "fade",
-			easing: "easeOutSine",
-			duration: 250
-		},
-		buttons : [ {
-			text : okLbl,
-			click : function() {
-				OKcallback();
-				$j(this).dialog("close");
-			}
-		}, {
-			text : cancelLbl,
-			click : function() {
-				CancelCallBack();
-				$j(this).dialog("close");
-			}
-		} ]
-	});
+    $j(id).dialog({
+        resizable: false,
+        width: "auto",
+        modal: true,
+        show: {
+            effect: "fade",
+            easing: "easeInSine",
+            duration: 250
+        },
+        hide: {
+            effect: "fade",
+            easing: "easeOutSine",
+            duration: 250
+        },
+        buttons: [{
+            text: okLbl,
+            click: function () {
+                OKcallback();
+                $j(this).dialog("close");
+            }
+        }, {
+            text: cancelLbl,
+            click: function () {
+                CancelCallBack();
+                $j(this).dialog("close");
+            }
+        }]
+    });
 }
 
-function objectSize (obj) {
-	var size=0;
-	for (key in obj){ if (obj.hasOwnProperty(key)) size++; }
-	return size;
+function objectSize(obj) {
+    var size = 0;
+    for (key in obj) { if (obj.hasOwnProperty(key)) size++; }
+    return size;
 }
