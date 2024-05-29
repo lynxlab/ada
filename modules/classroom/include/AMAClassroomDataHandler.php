@@ -16,9 +16,12 @@ namespace Lynxlab\ADA\Module\Classroom;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
+use Lynxlab\ADA\Main\AMA\Traits\WithInstance;
 
 class AMAClassroomDataHandler extends AMADataHandler
 {
+    use WithInstance;
+
     /**
      * module's own data tables prefix
      *
