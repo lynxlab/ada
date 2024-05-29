@@ -209,7 +209,7 @@ abstract class ADAGenericUser
 
     public function getGender()
     {
-        return $this->sesso;
+        return $this->sesso ?? 'M';
     }
 
     public function getPhoneNumber()

@@ -59,46 +59,51 @@ class EventSubscriber implements EventSubscriberInterface
     public function addDebugBar(CoreEvent $event)
     {
         $data = $event->getArguments();
-        [$cssFiles, $jsFiles] = $this->debugBarRender->getAssets();
+        /**
+         * Output the debugbar only if ARE_HTML_RENDER
+         */
+        if (($data['renderer'] ?? ARE_HTML_RENDER) == ARE_HTML_RENDER) {
+            [$cssFiles, $jsFiles] = $this->debugBarRender->getAssets();
 
-        foreach (
-            [
-            'JS_filename' => $jsFiles,
-            'CSS_filename' => $cssFiles,
-            ] as $assetKey => $assets
-        ) {
-            if (!array_key_exists($assetKey, $data['layout_dataAr'] ?? [])) {
-                $data['layout_dataAr'][$assetKey] = [];
+            foreach (
+                [
+                'JS_filename' => $jsFiles,
+                'CSS_filename' => $cssFiles,
+                ] as $assetKey => $assets
+            ) {
+                if (!array_key_exists($assetKey, $data['layout_dataAr'] ?? [])) {
+                    $data['layout_dataAr'][$assetKey] = [];
+                }
+                $data['layout_dataAr'][$assetKey] = array_merge(
+                    $data['layout_dataAr'][$assetKey],
+                    // filter out debugbar own jquery
+                    array_filter($assets, fn ($el) => !str_contains(strtolower($el), 'jquery'))
+                );
             }
-            $data['layout_dataAr'][$assetKey] = array_merge(
-                $data['layout_dataAr'][$assetKey],
-                // filter out debugbar own jquery
-                array_filter($assets, fn ($el) => !str_contains(strtolower($el), 'jquery'))
+
+            $debugbarCode = str_ireplace(
+                sprintf(
+                    "%s.ajaxHandler.bindToXHR();",
+                    $this->debugBarRender->getVariableName()
+                ),
+                sprintf(
+                    "%s.ajaxHandler.bindToJquery(\$j);\n",
+                    $this->debugBarRender->getVariableName()
+                ),
+                $this->debugBarRender->render()
             );
+            $data['content_dataAr']['adadebugbar'] = $debugbarCode;
+
+            if ($this->debugbar->hasCollector('ARE')) {
+                $this->debugbar['ARE']->setData($data);
+            }
+
+            if ($this->debugbar->hasCollector('dispatcher')) {
+                $this->addDispatcherMsg();
+            }
+
+            $event->setArguments($data);
         }
-
-        $debugbarCode = str_ireplace(
-            sprintf(
-                "%s.ajaxHandler.bindToXHR();",
-                $this->debugBarRender->getVariableName()
-            ),
-            sprintf(
-                "%s.ajaxHandler.bindToJquery(\$j);\n",
-                $this->debugBarRender->getVariableName()
-            ),
-            $this->debugBarRender->render()
-        );
-        $data['content_dataAr']['adadebugbar'] = $debugbarCode;
-
-        if ($this->debugbar->hasCollector('ARE')) {
-            $this->debugbar['ARE']->setData($data);
-        }
-
-        if ($this->debugbar->hasCollector('dispatcher')) {
-            $this->addDispatcherMsg();
-        }
-
-        $event->setArguments($data);
     }
 
     /**

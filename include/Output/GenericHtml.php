@@ -19,9 +19,9 @@
 namespace Lynxlab\ADA\Main\Output;
 
 use Dompdf\Dompdf;
+use Dompdf\Options;
 use Lynxlab\ADA\CORE\HtmlElements\Table;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
-use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Output\Output;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
@@ -762,22 +762,25 @@ class GenericHtml extends Output
                     umask($oldmask);
                 }
 
-                $dompdf_options = [
+                $dompdf_options = new Options([
                     // Rendering
-                    "default_media_type"       => 'print',
-                    "default_paper_size"       => 'A4',
-                    "font_dir"           => ADA_UPLOAD_PATH . 'tmp-dompdf',
-                    "font_cache"         => ADA_UPLOAD_PATH . 'tmp-dompdf',
-                    "temp_dir"           => ADA_UPLOAD_PATH . 'tmp-dompdf',
+                    "defaultMediaType"       => 'print',
+                    "defaultPaperSize"       => 'A4',
+                    "fontDir"           => ADA_UPLOAD_PATH . 'tmp-dompdf',
+                    "fontCache"         => ADA_UPLOAD_PATH . 'tmp-dompdf',
+                    "tempDir"           => ADA_UPLOAD_PATH . 'tmp-dompdf',
                     // Features
-                    "enable_unicode"           => true,
-                    "enable_php"               => true,
-                    "enable_remote"            => true,
-                    "enable_css_float"         => true,
-                    "enable_javascript"        => true,
-                    "enable_html5_parser"      => false,
-                    "enable_font_subsetting"   => false,
-                ];
+                    "isPhpEnabled"               => true,
+                    "isRemoteEnabled"            => true,
+                    "isJavascriptEnabled"        => true,
+                    "isHtml5ParserEnabled"      => false,
+                    "isFontSubsettingEnabled"   => false,
+                    "httpContext" => ['ssl' => [
+                        'allow_self_signed' => true,
+                        'verify_peer'       => false,
+                        'verify_depth'      => 0,
+                    ]],
+                ]);
 
                 $dompdf = new Dompdf($dompdf_options);
                 $dompdf->setPaper('A4', $this->orientation);
