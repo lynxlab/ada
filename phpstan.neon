@@ -9,3 +9,4 @@ parameters:
         - /*/upload_file/*
         - /*/widgets/cache/*
         - /*/api/*
+        - /*/modules/class*/
