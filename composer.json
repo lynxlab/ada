@@ -6,7 +6,7 @@
         "php": ">=8.0",
         "bower-asset/jquery.maskedinput": "^1.4",
         "cweagans/composer-patches": "^1.7",
-        "dompdf/dompdf": "^2.0",
+        "dompdf/dompdf": "^3.0",
         "j7mbo/twitter-api-php": "^1.0",
         "james-heinrich/getid3": "^1.9",
         "jawira/case-converter": "^3.5",
