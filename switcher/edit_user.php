@@ -78,6 +78,7 @@ SwitcherHelper::init($neededObjAr);
  * Check if the switcher is editing a student profile
  */
 $isEditingAStudent = (DataValidator::isUinteger($_GET['usertype'] ?? null) === AMA_TYPE_STUDENT);
+$isEditingATutor = (DataValidator::isUinteger($_GET['usertype'] ?? null) === AMA_TYPE_TUTOR);
 
 if (!$isEditingAStudent) {
     /**
@@ -90,7 +91,7 @@ if (!$isEditingAStudent) {
          *
          * added parameters to force allowEditConfirm
          */
-        $form = new UserProfileForm([], false, true);
+        $form = new UserProfileForm([], $isEditingATutor, true);
         $form->fillWithPostData();
         $password = trim($_POST['password']);
         $passwordcheck = trim($_POST['passwordcheck']);
@@ -165,7 +166,7 @@ if (!$isEditingAStudent) {
              *
              * added parameters to force allowEditConfirm
              */
-            $data = new UserProfileForm([], false, true);
+            $data = new UserProfileForm([], $isEditingATutor, true);
             $data->fillWithArrayData($formData);
         }
     }
