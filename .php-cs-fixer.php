@@ -15,6 +15,7 @@ $finder = (new PhpCsFixer\Finder())
 return (new PhpCsFixer\Config())
     ->setParallelConfig(PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect())
     ->setRules([
+        'align_multiline_comment' => true,
         '@PSR12' => true,
         'ordered_imports' => [
             'imports_order' => [
