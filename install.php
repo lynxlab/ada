@@ -1,6 +1,7 @@
 <?php
 
 use Composer\Console\Application;
+use Lynxlab\ADA\Admin\AdminHelper;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Output\ARE;
@@ -117,76 +118,6 @@ function sendToBrowser($message)
     flush();
 }
 
-function createDB($saveData, $dbname, $options = [])
-{
-    $pdo = new PDO(
-        'mysql:host=' . $saveData['HOST'] . ';dbname=INFORMATION_SCHEMA',
-        $saveData['USER'],
-        $saveData['PASSWORD'],
-        $options
-    );
-    $stmt = $pdo->query("CREATE DATABASE `" . $dbname . "` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-    if ($stmt) {
-        return new PDO(
-            'mysql:host=' . $saveData['HOST'] . ';dbname=' . $dbname,
-            $saveData['USER'],
-            $saveData['PASSWORD'],
-            $options
-        );
-    } else {
-        throw new Exception(translateFN("Errore creazione Database"), 1);
-    }
-}
-
-function checkDB($saveData, $dbname, $options = [])
-{
-    $pdo = new PDO(
-        'mysql:host=' . $saveData['HOST'] . ';dbname=INFORMATION_SCHEMA',
-        $saveData['USER'],
-        $saveData['PASSWORD'],
-        $options
-    );
-    $stmt = $pdo->query("SELECT COUNT(*) FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '" . $dbname . "'");
-    if ((bool) $stmt->fetchColumn()) {
-        return new PDO(
-            'mysql:host=' . $saveData['HOST'] . ';dbname=' . $dbname,
-            $saveData['USER'],
-            $saveData['PASSWORD'],
-            $options
-        );
-    }
-    return false;
-}
-
-function isEmptyDB($pdoconn, $dbname)
-{
-    $stmt = $pdoconn->query("SHOW TABLES FROM `$dbname`");
-    return $stmt->rowCount() == 0;
-}
-
-function importSQL($filename, $pdoconn)
-{
-    if (is_file($filename) && is_readable($filename)) {
-        $sqlScript = file($filename);
-        $query = '';
-        foreach ($sqlScript as $line) {
-            $startWith = substr(trim($line), 0, 2);
-            $endWith = substr(trim($line), -1, 1);
-            if (empty($line) || $startWith == '--' || $startWith == '/*' || $startWith == '*/' ||  trim($startWith) == '*' || $startWith == '//') {
-                continue;
-            }
-            $query = $query . $line;
-            if ($endWith == ';') {
-                $buffer = $pdoconn->prepare($query);
-                $buffer->execute();
-                unset($buffer);
-                $query = '';
-            }
-        }
-    } else {
-        throw new Exception(translateFN('File non trovato') . ' ' . $filename);
-    }
-}
 
 function composerInstall($version = '2.7.2')
 {
@@ -349,21 +280,21 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             ];
             $commonExisted = true;
-            $commonpdo = checkDB($postData['MYSQL']['COMMON'], $postData['COMMONDB'], $options);
+            $commonpdo = AdminHelper::checkDB($postData['MYSQL']['COMMON'], $postData['COMMONDB'], $options);
             if ($commonpdo === false) {
                 sendToBrowser(sprintf(translateFN('Creazione Database %s') . ' ...', $postData['COMMONDB']));
                 $commonExisted = false;
                 $commonEmpty = true;
-                $commonpdo = createDB($postData['MYSQL']['COMMON'], $postData['COMMONDB'], $options);
+                $commonpdo = AdminHelper::createDB($postData['MYSQL']['COMMON'], $postData['COMMONDB'], $options);
                 sendOK();
             } else {
                 sendToBrowser(sprintf(translateFN('Database %s esistente') . ' ...', $postData['COMMONDB']));
-                $commonEmpty = isEmptyDB($commonpdo, $postData['COMMONDB']);
+                $commonEmpty = AdminHelper::isEmptyDB($commonpdo, $postData['COMMONDB']);
                 sendOk();
             }
             sendToBrowser(translateFN("Importazione Database common") . ' ...');
             if ($commonEmpty) {
-                importSQL(ROOT_DIR . '/db/install/ada-empty-common.sql', $commonpdo);
+                AdminHelper::importSQL(ROOT_DIR . '/db/install/ada-empty-common.sql', $commonpdo);
                 sendOK();
             } else {
                 sendSkip();
@@ -379,16 +310,16 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             foreach ($providers as $i => $provider) {
                 set_time_limit(300);
                 $providers[$i]['pdoexisted'] = true;
-                $providers[$i]['pdo'] = checkDB($postData['MYSQL'][$i], $provider['DB'], $options);
+                $providers[$i]['pdo'] = AdminHelper::checkDB($postData['MYSQL'][$i], $provider['DB'], $options);
                 if ($providers[$i]['pdo'] === false) {
                     sendToBrowser(sprintf(translateFN('Creazione Database %s') . ' ...', $provider['DB']));
                     $providers[$i]['pdoexisted'] = false;
                     $providers[$i]['empty'] = true;
-                    $providers[$i]['pdo'] = createDB($postData['MYSQL'][$i], $provider['DB'], $options);
+                    $providers[$i]['pdo'] = AdminHelper::createDB($postData['MYSQL'][$i], $provider['DB'], $options);
                     sendOK();
                 } else {
                     sendToBrowser(sprintf(translateFN('Database %s esistente') . ' ...', $provider['DB']));
-                    $providers[$i]['empty'] = isEmptyDB($providers[$i]['pdo'], $provider['DB']);
+                    $providers[$i]['empty'] = AdminHelper::isEmptyDB($providers[$i]['pdo'], $provider['DB']);
                     sendOk();
                 }
                 sendToBrowser(sprintf(translateFN('Importazione Database %s') . ' ...', $provider['DB']));
@@ -403,7 +334,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                     } elseif (is_readable(ROOT_DIR . '/db/install/ada_provider_empty.sql')) {
                         $sqlFile = ROOT_DIR . '/db/install/ada_provider_empty.sql';
                     }
-                    importSQL($sqlFile, $providers[$i]['pdo']);
+                    AdminHelper::importSQL($sqlFile, $providers[$i]['pdo']);
 
                     $sql = "INSERT INTO tester(nome,puntatore) VALUES ('" . $provider['NAME'] . "', '" . $providers[$i]['pointer'] . "');";
                     $stmt = $commonpdo->prepare($sql);
@@ -510,7 +441,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                         ) {
                             sendToBrowser(translateFN("Importazione") . ' ' . ltrim(str_replace(ROOT_DIR . '/modules', '', $sqlFile), '\/') . ' in ' . $postData['COMMONDB'] . ' ...');
                             if ($commonEmpty) {
-                                importSQL($sqlFile, $commonpdo);
+                                AdminHelper::importSQL($sqlFile, $commonpdo);
                                 sendOK();
                             } else {
                                 sendSkip();
@@ -530,7 +461,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                             ) {
                                 sendToBrowser(translateFN("Importazione") . ' ' . ltrim(str_replace(ROOT_DIR . '/modules', '', $sqlFile), '\/') . ' in ' . $provider['DB'] . ' ...');
                                 if ($providers[$i]['empty']) {
-                                    importSQL($sqlFile, $provider['pdo']);
+                                    AdminHelper::importSQL($sqlFile, $provider['pdo']);
                                     sendOK();
                                 } else {
                                     sendSkip();
