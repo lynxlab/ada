@@ -20,77 +20,77 @@ use Lynxlab\ADA\Main\Logger\ADAFileLogger;
  * from the form POST, will build an array ready to be passed
  * the operation builder. e.g.
  *
-    [condition] => Array
-        (
-            [0] => Array
-                (
-                    [0] => completeConditionTime
-                    [1] => null
-                    [2] => null
-                )
-
-            [1] => Array
-                (
-                    [0] => completeConditionTest1
-                    [1] => null
-                    [2] => null
-                )
-
-            [2] => Array
-                (
-                    [0] => completeConditionTest2
-                    [1] => null
-                    [2] => null
-                )
-
-        )
-
-    [param] => Array
-        (
-            [0] => Array
-                (
-                    [0] => 12
-                    [1] =>
-                    [2] =>
-                )
-
-            [1] => Array
-                (
-                    [0] =>
-                    [1] =>
-                    [2] =>
-                )
-
-            [2] => Array
-                (
-                    [0] =>
-                    [1] =>
-                    [2] =>
-                )
-
-        )
-
-after running the function, $conditions will be:
-
-    Array
-    (
-        [0] => Array
-            (
-                [0] => completeConditionTime::buildAndCheck(12);
-            )
-
-        [1] => Array
-            (
-                [0] => completeConditionTest1::buildAndCheck();
-            )
-
-        [2] => Array
-            (
-                [0] => completeConditionTest2::buildAndCheck();
-            )
-
-    )
-
+ * [condition] => Array
+ * (
+ * [0] => Array
+ * (
+ * [0] => completeConditionTime
+ * [1] => null
+ * [2] => null
+ * )
+ *
+ * [1] => Array
+ * (
+ * [0] => completeConditionTest1
+ * [1] => null
+ * [2] => null
+ * )
+ *
+ * [2] => Array
+ * (
+ * [0] => completeConditionTest2
+ * [1] => null
+ * [2] => null
+ * )
+ *
+ * )
+ *
+ * [param] => Array
+ * (
+ * [0] => Array
+ * (
+ * [0] => 12
+ * [1] =>
+ * [2] =>
+ * )
+ *
+ * [1] => Array
+ * (
+ * [0] =>
+ * [1] =>
+ * [2] =>
+ * )
+ *
+ * [2] => Array
+ * (
+ * [0] =>
+ * [1] =>
+ * [2] =>
+ * )
+ *
+ * )
+ *
+ * after running the function, $conditions will be:
+ *
+ * Array
+ * (
+ * [0] => Array
+ * (
+ * [0] => completeConditionTime::buildAndCheck(12);
+ * )
+ *
+ * [1] => Array
+ * (
+ * [0] => completeConditionTest1::buildAndCheck();
+ * )
+ *
+ * [2] => Array
+ * (
+ * [0] => completeConditionTest2::buildAndCheck();
+ * )
+ *
+ * )
+ *
  *
  *
  * @param array $conditions

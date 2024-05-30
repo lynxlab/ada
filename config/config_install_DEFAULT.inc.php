@@ -104,7 +104,7 @@ define('ADA_DEFAULT_AVATAR', 'default_avatar.png');
 
 /**
  * portal name string - displayed in window titlebar
-*/
+ */
 if (!defined('PORTAL_NAME')) {
     if (getenv('PORTAL_NAME') !== false) {
         define('PORTAL_NAME', getenv('PORTAL_NAME'));

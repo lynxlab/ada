@@ -8,13 +8,13 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * Base config file
-*/
+ */
 
 require_once(realpath(__DIR__) . '/../../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
-*/
+ */
 $variableToClearAR = ['node', 'layout', 'course', 'user'];
 
 /**
@@ -24,7 +24,7 @@ $variableToClearAR = ['node', 'layout', 'course', 'user'];
 
 /**
  * Performs basic controls before entering this module
-*/
+ */
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
 BrowsingHelper::init($neededObjAr);

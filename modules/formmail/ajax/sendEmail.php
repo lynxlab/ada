@@ -11,21 +11,21 @@ ini_set('display_errors', '0');
 error_reporting(E_ALL);
 /**
  * Base config file
-*/
+ */
 require_once(realpath(__DIR__) . '/../../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
-*/
+ */
 $variableToClearAR = ['layout'];
 /**
  * Users (types) allowed to access this module.
-*/
+ */
 $allowedUsersAr = [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR, AMA_TYPE_STUDENT, AMA_TYPE_SUPERTUTOR];
 
 /**
  * Get needed objects
-*/
+ */
 $neededObjAr = [
         AMA_TYPE_SWITCHER => ['layout'],
         AMA_TYPE_TUTOR => ['layout'],
@@ -37,7 +37,7 @@ $neededObjAr = [
 
 /**
  * Performs basic controls before entering this module
-*/
+ */
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
 BrowsingHelper::init($neededObjAr);

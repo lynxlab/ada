@@ -29,7 +29,7 @@ class ExportHelper
 
     /**
      * @var string char for separating courseId from nodeId (e.g. 110_0) in tabella nodo
-    */
+     */
     public static $courseSeparator = '_';
 
     /**
@@ -154,7 +154,7 @@ class ExportHelper
          * - id_utente: WILL BE SELECTED BY THE USER DOING THE IMPORT (is the author, actually)
          * - id_posizione: exporting as an xml object, shall check if exists on table posizione when importing
          *
-        */
+         */
         $nodeInfo['id'] = self::stripOffCourseId($course_id, $nodeId);
         $nodeInfo['parent_id'] = self::stripOffCourseId($course_id, $nodeInfo['parent_id']);
 
@@ -194,7 +194,7 @@ class ExportHelper
                 $nodeLinkInfo = $dh->getLinkInfo($nodeLinkId);
                 /**
                  * - id_autore: WILL BE SELECTED BY THE USER DOING THE IMPORT (is the author, actually)
-                */
+                 */
                 if (!AMADB::isError($nodeLinkInfo)) {
                     unset($nodeLinkInfo['autore']);
                     $nodeLinkInfo['id_nodo'] = self::stripOffCourseId($course_id, $nodeLinkInfo['id_nodo']);

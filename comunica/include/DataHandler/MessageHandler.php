@@ -251,8 +251,8 @@ class MessageHandler
      * @param   $ordering    - ordering clause (without where)
      *
      * @return  array|AMAError a list of messages as an array of hashes
-   }          keys are among these possible values:
-     *           id_messaggio, data_ora, tipo, titolo, id_mittente, priorita, testo
+     *          keys are among these possible values:
+     *          id_messaggio, data_ora, tipo, titolo, id_mittente, priorita, testo
      *          an AMAError object if something goes wrong
      *
      **/
@@ -308,7 +308,7 @@ class MessageHandler
      * @param   $ordering    - ordering clause (without where)
      *
      * @return  array|AMAError a list of messages as an array of hashes
-   }          keys are among these possible values:
+     * }          keys are among these possible values:
      *           id_messaggio, data_ora, tipo, titolo, id_mittente, priorita, testo
      *          an AMAError object if something goes wrong
      *
@@ -821,7 +821,7 @@ class MessageHandler
      * @param   $ordering    - ordering clause (without where)
      *
      * @return  a list of messages as an array of hashes
-   }          keys are among these possible values:
+     * }          keys are among these possible values:
      *           id_messaggio, data_ora, tipo, titolo, id_mittente, priorita, testo
      *          an AMAError object if something goes wrong
      *

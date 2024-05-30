@@ -16,28 +16,28 @@ ini_set('display_errors', '0');
 error_reporting(E_ALL);
 /**
  * Base config file
-*/
+ */
 require_once(realpath(__DIR__) . '/../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
-*/
+ */
 $variableToClearAR = ['node', 'layout', 'course', 'user'];
 /**
  * Users (types) allowed to access this module.
-*/
+ */
 $allowedUsersAr = [AMA_TYPE_SWITCHER];
 
 /**
  * Get needed objects
-*/
+ */
 $neededObjAr = [
         AMA_TYPE_SWITCHER => ['layout'],
 ];
 
 /**
  * Performs basic controls before entering this module
-*/
+ */
 require_once(ROOT_DIR . '/include/module_init.inc.php');
 BrowsingHelper::init($neededObjAr);
 
@@ -49,7 +49,7 @@ $GLOBALS['dh'] = AMANewsletterDataHandler::instance(MultiPort::getDSN($_SESSION[
 /**
  * generate HTML for 'New Newsletter' button and the table with
  * old newsletters for editing, sending, deleting, duplicating and details view.
-*/
+ */
 
 $newsletterIndexDIV = CDOMElement::create('div', 'id:newsletterindex');
 
@@ -171,7 +171,7 @@ $data = $newsletterIndexDIV->getHtml();
 /**
  * include proper jquery ui css file depending on wheter there's one
  * in the template_family css path or the default one
-*/
+ */
 if (!is_dir(MODULES_NEWSLETTER_PATH . '/layout/' . $userObj->template_family . '/css/jquery-ui')) {
     $layout_dataAr['CSS_filename'] = [
             JQUERY_UI_CSS,

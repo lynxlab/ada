@@ -221,9 +221,9 @@ $login = UserModuleHtmlLib::loginForm($form_action, $supported_languages, $login
 
 //$login = UserModuleHtmlLib::loginForm($supported_languages,$login_page_language_code, $login_error_message);
 /**
-* giorgio 12/ago/2013
-* set up proper link path and tester for getting the news in a multiproivder environment
-*/
+ * giorgio 12/ago/2013
+ * set up proper link path and tester for getting the news in a multiproivder environment
+ */
 if (!MULTIPROVIDER) {
     if (isset($GLOBALS['user_provider']) && !empty($GLOBALS['user_provider'])) {
         $testerName = $GLOBALS['user_provider'];

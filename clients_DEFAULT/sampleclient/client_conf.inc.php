@@ -19,7 +19,7 @@ if (!MULTIPROVIDER) {
     define('PUBLIC_COURSE_ID_FOR_NEWS', 1);
     /**
      * How many news to get from the above mentioned course
-    */
+     */
     define('NEWS_COUNT', 3);
     /**
      * Provider default language

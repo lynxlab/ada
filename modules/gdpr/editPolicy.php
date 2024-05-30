@@ -18,14 +18,14 @@ ini_set('display_errors', '0');
 error_reporting(E_ALL);
 /**
  * Base config file
-*/
+ */
 require_once(realpath(__DIR__) . '/../../config_path.inc.php');
 
 // MODULE's OWN IMPORTS
 
 /**
  * Clear node and layout variable in $_SESSION
-*/
+ */
 $variableToClearAR = ['node', 'layout', 'course', 'user'];
 
 /**

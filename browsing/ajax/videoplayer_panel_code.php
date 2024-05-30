@@ -75,8 +75,8 @@ BrowsingHelper::init($neededObjAr);
  */
 
 /**
-* extract the author id from the passed media_url
-*/
+ * extract the author id from the passed media_url
+ */
 $regExp = preg_quote(HTTP_ROOT_DIR . MEDIA_PATH_DEFAULT, '/') . '(\d+)\/.*';
 preg_match('/' . $regExp . '/', $_GET['media_url'], $matches);
 

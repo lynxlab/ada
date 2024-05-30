@@ -83,7 +83,7 @@ abstract class ADAAbstractUser extends ADALoggableUser
      * whatsnew getter
      * @return array returns whatsnew array, populated in the constructor
      * @author giorgio
-
+     *
      */
     public function getwhatsnew()
     {

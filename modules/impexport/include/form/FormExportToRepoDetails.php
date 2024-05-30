@@ -24,7 +24,7 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
  * class for handling export phase 3, repository details
  *
  * @author giorgio
-*/
+ */
 
 class FormExportToRepoDetails extends FForm
 {
