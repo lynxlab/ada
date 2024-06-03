@@ -247,7 +247,7 @@ class QueueManager extends NotificationBase
         // make the module's own log dir if it's needed
         if (!is_dir(self::LOGDIR)) {
             $oldmask = umask(0);
-            mkdir(self::LOGDIR, 0o775, true);
+            mkdir(self::LOGDIR, 0775, true);
             umask($oldmask);
         }
         // set the log file name

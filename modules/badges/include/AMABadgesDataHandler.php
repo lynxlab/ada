@@ -197,7 +197,7 @@ class AMABadgesDataHandler extends AMADataHandler
 
         if (!is_dir(MODULES_BADGES_MEDIAPATH)) {
             $oldmask = umask(0);
-            $dirok = mkdir(MODULES_BADGES_MEDIAPATH, 0o775, true);
+            $dirok = mkdir(MODULES_BADGES_MEDIAPATH, 0775, true);
             umask($oldmask);
             if ($dirok === false) {
                 return new BadgesException(translateFN('Impossibile creare la directory bagdes!'));
@@ -350,7 +350,7 @@ class AMABadgesDataHandler extends AMADataHandler
         $dest = MODULES_BADGES_MEDIAPATH . $dest;
         if (!is_dir(MODULES_BADGES_MEDIAPATH)) {
             $oldmask = umask(0);
-            mkdir(MODULES_BADGES_MEDIAPATH, 0o775, true);
+            mkdir(MODULES_BADGES_MEDIAPATH, 0775, true);
             umask($oldmask);
         }
         rename($src, $dest);

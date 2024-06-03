@@ -758,7 +758,7 @@ class GenericHtml extends Output
                 // make dompf tmp font dir if needed
                 if (!is_dir(ADA_UPLOAD_PATH . 'tmp-dompdf')) {
                     $oldmask = umask(0);
-                    mkdir(ADA_UPLOAD_PATH . 'tmp-dompdf', 0o775, true);
+                    mkdir(ADA_UPLOAD_PATH . 'tmp-dompdf', 0775, true);
                     umask($oldmask);
                 }
 

@@ -121,7 +121,7 @@ class AdminHelper extends ViewBaseHelper
 
             if (!is_file(ROOT_DIR . '/clients/' . $providerData['pointer'] . '/client_conf.inc.php')) {
                 if (!is_dir(ROOT_DIR . '/clients/' . $providerData['pointer'])) {
-                    mkdir(ROOT_DIR . '/clients/' . $providerData['pointer'], 0o770, true);
+                    mkdir(ROOT_DIR . '/clients/' . $providerData['pointer'], 0770, true);
                 }
                 $outfile = str_replace(
                     ['${UPPERPROVIDER}', '${ASISPROVIDER}_provider', '${PROV_HTTP}', '${MYSQL_USER}', '${MYSQL_PASSWORD}', '${MYSQL_HOST}',],

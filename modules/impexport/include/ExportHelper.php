@@ -88,7 +88,7 @@ class ExportHelper
 
         // make the module's own log dir if it's needed
         if (!is_dir(MODULES_IMPEXPORT_LOGDIR)) {
-            mkdir(MODULES_IMPEXPORT_LOGDIR, 0o777, true);
+            mkdir(MODULES_IMPEXPORT_LOGDIR, 0777, true);
         }
 
         /**

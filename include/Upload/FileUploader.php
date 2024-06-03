@@ -166,7 +166,7 @@ class FileUploader
     public function createUploadDir()
     {
 
-        if (mkdir($this->destinationFolder, 0o777, true) == false) {
+        if (mkdir($this->destinationFolder, 0777, true) == false) {
             return false;
         }
 

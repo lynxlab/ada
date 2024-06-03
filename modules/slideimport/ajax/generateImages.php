@@ -43,7 +43,7 @@ if (isset($_GET['selectedPages']) && is_array($_GET['selectedPages']) && count($
         $info = pathinfo($fileName);
         $media_path = ROOT_DIR . MEDIA_PATH_DEFAULT . $userObj->getId() . DIRECTORY_SEPARATOR . $info['filename'];
         if (!is_dir($media_path)) {
-            if (!mkdir($media_path, 0o777, true)) {
+            if (!mkdir($media_path, 0777, true)) {
                 $error = 1;
             }
         }
