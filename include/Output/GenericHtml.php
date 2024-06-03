@@ -467,11 +467,19 @@ class GenericHtml extends Output
         }
 
         $jsAr = array_unique(explode(";", $this->JS_filename));
+        array_unshift($jsAr, ROOT_DIR . "/js/include/load_js.js");
         $html_js_code = "<noscript>" . translateFN("Questo browser non supporta Javascript") . "</noscript>\n";
         /*
          * vito, 6 ottobre 2008: import PHP defines from ada_config.php as javascript variables.
          */
-        if (false === stristr($this->JS_filename, 'install.js')) {
+        if (false !== stristr($this->JS_filename, 'install.js')) {
+            /**
+             * If installing ADA, composer dependencies are not installed yet.
+             * Load jquery and jquery-migrate from a CDN.
+             */
+            $html_js_code .= '<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha512-bnIvzh6FU75ZKxp0GXLH9bewza/OIw6dLVh9ICg0gogclmYGguQJWl8U30WpbsGTqbIiAwxTsbe76DErLq5EDQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>';
+            $html_js_code .= '<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-migrate/3.4.1/jquery-migrate.min.js" integrity="sha512-KgffulL3mxrOsDicgQWA11O6q6oKeWcV00VxgfJw4TcM8XRQT8Df9EsrYxDf7tpVpfl3qcYD96BpyPvA4d1FDQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>';
+        } else {
             $html_js_code .= "<script type=\"text/javascript\" src=\"$http_root_dir/include/PHPjavascript.php\"></script>";
         }
 
