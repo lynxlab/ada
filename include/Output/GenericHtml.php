@@ -467,7 +467,7 @@ class GenericHtml extends Output
         }
 
         $jsAr = array_unique(explode(";", $this->JS_filename));
-        $html_js_code = "";
+        $html_js_code = "<noscript>" . translateFN("Questo browser non supporta Javascript") . "</noscript>\n";
         /*
          * vito, 6 ottobre 2008: import PHP defines from ada_config.php as javascript variables.
          */
@@ -496,7 +496,7 @@ class GenericHtml extends Output
                     }
                     $jsFileTS = filemtime($javascript);
                     $javascript = str_replace($root_dir, $http_root_dir, $javascript);
-                    $html_js_code .= "<script type=\"text/javascript\" src=\"$javascript?ts=$jsFileTS\"></script>\n<noscript>" . translateFN("Questo browser non supporta Javascript") . "</noscript>\n";
+                    $html_js_code .= "<script type=\"text/javascript\" src=\"$javascript?ts=$jsFileTS\"></script>\n";
                 }
             }
         }

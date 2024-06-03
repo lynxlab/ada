@@ -886,7 +886,7 @@ class MultiPort
                 $userObj = new ADAUser($user_dataAr);
                 $userObj->setUserId($id_user);
 
-                $id_course_instance ??= $_SESSION['sess_id_course_instance'];
+                $id_course_instance ??= $_SESSION['sess_id_course_instance'] ?? null;
                 if (isset($id_course_instance) && DataValidator::isUinteger($id_course_instance) !== false) {
                     $userObj->setCourseInstanceForHistory($id_course_instance);
                 }
