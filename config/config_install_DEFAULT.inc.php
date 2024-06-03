@@ -239,7 +239,7 @@ define('ADA_NOREPLY_MAIL_ADDRESS', getenv('ADA_NOREPLY_MAIL_ADDRESS') ?: 'norepl
 /**
  * ADA version
  */
-define('ADA_VERSION', '2.2');
+define('ADA_VERSION', '3.0-RC1');
 
 /**
  * URL
