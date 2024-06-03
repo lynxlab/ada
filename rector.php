@@ -44,7 +44,6 @@ return RectorConfig::configure()
         __DIR__ . '/services/media/**/*',
         __DIR__ . '/upload_file',
         __DIR__ . '/widgets/cache',
-        __DIR__ . '/api',
         '*/vendor/*',
         __DIR__ . '/rector.php',
         ChangeSwitchToMatchRector::class,
