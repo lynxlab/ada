@@ -327,7 +327,7 @@ define('MEDIA_PATH_DEFAULT', '/services/media/');
 /**
  * writable directory permissions
  */
-define('ADA_WRITABLE_DIRECTORY_PERMISSIONS', 0o755);
+define('ADA_WRITABLE_DIRECTORY_PERMISSIONS', 0755);
 
 define('ADA_COURSE_MODELS_PATH', ADA_UPLOAD_PATH . 'models');
 

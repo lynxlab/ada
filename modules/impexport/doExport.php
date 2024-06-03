@@ -301,7 +301,7 @@ try {
             $exportDir = MODULES_IMPEXPORT_REPOBASEDIR . $course_id . DIRECTORY_SEPARATOR . MODULES_IMPEXPORT_REPODIR;
             if (!is_dir($exportDir)) {
                 $oldmask = umask(0);
-                mkdir($exportDir, 0o775, true);
+                mkdir($exportDir, 0775, true);
                 umask($oldmask);
             }
             $fileName = str_replace('.zip', '-' . date('His') . '.zip', basename($outZipFile));

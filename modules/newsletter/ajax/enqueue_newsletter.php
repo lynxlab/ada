@@ -99,7 +99,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $logFile = MODULES_NEWSLETTER_LOGDIR . 'log-' . $id_newsletter . '-' . date('d-m-Y_His');
             if (!is_dir(MODULES_NEWSLETTER_LOGDIR)) {
-                mkdir(MODULES_NEWSLETTER_LOGDIR, 0o777, true);
+                mkdir(MODULES_NEWSLETTER_LOGDIR, 0777, true);
             }
             if (!is_file($logFile)) {
                 touch($logFile);

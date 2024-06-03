@@ -201,7 +201,7 @@ class ImportHelper
 
         // make the module's own log dir if it's needed
         if (!is_dir(MODULES_IMPEXPORT_LOGDIR)) {
-            mkdir(MODULES_IMPEXPORT_LOGDIR, 0o777, true);
+            mkdir(MODULES_IMPEXPORT_LOGDIR, 0777, true);
         }
 
         /**
@@ -367,7 +367,7 @@ class ImportHelper
                 print_r($destDir);
             }
             if (!is_dir($destDir)) {
-                mkdir($destDir, 0o777, true);
+                mkdir($destDir, 0777, true);
             }
 
             for ($i = 0; $i < $zip->numFiles; $i++) {
@@ -387,7 +387,7 @@ class ImportHelper
                     }
                     // attempts to make outdir
                     if (!is_dir($outDir)) {
-                        mkdir($outDir, 0o777, true);
+                        mkdir($outDir, 0777, true);
                     }
                     if (!copy("zip://" . $zip->filename . "#" . $filename, $outDir . "/" . $fileinfo['basename'])) {
                         $this->logMessage(__METHOD__ . ' Could not copy from zip: source=' . $filename . ' dest=' . $outDir . "/" . $fileinfo['basename']);

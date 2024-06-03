@@ -400,7 +400,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 sendToBrowser(sprintf(translateFN("Configurazione provider %s") . '...', $provider['NAME']));
                 if (!is_file(ROOT_DIR . '/clients/' . $providers[$i]['pointer'] . '/client_conf.inc.php')) {
                     if (!is_dir(ROOT_DIR . '/clients/' . $providers[$i]['pointer'])) {
-                        mkdir(ROOT_DIR . '/clients/' . $providers[$i]['pointer'], 0o770, true);
+                        mkdir(ROOT_DIR . '/clients/' . $providers[$i]['pointer'], 0770, true);
                     }
                     $outfile = str_replace(
                         ['${UPPERPROVIDER}', '${ASISPROVIDER}_provider', '${PROV_HTTP}', '${MYSQL_USER}', '${MYSQL_PASSWORD}', '${MYSQL_HOST}',],
@@ -585,7 +585,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 if (false === file_put_contents(ENV_FILENAME, "<?php" . PHP_EOL . implode(';' . PHP_EOL, array_values($envlines)) . ";" . PHP_EOL)) {
                     throw new Exception(translateFN('Impossibile scrivere il file di configurazione principale'));
                 } else {
-                    chmod(ENV_FILENAME, 0o440);
+                    chmod(ENV_FILENAME, 0440);
                     sendOK();
                 }
             } else {

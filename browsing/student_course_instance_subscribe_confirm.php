@@ -108,7 +108,7 @@ if (!AMACommonDataHandler::isError($testerInfoAr)) {
     $logStr = "";
     if (!is_dir(ROOT_DIR . '/log/paypal/')) {
         $oldmask = umask(0);
-        mkdir(ROOT_DIR . '/log/paypal/', 0o775, true);
+        mkdir(ROOT_DIR . '/log/paypal/', 0775, true);
         umask($oldmask);
     }
     $log_file = ROOT_DIR . '/log/paypal/' . PAYPAL_PDT_LOG;

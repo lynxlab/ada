@@ -133,7 +133,7 @@ function logToFile($logLines = [])
 {
     if (!is_dir(MODULES_SERVICECOMPLETE_LOGDIR)) {
         $oldmask = umask(0);
-        mkdir(MODULES_SERVICECOMPLETE_LOGDIR, 0o775, true);
+        mkdir(MODULES_SERVICECOMPLETE_LOGDIR, 0775, true);
         umask($oldmask);
     }
     $dataLogFile = MODULES_SERVICECOMPLETE_LOGDIR . 'service-complete-' . date('Ymd') . '.log';
