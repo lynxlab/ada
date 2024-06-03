@@ -250,18 +250,18 @@ class AMAClassroomDataHandler extends AMADataHandler
      *
      * @param array $tablesData tables parameters to use, e.g.
      *      array (
-                'classrooms'=>  // table name is the array key
-                    array(
-                        'fields'=>array('id_classroom','name','seats','computers'), // fields to select
-                        'join_field'=>'id_venue' // field to join on
-                    ),
-                'venues'=> // table name is the array key
-                    array(
-                        'fields'=>array('name'), // fields to select
-                        'aliasfields'=>array('venuename'), // name shall be selected as venuename
-                        'join_field'=>'id_venue' // field to join on
-                    )
-        )
+     * 'classrooms'=>  // table name is the array key
+     * array(
+     * 'fields'=>array('id_classroom','name','seats','computers'), // fields to select
+     * 'join_field'=>'id_venue' // field to join on
+     * ),
+     * 'venues'=> // table name is the array key
+     * array(
+     * 'fields'=>array('name'), // fields to select
+     * 'aliasfields'=>array('venuename'), // name shall be selected as venuename
+     * 'join_field'=>'id_venue' // field to join on
+     * )
+     * )
      * @param string $whereClause
      * @param string $orderBY
      *
