@@ -210,7 +210,7 @@ switch ($op) {
 
             /**
              * begin PDF body generation
-            */
+             */
 
             $pdf->ezText($PDFdata['block1'], $pdf->docFontSize);
             $pdf->ezText($PDFdata['block2'], $pdf->docFontSize, ['justification' => 'center']);

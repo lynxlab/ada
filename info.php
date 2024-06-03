@@ -163,7 +163,7 @@ if ($op !== false && $op == 'course_info') {
             $timestamp = time();
 
             $instancesAr = $tester_dh->courseInstanceSubscribeableGetList(
-                ['data_inizio_previsto', 'durata', 'data_fine', 'title','price','self_instruction','duration_hours','tipo_servizio'],
+                ['data_inizio_previsto', 'durata', 'data_fine', 'title', 'price', 'self_instruction', 'duration_hours', 'tipo_servizio'],
                 $courseId
             );
 
@@ -184,12 +184,12 @@ if ($op !== false && $op == 'course_info') {
                             $id_istanza = $courseIstance['id_istanza_corso'];
 
                             if ($id_istanza == $instanceId) {
-                                $id_utente = $courseIstance ['id_utente'];
+                                $id_utente = $courseIstance['id_utente'];
                                 if ($id_utente == $userObj->getId()) {
                                     /**
                                      * Subscribe button
                                      */
-                                    $statusUr = $courseIstance ['status'];
+                                    $statusUr = $courseIstance['status'];
                                     if ($statusUr == ADA_STATUS_SUBSCRIBED || $statusUr == ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED) {
                                         if ($userObj->tipo == AMA_TYPE_VISITOR) {
                                             $subscribe_link = BaseHtmlLib::link("#", '<i class="checkmark icon"></i>' . translateFN('Già iscritto'));
@@ -663,9 +663,9 @@ if ($op !== false && $op == 'course_info') {
             header('Location: ' . HTTP_ROOT_DIR . '/info.php');
             die();
         }
-        $thead_data = ['&nbsp;', 'ID', translateFN('corso'), translateFN('descrizione'), translateFN('crediti'),'&nbsp;'];
+        $thead_data = ['&nbsp;', 'ID', translateFN('corso'), translateFN('descrizione'), translateFN('crediti'), '&nbsp;'];
     } else {
-        $thead_data = ['&nbsp;', 'ID', translateFN('corso'), translateFN('Fornito da'), translateFN('descrizione'), translateFN('crediti'),'&nbsp;'];
+        $thead_data = ['&nbsp;', 'ID', translateFN('corso'), translateFN('Fornito da'), translateFN('descrizione'), translateFN('crediti'), '&nbsp;'];
         $provider = DataValidator::checkInputValues('provider', 'Integer', INPUT_GET, null);
         $publishedServices = $common_dh->getPublishedCourses($provider);
     }

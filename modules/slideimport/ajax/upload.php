@@ -7,22 +7,22 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * Base config file
-*/
+ */
 
 require_once(realpath(__DIR__) . '/../../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
-*/
+ */
 $variableToClearAR = ['node', 'layout', 'course', 'user'];
 /**
  * Users (types) allowed to access this module.
-*/
+ */
 $allowedUsersAr = [AMA_TYPE_SWITCHER, AMA_TYPE_AUTHOR, AMA_TYPE_TUTOR, AMA_TYPE_STUDENT];
 
 /**
  * Get needed objects
-*/
+ */
 $neededObjAr = [
         AMA_TYPE_SWITCHER => ['layout'],
         AMA_TYPE_AUTHOR   => ['layout'],
@@ -32,7 +32,7 @@ $neededObjAr = [
 
 /**
  * Performs basic controls before entering this module
-*/
+ */
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
 BrowsingHelper::init($neededObjAr);

@@ -113,7 +113,7 @@ class CompleteConditionNodePercentage extends CompleteCondition
      * @param string $param
      * @param string $id_course_instance
      * @param string $id_user
-         * @param array  $summary the array to ouput summary infos
+     * @param array  $summary the array to ouput summary infos
      * @return Ambigous <boolean, number>
      */
     public static function buildAndCheck($param = null, $id_course_instance = null, $id_user = null, &$summary = null)

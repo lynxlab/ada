@@ -23,12 +23,12 @@ require_once realpath(__DIR__) . '/../../config_path.inc.php';
 $variableToClearAR = ['node', 'layout', 'course', 'course_instance'];
 /**
  * Users (types) allowed to access this module.
-*/
+ */
 $allowedUsersAr = [AMA_TYPE_STUDENT, AMA_TYPE_AUTHOR, AMA_TYPE_SWITCHER];
 
 /**
  * Performs basic controls before entering this module
-*/
+ */
 $neededObjAr = [
         AMA_TYPE_STUDENT => ['layout'],
         AMA_TYPE_AUTHOR => ['layout'],

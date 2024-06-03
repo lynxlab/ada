@@ -14,17 +14,17 @@ require_once(realpath(__DIR__) . '/../../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
-*/
+ */
 $variableToClearAR = ['node', 'layout', 'course', 'user'];
 
 /**
  * Users (types) allowed to access this module.
-*/
+ */
 $allowedUsersAr = [AMA_TYPE_SWITCHER, AMA_TYPE_AUTHOR];
 
 /**
  * Get needed objects
-*/
+ */
 $neededObjAr = [
         AMA_TYPE_SWITCHER => ['layout'],
         AMA_TYPE_AUTHOR => ['layout'],

@@ -14,7 +14,7 @@ ini_set('display_errors', '0');
 error_reporting(E_ALL);
 /**
  * Base config file
-*/
+ */
 require_once(realpath(__DIR__) . '/../../config_path.inc.php');
 
 /**

@@ -14,21 +14,21 @@ ini_set('display_errors', '0');
 error_reporting(E_ALL);
 /**
  * Base config file
-*/
+ */
 require_once(realpath(__DIR__) . '/../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
-*/
+ */
 $variableToClearAR = ['node', 'layout', 'course', 'user'];
 /**
  * Users (types) allowed to access this module.
-*/
+ */
 $allowedUsersAr = [AMA_TYPE_SWITCHER, AMA_TYPE_AUTHOR];
 
 /**
  * Get needed objects
-*/
+ */
 $neededObjAr = [
         AMA_TYPE_SWITCHER => ['layout'],
         AMA_TYPE_AUTHOR => ['layout'],
@@ -36,7 +36,7 @@ $neededObjAr = [
 
 /**
  * Performs basic controls before entering this module
-*/
+ */
 require_once(ROOT_DIR . '/include/module_init.inc.php');
 BrowsingHelper::init($neededObjAr);
 
@@ -91,11 +91,11 @@ try {
     }
     /**
      * exportHelper object to help us in the exporting process...
-    */
+     */
     $exportHelper = new ExportHelper($exportCourse);
     /**
      * comment to be inserted as first line of XML document
-    */
+     */
     $commentStr = "Exported From " . PORTAL_NAME . " v" . ADA_VERSION;
 
     // create a dom document with encoding utf8

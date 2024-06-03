@@ -104,7 +104,7 @@ define('ADA_DEFAULT_AVATAR', 'default_avatar.png');
 
 /**
  * portal name string - displayed in window titlebar
-*/
+ */
 if (!defined('PORTAL_NAME')) {
     if (getenv('PORTAL_NAME') !== false) {
         define('PORTAL_NAME', getenv('PORTAL_NAME'));
@@ -239,7 +239,7 @@ define('ADA_NOREPLY_MAIL_ADDRESS', getenv('ADA_NOREPLY_MAIL_ADDRESS') ?: 'norepl
 /**
  * ADA version
  */
-define('ADA_VERSION', '2.2');
+define('ADA_VERSION', '3.0-RC1');
 
 /**
  * URL

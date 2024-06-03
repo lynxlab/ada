@@ -22,7 +22,7 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
  * class for handling export phase 1, selecting a course
  *
  * @author giorgio
-*/
+ */
 class FormEditNewsletter extends FForm
 {
     public function __construct($formName)

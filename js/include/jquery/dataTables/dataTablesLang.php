@@ -28,7 +28,7 @@ require_once realpath(__DIR__).'/../../../../config_path.inc.php';
 $allowedUsersAr = [AMA_TYPE_VISITOR, AMA_TYPE_STUDENT,AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR, AMA_TYPE_SWITCHER, AMA_TYPE_ADMIN];
 /**
  * Performs basic controls before entering this module
-*/
+ */
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 

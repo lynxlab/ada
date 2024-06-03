@@ -5,11 +5,14 @@
     "require": {
         "php": ">=8.0",
         "bower-asset/jquery.maskedinput": "^1.4",
+        "bshaffer/oauth2-server-php": "^1.14",
         "cweagans/composer-patches": "^1.7",
         "dompdf/dompdf": "^3.0",
+        "fig/http-message-util": "^1.1",
         "j7mbo/twitter-api-php": "^1.0",
         "james-heinrich/getid3": "^1.9",
         "jawira/case-converter": "^3.5",
+        "mibe/feedwriter": "^1.1",
         "mobiledetect/mobiledetectlib": "^4.8",
         "npm-asset/datatables.net": "^1.13",
         "npm-asset/datatables.net-dt": "^3.2",
@@ -23,11 +26,15 @@
         "npm-asset/jquery-ui": "^1.13",
         "npm-asset/nivo-slider": "^3.2",
         "npm-asset/smartmenus": "^1.2",
+        "nyholm/psr7": "^1.8",
+        "nyholm/psr7-server": "^1.1",
         "oomphinc/composer-installers-extender": "^2.0",
+        "php-di/php-di": "^7.0",
         "phpmailer/phpmailer": "^6.9",
         "platforg/adobe-connect": "^0.2.4",
         "rospdf/pdf-php": "^0.12.67",
-        "simplepie/simplepie": "^1.8"
+        "simplepie/simplepie": "^1.8",
+        "slim/slim": "^4.13"
     },
     "repositories": [
         {
@@ -48,7 +55,8 @@
             "Lynxlab\\ADA\\Services\\": "services/include/",
             "Lynxlab\\ADA\\Switcher\\": "switcher/include/",
             "Lynxlab\\ADA\\Tutor\\": "tutor/include/",
-            "Lynxlab\\ADA\\Widgets\\": "widgets/include/"
+            "Lynxlab\\ADA\\Widgets\\": "widgets/include/",
+            "Lynxlab\\ADA\\API\\" : "api"
         },
         "files": [
             "include/Output/functions.php",
@@ -84,6 +92,7 @@
         "phpstan/phpstan": "^1.10"
     },
     "config": {
+        "optimize-autoloader": true,
         "sort-packages": true,
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true,

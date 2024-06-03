@@ -13,13 +13,13 @@
     <exclude-pattern>services/media/*</exclude-pattern>
     <exclude-pattern>upload_file/*</exclude-pattern>
     <exclude-pattern>widgets/cache/*</exclude-pattern>
-    <exclude-pattern>api/*</exclude-pattern>
     <exclude-pattern>*/**/*.css</exclude-pattern>
     <exclude-pattern>*/**/*.js</exclude-pattern>
 
     <arg value="ps"/>
     <arg name="colors"/>
     <arg name="encoding" value="utf-8"/>
+    <arg name="bootstrap" value="config_path.inc.php"/>
 
     <!-- Strip the filepaths down to the relevant bit. -->
     <arg name="basepath" value="./"/>

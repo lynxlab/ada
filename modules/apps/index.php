@@ -24,28 +24,28 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * Base config file
-*/
+ */
 require_once(realpath(__DIR__) . '/../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
-*/
+ */
 $variableToClearAR = ['node', 'layout', 'course', 'user'];
 /**
  * Users (types) allowed to access this module.
-*/
+ */
 $allowedUsersAr = [AMA_TYPE_SWITCHER];
 
 /**
  * Get needed objects
-*/
+ */
 $neededObjAr = [
         AMA_TYPE_SWITCHER => ['layout'],
 ];
 
 /**
  * Performs basic controls before entering this module
-*/
+ */
 require_once(ROOT_DIR . '/include/module_init.inc.php');
 BrowsingHelper::init($neededObjAr);
 
@@ -74,7 +74,7 @@ $data = $container->getHtml();
 /**
  * include proper jquery ui css file depending on wheter there's one
  * in the template_family css path or the default one
-*/
+ */
 if (!is_dir(MODULES_APPS_PATH . '/layout/' . $userObj->template_family . '/css/jquery-ui')) {
     $layout_dataAr['CSS_filename'] = [
             JQUERY_UI_CSS,

@@ -81,15 +81,15 @@ if ($userObj instanceof ADAGuest) {
 /**
  * Backurl: if user bookmarked an address and tried to get it directly...
  *
-  if (isset($_SESSION['sess_backurl'])) {
-  unset($_SESSION['sess_backurl']);
-  }
-
-  if (!isset($_SESSION['sess_id_user'])) {
-  $_SESSION['sess_backurl'] = $_SERVER['REQUEST_URI'];
-  header("Location: $http_root_dir"); // to login page
-  exit();
-  }
+ * if (isset($_SESSION['sess_backurl'])) {
+ * unset($_SESSION['sess_backurl']);
+ * }
+ *
+ * if (!isset($_SESSION['sess_id_user'])) {
+ * $_SESSION['sess_backurl'] = $_SERVER['REQUEST_URI'];
+ * header("Location: $http_root_dir"); // to login page
+ * exit();
+ * }
  */
 /**
  * ANONYM Browsing

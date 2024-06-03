@@ -239,7 +239,7 @@ class AMADataHandler extends AMATesterDataHandler
          *  $tablesPrefix is the prefix of the table in the DB.
          *
          *  the foreach loop does the magic
-        */
+         */
 
         $tablesToLoad = ADAUser::getLinkedTables();
         $tablesPrefix = ADAUser::getTablesPrefix();

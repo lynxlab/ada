@@ -141,7 +141,7 @@ class ImportHelper
      * must save the selected tester that's usually stored in $_SESSION
      * because this class is going to write_close and open the session
      * several times.
-    */
+     */
     private $selectedTester;
 
     /**
@@ -206,7 +206,7 @@ class ImportHelper
 
         /**
          * REMOVE THEESE WHEN YOU'VE FINISHED!!!!
-        */
+         */
         //      $this->_selectedCourseID = 110;
         //      $this->_selectedNodeID = $this->_selectedCourseID.self::$courseSeparator."0";
     }
@@ -263,7 +263,7 @@ class ImportHelper
                     $this->progressSetTitle((string) $course->titolo);
                     /**
                      * ADDS THE COURSE TO THE APPROPIATE TABLES
-                    */
+                     */
                     if (!self::$DEBUG) {
                         if (is_null($this->selectedCourseID)) {
                             $courseNewID = $this->addCourse($course);
@@ -552,7 +552,7 @@ class ImportHelper
         /**
          * keep the old node id in the links, they will be converted into new ones
          * just after all the nodes have been inserted
-        */
+         */
         $linkArr['id_nodo'] = $this->courseOldID . self::$courseSeparator . $linkArr['id_nodo'];
         $linkArr['id_nodo_to'] = $this->courseOldID . self::$courseSeparator . $linkArr['id_nodo_to'];
         $linkArr['id_utente'] = $this->assignedAuthorID;
@@ -1069,7 +1069,7 @@ class ImportHelper
              *
              * the result will be that all 1 become 7, and all 7 become 23 and at the and
              * all of the three links will point to 23.
-            */
+             */
 
             $randomStr = '#' . substr(md5(time()), 0, 8);
 

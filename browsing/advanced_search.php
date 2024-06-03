@@ -11,25 +11,25 @@ use Lynxlab\ADA\Main\Utilities;
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
-* Base config file
-*/
+ * Base config file
+ */
 
 require_once realpath(__DIR__) . '/../config_path.inc.php';
 
 /**
-* Clear node and layout variable in $_SESSION
-*/
+ * Clear node and layout variable in $_SESSION
+ */
 
 $variableToClearAR = ['node', 'layout', 'course', 'user'];
 
 /**
-* Users (types) allowed to access this module.
-*/
+ * Users (types) allowed to access this module.
+ */
 $allowedUsersAr = [AMA_TYPE_VISITOR, AMA_TYPE_STUDENT,AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR];
 
 /**
-* Get needed objects
-*/
+ * Get needed objects
+ */
 $neededObjAr = [
   AMA_TYPE_VISITOR => ['layout'],
   AMA_TYPE_STUDENT => ['layout'],
@@ -38,8 +38,8 @@ $neededObjAr = [
 ];
 
 /**
-* Performs basic controls before entering this module
-*/
+ * Performs basic controls before entering this module
+ */
 require_once ROOT_DIR . '/include/module_init.inc.php';
 
 /**
@@ -473,6 +473,6 @@ $content_dataAr = [
 ];
 
 /**
-* Sends data to the rendering engine
-*/
+ * Sends data to the rendering engine
+ */
 ARE::render($layout_dataAr, $content_dataAr);

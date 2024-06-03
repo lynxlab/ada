@@ -7,7 +7,6 @@ $finder = (new PhpCsFixer\Finder())
         'services/media',
         'upload_file',
         'widgets/cache',
-        'api',
         'vendor',
         'external/fckeditor/editor/dialog/fck_spellerpages/spellerpages/server-scripts/',
     ]);
@@ -15,6 +14,7 @@ $finder = (new PhpCsFixer\Finder())
 return (new PhpCsFixer\Config())
     ->setParallelConfig(PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect())
     ->setRules([
+        'align_multiline_comment' => true,
         '@PSR12' => true,
         'ordered_imports' => [
             'imports_order' => [

@@ -263,10 +263,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             /**
              * Send the message an email message
              * via ADA spool
-            $message_ha['tipo'] = ADA_MSG_MAIL;
-            $result = $mh->sendMessage($message_ha);
-            if(AMADataHandler::isError($result)) {
-            }
+             * $message_ha['tipo'] = ADA_MSG_MAIL;
+             * $result = $mh->sendMessage($message_ha);
+             * if(AMADataHandler::isError($result)) {
+             * }
              */
         }
 

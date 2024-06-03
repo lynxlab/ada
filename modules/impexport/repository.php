@@ -10,21 +10,21 @@ ini_set('display_errors', '0');
 error_reporting(E_ALL);
 /**
  * Base config file
-*/
+ */
 require_once(realpath(__DIR__) . '/../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
-*/
+ */
 $variableToClearAR = ['node', 'layout', 'course', 'user'];
 /**
  * Users (types) allowed to access this module.
-*/
+ */
 $allowedUsersAr = [AMA_TYPE_SWITCHER, AMA_TYPE_AUTHOR];
 
 /**
  * Get needed objects
-*/
+ */
 $neededObjAr = [
         AMA_TYPE_SWITCHER => ['layout'],
         AMA_TYPE_AUTHOR => ['layout'],
@@ -81,7 +81,7 @@ $layout_dataAr['JS_filename'] = [
 /**
  * include proper jquery ui css file depending on wheter there's one
  * in the template_family css path or the default one
-*/
+ */
 $templateFamily = (isset($userObj->template_family) && strlen($userObj->template_family) > 0) ? $userObj->template_family : ADA_TEMPLATE_FAMILY;
 $layout_dataAr['CSS_filename'] = [
     JQUERY_UI_CSS,

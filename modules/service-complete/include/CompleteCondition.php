@@ -94,11 +94,11 @@ abstract class CompleteCondition
              * third: raise an ADAError if wrong number of arguments
              * see config_errors.inc.php line 167 and following.
              * depending on the erorr phase / severity something will happen...
-            */
+             */
             new ADAError(null, null, __METHOD__, AMA_ERR_WRONG_ARGUMENTS, ADA_ERROR_SEVERITY_NONE);
             /**
              * third throw an exception to be catched by the caller
-            */
+             */
             throw new Exception('Fatal Error: could not instantiate ' . self::class, AMA_ERR_WRONG_ARGUMENTS);
         }
         $this->setLogToFile(ModuleLoaderHelper::isLoaded('SERVICECOMPLETE_LOG') === true);

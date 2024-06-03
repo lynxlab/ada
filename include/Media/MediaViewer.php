@@ -126,7 +126,7 @@ class MediaViewer
          * @author giorgio 23/apr/2013
          *
          * wrap $return around a div and return as promised
-        */
+         */
 
         if ($return !== '') {
             $return = "<div class='media " . $cssArray[$media_type] . "'>" . $return . "</div>";

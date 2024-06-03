@@ -25,12 +25,12 @@ $variableToClearAR = ['node', 'layout'];
 
 /**
  * Users (types) allowed to access this module.
-*/
+ */
 $allowedUsersAr = [AMA_TYPE_TUTOR];
 
 /**
  * Performs basic controls before entering this module
-*/
+ */
 $neededObjAr = [
     AMA_TYPE_TUTOR => ['layout'],
 ];
