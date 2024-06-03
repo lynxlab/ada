@@ -24,5 +24,6 @@ return (new PhpCsFixer\Config())
         ],
         '@PHP83Migration' => true,
         'heredoc_indentation' => false,
+        'octal_notation' => false,
     ])
     ->setFinder($finder);
