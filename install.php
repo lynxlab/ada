@@ -617,7 +617,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $self = Utilities::whoami();
     $modulesAv = [];
     $modulesDIS = ['secretquestion', 'code_man'];
-    $modulesHidden = ['event-dispatcher', 'gdpr', 'login', 'test', 'debugbar'];
+    $modulesHidden = ['event-dispatcher', 'gdpr', 'login', 'test', 'debugbar', 'extract-logger'];
     if (is_dir(MODULES_DIR)) {
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(MODULES_DIR . DIRECTORY_SEPARATOR));
         $regIter = new RegexIterator($iterator, '/^[a-z:|\/].+[\/|\\\]config\_DEFAULT\.inc\.php$/i', RecursiveRegexIterator::GET_MATCH);
