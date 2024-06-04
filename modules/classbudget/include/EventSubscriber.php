@@ -76,7 +76,7 @@ class EventSubscriber implements EventSubscriberInterface
                 'children' => null,
             ];
             $menu = $event->getSubject();
-            $left = $menu->getLeftItemsArray();
+            $left = $menu->getLeftItemsArray() ?? [];
 
             $exportPDF = array_merge($baseItem, [
                 'label' => 'File PDF',

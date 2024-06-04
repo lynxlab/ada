@@ -53,7 +53,7 @@ class EventSubscriber implements EventSubscriberInterface
     {
         if (false !== stristr(realpath($_SERVER['SCRIPT_FILENAME']), MODULES_CLONEINSTANCE_PATH)) {
             $menu = $event->getSubject();
-            $left = $menu->getLeftItemsArray();
+            $left = $menu->getLeftItemsArray() ?? [];
             $item = [
                 'item_id' => null,
                 'label' => 'Indietro',

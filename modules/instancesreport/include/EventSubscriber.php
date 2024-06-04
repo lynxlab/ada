@@ -68,7 +68,7 @@ class EventSubscriber implements EventSubscriberInterface, ADAScriptSubscriberIn
             ];
 
             $menu = $event->getSubject();
-            $left = $menu->getLeftItemsArray();
+            $left = $menu->getLeftItemsArray() ?? [];
             $item = array_filter($left, fn ($el) => 0 === strcasecmp($el['label'], 'agisci'));
             $itemkey = key($item);
 
