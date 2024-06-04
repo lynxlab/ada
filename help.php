@@ -27,18 +27,18 @@ $variableToClearAR = ['node', 'layout', 'course'];
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = [AMA_TYPE_VISITOR, AMA_TYPE_STUDENT,AMA_TYPE_TUTOR, AMA_TYPE_SWITCHER, AMA_TYPE_AUTHOR, AMA_TYPE_ADMIN];
+$allowedUsersAr = [AMA_TYPE_VISITOR, AMA_TYPE_STUDENT, AMA_TYPE_TUTOR, AMA_TYPE_SWITCHER, AMA_TYPE_AUTHOR, AMA_TYPE_ADMIN];
 
 /**
  * Get needed objects
  */
 $neededObjAr = [
-  AMA_TYPE_VISITOR      => ['layout'],
-  AMA_TYPE_STUDENT         => ['layout'],
-  AMA_TYPE_TUTOR => ['layout'],
-  AMA_TYPE_SWITCHER     => ['layout'],
-  AMA_TYPE_AUTHOR       => ['layout'],
-  AMA_TYPE_ADMIN        => ['layout'],
+    AMA_TYPE_VISITOR      => ['layout'],
+    AMA_TYPE_STUDENT         => ['layout'],
+    AMA_TYPE_TUTOR => ['layout'],
+    AMA_TYPE_SWITCHER     => ['layout'],
+    AMA_TYPE_AUTHOR       => ['layout'],
+    AMA_TYPE_ADMIN        => ['layout'],
 ];
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
@@ -76,7 +76,7 @@ switch ($id_profile) {
 }
 
 
-$args = DataValidator::checkInputValues('arg', 'Value', INPUT_GET);
+$arg = DataValidator::checkInputValues('arg', 'Value', INPUT_GET);
 if ($arg !== false) {
     $short_help_file_name = $usertype . '_' . $arg . '_' . $language . '.' . $fileext;
     $title = translateFN("Help for") . " $usertype " . translateFN("on") . " $arg";
@@ -110,12 +110,12 @@ if ($fileext == 'html') {
 }
 
 $content_dataAr = [
-'user_name' => $user_name,
-'title'     => $title,
-'text'      => $html_text,
-'menu'      => $menu,
-'message'   => $message,
-'status'    => $status,
+    'user_name' => $user_name,
+    'title'     => $title,
+    'text'      => $html_text,
+    'menu'      => $menu,
+    'message'   => $message,
+    'status'    => $status,
 ];
 
 /**
