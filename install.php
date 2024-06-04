@@ -583,7 +583,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                         $envlines[$formkey] = "putenv('$envvar=" . $postData[$formkey] . "')";
                     }
                 }
-                if (false === file_put_contents(ENV_FILENAME, "<?php" . PHP_EOL . implode(';' . PHP_EOL, array_values($envlines)) . ";" . PHP_EOL)) {
+                if (false === file_put_contents(ENV_FILENAME, "<?php" . PHP_EOL . PHP_EOL . implode(';' . PHP_EOL, array_values($envlines)) . ";" . PHP_EOL)) {
                     throw new Exception(translateFN('Impossibile scrivere il file di configurazione principale'));
                 } else {
                     chmod(ENV_FILENAME, 0440);
