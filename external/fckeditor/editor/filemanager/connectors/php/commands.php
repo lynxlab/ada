@@ -218,7 +218,7 @@ function FileUpload($resourceType, $currentFolder, $sCommand)
                             break ;
                         }
 
-                        $permissions = 0o777;
+                        $permissions = 0777;
 
                         if (isset($Config['ChmodOnUpload']) && $Config['ChmodOnUpload']) {
                             $permissions = $Config['ChmodOnUpload'] ;

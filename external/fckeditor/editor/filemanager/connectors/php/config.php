@@ -81,11 +81,11 @@ $Config['HtmlExtensions'] = ["html", "htm", "xml", "xsd", "txt", "js"] ;
 // If possible, it is recommended to set more restrictive permissions, like 0755.
 // Set to 0 to disable this feature.
 // Note: not needed on Windows-based servers.
-$Config['ChmodOnUpload'] = 0o777 ;
+$Config['ChmodOnUpload'] = 0777 ;
 
 // See comments above.
 // Used when creating folders that does not exist.
-$Config['ChmodOnFolderCreate'] = 0o777 ;
+$Config['ChmodOnFolderCreate'] = 0777 ;
 
 /*
     Configuration settings for each Resource Type
