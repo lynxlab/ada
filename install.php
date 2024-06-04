@@ -191,6 +191,7 @@ if (is_dir('clients') && count(glob(ROOT_DIR . "/clients/*/client_conf.inc.php")
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     define('COMPOSER_INSTALL_CMD', 'install -n --no-progress --no-cache --no-dev');
+    putenv("COMPOSER_ROOT_VERSION=" . ADA_VERSION);
     if (session_status() !== PHP_SESSION_NONE) {
         session_start();
         $_SESSION = [];
