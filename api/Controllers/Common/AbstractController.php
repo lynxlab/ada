@@ -86,7 +86,7 @@ abstract class AbstractController
     public function __construct(ContainerInterface $container, $authUserID = 0)
     {
         // get an instance of the ADA common DataBase
-        $this->common_dh = AMACommonDataHandler::instance();
+        $this->common_dh = AMACommonDataHandler::getInstance();
         // store the SLIM app container
         $this->container = $container;
         // if an authoized user id is passed, store it

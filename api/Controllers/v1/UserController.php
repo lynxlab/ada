@@ -60,12 +60,6 @@ class UserController extends AbstractController implements AdaApiInterface
         $paramsOK = true;
 
         if (!empty($params)) {
-
-            /**
-             * This GLOBAL is needed by the MultiPort
-             */
-            $GLOBALS['common_dh'] = $this->common_dh;
-
             /**
              * User Object to return
              */

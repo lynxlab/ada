@@ -37,7 +37,7 @@ if (!MULTIPROVIDER) {
     }
 
     if (isset($client) && !empty($client) && is_dir(ROOT_DIR . '/clients/' . $client)) {
-        $tmpcommon = AMACommonDataHandler::instance();
+        $tmpcommon = AMACommonDataHandler::getInstance();
         // $_SESSION['sess_user_provider'] = $client;
         $GLOBALS['user_provider'] = $tmpcommon->getPointerFromThirdLevel($client);
         unset($tmpcommon);
