@@ -120,7 +120,7 @@ function CreateServerFolder($folderPath, $lastFolder = null)
         if (isset($Config['ChmodOnFolderCreate']) && !$Config['ChmodOnFolderCreate']) {
             mkdir($folderPath);
         } else {
-            $permissions = 0o777;
+            $permissions = 0777;
             if (isset($Config['ChmodOnFolderCreate'])) {
                 $permissions = $Config['ChmodOnFolderCreate'];
             }

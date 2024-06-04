@@ -132,7 +132,7 @@ define('CACHE_FILE_GROUP', 'www');
 
 // What permissions should the cached file have
 // (Set to '' will give the default persmissions for the 'PHP-user')
-define('CACHE_FILE_MOD', 0o664);
+define('CACHE_FILE_MOD', 0664);
 
 // Default theme class name
 define('DEFAULT_THEME_CLASS', 'UniversalTheme');
