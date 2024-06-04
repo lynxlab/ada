@@ -190,6 +190,7 @@ if (is_dir('clients') && count(glob(ROOT_DIR . "/clients/*/client_conf.inc.php")
 }
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+    define('COMPOSER_INSTALL_CMD', 'install -n --no-progress --no-cache --no-dev');
     if (session_status() !== PHP_SESSION_NONE) {
         session_start();
         $_SESSION = [];
@@ -252,7 +253,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             fwrite($logfile, sprintf("\n\n******** %s ********\n", 'ADA'));
             chdir(__DIR__);
             // Create the commands
-            $input = new StringInput('install -o -n --no-cache --no-dev');
+            $input = new StringInput(COMPOSER_INSTALL_CMD);
             // Create the application and run it with the commands
             // @phpstan-ignore-next-line
             $application = new Application();
@@ -525,7 +526,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                                 fwrite($logfile, sprintf("\n\n******** %s ********\n", $modulename));
                                 chdir($dirname);
                                 // Create the commands
-                                $input = new StringInput('install -o -n --no-cache --no-dev');
+                                $input = new StringInput(COMPOSER_INSTALL_CMD);
                                 // Create the application and run it with the commands
                                 // @phpstan-ignore-next-line
                                 $application = new Application();
