@@ -11,6 +11,7 @@
  * @version         0.1
  */
 
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
@@ -56,7 +57,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
         switch ($_SESSION['sess_userObj']->getType()) {
             case AMA_TYPE_STUDENT:
                 if (isset($courseID) && intval($courseID) > 0) {
-                    $selTesterArr = $GLOBALS['common_dh']->getTesterInfoFromIdCourse($courseID);
+                    $selTesterArr = AMACommonDataHandler::getInstance()->getTesterInfoFromIdCourse($courseID);
                     if (!AMADB::isError($selTesterArr) && is_array($selTesterArr) && isset($selTesterArr['puntatore'])) {
                         $selTester = $selTesterArr['puntatore'];
                     }

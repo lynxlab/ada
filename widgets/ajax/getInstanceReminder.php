@@ -20,6 +20,7 @@
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
@@ -99,7 +100,7 @@ try {
             throw new Exception(translateFN('Nessun fornitore di servizi &egrave; stato configurato'));
         }
     } else {
-        $testerInfo = $GLOBALS['common_dh']->get_tester_info_from_id_course($id_course);
+        $testerInfo = AMACommonDataHandler::getInstance()->getTesterInfoFromIdCourse($id_course);
         if (!AMADB::isError($testerInfo) && is_array($testerInfo) && isset($testerInfo['puntatore'])) {
             $testerName = $testerInfo['puntatore'];
         }
