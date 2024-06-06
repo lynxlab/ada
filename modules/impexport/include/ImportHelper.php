@@ -131,7 +131,7 @@ class ImportHelper
      * ama.inc.php knows how to handle the datas.
      *
      * The constructor shall add tests and surveys if MODULES_TEST is set
-     * also, it can add other stuff provided the _import* method is implemented
+     * also, it can add other stuff provided the import* method is implemented
      *
      * @var array
      */
@@ -152,7 +152,7 @@ class ImportHelper
      */
     public function __construct($postDatas)
     {
-        //      $this->_importFile = $postDatas['importFileName'];
+        //      $this->importFile = $postDatas['importFileName'];
         if (isset($_SESSION['importHelper']['filename'])) {
             $this->importFile = $_SESSION['importHelper']['filename'];
         } else {
@@ -289,7 +289,7 @@ class ImportHelper
                      * NOW ADD  NODES, TESTS AND SURVEYS
                      */
                     foreach ($this->specialNodes as $groupName) {
-                        $method = '_import' . ucfirst(strtolower($groupName));
+                        $method = 'import' . ucfirst(strtolower($groupName));
 
                         $this->logMessage(__METHOD__ . ' Saving ' . $groupName . ' by calling method: ' . $method);
 
@@ -307,8 +307,8 @@ class ImportHelper
                         }
 
                         /**
-                         * calls a method named _import<groupName> foreach special node.
-                         * e.g. for nodes it will call _importNodi, for tests _importTests....
+                         * calls a method named import<groupName> foreach special node.
+                         * e.g. for nodes it will call importNodi, for tests importTests....
                          */
                         if (method_exists($this, $method) && !empty($course->$groupName)) {
                             $specialVal = $this->$method($course->{$groupName}, $courseNewID);
