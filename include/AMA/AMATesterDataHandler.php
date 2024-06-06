@@ -4627,7 +4627,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             $text,
             $type,
             $creation_date,
-            $parent_id,
+            $parent_id ?? '',
             $order,
             $level,
             $version,
