@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9a89c815b789dd5786f2ee20399e3dde",
+    "content-hash": "ed7e99e4006cdcf84179bc20d2a10b94",
     "packages": [
         {
             "name": "bower-asset/jquery.maskedinput",
@@ -1110,6 +1110,18 @@
             ]
         },
         {
+            "name": "npm-asset/dropzone",
+            "version": "5.9.3",
+            "dist": {
+                "type": "tar",
+                "url": "https://registry.npmjs.org/dropzone/-/dropzone-5.9.3.tgz"
+            },
+            "type": "npm-asset",
+            "license": [
+                "MIT"
+            ]
+        },
+        {
             "name": "npm-asset/jplayer",
             "version": "2.9.2",
             "dist": {
@@ -2171,6 +2183,59 @@
                 "source": "https://github.com/MyIntervals/PHP-CSS-Parser/tree/v8.5.1"
             },
             "time": "2024-02-15T16:41:13+00:00"
+        },
+        {
+            "name": "sbolch/max-upload-file-size",
+            "version": "v2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sbolch/max-upload-file-size.git",
+                "reference": "97748bcefdfb05469a2af2f762f01981a9a0ce39"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sbolch/max-upload-file-size/zipball/97748bcefdfb05469a2af2f762f01981a9a0ce39",
+                "reference": "97748bcefdfb05469a2af2f762f01981a9a0ce39",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4"
+            },
+            "type": "package",
+            "autoload": {
+                "psr-4": {
+                    "sbolch\\MaxUploadFileSize\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Szabolcs Surányi",
+                    "email": "szabolcs.suranyi@shadesoft.hu",
+                    "homepage": "https://shadesoft.dev"
+                }
+            ],
+            "description": "Gets maximum of upload file size.",
+            "homepage": "https://github.com/sbolch/max-upload-file-size",
+            "keywords": [
+                "file",
+                "size",
+                "upload"
+            ],
+            "support": {
+                "issues": "https://github.com/sbolch/max-upload-file-size/issues",
+                "source": "https://github.com/sbolch/max-upload-file-size/tree/v2.0"
+            },
+            "funding": [
+                {
+                    "url": "https://ko-fi.com/arnyek",
+                    "type": "ko_fi"
+                }
+            ],
+            "time": "2022-11-06T22:34:19+00:00"
         },
         {
             "name": "simplepie/simplepie",

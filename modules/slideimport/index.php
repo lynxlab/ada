@@ -54,8 +54,8 @@ $layout_dataAr['JS_filename'] = [
         JQUERY_UI,
         MODULES_SLIDEIMPORT_PATH . '/js/jquery.lazyload.js',
         MODULES_SLIDEIMPORT_PATH . '/js/tree.jquery.js',
+        JS_VENDOR_DIR . '/dropzone/dist/min/dropzone.min.js',
         JQUERY_NO_CONFLICT,
-        MODULES_SLIDEIMPORT_PATH . '/js/dropzone.js',
 ];
 
 if (isset($_GET['id_course']) && intval($_GET['id_course']) > 0) {
