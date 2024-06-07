@@ -47,6 +47,25 @@ class FCFieldset extends FormControl
         return $this->controls;
     }
 
+    /**
+     * Returns the label for this form control.
+     *
+     * @return string the html for the control's label
+     */
+    protected function label()
+    {
+        $html = '<span id="l_' . $this->controlId . '" class="' . self::DEFAULT_CLASS;
+        if ($this->isMissing) {
+            $html .= ' error';
+        }
+        $html .= '" >' . $this->labelText;
+        if ($this->isRequired) {
+            $html .= ' (*)';
+        }
+        $html .= '</span>';
+        return $html;
+    }
+
     public function render()
     {
         $html = $this->label() .

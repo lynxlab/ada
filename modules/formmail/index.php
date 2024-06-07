@@ -73,7 +73,8 @@ $content_dataAr = [
 ];
 
 $layout_dataAr['JS_filename'] = [
-    MODULES_FORMMAIL_PATH . '/js/dropzone.js',
+    JS_VENDOR_DIR . '/dropzone/dist/min/dropzone.min.js',
+    ROOT_DIR . '/js/include/dropzone/adaDropzone.js',
 ];
 
 $optionsAr['onload_func'] = 'initDoc(' . $userObj->getId() . ');';

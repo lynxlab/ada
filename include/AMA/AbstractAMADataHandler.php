@@ -337,14 +337,20 @@ abstract class AbstractAMADataHandler
      */
     public static function tsToDate($timestamp, $format = ADA_DATE_FORMAT)
     {
-        if (empty($timestamp) || is_string($timestamp)) {
+        if (empty($timestamp)) {
             return $timestamp;
+        } elseif (is_string($timestamp)) {
+            // negative limit to explode means to return an empty array if separator not found.
+            $date_ar = explode('/', $timestamp, -1);
+            if (count($date_ar) > 0) {
+                return $timestamp;
+            }
         }
         $format = str_replace(["%M", "%S"], ["%i", "%s"], $format);
         // if (is_string($timestamp)) {
         // var_dump($timestamp); die(__FILE__.':'.__LINE__);
         // }
-        return (new DateTimeImmutable())->setTimestamp($timestamp)->format(str_replace('%', '', $format));
+        return (new DateTimeImmutable())->setTimestamp((int)$timestamp)->format(str_replace('%', '', $format));
     }
 
     /**

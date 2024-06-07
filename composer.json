@@ -19,6 +19,7 @@
         "npm-asset/datatables.net-rowgroup": "^1.5",
         "npm-asset/datatables.net-rowgroup-se": "^1.5",
         "npm-asset/datatables.net-se": "^1.13",
+        "npm-asset/dropzone": "^5.9",
         "npm-asset/jplayer": "^2.9",
         "npm-asset/jquery": "~3.4.0",
         "npm-asset/jquery-blockui": "^2.70",
@@ -33,6 +34,7 @@
         "phpmailer/phpmailer": "^6.9",
         "platforg/adobe-connect": "^0.2.4",
         "rospdf/pdf-php": "^0.12.67",
+        "sbolch/max-upload-file-size": "^2.0",
         "simplepie/simplepie": "^1.8",
         "slim/slim": "^4.13"
     },

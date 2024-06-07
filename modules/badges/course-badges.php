@@ -89,7 +89,7 @@ $layout_dataAr['JS_filename'] = [
     SEMANTICUI_DATATABLE,
     JQUERY_DATATABLE_DATE,
     JQUERY_UI,
-    MODULES_BADGES_PATH . '/js/dropzone.js',
+    JS_VENDOR_DIR . '/dropzone/dist/min/dropzone.min.js',
     JQUERY_NO_CONFLICT,
 ];
 
