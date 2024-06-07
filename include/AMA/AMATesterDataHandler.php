@@ -4537,7 +4537,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         $text = $node_ha['text'] ?? null;
         $type = $this->orZero($node_ha['type'] ?? null);
         $creation_date = $this->dateToTs($this->orNull($node_ha['creation_date'] ?? ''));
-        $parent_id = $node_ha['parent_id'] ?? null;
+        $parent_id = $this->orNull($node_ha['parent_id'] ?? null);
         $order = $this->orNull($node_ha['order'] ?? null);
         $level = $this->orZero($node_ha['level'] ?? null);
         $version = $this->orZero($node_ha['version'] ?? null);
@@ -4630,7 +4630,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             $text,
             $type,
             $creation_date,
-            $parent_id ?? '',
+            $parent_id,
             $order,
             $level,
             $version,
