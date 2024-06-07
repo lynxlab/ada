@@ -2,7 +2,7 @@ var progressbar;
 var progressLabel;
 var repeatTimer;
 var tree;
-
+const dropzones = [];
 /**
  * Initializations
  *
@@ -11,20 +11,44 @@ var tree;
 function initDoc(maxSize) {
     const isAuthorImporting = $j('#isAuthorImporting').length == 1 && $j('#isAuthorImporting').val() == '1';
     $j('#isAuthorImporting').remove();
+    // dropzone init
+    Dropzone.autoDiscover = false;
+    // convert each input type="file" in a dropzone
+    document.querySelectorAll('input[type="file"]').forEach(el => {
+        const dzName = prepareDropzoneElement(el);
+        new Dropzone(`div#${dzName}`, Object.assign({}, getDropzonei18n(),
+            {
+                paramName: 'uploaded_file',
+                maxFiles: 1,
+                addRemoveLinks: false,
+                url: 'upload.php',
+                maxFilesize: maxSize,
+                acceptedFiles: 'application/zip',
+                // autoProcessQueue: false,
+                init: function () {
+                    var that = this;
+                    this.on("error", function (file, message) {
+                        that.removeFile(file);
+                        if ('object' == typeof message && 'data' in message && 'error' in message.data) {
+                            message = message.data.error;
+                        }
+                        document.getElementById(dzName).parentElement.insertAdjacentHTML(
+                            'beforeEnd',
+                            makeDropzoneError(file.name, message)
+                        );
+                    });
 
-    $j("#importfile").pekeUpload({
-        // onSubmit: true,
-        allowedExtensions: "zip",
-        // onFileError:function(file,error){alert("error on file: "+file.name+"
-        // error: "+error+"");},
-        onFileSuccess: function (file) {
-            goToImportStepTwo(file, isAuthorImporting);
-        },
-        btnText: "Sfoglia Files",
-        // multi: false,
-        maxSize: maxSize,
-        field : 'uploaded_file',
-        url: 'upload.php'
+                    this.on("success", function (file, responseObject) {
+                        console.log(responseObject);
+                        goToImportStepTwo(file, isAuthorImporting);
+                    });
+
+                    this.on("removedfile", function (file) {
+                        // delete uploadedFiles[file.name];
+                    });
+                }
+            })
+        );
     });
 
     progressbar = $j("#progressbar");
@@ -72,7 +96,6 @@ function initDoc(maxSize) {
                     // this timer will be cleared when the download has finished
                     repeatTimer = window.setTimeout(function () { requestProgress(); }, 100);
                     $j('#importUrlBtn, #importfile').prop("disabled", true);
-                    $j('a.btn-pekeupload').toggleClass('disabled');
                 }
             })
                 .done(function (JSONObj) {
@@ -89,7 +112,6 @@ function initDoc(maxSize) {
                 .always(function () {
                     window.clearTimeout(repeatTimer);
                     $j('#importUrlBtn, #importfile').prop("disabled", false);
-                    $j('a.btn-pekeupload').toggleClass('disabled');
                 });
         } else {
             alert($j('#emptyURLMSG').text());
