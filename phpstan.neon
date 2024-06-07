@@ -8,4 +8,7 @@ parameters:
         - /*/services/media/*
         - /*/upload_file/*
         - /*/widgets/cache/*
+        - /*/modules/debugbar/adminer/*
+        - /*/modules/debugbar/include/ADAAdminerPlugin.php
+        - /*/modules/debugbar/adaadminer.php
         - /*/modules/class*/
