@@ -2,3 +2,5 @@
 /composer.phar
 *.bak*
 /config/config.inc.php
+adminer/adminer.php
+adminer/plugins/

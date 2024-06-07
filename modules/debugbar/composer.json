@@ -8,12 +8,18 @@
             "email": "g.consorti@lynxlab.com"
         }
     ],
-    "autoload" : {
-        "psr-4" : {
-            "Lynxlab\\ADA\\Module\\DebugBar\\" : ["include/"]
-	    }
+    "autoload": {
+        "psr-4": {
+            "Lynxlab\\ADA\\Module\\DebugBar\\": [
+                "include/"
+            ]
+        }
     },
     "require": {
         "maximebf/debugbar": "^1.22"
+    },
+    "scripts": {
+        "post-install-cmd": "Lynxlab\\ADA\\Module\\DebugBar\\ADAAdminerHelper::installAdminer",
+        "post-update-cmd": "Lynxlab\\ADA\\Module\\DebugBar\\ADAAdminerHelper::installAdminer"
     }
 }
