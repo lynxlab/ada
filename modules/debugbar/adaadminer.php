@@ -41,7 +41,6 @@ function adminer_object()
 {
     // read client from "outside"
     global $client;
-    require_once "./adminer/plugins/plugin.php";
     $plugins = [];
     return new ADAAdminerPlugin($plugins, $client);
 }

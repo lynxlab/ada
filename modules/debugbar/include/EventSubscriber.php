@@ -65,10 +65,12 @@ class EventSubscriber implements EventSubscriberInterface
         if ((($_SESSION['sess_id_user'] ?? 0) > 0) && ($data['renderer'] ?? ARE_HTML_RENDER) == ARE_HTML_RENDER) {
             [$cssFiles, $jsFiles] = $this->debugBarRender->getAssets();
 
-            foreach ([
+            foreach (
+                [
                     'JS_filename' => $jsFiles,
                     'CSS_filename' => $cssFiles,
-                ] as $assetKey => $assets) {
+                ] as $assetKey => $assets
+            ) {
                 if (!array_key_exists($assetKey, $data['layout_dataAr'] ?? [])) {
                     $data['layout_dataAr'][$assetKey] = [];
                 }
