@@ -15,6 +15,8 @@ use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Upload\FileUploader;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Base config file
  */
@@ -46,14 +48,16 @@ BrowsingHelper::init($neededObjAr);
 $fieldUploadName = (string) DataValidator::checkInputValues('uploaded_file', 'Value', INPUT_POST, 'uploaded_file');
 $fileUploader = new FileUploader(ADA_UPLOAD_PATH . $userObj->getId() . '/', $fieldUploadName);
 if ($fileUploader->upload(false) == false) {
-    $data = $fileUploader->getErrorMessage();
+    $error = $fileUploader->getErrorMessage();
     $response['success'] = 0;
-    $response['error'] = $fileUploader->getErrorMessage();
+    $response['data'] = ['error' => strlen($error) == 0 ? translateFN('Errore sconosciuto') : $error];
+    unlink($fileUploader->getPathToUploadedFile());
+    header(' ', true, 400);
 } else {
-    $_SESSION['importHelper']['filename'] = $fileUploader->getPathToUploadedFile();
     $response['success'] = 1;
+    $response['data'] = ['fileName' => $fileUploader->getFileName()];
+    $_SESSION['importHelper']['filename'] = $fileUploader->getPathToUploadedFile();
 }
 
-echo $response['success'] == 0 ? $response['error'] : $response['success'];
-die();
-// echo json_encode($response);
+header('Content-Type: application/json');
+die(json_encode($response));
