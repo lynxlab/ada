@@ -3303,7 +3303,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         ADALogger::logDb("enteres del_links (sqlnode_id: $sqlnode_id)");
 
         $sql = "delete from link where id_nodo=?";
-        $result = $this->executeCriticalPrepared($sql, [$sqlnode_id]);
+        $result = $this->queryPrepared($sql, [$sqlnode_id]);
 
         if (AMADB::isError($result)) {
             return new AMAError(AMA_ERR_REMOVE);
@@ -5321,7 +5321,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
          */
         $sql = "delete from history_nodi where id_nodo=?";
         ADALogger::logDb("cleaning history_nodi: $sql");
-        $res = $this->executeCriticalPrepared($sql, [$node_id]);
+        $res = $this->queryPrepared($sql, [$node_id]);
         if (AMADB::isError($res)) {
             ADALogger::logDb($res->getMessage() . " detected, aborting");
             return new AMAError(AMA_ERR_REMOVE);
@@ -5332,7 +5332,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
          */
         $sql = "delete from history_esercizi where id_nodo=?";
         ADALogger::logDb("cleaning history_esercizi: $sql");
-        $res = $this->executeCriticalPrepared($sql, [$node_id]);
+        $res = $this->queryPrepared($sql, [$node_id]);
         if (AMADB::isError($res)) {
             ADALogger::logDb($res->getMessage() . " detected, aborting");
             return $res;
@@ -5343,7 +5343,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
          */
         $sql = "delete from bookmark where id_nodo=?";
         ADALogger::logDb("cleaning bookmark: $sql");
-        $res = $this->executeCriticalPrepared($sql, [$node_id]);
+        $res = $this->queryPrepared($sql, [$node_id]);
         if (AMADB::isError($res)) {
             ADALogger::logDb($res->getMessage() . " detected, aborting");
             return new AMAError(AMA_ERR_REMOVE);
@@ -5355,7 +5355,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
          */
         $sql = "delete from extended_node where id_node=?";
         ADALogger::logDb("cleaning extended node: $sql");
-        $res = $this->executeCriticalPrepared($sql, [$node_id]);
+        $res = $this->queryPrepared($sql, [$node_id]);
         if (AMADB::isError($res)) {
             ADALogger::logDb($res->getMessage() . " detected, aborting");
             return new AMAError(AMA_ERR_REMOVE);
@@ -6379,7 +6379,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         if (empty($ri_id)) {
             $sql = "delete from risorsa_esterna where id_risorsa_ext=?";
             ADALogger::logDb("deleting record: $sql");
-            $res = $this->executeCriticalPrepared($sql, [$res_id]);
+            $res = $this->queryPrepared($sql, [$res_id]);
             if (AMADB::isError($res)) {
                 return new AMAError(AMA_ERR_REMOVE);
             }
@@ -6728,7 +6728,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         }
         ADALogger::logDb("deleting record: $sql");
 
-        $result = $this->executeCriticalPrepared($sql, $params);
+        $result = $this->queryPrepared($sql, $params);
         if (AMADB::isError($result)) {
             return new AMAError(AMA_ERR_REMOVE);
         }
