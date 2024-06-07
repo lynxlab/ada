@@ -46,6 +46,7 @@ return RectorConfig::configure()
         __DIR__ . '/widgets/cache',
         '*/vendor/*',
         __DIR__ . '/rector.php',
+        __DIR__ . '/modules/debugbar/adminer',
         ChangeSwitchToMatchRector::class,
         RemoveExtraParametersRector::class,
         ArrayKeyExistsOnPropertyRector::class,

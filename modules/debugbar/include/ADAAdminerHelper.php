@@ -2,7 +2,6 @@
 
 namespace Lynxlab\ADA\Module\DebugBar;
 
-use Composer\Script\Event;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 
 class ADAAdminerHelper
@@ -111,7 +110,7 @@ class ADAAdminerHelper
         return $dsnArr;
     }
 
-    public static function installAdminer(Event $event)
+    public static function installAdminer()
     {
         // download adminer.
         // and turn off error_reporting.
@@ -121,7 +120,7 @@ class ADAAdminerHelper
                 '/(error_reporting)\(\d+\);/',
                 '$1(0);',
                 file_get_contents(
-                    'https://github.com/vrana/adminer/releases/download/v'. self::ADMINER_VERSION .'/adminer-'. self::ADMINER_VERSION .'-mysql.php'
+                    'https://github.com/vrana/adminer/releases/download/v' . self::ADMINER_VERSION . '/adminer-' . self::ADMINER_VERSION . '-mysql.php'
                 )
             )
         );

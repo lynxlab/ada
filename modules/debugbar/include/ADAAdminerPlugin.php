@@ -2,9 +2,12 @@
 
 namespace Lynxlab\ADA\Module\DebugBar;
 
-class ADAAdminerPlugin extends \AdminerPlugin
-{
+use AdminerPlugin;
 
+require_once realpath(__DIR__) . '/../adminer/plugins/plugin.php';
+
+class ADAAdminerPlugin extends AdminerPlugin
+{
     private $client;
 
     public function __construct($plugins, $client)
@@ -13,24 +16,24 @@ class ADAAdminerPlugin extends \AdminerPlugin
         parent::__construct($plugins);
     }
 
-    function head()
+    public function head()
     {
-?>
+        ?>
         <style>
             p.logout {
                 display: none;
             }
         </style>
-<?php
+        <?php
         return true;
     }
 
-    function name()
+    public function name()
     {
         return 'ADA Adminer';
     }
 
-    function databases($flush = true)
+    public function databases($flush = true)
     {
         return array_filter(
             parent::databases($flush),
@@ -41,18 +44,18 @@ class ADAAdminerPlugin extends \AdminerPlugin
         );
     }
 
-    function credentials()
+    public function credentials()
     {
         return ADAAdminerHelper::getCredentials($this->client);
     }
 
-    function login($login, $password)
+    public function login($login, $password)
     {
         // autologin to adminer
         return true;
     }
 
-    function headers()
+    public function headers()
     {
         // allow usage within iframe
         header("X-Frame-Options: SameOrigin");

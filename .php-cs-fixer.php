@@ -7,6 +7,7 @@ $finder = (new PhpCsFixer\Finder())
         'services/media',
         'upload_file',
         'widgets/cache',
+        'modules/debugbar/adminer',
         'vendor',
         'external/fckeditor/editor/dialog/fck_spellerpages/spellerpages/server-scripts/',
     ]);

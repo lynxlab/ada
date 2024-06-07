@@ -50,6 +50,8 @@ class ADAAdminerCollector extends DataCollector implements Renderable, AssetProv
                 'menu' => $clients,
             ];
         }
+
+        return [];
     }
 
     /**
