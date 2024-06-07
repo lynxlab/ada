@@ -339,7 +339,7 @@ abstract class AbstractAMADataHandler
     {
         if (empty($timestamp)) {
             return $timestamp;
-        } else if (is_string($timestamp)) {
+        } elseif (is_string($timestamp)) {
             // negative limit to explode means to return an empty array if separator not found.
             $date_ar = explode('/', $timestamp, -1);
             if (count($date_ar) > 0) {
