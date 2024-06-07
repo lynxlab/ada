@@ -18,6 +18,7 @@ use DebugBar\DataCollector\RequestDataCollector;
 use DebugBar\DebugBar;
 use DebugBar\DebugBarException;
 use Lynxlab\ADA\Main\Traits\ADASingleton;
+use Lynxlab\ADA\Module\DebugBar\DataCollector\ADAAdminerCollector;
 use Lynxlab\ADA\Module\DebugBar\DataCollector\GitInfoCollector;
 use Lynxlab\ADA\Module\DebugBar\DataCollector\GlobalsCollector;
 
@@ -34,15 +35,14 @@ class ADADebugBar extends DebugBar
     protected function __construct()
     {
         $this->pdoCollector = new PDOCollector();
+        $this->addCollector(new ADAAdminerCollector());
         $this->addCollector(new GitInfoCollector(ROOT_DIR));
-
         $this->addCollector(new PhpInfoCollector());
         $this->addCollector(new MessagesCollector());
         $this->addCollector(new RequestDataCollector());
         // $this->addCollector(new TimeDataCollector());
         $this->addCollector(new MemoryCollector());
         // $this->addCollector(new ExceptionsCollector());
-
         $this->addCollector(new GlobalsCollector());
         // $this->addCollector($this->pdoCollector);
         // $this->addCollector(new ConfigCollector([], 'ARE'));

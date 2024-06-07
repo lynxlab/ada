@@ -62,15 +62,13 @@ class EventSubscriber implements EventSubscriberInterface
         /**
          * Output the debugbar only if ARE_HTML_RENDER
          */
-        if (($data['renderer'] ?? ARE_HTML_RENDER) == ARE_HTML_RENDER) {
+        if ((($_SESSION['sess_id_user'] ?? 0) > 0) && ($data['renderer'] ?? ARE_HTML_RENDER) == ARE_HTML_RENDER) {
             [$cssFiles, $jsFiles] = $this->debugBarRender->getAssets();
 
-            foreach (
-                [
-                'JS_filename' => $jsFiles,
-                'CSS_filename' => $cssFiles,
-                ] as $assetKey => $assets
-            ) {
+            foreach ([
+                    'JS_filename' => $jsFiles,
+                    'CSS_filename' => $cssFiles,
+                ] as $assetKey => $assets) {
                 if (!array_key_exists($assetKey, $data['layout_dataAr'] ?? [])) {
                     $data['layout_dataAr'][$assetKey] = [];
                 }

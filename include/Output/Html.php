@@ -22,7 +22,6 @@ use Exception;
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\ArrayToXML\ArrayToXML;
-use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Output\GenericHtml;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 use Lynxlab\ADA\Widgets\Widget;
@@ -44,10 +43,7 @@ class Html extends GenericHtml
 
     public function __construct($template, $CSS_filename, $user_name, $course_title, $node_title = "", $meta_keywords = "", $author = "", $meta_refresh_time = "", $meta_refresh_url = "", $onload_func = "", $layoutObj = null)
     {
-
-        $HTTP_USER_AGENT =   $_SERVER['HTTP_USER_AGENT'];
-        $root_dir =   $GLOBALS['root_dir'];
-        $http_root_dir =   $GLOBALS['http_root_dir'];
+        $http_root_dir = $GLOBALS['http_root_dir'];
         $keywords = "ADA, Lynx, ";
         $keywords .= ADA_METAKEYWORDS; // from config file
         $description = ADA_METADESCRIPTION; // from config file
