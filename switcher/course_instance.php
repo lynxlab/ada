@@ -191,7 +191,7 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
                 }
             }
             $span_label = CDOMElement::create('span');
-            $span_label->setAttribute('title', $title);
+            $span_label->setAttribute('title', $title ?? '');
             $span_label->setAttribute('class', 'UserName tooltip');
             $span_label->setAttribute('id', $user->getSubscriberId());
             $span_label->addChild(new CText($name));
@@ -201,7 +201,7 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
             $span_lastname->addChild(new CText($lastname));
 
             $Tooltip = CDOMElement::create('div');
-            $Tooltip->setAttribute('title', $title);
+            $Tooltip->setAttribute('title', $title ?? '');
             $Tooltip->setAttribute('class', 'UserName tooltip');
             $Tooltip->setAttribute('id', 'user_tooltip_' . $user->getSubscriberId());
             $tooltipDiv->addChild($Tooltip);
