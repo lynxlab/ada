@@ -3666,7 +3666,10 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         $id_autore = $this->orZero($course_ha['id_autore']);
         $id_nodo_iniziale = $this->orZero(DataValidator::validateNodeId($course_ha['id_nodo_toc']));
         $id_nodo_toc = $this->orZero(DataValidator::validateNodeId($course_ha['id_nodo_iniziale']));
-        $media_path = $this->orNull(DataValidator::validateString($course_ha['media_path']));
+        $media_path = DataValidator::validateString($course_ha['media_path']);
+        if (false == $media_path) {
+            $media_path = null;
+        }
 
         $static_mode = $this->orZero($course_ha['static_mode']);
         $id_lingua = DataValidator::isUinteger($course_ha['id_lingua']);
