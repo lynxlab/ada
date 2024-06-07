@@ -3,6 +3,10 @@ function initDoc(options) {
     if ('datatables' in options && options.datatables.length > 0) {
         options.datatables.map((datatableID) => {
             $j('#' + datatableID).DataTable({
+                "aoColumnDefs": [
+                    { "aTargets": [2, 4, 5], "sType": "date-eu" },
+                    { "aTargets": [-1, -2], "sortable": false },
+                ],
                 'oLanguage':
                 {
                     'sUrl': HTTP_ROOT_DIR + '/js/include/jquery/dataTables/dataTablesLang.php'
@@ -11,7 +15,7 @@ function initDoc(options) {
         });
     }
 
-    $j('.subscribe-group').on('click', function(e) {
+    $j('.subscribe-group').on('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
         if ('loadModuleJS' in options && options.loadModuleJS.length > 0) {
@@ -36,19 +40,19 @@ function initDoc(options) {
  * @return jQuery promise
  */
 function showHideDiv(title, message, isOK) {
-	var errorClass = (!isOK) ? ' error' : '';
-	var content = "<div id='ADAJAX' class='saveResults popup" + errorClass + "'>";
-	if (title.length > 0) content += "<p class='title'>" + title + "</p>";
-	if (message.length > 0) content += "<p class='message'>" + message + "</p>";
-	content += "</div>";
-	var theDiv = $j(content);
-	theDiv.css("position", "fixed");
-	theDiv.css("z-index", 9000);
-	theDiv.css("width", "350px");
-	theDiv.css("top", ($j(window).height() / 2) - (theDiv.outerHeight() / 2));
-	theDiv.css("left", ($j(window).width() / 2) - (theDiv.outerWidth() / 2));
-	theDiv.hide().appendTo('body').fadeIn(500).delay(2000);
-	var thePromise = theDiv.fadeOut(500);
-	$j.when(thePromise).done(function () { theDiv.remove(); });
-	return thePromise;
+    var errorClass = (!isOK) ? ' error' : '';
+    var content = "<div id='ADAJAX' class='saveResults popup" + errorClass + "'>";
+    if (title.length > 0) content += "<p class='title'>" + title + "</p>";
+    if (message.length > 0) content += "<p class='message'>" + message + "</p>";
+    content += "</div>";
+    var theDiv = $j(content);
+    theDiv.css("position", "fixed");
+    theDiv.css("z-index", 9000);
+    theDiv.css("width", "350px");
+    theDiv.css("top", ($j(window).height() / 2) - (theDiv.outerHeight() / 2));
+    theDiv.css("left", ($j(window).width() / 2) - (theDiv.outerWidth() / 2));
+    theDiv.hide().appendTo('body').fadeIn(500).delay(2000);
+    var thePromise = theDiv.fadeOut(500);
+    $j.when(thePromise).done(function () { theDiv.remove(); });
+    return thePromise;
 }
