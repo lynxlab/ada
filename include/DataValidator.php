@@ -327,7 +327,7 @@ class DataValidator
     {
         return match ($language) {
             null => false,
-            default => (in_array($language, Translator::getSupportedLanguages())) ? $language : false
+            default => (count(array_filter(Translator::getSupportedLanguages(), fn ($x) => $x['codice_lingua'] == $language)) > 0) ? $language : false
         };
     }
 
