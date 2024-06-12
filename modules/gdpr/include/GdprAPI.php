@@ -382,11 +382,12 @@ class GdprAPI
     /**
      * Builds a GdprUser from the passed ADALoggableUser
      *
-     * @param \ADALoggableUser $user
+     * @param ADALoggableUser $user
+     * @param AMAGdprDataHandler|GDPRApi $dbToUse
      * @return \Lynxlab\ADA\Module\GDPR\GdprUser
      */
-    public static function createGdprUserFromADALoggable(ADALoggableUser $user)
+    public static function createGdprUserFromADALoggable(ADALoggableUser $user, $dbToUse = null)
     {
-        return new GdprUser(['id_utente' => $user->getId()]);
+        return new GdprUser(['id_utente' => $user->getId()], $dbToUse);
     }
 }

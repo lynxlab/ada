@@ -390,6 +390,43 @@ class History
     }
 
     /**
+     * Performs the calculation of how much time the student has spent in the course.
+     *
+     * @param array $visit_time array of rows as returned by AMATesterDataHandler::getStudentVisitTime
+     *
+     * @return int time in seconds
+     */
+    public static function applyTimeCalc($visit_time)
+    {
+        $nodes_time = 0;
+        if (isset($visit_time[0])) {
+            $n_session = $visit_time[0]['session_id'];
+            $n_start = $visit_time[0]['data_visita'];
+            $n_time_prec = $visit_time[0]['data_visita'];
+        } else {
+            $n_session = null;
+            $n_start = null;
+            $n_time_prec = null;
+        }
+        $num_nodi = count($visit_time);
+        foreach ($visit_time as $key => $val) {
+            // controlla se vi e' stato cambio del valore del session_id
+            if ($val['session_id'] != $n_session) {
+                $nodes_time  = $nodes_time + ($n_time_prec - $n_start); // + ADA_SESSION_TIME;
+                $n_session   = $val['session_id'];
+                $n_start     = $val['data_visita'];
+                $n_time_prec = $val['data_visita']; //ora di entrata nel primo nodo visitato nella sessione
+                // assegna il valore di data uscita del "nodo precedente"
+            } elseif ($key == ($num_nodi - 1)) {
+                $nodes_time = $nodes_time + $val['data_visita'] - $n_start;
+            } else {
+                $n_time_prec = $val['data_uscita'];
+            }
+        }
+        return $nodes_time;
+    }
+
+    /**
      * get_visit_time
      * Fetches an associative array containing history information for nodes in $this->id_course_instance
      * visited by student $this->id_student.
@@ -404,34 +441,7 @@ class History
         if (AMADataHandler::isError($visit_time)) {
             $errObj = new ADAError($visit_time, translateFN("Errore nella lettura dei dati"));
         }
-
-        $nodes_time = 0 ;
-        if (isset($visit_time[0])) {
-            $n_session = $visit_time[0]['session_id'] ;
-            $n_start = $visit_time[0]['data_visita'] ;
-            $n_time_prec = $visit_time[0]['data_visita'] ;
-        } else {
-            $n_session = null ;
-            $n_start = null ;
-            $n_time_prec = null ;
-        }
-        $num_nodi = count($visit_time);
-        foreach ($visit_time as $key => $val) {
-            // controlla se vi e' stato cambio del valore del session_id
-            if ($val['session_id'] != $n_session) {
-                $nodes_time  = $nodes_time + ($n_time_prec - $n_start); // + ADA_SESSION_TIME;
-                $n_session   = $val['session_id'];
-                $n_start     = $val['data_visita'];
-                $n_time_prec = $val['data_visita'] ; //ora di entrata nel primo nodo visitato nella sessione
-                // assegna il valore di data uscita del "nodo precedente"
-            } elseif ($key == ($num_nodi - 1)) {
-                $nodes_time = $nodes_time + $val['data_visita'] - $n_start;
-            } else {
-                $n_time_prec = $val['data_uscita'];
-            }
-        }
-
-        $this->total_time = $nodes_time;
+        $this->total_time = static::applyTimeCalc($visit_time);
         unset($visit_time);
     }
 

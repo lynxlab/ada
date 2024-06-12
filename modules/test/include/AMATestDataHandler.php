@@ -68,10 +68,10 @@ class AMATestDataHandler extends AMADataHandler
     {
         //validazione campi
         $d = [
-            'id_corso','id_posizione','id_utente','id_istanza','nome','titolo','consegna',
-            'testo','tipo','data_creazione','ordine','id_nodo_parent','id_nodo_radice',
-            'id_nodo_riferimento','livello','versione','n_contatti','icona','colore_didascalia',
-            'colore_sfondo','correttezza','copyright','didascalia','durata','titolo_dragdrop',
+            'id_corso', 'id_posizione', 'id_utente', 'id_istanza', 'nome', 'titolo', 'consegna',
+            'testo', 'tipo', 'data_creazione', 'ordine', 'id_nodo_parent', 'id_nodo_radice',
+            'id_nodo_riferimento', 'livello', 'versione', 'n_contatti', 'icona', 'colore_didascalia',
+            'colore_sfondo', 'correttezza', 'copyright', 'didascalia', 'durata', 'titolo_dragdrop',
         ];
         foreach ($data as $k => $v) {
             if (!in_array($k, $d)) {
@@ -111,9 +111,9 @@ class AMATestDataHandler extends AMADataHandler
     {
         //validazione campi
         $d = [
-            'nome','titolo','consegna','testo','tipo','ordine','id_nodo_parent','id_nodo_radice',
-            'id_nodo_riferimento','livello','versione','n_contatti','icona','colore_didascalia',
-            'colore_sfondo','correttezza','copyright','didascalia','durata','titolo_dragdrop',
+            'nome', 'titolo', 'consegna', 'testo', 'tipo', 'ordine', 'id_nodo_parent', 'id_nodo_radice',
+            'id_nodo_riferimento', 'livello', 'versione', 'n_contatti', 'icona', 'colore_didascalia',
+            'colore_sfondo', 'correttezza', 'copyright', 'didascalia', 'durata', 'titolo_dragdrop',
         ];
 
         foreach ($data as $k => $v) {
@@ -441,10 +441,14 @@ class AMATestDataHandler extends AMADataHandler
      */
     public function testGetGivenAnswers($id_history_text)
     {
-        $sql = "SELECT *
-				FROM `" . self::$PREFIX . "history_answer` ha
-				WHERE ha.`id_history_test` = ?";
-        $res =  $this->getAllPrepared($sql, [$id_history_text], AMA_FETCH_ASSOC);
+        $sql = "SELECT * FROM `" . self::$PREFIX . "history_answer` ha ";
+        if (is_array($id_history_text)) {
+            $sql .= "WHERE ha.`id_history_test` IN (" . implode(",", $id_history_text) .  ")";
+            $res =  $this->getAllPrepared($sql, [], AMA_FETCH_ASSOC);
+        } else {
+            $sql .= "WHERE ha.`id_history_test` = ?";
+            $res =  $this->getAllPrepared($sql, [$id_history_text], AMA_FETCH_ASSOC);
+        }
 
         if (self::isError($res)) {
             return new AMAError(AMA_ERR_GET);
@@ -492,7 +496,7 @@ class AMATestDataHandler extends AMADataHandler
 
         $data_fine = time();
 
-        $values = [$data_fine,$id_history_test];
+        $values = [$data_fine, $id_history_test];
 
         $result = $this->queryPrepared($sql, $values);
         if (self::isError($result)) {
@@ -548,6 +552,9 @@ class AMATestDataHandler extends AMADataHandler
                 if (is_null($v)) {
                     $sql .= " AND ht.`" . $k . "` IS NULL";
                     unset($where[$k]);
+                } elseif (is_array($v) && !empty($v)) {
+                    $sql .= " AND ht.`" . $k . "` IN ('" . implode("','", $v) . "')";
+                    unset($where[$k]);
                 } else {
                     $sql .= " AND ht.`" . $k . "` = ?";
                 }
@@ -565,13 +572,52 @@ class AMATestDataHandler extends AMADataHandler
         }
     }
 
+    /**
+     * Gets the time spent in test nodes.
+     *
+     * @param int $id_course id of the course.
+     * @param int $id_instance id of the course instance.
+     * @param int|array $id_user id or array of students ids.
+     * @param int $start  start timestamp, defaults to 0
+     * @param int $end end timestamp defaults to null that will be set to now().
+     *
+     * @return array an array with 'data_inizio', 'data_fine' and 'id_utente' keys
+     */
+    public function testGetStudentTimeInTest($id_course, $id_instance, $id_user, $start = 0, $end = null)
+    {
+        if (is_null($end)) {
+            $end = time();
+        }
+        return array_map(
+            fn ($el) => [
+                'data_inizio' => intval($el['data_inizio']),
+                'data_fine' => intval($el['data_fine']),
+                'id_utente' => $el['id_utente'],
+            ],
+            array_filter(
+                $this->testGetHistoryTestJoined([
+                    'id_corso' => $id_course,
+                    'id_istanza_corso' => $id_instance,
+                    'id_utente' => $id_user,
+                ]),
+                function ($el) use ($start, $end) {
+                    $check = intval($el['data_inizio']);
+                    return (
+                        array_key_exists('consegnato', $el) && intval($el['consegnato']) > 0 &&
+                        $check > 0 && intval($el['data_fine']) > 0 &&
+                        $start < $check && $check <= $end
+                    );
+                }
+            )
+        );
+    }
 
     /**
      * Retrieves history test record joined with other tables
      *
      * @param $where - array with key (field) and values (value)
      *
-     * @return an AMAError object if something goes wrong, true on success
+     * @return array|AMA_Error object if something goes wrong, data on success
      *
      */
     public function testGetHistoryTestJoined($where = [], $tipo = null)
@@ -669,7 +715,7 @@ class AMATestDataHandler extends AMADataHandler
 
         $data_inizio = time();
 
-        $values = [$id_test,$id_istanza_corso,$id_corso,$id_utente,$data_inizio,$domande];
+        $values = [$id_test, $id_istanza_corso, $id_corso, $id_utente, $data_inizio, $domande];
 
         $result = $this->queryPrepared($sql, $values);
         if (self::isError($result)) {
@@ -754,7 +800,7 @@ class AMATestDataHandler extends AMADataHandler
         $repeatable = $repeatable ? 1 : 0;
         $end_date = time();
 
-        $values = [$end_date,$tempo_scaduto,$points,$repeatable,$min_barrier_point,$level_gained,$id_history_test];
+        $values = [$end_date, $tempo_scaduto, $points, $repeatable, $min_barrier_point, $level_gained, $id_history_test];
 
         $result = $this->queryPrepared($sql, $values);
         if (self::isError($result)) {
@@ -786,7 +832,7 @@ class AMATestDataHandler extends AMADataHandler
 				)
 				WHERE t.`id_history_test` = ?";
 
-        $result = $this->queryPrepared($sql, [$id_history_test,$id_history_test]);
+        $result = $this->queryPrepared($sql, [$id_history_test, $id_history_test]);
         if (self::isError($result)) {
             return new AMAError(AMA_ERR_UPDATE);
         }
@@ -851,7 +897,7 @@ class AMATestDataHandler extends AMADataHandler
 
         $data = time();
 
-        $values = [$id_history_test,$student_id,$topic_id,$question_id,$course_id,$course_instance_id,$answer,$points,$attachment,$data];
+        $values = [$id_history_test, $student_id, $topic_id, $question_id, $course_id, $course_instance_id, $answer, $points, $attachment, $data];
 
         $result = $this->queryPrepared($sql, $values);
         if (self::isError($result)) {
@@ -951,7 +997,7 @@ class AMATestDataHandler extends AMADataHandler
 				WHERE ht.`id_corso` = ?
 				AND ht.`id_istanza_corso` = ?
 				AND ( ht.`consegnato` = 1 OR ht.`tempo_scaduto` = 1 )";
-        $res = $this->getAllPrepared($sql, [$id_course,$id_instance], AMA_FETCH_ASSOC);
+        $res = $this->getAllPrepared($sql, [$id_course, $id_instance], AMA_FETCH_ASSOC);
         if (self::isError($res)) {
             return $res;
         }
@@ -1039,7 +1085,7 @@ class AMATestDataHandler extends AMADataHandler
     public function testUpdateAnswer($id_answer, $data)
     {
         //validazione campi
-        $d = ['risposta','commento','punteggio','correzione_risposta','allegato'];
+        $d = ['risposta', 'commento', 'punteggio', 'correzione_risposta', 'allegato'];
 
         foreach ($data as $k => $v) {
             if (!in_array($k, $d)) {
@@ -1267,7 +1313,7 @@ class AMATestDataHandler extends AMADataHandler
     public function updateExitTimeExHistory($student_id, $course_instance_id, $node_id)
     {
         $sql = 'UPDATE `history_esercizi` SET `data_uscita`=? WHERE `data_visita`=`data_uscita` AND ' .
-        '`id_utente_studente` = ? AND `id_nodo` = ? AND `id_istanza_corso`= ?';
+            '`id_utente_studente` = ? AND `id_nodo` = ? AND `id_istanza_corso`= ?';
 
         return $this->queryPrepared($sql, [time(), $student_id, $node_id, $course_instance_id]);
     }

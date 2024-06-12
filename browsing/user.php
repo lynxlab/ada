@@ -621,6 +621,8 @@ $layout_dataAr['JS_filename'] = [
     'user.js', // this file may use different templates, force user.js inclusion here
 ];
 
-$layout_dataAr['widgets']['studentsOfInstance'] = compact(['courseId', 'courseInstanceId']);
+if (isset($courseId) && isset($courseInstanceId)) {
+    $layout_dataAr['widgets']['studentsOfInstance'] = compact(['courseId', 'courseInstanceId']);
+}
 
 ARE::render($layout_dataAr, $content_dataAr, null, ['onload_func' => 'initDoc();']);
