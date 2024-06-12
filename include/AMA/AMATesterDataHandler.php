@@ -1702,14 +1702,19 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      * get_student_visit_time
      * Used to fetch data about student visit time in a course instance.
      *
-     * @param string $id_student
+     * @param array|string|int $id_student id of a student, or an array of ids.
      * @param int $id_course_instance
      * @return mixed - an AMADB Error if something goes wrong or an associative array on success
      */
     public function getStudentVisitTime($id_student, $id_course_instance)
     {
-        $sql = "SELECT id_nodo, data_visita, data_uscita, session_id
-      FROM history_nodi WHERE id_utente_studente=? AND id_istanza_corso=? ORDER BY session_id,data_uscita ASC";
+        if (is_array($id_student)) {
+            $sql = "SELECT id_nodo, data_visita, data_uscita, session_id, id_utente_studente " .
+            "FROM history_nodi WHERE id_utente_studente IN (" . implode(',', $id_student) . ") AND id_istanza_corso=$id_course_instance ORDER BY session_id,data_uscita ASC";
+        } else {
+            $sql = "SELECT id_nodo, data_visita, data_uscita, session_id " .
+            "FROM history_nodi WHERE id_utente_studente=? AND id_istanza_corso=? ORDER BY session_id,data_uscita ASC";
+        }
 
         $result = $this->getAllPrepared($sql, [$id_student, $id_course_instance], AMA_FETCH_ASSOC);
         if (AMADB::isError($result)) {
@@ -2144,7 +2149,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         ];
         $sql = "update iscrizioni set status=:status, laststatusupdate=:laststatusupdate";
         if (!is_null($user_level)) {
-            $sql .= ", livello=$user_level";
+            $sql .= ", livello=:livello";
             $values['livello'] = $user_level;
         }
         $sql .= " where id_istanza_corso=:id_istanza_corso and id_utente_studente=:id_utente_studente";
@@ -5939,8 +5944,8 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         }
 
         $sql .= " WHERE N.id_nodo LIKE :node_like AND N2.id_nodo LIKE :node_like" .
-                " AND N.tipo NOT IN (" . ADA_NOTE_TYPE . "," . ADA_PRIVATE_NOTE_TYPE . ") AND N.tipo NOT IN (" . ADA_LEAF_WORD_TYPE . "," .
-                ADA_GROUP_WORD_TYPE . ") AND N2.tipo in (" . ADA_LEAF_TYPE . "," . ADA_GROUP_TYPE . ") GROUP BY N.id_nodo ORDER BY " . $ORDER;
+            " AND N.tipo NOT IN (" . ADA_NOTE_TYPE . "," . ADA_PRIVATE_NOTE_TYPE . ") AND N.tipo NOT IN (" . ADA_LEAF_WORD_TYPE . "," .
+            ADA_GROUP_WORD_TYPE . ") AND N2.tipo in (" . ADA_LEAF_TYPE . "," . ADA_GROUP_TYPE . ") GROUP BY N.id_nodo ORDER BY " . $ORDER;
 
         $params['node_like'] = $id_course . "\_%";
 
@@ -6000,7 +6005,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         }
 
         $sql .= "WHERE N.id_nodo LIKE :node_like AND N2.id_nodo LIKE :node_like" .
-                " AND N.tipo NOT IN (" . ADA_NOTE_TYPE . "," . ADA_PRIVATE_NOTE_TYPE . ") AND N.tipo NOT IN (" . ADA_LEAF_TYPE . "," . ADA_GROUP_TYPE . ") AND N.tipo in (" . ADA_LEAF_WORD_TYPE . "," . ADA_GROUP_WORD_TYPE . ") ORDER BY " . $ORDER;
+            " AND N.tipo NOT IN (" . ADA_NOTE_TYPE . "," . ADA_PRIVATE_NOTE_TYPE . ") AND N.tipo NOT IN (" . ADA_LEAF_TYPE . "," . ADA_GROUP_TYPE . ") AND N.tipo in (" . ADA_LEAF_WORD_TYPE . "," . ADA_GROUP_WORD_TYPE . ") ORDER BY " . $ORDER;
 
         $params['node_like'] = $id_course . "\_%";
 
@@ -6051,8 +6056,8 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         }
 
         $sql .= "WHERE N.id_nodo LIKE :node_like AND N2.id_nodo LIKE :node_like" .
-                " AND N.tipo  IN (" . ADA_NOTE_TYPE . "," . ADA_PRIVATE_NOTE_TYPE . ") " .
-                " AND N2.tipo in (" . ADA_LEAF_TYPE . "," . ADA_GROUP_TYPE . "," . ADA_NOTE_TYPE . "," . ADA_PRIVATE_NOTE_TYPE . ") ORDER BY " . $ORDER;
+            " AND N.tipo  IN (" . ADA_NOTE_TYPE . "," . ADA_PRIVATE_NOTE_TYPE . ") " .
+            " AND N2.tipo in (" . ADA_LEAF_TYPE . "," . ADA_GROUP_TYPE . "," . ADA_NOTE_TYPE . "," . ADA_PRIVATE_NOTE_TYPE . ") ORDER BY " . $ORDER;
 
         $params['node_like'] = $id_course . "\_%";
 
