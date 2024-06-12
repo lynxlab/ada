@@ -533,10 +533,10 @@ class MultiPort
                         $gdprUser = $gdprAPI->getGdprUserByID($userObj);
                         if (false !== $gdprUser) {
                             foreach ($gdprUser->getType() as $gdprType) {
-                                $gdprUser->removeType($gdprType);
+                                $gdprUser->removeType($gdprType, $gdprAPI);
                             }
                         } else {
-                            $gdprUser = GdprAPI::createGdprUserFromADALoggable($userObj);
+                            $gdprUser = GdprAPI::createGdprUserFromADALoggable($userObj, $gdprAPI);
                         }
                         if (!is_array($_POST['user_gdpr'])) {
                             $_POST['user_gdpr'] = [$_POST['user_gdpr']];
@@ -631,17 +631,21 @@ class MultiPort
          * If the user has subscribed to at least one tester, add the user
          * to the utente_tester table in common database.
          */
-        foreach ($testers_to_add as $tester_to_add) {
-            $testerHa = $common_dh->getTesterInfoFromPointer($tester_to_add);
-            $tester_id = $testerHa[0];
-            $res = $common_dh->addUserToTester($user_id, $tester_id);
-            if (AMADataHandler::isError($res)) {
-                if (($res->code != AMA_ERR_ADD) and ($res->code != AMA_ERR_UNIQUE_KEY)) {
-                    //return ADA_SET_USER_ERROR_TESTER;
-                    return false;
+        if (empty($tester_to_add)) {
+            $result ??= true;
+        } else {
+            foreach ($testers_to_add as $tester_to_add) {
+                $testerHa = $common_dh->getTesterInfoFromPointer($tester_to_add);
+                $tester_id = $testerHa[0];
+                $res = $common_dh->addUserToTester($user_id, $tester_id);
+                if (AMADataHandler::isError($res)) {
+                    if (($res->code != AMA_ERR_ADD) and ($res->code != AMA_ERR_UNIQUE_KEY)) {
+                        //return ADA_SET_USER_ERROR_TESTER;
+                        return false;
+                    }
+                } else {
+                    $userObj->addTester($tester_to_add);
                 }
-            } else {
-                $userObj->addTester($tester_to_add);
             }
         }
 

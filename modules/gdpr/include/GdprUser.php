@@ -116,7 +116,7 @@ class GdprUser extends GdprBase
             $type = $dbToUse->findBy('GdprUserType', ['id' => $type]);
             $type = reset($type);
         }
-        if ($type->getId() != GdprUserType::NONE) {
+        if (false !== $type && $type->getId() != GdprUserType::NONE) {
             $this->type[] = $type;
         }
         return $this;
