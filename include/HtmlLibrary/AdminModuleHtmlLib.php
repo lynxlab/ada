@@ -220,8 +220,8 @@ class AdminModuleHtmlLib
         $thead_dataAr = [
         translateFN('Tester'),
         translateFN('Azioni'),
-        translateFN('Utenti attivi'),
-        translateFN('Sessioni attive'),
+        translateFN('Studenti attivi'),
+        translateFN('Istanze attive'),
         ];
         $tbody_dataAr = [];
         foreach ($testers_dataAr as $tester_dataAr) {
