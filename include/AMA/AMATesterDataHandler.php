@@ -6225,7 +6225,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         $titolo = $res_ha['titolo'];
         $pubblicato = $res_ha['pubblicato'];
         $descrizione = $res_ha['descrizione'];
-        $lingua = $res_ha['lingua'];
+        $lingua = $this->orZero($res_ha['lingua'] ?? null);
 
         // vito, 19 luglio 2008
         $id_utente = $this->orZero($res_ha['id_utente']);
