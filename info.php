@@ -416,9 +416,12 @@ if ($op !== false && $op == 'course_info') {
                 if (!AMADataHandler::isError($course_instance_infoAR)) {
                     $course_infoAr = $tester_dh->getCourse($courseId);
                     $startStudentLevel = $course_instance_infoAR['start_level_student'];
-
-                    // add user to tester DB
-                    $id_tester_user = Multiport::setUser($userObj, $testersAr, $update_user_data = false);
+                    // add user to tester DB if needed
+                    if (empty(array_diff($testersAr, $userObj->getTesters()))) {
+                        $id_tester_user  = $userObj->getId();
+                    } else {
+                        $id_tester_user = Multiport::setUser($userObj, $testersAr, $update_user_data = false);
+                    }
                     if ($id_tester_user !== false) {
                         $result = $tester_dh->courseInstanceStudentPresubscribeAdd($instanceId, $userObj->getId(), $startStudentLevel);
                         if (!AMADataHandler::isError($result) || $result->code == AMA_ERR_UNIQUE_KEY) {
