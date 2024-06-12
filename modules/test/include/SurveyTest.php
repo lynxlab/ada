@@ -132,55 +132,62 @@ class SurveyTest extends RootTest
             foreach ($test_list as $test_listEL) {
                 $survey = NodeTest::readTest($test_listEL['id_test']);
                 $reportData['surveys'] += $survey->toArray();
+            }
 
-                // survey loop ended, do current survey computations
-                $historyArr = $dh->testGetHistoryTest([
-                        'id_corso' => $course_instanceObj->getCourseId(),
-                        'id_istanza_corso' => $course_instanceObj->getId(),
-                        'id_nodo' => $survey->id_nodo,
-                        'consegnato' => 1,
-                ]);
+            // survey loop ended, do current survey computations
+            $historyArr = $dh->testGetHistoryTest([
+                'id_corso' => $course_instanceObj->getCourseId(),
+                'id_istanza_corso' => $course_instanceObj->getId(),
+                'id_nodo' => array_keys($reportData['surveys']),
+                'consegnato' => 1,
+            ]);
 
-                if (!AMADB::isError($historyArr) && count($historyArr) > 0) {
-                    foreach ($historyArr as $historyEl) {
-                        $givenAnswers = $dh->testGetGivenAnswers($historyEl['id_history_test']);
-                        foreach ($givenAnswers as $givenAnswer) {
-                            // get a reference to the answers array to add report data
-                            $targetArr = &$reportData['surveys'][$survey->id_nodo]['topics'][$givenAnswer['id_topic']]['questions'][$givenAnswer['id_nodo']]['answers'];
-                            if (count($targetArr) == 0) {
-                                // unset whole question if empty answers
-                                unset($reportData['surveys'][$survey->id_nodo]['topics'][$givenAnswer['id_topic']]['questions'][$givenAnswer['id_nodo']]);
-                            } else {
-                                foreach (array_keys($targetArr) as $targetI) {
-                                    if (!isset($targetArr[$targetI]['count'])) {
-                                        $targetArr[$targetI]['count'] = 0;
+            $allGivenAnswers = $dh->test_getGivenAnswers(
+                array_map(fn ($historyEl) => $historyEl['id_history_test'], $historyArr)
+            );
+
+            if (!AMADB::isError($historyArr) && count($historyArr) > 0) {
+                foreach ($historyArr as $historyEl) {
+                    $givenAnswers = array_filter(
+                        $allGivenAnswers,
+                        fn ($el) => $el['id_history_test'] == $historyEl['id_history_test']
+                    );
+                    foreach ($givenAnswers as $givenAnswer) {
+                        // get a reference to the answers array to add report data
+                        $targetArr = &$reportData['surveys'][$survey->id_nodo]['topics'][$givenAnswer['id_topic']]['questions'][$givenAnswer['id_nodo']]['answers'];
+                        if (count($targetArr) == 0) {
+                            // unset whole question if empty answers
+                            unset($reportData['surveys'][$survey->id_nodo]['topics'][$givenAnswer['id_topic']]['questions'][$givenAnswer['id_nodo']]);
+                        } else {
+                            foreach (array_keys($targetArr) as $targetI) {
+                                if (!isset($targetArr[$targetI]['count'])) {
+                                    $targetArr[$targetI]['count'] = 0;
+                                }
+                            }
+                            if (!isset($targetArr[$noAnswerIndex])) {
+                                $targetArr[$noAnswerIndex] = ['titolo' => $noAnswerLabel, 'count' => 0];
+                            }
+                            if (!isset($targetArr[$totalIndex])) {
+                                $targetArr[$totalIndex] = ['titolo' => $totalLabel, 'count' => 0];
+                            }
+
+                            if (array_key_exists('risposta', $givenAnswer)) {
+                                $givenAnswerArr = unserialize($givenAnswer['risposta']);
+                                if (false !== $givenAnswerArr && array_key_exists('answer', $givenAnswerArr)) {
+                                    if (isset($targetArr[$totalIndex]['count'])) {
+                                        $targetArr[$totalIndex]['count']++;
                                     }
-                                }
-                                if (!isset($targetArr[$noAnswerIndex])) {
-                                    $targetArr[$noAnswerIndex] = ['titolo' => $noAnswerLabel, 'count' => 0];
-                                }
-                                if (!isset($targetArr[$totalIndex])) {
-                                    $targetArr[$totalIndex] = ['titolo' => $totalLabel, 'count' => 0];
-                                }
-
-                                if (array_key_exists('risposta', $givenAnswer)) {
-                                    $givenAnswerArr = unserialize($givenAnswer['risposta']);
-                                    if (false !== $givenAnswerArr && array_key_exists('answer', $givenAnswerArr)) {
-                                        if (isset($targetArr[$totalIndex]['count'])) {
-                                            $targetArr[$totalIndex]['count']++;
+                                    if (!is_array($givenAnswerArr['answer']) && strlen($givenAnswerArr['answer']) <= 0) {
+                                        if (isset($targetArr[$noAnswerIndex]['count'])) {
+                                            $targetArr[$noAnswerIndex]['count']++;
                                         }
-                                        if (!is_array($givenAnswerArr['answer']) && strlen($givenAnswerArr['answer']) <= 0) {
-                                            if (isset($targetArr[$noAnswerIndex]['count'])) {
-                                                $targetArr[$noAnswerIndex]['count']++;
-                                            }
-                                        } else {
-                                            if (!is_array($givenAnswerArr['answer'])) {
-                                                $givenAnswerArr['answer'] = [$givenAnswerArr['answer']];
-                                            }
-                                            foreach ($givenAnswerArr['answer'] as $anAnswer) {
-                                                if (isset($targetArr[$anAnswer]['count'])) {
-                                                    $targetArr[$anAnswer]['count']++;
-                                                }
+                                    } else {
+                                        if (!is_array($givenAnswerArr['answer'])) {
+                                            $givenAnswerArr['answer'] = [$givenAnswerArr['answer']];
+                                        }
+                                        foreach ($givenAnswerArr['answer'] as $anAnswer) {
+                                            if (isset($targetArr[$anAnswer]['count'])) {
+                                                $targetArr[$anAnswer]['count']++;
                                             }
                                         }
                                     }
@@ -188,15 +195,15 @@ class SurveyTest extends RootTest
                             }
                         }
                     }
-                } else {
-                    // set all counts to zero
-                    foreach ($reportData['surveys'] as $surveyID => $surveyData) {
-                        foreach ($surveyData['topics'] as $topicID => $topicData) {
-                            foreach ($topicData['questions'] as $questionID => $questionData) {
-                                foreach ($questionData['answers'] as $answerID => $answerData) {
-                                    $reportData['surveys'][$surveyID]['topics'][$topicID]['questions'][$questionID]['answers'][$answerID]['count'] = 0;
-                                    $reportData['surveys'][$surveyID]['topics'][$topicID]['questions'][$questionID]['answers'][$noAnswerIndex] = ['titolo' => $noAnswerLabel, 'count' => 0];
-                                }
+                }
+            } else {
+                // set all counts to zero
+                foreach ($reportData['surveys'] as $surveyID => $surveyData) {
+                    foreach ($surveyData['topics'] as $topicID => $topicData) {
+                        foreach ($topicData['questions'] as $questionID => $questionData) {
+                            foreach ($questionData['answers'] as $answerID => $answerData) {
+                                $reportData['surveys'][$surveyID]['topics'][$topicID]['questions'][$questionID]['answers'][$answerID]['count'] = 0;
+                                $reportData['surveys'][$surveyID]['topics'][$topicID]['questions'][$questionID]['answers'][$noAnswerIndex] = ['titolo' => $noAnswerLabel, 'count' => 0];
                             }
                         }
                     }
