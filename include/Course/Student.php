@@ -17,6 +17,7 @@ use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMATesterDataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Bookmark\Bookmark;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
@@ -247,6 +248,9 @@ class Student
     // added type parameter that defaults to 'xls'
     public function getClassReportFN($id_course, $order = "", $index_att = "", $type = 'HTML', $speed_mode = true)
     {
+        /**
+         * @var AMATesterDataHandler $dh
+         */
         $dh = $GLOBALS['dh'];
         $http_root_dir = $GLOBALS['http_root_dir'];
         $debug  = $GLOBALS['debug'] ?? null;
@@ -368,13 +372,20 @@ class Student
                     }
                 }
 
+                $dati_stude = $dh->getStudentsReport($id_instance, $id_course, $columns, $weights);
+
                 $ticIndex = null;
+                $allHistory = [];
                 if (array_key_exists(REPORT_COLUMN_TIME_IN_COURSE, $columns)) {
                     $tmp = array_search(REPORT_COLUMN_TIME_IN_COURSE, array_keys($columns), true);
                     if ($tmp !== false) {
-                        // add two to take into account id ands tudent name columns
+                        // add two to take into account id and student name columns
                         $ticIndex = $tmp + 2;
                     }
+                    $allHistory = $dh->getStudentVisitTime(
+                        array_map(fn ($el) => (int) $el['id'], $dati_stude),
+                        $id_instance
+                    );
                 }
 
                 if (array_key_exists(REPORT_COLUMN_BADGES, $columns)) {
@@ -404,9 +415,6 @@ class Student
                     $mydh->disconnect();
                 }
 
-
-                $dati_stude = $dh->getStudentsReport($id_instance, $id_course, $columns, $weights);
-
                 foreach ($dati_stude as $key => $user) {
                     // counters for statistics
                     $id_student = $dati_stude[$key]["id"];
@@ -421,12 +429,12 @@ class Student
                     $tot_level += $dati_stude[$key]['level'];
 
                     if (array_key_exists(REPORT_COLUMN_TIME_IN_COURSE, $columns) && !empty($ticIndex)) {
-                        $history = new History($id_instance, $id_student);
-                        if (is_numeric($id_course)) {
-                            $history->setCourse($id_course);
-                        }
-                        $history->getVisitTime();
-                        $tic = ($history->total_time > 0) ? $history->total_time : 0;
+                        $visit_time = array_values(array_filter(
+                            $allHistory,
+                            fn ($el) => $id_student == $el['id_utente_studente']
+                        ));
+                        $tic = History::applyTimeCalc($visit_time);
+
                         $dati_stude[$key] = array_merge(
                             array_slice($dati_stude[$key], 0, $ticIndex),
                             [$columns[REPORT_COLUMN_TIME_IN_COURSE] => sprintf("%02d:%02d", floor($tic / 3600), floor(($tic / 60) % 60))],
