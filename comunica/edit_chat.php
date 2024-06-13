@@ -4,6 +4,7 @@ use Lynxlab\ADA\Comunica\ChatRoom;
 use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMAError;
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Forms\ChatManagementForm;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 use Lynxlab\ADA\Main\Output\ARE;
@@ -101,6 +102,7 @@ if ($id_profile == AMA_TYPE_TUTOR) {
 }
 //***********************************
 
+$id_room = DataValidator::checkInputValues('id_room', 'Integer', INPUT_GET, 0);
 // initialize a new ChatDataHandler object
 $chatroomObj = new ChatRoom($id_room);
 // chek to see if the chatromm is started, in that case we disable some fields
