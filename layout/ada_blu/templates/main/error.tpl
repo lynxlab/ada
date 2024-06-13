@@ -59,10 +59,15 @@
             <div id="content">
                 <div id="contentcontent">
                     <div class="first">
-                        <div id="help">
-                            <template_field class="template_field" name="help">help</template_field>
+                        <div class="ui icon error message">
+                            <i class="ban circle icon"></i>
+                            <div class="content" style="font-size: 1.2em;">
+                                <div class="header">
+                                    <span><template_field class="template_field" name="status">status</template_field></span>
+                                </div>
+                                <span><template_field class="template_field" name="data">data</template_field></span>
+                            </div>
                         </div>
-                        <template_field class="template_field" name="data">data</template_field>
                     </div>
                 </div>
 
