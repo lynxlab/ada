@@ -19,7 +19,7 @@
     },
     "require": {
         "oomphinc/composer-installers-extender": "^2.0",
-        "npm-asset/fullcalendar": "~3.9.0"
+        "npm-asset/fullcalendar": "~3.4.0"
     },
     "repositories": [
         {
