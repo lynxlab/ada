@@ -299,7 +299,7 @@ if (
 
 // info on author and tutor and link for writing to tutor and author
 if (isset($tutor_uname)) {
-    $write_to_tutor_link = "<a href=\"$http_root_dir/comunica/sendMessage.php?destinatari=$tutor_uname\">$tutor_uname</a>";
+    $write_to_tutor_link = "<a href=\"$http_root_dir/comunica/send_message.php?destinatari=$tutor_uname\">$tutor_uname</a>";
     if (isset($tutor_id)) {
         $tutor_info_link = $tutor_uname;
     } else {
@@ -312,7 +312,7 @@ if (isset($tutor_uname)) {
 
 if (isset($node_author)) {
     if (isset($author_uname)) {
-        $write_to_author_link = "<a href=\"$http_root_dir/comunica/sendMessage.php?destinatari=$author_uname\">$node_author</a>";
+        $write_to_author_link = "<a href=\"$http_root_dir/comunica/send_message.php?destinatari=$author_uname\">$node_author</a>";
     } else {
         $write_to_author_link = null;
     }

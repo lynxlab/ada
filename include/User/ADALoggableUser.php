@@ -270,15 +270,15 @@ abstract class ADALoggableUser extends ADAGenericUser
                                         $online_users_idAr[] = $user_id;
                                         $id_profile = $userObj->getType(); //$userObj->tipo;
                                         if ($id_profile == AMA_TYPE_TUTOR) {
-                                            $online_usersAr[] = $userObj->username . " |<a href=\"$http_root_dir/comunica/sendMessage.php?destinatari=" . $userObj->username . "\"  target=\"_blank\">" . translateFN("scrivi un messaggio") . "</a> |"
+                                            $online_usersAr[] = $userObj->username . " |<a href=\"$http_root_dir/comunica/send_message.php?destinatari=" . $userObj->username . "\"  target=\"_blank\">" . translateFN("scrivi un messaggio") . "</a> |"
                                                 . " <a href=\"view.php?id_node=$sess_id_node&guide_user_id=" . $userObj->getId() . "\"> " . translateFN("segui") . "</a> |";
-                                            //$online_usersAr[$user_id]['user']= "<img src=\"img/_tutor.png\" border=\"0\"> ".$userObj->username. " |<a href=\"$http_root_dir/comunica/sendMessage.php?destinatari=". $userObj->username."\"  target=\"_blank\">".translateFN("scrivi un messaggio")."</a> |";
+                                            //$online_usersAr[$user_id]['user']= "<img src=\"img/_tutor.png\" border=\"0\"> ".$userObj->username. " |<a href=\"$http_root_dir/comunica/send_message.php?destinatari=". $userObj->username."\"  target=\"_blank\">".translateFN("scrivi un messaggio")."</a> |";
                                             //$online_usersAr[$user_id]['user'].= " <a href=\"view.php?id_node=$sess_id_node&guide_user_id=".$userObj->id."\"> ".translateFN("segui")."</a> |";
                                         } else {    // STUDENT
                                             // $online_usersAr[$user_id]['user']= "<a href=\"student.php?op=listStudents&id_course_instance=$sess_id_course_instance&id_course=$sess_id_course\"><img src=\"img/_student.png\" border=0></a> ";
-                                            $online_usersAr[] = $userObj->username . " |<a href=\"$http_root_dir/comunica/sendMessage.php?destinatari=" . $userObj->username . "\"  target=\"_blank\">" . translateFN("scrivi un messaggio") . "</a> |";
+                                            $online_usersAr[] = $userObj->username . " |<a href=\"$http_root_dir/comunica/send_message.php?destinatari=" . $userObj->username . "\"  target=\"_blank\">" . translateFN("scrivi un messaggio") . "</a> |";
                                             //                                            $online_usersAr[$user_id]['user']= "<img src=\"img/_student.png\" border=\"0\"> ";
-                                            //                                            $online_usersAr[$user_id]['user'].= $userObj->username. " |<a href=\"$http_root_dir/comunica/sendMessage.php?destinatari=". $userObj->username."\"  target=\"_blank\">".translateFN("scrivi un messaggio")."</a> |";
+                                            //                                            $online_usersAr[$user_id]['user'].= $userObj->username. " |<a href=\"$http_root_dir/comunica/send_message.php?destinatari=". $userObj->username."\"  target=\"_blank\">".translateFN("scrivi un messaggio")."</a> |";
                                         }
                                     }
                                 }
