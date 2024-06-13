@@ -217,7 +217,11 @@ class AMABadgesDataHandler extends AMADataHandler
         } else {
             $uuid = Uuid::fromString($saveData['badgeuuid']);
             unset($saveData['badgeuuid']);
-            $whereArr = ['uuid' => $uuid->toString()];
+            /**
+             * below '_bin' is needed for trait WithWhereClause::buildWhereClause
+             * to correctly set the binary uuid value
+             */
+            $whereArr = ['uuid_bin' => $uuid->toString()];
             $result = $this->queryPrepared(
                 $this->sqlUpdate(
                     Badge::TABLE,
@@ -256,6 +260,12 @@ class AMABadgesDataHandler extends AMADataHandler
         } else {
             $deletefile = '';
         }
+        /**
+         * below is needed for trait WithWhereClause::buildWhereClause
+         * to correctly set the binary uuid value
+         */
+        $saveData['uuid_bin'] = $saveData['uuid'];
+        unset($saveData['uuid']);
 
         $result = $this->queryPrepared(
             $this->sqlDelete(
