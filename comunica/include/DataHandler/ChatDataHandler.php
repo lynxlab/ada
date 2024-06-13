@@ -18,14 +18,14 @@
 
 // ADA ChatDataHandler
 
-/*****************************************************************************
+/**
  * ChatDataHandler extends the AMADataHandler, to communicate with the DB,
  * and implements the API to access data regarding the functionality of the
  * chatrooms.
  *
  * @access public
  * @author Stamatios Filippis
- *****************************************************************************/
+ */
 
 namespace Lynxlab\ADA\Comunica\DataHandler;
 
@@ -111,18 +111,13 @@ class ChatDataHandler extends AbstractAMADataHandler
      * Methods accessing database
      */
 
-
-
-
-
-
-    /*****************************************************************************
+    /**
      * Creates a new chatroom to the DB
      *
      * @access public
      * @param  $chatroom_ha an associative array containing all the chatroom's data
      * @return an AMAError object or a DB_Error object if something goes wrong
-     *****************************************************************************/
+     */
     public function addChatroom($chatroom_ha)
     {
         $chat_type          = $chatroom_ha['chat_type'];
@@ -184,13 +179,13 @@ class ChatDataHandler extends AbstractAMADataHandler
         return $id_chatroom;
     }
 
-    /****************************************************************************
+    /**
      * Removes a chatroom that has no mesages and users associated with it
      *
      * @access public
      * @param  $id_chatroom
      * @return an AMAError object or a DB_Error object if something goes wrong
-     *****************************************************************************/
+     */
     public function removeUnusedChatroom($id_chatroom)
     {
         // checks if the chatroom exists
@@ -219,13 +214,13 @@ class ChatDataHandler extends AbstractAMADataHandler
         return true;
     }
 
-    /*****************************************************************************
+    /**
      * Removes a chatroom from the DB, even if the chatroom is still running!
      *
      * @access public
      * @param  $id_chatroom
      * @return an AMAError object or a DB_Error object if something goes wrong
-     ******************************************************************************/
+     */
     public function removeChatroom($id_chatroom)
     {
         // checks if the chatroom exists
@@ -259,7 +254,7 @@ class ChatDataHandler extends AbstractAMADataHandler
         return true;
     }
 
-    /*****************************************************************************
+    /**
      * Updates informations related to a specific chatroom by the given id_chatroom
      *
      * @access public
@@ -267,7 +262,7 @@ class ChatDataHandler extends AbstractAMADataHandler
      *         $chatroom_ha the array containing all the information.
      *                                  empty fields are not updated.
      * @return an error if something goes wrong
-     *****************************************************************************/
+     */
     public function setChatroom($id_chatroom, $chatroom_ha)
     {
         $chat_type = $chatroom_ha['chat_type'];
@@ -373,7 +368,7 @@ class ChatDataHandler extends AbstractAMADataHandler
         }
     }
 
-    /************************************************************************
+    /**
      * Gets all the information about a chatroom
      *
      * @access public
@@ -389,7 +384,7 @@ class ChatDataHandler extends AbstractAMADataHandler
      *          res_ha['tempo_fine']
      *          res_ha['msg_benvenuto']
      *          res_ha['max_utenti']
-     ******************************************************************************/
+     */
     public function getInfoChatroom($id_chatroom)
     {
         // get a row from table chatroom
@@ -416,11 +411,11 @@ class ChatDataHandler extends AbstractAMADataHandler
         return $chatroom_ha;
     }
 
-    /*****************************************************************************
+    /**
      * Gets the list of all the chatrooms running at the moment
      *
-     * @return an array containing the ids of all active chatrooms
-     *****************************************************************************/
+     * @return AMAError|array an array containing the ids of all active chatrooms
+     */
     public function getAllChatrooms()
     {
         // get a row from table chatroom
@@ -435,12 +430,12 @@ class ChatDataHandler extends AbstractAMADataHandler
         return $chatrooms_ha;
     }
 
-    /*****************************************************************************
+    /**
      * Finds the chatroom running at the moment, relative to a specific class
      *
      * @param id $id_class
      * @return the id of the chatroom corresponding to the selected classroom
-     ******************************************************************************/
+     */
     public function getClassChatroom($id_course_instance, $actual_time)
     {
         // get a row from table chatroom
@@ -459,13 +454,13 @@ class ChatDataHandler extends AbstractAMADataHandler
         return $class_chatroom;
     }
 
-    /*****************************************************************************
+    /**
      * Finds the chatroom relative to a specific class and specific type
      *
      * @param id $id_class
      * @param id $type
      * @return the id of the chatroom corresponding to the selected classroom
-     ******************************************************************************/
+     */
     public function getClassChatroomForInstance($id_course_instance, $type)
     {
         // get a row from table chatroom
@@ -480,12 +475,12 @@ class ChatDataHandler extends AbstractAMADataHandler
         return $class_chatroom;
     }
 
-    /*****************************************************************************
+    /**
      * Finds the chatroom running at the moment, relative to a specific class
      *
      * @param id $id_class
      * @return the id of the chatroom corresponding to the selected classroom
-     ******************************************************************************/
+     */
     public function getClassChatroomWithDurationFN($id_course_instance, $start_time, $end_time)
     {
         // get a row from table chatroom
@@ -521,12 +516,12 @@ class ChatDataHandler extends AbstractAMADataHandler
         return $id_chatroom;
     }
 
-    /*****************************************************************************
+    /**
      * Finds all the chatrooms relative to a specific class
      *
      * @param id $id_class
      * @return an array contaning with the ids
-     ******************************************************************************/
+     */
     public function getAllClassChatrooms($id_course_instance)
     {
         // get a col from table chatroom
@@ -540,12 +535,13 @@ class ChatDataHandler extends AbstractAMADataHandler
         }
         return $class_chatrooms;
     }
-    /*****************************************************************************
+
+    /**
      * Finds all the private chatrooms
      *
      * @param
      * @return an array with all the id's of the private rooms available for the user
-     ******************************************************************************/
+     */
     public function getAllPrivateChatrooms($user_id)
     {
         //local variables in orded to be used into the sql query
@@ -580,12 +576,13 @@ class ChatDataHandler extends AbstractAMADataHandler
         }
         return $private_chatrooms;
     }
-    /*****************************************************************************
+
+    /**
      * Finds the first public chatroom running at the moment
      *
      * @param
      * @return the id of the public chatroom
-     ******************************************************************************/
+     */
     public function findPublicChatroom()
     {
         //clause for the query
@@ -604,7 +601,7 @@ class ChatDataHandler extends AbstractAMADataHandler
         return $public_chatroom;
     }
 
-    /*****************************************************************************
+    /**
      * - if a user it's not present to the chatroom adds him to it.
      *
      * - if $id_utente it is present into the table utente_chatroom, that record gets updated
@@ -615,7 +612,7 @@ class ChatDataHandler extends AbstractAMADataHandler
      * @access public
      * @param  $operator_id ,$user_id,$id_chatroom,$entrance_time,$action,$status
      * @return an AMAError object or a DB_Error object if something goes wrong
-     **********************************************************************************/
+     */
     public function addUserChatroom($operator_id, $user_id, $id_chatroom, $entrance_time, $action, $status)
     {
         $res_id = 0;
@@ -702,13 +699,13 @@ class ChatDataHandler extends AbstractAMADataHandler
         return $id;
     }
 
-    /**************************************************************************************
+    /**
      * The user quits the chatroom, his $id_user will be removed from the table utente_chatroom
      *
      * @access public
      * @param  $user_id , $id_chatroom,$exit_time,$user_status
      * @return an AMAError object or a DB_Error object if something goes wrong
-     ***************************************************************************************/
+     */
     public function quitChatroom($operator_id, $user_id, $id_chatroom, $exit_time, $action)
     {
         // /////////////////////////////////////////////
@@ -746,14 +743,14 @@ class ChatDataHandler extends AbstractAMADataHandler
 
         return true;
     }
-    /**************************************************************************************
+    /**
      * Removes permanently a user from the selected chatroom. This action will not be
      * registered into the table utente_chatroom_log
      *
      * @access public
      * @param  $user_id , $id_chatroom
      * @return an AMAError object or a DB_Error object if something goes wrong
-     **************************************************************************************/
+     */
     public function removeUserChatroom($user_id, $id_chatroom)
     {
         // checks if the user exists into the chatroom
@@ -770,14 +767,14 @@ class ChatDataHandler extends AbstractAMADataHandler
         return true;
     }
 
-    /**************************************************************************************
+    /**
      * Removes permanently all users from the selected chatroom. This action will not be
      * registered into the table utente_chatroom_log
      *
      * @access public
      * @param  $id_chatroom
      * @return an AMAError object or a DB_Error object if something goes wrong
-     **************************************************************************************/
+     */
     public function removeAllusersChatroom($id_chatroom)
     {
         // checks if exist any user into the chatroom
@@ -795,13 +792,13 @@ class ChatDataHandler extends AbstractAMADataHandler
         return true;
     }
 
-    /**************************************************************************************
+    /**
      * get the list of all active users inside a chatroom
      *
      * @access public
      * @param  $id_chatroom
      * @return an error if something goes wrong
-     **************************************************************************************/
+     */
     public function listUsersChatroom($id_chatroom)
     {
         //local variables assigned to constants
@@ -846,13 +843,13 @@ class ChatDataHandler extends AbstractAMADataHandler
     }
 
 
-    /**************************************************************************************
+    /**
      * get the list of the banned users into a chatroom
      *
      * @access public
      * @param  $id_chatroom
      * @return an error if something goes wrong
-     **************************************************************************************/
+     */
     public function listBannedUsersChatroom($id_chatroom)
     {
         //local variables assigned to constants
@@ -878,13 +875,13 @@ class ChatDataHandler extends AbstractAMADataHandler
         }
     }
 
-    /**************************************************************************************
+    /**
      * get the list of all the chatrooms that the user could have access or
      * he is allready present
      *
      * @param  $user_id
      * @return an error if something goes wrong
-     **************************************************************************************/
+     */
     public function listChatroomsUser($user_id)
     {
         // select a row from table utente_chatroom
@@ -900,13 +897,14 @@ class ChatDataHandler extends AbstractAMADataHandler
             return false;
         }
     }
-    /**************************************************************************************
+
+    /**
      * sets the status of a user into a given chatroom
      * he is allready present
      *
      * @param  $user_id ,$id_chatroom,$status
      * @return an error if something goes wrong
-     **************************************************************************************/
+     */
     public function setUserStatus($operator_id, $user_id, $id_chatroom, $action, $status, $time)
     {
         $res_id = 0;
@@ -976,12 +974,12 @@ class ChatDataHandler extends AbstractAMADataHandler
         return true;
     }
 
-    /**************************************************************************************
+    /**
      * gets the status of a user on a specific chatroom
      *
      * @param  $user_id , $id_chatroom
      * @return an error if something goes wrong
-     **************************************************************************************/
+     */
     public function getUserStatus($user_id, $id_chatroom)
     {
         // get a status row from table utente_chatroom
@@ -996,13 +994,13 @@ class ChatDataHandler extends AbstractAMADataHandler
 
         return $res;
     }
-    /******************************************************************************
+
+    /**
      * sets the time of the last event done by the user side into a given chatroom
-     *
      *
      * @param  $user_id ,$id_chatroom,$status,$last_event_time
      * @return an error if something goes wrong
-     ******************************************************************************/
+     */
     public function setLastEventTime($user_id, $id_chatroom, $last_event_time)
     {
         $res_id = 0;
@@ -1055,11 +1053,11 @@ class ChatDataHandler extends AbstractAMADataHandler
         return true;
     }
 
-    /*****************************************************************************
+    /**
      * Gets the time of the last_event that a user done into a specific chatroom
      *
      * @return the last_time_event of the user
-     *****************************************************************************/
+     */
     public function getLastEventTime($user_id, $id_chatroom)
     {
         // get an entry from table utente_chatroom
@@ -1074,12 +1072,8 @@ class ChatDataHandler extends AbstractAMADataHandler
         return $event_time;
     }
 
-    /**************************************************************************************
-     /**************************************************************************************
-     /**************************************************************************************
-     /*************************************************************************************
-
-     /* Removes all messages assosciated to the selected chatroom.
+    /**
+     * Removes all messages assosciated to the selected chatroom.
      *
      * @access public
      * @param  $id_chatroom
@@ -1094,4 +1088,3 @@ class ChatDataHandler extends AbstractAMADataHandler
         }
     }
 }
-//end of class ChatDataHandler
