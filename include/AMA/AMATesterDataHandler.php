@@ -6177,7 +6177,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      */
     protected function getPosition($id)
     {
-        $result =  $this->getRowPrepared("select x0, y0, x1, y1 from posizione where id_posizione=?", [$id]);
+        $result =  $this->getRowPrepared("select x0, y0, x1, y1 from posizione where id_posizione=?", [$id], AMA_FETCH_DEFAULT);
         if (AMADB::isError($result)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -6221,10 +6221,10 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         $tipo = $res_ha['tipo'];
         $copyright = $this->orZero($res_ha['copyright']);
         $id_nodo = $res_ha['id_nodo'] ?? null;
-        $keywords = $res_ha['keywords'];
-        $titolo = $res_ha['titolo'];
-        $pubblicato = $res_ha['pubblicato'];
-        $descrizione = $res_ha['descrizione'];
+        $keywords = $res_ha['keywords'] ?? '';
+        $titolo = $res_ha['titolo'] ?? '';
+        $pubblicato = $this->orZero($res_ha['pubblicato'] ?? null);
+        $descrizione = $res_ha['descrizione'] ?? '';
         $lingua = $this->orZero($res_ha['lingua'] ?? null);
 
         // vito, 19 luglio 2008
