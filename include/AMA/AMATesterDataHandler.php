@@ -6217,10 +6217,10 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
     {
         ADALogger::logDb("entered add_risorsa_esterna");
 
-        $nome_file = $res_ha['nome_file'];
-        $tipo = $res_ha['tipo'];
+        $nome_file = $res_ha['nome_file'] ?? '';
+        $tipo = $res_ha['tipo'] ?? '';
         $copyright = $this->orZero($res_ha['copyright']);
-        $id_nodo = $res_ha['id_nodo'] ?? null;
+        $id_nodo = $res_ha['id_nodo'] ?? '';
         $keywords = $res_ha['keywords'] ?? '';
         $titolo = $res_ha['titolo'] ?? '';
         $pubblicato = $this->orZero($res_ha['pubblicato'] ?? null);
@@ -6289,7 +6289,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             $res1 = $this->addRisorseNodi($id_nodo, $id);
             if (AMADB::isError($res1)) {
                 return new AMAError($this->errorMessage(AMA_ERR_ADD) .  " while in risorse_nodi" .
-                    AMA_SEP . ": " . $res->getMessage());
+                    AMA_SEP . ": " . $res1->getMessage());
             }
         } else {
             // return minus id if the resource was already there (a dirty trick!)
