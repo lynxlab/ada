@@ -74,7 +74,7 @@ class ChatRoom
         self::$isStatic = false;
 
         //$this->tester_dsn = MultiPort::getDSN($tester);
-        self::$tester_dsn = $tester_dsn;
+        self::$tester_dsn = $tester_dsn ?? $_SESSION['sess_selected_tester_dsn'];
 
         $dh = $GLOBALS['dh'];
         //get $user_id from the session variables

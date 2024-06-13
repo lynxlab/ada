@@ -276,7 +276,7 @@ class BrowsingHelper extends ViewBaseHelper
                 fclose($fp);
             } else {
                 $message_ha['testo'] = translateFN("Benvenuto in ADA!");
-                $message_ha['testo'] .= translateFN("Se hai problemi, dubbi o domande, puoi inviare un messaggio al tuo") . "<a href=\"" . HTTP_ROOT_DIR . "/comunica/sendMessage.php?destinatari=" . self::$tutor_uname . "\">" . translateFN("E-practitioner") . "</a>.";
+                $message_ha['testo'] .= translateFN("Se hai problemi, dubbi o domande, puoi inviare un messaggio al tuo") . "<a href=\"" . HTTP_ROOT_DIR . "/comunica/send_message.php?destinatari=" . self::$tutor_uname . "\">" . translateFN("E-practitioner") . "</a>.";
             }
             $message_ha['data_ora'] = "now";
             $message_ha['mittente'] = self::$tutor_uname;

@@ -146,7 +146,7 @@ $content_dataAr =  [
 //                'label' => $label,
                 'course_title' => $label,
                 'data' => $data->getHtml(),
-                'error' => $err_msg,
+                'error' => $err_msg ?? '',
                 ];
 
 ARE::render($layout_dataAr, $content_dataAr);

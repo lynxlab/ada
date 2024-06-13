@@ -84,7 +84,7 @@ ComunicaHelper::init($neededObjAr);
  */
 
 $success    = HTTP_ROOT_DIR . '/comunica/list_messages.php';
-$error_page = HTTP_ROOT_DIR . '/comunica/sendMessage.php';
+$error_page = HTTP_ROOT_DIR . '/comunica/send_message.php';
 
 if (!isset($op)) {
     $op = 'default';
