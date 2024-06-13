@@ -790,7 +790,7 @@ class AMACommonDataHandler extends AbstractAMADataHandler
             . "WHERE id_tester = ?";
 
         $testers_result = $this->getRowPrepared($testers_sql, $id_tester, $fetchmode);
-        if (self::isError($testers_result)) {
+        if (false === $testers_result || self::isError($testers_result)) {
             return new AMAError(AMA_ERR_GET);
         }
 

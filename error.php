@@ -1,5 +1,6 @@
 <?php
 
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\History\NavigationHistory;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
@@ -13,8 +14,10 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 require_once realpath(__DIR__) . '/config_path.inc.php';
 
-$allowedUsersAr = [AMA_TYPE_VISITOR, AMA_TYPE_STUDENT, AMA_TYPE_TUTOR,
-                        AMA_TYPE_AUTHOR, AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER];
+$allowedUsersAr = [
+    AMA_TYPE_VISITOR, AMA_TYPE_STUDENT, AMA_TYPE_TUTOR,
+    AMA_TYPE_AUTHOR, AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER
+];
 $neededObjAr = [
     AMA_TYPE_VISITOR => ['layout'],
     AMA_TYPE_STUDENT => ['layout'],
@@ -58,11 +61,9 @@ if (isset($_SESSION['sess_userObj'])) {
     }
 }
 
-$error_message = translateFN('A fatal error occurred. You can try to enter your home page. If it does not work, please contact the webmaster.');
-
-$error_div = '<div class="unrecoverable">'
-           . $error_message
-           . '</div>';
+if (false === $error_message = DataValidator::checkInputValues('err_msg', 'Value', INPUT_GET)) {
+    $error_message = translateFN('A fatal error occurred. You can try to enter your home page. If it does not work, please contact the webmaster.');
+}
 
 $content_dataAr = [
     'home_link' => $homepage,
@@ -70,7 +71,7 @@ $content_dataAr = [
     'user_name' => $user_name,
     'user_type' => $user_type,
     'course_title' => translateFN('Notifica errore'),
-    'data' => $error_div,
+    'data' => $error_message,
     'status' => translateFN('Notifica di errore'),
 ];
 /**

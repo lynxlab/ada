@@ -85,7 +85,7 @@ class ChatRoom
         }
 
         //case id_chatroom is provided
-        if ((isset($id_chatroom)) && (!is_object($id_chatroom))) {
+        if ((isset($id_chatroom)) && (!is_object($id_chatroom)) && (int)$id_chatroom > 0) {
             // search for a chatroom into the DB with such id_chatroom
             $chatroom_ha = static::getInfoChatroomFN($id_chatroom);
             //            print_r($chatroom_ha);
