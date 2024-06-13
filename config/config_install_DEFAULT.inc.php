@@ -569,7 +569,7 @@ define('ADA_MAX_USER_LEVEL', 100);
 define('ADA_MAX_SCORE', 100);
 
 // path to the standard error page
-$error = HTTP_ROOT_DIR . '/admin/error.php';
+$error = HTTP_ROOT_DIR . '/error.php';
 
 /**
  * Preferences array
