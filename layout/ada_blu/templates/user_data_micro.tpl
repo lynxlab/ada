@@ -20,10 +20,4 @@
                 <i18n>status: </i18n>
                 <template_field class="template_field" name="status">status</template_field>
             </span>
-            <span>
-                <template_field class="template_field" name="last_visit">last_visit</template_field>
-            </span>
-            <span>
-                <template_field class="template_field" name="user_level">user_level</template_field>
-            </span>
         </div>
