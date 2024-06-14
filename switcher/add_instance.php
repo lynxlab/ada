@@ -95,6 +95,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             /*
              * Creazione della chat
              */
+            $course_title = $courseObj->getTitle();
             $data_inizio_previsto = Utilities::dt2tsFN($_POST['data_inizio_previsto']);
             $durata = $_POST['durata'];
             $data_fine = $dh->addNumberOfDays($durata, $data_inizio ?? null);
