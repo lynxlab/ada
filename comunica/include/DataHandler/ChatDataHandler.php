@@ -261,7 +261,7 @@ class ChatDataHandler extends AbstractAMADataHandler
      * @param  $id_chatroom the chatroom's id
      *         $chatroom_ha the array containing all the information.
      *                                  empty fields are not updated.
-     * @return an error if something goes wrong
+     * @return null|AMAError an error if something goes wrong
      */
     public function setChatroom($id_chatroom, $chatroom_ha)
     {
@@ -1077,7 +1077,7 @@ class ChatDataHandler extends AbstractAMADataHandler
      *
      * @access public
      * @param  $id_chatroom
-     * @return an AMAError object or a DB_Error object if something goes wrong
+     * @return null|AMAError object or a DB_Error object if something goes wrong
      */
     public function removeAllmessagesChatroom($id_chatroom)
     {
