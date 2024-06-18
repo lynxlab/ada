@@ -74,7 +74,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 $logFile = MODULES_CLASSAGENDA_LOGDIR . 'log-' . $reminderID . '-' . date('d-m-Y_His');
                 if (!is_dir(MODULES_CLASSAGENDA_LOGDIR)) {
-                    mkdir(MODULES_CLASSAGENDA_LOGDIR, 0o777, true);
+                    mkdir(MODULES_CLASSAGENDA_LOGDIR, 0777, true);
                 }
                 if (!is_file($logFile)) {
                     touch($logFile);
