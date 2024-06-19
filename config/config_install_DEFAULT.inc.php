@@ -369,7 +369,15 @@ define('NAVIGATION_HISTORY_SIZE', 5);
 //
 // defines needed while editing or adding node
 //
-define('ADA_FILE_UPLOAD_MAX_FILESIZE', min(20000000, (new MaxUploadFileSizeGetter())->get('B')));
+define(
+    'ADA_FILE_UPLOAD_MAX_FILESIZE',
+    min(
+        20000000,
+        class_exists('sbolch\MaxUploadFileSize\MaxUploadFileSizeGetter') ?
+        (int)(new MaxUploadFileSizeGetter())->get('B') :
+        PHP_INT_MAX
+    )
+);
 define('ADA_FILE_UPLOAD_ACCEPTED_MIMETYPE', _GO);
 
 /**
