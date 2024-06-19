@@ -304,9 +304,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // SET THE PASSWORD PROVIDED IN ADMIN_PASSWORD FOR USER 'adminAda'
             sendToBrowser(translateFN('Impostazione password utenti') . ' ...');
-            $sql = "UPDATE utente SET password=SHA1(\"" . $postData['ADMIN_PASSWORD'] . "\") WHERE password=\"\";";
+            $sql = "UPDATE utente SET `e_mail`=?, `password`=SHA1(\"" . $postData['ADMIN_PASSWORD'] . "\") WHERE password=\"\";";
             $stmt = $commonpdo->prepare($sql);
-            $stmt->execute();
+            $stmt->execute([$postData['ADA_ADMIN_MAIL_ADDRESS']]);
             sendOK();
 
             foreach ($providers as $i => $provider) {
