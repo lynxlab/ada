@@ -5661,10 +5661,10 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
     public function &findCourseNodesList($out_fields_ar, $clause = '', $course_id = '-1')
     {
         // build comma separated string out of $field_list_ar array
-        if (count($out_fields_ar)) {
+        if (is_array($out_fields_ar) && count($out_fields_ar)) {
             $more_fields = ', ' . implode(', ', $out_fields_ar);
         } else {
-            $more_fields = '';
+            $more_fields = $out_fields_ar ?? '';
         }
 
         // add an 'and' on top of the clause
