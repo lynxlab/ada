@@ -594,6 +594,13 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 sendSkip();
             }
 
+            // Install is done, ensure that needed subdirs have been created.
+            foreach (['docs/help', 'docs/info', 'docs/news'] as $ensureDir) {
+                if (!is_dir($ensureDir)) {
+                    mkdir($ensureDir, 0770, true);
+                }
+            }
+
             sendToBrowser(translateFN('Rimozione file temopranei') . ' ...');
             Utilities::delTree(COMPOSER_DIRECTORY) ? sendOK() : sendFail();
 
