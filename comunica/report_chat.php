@@ -6,6 +6,7 @@ use Lynxlab\ADA\CORE\HtmlElements\Table;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\DBRead;
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
@@ -91,12 +92,13 @@ if (!isset($sess_id_course_instance) && isset($id_instance)) {
 $title = translateFN("ADA - Chat Log");
 
 if (!isset($id_chatroom)) {
-    $id_chatroom = null;
+    // if id_chatroom is not set, try the id_room $_GET parameter
+    $id_chatroom = DataValidator::checkInputValues('id_room', 'Integer', INPUT_GET, null);
 }
 $chatroomObj = new ChatRoom($id_chatroom);
 if (is_object($chatroomObj) && !AMADataHandler::isError($chatroomObj)) {
     //get the array with all the current info of the chatoorm
-    $id_course_instance = $chatroomObj->id_course_instance;
+    $id_course_instance = $chatroomObj::$id_course_instance;
     $id_course = $dh->getCourseIdForCourseInstance($id_course_instance);
     // ******************************************************
     // get  course object
@@ -265,19 +267,6 @@ switch ($op) {
         $tabled_chat_dataHa  = $list_chatrooms;
         break;
     case 'export': //file as TXT :
-        header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
-        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");          // always modified
-        header("Cache-Control: no-store, no-cache, must-revalidate");  // HTTP/1.1
-        header("Cache-Control: post-check=0, pre-check=0", false);
-        header("Pragma: no-cache");                          // HTTP/1.0
-        header("Content-Type: text/plain");
-        header("Content-Length: " . filesize($chat_log_file)); //?
-        header("Content-Disposition: attachment;
-                filename=chat_course_" . $id_course . "_class_" . $id_instance . ".html");
-        echo $user_chat_report;
-        //              header ("Connection: close");
-        exit;
-        break;
     case 'exportTable': // XLS-like
         $chat_report = "";
 
@@ -289,7 +278,7 @@ switch ($op) {
             }
         }
         $mh = MessageHandler::instance($_SESSION['sess_selected_tester_dsn']);
-        $chat_data = $mh->findChatMessages($sess_user_id, ADA_MSG_CHAT, $id_chatroom, $fields_list = "", $clause = "", $ordering = "");
+        $chat_data = $mh->findChatMessages($sess_id_user, ADA_MSG_CHAT, $id_chatroom, $fields_list = "", $clause = "", $ordering = "");
         if (is_array($chat_data)) {
             $chat_dataAr = [];
             $c = 0;
@@ -331,12 +320,19 @@ switch ($op) {
         header("Cache-Control: post-check=0, pre-check=0", false);
         header("Pragma: no-cache");                          // HTTP/1.0
         header("Content-Type: text/plain");
-        //        header("Content-Type: application/vnd.ms-excel");
-        //              header("Content-Length: ".filesize($chat_log_file)); //?
-        $course_title .= ' - ' . translateFN('id classe') . ': ' . $id_course_instance;
-        header("Content-Disposition: attachment; filename=class_" . $id_course_instance . '_chat_' . $id_chatroom . ".csv");
-        echo $export_log;
-        //              header ("Connection: close");
+
+        if ($op == 'export') {
+            header("Content-Length: " . strlen($user_chat_report)); //?
+            header("Content-Disposition: attachment; filename=chat_course_" . $id_course . "_class_" . $id_course_instance . ".html");
+            echo stripslashes(str_replace('PHP_EOL', '<br/>', $user_chat_report));
+        } else {
+            //        header("Content-Type: application/vnd.ms-excel");
+            //              header("Content-Length: ".filesize($chat_log_file)); //?
+            $course_title .= ' - ' . translateFN('id classe') . ': ' . $id_course_instance;
+            header("Content-Disposition: attachment; filename=class_" . $id_course_instance . '_chat_' . $id_chatroom . ".csv");
+            echo $export_log;
+            //              header ("Connection: close");
+        }
         exit;
         break;
     default:
