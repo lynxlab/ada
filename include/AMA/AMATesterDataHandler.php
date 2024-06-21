@@ -4210,7 +4210,10 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         }
         /* fine modifica */
 
-        $media_path = $this->orNull(DataValidator::validateString($course_ha['media_path']));
+        $media_path = DataValidator::validateString($course_ha['media_path']);
+        if (false == $media_path) {
+            $media_path = null;
+        }
         $res_id = 0;
 
         // verify that the record exists and store old values for rollback
