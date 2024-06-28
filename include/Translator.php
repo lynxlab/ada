@@ -157,6 +157,20 @@ class Translator
         return '';
     }
 
+    /**
+     * get id of the language associated to the ISO 639-1 code
+     * passed as argument.
+     *
+     * @param string $ISO_code
+     * @return int|string|false
+     */
+    public static function getLanguageIDFromCode($ISO_code)
+    {
+        return array_search(
+            static::getLanguageNameForLanguageCode($ISO_code),
+            static::getLanguagesIdAndName()
+        );
+    }
 
     /**
      * function getLanguageNameForLanguageCode: used to obtain name of the language associated to the ISO 639-1 code
