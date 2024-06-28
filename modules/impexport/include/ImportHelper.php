@@ -15,6 +15,7 @@ use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Logger\ADAFileLogger;
+use Lynxlab\ADA\Main\Translator;
 use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Impexport\AMAImpExportDataHandler;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
@@ -977,6 +978,7 @@ class ImportHelper
         $courseArr['d_create'] = Utilities::ts2dFN(time());
         $courseArr['d_publish'] = null;
         $courseArr['service_level'] = $this->selectedServiceLevel;
+        $courseArr['id_lingua'] = (int) Translator::getLanguageIDFromCode($courseArr['id_lingua']);
 
         $this->logMessage('Adding course model by calling data handler add_course with the following datas:');
         $this->logMessage(print_r($courseArr, true));

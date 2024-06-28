@@ -5,6 +5,7 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\Forms\lib\classes\FForm;
 use Lynxlab\ADA\Main\Forms\UserExtraForm;
 use Lynxlab\ADA\Main\Forms\UserProfileForm;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
@@ -227,11 +228,12 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
         $linkedTablesInADAUser = !is_null(ADAUser::getLinkedTables()) ? ADAUser::getLinkedTables() : [];
         for ($currTab = 0; $currTab < count($tabsArray); $currTab++) {
             // if is a subclass of FForm the it's a multirow element
-            $doMultiRowTab = !is_subclass_of($tabsArray[$currTab][1], 'FForm');
+            $doMultiRowTab = !is_subclass_of($tabsArray[$currTab][1], FForm::class);
 
             if ($doMultiRowTab === true) {
                 $extraTableName = $tabsArray[$currTab][1];
-                $extraTableFormClass = "User" . ucfirst($extraTableName) . "Form";
+                $extraTableClass = ADAUser::getClassForLinkedTable($extraTableName);
+                $extraTableFormClass = ADAUser::getFormClassForLinkedTable($extraTableName);
 
                 /*
                  * if extraTableName is not in the linked tables array or there's
@@ -252,10 +254,14 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
                     continue;
                 }
 
-                // generate the form
+                /**
+                 * generate the form
+                 *
+                 * @var FForm $form
+                 */
                 $form = new $extraTableFormClass();
                 $form->fillWithArrayData([
-                        $extraTableName::getForeignKeyProperty() => $editUserObj->getId(),
+                        $extraTableClass::getForeignKeyProperty() => $editUserObj->getId(),
                 ]);
 
                 // create a div for placing 'new' and 'discard changes button'

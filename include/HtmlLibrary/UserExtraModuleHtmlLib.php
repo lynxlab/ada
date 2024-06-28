@@ -14,6 +14,7 @@ namespace Lynxlab\ADA\Main\HtmlLibrary;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use ReflectionClass;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -38,6 +39,7 @@ class UserExtraModuleHtmlLib
         $className = $extraObject::class;
         $keyProperty = $className::getKeyProperty();
         $fields = $className::getFields();
+        $className = lcfirst((new ReflectionClass($className))->getShortName());
 
         $table = CDOMElement::create('table', 'class:extraTableDatas ' . $className . ',id:' . $className . '_' . $extraObject->$keyProperty);
         $tbody = CDOMElement::create('tbody');

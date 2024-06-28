@@ -125,11 +125,12 @@ class AMADataHandler extends AMATesterDataHandler
                     }
                 }
             } elseif (in_array($extraTableName, ADAUser::getLinkedTables())) { // stored in tableprefix_$extraTableName
-                $uniqueField = $extraTableName::getKeyProperty();
+                $extraTableClass = ADAUser::getClassForLinkedTable($extraTableName);
+                $uniqueField = $extraTableClass::getKeyProperty();
 
                 $tblPrefix = ADAUser::getTablesPrefix();
 
-                $fieldList = $extraTableName::getFields();
+                $fieldList = $extraTableClass::getFields();
 
                 // search for the unique field int the fieldList array
                 $pos = array_search($uniqueField, $fieldList, true);
@@ -246,10 +247,11 @@ class AMADataHandler extends AMATesterDataHandler
 
         if (!is_null($tablesToLoad)) {
             foreach ($tablesToLoad as $table) {
-                if (!empty($table) && class_exists($table)) {
-                    $selQry = "SELECT " . implode(", ", $table::getFields()) .
-                    " FROM " . $tablesPrefix . $table . " WHERE " . $table::getForeignKeyProperty() . "=?" .
-                    " ORDER BY " . $table::getKeyProperty() . " ASC";
+                $class = ADAUser::getClassForLinkedTable($table);
+                if (!empty($table) && class_exists($class)) {
+                    $selQry = "SELECT " . implode(", ", $class::getFields()) .
+                    " FROM " . $tablesPrefix . $table . " WHERE " . $class::getForeignKeyProperty() . "=?" .
+                    " ORDER BY " . $class::getKeyProperty() . " ASC";
 
                     $extraArr = $this->getAllPrepared($selQry, [$userObj->getId()], AMA_FETCH_ASSOC);
                     if (!AMADB::isError($extraArr) && is_array($extraArr) && count($extraArr) > 0) {
@@ -277,16 +279,17 @@ class AMADataHandler extends AMATesterDataHandler
      *
      * @param int $user_id
      * @param int $extraTableId
-     * @param string $extraTableClass
+     * @param string $extraTable
      * @return query result, either a PDOStatement or PDOException object
      *
      * @access public
      */
-    public function removeUserExtraRow($user_id, $extraTableId, $extraTableClass)
+    public function removeUserExtraRow($user_id, $extraTableId, $extraTable)
     {
         $tablesPrefix = ADAUser::getTablesPrefix();
+        $extraTableClass = ADAUser::getClassForLinkedTable($extraTable);
 
-        $delQry = "DELETE FROM " . $tablesPrefix . $extraTableClass .
+        $delQry = "DELETE FROM " . $tablesPrefix . $extraTable .
         " WHERE " . $extraTableClass::getForeignKeyProperty() . "=? AND " . $extraTableClass::getKeyProperty() . "=?";
 
         $result = $this->queryPrepared($delQry, [$user_id, $extraTableId]);

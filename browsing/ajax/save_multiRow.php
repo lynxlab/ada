@@ -6,6 +6,7 @@ use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\UserExtraModuleHtmlLib;
 use Lynxlab\ADA\Main\Translator;
+use Lynxlab\ADA\Main\User\ADAUser;
 use Lynxlab\ADA\Main\Utilities;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -91,20 +92,25 @@ if (!isset($_POST['extraTableName'])) {
      * variable that MUST be set, else dont' know what and how to save.
      */
     $extraTableClass = trim($_POST['extraTableName']);
-    $extraTableFormClass = "User" . ucfirst($extraTableClass) . "Form";
+    $extraTableFqcn = ADAUser::getClassForLinkedTable($extraTableClass);
+    $extraTableFormClass = ADAUser::getFormClassForLinkedTable($extraTableClass);
 
-    if (!class_exists('Lynxlab\ADA\Main\Forms\\' . $extraTableFormClass)) {
-        die("Form class not found, don't know how to save");
+    if (null == $extraTableFormClass || null == $extraTableFqcn) {
+        die(
+            json_encode(
+                ["status" => "ERROR", "title" => $title, "msg" => "Form or data class not found, don't know how to save"]
+            )
+        );
     }
 }
 
 switch ($userObj->getType()) {
     case AMA_TYPE_STUDENT:
     case AMA_TYPE_AUTHOR:
-        $editUserObj = & $userObj;
+        $editUserObj = &$userObj;
         break;
     case AMA_TYPE_SWITCHER:
-        $userId = DataValidator::isUinteger($_POST[$extraTableClass::getForeignKeyProperty()]);
+        $userId = DataValidator::isUinteger($_POST[$extraTableFqcn::getForeignKeyProperty()]);
         if ($userId !== false) {
             $editUserObj = MultiPort::findUser($userId);
         }
@@ -117,7 +123,7 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
 
     if ($form->isValid()) {
         $arr = [];
-        $arr[$extraTableClass][0] = $extraTableClass::buildArrayFromPOST($_POST);
+        $arr[$extraTableClass][0] = $extraTableFqcn::buildArrayFromPOST($_POST);
         // setExtras returns the index of the updated element, be it inserted or updated
         $updatedElementKey = $editUserObj->setExtras($arr);
         // setUser returns last insert id, or empty on update
@@ -134,7 +140,7 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
             /**
              * WEIRD STUFF:  NEED TO ACCESS OBJECT THIS WAY OTHERWISE WON'T WORK
              */
-            $extraTableKeyProperty = $extraTableClass::getKeyProperty();
+            $extraTableKeyProperty = $extraTableFqcn::getKeyProperty();
             $temp1 = $editUserObj->$extraTableProperty;
             //          $temp =  $temp1[$lastInsertKey];
             $temp =  $temp1[$updatedElementKey];

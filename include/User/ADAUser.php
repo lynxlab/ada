@@ -29,6 +29,7 @@
 
 namespace Lynxlab\ADA\Main\User;
 
+use Jawira\CaseConverter\Convert;
 use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
@@ -36,6 +37,7 @@ use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\User\ADAAbstractUser;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Switcher\Subscription;
 use ReflectionClass;
 use ReflectionProperty;
@@ -188,7 +190,7 @@ class ADAUser extends ADAAbstractUser
             foreach ($this->extraFieldsArray as $propertyName) {
                 $extraValues[$propertyName] = $this->$propertyName;
             }
-            if (property_exists($this, '_linkedTables')) {
+            if (property_exists($this, 'linkedTables')) {
                 foreach (self::$linkedTables as $tableName) {
                     $propertyName = 'tbl_' . $tableName;
                     if (isset($this->$propertyName) && is_array($this->$propertyName)) {
@@ -222,16 +224,17 @@ class ADAUser extends ADAAbstractUser
     {
         if ($this->hasExtra) {
             foreach ($extraAr as $property => $value) {
+                $propertyClass = static::getClassForLinkedTable($property);
                 // first check if $property is a class property
                 if (property_exists($this, $property)) {
                     $this->$property = $value;
-                } elseif (is_array($value) && class_exists($property) && method_exists($property, 'getKeyProperty')) {
+                } elseif (is_array($value) && class_exists($propertyClass) && method_exists($propertyClass, 'getKeyProperty')) {
                     // if $property is an array, which means
                     // it's a value coming from a table that has a 1:n relationship with the student
 
                     // in this case must return the key of the new or substituted element
                     $classPropertyName = 'tbl_' . $property;
-                    $classKeyProperty = $property::getKeyProperty();
+                    $classKeyProperty = $propertyClass::getKeyProperty();
                     // $classProperyName hold something like 'tbl_moreUserFields'
 
                     foreach ($value as $arrayValues) {
@@ -244,10 +247,10 @@ class ADAUser extends ADAAbstractUser
                                 }
                             }
                             // substitute the element with the modified one
-                            $tempArray[$key] = new $property($arrayValues);
+                            $tempArray[$key] = new $propertyClass($arrayValues);
                         } else {
                             // push all incoming arrays into the object array
-                            array_push($this->$classPropertyName, new $property($arrayValues));
+                            array_push($this->$classPropertyName, new $propertyClass($arrayValues));
                             $key = count($this->$classPropertyName) - 1;
                         }
                     }
@@ -267,14 +270,15 @@ class ADAUser extends ADAAbstractUser
      * @author giorgio 20/giu/2013
      *
      * @param int $extraTableId  the ID of the object to be removed
-     * @param string $extraTableClass the class of the object to be removed
+     * @param string $extraTable the class of the object to be removed
      *
      * @access public
      */
-    public function removeExtras($extraTableId = null, $extraTableClass = null)
+    public function removeExtras($extraTableId = null, $extraTable = null)
     {
-        if ($this->hasExtra && $extraTableId !== null && $extraTableClass !== null) {
-            $classPropertyName = 'tbl_' . $extraTableClass;
+        if ($this->hasExtra && $extraTableId !== null && $extraTable !== null) {
+            $extraTableClass = static::getClassForLinkedTable($extraTable);
+            $classPropertyName = 'tbl_' . $extraTable;
             $keyFieldName = $extraTableClass::getKeyProperty();
             $propertyArray = &$this->$classPropertyName;
 
@@ -369,6 +373,40 @@ class ADAUser extends ADAAbstractUser
         if (property_exists(static::class, 'extraTableKeyProperty')) {
             return self::$extraTableKeyProperty;
         }
+    }
+
+    /**
+     * Gets the full classname implementing the form class for the passed table.
+     *
+     * @param mixed $linkedTable
+     * @return string|null
+     */
+    public static function getFormClassForLinkedTable($linkedTable) {
+        if (in_array($linkedTable, static::getLinkedTables())) {
+            $mainNamespace = (new ReflectionClass(Utilities::class))->getNamespaceName();
+            $retclass = $mainNamespace . "\\Forms\\User" . (new Convert($linkedTable))->toPascal() . "Form";
+            if (class_exists($retclass)) {
+                return $retclass;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets the full classname implementing the object class for the passed table.
+     *
+     * @param mixed $linkedTable
+     * @return string|null
+     */
+    public static function getClassForLinkedTable($linkedTable) {
+        if (in_array($linkedTable, static::getLinkedTables())) {
+            $mainNamespace = (new ReflectionClass(Utilities::class))->getNamespaceName();
+            $retclass = $mainNamespace . "\\" . (new Convert($linkedTable))->toPascal();
+            if (class_exists($retclass)) {
+                return $retclass;
+            }
+        }
+        return null;
     }
 
     /**
