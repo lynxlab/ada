@@ -70,7 +70,7 @@ abstract class UserExtraTables
         return empty($retArray) ? null : $retArray;
     }
 
-    protected static function getFields($className)
+    protected static function doGetFields($className)
     {
         $retArray = [];
         $refclass = new ReflectionClass($className);
