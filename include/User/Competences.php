@@ -77,7 +77,7 @@ class Competences extends UserExtraTables
      */
     public static function getFields($className = self::class)
     {
-        return parent::getFields($className);
+        return parent::doGetFields($className);
     }
 
     public static function buildArrayFromPOST($postData)

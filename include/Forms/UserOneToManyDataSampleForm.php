@@ -14,6 +14,7 @@
 namespace Lynxlab\ADA\Main\Forms;
 
 use Lynxlab\ADA\Main\Forms\lib\classes\FForm;
+use Lynxlab\ADA\Main\User\ADAUser;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -27,14 +28,12 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
  */
 class UserOneToManyDataSampleForm extends FForm
 {
-    private const OBJNS = 'Lynxlab\ADA\Main\User';
-
     public function __construct($action = null)
     {
         parent::__construct();
 
         $formName = 'moreUserFields';
-        $classFQN = self::OBJNS . "\\" . ucfirst($formName);
+        $classFQN = ADAUser::getClassForLinkedTable($formName);
         $classObj = new $classFQN();
         $fieldList = $formName::getFields();
 
@@ -47,8 +46,8 @@ class UserOneToManyDataSampleForm extends FForm
         $this->addHidden('saveAsMultiRow')->withData(1);
         $this->addHidden('_isSaved')->withData(0);
         $this->addHidden('extraTableName')->withData($formName);
-        $this->addHidden($formName::getForeignKeyProperty());
-        $this->addHidden($formName::getKeyProperty())->withData(0);
+        $this->addHidden($classObj::getForeignKeyProperty());
+        $this->addHidden($classObj::getKeyProperty())->withData(0);
 
         // the firsrt two fields are 'service' fields, so start at index 2
         $fieldIndex = 2;
