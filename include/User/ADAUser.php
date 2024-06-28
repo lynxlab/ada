@@ -381,7 +381,8 @@ class ADAUser extends ADAAbstractUser
      * @param mixed $linkedTable
      * @return string|null
      */
-    public static function getFormClassForLinkedTable($linkedTable) {
+    public static function getFormClassForLinkedTable($linkedTable)
+    {
         if (in_array($linkedTable, static::getLinkedTables())) {
             $mainNamespace = (new ReflectionClass(Utilities::class))->getNamespaceName();
             $retclass = $mainNamespace . "\\Forms\\User" . (new Convert($linkedTable))->toPascal() . "Form";
@@ -398,7 +399,8 @@ class ADAUser extends ADAAbstractUser
      * @param mixed $linkedTable
      * @return string|null
      */
-    public static function getClassForLinkedTable($linkedTable) {
+    public static function getClassForLinkedTable($linkedTable)
+    {
         if (in_array($linkedTable, static::getLinkedTables())) {
             $mainNamespace = (new ReflectionClass(Utilities::class))->getNamespaceName();
             $retclass = $mainNamespace . "\\" . (new Convert($linkedTable))->toPascal();
