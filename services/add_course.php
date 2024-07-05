@@ -124,7 +124,7 @@ if (@$submit) {
     // aggiunta Corso
     // se i dati sono ok, prova l'inserimento nel DB
     if (!$dati) {
-        $course_id = $dh->add_course($course);
+        $course_id = $dh->addCourse($course);
 
         if (AMADataHandler::isError($course_id)) {
             // $dati = $result->getMessage();

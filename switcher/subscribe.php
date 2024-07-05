@@ -79,6 +79,7 @@ $self = Utilities::whoami();
  * @var \Lynxlab\ADA\Main\User\ADAPractitioner $tutorObj
  * @var \Lynxlab\ADA\Main\Node\Node $nodeObj
  * @var \Lynxlab\ADA\Main\User\ADALoggableUser $userObj
+ * @var \Lynxlab\ADA\Main\AMA\AMATesterDataHandler $dh
  *
  * WARNING: $media_path is used as a global somewhere else,
  * e.g.: node_classes.inc.php:990

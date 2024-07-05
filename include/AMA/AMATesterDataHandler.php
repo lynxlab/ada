@@ -1821,7 +1821,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         // insert a row into table iscrizioni
         $sql1 =  "insert into iscrizioni (id_utente_studente, id_istanza_corso, livello, status,data_iscrizione,laststatusupdate)";
         $sql1 .= " values (?, ?, ?, ?, ?, ?);";
-        $res = $this->queryPrepared($sql1, [$id_studente, $id_istanza_corso, $livello, 1, $data_iscrizione, $data_iscrizione]);
+        $res = $this->queryPrepared($sql1, [$id_studente, $id_istanza_corso, $livello, ADA_STATUS_PRESUBSCRIBED, $data_iscrizione, $data_iscrizione]);
         // FIXME: usare executeCritical?
         if (AMADB::isError($res)) { // || $db->affectedRows()==0)
             return new AMAError(AMA_ERR_ADD);

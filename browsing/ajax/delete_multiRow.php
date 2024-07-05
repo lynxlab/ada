@@ -110,7 +110,7 @@ switch ($userObj->getType()) {
         $editUserObj = &$userObj;
         break;
     case AMA_TYPE_SWITCHER:
-        $userId = DataValidator::isUinteger($_POST[$extraTableClass::getForeignKeyProperty()]);
+        $userId = DataValidator::isUinteger($_POST[$extraTableFqcn::getForeignKeyProperty()]);
         if ($userId !== false) {
             $editUserObj = MultiPort::findUser($userId);
         }

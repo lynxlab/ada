@@ -248,7 +248,7 @@ class Tag extends Bookmark
         $debug = $GLOBALS['debug'];
 
         $out_fields_ar = ['id_nodo', 'data', 'descrizione', 'id_utente_studente'];
-        $dataHa = $dh->find_bookmarks_list($out_fields_ar, '', $sess_id_course_instance, $sess_id_node);
+        $dataHa = $dh->findBookmarksList($out_fields_ar, '', $sess_id_course_instance, $sess_id_node);
         if (AMADataHandler::isError($dataHa)) {
             $msg = $dataHa->getMessage();
             return $msg;

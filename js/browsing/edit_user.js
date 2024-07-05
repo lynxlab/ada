@@ -20,7 +20,7 @@ function initDoc(maxSize, userId) {
     /*
      * initialization of avatar preview
      */
-    if ($j('#avatar').val() != '') {
+    if ($j('#avatar').length > 0 && $j('#avatar').val() != '') {
         var avatarValue = $j('#avatar').val();
         var avatarImgUserId = userId + '/';
     } else {
@@ -36,56 +36,57 @@ function initDoc(maxSize, userId) {
     }).prepend($j('<div></div>').attr('id', 'avatar_preview'));
     $j('#avatar_preview').append(imgSrcAvatar);
 
-    const dzName = prepareDropzoneElement(document.getElementById('avatarfile'));
-    new Dropzone(`div#${dzName}`, Object.assign({}, getDropzonei18n(),
-        {
-            paramName: 'uploaded_file',
-            maxFiles: 1,
-            addRemoveLinks: false,
-            url: HTTP_ROOT_DIR + '/services/ajax/upload.php?userId=' + userId + '&fieldUploadName=' + FileNameField,
-            maxFilesize: maxSize,
-            acceptedFiles: 'image/png, image/jpeg, image/gif',
-            // autoProcessQueue: false,
-            init: function () {
-                var that = this;
-                this.on("error", function (file, message) {
-                    that.removeFile(file);
-                    if ('object' == typeof message && 'data' in message && 'error' in message.data) {
-                        message = message.data.error;
-                    }
-                    document.getElementById(dzName).parentElement.insertAdjacentHTML(
-                        'beforeEnd',
-                        makeDropzoneError(file.name, message, 'flex-basis:100%;')
-                    );
-                });
+    if (null !== document.getElementById('avatarfile')) {
+        const dzName = prepareDropzoneElement(document.getElementById('avatarfile'));
+        new Dropzone(`div#${dzName}`, Object.assign({}, getDropzonei18n(),
+            {
+                paramName: 'uploaded_file',
+                maxFiles: 1,
+                addRemoveLinks: false,
+                url: HTTP_ROOT_DIR + '/services/ajax/upload.php?userId=' + userId + '&fieldUploadName=' + FileNameField,
+                maxFilesize: maxSize,
+                acceptedFiles: 'image/png, image/jpeg, image/gif',
+                // autoProcessQueue: false,
+                init: function () {
+                    var that = this;
+                    this.on("error", function (file, message) {
+                        that.removeFile(file);
+                        if ('object' == typeof message && 'data' in message && 'error' in message.data) {
+                            message = message.data.error;
+                        }
+                        document.getElementById(dzName).parentElement.insertAdjacentHTML(
+                            'beforeEnd',
+                            makeDropzoneError(file.name, message, 'flex-basis:100%;')
+                        );
+                    });
 
-                this.on("success", function (file, responseObject) {
-                    that.removeFile(file);
-                    showImage(file, userId);
-                });
+                    this.on("success", function (file, responseObject) {
+                        that.removeFile(file);
+                        showImage(file, userId);
+                    });
 
-                this.on("removedfile", function (file) {
-                    // delete uploadedFiles[file.name];
-                });
+                    this.on("removedfile", function (file) {
+                        // delete uploadedFiles[file.name];
+                    });
+                }
+            })
+        );
+        $j(`#${dzName}`).css({'flex-grow': 1});
+
+        progressbar = $j("#progressbar");
+        progressLabel = $j("#progress-label");
+
+        progressbar.progressbar({
+            value: 0,
+            max: 1,
+            change: function () {
+                progressLabel.text(progressbar.progressbar("value") + " / " + progressbar.progressbar("option", "max"));
+            },
+            complete: function () {
+                progressLabel.text(progressbar.progressbar("option", "max") + " / " + progressbar.progressbar("option", "max"));
             }
-        })
-    );
-    $j(`#${dzName}`).css({'flex-grow': 1});
-
-    progressbar = $j("#progressbar");
-    progressLabel = $j("#progress-label");
-
-    progressbar.progressbar({
-        value: 0,
-        max: 1,
-        change: function () {
-            progressLabel.text(progressbar.progressbar("value") + " / " + progressbar.progressbar("option", "max"));
-        },
-        complete: function () {
-            progressLabel.text(progressbar.progressbar("option", "max") + " / " + progressbar.progressbar("option", "max"));
-        }
-    });
-
+        });
+    }
 }
 
 function showImage(file, userId) {
