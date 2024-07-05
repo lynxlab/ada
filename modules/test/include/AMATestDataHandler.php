@@ -436,7 +436,7 @@ class AMATestDataHandler extends AMADataHandler
      *
      * @param $id_history_test - id history test
      *
-     * @return an error if something goes wrong or an array (empty if there are no tests)
+     * @return array|AMAError an error if something goes wrong or an array (empty if there are no tests)
      *
      */
     public function testGetGivenAnswers($id_history_text)
@@ -534,7 +534,7 @@ class AMATestDataHandler extends AMADataHandler
      *
      * @param $where - array with key (field) and values (value)
      *
-     * @return an AMAError object if something goes wrong, true on success
+     * @return array|AMAError an AMAError object if something goes wrong, true on success
      *
      */
     public function testGetHistoryTest($where = [])

@@ -109,6 +109,9 @@ class SurveyTest extends RootTest
     public static function getSurveysReportForCourseInstance(CourseInstance $course_instanceObj, AMATestDataHandler $dh = null)
     {
         if (is_null($dh)) {
+            /**
+             * @var AMATestDataHandler $dh
+             */
             $dh = $GLOBALS['dh'];
         }
         $noAnswerIndex = -1; // special index to store not answered questions
@@ -142,7 +145,7 @@ class SurveyTest extends RootTest
                 'consegnato' => 1,
             ]);
 
-            $allGivenAnswers = $dh->test_getGivenAnswers(
+            $allGivenAnswers = $dh->testGetGivenAnswers(
                 array_map(fn ($historyEl) => $historyEl['id_history_test'], $historyArr)
             );
 
