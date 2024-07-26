@@ -36,7 +36,7 @@ class InfoController extends AbstractController implements AdaApiInterface
      * (non-PHPdoc)
      * @see \Lynxlab\ADA\API\Controllers\Common\AdaApiInterface::get()
      */
-    public function get(Request $request, Response $response, array $params): array
+    public function get(Request $request, Response &$response, array $params): array
     {
         /**
          * Get all published courses:
@@ -141,17 +141,17 @@ class InfoController extends AbstractController implements AdaApiInterface
         }
     }
 
-    public function post(Request $request, Response $response, array $args): Response
+    public function post(Request $request, Response &$response, array $args): Response
     {
         return $response;
     }
 
-    public function put(Request $request, Response $response, array $args): Response
+    public function put(Request $request, Response &$response, array $args): Response
     {
         return $response;
     }
 
-    public function delete(Request $request, Response $response, array $args): Response
+    public function delete(Request $request, Response &$response, array $args): Response
     {
         return $response;
     }

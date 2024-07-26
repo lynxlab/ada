@@ -23,8 +23,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  */
 interface AdaApiInterface
 {
-    public function get(Request $request, Response $response, array $args): Response|array;
-    public function post(Request $request, Response $response, array $args): Response|array;
-    public function put(Request $request, Response $response, array $args): Response|array;
-    public function delete(Request $request, Response $response, array $args): Response|array;
+    public function get(Request $request, Response &$response, array $args): Response|array;
+    public function post(Request $request, Response &$response, array $args): Response|array;
+    public function put(Request $request, Response &$response, array $args): Response|array;
+    public function delete(Request $request, Response &$response, array $args): Response|array;
 }
