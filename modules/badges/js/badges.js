@@ -232,8 +232,11 @@ function editBadge(id_badge) {
                             if (okToSubmit) {
                                 $j('#error_form_' + formName, theDialog).addClass('hide_erorr').removeClass('show_error');
                                 $j.when(uploadFiles(dropZones[0]), debugForm).done(function () {
-                                    ajaxSubmitBadgeForm(theDialog.find('form').serialize());
-                                    theDialog.dialog('close');
+                                    $j.when(ajaxSubmitBadgeForm(theDialog.find('form').serialize())).always(
+                                        function() {
+                                            theDialog.dialog('close');
+                                        }
+                                    );
                                 });
                             } else {
                                 $j('#error_form_' + formName, theDialog).removeClass('hide_erorr').addClass('show_error');
@@ -303,7 +306,7 @@ function ajaxSubmitBadgeForm(data) {
     // first upload the file
 
     // then ask the server to save the badge
-    $j.ajax({
+    return $j.ajax({
         type: 'POST',
         url: 'ajax/saveBadge.php',
         data: data,
