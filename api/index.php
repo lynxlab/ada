@@ -122,8 +122,12 @@ foreach ($routes as $version => $versionRoutes) {
                         ));
                         return $response;
                     } catch (Throwable $th) {
-                        $response = $response->withStatus($th->getCode(), $th->getMessage());
-                        $response->getBody()->write($th->getMessage());
+                        $code = $th->getCode() > 0 ? $th->getCode() : StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR;
+                        $response = $response->withStatus($code);
+                        $response = $response->withHeader('Content-Type', 'application/json');
+                        $response->getBody()->write(json_encode([
+                            'error' => $th->getMessage(),
+                        ]));
                         return $response;
                         // TODO: DECIDERE COSA FARE SE LA CLASSE VIEWER NON C'È
                         // return JsonView::render($response, $data);
