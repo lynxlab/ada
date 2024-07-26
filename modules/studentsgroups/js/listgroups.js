@@ -220,10 +220,11 @@ function editGroup(id_group) {
                             if (okToSubmit) {
                                 $j('#error_form_' + formName, theDialog).addClass('hide_erorr').removeClass('show_error');
                                 if (debugForm) console.log('calling uploadFiles with', dropZones[0], debugForm);
-                                $j.when(uploadFiles(dropZones[0], debugForm)).done(function () {
-                                    ajaxSubmitGroupForm(theDialog.find('form').serialize());
-                                    theDialog.dialog('close');
-                                });
+                                $j.when(ajaxSubmitGroupForm(theDialog.find('form').serialize())).always(
+                                    function() {
+                                        theDialog.dialog('close');
+                                    }
+                                );
                             } else {
                                 $j('#error_form_' + formName, theDialog).removeClass('hide_erorr').addClass('show_error');
                             }
@@ -291,7 +292,7 @@ function uploadFiles(aDropZone, debug) {
 function ajaxSubmitGroupForm(data) {
     // first upload the file
     // then ask the server to save the group
-    $j.ajax({
+    return $j.ajax({
         type: 'POST',
         url: 'ajax/getGroupForm.php',
         data: data,
