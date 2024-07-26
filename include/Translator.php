@@ -76,7 +76,9 @@ class Translator
      */
     public static function loadSupportedLanguagesInSession()
     {
-        unset($_SESSION['sess_ada_supported_languages']);
+        if (isset($_SESSION['sess_ada_supported_languages'])) {
+            unset($_SESSION['sess_ada_supported_languages']);
+        }
 
         $common_dh = AMACommonDataHandler::getInstance();
 

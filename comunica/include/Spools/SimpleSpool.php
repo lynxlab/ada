@@ -135,7 +135,7 @@ class SimpleSpool extends Spool
     public function clean()
     {
 
-        $simpleCleaned = $GLOBALS['simpleCleaned'];
+        $simpleCleaned = $GLOBALS['simpleCleaned'] ?? false;
 
         // logger("entered SimpleSpool::clean", 3);
 
