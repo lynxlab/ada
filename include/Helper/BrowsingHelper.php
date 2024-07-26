@@ -206,7 +206,7 @@ class BrowsingHelper extends ViewBaseHelper
      */
     public static function checkRewardedBadges(ADAGenericUser $userObj, $courseId = null, $courseInstanceId = null)
     {
-        if ($userObj->getType() == AMA_TYPE_STUDENT && ModuleLoaderHelper::isLoaded('BADGES')) {
+        if ($userObj->getType() == AMA_TYPE_STUDENT && ModuleLoaderHelper::isLoaded('BADGES') && ModuleLoaderHelper::isLoaded('SERVICECOMPLETE')) {
             if (
                 intval($courseInstanceId) > 0 && intval($courseId) > 0 && isset($userObj) && is_object($userObj)
             ) {
