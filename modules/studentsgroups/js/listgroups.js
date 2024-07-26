@@ -222,8 +222,8 @@ function editGroup(id_group) {
                                 if (debugForm) console.log('calling uploadFiles with', dropZones[0], debugForm);
                                 $j.when(uploadFiles(dropZones[0], debugForm)).done(function () {
                                     ajaxSubmitGroupForm(theDialog.find('form').serialize());
+                                    theDialog.dialog('close');
                                 });
-                                theDialog.dialog('close');
                             } else {
                                 $j('#error_form_' + formName, theDialog).removeClass('hide_erorr').addClass('show_error');
                             }

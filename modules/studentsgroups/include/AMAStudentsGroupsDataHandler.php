@@ -181,18 +181,20 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
                         }
                     }
                     $retArr['importResults'] = $counters;
-                    /**
-                     * add users to the group
-                     */
-                    $sql = sprintf(
-                        "INSERT INTO `%s` VALUES %s;",
-                        Groups::UTENTERELTABLE,
-                        implode(
-                            ',',
-                            array_map(fn ($el) => '(' . $retArr['group']->getId() . ',' . $el . ')', $usersToAdd)
-                        )
-                    );
-                    $this->executeCriticalPrepared($sql);
+                    if (!empty($usersToAdd)) {
+                        /**
+                         * add users to the group
+                         */
+                        $sql = sprintf(
+                            "INSERT INTO `%s` VALUES %s;",
+                            Groups::UTENTERELTABLE,
+                            implode(
+                                ',',
+                                array_map(fn ($el) => '(' . $retArr['group']->getId() . ',' . $el . ')', $usersToAdd)
+                            )
+                        );
+                        $this->executeCriticalPrepared($sql);
+                    }
                     @unlink($groupscsv);
                 }
             }

@@ -232,11 +232,8 @@ function editBadge(id_badge) {
                             if (okToSubmit) {
                                 $j('#error_form_' + formName, theDialog).addClass('hide_erorr').removeClass('show_error');
                                 $j.when(uploadFiles(dropZones[0]), debugForm).done(function () {
-                                    $j.when(ajaxSubmitBadgeForm(theDialog.find('form').serialize())).always(
-                                        function() {
-                                            theDialog.dialog('close');
-                                        }
-                                    );
+                                    ajaxSubmitBadgeForm(theDialog.find('form').serialize());
+                                    theDialog.dialog('close');
                                 });
                             } else {
                                 $j('#error_form_' + formName, theDialog).removeClass('hide_erorr').addClass('show_error');
