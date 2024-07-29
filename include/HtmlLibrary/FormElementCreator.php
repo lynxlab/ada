@@ -23,11 +23,8 @@ class FormElementCreator
         } else {
             $error_message = null;
         }
-        $div = self::controlContainer($name, $label_text, $error_message);
+        $div = self::controlContainer($name, $label_text, $error_message, $required);
         $div->addChild($input);
-        if ($required) {
-            $div->addChild(new CText('(*)'));
-        }
 
         return $div;
     }
@@ -44,11 +41,8 @@ class FormElementCreator
         } else {
             $error_message = null;
         }
-        $div = self::controlContainer($name, $label_text, $error_message);
+        $div = self::controlContainer($name, $label_text, $error_message, $required);
         $div->addChild($input);
-        if ($required) {
-            $div->addChild(new CText('(*)'));
-        }
 
         return $div;
     }
@@ -62,11 +56,9 @@ class FormElementCreator
         } else {
             $error_message = null;
         }
-        $div = self::controlContainer($name, $label_text, $error_message);
+        $div = self::controlContainer($name, $label_text, $error_message, $required);
         $div->addChild($password);
-        if ($required) {
-            $div->addChild(new CText('(*)'));
-        }
+
         return $div;
     }
 
@@ -84,11 +76,9 @@ class FormElementCreator
         } else {
             $error_message = null;
         }
-        $div = self::controlContainer($name, $label_text, $error_message);
+        $div = self::controlContainer($name, $label_text, $error_message, $required);
         $div->addChild($textarea);
-        if ($required) {
-            $div->addChild(new CText('(*)'));
-        }
+
         return $div;
     }
 
@@ -107,11 +97,9 @@ class FormElementCreator
             $error_message = null;
         }
 
-        $div = self::controlContainer($name, $label_text, $error_message);
+        $div = self::controlContainer($name, $label_text, $error_message, $required);
         $div->addChild($select);
-        if ($required) {
-            $div->addChild(new CText('(*)'));
-        }
+
         return $div;
     }
 
@@ -133,7 +121,7 @@ class FormElementCreator
         return $div;
     }
 
-    private static function controlContainer($name, $label_text, $error_message = null)
+    private static function controlContainer($name, $label_text, $error_message = null, $required = false)
     {
         $div   = CDOMElement::create('div', "id:div_$name");
         $label = CDOMElement::create('label', "for:$name");
@@ -144,6 +132,11 @@ class FormElementCreator
             $error_div = CDOMElement::create('div', 'class:error');
             $error_div->addChild(new CText($error_message));
             $div->addChild($error_div);
+        }
+        if ($required) {
+            $req = CDOMElement::create('span', 'class:label_required');
+            $req->addChild(new CText('(*)'));
+            $label->addChild($req);
         }
 
         return $div;
