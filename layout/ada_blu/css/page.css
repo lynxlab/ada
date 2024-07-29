@@ -112,6 +112,11 @@ a:visited {text-decoration: none; }
 	padding-bottom: 10px;
 }
 
+.fec span.label_required {
+    font-weight: normal;
+    margin-left: 0.2em;
+}
+
 /*
  *
  */
