@@ -540,58 +540,58 @@ class AdminModuleHtmlLib
                 translateFN("Nel campo host può essere specificata la porta di connessione, per esempio <i>localhost:3306</i>"),
                 ];
                 $dbfiels->addChild(
-                    FormElementCreator::addTextInput('db_host', 'Host DB', $tester_dataAr, $errorsAr, 'value:localhost')
+                    FormElementCreator::addTextInput('db_host', translateFN('Host DB'), $tester_dataAr, $errorsAr, 'value:localhost', '', true)
                 );
                 $dbfiels->addChild(
-                    FormElementCreator::addTextInput('db_user', 'Username DB', $tester_dataAr, $errorsAr)
+                    FormElementCreator::addTextInput('db_user', translateFN('Username DB'), $tester_dataAr, $errorsAr, '', true)
                 );
                 $dbfiels->addChild(
-                    FormElementCreator::addTextInput('db_password', 'Password DB', $tester_dataAr, $errorsAr)
+                    FormElementCreator::addTextInput('db_password', translateFN('Password DB'), $tester_dataAr, $errorsAr, '', true)
                 );
             }
             $p->addChild(new CText(implode("<br/>", $text)));
 
             $dbfiels->addChild(
-                FormElementCreator::addTextInput('db_name', 'Nome DB', $tester_dataAr, $errorsAr)
+                FormElementCreator::addTextInput('db_name', translateFN('Nome DB'), $tester_dataAr, $errorsAr, '', true)
             );
             $form->addChild($p);
             $form->addChild($dbfiels);
         }
 
-        $tester_name = FormElementCreator::addTextInput('tester_name', 'Nome', $tester_dataAr, $errorsAr);
+        $tester_name = FormElementCreator::addTextInput('tester_name', translateFN('Nome'), $tester_dataAr, $errorsAr, '', true);
         $form->addChild($tester_name);
 
-        $tester_rs = FormElementCreator::addTextInput('tester_rs', 'Ragione sociale', $tester_dataAr, $errorsAr);
+        $tester_rs = FormElementCreator::addTextInput('tester_rs', translateFN('Ragione sociale'), $tester_dataAr, $errorsAr, '', true);
         $form->addChild($tester_rs);
 
-        $tester_address = FormElementCreator::addTextInput('tester_address', 'Indirizzo', $tester_dataAr, $errorsAr);
+        $tester_address = FormElementCreator::addTextInput('tester_address', translateFN('Indirizzo'), $tester_dataAr, $errorsAr, '', true);
         $form->addChild($tester_address);
 
-        $tester_province = FormElementCreator::addTextInput('tester_province', 'Provincia', $tester_dataAr, $errorsAr);
+        $tester_province = FormElementCreator::addTextInput('tester_province', translateFN('Provincia'), $tester_dataAr, $errorsAr, '', true);
         $form->addChild($tester_province);
 
-        $tester_city = FormElementCreator::addTextInput('tester_city', 'Citt&agrave', $tester_dataAr, $errorsAr);
+        $tester_city = FormElementCreator::addTextInput('tester_city', translateFN('Citt&agrave'), $tester_dataAr, $errorsAr, '', true);
         $form->addChild($tester_city);
 
-        $tester_country = FormElementCreator::addTextInput('tester_country', 'Nazione', $tester_dataAr, $errorsAr);
+        $tester_country = FormElementCreator::addTextInput('tester_country', translateFN('Nazione'), $tester_dataAr, $errorsAr, '', true);
         $form->addChild($tester_country);
 
-        $tester_phone = FormElementCreator::addTextInput('tester_phone', 'Telefono', $tester_dataAr, $errorsAr);
+        $tester_phone = FormElementCreator::addTextInput('tester_phone', translateFN('Telefono'), $tester_dataAr, $errorsAr, '', true);
         $form->addChild($tester_phone);
 
-        $tester_email = FormElementCreator::addTextInput('tester_email', 'E-mail', $tester_dataAr, $errorsAr);
+        $tester_email = FormElementCreator::addTextInput('tester_email', translateFN('E-mail'), $tester_dataAr, $errorsAr, '', true);
         $form->addChild($tester_email);
 
-        $tester_desc = FormElementCreator::addTextArea('tester_desc', 'Descrizione', $tester_dataAr, $errorsAr);
+        $tester_desc = FormElementCreator::addTextArea('tester_desc', translateFN('Descrizione'), $tester_dataAr, $errorsAr);
         $form->addChild($tester_desc);
 
-        $tester_resp = FormElementCreator::addTextInput('tester_resp', 'Responsabile', $tester_dataAr, $errorsAr);
+        $tester_resp = FormElementCreator::addTextInput('tester_resp', translateFN('Responsabile'), $tester_dataAr, $errorsAr);
         $form->addChild($tester_resp);
 
-        $tester_iban = FormElementCreator::addTextInput('tester_iban', 'IBAN', $tester_dataAr, $errorsAr);
+        $tester_iban = FormElementCreator::addTextInput('tester_iban', translateFN('IBAN'), $tester_dataAr, $errorsAr, '', true);
         $form->addChild($tester_iban);
 
-        $tester_pointer = FormElementCreator::addTextInput('tester_pointer', 'Puntatore al database', $tester_dataAr, $errorsAr);
+        $tester_pointer = FormElementCreator::addTextInput('tester_pointer', translateFN('Puntatore al database'), $tester_dataAr, $errorsAr, '', true);
         $form->addChild($tester_pointer);
 
 
