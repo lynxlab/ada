@@ -61,7 +61,7 @@ and open the template in the editor.
  * end #table_log_report jQuery dataTable
  */
 
-
-
-
-
+#addbuttoncontainer {
+    margin: 0.5% 1.5%;
+    text-align:right;
+}

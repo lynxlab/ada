@@ -45,6 +45,12 @@
                         <div id="help">
                             <template_field class="template_field" name="help">help</template_field>
                         </div>
+                        <div id="addbuttoncontainer">
+                            <a href="/switcher/add_course.php" title="<i18n>Aggiungi Corso</i18n>" class="ui labeled icon teal button">
+                                <i class="book icon"></i>
+                                <i18n>Aggiungi Corso</i18n>
+                            </a>
+                        </div>
                         <div id="data">
                             <template_field class="template_field" name="data">data</template_field>
                         </div>
