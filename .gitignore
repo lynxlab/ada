@@ -5,6 +5,8 @@
 /.vscode/
 /clients/
 /config_path.inc.php
+/config/config_install.inc.php
+/config/env_install.inc.php
 *.txt
 /docs/
 /nbproject/
