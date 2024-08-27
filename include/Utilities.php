@@ -506,4 +506,9 @@ class Utilities
         }
         return $ip;
     }
+
+    public static function inInstall()
+    {
+        return (0 === strcasecmp('install.php', basename($_SERVER['SCRIPT_FILENAME'])));
+    }
 }

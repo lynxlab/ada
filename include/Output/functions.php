@@ -24,11 +24,12 @@
 namespace Lynxlab\ADA\Main\Output\Functions;
 
 use Lynxlab\ADA\Main\Translator;
+use Lynxlab\ADA\Main\Utilities;
 
 function translateFN($message, $language_from = null, $language_to = null)
 {
 
-    if (0 === strcasecmp('install.php', basename($_SERVER['SCRIPT_FILENAME']))) {
+    if (Utilities::inInstall()) {
         return $message;
     }
 

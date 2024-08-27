@@ -344,7 +344,7 @@ class ARE
                  *
                  * make menu here
                  */
-                if (0 !== strcasecmp('install.php', basename($_SERVER['SCRIPT_FILENAME']))) {
+                if (!Utilities::inInstall()) {
                     // menu property created 'on-the-fly'
                     $layoutObj->menu = new Menu(
                         $layoutObj->module_dir,
