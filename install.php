@@ -170,23 +170,22 @@ function composerInstall($version = '2.7.2')
             $composerPhar = new Phar(COMPOSER_DIRECTORY . DIRECTORY_SEPARATOR . 'Composer.phar');
             $composerPhar->extractTo(COMPOSER_DIRECTORY);
             unset($composerPhar);
-            require_once(COMPOSER_DIRECTORY . '/vendor/autoload.php');
-            if ((is_dir('vendor') && is_writable('vendor')) || mkdir('vendor', 0770)) {
-                // Create the commands
-                $input = new StringInput('dumpautoload');
-                // Create the application and run it with the commands
-                // @phpstan-ignore-next-line
-                $application = new Application();
-                $application->setAutoExit(false); // prevent `$application->run` method from exitting the script
-                $application->setCatchExceptions(false);
-                $application->run($input);
-            } else {
-                die ("vendor dir does not exist and could not be created: check webserver write permissions on ADA root directory, aborting installation!");
-            }
         }
     }
     //This requires the phar to have been extracted successfully.
     require_once(COMPOSER_DIRECTORY . '/vendor/autoload.php');
+    if ((is_dir('vendor') && is_writable('vendor')) || mkdir('vendor', 0770)) {
+        // Create the commands
+        $input = new StringInput('dumpautoload');
+        // Create the application and run it with the commands
+        // @phpstan-ignore-next-line
+        $application = new Application();
+        $application->setAutoExit(false); // prevent `$application->run` method from exitting the script
+        $application->setCatchExceptions(false);
+        $application->run($input);
+    } else {
+        die ("vendor dir does not exist, is not writable or could not be created: check webserver write permissions on ADA root directory, aborting installation!");
+    }
 }
 
 $created = [
@@ -196,7 +195,6 @@ $created = [
 $installSuccess = false;
 
 register_shutdown_function('makeClean');
-composerInstall();
 
 putenv('PORTAL_NAME=ADA Install');
 putenv('HTTP_ROOT_DIR=' . getBaseUrl());
@@ -221,6 +219,8 @@ foreach (
         }
     }
 }
+
+composerInstall();
 
 require_once realpath(__DIR__) . '/config_path.inc.php';
 
@@ -290,9 +290,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     try {
         // Install composer dependencies as first
         if (is_file(ROOT_DIR . '/composer.json') && is_readable(ROOT_DIR . '/composer.json')) {
+            Utilities::delTree(ROOT_DIR . '/vendor');
             $created['dirs'][] = ROOT_DIR . '/js/vendor';
             if (!is_dir(ROOT_DIR . '/js/vendor') && !mkdir(ROOT_DIR . '/js/vendor', 0770)) {
-                die ("js/vendor dir does not exist and could not be created: check webserver write permissions on js directory, aborting installation!");
+                die ("js/vendor dir does not exist, is not writable or could not be created: check webserver write permissions on js directory, aborting installation!");
             }
             set_time_limit(300);
             sendToBrowser(translateFN('Installazione dipendenze ADA') . ' ...');
@@ -716,7 +717,6 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $modMessage = CDOMElement::create('div', 'class:ui visible warning small message');
     $modMessage->addChild(new CText(translateFN("ATTENZIONE: se si sta installando il modulo 'slideimport' leggere il suo README per informazioni sull'uso di ImageMagick e Ghostscript.")));
-    $installSuccess = true;
     /**
      * Sends data to the rendering engine
      */
