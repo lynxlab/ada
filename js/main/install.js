@@ -52,7 +52,11 @@ function initDoc() {
         onSuccess: function() {
             $j(".ui.attached").slideUp(500, function() {
                 $j("#installResults").slideDown(500, function (){
-                    $j('#installResults').contents().find("body").css('cursor', 'wait');
+                    $j('#installResults').contents().find("body").css({
+                        'cursor': 'wait',
+                        'color': '#fff',
+                        'font-family': 'monospace',
+                    });
                 });
             });
         }

@@ -134,6 +134,8 @@ class ADAAdminerHelper
             file_get_contents('https://raw.github.com/vrana/adminer/master/plugins/plugin.php')
         );
 
-        echo "adminer and adminer/plugin patched and installed/updated!\nYou may need to fix file permissions!\n";
+        if (php_sapi_name() === 'cli') {
+            echo "adminer and adminer/plugin patched and installed/updated!\nYou may need to fix file permissions!\n";
+        }
     }
 }
