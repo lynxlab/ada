@@ -43,8 +43,7 @@ function initDoc() {
     $j('#retryButton').click(function() {
         $j('#retryButton-cnt').hide();
         $j("#installResults").slideUp(500, function() {
-            $j(".ui.attached").slideDown(500, function (){
-            });
+            window.location.reload(true);
         });
     });
 
