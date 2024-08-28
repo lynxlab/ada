@@ -20,7 +20,6 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
-use Lynxlab\ADA\Main\HtmlLibrary\FormElementCreator;
 use Lynxlab\ADA\Module\CollaboraACL\GrantAccessForm;
 use Lynxlab\ADA\Module\Login\AbstractLogin;
 use Lynxlab\ADA\Switcher\Subscription;
