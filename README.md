@@ -28,8 +28,9 @@
 
 1. Download or clone this repository, unzip or upload its contents in a directory visible by your webserver
 2. Make sure all files and dirs are owned and writable by the webserver user
-3. Point your browser to the webserver directory where ADA is uploaded
-4. Fill the Install form and click the 'Install ADA' button
+3. If you're creating the databases using the installer, please make sure that the DB user has at least the following global privileges: SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, INDEX, REFERENCES
+4. Point your browser to the webserver directory where ADA is uploaded
+5. Fill the Install form and click the 'Install ADA' button
 
 ### SELinux notices
 
