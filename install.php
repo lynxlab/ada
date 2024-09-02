@@ -79,6 +79,9 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
      // output: Array ( [dirname] => /myproject [basename] => index.php [extension] => php [filename] => index )
      $pathInfo = pathinfo($currentPath);
+     if ($pathInfo['dirname'] == '.') {
+        $pathInfo['dirname'] = '';
+     }
 
      // output: localhost
      $hostName = $_SERVER['HTTP_HOST'];
@@ -89,7 +92,7 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
      $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ? 'https' : $protocol;
 
      // return: http://localhost/myproject/
-     return $protocol . '://' . $hostName . trim($pathInfo['dirname'], " /") . "/";
+     return $protocol . '://' . $hostName . rtrim($pathInfo['dirname'], " /") . "/";
  }
 
  function sendToBrowser($message)
