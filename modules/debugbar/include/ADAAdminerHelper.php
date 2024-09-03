@@ -114,25 +114,40 @@ class ADAAdminerHelper
     {
         // download adminer.
         // and turn off error_reporting.
-        file_put_contents(
-            './adminer/adminer.php',
-            preg_replace(
-                '/(error_reporting)\(\d+\);/',
-                '$1(0);',
-                file_get_contents(
-                    'https://github.com/vrana/adminer/releases/download/v' . self::ADMINER_VERSION . '/adminer-' . self::ADMINER_VERSION . '-mysql.php'
-                )
-            )
-        );
+        $fp = fopen('./adminer/adminer.php', 'w+');
+        $ch = curl_init('https://github.com/vrana/adminer/releases/download/v' . self::ADMINER_VERSION . '/adminer-' . self::ADMINER_VERSION . '-mysql.php');
+        curl_setopt($ch, CURLOPT_TIMEOUT, 50);
+        //disable ssl cert verification to allow copying files from HTTPS
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // get curl response
+        $contents = curl_exec($ch);
+        if ($contents !== false) {
+            fwrite($fp, preg_replace('/(error_reporting)\(\d+\);/', '$1(0);', $contents));
+        }
+        curl_close($ch);
+        fclose($fp);
 
         // make dir and download adminer plugin base class.
         if (!is_dir('./adminer/plugins')) {
             mkdir('./adminer/plugins');
         }
-        file_put_contents(
-            './adminer/plugins/plugin.php',
-            file_get_contents('https://raw.github.com/vrana/adminer/master/plugins/plugin.php')
-        );
+
+        $fp = fopen('./adminer/plugins/plugin.php', 'w+');
+        $ch = curl_init('https://raw.github.com/vrana/adminer/master/plugins/plugin.php');
+        curl_setopt($ch, CURLOPT_TIMEOUT, 50);
+        //disable ssl cert verification to allow copying files from HTTPS
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // get curl response
+        $contents = curl_exec($ch);
+        if ($contents !== false) {
+            fwrite($fp, $contents);
+        }
+        curl_close($ch);
+        fclose($fp);
 
         if (php_sapi_name() === 'cli') {
             echo "adminer and adminer/plugin patched and installed/updated!\nYou may need to fix file permissions!\n";

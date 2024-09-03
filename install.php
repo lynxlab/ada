@@ -52,6 +52,11 @@ function outputBufferOff()
     do {
         $flushed = @ob_end_flush();
     } while ($flushed);
+    // Output buffering can be layered and I've had cases where earlier code had made multiple levels.
+    // This will clear them all.
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
     ob_implicit_flush(1);
     @ob_flush();
     flush();
@@ -123,8 +128,7 @@ function sendToBrowser($message)
         echo '</pre>';
         echo '<script type="text/javascript">window.scrollTo(0,document.body.scrollHeight);</script>';
     }
-    echo str_pad(' ', 4 * 1024);
-    flush();
+    outputBufferOff();
 }
 
 function makeClean()
@@ -169,17 +173,35 @@ function composerInstall($version = '2.7.2')
     putenv('COMPOSER_MEMORY_LIMIT=2048M');
 
     if (!is_dir(COMPOSER_DIRECTORY)) {
-        $COMPOSER_URL = 'https://getcomposer.org/download/' . $version . '/composer.phar';
         if (!mkdir(COMPOSER_DIRECTORY)) {
             die("Cannot make dir for composer: " . COMPOSER_DIRECTORY . ", aborting installation!");
         }
-        if (file_exists(COMPOSER_DIRECTORY . '/vendor/autoload.php') !== true) {
-            set_time_limit(300);
-            copy($COMPOSER_URL, COMPOSER_DIRECTORY . DIRECTORY_SEPARATOR . 'Composer.phar');
-            $composerPhar = new Phar(COMPOSER_DIRECTORY . DIRECTORY_SEPARATOR . 'Composer.phar');
-            $composerPhar->extractTo(COMPOSER_DIRECTORY);
-            unset($composerPhar);
+    }
+    if (file_exists(COMPOSER_DIRECTORY . '/vendor/autoload.php') !== true) {
+        set_time_limit(300);
+
+        $COMPOSER_URL = 'https://getcomposer.org/download/' . $version . '/composer.phar';
+        $fp = fopen(COMPOSER_DIRECTORY . DIRECTORY_SEPARATOR . 'Composer.phar', 'w+');
+        $ch = curl_init($COMPOSER_URL);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 50);
+        //disable ssl cert verification to allow copying files from HTTPS
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        // write curl response to file
+        curl_setopt($ch, CURLOPT_FILE, $fp);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        // get curl response
+        $exec = curl_exec($ch);
+        curl_close($ch);
+        fclose($fp);
+        if ($exec !== true) {
+            if (is_file((COMPOSER_DIRECTORY . DIRECTORY_SEPARATOR . 'Composer.phar'))) {
+                unlink(COMPOSER_DIRECTORY . DIRECTORY_SEPARATOR . 'Composer.phar');
+            }
+            die("Cannot download composer from url: $COMPOSER_URL");
         }
+        $composerPhar = new Phar(COMPOSER_DIRECTORY . DIRECTORY_SEPARATOR . 'Composer.phar');
+        $composerPhar->extractTo(COMPOSER_DIRECTORY);
+        unset($composerPhar);
     }
 
     foreach ([__DIR__ . '/vendor', __DIR__ . '/js/vendor'] as $vendorDir) {
@@ -417,7 +439,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                         $uData = $stmt->fetch(PDO::FETCH_ASSOC);
 
                         $fields = '`' . implode('`, `', array_keys($uData)) . '`';
-                        $fields_data = implode(', ', array_map(fn() => '?', $uData));
+                        $fields_data = implode(', ', array_map(fn () => '?', $uData));
                         $sql =  "INSERT INTO `" . $provider['DB'] . "`.`utente` ({$fields}) VALUES ({$fields_data});";
                         $stmt = $providers[$i]['pdo']->prepare($sql);
                         $stmt->execute(array_values($uData));
@@ -493,7 +515,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 foreach ($regIter as $x) {
                     $modulesSQL = array_merge($modulesSQL, $x);
                 }
-                usort($modulesSQL, fn($a, $b) =>
+                usort($modulesSQL, fn ($a, $b) =>
                 // dirty hack to order by filename, having files that starts with a number as last elements
                 strnatcmp('1' . basename($a) . DIRECTORY_SEPARATOR . $a, '1' . basename($b) . DIRECTORY_SEPARATOR . $b));
 
