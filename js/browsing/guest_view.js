@@ -9,4 +9,4 @@
  * @version		0.1
  */
 // just include view.js and it's all set
-load_js('../js/browsing/view.js');
+load_js(`${HTTP_ROOT_DIR}/js/browsing/view.js`);

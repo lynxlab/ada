@@ -1,4 +1,4 @@
-load_js('../../external/fckeditor/fckeditor.js');
+load_js(`${HTTP_ROOT_DIR}/external/fckeditor/fckeditor.js`);
 
 /**
  * change the following to false if you want standard submit

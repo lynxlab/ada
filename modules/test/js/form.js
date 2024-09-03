@@ -1,4 +1,4 @@
-load_js('../../external/fckeditor/fckeditor.js');
+load_js(`${HTTP_ROOT_DIR}/external/fckeditor/fckeditor.js`);
 
 function loadFCKeditor(textarea_name, toolbar) {
     if ($j('#' + textarea_name).size() == 1) {

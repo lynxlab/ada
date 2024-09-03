@@ -1,4 +1,4 @@
-load_js('../external/fckeditor/fckeditor.js');
+load_js(`${HTTP_ROOT_DIR}/external/fckeditor/fckeditor.js`);
 //document.write("<script type='text/javascript' src='../js/include/fckeditor_integration.js'></script>");
 
 function includeFCKeditor(textarea_name) {

@@ -1,4 +1,4 @@
-load_js('../external/fckeditor/fckeditor.js');
+load_js(`${HTTP_ROOT_DIR}/external/fckeditor/fckeditor.js`);
 
 function includeFCKeditor(textarea_name) {
    var oFCKeditor = new FCKeditor( textarea_name );

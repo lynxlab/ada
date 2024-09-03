@@ -1,2 +1,2 @@
 var CHAT_IFRAME = true;
-load_js('../js/include/chat_includes.js');
+load_js(`${HTTP_ROOT_DIR}/js/include/chat_includes.js`);
