@@ -1,3 +1,0 @@
-<p>
-<a href="browsing/view.php?id_node=101_0">ADA1.9alpha</a>
-</p>
