@@ -10,5 +10,5 @@ ADA is a opensource platform released under <a href="http://ada.lynxlab.com/ada2
 You can watch who has worked on it <a href="credits.php">credits</a>.<br />
 <br />
 You can find some other informations about  ADA at <a href="http://www.lynxlab.com/" target="_blank">the official Lynx web site</a>.</p>
-<p>To login as administrator: username <strong>adminAda</strong> and password <strong>adminAda</strong>.<br>
-We strongly invite you to change it immediately for security reasons.</p>
+<p>To login as administrator: username <strong>adminAda</strong> with the password chosen during the installation process.<br>
+</p>

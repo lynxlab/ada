@@ -9,5 +9,5 @@ Se vuoi sapere chi l'ha sviluppata, leggi i <a href="credits.php">crediti</a>.<b
 <br>
 Altre informazioni sulle diverse versioni di ADA le trovi nel nostro <a target="_blank" href="https://www.lynxlab.com/#prodotti">sito</a>.
 </p>
-<p>Per fare login come amministratore puoi usare lo username <strong>adminAda</strong> con password <strong>adminAda</strong>.<br>
-Ti invitiamo però a cambiarla immediatamente per ragioni di sicurezza.</p>
+<p>Per fare login come amministratore puoi usare lo username <strong>adminAda</strong> con password che è stata scelta al momento dell'installazione.<br>
+</p>
