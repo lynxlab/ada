@@ -9,7 +9,7 @@
  * @version   0.1
  */
 load_js([
-    '../js/include/ts_picker.js',
-    '../js/include/clock.js',
-    '../js/comunica/address_book.js',
+    `${HTTP_ROOT_DIR}/js/include/ts_picker.js`,
+    `${HTTP_ROOT_DIR}/js/include/clock.js`,
+    `${HTTP_ROOT_DIR}/js/comunica/address_book.js`,
 ]);

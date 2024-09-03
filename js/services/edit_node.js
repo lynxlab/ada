@@ -1,4 +1,4 @@
 load_js([
-    '../external/fckeditor/fckeditor.js',
-    '../js/include/fckeditor_integration.js',
+    `${HTTP_ROOT_DIR}/external/fckeditor/fckeditor.js`,
+    `${HTTP_ROOT_DIR}/js/include/fckeditor_integration.js`,
 ]);

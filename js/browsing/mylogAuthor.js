@@ -9,4 +9,4 @@
  * @version		0.1
  */
 
-load_js('../js/browsing/mylog.js');
+load_js(`${HTTP_ROOT_DIR}/js/browsing/mylog.js`);

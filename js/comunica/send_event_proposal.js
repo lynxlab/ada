@@ -1,5 +1,5 @@
 load_js([
-    '../js/include/basic.js',
-    '../js/include/menu_functions.js',
-    '../js/include/ts_picker.js',
+    `${HTTP_ROOT_DIR}/js/include/basic.js`,
+    `${HTTP_ROOT_DIR}/js/include/menu_functions.js`,
+    `${HTTP_ROOT_DIR}/js/include/ts_picker.js`,
 ]);
