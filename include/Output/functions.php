@@ -34,8 +34,8 @@ function translateFN($message, $language_from = null, $language_to = null)
     }
 
     if (is_null($language_to)) {
-        $sess_userObj = $_SESSION['sess_userObj'];
-        $languageId = $sess_userObj->getLanguage();
+        $sess_userObj = $_SESSION['sess_userObj'] ?? null;
+        $languageId = $sess_userObj?->getLanguage();
     } else {
         $languageId = $language_to;
     }
