@@ -2902,18 +2902,21 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
                  * giorgio 13/01/2021: force subscritionEndDate to have time set to 23:59:59
                  */
                 $subscritionEndDate = strtotime('tomorrow midnight', $subscritionEndDate) - 1;
-                if (
-                    $subscription->getSubscriptionStatus() == ADA_STATUS_SUBSCRIBED &&
-                    $subscritionEndDate <= time()
-                ) {
-                    $subscription->setSubscriptionStatus(ADA_STATUS_TERMINATED);
-                    $updateSubscription = true;
-                } elseif (
-                    $subscription->getSubscriptionStatus() == ADA_STATUS_TERMINATED &&
-                    $subscritionEndDate > time()
-                ) {
-                    $subscription->setSubscriptionStatus(ADA_STATUS_SUBSCRIBED);
-                    $updateSubscription = true;
+                // never update status if it's completed
+                if ($subscription->getSubscriptionStatus() != ADA_STATUS_COMPLETED) {
+                    if (
+                        $subscription->getSubscriptionStatus() == ADA_STATUS_SUBSCRIBED &&
+                        $subscritionEndDate <= time()
+                    ) {
+                        $subscription->setSubscriptionStatus(ADA_STATUS_TERMINATED);
+                        $updateSubscription = true;
+                    } elseif (
+                        $subscription->getSubscriptionStatus() == ADA_STATUS_TERMINATED &&
+                        $subscritionEndDate > time()
+                    ) {
+                        $subscription->setSubscriptionStatus(ADA_STATUS_SUBSCRIBED);
+                        $updateSubscription = true;
+                    }
                 }
 
                 if ($updateSubscription) {
