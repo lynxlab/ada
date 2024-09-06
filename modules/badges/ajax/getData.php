@@ -7,6 +7,7 @@ use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
 use Lynxlab\ADA\Module\Badges\Badge;
 use Lynxlab\ADA\Module\Badges\BadgesActions;
+use Lynxlab\ADA\Module\Badges\BadgesException;
 use Lynxlab\ADA\Module\Servicecomplete\AMACompleteDataHandler;
 use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
 
@@ -53,68 +54,72 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
     if (class_exists(AMABadgesDataHandler::MODELNAMESPACE . $params['object'])) {
         if ($params['object'] == 'Badge') {
             $badgesData = [];
-            $badgesList = $GLOBALS['dh']->findAll($params['object']);
-            if (!AMADB::isError($badgesList)) {
-                /**
-                 * @var \Lynxlab\ADA\Module\Badges\Badge $badge
-                 */
-                foreach ($badgesList as $badge) {
-                    $links = [];
-                    $linksHtml = "";
+            try {
+                $badgesList = $GLOBALS['dh']->findAll($params['object']);
+                if (!AMADB::isError($badgesList)) {
+                    /**
+                     * @var \Lynxlab\ADA\Module\Badges\Badge $badge
+                     */
+                    foreach ($badgesList as $badge) {
+                        $links = [];
+                        $linksHtml = "";
 
-                    for ($j = 0; $j < 2; $j++) {
-                        switch ($j) {
-                            case 0:
-                                if (BadgesActions::canDo(BadgesActions::EDIT_BADGE)) {
-                                    $type = 'edit';
-                                    $title = translateFN('Modifica badge');
-                                    $link = 'editBadge(\'' . $badge->getUuid() . '\');';
-                                }
-                                break;
-                            case 1:
-                                if (BadgesActions::canDo(BadgesActions::TRASH_BADGE)) {
-                                    $type = 'delete';
-                                    $title = translateFN('Cancella badge');
-                                    $link = 'deleteBadge($j(this), \'' . $badge->getUuid() . '\');';
-                                }
-                                break;
+                        for ($j = 0; $j < 2; $j++) {
+                            switch ($j) {
+                                case 0:
+                                    if (BadgesActions::canDo(BadgesActions::EDIT_BADGE)) {
+                                        $type = 'edit';
+                                        $title = translateFN('Modifica badge');
+                                        $link = 'editBadge(\'' . $badge->getUuid() . '\');';
+                                    }
+                                    break;
+                                case 1:
+                                    if (BadgesActions::canDo(BadgesActions::TRASH_BADGE)) {
+                                        $type = 'delete';
+                                        $title = translateFN('Cancella badge');
+                                        $link = 'deleteBadge($j(this), \'' . $badge->getUuid() . '\');';
+                                    }
+                                    break;
+                            }
+
+                            if (isset($type)) {
+                                $links[$j] = CDOMElement::create('li', 'class:liactions');
+
+                                $linkshref = CDOMElement::create('button');
+                                $linkshref->setAttribute('onclick', 'javascript:' . $link);
+                                $linkshref->setAttribute('class', $type . 'Button tooltip');
+                                $linkshref->setAttribute('title', $title);
+                                $links[$j]->addChild($linkshref);
+                                // unset for next iteration
+                                unset($type);
+                            }
                         }
 
-                        if (isset($type)) {
-                            $links[$j] = CDOMElement::create('li', 'class:liactions');
-
-                            $linkshref = CDOMElement::create('button');
-                            $linkshref->setAttribute('onclick', 'javascript:' . $link);
-                            $linkshref->setAttribute('class', $type . 'Button tooltip');
-                            $linkshref->setAttribute('title', $title);
-                            $links[$j]->addChild($linkshref);
-                            // unset for next iteration
-                            unset($type);
+                        if (!empty($links)) {
+                            $linksul = CDOMElement::create('ul', 'class:ulactions');
+                            foreach ($links as $link) {
+                                $linksul->addChild($link);
+                            }
+                            $linksHtml = $linksul->getHtml();
+                        } else {
+                            $linksHtml = '';
                         }
+
+                        $tmpelement = CDOMElement::create('img', 'class:ui tiny image,src:' . $badge->getImageUrl() . '?t=' . time());
+                        $badgesData[] = [
+                            // NOTE: the timestamp parameter added to the png will prevent caching
+                            $tmpelement->getHtml(),
+                            $badge->getName(),
+                            nl2br($badge->getDescription()),
+                            nl2br($badge->getCriteria()),
+                            $linksHtml,
+                        ];
                     }
-
-                    if (!empty($links)) {
-                        $linksul = CDOMElement::create('ul', 'class:ulactions');
-                        foreach ($links as $link) {
-                            $linksul->addChild($link);
-                        }
-                        $linksHtml = $linksul->getHtml();
-                    } else {
-                        $linksHtml = '';
-                    }
-
-                    $tmpelement = CDOMElement::create('img', 'class:ui tiny image,src:' . $badge->getImageUrl() . '?t=' . time());
-                    $badgesData[] = [
-                        // NOTE: the timestamp parameter added to the png will prevent caching
-                        $tmpelement->getHtml(),
-                        $badge->getName(),
-                        nl2br($badge->getDescription()),
-                        nl2br($badge->getCriteria()),
-                        $linksHtml,
-                    ];
-                }
-            } // if (!AMADB::isError($badgesList))
-            $data = [ 'data' => $badgesData ];
+                    $data = [ 'data' => $badgesData ];
+                } // if (!AMADB::isError($badgesList))
+            } catch (BadgesException $e) {
+                $data['error'] = $e->getMessage();
+            }
         } elseif ($params['object'] == 'CourseBadge') {
             $cdh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 

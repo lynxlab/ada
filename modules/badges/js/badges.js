@@ -128,7 +128,12 @@ function initDataTables() {
                 .fail(function (response) {
                     if (debugForm) console.debug('dataTable ajax fail ', response.responseJSON);
                     $j.when(showHideDiv("(" + response.status + ") " + response.statusText, ('error' in response.responseJSON) ? response.responseJSON.error : 'unkown error', false))
-                        .then(function () { callback(response.responseJSON); });
+                        .then(function () {
+                            if ('error' in response.responseJSON) {
+                                delete(response.responseJSON.error);
+                            }
+                            callback(response.responseJSON);
+                        });
                 });
         },
         "deferRender": true,
