@@ -121,4 +121,22 @@ final class CoreEvent extends GenericEvent
      * @var string
      */
     public const POSTMODULEINIT = self::NAMESPACE . '.moduleinit.post';
+
+    /**
+     * The PREFILLINTEMPLATE event occurs before ARE:render fills in the template fields.
+     *
+     * @CoreEvent
+     *
+     * @var string
+     */
+    public const PREFILLINTEMPLATE = self::NAMESPACE . 'fillintemplate.pre';
+
+    /**
+     * The POSTFILLINTEMPLATE event occurs after ARE:render has filled in the template fields.
+     *
+     * @CoreEvent
+     *
+     * @var string
+     */
+    public const POSTFILLINTEMPLATE = self::NAMESPACE . 'fillintemplate.post';
 }
