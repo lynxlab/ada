@@ -21,6 +21,7 @@ use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Logger\ADALogger;
 use Lynxlab\ADA\Main\Menu;
+use Lynxlab\ADA\Main\Traits\ADASingleton;
 use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CourseEvent;
@@ -32,6 +33,8 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 abstract class AMATesterDataHandler extends AbstractAMADataHandler
 {
+    use ADASingleton;
+
     protected static $instance = null;
     /**
      * Contains the data source name used to create this instance of AMADataHandler
@@ -59,13 +62,24 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         parent::__destruct();
     }
 
+    public static function instance($dsn = null)
+    {
+        if (static::hasInstance()) {
+            $instance = static::getInstance($dsn);
+        } else {
+            $instance = static::getInstance($dsn);
+            $instance->setDSN($dsn);
+        }
+        return $instance;
+    }
+
     /**
      * Returns an instance of AMADataHandler.
      *
      * @param  string $dsn - optional, a valid data source name
      * @return self an instance of AMADataHandler
      */
-    public static function instance($dsn = null)
+    public static function OLDinstance($dsn = null)
     {
         $callerClassName = static::class;
         if (!is_null(self::$instance) && self::$instance::class !== $callerClassName) {

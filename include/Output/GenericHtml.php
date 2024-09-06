@@ -132,6 +132,24 @@ class GenericHtml extends Output
          */
         $dataHa['HTTP_ROOT_DIR'] = HTTP_ROOT_DIR;
 
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CoreEvent::class,
+                    'eventName' => CoreEvent::PREFILLINTEMPLATE,
+                    'eventPrefix' => basename($_SERVER['SCRIPT_FILENAME']),
+                ],
+                basename($_SERVER['SCRIPT_FILENAME']),
+                [
+                    'dataHa' => $dataHa,
+                ]
+            );
+            foreach ($event->getArguments() as $key => $val) {
+
+                ${$key} = $val;
+            }
+        }
+
         foreach ($dataHa as $field => $data) {
             $ereg = str_replace('%field_name%', $field, $this->replace_field_code);
             $preg = str_replace('%field_name%', $field, preg_quote($this->replace_field_code, '/'));
@@ -184,6 +202,23 @@ class GenericHtml extends Output
         /*
          * fine della traduzione
          */
+
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CoreEvent::class,
+                    'eventName' => CoreEvent::POSTFILLINTEMPLATE,
+                    'eventPrefix' => basename($_SERVER['SCRIPT_FILENAME']),
+                ],
+                basename($_SERVER['SCRIPT_FILENAME']),
+                [
+                    'html' => $tpl,
+                ]
+            );
+            foreach ($event->getArguments() as $key => $val) {
+                ${$key} = $val;
+            }
+        }
 
         $this->htmlbody = $tpl;
     }

@@ -34,7 +34,8 @@ class EventSubscriber implements EventSubscriberInterface
             CoreEvent::AMADBPOSTCONNECT => 'addPDOCollector',
             CoreEvent::PREMODULEINIT => 'onPreModuleInit',
             CoreEvent::POSTMODULEINIT => 'onPostModuleInit',
-            CoreEvent::PAGEPRERENDER => 'addDebugBar',
+            CoreEvent::PAGEPRERENDER => 'addDebugBarAssets',
+            CoreEvent::PREFILLINTEMPLATE => 'addDebugBar',
         ];
     }
 
@@ -51,17 +52,13 @@ class EventSubscriber implements EventSubscriberInterface
 
     /**
      * adds the script and css tags to include the debugbar components.
-     * adds dispatcher and ARE collectors content.
      *
      * @param CoreEvent $event
      * @return void
      */
-    public function addDebugBar(CoreEvent $event)
+    public function addDebugBarAssets(CoreEvent $event)
     {
         $data = $event->getArguments();
-        /**
-         * Output the debugbar only if ARE_HTML_RENDER
-         */
         if ((($_SESSION['sess_id_user'] ?? 0) > 0) && ($data['renderer'] ?? ARE_HTML_RENDER) == ARE_HTML_RENDER) {
             [$cssFiles, $jsFiles] = $this->debugBarRender->getAssets();
 
@@ -80,7 +77,23 @@ class EventSubscriber implements EventSubscriberInterface
                     array_filter($assets, fn ($el) => !str_contains(strtolower($el), 'jquery'))
                 );
             }
+        }
+        $event->setArguments($data);
+    }
 
+    /**
+     * adds debugbar code and dispatcher and ARE collectors content.
+     *
+     * @param CoreEvent $event
+     * @return void
+     */
+    public function addDebugBar(CoreEvent $event)
+    {
+        /**
+         * Output the debugbar only for logged users
+         */
+        if (($_SESSION['sess_id_user'] ?? 0) > 0) {
+            $data = $event->getArguments();
             $debugbarCode = str_ireplace(
                 sprintf(
                     "%s.ajaxHandler.bindToXHR();",
@@ -92,7 +105,7 @@ class EventSubscriber implements EventSubscriberInterface
                 ),
                 $this->debugBarRender->render()
             );
-            $data['content_dataAr']['adadebugbar'] = $debugbarCode;
+            $data['dataHa']['adadebugbar'] = $debugbarCode;
 
             if ($this->debugbar->hasCollector('ARE')) {
                 $this->debugbar['ARE']->setData($data);

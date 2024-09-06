@@ -74,7 +74,10 @@ trait ADASingleton
                 if (empty($params)) {
                     $debugstr .= 'out params';
                 } else {
-                    $debugstr .= sprintf(" params: %s", $params);
+                    $debugstr .= sprintf(
+                        " params: %s",
+                        (is_scalar($params) ? (string) $params : print_r($params, true))
+                    );
                 }
                 if (ModuleLoaderHelper::isLoaded('debugbar')) {
                     ADADebugBar::addMessage($debugstr);
@@ -90,7 +93,7 @@ trait ADASingleton
      *
      * @return boolean
      */
-    final public function hasInstance()
+    final static public function hasInstance()
     {
         return in_array(static::class, static::$instances);
     }
