@@ -84,7 +84,7 @@ class SubscriptionController extends AbstractController implements AdaApiInterfa
             /*
              * This GLOBAL is needed by almost everyone
              */
-            $GLOBALS['dh'] = new AMADataHandler(MultiPort::getDSN($this->authUserTesters[0]));
+            $GLOBALS['dh'] = AMADataHandler::getInstance(MultiPort::getDSN($this->authUserTesters[0]));
             $dh = $GLOBALS['dh'];
 
             $canSubscribeUser = false;
@@ -95,7 +95,7 @@ class SubscriptionController extends AbstractController implements AdaApiInterfa
 
                 $subscriberObj = MultiPort::findUserByUsername($subscriptionArr['username']);
                 if ($subscriberObj instanceof ADAUser) {
-                    $result = $dh->studentCanSubscribeToCourseInstanceXX($subscriberObj->getId(), $courseInstanceObj->getId());
+                    $result = $dh->studentCanSubscribeToCourseInstance($subscriberObj->getId(), $courseInstanceObj->getId());
                     if (!AMADataHandler::isError($result) && $result !== false) {
                         $canSubscribeUser = true;
                     }

@@ -102,7 +102,7 @@ class CourseXmlFileProcess
         $id_course = $this->set_ha['id_course'];
         $id_author = $this->set_ha['id_author'];
 
-        $dh = new AMADataHandler();
+        $dh = AMADataHandler::getInstance();
 
         // inserimento dati nel database
         $instances = $dh->courseHasInstances($id_course);
@@ -724,7 +724,7 @@ class CourseXmlFileProcess
         $data_ha['actions_ar'] = "";
 
         // creazione nuova istanza della classe AMA
-        $dh = new AMADataHandler();
+        $dh = AMADataHandler::getInstance();
 
         // inserimento dati nel database
 

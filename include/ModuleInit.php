@@ -392,7 +392,7 @@ final class ModuleInit
             $_SESSION['sess_selected_tester'] = $sess_selected_tester;
         }
 
-        $dh = new AMADataHandler($sess_selected_tester_dsn);
+        $dh = AMADataHandler::getInstance($sess_selected_tester_dsn);
         $GLOBALS['dh'] = $dh;
         static::loadServiceTypes();
 
