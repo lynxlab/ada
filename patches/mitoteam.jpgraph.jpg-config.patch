@@ -1,0 +1,24 @@
+--- src/lib/jpg-config.inc.php	2024-09-09 15:15:01.837724615 +0200
++++ src/lib/jpg-config.inc.php	2024-09-09 15:16:37.887494914 +0200
+@@ -81,7 +81,9 @@
+ // regenerate the image. Note that even if reading the cache is
+ // disabled the cached will still be updated with the newly generated
+ // image. Set also 'USE_CACHE' below.
+-define('READ_CACHE',true);
++if (!defined('READ_CACHE')) {
++    define('READ_CACHE',true);
++}
+
+ // Determine if the error handler should be image based or purely
+ // text based. Image based makes it easier since the script will
+@@ -103,7 +105,9 @@
+
+ // Should usage of deprecated functions and parameters give a fatal error?
+ // (Useful to check if code is future proof.)
+-define('ERR_DEPRECATED',true);
++if (!defined('ERR_DEPRECATED')) {
++    define('ERR_DEPRECATED',true);
++}
+
+ // The builtin GD function imagettfbbox() fuction which calculates the bounding box for
+ // text using TTF fonts is buggy. By setting this define to true the library
