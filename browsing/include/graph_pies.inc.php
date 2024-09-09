@@ -24,22 +24,34 @@ if (isset($nodes_percent)) {
     $nodes_percent_decode = (int) urldecode($nodes_percent);
 
     // Array dei dati
-    $data = [100 - $nodes_percent_decode, $nodes_percent_decode];
+    if ($nodes_percent_decode <= 0) {
+        $data = [100];
+        $legends = ['non visitati'];
+    } else if ($nodes_percent_decode >= 100) {
+        $data = [100];
+        $legends = ['visitati'];
+    } else {
+        $data = [100 - $nodes_percent_decode, $nodes_percent_decode];
+        $legends = ['non visitati', 'visitati'];
+    }
 
-    MtJpGraph::load('pie');
+    MtJpGraph::load(['pie', 'pie3d'], true);
     // Crea un grafico a torta
     // @phpstan-ignore-next-line
-    $graph = new PieGraph(300, 200);
+    $graph = new PieGraph(500, 400);
     $graph->SetShadow();
 
     // Set titolo
     $graph->title->Set('Nodi visitati');
-    $graph->title->SetFont(FF_FONT1, FS_BOLD);
+    $graph->title->SetFont(FF_DV_SANSSERIF, FS_BOLD, 18);
 
     // Crea il grafico
     // @phpstan-ignore-next-line
-    $p1 = new PiePlot($data);
-    $p1->SetLegends(['visitati']);
+    $p1 = new PiePlot3D($data);
+    $p1->SetStartAngle(0);
+    $p1->ExplodeAll(10);
+    $p1->SetSize(150);
+    $p1->SetLegends($legends);
     $graph->Add($p1);
 
     // output
