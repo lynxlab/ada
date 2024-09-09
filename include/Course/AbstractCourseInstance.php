@@ -95,7 +95,7 @@ abstract class AbstractCourseInstance
 
     public function tabledClassExplodeNodesFN($depth, $id_parent, $id_profile, $order, $expand = 1)
     {
-        $lObj = new Ilist();
+        $lObj = new IList();
         if ($order == 'alfa') {
             $data =  $this->classExplodeNodesIterativeFN($depth, $id_parent, $id_profile, $order, $expand);
             $lObj->initList('1', '1', 1);

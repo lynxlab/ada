@@ -145,7 +145,6 @@ class GenericHtml extends Output
                 ]
             );
             foreach ($event->getArguments() as $key => $val) {
-
                 ${$key} = $val;
             }
         }

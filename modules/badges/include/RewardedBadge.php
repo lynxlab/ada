@@ -8,7 +8,7 @@
  * @version     0.1
  */
 
-namespace  Lynxlab\ADA\Module\Badges;
+namespace Lynxlab\ADA\Module\Badges;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;

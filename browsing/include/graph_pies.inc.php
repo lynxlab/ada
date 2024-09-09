@@ -10,7 +10,7 @@ use mitoteam\jpgraph\MtJpGraph;
  *  Root dir relative path
  */
 if (!defined('ROOT_DIR')) {
-    define('ROOT_DIR', realpath(dirname(__FILE__)) . '/../../');
+    define('ROOT_DIR', realpath(__DIR__) . '/../../');
 }
 require_once ROOT_DIR . '/config/config_main.inc.php';
 require_once ROOT_DIR . '/config/config_install.inc.php';
@@ -26,8 +26,9 @@ if (isset($nodes_percent)) {
     // Array dei dati
     $data = [100 - $nodes_percent_decode, $nodes_percent_decode];
 
-    // Crea un grafico a torta
     MtJpGraph::load('pie');
+    // Crea un grafico a torta
+    // @phpstan-ignore-next-line
     $graph = new PieGraph(300, 200);
     $graph->SetShadow();
 
@@ -36,6 +37,7 @@ if (isset($nodes_percent)) {
     $graph->title->SetFont(FF_FONT1, FS_BOLD);
 
     // Crea il grafico
+    // @phpstan-ignore-next-line
     $p1 = new PiePlot($data);
     $p1->SetLegends(['visitati']);
     $graph->Add($p1);

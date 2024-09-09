@@ -59,12 +59,12 @@ class SubscriptionController extends AbstractController implements AdaApiInterfa
              *  SLIM has converted the body to an array alreay
              */
             $subscriptionArr = $request->getParsedBody();
-        } elseif (!empty($params) && is_array($params)) {
+        } elseif (!empty($args) && is_array($args)) {
 
             /**
              * Assume we've been passed an array
              */
-            $subscriptionArr = $params;
+            $subscriptionArr = $args;
         } else {
             throw new APIException('Wrong Parameters', StatusCodeInterface::STATUS_BAD_REQUEST);
         }
