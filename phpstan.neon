@@ -3,7 +3,6 @@ parameters:
     bootstrapFiles:
         - config_path.inc.php
     excludePaths:
-        - /*/graph/*
         - /*/vendor/*
         - /*/services/media/*
         - /*/upload_file/*

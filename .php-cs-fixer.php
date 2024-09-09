@@ -3,7 +3,6 @@
 $finder = (new PhpCsFixer\Finder())
     ->in(__DIR__)
     ->exclude([
-        'browsing/include/graph',
         'services/media',
         'upload_file',
         'widgets/cache',
