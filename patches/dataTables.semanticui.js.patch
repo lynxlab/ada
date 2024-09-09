@@ -1,5 +1,5 @@
 Applies semanticui styling to the lenght dropdown and input filter.
-NOTE: Below paths are relative to js/vendor
+NOTE: Below paths are relative to js/vendor/datatables.net-se
 --- js/dataTables.semanticui.js
 +++ js/dataTables.semanticui.js
 @@ -216,11 +216,52 @@

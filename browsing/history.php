@@ -146,7 +146,7 @@ if ($userObj instanceof ADALoggableUser) {
             $added_nodes_count = count($nodes);
             $added_notes = $added_nodes_count;
         } else {
-            $added_notes = '-';
+            $added_notes = '0';
         }
 
         $st_history_count = '0';
