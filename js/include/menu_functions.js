@@ -1,17 +1,17 @@
-var DROPDOWN_MENU_OPEN_ANIMATION     = true;
-var DROPDOWN_MENU_CLOSE_ANIMATION    = false;
-var NAVIGATION_PANEL_OPEN_ANIMATION  = false;
-var NAVIGATION_PANEL_CLOSE_ANIMATION = false;
-var NAVIGATION_PANEL_IDENTIFIER      = 'menuright';
-var NODE_TEXT_CONTAINER_IDENTIFIER   = 'content_view';
-var MAIN_INDEX_CONTAINER_IDENTIFIER   = 'contentcontent';
-var EFFECT_BLIND_DURATION_IN_SECONDS = 0.3;
+const DROPDOWN_MENU_OPEN_ANIMATION     = true;
+const DROPDOWN_MENU_CLOSE_ANIMATION    = false;
+const NAVIGATION_PANEL_OPEN_ANIMATION  = false;
+const NAVIGATION_PANEL_CLOSE_ANIMATION = false;
+const NAVIGATION_PANEL_IDENTIFIER      = 'menuright';
+const NODE_TEXT_CONTAINER_IDENTIFIER   = 'content_view';
+const MAIN_INDEX_CONTAINER_IDENTIFIER   = 'contentcontent';
+const EFFECT_BLIND_DURATION_IN_SECONDS = 0.3;
 
 /**
  * hides the sidebar (aka menuright) from an
  * href onclick event generated inside the sidebar
  */
-function hideSideBarFromSideBar() {
+const hideSideBarFromSideBar = function () {
 	if (IE_version==false || IE_version>8) {
 		$j('#menuright').sidebar('hide');
 		$j('li.item.active').removeClass('active');
@@ -25,7 +25,6 @@ document.onreadystatechange = () => {
 	// wait for jQuery to be loaded before doing stuff
 	if (document.readyState === "complete") {
 	initMenu();
-	initEffect();
 	}
 };
 
@@ -245,7 +244,7 @@ const initMenu = function() {
 
 }
 
-function navigationPanelToggle(options) {
+const navigationPanelToggle = function(options) {
 	if ('undefined' === typeof options) options = {};
 	options = $j.extend({ action: 'toggle', removeCookie: true }, options);
 	if (IE_version==false || IE_version>8) {
@@ -274,149 +273,19 @@ function navigationPanelToggle(options) {
 	}
 }
 
-const initEffect = () => {
-	/*
-	 * Per mostrare e nascondere elementi
-	 */
-	 Effect.BlindLeft = function(elem) {
-		var element = $(elem);
-		element.makeClipping();
-
-		return new Effect.Scale(element, 0,
-			Object.extend({scaleContent: false,
-				scaleY: false,
-				scaleMode: 'box',
-				restoreAfterFinish:true,
-				afterSetup: function (effect) {
-					effect.element.makeClipping().setStyle({
-						height: effect.dims[0] + 'px'
-					}).show();
-				},
-				afterFinishInternal: function(effect) {
-					effect.element.hide().undoClipping();
-				}
-			}, arguments[1] || {})
-		);
-	};
-
-	Effect.BlindRight = function(elem) {
-		var element = $(elem);
-		var elementDimensions = $(element).getDimensions();
-
-		return new Effect.Scale(element, 100, Object.extend({
-			scaleContent: false,
-			scaleY: false,
-			scaleFrom: 0,
-			scaleMode: {originalHeight: elementDimensions.height, originalWidth: elementDimensions.width},
-			restoreAfterFinish: true,
-			afterSetup: function(effect) {
-				effect.element.makeClipping().setStyle({
-					width: '0px',
-					height: effect.dims[0]+'px'
-				}).show();
-			},
-			afterFinishInternal: function(effect) {
-				effect.element.undoClipping();
-			}
-		}, arguments[1] || {})
-		);
-	};
-};
-
-function toggleElementVisibility(element, direction)
-{
-	if($(element).hasClassName('sottomenu_off')){
-		$(element).removeClassName('sottomenu_off');
-		$(element).hide();
-	}
-
-	/*
-	 * Handle navigation panel visibility.
-	 */
-	if ($(element).identify() == NAVIGATION_PANEL_IDENTIFIER) {
-		if($(element).visible()) {
-			navigationPanelHide(direction);
-		}
-		else {
-			navigationPanelShow(direction);
-		}
-		return;
-	}
-
-	/*
-	 * Handle dropdown menu visibility
-	 */
-	var elements = $('dropdownmenu').childElements();
-	var elements_count = elements.size();
-
-	for (i=0; i < elements_count; i++) {
-
-		var e = elements[i];
-
-		var menu_link = e.identify().sub('submenu_','',1);
-
-		var selected_classname   = 'selected'   + menu_link;
-		var unselected_classname = 'unselected' + menu_link;
-
-		if(e.identify() == element) {
-
-			if(e.visible()) {
-
-				$(menu_link).removeClassName(selected_classname);
-				$(menu_link).addClassName(unselected_classname);
-
-				dropDownMenuHide(e, direction);
-			}
-			else {
-
-				$(menu_link).removeClassName(unselected_classname);
-				$(menu_link).addClassName(selected_classname);
-
-				dropDownMenuShow(e, direction);
-			}
-		}
-		else {
-			if(e.visible()) {
-
-				$(menu_link).removeClassName(selected_classname);
-				$(menu_link).addClassName(unselected_classname);
-
-				dropDownMenuHide(e, direction);
-			}
-		}
-	}
-}
-
 function showElement(element, direction) {
 
-	switch(direction) {
-		case 'left':
-			Effect.BlindRight(element);
-
-		case 'right':
-			Effect.BlindRight(element);
-
-		case 'up':
-			Effect.BlindDown(element, {duration: EFFECT_BLIND_DURATION_IN_SECONDS});
-
-		default:
+	if (typeof element === 'string' && !element.startsWith('#')) {
+		element = `#${element}`;
 	}
+	$j(element).show('blind', { direction: direction }, EFFECT_BLIND_DURATION_IN_SECONDS);
 }
 
 function hideElement(element, direction) {
-
-	switch(direction) {
-		case 'left':
-			Effect.BlindLeft(element);
-
-		case 'right':
-			Effect.BlindLeft(element);
-
-		case 'up':
-			Effect.BlindUp(element, {duration: EFFECT_BLIND_DURATION_IN_SECONDS});
-
-		default:
+	if (typeof element === 'string' && !element.startsWith('#')) {
+		element = `#${element}`;
 	}
+	$j(element).hide('blind', { direction: direction }, EFFECT_BLIND_DURATION_IN_SECONDS);
 }
 
 function navigationPanelHide(direction) {
