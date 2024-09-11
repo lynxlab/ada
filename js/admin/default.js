@@ -1,7 +1,6 @@
 // vito, 28 nov 2008
 load_js([
 	`${HTTP_ROOT_DIR}/js/include/menu_functions.js`,
-	// '../js/include/tablekit/tablekit.js',
 	`${HTTP_ROOT_DIR}/js/include/basic.js`,
 ]);
 
