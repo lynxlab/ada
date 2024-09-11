@@ -69,27 +69,6 @@
             </div>
         </div>
 
-        <div id="menuright" class="sottomenu_off menuright_default">
-            <div id="topmenur">
-            </div>
-            <div id="menurightcontent">
-                <ul>
-                    <li class="close">
-                        <a href="#" onClick="toggleElementVisibility('menuright', 'right');">
-                            <i18n>chiudi</i18n>
-                        </a>
-                    </li>
-
-                    <li class="_menu">
-                        <template_field class="template_field" name="search_form">search_form</template_field>
-                    </li>
-
-                </ul>
-            </div>
-            <div id="bottommenur">
-            </div>
-        </div>
-
         <!--/glossario-->
 
         <!--search-->

@@ -712,7 +712,6 @@ function manageMultimediaProperties(media, author_id) {
 //                var preview_image = '<img src=\"' + imgsrc + '\" id=\"img_preview\" \" width=\"' + width + '\" height=\"' + height +'\">';
                 $('preview_media').insert(preview_image);
 //                var newDimensionImage = resize_image(imgsrc, MAXH, MAXW, 'img_preview');
-//                new Effect.Scale($('img_preview'), 30);
                 $('p_selected_media_extended_type').insert(new Element('option', {value: ADA_MEDIA_IMAGE}).update(ADA_MEDIA_IMAGE_LABEL));
                 $('p_selected_media_extended_type').insert(new Element('option', {value: ADA_MEDIA_IMAGE_MONTESSORI}).update(ADA_MEDIA_IMAGE_MONTESSORI_LABEL));
 
