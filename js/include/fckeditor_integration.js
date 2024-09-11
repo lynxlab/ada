@@ -612,16 +612,9 @@ function addMultimedia(file_to_add) {
  * Used to select an option in a select field to passed data
  */
 function select_option(field, data) {
-    var options = $$('select#'+field+' option');
-    var len = options.length;
 
-    for(var i=0;i<len;i++){
-        if(options[i].value == data) {
-            options[i].selected = true;
-            //$(field).selectIndex = i;
-            return i;
-       }
-    }
+	$j(`select#${field} option[value="${data}"]`).attr("selected", "selected").prop('selected', true);
+
 /*
  * Vito Version
  *
@@ -1066,13 +1059,13 @@ function toggleVisibilityByClassName_OLD(container_div, item_class) {
 
 function toggleVisibilityByClassName(className, idName, mode)
 {
-	var children = $$('#'+idName+'.'+className);
-
-	if (mode == 'show') children.invoke('show');
-	else if (mode == 'hide') children.invoke('hide');
-	else {
+	if (['show', 'hide', 'toggle'].indexOf(mode) == -1) {
 		mode = 'toggle';
-		children.invoke('toggle');
+	}
+
+	const children = $j('ul#'+idName+'.'+className);
+	if (children.length > 0) {
+		children.each((i, el) => $j(el).trigger(mode));
 	}
 
 	/*
@@ -1081,23 +1074,21 @@ function toggleVisibilityByClassName(className, idName, mode)
 	 * to get its id in this way.
 	 */
 
-	var span_element_id = $$('span#s'+idName+'.'+className).first();
+	const span_element_id = $j('span#s'+idName+'.'+className).first();
 
-	if (typeof span_element_id != 'undefined')
+	if (span_element_id.length > 0)
 	{
-		if (mode == 'show' || (mode == 'toggle' && $(span_element_id).hasClassName('hideNodeChildren')))
+		if (mode == 'show' || (mode == 'toggle' && span_element_id.hasClass('hideNodeChildren')))
 		{
-			$(span_element_id).update();
-			$(span_element_id).insert('-');
-			$(span_element_id).removeClassName('hideNodeChildren');
-			$(span_element_id).addClassName('viewNodeChildren');
+			span_element_id.html('-');
+			span_element_id.removeClass('hideNodeChildren');
+			span_element_id.addClass('viewNodeChildren');
 		}
-		else if (mode == 'hide' || (mode == 'toggle' && $(span_element_id).hasClassName('viewNodeChildren')))
+		else if (mode == 'hide' || (mode == 'toggle' && span_element_id.hasClass('viewNodeChildren')))
 		{
-			$(span_element_id).update();
-			$(span_element_id).insert('+');
-			$(span_element_id).removeClassName('viewNodeChildren');
-			$(span_element_id).addClassName('hideNodeChildren');
+			span_element_id.html('+');
+			span_element_id.removeClass('viewNodeChildren');
+			span_element_id.addClass('hideNodeChildren');
 		}
 	}
 }

@@ -86,8 +86,8 @@ var timer = null;
 function testTimer(startTime, stopTime, message) {
     timer = new Timer(startTime, stopTime,
         function (value) {
-            $$('.absoluteTimer')[0].setStyle({ display: 'block' });
-            $$('.absoluteTimer')[0].innerHTML = value;
+            $j('.absoluteTimer').css({ display: 'block' });
+            $j('.absoluteTimer').html(value);
         },
         function () {
             alert(message);

@@ -5,22 +5,23 @@ load_js([
 
 function toggleVisibilityByDiv(className, mode)
 {
-	$$('ul.'+className).each( function(e) {
-		if (!$(e).empty()) {
-			toggleVisibilityByClassName(className, e.id, mode);
+	$j('ul.'+className).each( function(i, e) {
+		e = $j(e);
+		if (e.length > 0) {
+			toggleVisibilityByClassName(className, e.attr('id'), mode);
 		}
 	});
 }
 
 function toggleVisibilityByClassName(className, idName, mode)
 {
-	var children = $$('ul#'+idName+'.'+className);
-
-	if (mode == 'show') children.invoke('show');
-	else if (mode == 'hide') children.invoke('hide');
-	else {
+	if (['show', 'hide', 'toggle'].indexOf(mode) == -1) {
 		mode = 'toggle';
-		children.invoke('toggle');
+	}
+
+	const children = $j('ul#'+idName+'.'+className);
+	if (children.length > 0) {
+		children.each((i, el) => $j(el).trigger(mode));
 	}
 
 	/*
@@ -29,23 +30,21 @@ function toggleVisibilityByClassName(className, idName, mode)
 	 * to get its id in this way.
 	 */
 
-	var span_element_id = $$('span#s'+idName+'.'+className).first();
+	const span_element_id = $j('span#s'+idName+'.'+className).first();
 
-	if (typeof span_element_id != 'undefined')
+	if (span_element_id.length > 0)
 	{
-		if (mode == 'show' || (mode == 'toggle' && $(span_element_id).hasClassName('hideNodeChildren')))
+		if (mode == 'show' || (mode == 'toggle' && span_element_id.hasClass('hideNodeChildren')))
 		{
-			$(span_element_id).update();
-			$(span_element_id).insert('-');
-			$(span_element_id).removeClassName('hideNodeChildren');
-			$(span_element_id).addClassName('viewNodeChildren');
+			span_element_id.html('-');
+			span_element_id.removeClass('hideNodeChildren');
+			span_element_id.addClass('viewNodeChildren');
 		}
-		else if (mode == 'hide' || (mode == 'toggle' && $(span_element_id).hasClassName('viewNodeChildren')))
+		else if (mode == 'hide' || (mode == 'toggle' && span_element_id.hasClass('viewNodeChildren')))
 		{
-			$(span_element_id).update();
-			$(span_element_id).insert('+');
-			$(span_element_id).removeClassName('viewNodeChildren');
-			$(span_element_id).addClassName('hideNodeChildren');
+			span_element_id.html('+');
+			span_element_id.removeClass('viewNodeChildren');
+			span_element_id.addClass('hideNodeChildren');
 		}
 	}
 }
