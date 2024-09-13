@@ -163,6 +163,7 @@ if (
             $nome = $tutor[1] . ' ' . $tutor[2];
             $link = CDOMElement::create('a');
             $link->setAttribute('id', 'tooltip' . $tutor[0]);
+            $link->setAttribute('title', ''); // this is needed by the jquery-ui tooltip
             $link->setAttribute('href', 'javascript:void(0);');
             $link->addChild(new CText($nome));
             $tutors[$tutor[0]] = $link->getHtml();
@@ -190,10 +191,13 @@ if (
             }
 
             $tip = CDOMElement::create('div', 'id:tooltipContent' . $k);
+            $tip->setAttribute('style', 'display:none');
             $tip->addChild(new CText(translateFN('Tutor assegnato ai seguenti corsi:<br />')));
             $tip->addChild($ul);
             $tooltips .= $tip->getHtml();
-            $js .= 'new Tooltip("tooltip' . $k . '", "tooltipContent' . $k . '", {DOM_location: {parentId: "header"}, className: "tooltip", offset: {x:+15, y:0}, hook: {target:"rightMid", tip:"leftMid"}});' . "\n";
+            $js .= "\$j('#tooltip$k').tooltip({
+                content: () => '<div class=\'assigntutor\'>' + \$j('#tooltipContent$k').html() + '</div>'
+            });";
         }
         $js .= '</script>';
         $tooltips .= $js;
@@ -216,6 +220,14 @@ $title = translateFN('Assegnazione di un tutor alla classe');
 $help = translateFN('Da qui il Provider Admin può assegnare un tutor ad una classe');
 $status = translateFN('Assegnazione tutor');
 
+$layout_dataAr['JS_filename'] = [
+    JQUERY,
+    JQUERY_UI,
+  ];
+
+$layout_dataAr['CSS_filename'] = [
+    JQUERY_UI_CSS,
+];
 
 $content_dataAr = [
     'data' => $data->getHtml() . $tooltips,
