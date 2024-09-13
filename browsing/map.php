@@ -208,6 +208,15 @@ $menuOptions['id_parent'] = $nodeObj->parent_id;
 $menuOptions['id_student'] = $userObj->getId();
 $menuOptions['type'] = $nodeObj->type;
 
+$layout_dataAr['JS_filename'] = [
+    JQUERY,
+    JQUERY_UI,
+  ];
+
+$layout_dataAr['CSS_filename'] = [
+    JQUERY_UI_CSS,
+];
+
 $content_dataAr = [
     'user_name' => $user_name,
     'user_type' => $user_type,

@@ -80,14 +80,11 @@ function setAllLinesFromNode( element ){
 		if( elemWidth == "" ) elemWidth = element.offsetWidth
 
 
-		if( !isIE) setLine(line, X0, Y0, X1, Y1 )
-
-		else  setLine(line, X0, Y0, X1, Y1 )
-
+		setLine(line, X0, Y0, X1, Y1 )
 
 		var form_ex = $j('#form_map').length > 0;
 
-        if(!!form_ex) try{$j(`input_${element.id}`)[0].value = `${X0},${Y0},${elemWidth},0`;}catch(e){}
+        if(!!form_ex) try{$j(`#input_${element.id}`)[0].value = `${X0},${Y0},${elemWidth},0`;}catch(e){}
 
 	}
 
@@ -268,11 +265,15 @@ var Node = function( element ){
 
 
 	// create draggable
-	new Draggable(element, {
+	$j(element).draggable({
 
 		handle: element.getElementsByTagName("img")[0], // handle on icon
 
-		onDrag: function(drgObj){
+		drag: function(event, ui){
+
+			const drgObj = {
+				element: ui.helper[0],
+			};
 
 
 			// case node has negative y-coordinate
@@ -338,7 +339,11 @@ var Node = function( element ){
 
 
 		// on end drag re-set all lines ( needed for [the slow] Internet explorer )
-		onEnd: function(drgObj){
+		stop: function(event, ui){
+
+			const drgObj = {
+				element: ui.helper[0],
+			};
 
 			if( !!drgObj.element.out ){
 
