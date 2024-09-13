@@ -89,7 +89,7 @@ var HOW_MANY_READS = 0;
 function startChat()
 {
 	ARGUMENTS = getArguments();
-	if (DEBUG_LOG_ENABLED) $j(`${DEBUG_DIV}`).append(`ARGUMENTS: ${JSON.stringify(ARGUMENTS)}<br />`);
+	if (DEBUG_LOG_ENABLED) $j(`#${DEBUG_DIV}`).append(`ARGUMENTS: ${JSON.stringify(ARGUMENTS)}<br />`);
 
 // test periodical executer
 //	READ_MESSAGES_PERIODICAL_EXECUTER = new PeriodicalExecuter(readMessages, CURRENT_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE);
