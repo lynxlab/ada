@@ -73,20 +73,6 @@ class AjaxRemoteContent
                     $ajax_content .= "if ('function' === typeof $failCallback) $failCallback(html, \$j('#$widgetObj->generatedDIVId'));";
                 }
                 $ajax_content .= " });</script>";
-            } else {
-                // prototype 1.6 version
-                $ajax_content = "<script type='text/javascript'>
-						new Ajax.Request('" . $widgetObj->ajaxModule . "', {
-								method: 'get',";
-                if (!empty($widgetObj->optionsArr)) {
-                    $ajax_content .= 'parameters: ' . json_encode($widgetObj->optionsArr) . ',';
-                }
-                $ajax_content .= "  onComplete: function(response) {
-						$('" . $widgetObj->generatedDIVId . "').removeClassName('loading');
-						$('" . $widgetObj->generatedDIVId . "').update (response.responseText);
-			  }
-			});
-			</script>";
             }
         } else {
             $replacement = translateFN('widget content generator not found');

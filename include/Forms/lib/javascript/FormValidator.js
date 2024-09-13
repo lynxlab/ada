@@ -21,35 +21,35 @@ function validateContent(elements, regexps) {
 		var element = elements[i];
 		var regexp = regexps[i];
 		var value = null;
-		if ($(element) != null && $(element).getValue) {
-			value = $(element).getValue();
+		if ($j(`#${element}`).lenght && $j(`#${element}`).val()) {
+			value = $j(`#${element}`).val();
 		}
 
-		if (value != null) {
+		if (value != null && value.lenght) {
 			if(!value.match(regexp)) {
-				if($(label)) {
-					$(label).addClassName('error');
+				if($j(`#${label}`).lenght) {
+					$j(`#${label}`).addClass('error');
 				}
 				error_found = true;
 			}
 			else {
-				if($(label)) {
-					$(label).removeClassName('error');
+				if($j(`#${label}`).lenght) {
+					$j(`#${label}`).removeClass('error');
 				}
 			}
 		}
 	}
 
 	if (error_found) {
-		if($('error_form')) {
-			$('error_form').addClassName('show_error');
-			$('error_form').removeClassName('hide_error');
+		if($j('#error_form').lenght) {
+			$j('#error_form').addClass('show_error');
+			$j('#error_form').removeClass('hide_error');
 		}
 	}
 	else {
-		if($('error_form')) {
-			$('error_form').addClassName('hide_error');
-			$('error_form').removeClassName('show_error');
+		if($j('#error_form').lenght) {
+			$j('#error_form').addClass('hide_error');
+			$j('#error_form').removeClass('show_error');
 		}
 	}
 

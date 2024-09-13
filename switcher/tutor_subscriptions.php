@@ -261,8 +261,6 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 /*
  * OUTPUT
  */
-$optionsAr = ['onload_func' => "PAGER.showPage('subscribed');"];
-
 $content_dataAr = [
     'path' => $path ?? '',
     'label' => $label ?? '',

@@ -24,7 +24,8 @@ function includeFCKeditor(textarea_name) {
  * .@return oFCKeditor - FCKeditor instance
  */
 function createEditor(FCKeditorID, Plain_textID) {
-	$(FCKeditorID).value = ADAToFCKeditor($(Plain_textID).value);
+
+	$j(`#${FCKeditorID}`).val(ADAToFCKeditor($j(`#${Plain_textID}`).val()));
 
 	var oFCKeditor = new FCKeditor(FCKeditorID);
         oFCKeditor.BasePath = '../external/fckeditor/';

@@ -184,7 +184,7 @@ if ($userObj-> tipo == AMA_TYPE_AUTHOR && $mod_enabled) {
     $id_node_parent = $nodeObj->id;
     $data .= '<form method="POST" action="map.php?map_type=' . $tipo_mappa . '&id_node=' . $id_node_parent . '" id="form_map"><input type="hidden" name="mod_map"/></form>';
 };
-//$data .= '<script type="text/javascript">document.getElementById("help").onclick=function(){alert($("map_content").map.nodeList)}</script>';
+//$data .= '<script type="text/javascript">document.getElementById("help").onclick=function(){alert($j("map_content")[0].map.nodeList)}</script>';
 
 
 //$data .= "<div>LIVELLO STUDENTE: ".$userObj->livello."</div>";

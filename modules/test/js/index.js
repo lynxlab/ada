@@ -1,7 +1,11 @@
 function autoCheckForOtherAnswer(element) {
-    var siblings = $(element).siblings();
-    var checkbox = $(siblings[0]);
-    if (element.value.length > 0) checkbox.setAttribute('checked', true);
+    if (typeof element === 'string' && !element.startsWith('#')) {
+		element = `#${element}`;
+	}
+
+    var siblings = $j(element).siblings();
+    var checkbox = siblings[0];
+    if (element.val().length > 0) checkbox.setAttribute('checked', true);
     else checkbox.removeAttribute('checked');
 }
 
@@ -91,7 +95,7 @@ function testTimer(startTime, stopTime, message) {
         },
         function () {
             alert(message);
-            $('testForm').submit();
+            $j('testForm').trigger('submit');
         }
     );
 }

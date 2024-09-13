@@ -85,9 +85,9 @@ function setAllLinesFromNode( element ){
 		else  setLine(line, X0, Y0, X1, Y1 )
 
 
-		var form_ex = $('form_map') ? true:false;
+		var form_ex = $j('#form_map').length > 0;
 
-                if(!!form_ex) try{$("input_"+element.id).value = X0+","+Y0+","+elemWidth+",0";}catch(e){}
+        if(!!form_ex) try{$j(`input_${element.id}`)[0].value = `${X0},${Y0},${elemWidth},0`;}catch(e){}
 
 	}
 
@@ -104,9 +104,9 @@ function setAllLinesFromNode( element ){
 
 		if( elemWidth == "" ) elemWidth = element.offsetWidth
 
-		var form_ex = $('form_map') ? true:false;
+		var form_ex = $j('#form_map').length > 0;
 
-		if(!!form_ex)	try{$("input_"+element.id).value = X0+","+Y0+","+elemWidth+",0";}catch(e){}
+		if(!!form_ex)	try{$j(`#input_${element.id}`)[0].value = `${X0},${Y0},${elemWidth},0`;}catch(e){}
 
 	}
 
@@ -247,11 +247,11 @@ var Node = function( element ){
 	// create a links ( line ) from a node
 	element.linkTo = function( nodeId ){
 
-		var exist = $(nodeId) ? true : false;
+		var exist = $j(`#${nodeId}`).length > 0;
 
 		if( !exist ) return; // link esterni al gruppo
 
-		var node = $(nodeId);
+		var node = $j(`#${nodeId}`)[0];
 
 		var X0 = parseInt(element.left)
 
@@ -310,11 +310,11 @@ var Node = function( element ){
 			};
 
 			// case node has y-coordinate > of map height
-			if( parseInt(drgObj.element.style.left.replace("px","")) > parseInt( $('map_content').style.maxWidth.replace("px","")) ){
+			if( parseInt(drgObj.element.style.left.replace("px","")) > parseInt( $j('#map_content')[0].style.maxWidth.replace("px","")) ){
 
 				if( drgObj.element.out == true ) return;
 
-				drgObj.element.left = $('map_content').style.maxWidth;
+				drgObj.element.left = $j('#map_content')[0].style.maxWidth;
 
 				drgObj.element.style.left = drgObj.element.left;
 
@@ -436,9 +436,9 @@ var Map = function(){
 
 	// PROPERTIES
 
-	this.root = $('map_content');
+	this.root = $j('#map_content')[0];
 
-	$('map_content').map = this;
+	$j('#map_content')[0].map = this;
 
 	this.root.style.maxWidth = this.root.offsetWidth+"px"
 
@@ -484,7 +484,7 @@ var Map = function(){
 
 			var values = X0+","+Y0+","+parseInt( thisNode.offsetWidth )+",0";
 
-			if(!!form_ex) $('form_map').innerHTML += "<input type='hidden' name='input_"+thisNode.id+"' value='"+values+"' id='input_"+thisNode.id+"'/>\n";
+			if(!!form_ex) $j('#form_map')[0].innerHTML += "<input type='hidden' name='input_"+thisNode.id+"' value='"+values+"' id='input_"+thisNode.id+"'/>\n";
 
 			var y = parseInt(thisNode.style.top.replace("px",""))
 
@@ -503,7 +503,7 @@ var Map = function(){
 
 		if(!!form_ex){
 
-                    $('form_map').innerHTML += "<input type='hidden' value='"+i+"' name='nNodeMap'/>\n"; // number of nodes in map
+                    $j('#form_map')[0].innerHTML += "<input type='hidden' value='"+i+"' name='nNodeMap'/>\n"; // number of nodes in map
 
                     // creating submit button (ONLY FOR AUTHOR)
                     var subm_butt = document.createElement("input")
@@ -520,10 +520,10 @@ var Map = function(){
 
                     subm_butt.onclick = function(){
 
-                            $("form_map").submit()
+                            $j("#form_map").trigger('submit');
                     }
 
-                    $('map_content').appendChild( subm_butt )
+                    $j('#map_content').append( subm_butt )
                 };
 
 	}catch(e){}
@@ -635,7 +635,7 @@ function newLine(element, node, X0, Y0, X1, Y1){
 
 	node.linkArray.push({"node":element,"line":line})
 
-	$("map_content").appendChild(line);
+	$j("#map_content").append(line);
 
 
 }
@@ -726,9 +726,9 @@ function rectangleIsFree( obj ){
         var yFree = true
 
 
-        for(var i = 0; i < $("map_content").map.nodeList; i++){
+        for(var i = 0; i < $j("#map_content")[0].map.nodeList; i++){
 
-                var element = $("map_content").map.nodeList[i];
+                var element = $j("#map_content")[0].map.nodeList[i];
 
                 if( element.left >= obj.xFrom && element.left  <=  obj.xTo  ) xFree= false
 

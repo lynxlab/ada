@@ -89,7 +89,7 @@ var HOW_MANY_READS = 0;
 function startChat()
 {
 	ARGUMENTS = getArguments();
-	if (DEBUG_LOG_ENABLED) $(DEBUG_DIV).insert('ARGUMENTS: ' + JSON.stringify(ARGUMENTS) + '<br />');
+	if (DEBUG_LOG_ENABLED) $j(`${DEBUG_DIV}`).append(`ARGUMENTS: ${JSON.stringify(ARGUMENTS)}<br />`);
 
 // test periodical executer
 //	READ_MESSAGES_PERIODICAL_EXECUTER = new PeriodicalExecuter(readMessages, CURRENT_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE);
@@ -112,7 +112,7 @@ function startChat()
  */
 function loadTopChat()
 {
-	$(TOP_CHAT_DIV).insert('TOP CHAT');
+	$j(`#${TOP_CHAT_DIV}`).append('TOP CHAT');
 }
 
 /**
@@ -226,7 +226,7 @@ function sendMessage()
 	var message_to_send = $F(SEND_MESSAGE_INPUT);
 
 //DISABILITIAMO L'INVIO DI ULTERIORI MESSAGGI FINO A CONCLUSIONE DELL'OPERAZIONE DI INVIO.
-	$(SEND_MESSAGE_INPUT).disable();
+	$j(`#${SEND_MESSAGE_INPUT}`).prop('disabled', true).addClass('disabled');
 	$j('#'+SEND_MESSAGE_DIV).siblings().find('.sendmessage.button').addClass('disabled');
 
 	if (GET_AJAX_REQUEST_EXECUTION_TIME)
@@ -238,7 +238,7 @@ function sendMessage()
 		method: 'Post',
 		parameters: {chatroom:ARGUMENTS.chatroomId, message_to_send:message_to_send},
 		onComplete: function(transport) {
-			var json = transport.responseText.evalJSON(true);
+			var json = JOSN.parse(transport.responseText);
 
 			if (GET_AJAX_REQUEST_EXECUTION_TIME)
 			{
@@ -248,31 +248,31 @@ function sendMessage()
 		    if ( json.error == 0 )
 		    {
 				logMessageOnScreen('messaggio inviato');
-				$(SEND_MESSAGE_INPUT).clear();
+				$j(`#${SEND_MESSAGE_INPUT}`).val('');
 				// Quando invio un messaggio, faccio ripartire il tempo di lettura messaggi dal minimo.
 				CURRENT_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE = MINIMUM_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE;
 
 				readMessages();
-				$(SEND_MESSAGE_INPUT).enable();
+				$j(`#${SEND_MESSAGE_INPUT}`).prop('disabled', false).removeClass('disabled');
 				$j('#'+SEND_MESSAGE_DIV).siblings().find('.sendmessage.button').removeClass('disabled');
-				$(SEND_MESSAGE_INPUT).focus();
+				$j(`#${SEND_MESSAGE_INPUT}`).trigger('focus');
 			}
 			else
 			{
 				logMessageOnScreen('sendMessages json error: ' + json.error);
 				handleError('sendMessages', json);
 				//displayErrorMessage('sendMessages', json);
-				$(SEND_MESSAGE_INPUT).enable();
+				$j(`#${SEND_MESSAGE_INPUT}`).prop('disabled', false).removeClass('disabled');
 				$j('#'+SEND_MESSAGE_DIV).siblings().find('.sendmessage.button').removeClass('disabled');
-				$(SEND_MESSAGE_INPUT).focus();
+				$j(`#${SEND_MESSAGE_INPUT}`).trigger('focus');
 			}
 
 		},
 		onFailure: function() {
 			displayErrorMessage('sendMessages', null);
-				$(SEND_MESSAGE_INPUT).enable();
+				$j(`#${SEND_MESSAGE_INPUT}`).prop('disabled', false).removeClass('disabled');
 				$j('#'+SEND_MESSAGE_DIV).siblings().find('.sendmessage.button').removeClass('disabled');
-				$(SEND_MESSAGE_INPUT).focus();
+				$j(`#${SEND_MESSAGE_INPUT}`).trigger('focus');
 		}
 	});
 
@@ -342,18 +342,20 @@ function displayMessages(messages)
 	/*
 	 * Display each received message
 	 */
-	messages.each(displayMessage);
+	messages.forEach(element => {
+		displayMessage(element);
+	});
 	/*
 	 * Adjust scrolling, if autoscroll is on
 	 */
 //	if ($F(AUTOSCROLL_CHECKBOX) == 'on')
 //	{
-		$(READ_MESSAGES_DIV).scrollTop=$(READ_MESSAGES_DIV).scrollHeight;
+		$j(`#${READ_MESSAGES_DIV}`)[0].scrollTop=$j(`#${READ_MESSAGES_DIV}`)[0].scrollHeight;
 //	}
 	/*
 	 * Update the time interval at which chat messages are retrieved
 	 */
-	updateReadChatInterval(messages.size());
+	updateReadChatInterval(messages.length);
 }
 
 /**
@@ -374,7 +376,7 @@ function displayMessage(message)
 	// con le righe seguenti evitiamo di mostrare dei doppioni
 	var message_exists = 'msg_'+message.id;
 
-	if ($(message_exists))
+	if ($j(`#${message_exists}`).length)
 	{
 		return;
 	}
@@ -422,22 +424,27 @@ function displayMessage(message)
 	 * Display current message.
 	 */
 	// div message dovrebbe avere id=id messaggio
-	var div_message       = new Element('div',  {'id': 'msg_'+message.id, 'class': 'item '+this_message_class});
-	var span_message_time = new Element('span', {'class':'message_time'});
-	var span_user_name    = new Element('span', {'class':'user_name'});
-	var span_message_text = new Element('span', {'class': 'message_text'});
-	var item_header = new Element('div', {'class':'header'});
+	var div_message = document.createElement('div');
+	Object.assign(div_message, {'id': 'msg_'+message.id, 'class': 'item '+this_message_class});
+	var span_message_time = document.createElement('span');
+	Object.assign(span_message_time,  {'class':'message_time'});
+	var span_user_name = document.createElement('span');
+	Object.assign(span_user_name, {'class':'user_name'});
+	var span_message_text = document.createElement('span');
+	Object.assign(span_message_text, {'class': 'message_text'});
+	var item_header = document.createElement('div');
+	Object.assign(item_header, {'class':'header'});
 
-	span_message_time.insert(message.time);
-	span_user_name.insert(message.sender);
-	span_message_text.insert(this_message_text);
+	span_message_time.append(message.time);
+	span_user_name.append(message.sender);
+	span_message_text.append(this_message_text);
 
-	item_header.insert(span_user_name);
-	item_header.insert(span_message_time);
-	div_message.insert(item_header);
-	div_message.insert(span_message_text);
+	item_header.append(span_user_name);
+	item_header.append(span_message_time);
+	div_message.append(item_header);
+	div_message.append(span_message_text);
 
-	$(READ_MESSAGES_DIV).insert(div_message);
+	$j(`#${READ_MESSAGES_DIV}`).append(div_message);
 }
 
 /*
@@ -559,7 +566,7 @@ function logMessageOnScreen(text)
 {
 	if (DEBUG_LOG_ENABLED)
 	{
-		$(DEBUG_DIV).insert(text + '<br />');
+		$j(`#${DEBUG_DIV}`).append(text + '<br />');
 	}
 }
 function updateControlChatData(data)
@@ -567,12 +574,13 @@ function updateControlChatData(data)
 	/*
 	 * Display user status in the chatroom.
 	 */
-	if ($(USER_STATUS_DIV) != null) {
-		$(USER_STATUS_DIV).update();
-		var div_user_status_label = new Element('div', {'class': 'user_status_label'});
-		div_user_status_label.insert(data.user_status_label);
-		$(USER_STATUS_DIV).insert(div_user_status_label);
-		$(USER_STATUS_DIV).insert(data.user_status);
+	if ($j(`#${USER_STATUS_DIV}`).length) {
+		$j(`#${USER_STATUS_DIV}`).html('');
+		var div_user_status_label = document.createElement('div');
+		Object.assign(div_user_status_label, {'class': 'user_status_label'});
+		div_user_status_label.append(data.user_status_label);
+		$j(`#${USER_STATUS_DIV}`).append(div_user_status_label);
+		$j(`#${USER_STATUS_DIV}`).append(data.user_status);
 	}
 
 	/*
@@ -592,18 +600,23 @@ function updateControlChatData(data)
 		USER_ACTIONS_FILLED = true;
 	}
 */
-	if ($(USERS_LIST_DIV) != null) {
-		$(USERS_LIST_DIV).update();
+	if ($j(`#${USERS_LIST_DIV}`).length) {
+		$j(`#${USERS_LIST_DIV}`).html('');
 	//	$(INVITED_USERS_LIST_UL).update();
 
-		var div_users_list_label = new Element('div', {'class': 'users_list_label ui small header'});
-		div_users_list_label.insert(data.users_list_label);
-		$(USERS_LIST_DIV).insert(div_users_list_label);
+		var div_users_list_label = document.createElement('div');
+		Object.assign(div_users_list_label, {'class': 'users_list_label ui small header'});
+		div_users_list_label.append(data.users_list_label);
+		$j(`#${USERS_LIST_DIV}`).append(div_users_list_label);
 
-		var users_list_select = new Element('select', {'id': USERS_LIST_SELECT, 'size':'8'});
-		$(USERS_LIST_DIV).insert(users_list_select);
+		var users_list_select = document.createElement('select');
+		Object.assign(users_list_select, {'id': USERS_LIST_SELECT, 'size':'8'});
 
-		data.users_list.each(addUserToUserSelect);
+		$j(`#${USERS_LIST_DIV}`).append(users_list_select);
+
+		data.users_list.forEach(el => {
+			addUserToUserSelect(el);
+		});
 
 	//	data.invited_users_list.each(addUserToInvitedUsers);
 	}
@@ -611,30 +624,32 @@ function updateControlChatData(data)
 
 function addActionToUserActionSelect(action)
 {
-	var opt = new Element('option', {'value': action.value});
-	opt.insert(action.text);
-	$(USER_ACTIONS_SELECT).insert(opt);
+	var opt = document.createElement('option');
+	opt.value = action.value;
+	opt.append(action.text);
+	$j(`#${USER_ACTIONS_SELECT}`).append(opt);
 	//$(USER_ACTIONS_SELECT).insert('<option value="'+action.value+'">'+action.text+'</option>');
 }
 
 function addUserToUserSelect(user)
 {
-	var opt = new Element('option', {'value': user.id});
-	opt.insert(user.nome + ' '+ user.cognome);
-	$(USERS_LIST_SELECT).insert(opt);
+	var opt = document.createElement('option');
+	opt.value = user.id;
+	opt.append(user.nome + ' '+ user.cognome);
+	$j(`#${USERS_LIST_SELECT}`).append(opt);
 //	$(USERS_LIST_SELECT).insert('<option value="'+user.id+'">'+user.username+'</option>');
 }
 
 function addUserToInvitedUsers(user)
 {
-	var li = new Element('li');
-	li.insert(user.username);
-	$(INVITED_USERS_LIST_UL).insert(li);
+	var li = document.createElement('li');
+	li.append(user.username);
+	$j(`#${INVITED_USERS_LIST_UL}`).append(li);
 }
 
 function getArguments()
 {
-	var passed_args = $('data').innerHTML.unescapeHTML();
+	var passed_args = $j('#data')[0].innerHTML.unescapeHTML();
 	var retobj = { chatroomId: 0, ownerId: null, studentId: null };
 	var passedObj = passed_args.length > 0 ? JSON.parse(passed_args) : {};
 	return $j.extend({}, retobj, passedObj);
@@ -736,20 +751,24 @@ function handleError(function_name, error_object)
 		READ_MESSAGES_PERIODICAL_EXECUTER.stop();
 		CONTROL_CHAT_PERIODICAL_EXECUTER.stop();
 
-		var div_message       = new Element('div',  {'class': 'php_error'});
-		var span_message_time = new Element('span', {'class': 'message_time'});
-		var span_user_name    = new Element('span', {'class': 'user_name'});
-		var span_message_text = new Element('span', {'class': 'message_text'});
+		var div_message = document.createElement('div');
+		div_message.className = 'php_error';
+		var span_message_time = document.createElement('span');
+		span_message_time.className = 'message_time';
+		var span_user_name    = document.createElement('span');
+		span_user_name.className = 'user_name';
+		var span_message_text = document.createElement('span');
+		span_message_text.className = 'message_text';
 
-		span_message_time.insert();
-		span_user_name.insert('ada chat');
-		span_message_text.insert(error_object.message);
+		span_message_time.append('');
+		span_user_name.append('ada chat');
+		span_message_text.append(error_object.message);
 
-		div_message.insert(span_message_time);
-		div_message.insert(span_user_name);
-		div_message.insert(span_message_text);
+		div_message.append(span_message_time);
+		div_message.append(span_user_name);
+		div_message.append(span_message_text);
 
-		$(READ_MESSAGES_DIV).insert(div_message);
+		$j(`#${READ_MESSAGES_DIV}`).append(div_message);
 	}
 }
 
