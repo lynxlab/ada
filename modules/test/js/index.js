@@ -106,15 +106,28 @@ function clockTimer() {
     }
 }
 
-Event.observe(window, 'load', function () {
+const startTimer = () => {
     if (timer != null) {
         timer.start();
     }
-});
+}
 
-Event.observe(window, 'unload', function () {
-    new Ajax.Request(document.URL, { method: 'get', parameters: 'unload', asynchronous: false });
-});
+const closeTest = () => {
+    fetch(`${document.URL}?unload`,{
+        keepalive: true,
+    });
+}
+
+if (window.attachEvent) {
+	window.attachEvent('onload', startTimer);
+	window.attachEvent('beforeunload', closeTest);
+} else if (window.addEventListener) {
+	window.addEventListener('load', startTimer);
+	window.addEventListener('beforeunload', closeTest, { 'once' : true, 'passive' : true });
+} else {
+	document.addEventListener('load',startTimer);
+	document.addEventListener('beforeunload', closeTest, { 'once' : true, 'passive' : true });
+}
 
 function move(e, id_nodo, direction) {
     var loc = window.location.pathname;

@@ -215,15 +215,14 @@ function sendMessage()
 	/*
 	 * In order to be sent, a message must not be empty.
 	 */
-	if ($F(SEND_MESSAGE_INPUT).blank())
+	if ($j(`#${SEND_MESSAGE_INPUT}`).val().trim().length <= 0)
 	{
 //		var div_error = new Element('div', {'class':'javascript_error'});
 //		div_error.insert('Devi inserire del testo, per inviare un messaggio.');
 //		$(READ_MESSAGES_DIV).insert(div_error);
 		return;
 	}
-	//var message_to_send = '&message_to_send='+encodeURIComponent($F(SEND_MESSAGE_INPUT));
-	var message_to_send = $F(SEND_MESSAGE_INPUT);
+	var message_to_send = $j(`#${SEND_MESSAGE_INPUT}`).val().trim();
 
 //DISABILITIAMO L'INVIO DI ULTERIORI MESSAGGI FINO A CONCLUSIONE DELL'OPERAZIONE DI INVIO.
 	$j(`#${SEND_MESSAGE_INPUT}`).prop('disabled', true).addClass('disabled');
@@ -234,46 +233,50 @@ function sendMessage()
 		var request_time = Date.now();
 	}
 
-	new Ajax.Request(SEND_MESSAGE_URL, {
-		method: 'Post',
-		parameters: {chatroom:ARGUMENTS.chatroomId, message_to_send:message_to_send},
-		onComplete: function(transport) {
-			var json = JOSN.parse(transport.responseText);
+	const parameters = new FormData();
+	parameters.append('chatroom', ARGUMENTS.chatroomId);
+	parameters.append('message_to_send', message_to_send);
 
-			if (GET_AJAX_REQUEST_EXECUTION_TIME)
-			{
-				var response_time = Date.now();
-			}
-
-		    if ( json.error == 0 )
-		    {
-				logMessageOnScreen('messaggio inviato');
-				$j(`#${SEND_MESSAGE_INPUT}`).val('');
-				// Quando invio un messaggio, faccio ripartire il tempo di lettura messaggi dal minimo.
-				CURRENT_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE = MINIMUM_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE;
-
-				readMessages();
-				$j(`#${SEND_MESSAGE_INPUT}`).prop('disabled', false).removeClass('disabled');
-				$j('#'+SEND_MESSAGE_DIV).siblings().find('.sendmessage.button').removeClass('disabled');
-				$j(`#${SEND_MESSAGE_INPUT}`).trigger('focus');
-			}
-			else
-			{
-				logMessageOnScreen('sendMessages json error: ' + json.error);
-				handleError('sendMessages', json);
-				//displayErrorMessage('sendMessages', json);
-				$j(`#${SEND_MESSAGE_INPUT}`).prop('disabled', false).removeClass('disabled');
-				$j('#'+SEND_MESSAGE_DIV).siblings().find('.sendmessage.button').removeClass('disabled');
-				$j(`#${SEND_MESSAGE_INPUT}`).trigger('focus');
-			}
-
-		},
-		onFailure: function() {
-			displayErrorMessage('sendMessages', null);
-				$j(`#${SEND_MESSAGE_INPUT}`).prop('disabled', false).removeClass('disabled');
-				$j('#'+SEND_MESSAGE_DIV).siblings().find('.sendmessage.button').removeClass('disabled');
-				$j(`#${SEND_MESSAGE_INPUT}`).trigger('focus');
+	fetch(SEND_MESSAGE_URL, {
+		method: 'post',
+		body:parameters,
+	})
+	.then(response => {
+		//Here body is not ready yet, throw promise
+		if (!response.ok) throw response;
+		return response.json();
+	})
+	.then(json => {
+		if (GET_AJAX_REQUEST_EXECUTION_TIME) {
+			var response_time = Date.now();
 		}
+
+		if (json.error == 0) {
+			logMessageOnScreen('messaggio inviato');
+			$j(`#${SEND_MESSAGE_INPUT}`).val('');
+			// Quando invio un messaggio, faccio ripartire il tempo di lettura messaggi dal minimo.
+			CURRENT_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE = MINIMUM_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE;
+
+			readMessages();
+			$j(`#${SEND_MESSAGE_INPUT}`).prop('disabled', false).removeClass('disabled');
+			$j('#' + SEND_MESSAGE_DIV).siblings().find('.sendmessage.button').removeClass('disabled');
+			$j(`#${SEND_MESSAGE_INPUT}`).trigger('focus');
+		}
+		else {
+			logMessageOnScreen('sendMessages json error: ' + json.error);
+			handleError('sendMessages', json);
+			//displayErrorMessage('sendMessages', json);
+			$j(`#${SEND_MESSAGE_INPUT}`).prop('disabled', false).removeClass('disabled');
+			$j('#' + SEND_MESSAGE_DIV).siblings().find('.sendmessage.button').removeClass('disabled');
+			$j(`#${SEND_MESSAGE_INPUT}`).trigger('focus');
+		}
+	})
+	.catch(async response => {
+		var body = await response.text();
+		displayErrorMessage('sendMessages', null);
+		$j(`#${SEND_MESSAGE_INPUT}`).prop('disabled', false).removeClass('disabled');
+		$j('#'+SEND_MESSAGE_DIV).siblings().find('.sendmessage.button').removeClass('disabled');
+		$j(`#${SEND_MESSAGE_INPUT}`).trigger('focus');
 	});
 
 }
@@ -297,38 +300,43 @@ function exitChat(action, action_arguments)
 		var request_time = Date.now();
 	}
 
-	new Ajax.Request(EXIT_CHAT_URL, {
-		method: 'Post',
-		parameters: {chatroom:ARGUMENTS.chatroomId,exit_reason:0},
-		onComplete: function(transport) {
-			var json = transport.responseText.evalJSON(true);
+	const parameters = new FormData();
+	parameters.append('chatroom', ARGUMENTS.chatroomId);
+	parameters.append('exit_reason', 0);
 
-			if (GET_AJAX_REQUEST_EXECUTION_TIME)
-			{
-				var response_time = Date.now();
-			}
-		    if ( json.error == 0 )
-		    {
-		    	// vito, 20 mar 2009.
-		    	//displayMessages(json.data);
-		    	//alert(HOW_MANY_READS);
-		    	if(action == REDIRECT_TO_PRACTITIONER_EXIT_CHAT_URL) {
-		    		self.location = PRACTITIONER_EXIT_CHAT_URL+'?'+action_arguments;
-		    	}
-		    	else {
-		    		self.close();
-		    	}
-			}
-			else
-			{
-				logMessageOnScreen('exitChat json error: ' + json.error);
-				handleError('exitChat', json);
-				//displayErrorMessage('exitChat', json);
-			}
-		},
-		onFailure: function() {
-			displayErrorMessage('exitChat', null);
+	fetch(EXIT_CHAT_URL, {
+		method: 'post',
+		body:parameters,
+	})
+	.then(response => {
+		//Here body is not ready yet, throw promise
+		if (!response.ok) throw response;
+		return response.json();
+	})
+	.then(json => {
+		if (GET_AJAX_REQUEST_EXECUTION_TIME) {
+			var response_time = Date.now();
 		}
+		if (json.error == 0) {
+			// vito, 20 mar 2009.
+			//displayMessages(json.data);
+			//alert(HOW_MANY_READS);
+			if (action == REDIRECT_TO_PRACTITIONER_EXIT_CHAT_URL) {
+				self.location = PRACTITIONER_EXIT_CHAT_URL + '?' + action_arguments;
+			}
+			else {
+				self.close();
+			}
+		}
+		else {
+			logMessageOnScreen('exitChat json error: ' + json.error);
+			handleError('exitChat', json);
+			//displayErrorMessage('exitChat', json);
+		}
+	})
+	.catch(async response => {
+		var body = await response.text();
+		displayErrorMessage('exitChat', null);
 	});
 }
 
@@ -346,12 +354,9 @@ function displayMessages(messages)
 		displayMessage(element);
 	});
 	/*
-	 * Adjust scrolling, if autoscroll is on
+	 * Adjust scrolling
 	 */
-//	if ($F(AUTOSCROLL_CHECKBOX) == 'on')
-//	{
-		$j(`#${READ_MESSAGES_DIV}`)[0].scrollTop=$j(`#${READ_MESSAGES_DIV}`)[0].scrollHeight;
-//	}
+	$j(`#${READ_MESSAGES_DIV}`)[0].scrollTop=$j(`#${READ_MESSAGES_DIV}`)[0].scrollHeight;
 	/*
 	 * Update the time interval at which chat messages are retrieved
 	 */
@@ -658,42 +663,42 @@ function getArguments()
 function executeControlAction()
 {
 
-	//alert('esegui azione di controllo: ' +$F(USER_ACTIONS_SELECT) + 'utente selezionato: '+$F(USERS_LIST_DIV));
 	if (GET_AJAX_REQUEST_EXECUTION_TIME)
 	{
 		var request_time = Date.now();
 	}
 
-	var control_action = $F(USER_ACTIONS_SELECT);
-	var user_id        = $F(USERS_LIST_SELECT);
+	var control_action = $j(`#${USER_ACTIONS_SELECT}`).val();
+	var user_id        = $j(`#${USERS_LIST_SELECT}`).val();
 //	alert(CONTROL_ACTION_URL+'?'+ARGUMENTS+'&action='+control_action+'&target_user='+user_id);
 	var controlActionParameters = '&action='+control_action+'&target_user='+user_id;
 //	alert(CONTROL_ACTION_URL+'?'+ARGUMENTS+controlActionParameters);
 
-	new Ajax.Request(CONTROL_ACTION_URL+'?'+ARGUMENTS.chatroomId+controlActionParameters, {
+	fetch(CONTROL_ACTION_URL+'?'+ARGUMENTS.chatroomId+controlActionParameters, {
 		method: 'get',
-		onComplete: function(transport) {
-			var json = transport.responseText.evalJSON(true);
-
-			if (GET_AJAX_REQUEST_EXECUTION_TIME)
-			{
-				var response_time = Date.now();
-			}
-		    if ( json.error == 0 )
-		    {
-		    	readMessages();
-		    	//displayMessages(json.data);
-		    	//alert('Azione eseguita: ' + controlActionParameters);
-			}
-			else
-			{
-				handleError('executeControlAction', json);
-				//displayErrorMessage('executeControlAction', json);
-			}
-		},
-		onFailure: function() {
-			displayErrorMessage('executeControlAction', null);
+	})
+	.then(response => {
+		//Here body is not ready yet, throw promise
+		if (!response.ok) throw response;
+		return response.json();
+	})
+	.then(json => {
+		if (GET_AJAX_REQUEST_EXECUTION_TIME) {
+			var response_time = Date.now();
 		}
+		if (json.error == 0) {
+			readMessages();
+			//displayMessages(json.data);
+			//alert('Azione eseguita: ' + controlActionParameters);
+		}
+		else {
+			handleError('executeControlAction', json);
+			//displayErrorMessage('executeControlAction', json);
+		}
+	})
+	.catch(async response => {
+		var body = await response.text();
+		displayErrorMessage('executeControlAction', null);
 	});
 }
 

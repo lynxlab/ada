@@ -525,7 +525,7 @@ function addExternalLink() {
 	else {
 		if($j('#jsinvalid_external_link').length > 0) {
 			$j('#span_insert_external_link_text').append(
-				$j(new Element('div',{'id':'jsinvalid_external_link','class':'error'})).html('link non valido')
+				$j("<div id='jsinvalid_external_link' class='error'>link non valido</div>")
 			);
 		}
 	}
@@ -648,32 +648,36 @@ function select_option(field, data) {
 
 /*
  * Used to calculate the new dimension of an image in order to resize an image
+ * and load and display it in the id_img div
  */
-    function resize_image(img, maxh, maxw , id_img) {
+    async function loadPreviewMedia(img, maxh, maxw , id_img) {
       imgObj = new Image();
       imgObj.src = img;
-//      var imgObj = $(id_img);
-      var ratio = maxh/maxw;
-      if (imgObj.height/imgObj.width > ratio){
-         // height is the problem
-        if (imgObj.height > maxh){
-          imgObj.width = Math.round(imgObj.width*(maxh/imgObj.height));
-          imgObj.height = maxh;
-        }
-      } else {
-        // width is the problem
-        if (imgObj.width > maxh){
-          imgObj.height = Math.round(imgObj.height*(maxw/imgObj.width));
-          imgObj.width = maxw;
-        }
-      }
-      newDimension = new Array(imgObj.height, imgObj.width);
-      return newDimension;
-      //$(id_img) = imgObj.src;
+
+	  try {
+		  await imgObj.decode();
+
+		  var ratio = maxh/maxw;
+		  if (imgObj.height/imgObj.width > ratio){
+			 // height is the problem
+			if (imgObj.height > maxh){
+			  imgObj.width = Math.round(imgObj.width*(maxh/imgObj.height));
+			  imgObj.height = maxh;
+			}
+		  } else {
+			// width is the problem
+			if (imgObj.width > maxh){
+			  imgObj.height = Math.round(imgObj.height*(maxw/imgObj.width));
+			  imgObj.width = maxw;
+			}
+		  }
+		  document.getElementById(id_img).appendChild(imgObj);
+	  } catch (e) {
+	  }
     }
 
 function updateMediaManager() {
-    var author_id = $F('id_node_author');
+    var author_id = $j('#id_node_author').val();
     var media = getFileDataFromSelect('jsid_select_files');
     if ($j('#jsid_div_media_properties').is(':visible')) {
         toggleVisibility('jsid_div_media_properties');
@@ -698,20 +702,12 @@ function manageMultimediaProperties(media, author_id) {
     if (!$j('#jsid_div_media_properties').is(':visible')) {
         numeric_adaFileType = parseInt(adafiletype);
         $j('#preview_media').html('');
-        switch (numeric_adaFileType) {
+        switch (adafiletype) {
             case ADA_MEDIA_IMAGE:
             case ADA_MEDIA_IMAGE_MONTESSORI:
-                var imgsrc = `${HTTP_ROOT_DIR}/services/media/${author_id}/${filename}`;
-                var newDimensionImage = resize_image(imgsrc, MAXH, MAXW, 'img_preview');
-                var width =  newDimensionImage[1];
-                var height =  newDimensionImage[0];
-//                var preview_image = '<img src=\"' + imgsrc + '\" id=\"img_preview\">';
-                var preview_image = new Element('img', {src: imgsrc, id: "img_preview", width:width, height:height});
-//                var preview_image = '<img src=\"' + imgsrc + '\" id=\"img_preview\" \" width=\"' + width + '\" height=\"' + height +'\">';
-                $j('#preview_media').append(preview_image);
-//                var newDimensionImage = resize_image(imgsrc, MAXH, MAXW, 'img_preview');
-                $j('#p_selected_media_extended_type').append($j(new Element('option', {value: ADA_MEDIA_IMAGE})).html(ADA_MEDIA_IMAGE_LABEL));
-                $j('#p_selected_media_extended_type').append($j(new Element('option', {value: ADA_MEDIA_IMAGE_MONTESSORI})).html(ADA_MEDIA_IMAGE_MONTESSORI_LABEL));
+				loadPreviewMedia(`${HTTP_ROOT_DIR}/services/media/${author_id}/${filename}`, MAXH, MAXW, 'preview_media');
+                $j('#p_selected_media_extended_type').append($j(`<option value='${ADA_MEDIA_IMAGE}'>${ADA_MEDIA_IMAGE_LABEL}</option>`));
+                $j('#p_selected_media_extended_type').append($j(`<option value='${ADA_MEDIA_IMAGE_MONTESSORI}'>${ADA_MEDIA_IMAGE_MONTESSORI_LABEL}</option>`));
 
 /*var ADA_MEDIA_IMAGE_LABEL = "image";
 var ADA_MEDIA_AUDIO_LABEL = "audio";
@@ -729,53 +725,56 @@ var ADA_MEDIA_AUDIO_PRONOUNCE_LABEL = "audio pronucia";
                 break;
             case ADA_MEDIA_AUDIO:
             case ADA_MEDIA_AUDIO_PRONOUNCE:
-                $j('#p_selected_media_extended_type').append($j(new Element('option', {value: ADA_MEDIA_AUDIO})).html(ADA_MEDIA_AUDIO_LABEL));
-                $j('#p_selected_media_extended_type').append($j(new Element('option', {value: ADA_MEDIA_AUDIO_PRONOUNCE})).html(ADA_MEDIA_AUDIO_PRONOUNCE_LABEL));
+                $j('#p_selected_media_extended_type').append($j(`<option value='${ADA_MEDIA_AUDIO}'>${ADA_MEDIA_AUDIO_LABEL}</option>`));
+                $j('#p_selected_media_extended_type').append($j(`<option value='${ADA_MEDIA_AUDIO_PRONOUNCE}'>${ADA_MEDIA_AUDIO_PRONOUNCE_LABEL}</option>`));
                 break;
             case ADA_MEDIA_VIDEO:
             case ADA_MEDIA_VIDEO_LABIALE:
             case ADA_MEDIA_VIDEO_FINGER_SPELLING:
             case ADA_MEDIA_VIDEO_LIS:
-                $j('#p_selected_media_extended_type').append($j(new Element('option', {value: ADA_MEDIA_VIDEO})).html(ADA_MEDIA_VIDEO_LABEL));
-                $j('#p_selected_media_extended_type').append($j(new Element('option', {value: ADA_MEDIA_VIDEO_LABIALE})).html(ADA_MEDIA_VIDEO_LABIALE_LABEL));
-                $j('#p_selected_media_extended_type').append($j(new Element('option', {value: ADA_MEDIA_VIDEO_FINGER_SPELLING})).html(ADA_MEDIA_VIDEO_FINGER_SPELLING_LABEL));
-                $j('#p_selected_media_extended_type').append($j(new Element('option', {value: ADA_MEDIA_VIDEO_LIS})).html(ADA_MEDIA_VIDEO_LIS_LABEL));
+                $j('#p_selected_media_extended_type').append($j(`<option value='${ADA_MEDIA_VIDEO}'>${ADA_MEDIA_VIDEO_LABEL}</option>`));
+                $j('#p_selected_media_extended_type').append($j(`<option value='${ADA_MEDIA_VIDEO_LABIALE}'>${ADA_MEDIA_VIDEO_LABIALE_LABEL}</option>`));
+                $j('#p_selected_media_extended_type').append($j(`<option value='${ADA_MEDIA_VIDEO_FINGER_SPELLING}'>${ADA_MEDIA_VIDEO_FINGER_SPELLING_LABEL}</option>`));
+                $j('#p_selected_media_extended_type').append($j(`<option value='${ADA_MEDIA_VIDEO_LIS}'>${ADA_MEDIA_VIDEO_LIS_LABEL}</option>`));
                 break;
         }
-        new Ajax.Request(READ_MEDIA_URL, {
-                    method: 'Post',
-                    parameters: {nome_file:filename, id_utente:author_id},
-                    onComplete: function(transport) {
-                            var json = JSON.parse(transport.responseText);
-
-                            //if (GET_AJAX_REQUEST_EXECUTION_TIME)
-                            //{
-                            //        var response_time = Date.now();
-                            //}
-                        if (typeof(json.id_risorsa_ext) != undefined )
-                        {
-                            $j('#jsdata_titlesarea').val(json.titolo);
-                            $j('#jsdata_keywordsarea').val(json.keywords);
-                            $j('#jsdata_descriptionarea').val(json.descrizione);
-                            if (json.pubblicato == 1) {
-                                $j('#jsdata_published')[0].checked = true;
-                            }else {
-                                $j('#jsdata_published')[0].checked = false;
-                            }
-//                            alert($('p_selected_language').options[json.lingua]);
-                            select_option('p_selected_language',json.lingua);
-                            select_option('p_selected_media_extended_type',json.tipo);
-                        }
-                        else
-                        {
-                                alert('json error: ' + json.error)
-                        }
-
-                    },
-                    onFailure: function() {
-                            alert('save media', null);
-                    }
-            });
+		const parameters = new FormData();
+		parameters.append('nome_file', filename);
+		parameters.append('id_utente', author_id);
+		fetch(READ_MEDIA_URL, {
+			method: 'post',
+			body: parameters,
+		})
+		.then(response => {
+            //Here body is not ready yet, throw promise
+            if (!response.ok) throw response;
+            return response.json();
+        })
+		.then(json => {
+			//if (GET_AJAX_REQUEST_EXECUTION_TIME)
+			//{
+			//        var response_time = Date.now();
+			//}
+			if (!json.error && typeof (json.id_risorsa_ext) != undefined) {
+				$j('#jsdata_titlesarea').val(json.titolo);
+				$j('#jsdata_keywordsarea').val(json.keywords);
+				$j('#jsdata_descriptionarea').val(json.descrizione);
+				if (json.pubblicato == 1) {
+					$j('#jsdata_published')[0].checked = true;
+				} else {
+					$j('#jsdata_published')[0].checked = false;
+				}
+				select_option('p_selected_language', json.lingua);
+				select_option('p_selected_media_extended_type', json.tipo);
+			}
+			else {
+				alert(json.message);
+			}
+		}).catch(async response => {
+			var body = await response.text();
+			body = body.length ? `:\n${body}` : body ;
+			alert(`read media error${body}`);
+		});
 
     }
 
@@ -783,11 +782,11 @@ var ADA_MEDIA_AUDIO_PRONOUNCE_LABEL = "audio pronucia";
 }
 
 function saveMultimediaProperties(media, id_author) {
-    var keywords = $F('jsdata_keywordsarea');
-    var title = $F('jsdata_titlesarea');
-    var description = $F('jsdata_descriptionarea');
+    var keywords = $j('#jsdata_keywordsarea').val().trim();
+    var title = $j('#jsdata_titlesarea').val().trim();
+    var description = $j('#jsdata_descriptionarea').val().trim();
     var language = getFileDataFromSelect('p_selected_language');
-    var published = $F('jsdata_published');
+    var published = $j('#jsdata_published:checked').val() || null;
     var media = getFileDataFromSelect('jsid_select_files');
     var filename = media[1];
     //var adafiletype = media[0];
@@ -795,34 +794,41 @@ function saveMultimediaProperties(media, id_author) {
 //    var copyright = $F(copyright);
 //    var id_risorsa_ext = $F(id_risorsa_ext);
 
-    new Ajax.Request(SAVE_MEDIA_URL, {
-		method: 'Post',
-		parameters: {keywords:keywords, titolo:title, nome_file:filename, tipo:adafiletype,
-                    id_utente:id_author, descrizione:description, pubblicato:published, lingua:language},
-		onComplete: function(transport) {
-			var json = JSON.parse(transport.responseText);
+	const parameters = new FormData();
+	parameters.append('keywords', keywords);
+	parameters.append('titolo', title);
+	parameters.append('nome_file', filename);
+	parameters.append('tipo', adafiletype);
+	parameters.append('id_utente', id_author);
+	parameters.append('descrizione', description);
+	parameters.append('pubblicato', published);
+	parameters.append('lingua', language);
 
-			if (GET_AJAX_REQUEST_EXECUTION_TIME)
-			{
-				var response_time = Date.now();
-			}
-
-		    if ( json.error == 0 )
-		    {
-				alert('save completed');
-			}
-			else
-			{
-                                alert('json error: ' + json.error)
-			}
-
-		},
-		onFailure: function() {
-			alert('save media', null);
+	fetch(SAVE_MEDIA_URL, {
+		method: 'post',
+		body:parameters,
+	})
+	.then(response => {
+		//Here body is not ready yet, throw promise
+		if (!response.ok) throw response;
+		return response.json();
+	})
+	.then(json => {
+		if (GET_AJAX_REQUEST_EXECUTION_TIME) {
+			var response_time = Date.now();
 		}
+		if (json.error == 0) {
+			alert('save completed');
+		}
+		else {
+			alert(json.message)
+		}
+	})
+	.catch(async response => {
+		var body = await response.text();
+		body = body.length ? `:\n${body}` : body ;
+		alert(`save media error${body}`);
 	});
-
-
 }
 
 /**
@@ -945,13 +951,13 @@ function printErrorMessage(error, filename) {
 }
 
 function getFileDataFromSelect(id_select) {
-	var f = $F(id_select);
+	var f = $j(`#${id_select}>option:selected`).val() || null;
 
 	if (f == null) {
 		return false;
 	}
 	else {
-		return $F(id_select).split('|');
+		return f.split('|');
 	}
 }
 
@@ -1075,16 +1081,6 @@ function toggleVisibilityByClassName(className, idName, mode)
 	}
 }
 
-
-function changeNodeIcon(type) {
-	var node_type = $F(type);
-
-	if (node_type == ADA_LEAF_TYPE) {
-		$j(`#${NODE_ICON_ID}`).val(ADA_LEAF_ICON);
-	} else if (node_type == ADA_GROUP_TYPE) {
-		$j(`#${NODE_ICON_ID}`).val(ADA_GROUP_ICON);
-	}
-}
 /**
  *
  * @param string
