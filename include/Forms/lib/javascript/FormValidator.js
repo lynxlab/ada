@@ -21,8 +21,14 @@ function validateContent(elements, regexps) {
 		var element = elements[i];
 		var regexp = regexps[i];
 		var value = null;
-		if ($j(`#${element}`).lenght && $j(`#${element}`).val()) {
-			value = $j(`#${element}`).val();
+		if ($j(`#${element}`).lenght && $j(`#${element}`).val) {
+			if ($j(`#${element}`).is(':radio') || $j(`#${element}`).is(':checkbox')) {
+				value = $j(`#${element}:checked`).val() || null;
+			} else if ($j(`#${element}`).is(':select')) {
+				value = $j(`#${element}>option:selected`).val() || null;
+			} else {
+				value = $j(`#${element}`).val();
+			}
 		}
 
 		if (value != null && value.lenght) {

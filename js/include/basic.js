@@ -72,7 +72,13 @@ function validateContent(elements, regexps, formName) {
 		var value = null;
 		var id = null;
 		if ($j(`#${element}`).length && $j(`#${element}`).val) {
-			value = $j(`#${element}`).val();
+			if ($j(`#${element}`).is(':radio') || $j(`#${element}`).is(':checkbox')) {
+				value = $j(`#${element}:checked`).val() || null;
+			} else if ($j(`#${element}`).is(':select')) {
+				value = $j(`#${element}>option:selected`).val() || null;
+			} else {
+				value = $j(`#${element}`).val();
+			}
 			id = $j(`#${element}`).attr('id');
 		}
 
