@@ -91,12 +91,9 @@ function startChat()
 	ARGUMENTS = getArguments();
 	if (DEBUG_LOG_ENABLED) $j(`#${DEBUG_DIV}`).append(`ARGUMENTS: ${JSON.stringify(ARGUMENTS)}<br />`);
 
-// test periodical executer
-//	READ_MESSAGES_PERIODICAL_EXECUTER = new PeriodicalExecuter(readMessages, CURRENT_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE);
-// test periodical executer
 	// Start periodical executers for reading chat messages
-	READ_MESSAGES_PERIODICAL_EXECUTER = new PeriodicalExecuter(shouldReadMessages, READ_MESSAGES_PERIODICAL_EXECUTER_TIME_INTERVAL);
-	CONTROL_CHAT_PERIODICAL_EXECUTER  = new PeriodicalExecuter(controlChat, CONTROL_CHAT_TIME_INTERVAL);
+	READ_MESSAGES_PERIODICAL_EXECUTER = window.setInterval(() => shouldReadMessages(), 1000 * READ_MESSAGES_PERIODICAL_EXECUTER_TIME_INTERVAL);
+	CONTROL_CHAT_PERIODICAL_EXECUTER  = window.setInterval(() => controlChat(), 1000 * CONTROL_CHAT_TIME_INTERVAL);
 
 
 	readMessages();
@@ -292,8 +289,10 @@ function exitChat(action, action_arguments)
 {
 // stoppare i periodical executers e poi fare una richiesta AJAX per aggiornare
 // lo stato dell'utente all'interno del database
-	READ_MESSAGES_PERIODICAL_EXECUTER.stop();
-	CONTROL_CHAT_PERIODICAL_EXECUTER.stop();
+	window.clearInterval(READ_MESSAGES_PERIODICAL_EXECUTER);
+	READ_MESSAGES_PERIODICAL_EXECUTER = null;
+	window.clearInterval(CONTROL_CHAT_PERIODICAL_EXECUTER);
+	CONTROL_CHAT_PERIODICAL_EXECUTER = null;
 
 	if (GET_AJAX_REQUEST_EXECUTION_TIME)
 	{
@@ -753,8 +752,10 @@ function handleError(function_name, error_object)
 	else if(error_object.error == 2)
 	{
 		// stop periodical executer, exit chat
-		READ_MESSAGES_PERIODICAL_EXECUTER.stop();
-		CONTROL_CHAT_PERIODICAL_EXECUTER.stop();
+		window.clearInterval(READ_MESSAGES_PERIODICAL_EXECUTER);
+		READ_MESSAGES_PERIODICAL_EXECUTER = null;
+		window.clearInterval(CONTROL_CHAT_PERIODICAL_EXECUTER);
+		CONTROL_CHAT_PERIODICAL_EXECUTER = null;
 
 		var div_message = document.createElement('div');
 		div_message.className = 'php_error';
