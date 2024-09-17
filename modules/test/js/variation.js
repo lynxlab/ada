@@ -2,7 +2,7 @@ var VA_IDENTIFIERS = '.erase_variation_test, .highlight_variation_test';
 var VA_CONTAINER = '.answer_group_test';
 var VA_FORM = '#testForm';
 
-$j(document).ready(function () {
+onDOMLoaded(function () {
     //functionalities for single/multi choiche variations (erase, highlight)
     function resetVariationTest($input) {
         $input.prop('checked', false);

@@ -316,6 +316,6 @@ function confirmSubmit() {
     else return res;
 }
 
-document.observe('dom:loaded', function () {
+onDOMLoaded(() => {
     domReady = true;
 });

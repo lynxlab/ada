@@ -2,7 +2,7 @@ var EH_IDENTIFIERS = '.answer_cloze_erase_test, .answer_cloze_highlight_test';
 var EH_ITEM = '.answer_erase_item_test';
 var EH_FORM = '#testForm';
 
-$j(document).ready(function () {
+onDOMLoaded(function () {
     //functionalities for erase/highlight words in text (cloze_erase_test type)
     function resetEraseItemTest($span, $parent) {
         var rel = $span.attr('rel');
