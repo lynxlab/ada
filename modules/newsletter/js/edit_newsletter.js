@@ -7,7 +7,7 @@ load_js(`${HTTP_ROOT_DIR}/external/fckeditor/fckeditor.js`);
 var isAjax = true;
 
 function loadFCKeditor(textarea_name, toolbar) {
-    if ($j('#' + textarea_name).size() == 1) {
+    if ($j('#' + textarea_name).length == 1) {
         toolbar = (typeof toolbar === 'undefined') ? 'Test' : toolbar;
 
         var oFCKeditor = new FCKeditor(textarea_name);
