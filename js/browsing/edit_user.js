@@ -238,22 +238,25 @@ function initUserRegistrationForm(hasTabs, useAjax) {
                     dataType: 'json',
                     async: false
                 })
-                    .done(function (JSONObj) {
-                        if (JSONObj) {
-                            //								 showModalDialog ("Salvataggio", JSONObj.msg);
-                            showHideDiv(JSONObj.title, JSONObj.msg, (typeof JSONObj.reload == 'boolean' && JSONObj.reload));
-                            if (isMultiRow && JSONObj.status == 'OK') {
-                                updateExtraRow(JSONObj.extraID, JSONObj.html, name);
-                                toggleForm(name, false);
-                            } else initFormsInitialValues();
-                        }
-                    })
-                    .fail(function () {
-                        console.log("edit user has failed");
-                    })
-                    .always(function () {
-                        if (theId != -1 && $j('#tabSaveIcon' + theId).css('visibility') == 'visible') setSaveIconVisibility(theId, 'hidden');
-                    });
+                .done(function (JSONObj) {
+                    if (JSONObj) {
+                        $j.when(showHideDiv(JSONObj.title, JSONObj.msg, JSONObj.status == 'OK')).done(() => {
+                            if (typeof JSONObj.reload == 'boolean' && JSONObj.reload) {
+                                self.location.reload(true);
+                            }
+                        });
+                        if (isMultiRow && JSONObj.status == 'OK') {
+                            updateExtraRow(JSONObj.extraID, JSONObj.html, name);
+                            toggleForm(name, false);
+                        } else initFormsInitialValues();
+                    }
+                })
+                .fail(function () {
+                    console.log("edit user has failed");
+                })
+                .always(function () {
+                    if (theId != -1 && $j('#tabSaveIcon' + theId).css('visibility') == 'visible') setSaveIconVisibility(theId, 'hidden');
+                });
                 return false;
             }
         );
@@ -491,25 +494,6 @@ function deleteExtra(extraTableName, extraID, foreignKeyName) {
                 }
             });
     }
-}
-
-/**
- * shows and after 500ms removes the div to give feedback to the user about
- * the status of the executed operation (if it's been saved, delete or who knows what..)
- *
- * @param title title to be displayed
- * @param message message to the user
- */
-function showHideDiv(title, message, reload) {
-    var theDiv = $j("<div id='ADAJAX' class='saveResults'><p class='title'>" + title + "</p><p class='message'>" + message + "</p></div>");
-    theDiv.css("position", "fixed");
-    theDiv.css("width", "350px");
-    theDiv.css("top", ($j(window).height() / 2) - (theDiv.outerHeight() / 2));
-    theDiv.css("left", ($j(window).width() / 2) - (theDiv.outerWidth() / 2));
-    theDiv.hide().appendTo('body').fadeIn(500).delay(2000).fadeOut(500, function () {
-        theDiv.remove();
-        if (typeof reload != 'undefined' && reload) self.location.reload(true);
-    });
 }
 
 /**

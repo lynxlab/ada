@@ -16,18 +16,20 @@ function isNotEmpty(field) {
 function checkNec(){
 var isOk = true;
 var cflDiv = document.getElementById('cfl');
-var cflFields = cflDiv.getAttribute('title');
-var cxflAr = new Array();
-var fieldId;
-cxflAr = cflFields.split(',');
-for (var i=0; i<cxflAr.length; i++){
-        fieldId = cxflAr[i];
-        var fieldDiv = document.getElementById(fieldId);
-        var type = fieldDiv.type;
+if (cflDiv != null) {
+  var cflFields = cflDiv.getAttribute('title');
+  var cxflAr = new Array();
+  var fieldId;
+  cxflAr = cflFields.split(',');
+  for (var i=0; i<cxflAr.length; i++){
+          fieldId = cxflAr[i];
+          var fieldDiv = document.getElementById(fieldId);
+          var type = fieldDiv.type;
 
-        if ((type == "text") | (type == "textarea")){
-                isOk = isOk & (isNotEmpty(fieldDiv));
-        }
+          if ((type == "text") | (type == "textarea")){
+                  isOk = isOk & (isNotEmpty(fieldDiv));
+          }
+  }
 }
 
 if (isOk) {

@@ -29,7 +29,7 @@ function followForkedPath (options, button) {
                     title = result.responseJSON.title;
                     message = result.responseJSON.message;
                 }
-                showHidePromise = showHideDiv(title, message);
+                showHidePromise = showHideDiv(title, message, result.responseJSON.status != 'ERROR');
             })
             .always(function(){
                 $j.when(showHidePromise).done(function(){
@@ -43,16 +43,4 @@ function followForkedPath (options, button) {
     } else {
         console.error('invalid or incomplete options ', options);
     }
-}
-
-function showHideDiv ( title, message ) {
-	var theDiv = $j("<div id='ADAJAX' class='saveResults'><p class='title'>"+title+"</p><p class='message'>"+message+"</p></div>");
-	theDiv.css("position","fixed");
-	theDiv.css("width", "350px");
-	theDiv.css("top", ($j(window).height() / 2) - (theDiv.outerHeight() / 2));
-    theDiv.css("left", ($j(window).width() / 2) - (theDiv.outerWidth() / 2));
-    theDiv.hide().appendTo('body').fadeIn(500).delay(2000);
-    var thePromise = theDiv.fadeOut(500);
-    $j.when(thePromise).done(function() { theDiv.remove(); });
-    return thePromise;
 }
