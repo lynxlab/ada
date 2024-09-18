@@ -653,7 +653,7 @@ function addUserToInvitedUsers(user)
 
 function getArguments()
 {
-	var passed_args = $j('#data')[0].innerHTML.unescapeHTML();
+	var passed_args = decodeURIComponent($j('#data')[0].innerHTML ?? '');
 	var retobj = { chatroomId: 0, ownerId: null, studentId: null };
 	var passedObj = passed_args.length > 0 ? JSON.parse(passed_args) : {};
 	return $j.extend({}, retobj, passedObj);
