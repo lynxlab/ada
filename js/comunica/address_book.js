@@ -42,10 +42,17 @@ var CSS_HIDE_CLASSNAME = 'hidden_element';
  * @return void
  */
 function add_addressee(select) {
+
+  if (typeof select === 'string' && !select.startsWith('#')) {
+		select = $j(`#${select}`);
+	} else {
+    select = $j(select);
+  }
+
   /*
    * Addressee's username
    */
-  var addressee = select.getValue();
+  var addressee = select.val(); // .replace(/[.@]/g ,'-');
 
   if(addressee == null) {
       return;
@@ -53,37 +60,41 @@ function add_addressee(select) {
   /**
    * Read the selected element HTML before deselectiong
    */
-  var optionsList = $(select).getElementsByTagName('option');
-  var options = $A(optionsList);
-  var checkBoxHTML = options[$(select).selectedIndex].innerHTML;
+  var optionsList = select[0].getElementsByTagName('option');
+  var options = Array.from(optionsList);
+  var checkBoxHTML = options[select[0].selectedIndex].innerHTML;
+  var divID = addressee.replace(/[.@]/g ,'-');
   /*
    * Deselect the selected element
    */
-  $(select).selectedIndex = -1;
+  select[0].selectedIndex = -1;
   /*
    * If the user has already added an addressee, do not
    * add him/her again.
    */
-  if($(addressee)) {
+  if($j(`#${divID}`).length) {
     return;
   }
   /*
    * Add a div with id equal to the addressee username containing a checkbox
    * and the username
    */
-  var div = new Element('div',{'id':addressee});
+  var div = document.createElement('div');
+  div.id = divID;
 
-  var checkbox = new Element('input',{
-      'name':'destinatari[]',
-      'type':'checkbox',
-      'value':addressee,
-      'checked':'true',
-      'onclick':"remove_addressee('"+addressee+"')"});
+  var checkbox = document.createElement('input');
+  Object.assign(checkbox, {
+    'name':'destinatari[]',
+    'type':'checkbox',
+    'value':addressee,
+    'checked':'true',
+    'onclick': () => remove_addressee(div.id)
+  });
 
-  $(div).insert(checkbox);
-  $(div).insert(checkBoxHTML);
+  div.append(checkbox);
+  div.append(checkBoxHTML);
 
-  $(ADDRESSEES_SELECT).insert(div);
+  $j(`#${ADDRESSEES_SELECT}`).append(div);
 }
 
 /**
@@ -93,7 +104,7 @@ function add_addressee(select) {
  * @return void
  */
 function remove_addressee(addressee) {
-  $(addressee).remove();
+  $j(`#${addressee}`).remove();
 }
 
 /**
@@ -106,7 +117,9 @@ function remove_addressee(addressee) {
 function showMeHideOthers(control) {
   var index = SELECTS.indexOf(control);
 
-  var to_hide = SELECTS.without(control);
+  // prototype style
+  // var to_hide = SELECTS.without(control);
+	var to_hide = SELECTS.filter(el => control.split(',').indexOf(el.toString()) == -1 );
 
   var i = 0;
   var max = to_hide.length;
@@ -115,27 +128,27 @@ function showMeHideOthers(control) {
 
   for (i = 0; i < max; i++) {
     element = to_hide[i];
-    if($(element)) {
-      $(element).hide();
+    if($j(`#${element}`).length) {
+      $j(`#${element}`).hide();
     }
   }
 
   for(i = 0; i < BUTTONS.length; i++) {
     element = BUTTONS[i];
-    if(i == index && $(element)) {
-      $(element).addClassName('selected');
+    if(i == index && $j(`#${element}`).length) {
+      $j(`#${element}`).addClass('selected');
     }
-    else if($(element) && $(element).hasClassName('selected')) {
-      $(element).removeClassName('selected');
+    else if($j(`#${element}`).length && $j(`#${element}`).hasClass('selected')) {
+      $j(`#${element}`).removeClass('selected');
     }
   }
 
-  if($(control).hasClassName(CSS_HIDE_CLASSNAME)) {
-    $(control).removeClassName(CSS_HIDE_CLASSNAME);
+  if($j(`#${control}`).hasClass(CSS_HIDE_CLASSNAME)) {
+    $j(`#${control}`).removeClass(CSS_HIDE_CLASSNAME);
   }
 
-  if(!$(control).visible()) {
-    $(control).show();
+  if(!$j(`#${control}`).is(':visible')) {
+    $j(`#${control}`).show();
   }
 }
 
@@ -147,12 +160,12 @@ function load_addressbook() {
   for (i = 0; i < max; i++) {
     select = SELECTS[i];
     button = BUTTONS[i];
-    if($(select)) {
-      if($(select).hasClassName(CSS_HIDE_CLASSNAME)) {
-        $(select).removeClassName(CSS_HIDE_CLASSNAME);
+    if($j(`#${select}`).length) {
+      if($j(`#${select}`).hasClass(CSS_HIDE_CLASSNAME)) {
+        $j(`#${select}`).removeClass(CSS_HIDE_CLASSNAME);
       }
-      $(select).show();
-      $(button).addClassName('selected');
+      $j(`#${select}`).show();
+      $j(`#${button}`).addClass('selected');
       break;
     }
   }

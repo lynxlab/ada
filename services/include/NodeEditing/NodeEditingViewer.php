@@ -489,7 +489,6 @@ class NodeEditingViewer
             $media_type = [_IMAGE, _MONTESSORI];
             $select_icon = self::getAuthorMediaOnlySelector($id_course, $media_type, 'icon', $node_data);
             //            $select_icon->addChild($options);
-            //            $select->setAttribute('onchange',"changeNodeIcon('type');");
 
             $node_icon->addChild($select_icon);
 
@@ -566,7 +565,6 @@ class NodeEditingViewer
             $span_select->addChild($label_type);
 
             $select = CDOMElement::create('select', 'id:type, name:type');
-            //            $select->setAttribute('onchange',"changeNodeIcon('type');");
 
             $option_group = CDOMElement::create('option');
             $option_group->setAttribute('value', ADA_GROUP_TYPE);

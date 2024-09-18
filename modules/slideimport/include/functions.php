@@ -13,18 +13,23 @@
 
 namespace Lynxlab\ADA\Module\Slideimport\Functions;
 
+use Exception;
 use Imagick;
 
 function getFileData($fileName)
 {
-    $filedata = [];
-    $imagick = new Imagick($fileName);
-    $filedata['numPages'] = $imagick->getnumberimages();
-    $width = $imagick->getimagewidth();
-    $height = $imagick->getimageheight();
-    $filedata['orientation'] = ($width > $height) ? 'landscape' : 'portrait';
-    $filedata['url'] = str_replace(ROOT_DIR, HTTP_ROOT_DIR, $fileName);
-    return $filedata;
+    if (class_exists('Imagick')) {
+        $filedata = [];
+        $imagick = new Imagick($fileName);
+        $filedata['numPages'] = $imagick->getnumberimages();
+        $width = $imagick->getimagewidth();
+        $height = $imagick->getimageheight();
+        $filedata['orientation'] = ($width > $height) ? 'landscape' : 'portrait';
+        $filedata['url'] = str_replace(ROOT_DIR, HTTP_ROOT_DIR, $fileName);
+        return $filedata;
+    } else {
+        throw new Exception('Please install "Imagick" php module');
+    }
 }
 
 function generateRandomString($length = 10)

@@ -355,7 +355,6 @@ $help .= translateFN('Il file deve avere estensione txt e deve contenere in ogni
 /*
  * OUTPUT
  */
-$optionsAr = ['onload_func' => "PAGER.showPage('subscribed');"];
 $content_dataAr = [
     'path' => $path ?? '',
     'label' => $label ?? '',

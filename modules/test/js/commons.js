@@ -1,4 +1,4 @@
-document.observe('dom:loaded', function () {
+onDOMLoaded(() => {
     //tooltip for cloze input editing
     function getToolTip() {
         var title = $j(this).attr('title');

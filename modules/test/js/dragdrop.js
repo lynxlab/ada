@@ -117,6 +117,7 @@ function makeSortable(e) {
     );
 }
 
+onDOMLoaded(() => {
 $j(window).load(function () {
     $j(DD_DRAG_DROP_BOX).each(function (i, e) {
         var parent = $j(e).parent();
@@ -158,4 +159,6 @@ $j(document).ready(function () {
     $j(DD_SORTABLE).each(function (i, e) {
         makeSortable(e);
     });
+});
+
 });

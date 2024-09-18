@@ -65,68 +65,6 @@
     <div id="bottomcont">
     </div>
 	</div><!-- /contenuto -->
-
-
-  <!-- menudestra -->
-  <!--
-  <div id="menuright" class="sottomenu_off menuright_default">
-    <div id="topmenur">
-    </div>
-    <div id="menurightcontent">
-                  		 <ul>
-                  		 		 <li class="close">
-                  		 		 		 <a href="#" onclick="toggleElementVisibility('menuright', 'right');">
-                  					   		</i18n>chiudi</i18n>
-                  		 				 </a>
-                  				 </li>
-													 <li class="_menu">
-													 		 <template_field class="disabled" name="menu_nav">menu_nav</template_field>
-													 </li>
-													 <li class="_menu">
-													 		<a href="admin_config.php?mode=0">
-													 		 <i18n>configurazione</i18n>
-					 										</a>
-													 </li>
-													 <li class="_menu">
-													 		<a href="admin_report.php">
-													 		 <i18n>monitoraggio</i18n>
-					 										</a>
-													 </li>
-													 <li class="_menu">
-													 		<a href="search_user.php">
-													 			<i18n>utenti</i18n>
-					 										</a>
-													 </li>
-													 <li class="_menu">
-													 		<a href="search_course.php">
-																 <i18n>corsi</i18n>
-															</a>
-													 </li>
-													 <hr>
-													 <li class="_menu">
-													 		 <a href="../user/index.php?module=edit_info.php">
-															 		<i18n>modifica informazioni</i18n>
-															 </a>
-													 </li>
-													 <li class="_menu">
-													 		 <a href="../user/index.php?module=translation.php">
-															 		<i18n>modifica traduzioni</i18n>
-															 </a>
-													 </li>
-													 <li class="_menu">
-													 		 <a href="tpl_list.php">
-															 		<i18n>templates</i18n>
-															 </a>
-													 </li>
-
-                  			</ul>
-    </div>
-    <div id="bottommenur">
-    </div>
-  </div>
-  -->
-  <!-- /menudestra  -->
-
 </div> <!-- /contenitore -->
 	<div id="push"></div>
 	</div>

@@ -93,7 +93,7 @@ trait ADASingleton
      *
      * @return boolean
      */
-    final static public function hasInstance()
+    final public static function hasInstance()
     {
         return in_array(static::class, static::$instances);
     }

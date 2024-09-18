@@ -181,7 +181,8 @@ var DO_NOT_DISABLE_EL_CLASS = 'donotDisable';
  * .@return oFCKeditor - FCKeditor instance
  */
 function createEditor(FCKeditorID, Plain_textID) {
-	$(FCKeditorID).value = ADAToFCKeditor($(Plain_textID).value);
+
+	$j(`#${FCKeditorID}`).val(ADAToFCKeditor($j(`#${Plain_textID}`).val()));
 
 	var oFCKeditor = new FCKeditor(FCKeditorID);
         oFCKeditor.BasePath = '../external/fckeditor/';
@@ -205,20 +206,20 @@ function FCKeditor_OnComplete(FCKEDITOR_INSTANCE_NAME) {
 		document.getElementById('switch_to_adacode').disabled = false;
 	}
 	// hide MEDIA divs
-	if ($(EXTERNAL_LINK_DIV) != null) {
-		$(EXTERNAL_LINK_DIV).hide();
+	if ($j(`#${EXTERNAL_LINK_DIV}`).length) {
+		$j(`#${EXTERNAL_LINK_DIV}`).hide();
 	}
-	if ($(INTERNAL_LINK_DIV) != null) {
-		$(INTERNAL_LINK_DIV).hide();
+	if ($j(`#${INTERNAL_LINK_DIV}`).length) {
+		$j(`#${INTERNAL_LINK_DIV}`).hide();
 	}
-	if ($(MULTIMEDIA_DIV) != null) {
-		$(MULTIMEDIA_DIV).hide();
+	if ($j(`#${MULTIMEDIA_DIV}`).length) {
+		$j(`#${MULTIMEDIA_DIV}`).hide();
 	}
-	if ($(PARENT_NODE_DIV) != null) {
-		$(PARENT_NODE_DIV).hide();
+	if ($j(`#${PARENT_NODE_DIV}`).length) {
+		$j(`#${PARENT_NODE_DIV}`).hide();
 	}
-	if ($(FILE_UPLOAD_ERROR_DIV) != null) {
-		$(FILE_UPLOAD_ERROR_DIV).hide();
+	if ($j(`#${FILE_UPLOAD_ERROR_DIV}`).length) {
+		$j(`#${FILE_UPLOAD_ERROR_DIV}`).hide();
 	}
 
 }
@@ -241,7 +242,7 @@ function switchToFCKeditor(template_family) {
 
 	if (typeof (FCKeditorAPI) == 'undefined') {
 		oFCKeditor = createEditor(FCKEDITOR_INSTANCE_NAME, PURE_TEXT_EDITOR);
-                if ($(PURE_HYPHENATION_EDITOR) != undefined) {
+                if ($j(`#${PURE_HYPHENATION_EDITOR}`).length) {
                     oFCKeditor_hyphen = createEditor(FCKEDITOR_INSTANCE_HYPHENATION, PURE_HYPHENATION_EDITOR);
                     oFCKeditor_semantic = createEditor(FCKEDITOR_INSTANCE_SEMANTIC, PURE_SEMANTIC_EDITOR);
                     oFCKeditor_grammar = createEditor(FCKEDITOR_INSTANCE_GRAMMAR, PURE_GRAMMAR_EDITOR);
@@ -250,28 +251,28 @@ function switchToFCKeditor(template_family) {
                 }
 	} else {
 		oFCKeditor = FCKeditorAPI.GetInstance(FCKEDITOR_INSTANCE_NAME);
-		oFCKeditor.SetData(ADAToFCKeditor($(PURE_TEXT_EDITOR).value));
-                if ($(PURE_HYPHENATION_EDITOR) != undefined) {
+		oFCKeditor.SetData(ADAToFCKeditor($j(`#${PURE_TEXT_EDITOR}`).val()));
+                if ($j(`#${PURE_HYPHENATION_EDITOR}`).length) {
                     oFCKeditor_hyphen = FCKeditorAPI.GetInstance(FCKEDITOR_INSTANCE_HYPHENATION);
-                    oFCKeditor_hyphen.SetData(ADAToFCKeditor($(PURE_HYPHENATION_EDITOR).value));
+                    oFCKeditor_hyphen.SetData(ADAToFCKeditor($j(`#${PURE_HYPHENATION_EDITOR}`).val()));
                     oFCKeditor_semantic = FCKeditorAPI.GetInstance(FCKEDITOR_INSTANCE_SEMANTIC);
-                    oFCKeditor_semantic.SetData(ADAToFCKeditor($(PURE_SEMANTIC_EDITOR).value));
+                    oFCKeditor_semantic.SetData(ADAToFCKeditor($j(`#${PURE_SEMANTIC_EDITOR}`).value));
                     oFCKeditor_grammar = FCKeditorAPI.GetInstance(FCKEDITOR_INSTANCE_GRAMMAR);
-                    oFCKeditor_grammar.SetData(ADAToFCKeditor($(PURE_GRAMMAR_EDITOR).value));
+                    oFCKeditor_grammar.SetData(ADAToFCKeditor($j(`#${PURE_GRAMMAR_EDITOR}`).value));
                     oFCKeditor_notes = FCKeditorAPI.GetInstance(FCKEDITOR_INSTANCE_NOTES);
-                    oFCKeditor_notes.SetData(ADAToFCKeditor($(PURE_NOTES_EDITOR).value));
+                    oFCKeditor_notes.SetData(ADAToFCKeditor($j(`#${PURE_NOTES_EDITOR}`).value));
                     oFCKeditor_examples = FCKeditorAPI.GetInstance(FCKEDITOR_INSTANCE_EXAMPLES);
-                    oFCKeditor_examples.SetData(ADAToFCKeditor($(PURE_EXAMPLES_EDITOR).value));
+                    oFCKeditor_examples.SetData(ADAToFCKeditor($j(`#${PURE_EXAMPLES_EDITOR}`).value));
                 }
 	}
 
-	$(PURE_TEXT_EDITOR_DIV).hide();
-	$(ADA_MEDIA_INPUT).show();
-	$(FCKEDITOR_DIV).show();
-	$(ADA_MEDIA_BUTTONS).show();
+	$j(`#${PURE_TEXT_EDITOR_DIV}`).hide();
+	$j(`#${ADA_MEDIA_INPUT}`).show();
+	$j(`#${FCKEDITOR_DIV}`).show();
+	$j(`#${ADA_MEDIA_BUTTONS}`).show();
 	// restore active panel
-	$j('#'+ADA_MEDIA_BUTTONS).children('.button.active').trigger('click');
-	$(ADA_MEDIA_DIV).show();
+	$j(`#${ADA_MEDIA_BUTTONS}`).children('.button.active').trigger('click');
+	$j(`#${ADA_MEDIA_DIV}`).show();
 }
 
 function updateFCKEditorIconsPath(template_family) {
@@ -286,11 +287,11 @@ function updateFCKEditorIconsPath(template_family) {
 function switchToADACode() {
 	updateADACode();
 
-	$(PURE_TEXT_EDITOR_DIV).show();
-	$(ADA_MEDIA_INPUT).hide();
-	$(FCKEDITOR_DIV).hide();
-	$(ADA_MEDIA_BUTTONS).hide();
-	$(ADA_MEDIA_DIV).hide();
+	$j(`#${PURE_TEXT_EDITOR_DIV}`).show();
+	$j(`#${ADA_MEDIA_INPUT}`).hide();
+	$j(`#${FCKEDITOR_DIV}`).hide();
+	$j(`#${ADA_MEDIA_BUTTONS}`).hide();
+	$j(`#${ADA_MEDIA_DIV}`).hide();
 }
 /**
  * function updateADACode
@@ -300,7 +301,7 @@ function switchToADACode() {
 function updateADACode() {
 	if (typeof (FCKeditorAPI) == 'undefined') {
 		oFCKeditor = createEditor(FCKEDITOR_INSTANCE_NAME, PURE_TEXT_EDITOR);
-                if ($(PURE_HYPHENATION_EDITOR) != undefined) {
+                if ($j(`#${PURE_HYPHENATION_EDITOR}`).length) {
                     oFCKeditor_hyphen = createEditor(FCKEDITOR_INSTANCE_HYPHENATION, PURE_HYPHENATION_EDITOR);
                     oFCKeditor_semantic = createEditor(FCKEDITOR_INSTANCE_SEMANTIC, PURE_SEMANTIC_EDITOR);
                     oFCKeditor_grammar = createEditor(FCKEDITOR_INSTANCE_GRAMMAR, PURE_GRAMMAR_EDITOR);
@@ -309,7 +310,7 @@ function updateADACode() {
                 }
 	} else {
 		oFCKeditor = FCKeditorAPI.GetInstance(FCKEDITOR_INSTANCE_NAME);
-                if ($(PURE_HYPHENATION_EDITOR) != undefined) {
+                if ($j(`#${PURE_HYPHENATION_EDITOR}`).length) {
                     oFCKeditor_hyphen = FCKeditorAPI.GetInstance(FCKEDITOR_INSTANCE_HYPHENATION);
                     oFCKeditor_semantic = FCKeditorAPI.GetInstance(FCKEDITOR_INSTANCE_SEMANTIC);
                     oFCKeditor_grammar = FCKeditorAPI.GetInstance(FCKEDITOR_INSTANCE_GRAMMAR);
@@ -317,13 +318,13 @@ function updateADACode() {
                     oFCKeditor_examples = FCKeditorAPI.GetInstance(FCKEDITOR_INSTANCE_EXAMPLES);
                 }
 	}
-	$(PURE_TEXT_EDITOR).value = FCKeditorToADA(oFCKeditor.GetXHTML());
-        if ($(PURE_HYPHENATION_EDITOR) != undefined) {
-            $(PURE_HYPHENATION_EDITOR).value = FCKeditorToADA(oFCKeditor_hyphen.GetXHTML());
-            $(PURE_SEMANTIC_EDITOR).value = FCKeditorToADA(oFCKeditor_semantic.GetXHTML());
-            $(PURE_GRAMMAR_EDITOR).value = FCKeditorToADA(oFCKeditor_grammar.GetXHTML());
-            $(PURE_NOTES_EDITOR).value = FCKeditorToADA(oFCKeditor_notes.GetXHTML());
-            $(PURE_EXAMPLES_EDITOR).value = FCKeditorToADA(oFCKeditor_examples.GetXHTML());
+	$j(`#${PURE_TEXT_EDITOR}`).val(FCKeditorToADA(oFCKeditor.GetXHTML()));
+        if ($j(`#${PURE_HYPHENATION_EDITOR}`).length) {
+            $j(`#${PURE_HYPHENATION_EDITOR}`).val(FCKeditorToADA(oFCKeditor_hyphen.GetXHTML()));
+            $j(`#${PURE_SEMANTIC_EDITOR}`).val(FCKeditorToADA(oFCKeditor_semantic.GetXHTML()));
+            $j(`#${PURE_GRAMMAR_EDITOR}`).val(FCKeditorToADA(oFCKeditor_grammar.GetXHTML()));
+            $j(`#${PURE_NOTES_EDITOR}`).val(FCKeditorToADA(oFCKeditor_notes.GetXHTML()));
+            $j(`#${PURE_EXAMPLES_EDITOR}`).val(FCKeditorToADA(oFCKeditor_examples.GetXHTML()));
         }
 }
 /*
@@ -488,16 +489,19 @@ function FCKeditorToADA(input_text) {
  *	FUNCTIONS USED TO ADD ADA MEDIA IN FCKEDITOR
  */
 function toggleVisibility(element) {
-	$(element).toggle();
+	if (typeof element === 'string' && !element.startsWith('#')) {
+		element = `#${element}`;
+	}
+	$j(element).trigger('toggle');
 }
 
 function addExternalLink() {
-	var external_link_div = $(EXTERNAL_LINK_DIV);
-	var text_input = $(EXTERNAL_LINK_INPUT_NAME);
+	// var external_link_div = $(EXTERNAL_LINK_DIV);
+	var text_input = $j(`#${EXTERNAL_LINK_INPUT_NAME}`);
 	var oFCKeditor = FCKeditorAPI.GetInstance(FCKEDITOR_INSTANCE_NAME);
 
 	//vito, 3 giugno 2009
-	var external_link = cleanExternalLink(text_input.value);
+	var external_link = cleanExternalLink(text_input.val());
 
 	/*
 	 * if the link is typed correctly, add it
@@ -508,32 +512,33 @@ function addExternalLink() {
 		addToExternalLinkSelector(ADA_MEDIA_EXTERNAL_LINK, external_link);
 		// vito, 10 giugno 2009
 		//external_link_div.hide();
-		text_input.clear();
+		text_input.val('');
 		// fine di vito, 10 giugno 2009
 
-		if($('jsinvalid_external_link')) {
-			$('jsinvalid_external_link').remove();
+		if($j('#jsinvalid_external_link').length > 0) {
+			$j('#jsinvalid_external_link').remove();
 		}
 	}
 	/*
 	 * show an alert?
 	 */
 	else {
-		if(!$('jsinvalid_external_link')) {
-			var div = new Element('div',{'id':'jsinvalid_external_link','class':'error'}).update('link non valido');
-			$('span_insert_external_link_text').insert(div);
+		if($j('#jsinvalid_external_link').length > 0) {
+			$j('#span_insert_external_link_text').append(
+				$j("<div id='jsinvalid_external_link' class='error'>link non valido</div>")
+			);
 		}
 	}
 
 }
 
 function addToExternalLinkSelector(adatype, external_link) {
-	var external_links_in = $(EXTERNAL_LINK_SELECTOR).childElements();
-	var already_in = external_links_in.find( function(element) {
-		return (element.value == adatype + '|' + external_link);
+	const already_in = $j(`#${EXTERNAL_LINK_SELECTOR}`).children().filter((i,el) => {
+		return $j(el).val() == adatype + '|' + external_link;
 	});
-	if (typeof (already_in) == 'undefined') {
-		$(EXTERNAL_LINK_SELECTOR).insert(
+
+	if (already_in.length == 0) {
+		$j(`#${EXTERNAL_LINK_SELECTOR}`).append(
 				'<option value="' + adatype + '|' + external_link
 						+ '">[LINK ESTERNO] ' + external_link + '</option>');
 	}
@@ -544,7 +549,7 @@ function addInternalLink(node) {
 	var splitted_string = node.split('_');
 	var idnode = splitted_string[1];
 
-	var internal_link_div = $(INTERNAL_LINK_DIV);
+	// var internal_link_div = $(INTERNAL_LINK_DIV);
 	var oFCKeditor = FCKeditorAPI.GetInstance(FCKEDITOR_INSTANCE_NAME);
 	oFCKeditor.InsertHtml('<img title="' + idnode + '" alt="" src="'
 			+ FCKEDITOR_ICONS_PATH + FCKEDITOR_ICON_INTERNAL_LINK + '" data-parseada="1" />');
@@ -557,7 +562,7 @@ function addMultimedia(file_to_add) {
 	var adafiletype = file_to_add[0];
 
 	if (filename != null && adafiletype != null) {
-		var add_multimedia_div = $(MULTIMEDIA_DIV);
+		// var add_multimedia_div = $(MULTIMEDIA_DIV);
 		icon = FCKEDITOR_ICONS_PATH + FCKEDITOR_ICON_DEFAULT;
 
 		if (adafiletype == ADA_MEDIA_IMAGE) {
@@ -612,16 +617,9 @@ function addMultimedia(file_to_add) {
  * Used to select an option in a select field to passed data
  */
 function select_option(field, data) {
-    var options = $$('select#'+field+' option');
-    var len = options.length;
 
-    for(var i=0;i<len;i++){
-        if(options[i].value == data) {
-            options[i].selected = true;
-            //$(field).selectIndex = i;
-            return i;
-       }
-    }
+	$j(`select#${field} option[value="${data}"]`).attr("selected", "selected").prop('selected', true);
+
 /*
  * Vito Version
  *
@@ -650,34 +648,38 @@ function select_option(field, data) {
 
 /*
  * Used to calculate the new dimension of an image in order to resize an image
+ * and load and display it in the id_img div
  */
-    function resize_image(img, maxh, maxw , id_img) {
+    async function loadPreviewMedia(img, maxh, maxw , id_img) {
       imgObj = new Image();
       imgObj.src = img;
-//      var imgObj = $(id_img);
-      var ratio = maxh/maxw;
-      if (imgObj.height/imgObj.width > ratio){
-         // height is the problem
-        if (imgObj.height > maxh){
-          imgObj.width = Math.round(imgObj.width*(maxh/imgObj.height));
-          imgObj.height = maxh;
-        }
-      } else {
-        // width is the problem
-        if (imgObj.width > maxh){
-          imgObj.height = Math.round(imgObj.height*(maxw/imgObj.width));
-          imgObj.width = maxw;
-        }
-      }
-      newDimension = new Array(imgObj.height, imgObj.width);
-      return newDimension;
-      //$(id_img) = imgObj.src;
+
+	  try {
+		  await imgObj.decode();
+
+		  var ratio = maxh/maxw;
+		  if (imgObj.height/imgObj.width > ratio){
+			 // height is the problem
+			if (imgObj.height > maxh){
+			  imgObj.width = Math.round(imgObj.width*(maxh/imgObj.height));
+			  imgObj.height = maxh;
+			}
+		  } else {
+			// width is the problem
+			if (imgObj.width > maxh){
+			  imgObj.height = Math.round(imgObj.height*(maxw/imgObj.width));
+			  imgObj.width = maxw;
+			}
+		  }
+		  document.getElementById(id_img).appendChild(imgObj);
+	  } catch (e) {
+	  }
     }
 
 function updateMediaManager() {
-    var author_id = $F('id_node_author');
+    var author_id = $j('#id_node_author').val();
     var media = getFileDataFromSelect('jsid_select_files');
-    if ($('jsid_div_media_properties').visible()) {
+    if ($j('#jsid_div_media_properties').is(':visible')) {
         toggleVisibility('jsid_div_media_properties');
     }
 //    $('jsid_div_media_properties').hidden;
@@ -696,25 +698,16 @@ function manageMultimediaProperties(media, author_id) {
 
     var filename = media[1];
     var adafiletype = media[0];
-    $('p_selected_media_extended_type').options.length = 0;
-    if (!$('jsid_div_media_properties').visible()) {
+    $j('#p_selected_media_extended_type')[0].options.length = 0;
+    if (!$j('#jsid_div_media_properties').is(':visible')) {
         numeric_adaFileType = parseInt(adafiletype);
-        $('preview_media').update();
-        switch (numeric_adaFileType) {
+        $j('#preview_media').html('');
+        switch (adafiletype) {
             case ADA_MEDIA_IMAGE:
             case ADA_MEDIA_IMAGE_MONTESSORI:
-                var imgsrc = HTTP_ROOT_DIR + '/services/media/' + author_id + '/' + filename;
-                var newDimensionImage = resize_image(imgsrc, MAXH, MAXW, 'img_preview');
-                var width =  newDimensionImage[1];
-                var height =  newDimensionImage[0];
-//                var preview_image = '<img src=\"' + imgsrc + '\" id=\"img_preview\">';
-                var preview_image = new Element('img', {src: imgsrc, id: "img_preview", width:width, height:height});
-//                var preview_image = '<img src=\"' + imgsrc + '\" id=\"img_preview\" \" width=\"' + width + '\" height=\"' + height +'\">';
-                $('preview_media').insert(preview_image);
-//                var newDimensionImage = resize_image(imgsrc, MAXH, MAXW, 'img_preview');
-//                new Effect.Scale($('img_preview'), 30);
-                $('p_selected_media_extended_type').insert(new Element('option', {value: ADA_MEDIA_IMAGE}).update(ADA_MEDIA_IMAGE_LABEL));
-                $('p_selected_media_extended_type').insert(new Element('option', {value: ADA_MEDIA_IMAGE_MONTESSORI}).update(ADA_MEDIA_IMAGE_MONTESSORI_LABEL));
+				loadPreviewMedia(`${HTTP_ROOT_DIR}/services/media/${author_id}/${filename}`, MAXH, MAXW, 'preview_media');
+                $j('#p_selected_media_extended_type').append($j(`<option value='${ADA_MEDIA_IMAGE}'>${ADA_MEDIA_IMAGE_LABEL}</option>`));
+                $j('#p_selected_media_extended_type').append($j(`<option value='${ADA_MEDIA_IMAGE_MONTESSORI}'>${ADA_MEDIA_IMAGE_MONTESSORI_LABEL}</option>`));
 
 /*var ADA_MEDIA_IMAGE_LABEL = "image";
 var ADA_MEDIA_AUDIO_LABEL = "audio";
@@ -732,53 +725,56 @@ var ADA_MEDIA_AUDIO_PRONOUNCE_LABEL = "audio pronucia";
                 break;
             case ADA_MEDIA_AUDIO:
             case ADA_MEDIA_AUDIO_PRONOUNCE:
-                $('p_selected_media_extended_type').insert(new Element('option', {value: ADA_MEDIA_AUDIO}).update(ADA_MEDIA_AUDIO_LABEL));
-                $('p_selected_media_extended_type').insert(new Element('option', {value: ADA_MEDIA_AUDIO_PRONOUNCE}).update(ADA_MEDIA_AUDIO_PRONOUNCE_LABEL));
+                $j('#p_selected_media_extended_type').append($j(`<option value='${ADA_MEDIA_AUDIO}'>${ADA_MEDIA_AUDIO_LABEL}</option>`));
+                $j('#p_selected_media_extended_type').append($j(`<option value='${ADA_MEDIA_AUDIO_PRONOUNCE}'>${ADA_MEDIA_AUDIO_PRONOUNCE_LABEL}</option>`));
                 break;
             case ADA_MEDIA_VIDEO:
             case ADA_MEDIA_VIDEO_LABIALE:
             case ADA_MEDIA_VIDEO_FINGER_SPELLING:
             case ADA_MEDIA_VIDEO_LIS:
-                $('p_selected_media_extended_type').insert(new Element('option', {value: ADA_MEDIA_VIDEO}).update(ADA_MEDIA_VIDEO_LABEL));
-                $('p_selected_media_extended_type').insert(new Element('option', {value: ADA_MEDIA_VIDEO_LABIALE}).update(ADA_MEDIA_VIDEO_LABIALE_LABEL));
-                $('p_selected_media_extended_type').insert(new Element('option', {value: ADA_MEDIA_VIDEO_FINGER_SPELLING}).update(ADA_MEDIA_VIDEO_FINGER_SPELLING_LABEL));
-                $('p_selected_media_extended_type').insert(new Element('option', {value: ADA_MEDIA_VIDEO_LIS}).update(ADA_MEDIA_VIDEO_LIS_LABEL));
+                $j('#p_selected_media_extended_type').append($j(`<option value='${ADA_MEDIA_VIDEO}'>${ADA_MEDIA_VIDEO_LABEL}</option>`));
+                $j('#p_selected_media_extended_type').append($j(`<option value='${ADA_MEDIA_VIDEO_LABIALE}'>${ADA_MEDIA_VIDEO_LABIALE_LABEL}</option>`));
+                $j('#p_selected_media_extended_type').append($j(`<option value='${ADA_MEDIA_VIDEO_FINGER_SPELLING}'>${ADA_MEDIA_VIDEO_FINGER_SPELLING_LABEL}</option>`));
+                $j('#p_selected_media_extended_type').append($j(`<option value='${ADA_MEDIA_VIDEO_LIS}'>${ADA_MEDIA_VIDEO_LIS_LABEL}</option>`));
                 break;
         }
-        new Ajax.Request(READ_MEDIA_URL, {
-                    method: 'Post',
-                    parameters: {nome_file:filename, id_utente:author_id},
-                    onComplete: function(transport) {
-                            var json = transport.responseText.evalJSON(true);
-
-                            //if (GET_AJAX_REQUEST_EXECUTION_TIME)
-                            //{
-                            //        var response_time = Date.now();
-                            //}
-                        if (typeof(json.id_risorsa_ext) != undefined )
-                        {
-                            $('jsdata_titlesarea').value = json.titolo;
-                            $('jsdata_keywordsarea').value = json.keywords;
-                            $('jsdata_descriptionarea').value = json.descrizione;
-                            if (json.pubblicato == 1) {
-                                $('jsdata_published').checked = true;
-                            }else {
-                                $('jsdata_published').checked = false;
-                            }
-//                            alert($('p_selected_language').options[json.lingua]);
-                            select_option('p_selected_language',json.lingua);
-                            select_option('p_selected_media_extended_type',json.tipo);
-                        }
-                        else
-                        {
-                                alert('json error: ' + json.error)
-                        }
-
-                    },
-                    onFailure: function() {
-                            alert('save media', null);
-                    }
-            });
+		const parameters = new FormData();
+		parameters.append('nome_file', filename);
+		parameters.append('id_utente', author_id);
+		fetch(READ_MEDIA_URL, {
+			method: 'post',
+			body: parameters,
+		})
+		.then(response => {
+            //Here body is not ready yet, throw promise
+            if (!response.ok) throw response;
+            return response.json();
+        })
+		.then(json => {
+			//if (GET_AJAX_REQUEST_EXECUTION_TIME)
+			//{
+			//        var response_time = Date.now();
+			//}
+			if (!json.error && typeof (json.id_risorsa_ext) != undefined) {
+				$j('#jsdata_titlesarea').val(json.titolo);
+				$j('#jsdata_keywordsarea').val(json.keywords);
+				$j('#jsdata_descriptionarea').val(json.descrizione);
+				if (json.pubblicato == 1) {
+					$j('#jsdata_published')[0].checked = true;
+				} else {
+					$j('#jsdata_published')[0].checked = false;
+				}
+				select_option('p_selected_language', json.lingua);
+				select_option('p_selected_media_extended_type', json.tipo);
+			}
+			else {
+				alert(json.message);
+			}
+		}).catch(async response => {
+			var body = await response.text();
+			body = body.length ? `:\n${body}` : body ;
+			alert(`read media error${body}`);
+		});
 
     }
 
@@ -786,11 +782,11 @@ var ADA_MEDIA_AUDIO_PRONOUNCE_LABEL = "audio pronucia";
 }
 
 function saveMultimediaProperties(media, id_author) {
-    var keywords = $F('jsdata_keywordsarea');
-    var title = $F('jsdata_titlesarea');
-    var description = $F('jsdata_descriptionarea');
+    var keywords = $j('#jsdata_keywordsarea').val().trim();
+    var title = $j('#jsdata_titlesarea').val().trim();
+    var description = $j('#jsdata_descriptionarea').val().trim();
     var language = getFileDataFromSelect('p_selected_language');
-    var published = $F('jsdata_published');
+    var published = $j('#jsdata_published:checked').val() || null;
     var media = getFileDataFromSelect('jsid_select_files');
     var filename = media[1];
     //var adafiletype = media[0];
@@ -798,34 +794,41 @@ function saveMultimediaProperties(media, id_author) {
 //    var copyright = $F(copyright);
 //    var id_risorsa_ext = $F(id_risorsa_ext);
 
-    new Ajax.Request(SAVE_MEDIA_URL, {
-		method: 'Post',
-		parameters: {keywords:keywords, titolo:title, nome_file:filename, tipo:adafiletype,
-                    id_utente:id_author, descrizione:description, pubblicato:published, lingua:language},
-		onComplete: function(transport) {
-			var json = transport.responseText.evalJSON(true);
+	const parameters = new FormData();
+	parameters.append('keywords', keywords);
+	parameters.append('titolo', title);
+	parameters.append('nome_file', filename);
+	parameters.append('tipo', adafiletype);
+	parameters.append('id_utente', id_author);
+	parameters.append('descrizione', description);
+	parameters.append('pubblicato', published);
+	parameters.append('lingua', language);
 
-			if (GET_AJAX_REQUEST_EXECUTION_TIME)
-			{
-				var response_time = Date.now();
-			}
-
-		    if ( json.error == 0 )
-		    {
-				alert('save completed');
-			}
-			else
-			{
-                                alert('json error: ' + json.error)
-			}
-
-		},
-		onFailure: function() {
-			alert('save media', null);
+	fetch(SAVE_MEDIA_URL, {
+		method: 'post',
+		body:parameters,
+	})
+	.then(response => {
+		//Here body is not ready yet, throw promise
+		if (!response.ok) throw response;
+		return response.json();
+	})
+	.then(json => {
+		if (GET_AJAX_REQUEST_EXECUTION_TIME) {
+			var response_time = Date.now();
 		}
+		if (json.error == 0) {
+			alert('save completed');
+		}
+		else {
+			alert(json.message)
+		}
+	})
+	.catch(async response => {
+		var body = await response.text();
+		body = body.length ? `:\n${body}` : body ;
+		alert(`save media error${body}`);
 	});
-
-
 }
 
 /**
@@ -927,34 +930,34 @@ function printErrorMessage(error, filename) {
 
 	switch (error) {
 	case ADA_FILE_UPLOAD_ERROR_UPLOAD:
-		$(FILE_UPLOAD_ERROR_DIV).innerHTML = 'Il file non e\' stato copiato.';
+		$j(`#${FILE_UPLOAD_ERROR_DIV}`).html('Il file non e\' stato copiato.');
 		break;
 	case ADA_FILE_UPLOAD_ERROR_MIMETYPE:
-		$(FILE_UPLOAD_ERROR_DIV).innerHTML = 'Il formato del file inviato non e\' stato accettato.';
+		$j(`#${FILE_UPLOAD_ERROR_DIV}`).html('Il formato del file inviato non e\' stato accettato.');
 		break;
 	case ADA_FILE_UPLOAD_ERROR_FILESIZE:
-		$(FILE_UPLOAD_ERROR_DIV).innerHTML = 'La dimensione del file inviato supera quella massima consentita da ADA.';
+		$j(`#${FILE_UPLOAD_ERROR_DIV}`).html('La dimensione del file inviato supera quella massima consentita da ADA.');
 		break;
 	case ADA_FILE_UPLOAD_ERROR_UPLOAD_PATH:
-		$(FILE_UPLOAD_ERROR_DIV).innerHTML = 'La cartella in cui scrivere il file non esite o non e\' scrivibile.';
+		$j(`#${FILE_UPLOAD_ERROR_DIV}`).html('La cartella in cui scrivere il file non esite o non e\' scrivibile.');
 		break;
 	default:
-		$(FILE_UPLOAD_ERROR_DIV).innerHTML = 'Errore nell\'upload del file.';
+		$j(`#${FILE_UPLOAD_ERROR_DIV}`).html('Errore nell\'upload del file.');
 		break;
 	}
 	document.querySelector('input[type="file"][name="file_up"]').value = "";
-	$(FILE_UPLOAD_ERROR_DIV).show();
+	$j(`#${FILE_UPLOAD_ERROR_DIV}`).show();
 
 }
 
 function getFileDataFromSelect(id_select) {
-	var f = $F(id_select);
+	var f = $j(`#${id_select}>option:selected`).val() || null;
 
 	if (f == null) {
 		return false;
 	}
 	else {
-		return $F(id_select).split('|');
+		return f.split('|');
 	}
 }
 
@@ -979,12 +982,11 @@ function addToAuthorFileSelector(filename, filetype) {
 		break;
 	}
 
-	$(AUTHOR_FILES_SELECTOR).insert(
-			'<option value="' + filetype + '|' + filename + '">' + hint + ' '
-					+ filename + '</option>');
+	$j(`#${AUTHOR_FILES_SELECTOR}`).append(
+			`<option value="${filetype}|${filename}">${hint} ${filename}</option>`);
 
 	// vito, 10 giugno 2009
-	$('id_multimedia').clear();
+	$j('#id_multimedia').val('');
 }
 
 function executeAction(action, node) {
@@ -996,41 +998,46 @@ function executeAction(action, node) {
 }
 
 function setParentNode(node) {
-	$(PARENT_NODE).value = node;
-	$(TEXT_PARENT_NODE_ID).innerHTML = node;
+	$j(`#${PARENT_NODE}`).val(node);
+	$j(`#${TEXT_PARENT_NODE_ID}`).html(node);
 }
 
 function toggleMeHideOthers(addon) {
-	var addons_to_hide = ADDONS.without(addon);
-	addons_to_hide.each( function(a) {
-		$(a).hide();
+	// prototype style
+	// var addons_to_hide = ADDONS.without(addon);
+	var addons_to_hide = ADDONS.filter(el => addon.split(',').indexOf(el.toString()) == -1 );
+	addons_to_hide.forEach( function(a) {
+		$j(`#${a}`).hide();
 	});
-	$(addon).toggle();
+	$j(`#${addon}`).trigger('toggle');
 	//	alert('array: ' + buttons + ' pulsante selezionato: ' + button);
 }
 
 function showMeHideOthers(button, addon) {
 
-	$('jsid_div_media_properties').hide();
+	$j('#jsid_div_media_properties').hide();
 
-	var addons_to_hide = ADDONS.without(addon);
+	// prototype style
+	// var addons_to_hide = ADDONS.without(addon);
+	var addons_to_hide = ADDONS.filter(el => addon.split(',').indexOf(el.toString()) == -1 );
+
 	addons_to_hide
-			.each( function(a) {
-				$(a).hide();
+			.forEach( function(a) {
+				$j(`#${a}`).hide();
 				var button_name_for_a = EDITOR_ID_BUTTON_PREFIX
-						+ $(a).identify();
-				if ($(button_name_for_a).hasClassName(
+						+ $j(`#${a}`).attr('id');
+				if ($j(`#${button_name_for_a}`).hasClass(
 						EDITOR_BUTTON_SELECTED_CLASSNAME)) {
-					$(button_name_for_a).removeClassName(
+					$j(`#${button_name_for_a}`).removeClass(
 							EDITOR_BUTTON_SELECTED_CLASSNAME);
-					$(button_name_for_a).addClassName(
+					$j(`#${button_name_for_a}`).addClass(
 							EDITOR_BUTTON_UNSELECTED_CLASSNAME);
 				}
 			});
 
-	if ($(button).hasClassName(EDITOR_BUTTON_UNSELECTED_CLASSNAME)) {
-		$(button).removeClassName(EDITOR_BUTTON_UNSELECTED_CLASSNAME);
-		$(button).addClassName(EDITOR_BUTTON_SELECTED_CLASSNAME);
+	if ($j(`#${button}`).hasClass(EDITOR_BUTTON_UNSELECTED_CLASSNAME)) {
+		$j(`#${button}`).removeClass(EDITOR_BUTTON_UNSELECTED_CLASSNAME);
+		$j(`#${button}`).addClass(EDITOR_BUTTON_SELECTED_CLASSNAME);
 	}
 
 	if (!$j('#'+addon).is(':visible')) {
@@ -1038,42 +1045,15 @@ function showMeHideOthers(button, addon) {
 	}
 }
 
-function toggleVisibilityByClassName_OLD(container_div, item_class) {
-	var children = $(container_div).select(
-			'[id=' + container_div + item_class + ']');
-	children.invoke('toggle');
-
-	/*
-	 * Get span element identifier for span element with title=container_div+item_class:
-	 * since there is only one (if it exists) span element with this class name, it is safe
-	 * to get its id in this way.
-	 */
-	var span_element_id = ($(container_div).select('[title=' + container_div
-			+ item_class + ']')).first().identify();
-
-	if ($(span_element_id).hasClassName('hideNodeChildren')) {
-		$(span_element_id).update();
-		$(span_element_id).insert('-');
-		$(span_element_id).removeClassName('hideNodeChildren');
-		$(span_element_id).toggleClassName('viewNodeChildren');
-	} else if ($(span_element_id).hasClassName('viewNodeChildren')) {
-		$(span_element_id).update();
-		$(span_element_id).insert('+');
-		$(span_element_id).removeClassName('viewNodeChildren');
-		$(span_element_id).toggleClassName('hideNodeChildren');
-	}
-
-}
-
 function toggleVisibilityByClassName(className, idName, mode)
 {
-	var children = $$('#'+idName+'.'+className);
-
-	if (mode == 'show') children.invoke('show');
-	else if (mode == 'hide') children.invoke('hide');
-	else {
+	if (['show', 'hide', 'toggle'].indexOf(mode) == -1) {
 		mode = 'toggle';
-		children.invoke('toggle');
+	}
+
+	const children = $j('ul#'+idName+'.'+className);
+	if (children.length > 0) {
+		children.each((i, el) => $j(el).trigger(mode));
 	}
 
 	/*
@@ -1082,37 +1062,25 @@ function toggleVisibilityByClassName(className, idName, mode)
 	 * to get its id in this way.
 	 */
 
-	var span_element_id = $$('span#s'+idName+'.'+className).first();
+	const span_element_id = $j('span#s'+idName+'.'+className).first();
 
-	if (typeof span_element_id != 'undefined')
+	if (span_element_id.length > 0)
 	{
-		if (mode == 'show' || (mode == 'toggle' && $(span_element_id).hasClassName('hideNodeChildren')))
+		if (mode == 'show' || (mode == 'toggle' && span_element_id.hasClass('hideNodeChildren')))
 		{
-			$(span_element_id).update();
-			$(span_element_id).insert('-');
-			$(span_element_id).removeClassName('hideNodeChildren');
-			$(span_element_id).addClassName('viewNodeChildren');
+			span_element_id.html('-');
+			span_element_id.removeClass('hideNodeChildren');
+			span_element_id.addClass('viewNodeChildren');
 		}
-		else if (mode == 'hide' || (mode == 'toggle' && $(span_element_id).hasClassName('viewNodeChildren')))
+		else if (mode == 'hide' || (mode == 'toggle' && span_element_id.hasClass('viewNodeChildren')))
 		{
-			$(span_element_id).update();
-			$(span_element_id).insert('+');
-			$(span_element_id).removeClassName('viewNodeChildren');
-			$(span_element_id).addClassName('hideNodeChildren');
+			span_element_id.html('+');
+			span_element_id.removeClass('viewNodeChildren');
+			span_element_id.addClass('hideNodeChildren');
 		}
 	}
 }
 
-
-function changeNodeIcon(type) {
-	var node_type = $F(type);
-
-	if (node_type == ADA_LEAF_TYPE) {
-		$(NODE_ICON_ID).value = ADA_LEAF_ICON;
-	} else if (node_type == ADA_GROUP_TYPE) {
-		$(NODE_ICON_ID).value = ADA_GROUP_ICON;
-	}
-}
 /**
  *
  * @param string

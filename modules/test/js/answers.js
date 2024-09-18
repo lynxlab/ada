@@ -149,7 +149,7 @@ dialog_img_buttons[i18n['cancel']] = function () {
     $j(this).dialog('close');
 };
 
-document.observe('dom:loaded', function () {
+onDOMLoaded(() => {
     var div = $j('#insertImage');
     div.dialog({
         autoOpen: false,

@@ -145,7 +145,6 @@ class GenericHtml extends Output
                 ]
             );
             foreach ($event->getArguments() as $key => $val) {
-
                 ${$key} = $val;
             }
         }
@@ -799,9 +798,9 @@ class GenericHtml extends Output
                 $data .= $this->htmlbody;
                 $data .= $this->htmlfooter;
                 // make dompf tmp font dir if needed
-                if (!is_dir(ADA_UPLOAD_PATH . 'tmp-dompdf')) {
+                if (!is_dir(ADA_UPLOAD_PATH . 'tmp/dompdf')) {
                     $oldmask = umask(0);
-                    mkdir(ADA_UPLOAD_PATH . 'tmp-dompdf', 0775, true);
+                    mkdir(ADA_UPLOAD_PATH . 'tmp/dompdf', 0775, true);
                     umask($oldmask);
                 }
 
@@ -809,9 +808,9 @@ class GenericHtml extends Output
                     // Rendering
                     "defaultMediaType"       => 'print',
                     "defaultPaperSize"       => 'A4',
-                    "fontDir"           => ADA_UPLOAD_PATH . 'tmp-dompdf',
-                    "fontCache"         => ADA_UPLOAD_PATH . 'tmp-dompdf',
-                    "tempDir"           => ADA_UPLOAD_PATH . 'tmp-dompdf',
+                    "fontDir"           => ADA_UPLOAD_PATH . 'tmp/dompdf',
+                    "fontCache"         => ADA_UPLOAD_PATH . 'tmp/dompdf',
+                    "tempDir"           => ADA_UPLOAD_PATH . 'tmp/dompdf',
                     // Features
                     "isPhpEnabled"               => true,
                     "isRemoteEnabled"            => true,

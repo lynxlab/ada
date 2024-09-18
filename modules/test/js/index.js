@@ -1,7 +1,11 @@
 function autoCheckForOtherAnswer(element) {
-    var siblings = $(element).siblings();
-    var checkbox = $(siblings[0]);
-    if (element.value.length > 0) checkbox.setAttribute('checked', true);
+    if (typeof element === 'string' && !element.startsWith('#')) {
+		element = `#${element}`;
+	}
+
+    var siblings = $j(element).siblings();
+    var checkbox = siblings[0];
+    if (element.val().length > 0) checkbox.setAttribute('checked', true);
     else checkbox.removeAttribute('checked');
 }
 
@@ -86,12 +90,12 @@ var timer = null;
 function testTimer(startTime, stopTime, message) {
     timer = new Timer(startTime, stopTime,
         function (value) {
-            $$('.absoluteTimer')[0].setStyle({ display: 'block' });
-            $$('.absoluteTimer')[0].innerHTML = value;
+            $j('.absoluteTimer').css({ display: 'block' });
+            $j('.absoluteTimer').html(value);
         },
         function () {
             alert(message);
-            $('testForm').submit();
+            $j('testForm').trigger('submit');
         }
     );
 }
@@ -102,15 +106,28 @@ function clockTimer() {
     }
 }
 
-Event.observe(window, 'load', function () {
+const startTimer = () => {
     if (timer != null) {
         timer.start();
     }
-});
+}
 
-Event.observe(window, 'unload', function () {
-    new Ajax.Request(document.URL, { method: 'get', parameters: 'unload', asynchronous: false });
-});
+const closeTest = () => {
+    fetch(`${document.URL}?unload`,{
+        keepalive: true,
+    });
+}
+
+if (window.attachEvent) {
+	window.attachEvent('onload', startTimer);
+	window.attachEvent('beforeunload', closeTest);
+} else if (window.addEventListener) {
+	window.addEventListener('load', startTimer);
+	window.addEventListener('beforeunload', closeTest, { 'once' : true, 'passive' : true });
+} else {
+	document.addEventListener('load',startTimer);
+	document.addEventListener('beforeunload', closeTest, { 'once' : true, 'passive' : true });
+}
 
 function move(e, id_nodo, direction) {
     var loc = window.location.pathname;
@@ -299,6 +316,6 @@ function confirmSubmit() {
     else return res;
 }
 
-document.observe('dom:loaded', function () {
+onDOMLoaded(() => {
     domReady = true;
 });

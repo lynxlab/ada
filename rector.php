@@ -40,7 +40,6 @@ return RectorConfig::configure()
         __DIR__ . '/config_path.inc.php',
     ])
     ->withSkip([
-        __DIR__ . '/browsing/include/graph',
         __DIR__ . '/services/media/**/*',
         __DIR__ . '/upload_file',
         __DIR__ . '/widgets/cache',

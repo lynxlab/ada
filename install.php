@@ -131,23 +131,23 @@ function sendToBrowser($message)
     outputBufferOff();
 }
 
+if (!function_exists('localDelTree')) {
+    function localDelTree($dir)
+    {
+        if (is_dir($dir)) {
+            $files = array_diff(scandir($dir), ['.', '..']);
+            foreach ($files as $file) {
+                (is_dir("$dir/$file")) ? localDelTree("$dir/$file") : unlink("$dir/$file");
+            }
+            return rmdir($dir);
+        }
+    }
+}
+
 function makeClean()
 {
     global $created;
     global $installSuccess;
-
-    if (!function_exists('localDelTree')) {
-        function localDelTree($dir)
-        {
-            if (is_dir($dir)) {
-                $files = array_diff(scandir($dir), ['.', '..']);
-                foreach ($files as $file) {
-                    (is_dir("$dir/$file")) ? localDelTree("$dir/$file") : unlink("$dir/$file");
-                }
-                return rmdir($dir);
-            }
-        }
-    }
 
     if (!$installSuccess) {
         foreach ($created['files'] as $file) {

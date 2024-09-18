@@ -1,5 +1,6 @@
 @import url("../page.css");
 @import url("../form.css");
+@import url("tooltips.css");
 
 #pagecontainer { margin-bottom: -55px; }
 #content {
@@ -157,7 +158,7 @@ div.fform form fieldset fieldset #module_classbudget_notes { width: 95%; }
 }
 #courseAttachments tr td:last-child i.icon.trash:hover:before {
 	background: #ff6666;
-	color: #fff;	
+	color: #fff;
 }
 
 li.form.attachments {

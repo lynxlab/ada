@@ -35,7 +35,7 @@
             <div id="status_bar">
                 <div class="user_data_default status_bar">
                     <template_field class="microtemplate_field" name="user_data_micro">user_data_micro</template_field>
-                    <template_field class="microtemplate_field" name="user_more_data_micro">user_more_data_micro</template_field>
+                    <!-- <template_field class="microtemplate_field_disabled" name="user_more_data_micro">user_more_data_micro</template_field> -->
                 </div>
             </div>
             <!-- / dati utente -->

@@ -41,8 +41,7 @@ class JS
             $JS_dir = $rel_pref . "js/$module_dir/";
         }
 
-        $JS_files[] = $rel_pref . "external/lib/js/prototype-1.7.3.js";
-        $JS_files[] = $rel_pref . "external/lib/js/scriptaculous/scriptaculous.js";
+        // $JS_files[] = $rel_pref . "external/lib/js/prototype-1.7.3.js";
         $JS_files[] = $JS_dir . "default.js";
         $jsfile = $JS_dir . $node_type . ".js";
         if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && strlen($GLOBALS['user_provider']) > 0) {

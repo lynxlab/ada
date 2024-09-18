@@ -16,23 +16,23 @@ function updateExerciseWithStudentAnswer() {
      *
      * It's defined in tutor_exercise.tpl as a div with style display:none.
      */
-    var jsonContainer = 'jsonResponse';
+    const jsonContainer = $j('#jsonResponse');
 
-    if($(jsonContainer)) {
+    if(jsonContainer.length) {
 
-        var jsonResponse = $(jsonContainer).innerHTML;
-        var responseObject = jsonResponse.evalJSON();
+        var jsonResponse = jsonContainer.html();
+        var responseObject = JSON.parse(jsonResponse);
         var answersCount = responseObject.answers.length;
         for(var i = 0; i< answersCount; i++) {
 
-            var element = responseObject.answers[i].id;
+            var element = $j(`#${responseObject.answers[i].id}`);
             var userAnswer = responseObject.answers[i].userAnswer;
             var correctAnswer = responseObject.answers[i].correctAnswer;
             var correctness = responseObject.answers[i].correctness;
 
-            var elementAsString = $(element).toString();
-            var ancestors = $(element).ancestors();
-            var firstAncestor = ancestors[0];
+            var elementAsString = element.toString();
+            var ancestors = element.parents();
+            var firstAncestor = element.parent();
             var cssClass = '';
 
             if (elementAsString == '[object HTMLInputElement]') {
@@ -43,23 +43,23 @@ function updateExerciseWithStudentAnswer() {
                     cssClass = 'wrong-image';
                 }
 
-                var inputType = $(element).getAttribute('type');
+                var inputType = element.attr('type');
                 switch (inputType) {
                    case 'checkbox':
-                       $(firstAncestor).addClassName(cssClass);
+                       firstAncestor.addClass(cssClass);
                        if (userAnswer == 'true') {
-                           $(element).setAttribute('checked', true);
+                           element.attr('checked', true);
                        }
                        break;
                    case 'radio':
                        if (userAnswer == 'true') {
-                           $(element).setAttribute('checked', true);
-                           $(firstAncestor).addClassName(cssClass);
+                           element.attr('checked', true);
+                           firstAncestor.addClass(cssClass);
                        }
                        break;
                    case 'text':
-                       $(element).addClassName(cssClass);
-                       $(element).setAttribute('value', userAnswer);
+                       element.addClass(cssClass);
+                       element.attr('value', userAnswer);
                        break;
                 }
                 /*
@@ -67,7 +67,7 @@ function updateExerciseWithStudentAnswer() {
                  * are needed only to show how the student answered to the
                  * questions.
                  */
-                $(element).setAttribute('disabled', true);
+                element.attr('disabled', true);
 
             } else if((elementAsString == '[object HTMLSpanElement]') || (elementAsString == '[object HTMLElement]')) {
 
@@ -81,13 +81,13 @@ function updateExerciseWithStudentAnswer() {
                     var tableCell = firstAncestor;
                     var tableRow = ancestors[1];
 
-                    $(element).remove();
+                    element.remove();
 
-                    $(tableCell).insert(userAnswer);
-                    $(tableCell).addClassName(cssClass);
+                    tableCell.append(userAnswer);
+                    tableCell.addClass(cssClass);
                 } else {
-                    $(element).insert(userAnswer);
-                    $(element).addClassName(cssClass);
+                    element.append(userAnswer);
+                    element.addClass(cssClass);
                 }
             }else if (elementAsString == '[object HTMLElement]') {
 

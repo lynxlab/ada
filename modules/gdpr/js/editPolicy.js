@@ -98,7 +98,7 @@ function initDoc(formName) {
 }
 
 function loadFCKeditor(textarea_name, toolbar) {
-    if ($j('#' + textarea_name).size() == 1) {
+    if ($j('#' + textarea_name).length == 1) {
         toolbar = (typeof toolbar === 'undefined') ? 'Basic' : toolbar;
 
         var oFCKeditor = new FCKeditor(textarea_name);

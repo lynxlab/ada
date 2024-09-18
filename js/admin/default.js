@@ -1,44 +1,37 @@
 // vito, 28 nov 2008
 load_js([
 	`${HTTP_ROOT_DIR}/js/include/menu_functions.js`,
-	// '../js/include/tablekit/tablekit.js',
 	`${HTTP_ROOT_DIR}/js/include/basic.js`,
 ]);
 
 // vito, 21 luglio 2008
 function toggleVisibilityByClassName(container_div, item_class)
 {
-	//vito, 3 ottobre 2008
-	//var children = $(container_div).select('[class='+item_class+']');
-	var children = $(container_div).select('[id='+container_div+item_class+']');
-	children.invoke('toggle');
+	$j(`#${container_div}`).find(`[id=${container_div}${item_class}]`).toggle();
 	/*
 	 * Get span element identifier for span element with title=container_div+item_class:
 	 * since there is only one (if it exists) span element with this class name, it is safe
 	 * to get its id in this way.
 	 */
-	var span_element_id = ($(container_div).select('[title='+container_div+item_class+']')).first().identify();
+	const span_element_id = $j(`#${container_div}`).find(`[title=${container_div}${item_class}]`).first();
 
-	if ($(span_element_id).hasClassName('hideNodeChildren'))
-	{
-		$(span_element_id).update();
-		$(span_element_id).insert('-');
-		$(span_element_id).removeClassName('hideNodeChildren');
-		$(span_element_id).toggleClassName('viewNodeChildren');
-	}
-	else if ($(span_element_id).hasClassName('viewNodeChildren'))
-	{
-		$(span_element_id).update();
-		$(span_element_id).insert('+');
-		$(span_element_id).removeClassName('viewNodeChildren');
-		$(span_element_id).toggleClassName('hideNodeChildren');
+	if (span_element_id.length > 0) {
+		if (span_element_id.hasClass('hideNodeChildren')) {
+			span_element_id.html('-');
+			span_element_id.removeClass('hideNodeChildren');
+			span_element_id.toggleClass('viewNodeChildren');
+		}
+		else if (span_element_id.hasClass('viewNodeChildren')) {
+			span_element_id.html('+');
+			span_element_id.removeClass('viewNodeChildren');
+			span_element_id.toggleClass('hideNodeChildren');
+		}
 	}
 
 }
 
-function printit()
-{
-  if (typeof window.print == 'function') {
-    window.print();
-  }
+function printit() {
+	if (typeof window.print == 'function') {
+		window.print();
+	}
 }

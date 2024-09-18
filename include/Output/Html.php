@@ -67,7 +67,7 @@ class Html extends GenericHtml
         $family_name = $this->family;
         $module_dir =  $this->module_dir;
         $this->htmlheader = "
-<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">
+<!DOCTYPE HTML>
 <html>
 <head>
 <meta http-equiv=\"Content-Type\" content=\"text/html; charset=" . ADA_CHARSET . "\">";

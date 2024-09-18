@@ -59,12 +59,12 @@ class SubscriptionController extends AbstractController implements AdaApiInterfa
              *  SLIM has converted the body to an array alreay
              */
             $subscriptionArr = $request->getParsedBody();
-        } elseif (!empty($params) && is_array($params)) {
+        } elseif (!empty($args) && is_array($args)) {
 
             /**
              * Assume we've been passed an array
              */
-            $subscriptionArr = $params;
+            $subscriptionArr = $args;
         } else {
             throw new APIException('Wrong Parameters', StatusCodeInterface::STATUS_BAD_REQUEST);
         }
@@ -84,7 +84,7 @@ class SubscriptionController extends AbstractController implements AdaApiInterfa
             /*
              * This GLOBAL is needed by almost everyone
              */
-            $GLOBALS['dh'] = new AMADataHandler(MultiPort::getDSN($this->authUserTesters[0]));
+            $GLOBALS['dh'] = AMADataHandler::getInstance(MultiPort::getDSN($this->authUserTesters[0]));
             $dh = $GLOBALS['dh'];
 
             $canSubscribeUser = false;
@@ -95,7 +95,7 @@ class SubscriptionController extends AbstractController implements AdaApiInterfa
 
                 $subscriberObj = MultiPort::findUserByUsername($subscriptionArr['username']);
                 if ($subscriberObj instanceof ADAUser) {
-                    $result = $dh->studentCanSubscribeToCourseInstanceXX($subscriberObj->getId(), $courseInstanceObj->getId());
+                    $result = $dh->studentCanSubscribeToCourseInstance($subscriberObj->getId(), $courseInstanceObj->getId());
                     if (!AMADataHandler::isError($result) && $result !== false) {
                         $canSubscribeUser = true;
                     }

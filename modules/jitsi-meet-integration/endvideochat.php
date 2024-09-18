@@ -39,7 +39,7 @@ if (count($data) == 0) {
 }
 
 if (isset($data['p']) && strlen($data['p']) && DataValidator::validateTestername($data['p'])) {
-    $GLOBALS['dh'] = new AMADataHandler(MultiPort::getDSN($data['p']));
+    $GLOBALS['dh'] = AMADataHandler::getInstance(MultiPort::getDSN($data['p']));
     $videoroomObj = VideoRoom::getVideoObj();
     $logData = [
         'event' => VideoRoom::EVENT_EXIT,

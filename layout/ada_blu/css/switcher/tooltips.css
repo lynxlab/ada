@@ -1,15 +1,27 @@
 body .ui-tooltip {
-    background: #BCD6D7;
-    border: 2px solid white;
-    zoom: 1;
-    filter: alpha(opacity=90);
-    opacity: 0.9;
-  }
-  
-body .ui-tooltip {
-    padding: 3px 10px;
-    color: black;
-    border-radius: 20px;
-    font-size: 0.9em;
-    box-shadow: 0 0 7px black;
-  } 
+  background: #BCD6D7;
+  border: 2px solid white;
+  zoom: 1;
+  filter: alpha(opacity=90);
+  opacity: 0.9;
+  margin: 10px;
+  padding: 3px 10px;
+  color: black;
+  border-radius: 20px;
+  font-size: 0.9em;
+  box-shadow: 0 0 7px black;
+  max-width: fit-content;
+}
+
+body .ui-tooltip .assigntutor {
+  margin: 0.5em;
+}
+
+body .ui-tooltip .assigntutor ul {
+  margin: 0.8em;
+  padding: 0.8em;
+}
+
+body .ui-tooltip .assigntutor ul > li {
+  margin-bottom: 0.4em;
+}

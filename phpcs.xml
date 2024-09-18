@@ -9,7 +9,6 @@
 
     <!--Ignore -->
     <exclude-pattern>*/vendor/*</exclude-pattern>
-    <exclude-pattern>browsing/include/graph/*</exclude-pattern>
     <exclude-pattern>services/media/*</exclude-pattern>
     <exclude-pattern>upload_file/*</exclude-pattern>
     <exclude-pattern>widgets/cache/*</exclude-pattern>

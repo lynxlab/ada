@@ -5,18 +5,17 @@ function pad(n) {
 }
 
 function updateClock(timestamp) {
-    
-    if(!$('js_clock')) {
-        return;
+
+    if($j('#js_clock').length > 0) {
+        var milliseconds = timestamp * 1000;
+        DATE = new Date(milliseconds);
+
+        setInterval(() => {
+            DATE.setSeconds(DATE.getSeconds() + 1);
+            $j('#js_clock').html(
+                `${pad(DATE.getHours())}:${pad(DATE.getMinutes())}:${pad(DATE.getSeconds())}`
+            );
+        }, 1000);
     }
 
-    var milliseconds = timestamp * 1000;
-    DATE = new Date(milliseconds);
-
-    new PeriodicalExecuter(function(pe) {
-        DATE.setSeconds(DATE.getSeconds() + 1);
-        $('js_clock').innerHTML = pad(DATE.getHours()) + ':'
-                             + pad(DATE.getMinutes()) + ':'
-                             + pad(DATE.getSeconds());
-    }, 1);
 }

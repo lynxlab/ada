@@ -50,7 +50,7 @@ try {
         throw new GdprException(translateFN("Solo un utente abilitato può vedere tutte le richieste"));
     }
 
-    if ($showUUID && !UUid::isValid(trim($_REQUEST['uuid']))) {
+    if ($showUUID && !Uuid::isValid(trim($_REQUEST['uuid']))) {
         throw new GdprException(translateFN("Numero di pratica non valido"));
     }
 

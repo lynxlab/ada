@@ -66,28 +66,33 @@ function initDateField() {
 
 function validateContent(elements, regexps, formName) {
 	var error_found = false;
-	for (i in elements) {
-		var label = 'l_' + elements[i];
-		var element = elements[i];
+	elements.forEach((element,i) => {
+		var label = 'l_' + element;
 		var regexp = regexps[i];
 		var value = null;
 		var id = null;
-		if ($(element) != null && $(element).getValue) {
-			value = $(element).getValue();
-			id = $(element).id;
+		if ($j(`#${element}`).length && $j(`#${element}`).val) {
+			if ($j(`#${element}`).is(':radio') || $j(`#${element}`).is(':checkbox')) {
+				value = $j(`#${element}:checked`).val() || null;
+			} else if ($j(`#${element}`).is(':select')) {
+				value = $j(`#${element}>option:selected`).val() || null;
+			} else {
+				value = $j(`#${element}`).val();
+			}
+			id = $j(`#${element}`).attr('id');
 		}
 
 		if (value != null && typeof value == 'string') {
 			if(!value.match(regexp)) {
-				if($(label)) {
-					$(label).addClassName('error');
+				if($j(`#${label}`).length) {
+					$j(`#${label}`).addClass('error');
 				}
 				error_found = true;
 			}
 			else {
 
-				if($(label)) {
-					$(label).removeClassName('error');
+				if($j(`#${label}`).length) {
+					$j(`#${label}`).removeClass('error');
 				}
 				/**
 				 * giorgio, if element it's a date field it may validate the regexp,
@@ -110,26 +115,26 @@ function validateContent(elements, regexps, formName) {
 
 				 if (!ok)
 					 {
-						if($(label)) {
-							$(label).addClassName('error');
+						if($j(`#${label}`).length) {
+							$j(`#${label}`).addClass('error');
 						}
 						error_found = true;
 					 }
 				}
 			}
 		}
-	}
+	});
 
 	if (error_found) {
-		if($('error_form_'+formName)) {
-			$('error_form_'+formName).addClassName('show_error');
-			$('error_form_'+formName).removeClassName('hide_error');
+		if($j(`#error_form_${formName}`)) {
+			$j(`#error_form_${formName}`).addClass('show_error');
+			$j(`#error_form_${formName}`).removeClass('hide_error');
 		}
 	}
 	else {
-		if($('error_form_'+formName)) {
-			$('error_form_'+formName).addClassName('hide_error');
-			$('error_form_'+formName).removeClassName('show_error');
+		if($j(`#error_form_${formName}`)) {
+			$j(`#error_form_${formName}`).addClass('hide_error');
+			$j(`#error_form_${formName}`).removeClass('show_error');
 		}
 	}
 
