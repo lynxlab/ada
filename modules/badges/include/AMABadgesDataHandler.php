@@ -159,6 +159,13 @@ class AMABadgesDataHandler extends AMADataHandler
      */
     public function deleteCourseBadge($saveData)
     {
+        $uuid = Uuid::fromString($saveData['badge_uuid']);
+        unset($saveData['badge_uuid']);
+        /**
+         * below '_bin' is needed for trait WithWhereClause::buildWhereClause
+         * to correctly set the binary uuid value
+         */
+        $saveData = ['badge_uuid_bin' => $uuid->toString()];
         $result = $this->queryPrepared(
             $this->sqlDelete(
                 CourseBadge::TABLE,
