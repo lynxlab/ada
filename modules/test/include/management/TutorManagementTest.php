@@ -10,6 +10,7 @@
 
 namespace Lynxlab\ADA\Module\Test;
 
+use Jawira\CaseConverter\Convert;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Course\CourseInstance;
@@ -385,10 +386,17 @@ class TutorManagementTest
      */
     public function run($returnHtml = false)
     {
-        if (method_exists($this, $this->action)) {
-            $return = $this->{$this->action}();
-        } else {
-            $this->returnError = true;
+        foreach([
+            $this->action,
+            (new Convert($this->action))->toCamel(),
+        ] as $method) {
+            if (method_exists($this, $method)) {
+                $return = $this->{$method}();
+                $this->returnError = false;
+                break;
+            } else {
+                $this->returnError = true;
+            }
         }
 
         if ($this->returnError) {
