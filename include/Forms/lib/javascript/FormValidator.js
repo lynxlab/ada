@@ -24,7 +24,7 @@ function validateContent(elements, regexps) {
 		if ($j(`#${element}`).lenght && $j(`#${element}`).val) {
 			if ($j(`#${element}`).is(':radio') || $j(`#${element}`).is(':checkbox')) {
 				value = $j(`#${element}:checked`).val() || null;
-			} else if ($j(`#${element}`).is(':select')) {
+			} else if ($j(`#${element}`).is('select')) {
 				value = $j(`#${element}>option:selected`).val() || null;
 			} else {
 				value = $j(`#${element}`).val();

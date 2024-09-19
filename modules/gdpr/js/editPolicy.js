@@ -28,7 +28,6 @@ function initDoc(formName) {
             }
 
             $j('textarea, input[type="checkbox"]', 'form[name="' + formName + '"]').each(function (index, el) {
-                console.log(el);
                 var name = $j(el).attr('name');
                 if ($j(el).is('textarea')) {
                     data[name] = FCKeditorAPI.GetInstance(name).GetData();
