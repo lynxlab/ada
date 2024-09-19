@@ -10,6 +10,7 @@
 
 namespace Lynxlab\ADA\Module\Test;
 
+use Jawira\CaseConverter\Convert;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -112,11 +113,16 @@ abstract class ManagementTest
             }
         }
 
-        if (method_exists($this, $this->action)) {
-            $array = [
-                'status' => $this->status(),
-            ];
-            return array_merge($array, $this->{$this->action}());
+        foreach([
+            $this->action,
+            (new Convert($this->action))->toCamel(),
+        ] as $method) {
+            if (method_exists($this, $method)) {
+                $array = [
+                    'status' => $this->status(),
+                ];
+                return array_merge($array, $this->{$method}());
+            }
         }
     }
 }
