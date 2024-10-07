@@ -89,19 +89,19 @@ if (isset($other_node_data['private_notes'])) {
 }
 
 if ($reg_enabled && isset($addBookmark)) {
-    $content_dataAr['addBookmark'] = $addBookmark;
+    $content_dataAr['addBookmark'] = $addBookmark ?? null;
 } else {
     $content_dataAr['addBookmark'] = "";
 }
 
 if (isset($bookmark)) {
-    $content_dataAr['bookmark'] = $bookmark;
+    $content_dataAr['bookmark'] = $bookmark ?? null;
 }
 if (isset($go_bookmarks)) {
-    $content_dataAr['go_bookmarks_1'] = $go_bookmarks;
+    $content_dataAr['go_bookmarks_1'] = $go_bookmarks ?? null;
 }
 if (isset($go_bookmarks)) {
-    $content_dataAr['go_bookmarks_2'] = $go_bookmarks;
+    $content_dataAr['go_bookmarks_2'] = $go_bookmarks ?? null;
 }
 
 if ($com_enabled) {

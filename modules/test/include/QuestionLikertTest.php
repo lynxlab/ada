@@ -79,7 +79,7 @@ class QuestionLikertTest extends QuestionTest
                     }
                 }
 
-                if ($post_data[self::POST_ANSWER_VAR] == $v->id_nodo) {
+                if (false !== $post_data && $post_data[self::POST_ANSWER_VAR] == $v->id_nodo) {
                     $input->setAttribute('checked', '');
                 }
 
@@ -99,8 +99,7 @@ class QuestionLikertTest extends QuestionTest
                 }
 
                 if ($_SESSION['sess_id_user_type'] != AMA_TYPE_STUDENT) {
-                    $v->correttezza = is_null($v->correttezza) ? 0 : $v->correttezza;
-                    $li->addChild(new CText(' (' . $v->correttezza . ' ' . translateFN('punti') . ')'));
+                    $li->addChild(new CText(' (' . (int)$v->correttezza . ' ' . translateFN('punti') . ')'));
                 }
 
                 $li->setAttribute('class', $class);
@@ -131,7 +130,7 @@ class QuestionLikertTest extends QuestionTest
             $points = $this->getMaxScore();
         }
 
-        return ['points' => $points,'attachment' => null];
+        return ['points' => $points, self::POST_ATTACHMENT_VAR => null];
     }
 
     /**

@@ -134,7 +134,7 @@ class QuestionSelectClozeTest extends QuestionClozeTest
                     $class .= ' empty_answer_test';
                 }
             } else {
-                if ($this->searchParent('RootTest')->shuffle_answers) {
+                if ($this->searchParent(RootTest::class)->shuffle_answers) {
                     shuffle($this->children);
                 }
                 if (!empty($this->children)) {
@@ -144,8 +144,7 @@ class QuestionSelectClozeTest extends QuestionClozeTest
                             $option->setAttribute('value', $v->id_nodo);
                             $option->addChild(new CText($v->testo));
                             if ($_SESSION['sess_id_user_type'] != AMA_TYPE_STUDENT) {
-                                $v->correttezza = is_null($v->correttezza) ? 0 : $v->correttezza;
-                                $option->addChild(new CText(' (' . $v->correttezza . ' ' . translateFN('punti') . ')'));
+                                $option->addChild(new CText(' (' . (int)$v->correttezza . ' ' . translateFN('punti') . ')'));
                             }
                             $obj->addChild($option);
                         }
@@ -163,7 +162,7 @@ class QuestionSelectClozeTest extends QuestionClozeTest
                 $popup->setAttribute('style', 'display:none;');
                 $popup->addChild(new CText($correctAnswer->testo));
                 if ($this->rating) {
-                    $popup->addChild(new CText(' (' . $correctAnswer->correttezza . ' ' . translateFN('Punti') . ')'));
+                    $popup->addChild(new CText(' (' . (int)$correctAnswer->correttezza . ' ' . translateFN('Punti') . ')'));
                 }
 
                 $obj->setAttribute('class', $class . ' answerPopup');
@@ -187,7 +186,7 @@ class QuestionSelectClozeTest extends QuestionClozeTest
             if (!empty($this->children)) {
                 foreach ($this->children as $k => $v) {
                     if ($v->ordine == $ordine) {
-                        $risposte[] = $v->testo . ' (' . $v->correttezza . ' ' . translateFN('Punti') . ')';
+                        $risposte[] = $v->testo . ' (' . (int)$v->correttezza . ' ' . translateFN('Punti') . ')';
                     }
                 }
             }
@@ -224,7 +223,7 @@ class QuestionSelectClozeTest extends QuestionClozeTest
             $points = $this->getMaxScore();
         }
 
-        return ['points' => $points,'attachment' => null];
+        return ['points' => $points, self::POST_ATTACHMENT_VAR => null];
     }
 
     /**

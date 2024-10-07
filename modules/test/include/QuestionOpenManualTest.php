@@ -128,7 +128,7 @@ class QuestionOpenManualTest extends QuestionTest
     public function exerciseCorrection($data)
     {
         //manual corrections, no points gained
-        return ['points' => null, 'attachment' => null];
+        return ['points' => null, self::POST_ATTACHMENT_VAR => null];
     }
 
     /**

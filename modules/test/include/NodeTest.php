@@ -341,7 +341,6 @@ abstract class NodeTest
         $constants = constant(static::class . '::CHILD_CLASS');
         $constants = explode('|', $constants ?? '');
         foreach ($constants as $v) {
-            $v = __NAMESPACE__ . "\\" . $v;
             if ($child::class == $v || is_subclass_of($child, $v)) {
                 if (is_null($this->children)) {
                     $this->children = [];

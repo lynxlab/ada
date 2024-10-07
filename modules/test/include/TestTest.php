@@ -22,7 +22,7 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 class TestTest extends RootTest
 {
     public const NODE_TYPE = ADA_TYPE_TEST;
-    public const CHILD_CLASS = 'TopicTest';
+    public const CHILD_CLASS = TopicTest::class;
 
     protected $barrier;
 

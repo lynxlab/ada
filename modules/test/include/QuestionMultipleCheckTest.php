@@ -61,7 +61,7 @@ class QuestionMultipleCheckTest extends QuestionTest
 
         if (!empty($this->children)) {
             $_children = $this->children;
-            if ($this->searchParent('RootTest')?->shuffle_answers) {
+            if ($this->searchParent(RootTest::class)?->shuffle_answers) {
                 shuffle($_children);
             }
 
@@ -88,7 +88,7 @@ class QuestionMultipleCheckTest extends QuestionTest
                             && in_array($v->id_nodo, $this->givenAnswer['risposta'][self::POST_ANSWER_VAR])
                         ) {
                             $input->setAttribute('checked', '');
-                            if ($v->correttezza > 0) {
+                            if ((int)$v->correttezza > 0) {
                                 $answer->setAttribute('class', 'right_answer_test');
                             } else {
                                 $answer->setAttribute('class', 'wrong_answer_test');
@@ -127,7 +127,7 @@ class QuestionMultipleCheckTest extends QuestionTest
                                 $li->addChild(new CText($popup->getHtml()));
                             }
                         } elseif ($feedback && $rating) {
-                            $li->addChild(new CText(' (' . $v->correttezza . ' ' . translateFN('Punti') . ')'));
+                            $li->addChild(new CText(' (' . (int)$v->correttezza . ' ' . translateFN('Punti') . ')'));
                         }
                     }
 
@@ -149,8 +149,7 @@ class QuestionMultipleCheckTest extends QuestionTest
                     }
 
                     if ($_SESSION['sess_id_user_type'] != AMA_TYPE_STUDENT) {
-                        $v->correttezza = is_null($v->correttezza) ? 0 : $v->correttezza;
-                        $li->addChild(new CText(' (' . $v->correttezza . ' ' . translateFN('punti') . ')'));
+                        $li->addChild(new CText(' (' . (int)$v->correttezza . ' ' . translateFN('punti') . ')'));
                     }
 
                     $ref->addChild($li);
@@ -191,7 +190,7 @@ class QuestionMultipleCheckTest extends QuestionTest
             $points = $this->getMaxScore();
         }
 
-        return ['points' => $points,'attachment' => null];
+        return ['points' => $points, self::POST_ATTACHMENT_VAR => null];
     }
 
     /**

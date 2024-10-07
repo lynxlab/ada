@@ -35,7 +35,7 @@ class TopicManagementTest extends ManagementTest
     {
         parent::__construct($action, $id);
 
-        if ($_POST && $_POST['id_nodo_parent'] == $id_test) {
+        if ($_POST && ($_POST['id_nodo_parent'] ?? 0) == $id_test) {
             $this->what = translateFN('sessione');
         } else {
             $this->what = translateFN('argomento');
@@ -58,7 +58,7 @@ class TopicManagementTest extends ManagementTest
         ];
 
         if ($_POST) {
-            $this->tipo[1] = intval($_POST['random']);
+            $this->tipo[1] = intval($_POST['random'] ?? 0);
             $this->tipo[2] = 0;
             $this->tipo[3] = 0;
             $this->tipo[4] = 0;
@@ -85,7 +85,7 @@ class TopicManagementTest extends ManagementTest
             $path = $nodo->findPathFN();
         }
 
-        $form = new TopicFormTest($test['id_nodo'], $_POST, $_GET['id_nodo_parent']);
+        $form = new TopicFormTest($test['id_nodo'], $_POST, $_GET['id_nodo_parent'] ?? null);
 
         if ($_POST) {
             if ($form->isValid()) {
@@ -219,7 +219,7 @@ class TopicManagementTest extends ManagementTest
             $path = $nodo->findPathFN();
         }
 
-        if ($nodo->id_nodo_radice == $nodo->id_nodo_parent) {
+        if ($topic['id_nodo_radice'] == $topic['id_nodo_parent']) {
             $this->what = translateFN('sessione');
         }
 

@@ -152,10 +152,10 @@ class AnswersManagementTest
                     $post[] = [
                         'answer' => $_POST['answer'][$k],
                         'value' => intval($_POST['value'][$k]),
-                        'case_sensitive' => ($_POST['case_sensitive'][$k] == 1) ? true : false,
+                        'case_sensitive' => ($_POST['case_sensitive'][$k] ?? 0 == 1) ? true : false,
                         'other_answer' => ($_POST['other_answer'][$k] == 1) ? true : false,
-                        'record' => $_POST['record'][$k],
-                        'ordine' => $_POST['ordine'][$k],
+                        'record' => $_POST['record'][$k] ?? null,
+                        'ordine' => $_POST['ordine'][$k] ?? null,
                     ];
                 }
 
@@ -194,7 +194,7 @@ class AnswersManagementTest
 
                 if ($result) {
                     $get_topic = (isset($_GET['topic']) ? '&topic=' . $_GET['topic'] : '');
-                    if ($_POST['return'] == 'here') {
+                    if ($_POST['return'] ?? '' == 'here') {
                         Utilities::redirect(MODULES_TEST_HTTP . '/edit_answers.php?id_question=' . $this->question['id_nodo'] . $get_topic);
                     } else {
                         Utilities::redirect(MODULES_TEST_HTTP . '/index.php?id_test=' . $this->test['id_nodo'] . $get_topic . '#liQuestion' . $this->question['id_nodo']);

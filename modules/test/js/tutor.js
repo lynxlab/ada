@@ -150,3 +150,41 @@ function saveCommentAnswer(id_answer) {
 function toggleDiv(id) {
     $j('#' + id).toggle();
 }
+
+const initTestHistory = () => {
+    const cTable = $j('#content_view table');
+    if (cTable.length == 1) {
+        const columnDefs = [
+            {
+                "targets": -1,
+                "orderable": false,
+                "searchable": false,
+            }
+        ];
+        cTable.find('thead th').each((
+            (i, el) => {
+                // guess 'data' headers and set order plugin
+                if (-1 !== $j(el).html().toLowerCase().indexOf('data')) {
+                    columnDefs.push({
+                        targets: i,
+                        type: 'date-euro',
+                        render: (data, type) => data.replace(new RegExp('-', 'g'), ''),
+                    });
+                }
+            }
+        ));
+        cTable.DataTable({
+            "paging": true,
+            "ordering": true,
+            "info": true,
+            "filter": true,
+            "autoWidth": true,
+            "stateSave": true,
+            "order": [[0, 'desc']],
+            "language": {
+                "url": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
+            },
+            "columnDefs": columnDefs,
+        });
+    }
+};
