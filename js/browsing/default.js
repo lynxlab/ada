@@ -21,7 +21,7 @@ function toggleVisibilityByClassName(className, idName, mode)
 
 	const children = $j('ul#'+idName+'.'+className);
 	if (children.length > 0) {
-		children.each((i, el) => $j(el).trigger(mode));
+		children.each((i, el) => $j(el)[mode]());
 	}
 
 	/*
