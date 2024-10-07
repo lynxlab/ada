@@ -4,6 +4,7 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Utilities;
@@ -47,7 +48,7 @@ $dh = $GLOBALS['dh'];
 $self = Utilities::whoami();
 
 /** @var \Lynxlab\ADA\Main\Course\CourseInstance $course_instanceObj */
-if (!isset($course_instanceObj) || !is_a($course_instanceObj, 'CourseInstance')) {
+if (!isset($course_instanceObj) || !is_a($course_instanceObj, CourseInstance::class)) {
     $course_instanceObj = DBRead::readCourseInstanceFromDB($_GET['id_course_instance']);
 }
 
@@ -134,19 +135,19 @@ if (isset($other_node_data['private_notes'])) {
 }
 
 if ($reg_enabled && isset($addBookmark)) {
-    $content_dataAr['addBookmark'] = $addBookmark;
+    $content_dataAr['addBookmark'] = $addBookmark ?? null;
 } else {
     $content_dataAr['addBookmark'] = "";
 }
 
 if (isset($bookmark)) {
-    $content_dataAr['bookmark'] = $bookmark;
+    $content_dataAr['bookmark'] = $bookmark ?? null;
 }
 if (isset($go_bookmarks)) {
-    $content_dataAr['go_bookmarks_1'] = $go_bookmarks;
+    $content_dataAr['go_bookmarks_1'] = $go_bookmarks ?? null;
 }
 if (isset($go_bookmarks)) {
-    $content_dataAr['go_bookmarks_2'] = $go_bookmarks;
+    $content_dataAr['go_bookmarks_2'] = $go_bookmarks ?? null;
 }
 
 if ($com_enabled) {

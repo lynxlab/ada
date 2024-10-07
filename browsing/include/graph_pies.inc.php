@@ -27,7 +27,7 @@ if (isset($nodes_percent)) {
     if ($nodes_percent_decode <= 0) {
         $data = [100];
         $legends = ['non visitati'];
-    } else if ($nodes_percent_decode >= 100) {
+    } elseif ($nodes_percent_decode >= 100) {
         $data = [100];
         $legends = ['visitati'];
     } else {

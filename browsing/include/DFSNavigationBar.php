@@ -120,7 +120,7 @@ class DFSNavigationBar
             if (!empty($res) && count($res) == 1 && !AMADB::isError($res)) {
                 $node = array_shift($res);
                 $test = NodeTest::readTest($node['id_nodo'], $test_db);
-                $this->prevTestTopic = count($test->_children);
+                $this->prevTestTopic = count($test->_children ?? []);
                 $this->prevTestNode = $node['id_nodo'];
             }
             $test_db->disconnect();

@@ -4,6 +4,7 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Utilities;
@@ -45,7 +46,8 @@ $GLOBALS['dh'] = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_
 
 $self = Utilities::whoami();
 
-if (!isset($course_instanceObj) || !is_a($course_instanceObj, 'CourseInstance')) {
+if (!isset($course_instanceObj) || !is_a($course_instanceObj, CourseInstance::class)) {
+    /** @var \Lynxlab\ADA\Main\Course\CourseInstance $course_instanceObj */
     $course_instanceObj = DBRead::readCourseInstanceFromDB($_GET['id_course_instance']);
 }
 
@@ -99,19 +101,19 @@ if (isset($other_node_data['private_notes'])) {
 }
 
 if ($reg_enabled && isset($addBookmark)) {
-    $content_dataAr['addBookmark'] = $addBookmark;
+    $content_dataAr['addBookmark'] = $addBookmark ?? null;
 } else {
     $content_dataAr['addBookmark'] = "";
 }
 
 if (isset($bookmark)) {
-    $content_dataAr['bookmark'] = $bookmark;
+    $content_dataAr['bookmark'] = $bookmark ?? null;
 }
 if (isset($go_bookmarks)) {
-    $content_dataAr['go_bookmarks_1'] = $go_bookmarks;
+    $content_dataAr['go_bookmarks_1'] = $go_bookmarks ?? null;
 }
 if (isset($go_bookmarks)) {
-    $content_dataAr['go_bookmarks_2'] = $go_bookmarks;
+    $content_dataAr['go_bookmarks_2'] = $go_bookmarks ?? null;
 }
 
 if ($com_enabled) {
@@ -134,12 +136,16 @@ if ($com_enabled) {
 $layout_dataAr['JS_filename'] = [
     JQUERY,
     JQUERY_UI,
+    JQUERY_DATATABLE,
+    SEMANTICUI_DATATABLE,
+    JQUERY_DATATABLE_DATE,
     JQUERY_NO_CONFLICT,
     MODULES_TEST_PATH . '/js/dragdrop.js',
     ROOT_DIR . '/js/browsing/virtual_keyboard.js',
 ];
 $layout_dataAr['CSS_filename'] = [
     JQUERY_UI_CSS,
+    SEMANTICUI_DATATABLE_CSS,
 ];
-
-ARE::render($layout_dataAr, $content_dataAr);
+$options['onload_func'] = 'initTestHistory();';
+ARE::render($layout_dataAr, $content_dataAr, null, $options);

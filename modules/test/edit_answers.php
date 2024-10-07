@@ -40,7 +40,7 @@ ServiceHelper::init($neededObjAr);
 $layout_dataAr['node_type'] = $self;
 
 $online_users_listing_mode = 2;
-$online_users = ADAGenericUser::getOnlineUsersFN($id_course_instance, $online_users_listing_mode);
+$online_users = ADAGenericUser::getOnlineUsersFN($id_course_instance ?? 0, $online_users_listing_mode);
 
 
 //needed to promote AMADataHandler to AMATestDataHandler. $sess_selected_tester is already present in session
@@ -61,7 +61,7 @@ if (!AMATestDataHandler::isError($question) && !empty($question)) {
 // per la visualizzazione del contenuto della pagina
 
 $content_dataAr = [
-        'head' => $head_form,
+        'head' => $head_form ?? null,
         'path' => $form_return['path'],
         'form' => $form_return['html'],
         'status' => $form_return['status'],
@@ -69,25 +69,25 @@ $content_dataAr = [
         'user_type' => $user_type,
         'messages' => $user_messages->getHtml(),
         'agenda' => $user_agenda->getHtml(),
-        'title' => $node_title,
-        'course_title' => $course_title,
-        'back' => $back,
+        'title' => $node_title ?? null,
+        'course_title' => $course_title ?? null,
+        'back' => $back ?? null,
         'edit_question' => $edit_question,
         'delete_question' => $delete_question,
 ];
 
-$content_dataAr['notes'] = $other_node_data['notes'];
-$content_dataAr['personal'] = $other_node_data['private_notes'];
+// $content_dataAr['notes'] = $other_node_data['notes'];
+// $content_dataAr['personal'] = $other_node_data['private_notes'];
 
 if ($reg_enabled) {
-    $content_dataAr['addBookmark'] = $addBookmark;
+    $content_dataAr['addBookmark'] = $addBookmark ?? null;
 } else {
     $content_dataAr['addBookmark'] = "";
 }
 
-$content_dataAr['bookmark'] = $bookmark;
-$content_dataAr['go_bookmarks_1'] = $go_bookmarks;
-$content_dataAr['go_bookmarks_2'] = $go_bookmarks;
+$content_dataAr['bookmark'] = $bookmark ?? null;
+$content_dataAr['go_bookmarks_1'] = $go_bookmarks ?? null;
+$content_dataAr['go_bookmarks_2'] = $go_bookmarks ?? null;
 
 if ($com_enabled) {
     $content_dataAr['ajax_chat_link'] = $ajax_chat_link;

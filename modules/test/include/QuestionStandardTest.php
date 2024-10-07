@@ -61,7 +61,7 @@ class QuestionStandardTest extends QuestionTest
 
         if (!empty($this->children)) {
             $_children = $this->children;
-            if ($this->searchParent('RootTest')?->shuffle_answers) {
+            if ($this->searchParent(RootTest::class)?->shuffle_answers) {
                 // giorgio 04/lug/2014 bugfix: was shuffle($this->children);
                 shuffle($_children);
             }
@@ -128,7 +128,7 @@ class QuestionStandardTest extends QuestionTest
                                 $li->addChild(new CText($popup->getHtml()));
                             }
                         } elseif ($feedback && $rating) {
-                            $li->addChild(new CText(' (' . $v->correttezza . ' ' . translateFN('Punti') . ')'));
+                            $li->addChild(new CText(' (' . (int) $v->correttezza . ' ' . translateFN('Punti') . ')'));
                         }
                     }
 
@@ -147,8 +147,7 @@ class QuestionStandardTest extends QuestionTest
                     }
 
                     if ($_SESSION['sess_id_user_type'] != AMA_TYPE_STUDENT) {
-                        $v->correttezza = is_null($v->correttezza) ? 0 : $v->correttezza;
-                        $li->addChild(new CText(' (' . $v->correttezza . ' ' . translateFN('punti') . ')'));
+                        $li->addChild(new CText(' (' . (int)$v->correttezza . ' ' . translateFN('punti') . ')'));
                     }
 
                     $ref->addChild($li);
@@ -181,7 +180,7 @@ class QuestionStandardTest extends QuestionTest
             $points = $this->getMaxScore();
         }
 
-        return ['points' => $points,'attachment' => null];
+        return ['points' => $points, self::POST_ATTACHMENT_VAR => null];
     }
 
     /**

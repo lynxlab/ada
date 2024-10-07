@@ -118,7 +118,7 @@ abstract class RootTest extends NodeTest
                         $correction = $question->exerciseCorrection($answer_data);
                         if (is_array($correction)) {
                             $points = $correction['points'];
-                            $attachment = $correction['attachment'];
+                            $attachment = $correction[self::POST_ATTACHMENT_VAR];
                         } else {
                             $points = $correction;
                             $attachment = null;
@@ -385,7 +385,7 @@ abstract class RootTest extends NodeTest
                         if (!empty($sub->children)) {
                             foreach ($sub->children as $i) {
                                 $i->setDisplay(false);
-                                if (is_a($i, 'TopicTest')) {
+                                if (is_a($i, TopicTest::class)) {
                                     if (!empty($i->children)) {
                                         foreach ($i->children as $v) {
                                             $v->setDisplay(false);
@@ -402,10 +402,10 @@ abstract class RootTest extends NodeTest
                     if (isset(self::$nodesArray[$v])) {
                         $q = self::$nodesArray[$v];
                         $q->setDisplay(true);
-                        $t = $q->searchParent('TopicTest');
+                        $t = $q->searchParent(TopicTest::class);
                         if (!is_null($t)) {
                             $t->setDisplay(true);
-                            $t = $t->searchParent('TopicTest');
+                            $t = $t->searchParent(TopicTest::class);
                             if (!is_null($t)) {
                                 $t->setDisplay(true);
                             }
@@ -432,7 +432,7 @@ abstract class RootTest extends NodeTest
                 $i = $sub->children[$r];
                 if (!in_array($i->id_nodo, $tmpList)) {
                     $tmpList[] = $i->id_nodo;
-                    if (is_a($i, 'QuestionTest')) {
+                    if (is_a($i, QuestionTest::class)) {
                         $this->randomQuestion[] = $i->id_nodo;
                     } else {
                         $this->pickRandomQuestionTopic($i);
@@ -591,7 +591,7 @@ abstract class RootTest extends NodeTest
         } else {
             $out = CDOMElement::create('form', 'id:testForm,method:post');
             $out->setAttribute('enctype', 'multipart/form-data');
-            $out->setAttribute('onsubmit', 'return confirmSubmit();');
+            $out->setAttribute('onsubmit', 'confirmSubmit(this); return false;');
             $out->addChild(new CText('<script type="text/javascript">var confirmEmptyAnswers = "' . translateFN('Non hai risposto ad una o più domande. Confermi l\'invio?') . '";</script>'));
         }
 
@@ -664,7 +664,12 @@ abstract class RootTest extends NodeTest
                 $div->setAttribute('class', 'submit_test');
                 if ($this->currentTopic > 0) {
                     $a = CDOMElement::create('a');
-                    $a->setAttribute('href', MODULES_TEST_HTTP . '/index.php?id_test=' . $this->id_nodo . '&topic=' . ($this->currentTopic - 1));
+                    $a->setAttribute(
+                        'href',
+                        MODULES_TEST_HTTP . '/index.php?id_test=' .
+                        $this->id_nodo . '&topic=' .
+                        ((int)($this->currentTopic == self::EOT ? $this->countChildren() : $this->currentTopic) - 1)
+                    );
                     $a->addChild(new CText(translateFN('Pagina precedente')));
                     $div->addChild(new CText(' [ '));
                     $div->addChild($a);
@@ -686,7 +691,12 @@ abstract class RootTest extends NodeTest
 
                 if ($this->currentTopic < count($this->children) - 1) {
                     $a = CDOMElement::create('a');
-                    $a->setAttribute('href', MODULES_TEST_HTTP . '/index.php?id_test=' . $this->id_nodo . '&topic=' . ($this->currentTopic + 1));
+                    $a->setAttribute(
+                        'href',
+                        MODULES_TEST_HTTP . '/index.php?id_test=' .
+                        $this->id_nodo . '&topic=' .
+                        ((int)($this->currentTopic == self::EOT ? $this->countChildren() : $this->currentTopic) + 1)
+                    );
                     $a->addChild(new CText(translateFN('Pagina successiva')));
                     $div->addChild(new CText(' [ '));
                     $div->addChild($a);
@@ -739,7 +749,7 @@ abstract class RootTest extends NodeTest
                     $questions = [];
                     while (!empty($genericItems)) {
                         foreach ($genericItems as $k => $child) {
-                            if (!is_subclass_of($child, 'QuestionTest')) {
+                            if (!is_subclass_of($child, QuestionTest::class)) {
                                 for ($i = 0; $i < $child->countChildren(); $i++) {
                                     $genericItems[] = $child->getChild($i);
                                 }
@@ -1070,7 +1080,7 @@ abstract class RootTest extends NodeTest
             $start = 0;
             $limit = $this->countChildren();
             if ($this->sequenced) {
-                $start = ($this->currentTopic - 1);
+                $start = (int)($this->currentTopic == self::EOT ? $limit : $this->currentTopic) - 1;
                 if ($start < 0) {
                     $start = 0;
                 }
@@ -1080,11 +1090,11 @@ abstract class RootTest extends NodeTest
                 $topic = $this->getChild($i);
                 if (!empty($topic->children)) {
                     foreach ($topic->children as $subTopic) {
-                        if (is_a($subTopic, 'TopicTest')) {
+                        if (is_a($subTopic, TopicTest::class)) {
                             foreach ($subTopic->children as $v) {
                                 $questions[] = $v;
                             }
-                        } elseif (is_a($subTopic, 'QuestionTest')) {
+                        } elseif (is_a($subTopic, QuestionTest::class)) {
                             $questions[] = $subTopic;
                         }
                     }

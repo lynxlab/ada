@@ -330,7 +330,7 @@ class QuestionMultipleClozeTest extends QuestionClozeTest
 
                 $popup = '';
                 if (($this->rating || $this->rating_answer) && !empty($answer)) {
-                    $popup = '<div id="popup_' . $this->id_nodo . '_' . $ordine . '" style="display:none;">' . $answer->correttezza . ' ' . translateFN('Punti') . '</div>';
+                    $popup = '<div id="popup_' . $this->id_nodo . '_' . $ordine . '" style="display:none;">' . (int)$answer->correttezza . ' ' . translateFN('Punti') . '</div>';
                     $element->setAttribute('title', $this->id_nodo . '_' . $ordine);
                 }
 
@@ -481,7 +481,7 @@ class QuestionMultipleClozeTest extends QuestionClozeTest
             }
         }
 
-        return ['points' => $points,'attachment' => null];
+        return ['points' => $points, self::POST_ATTACHMENT_VAR => null];
     }
 
     /**
@@ -698,7 +698,7 @@ class QuestionMultipleClozeTest extends QuestionClozeTest
                             $input->setAttribute('value', implode(',', $ordini));
                             foreach ($this->children as $v) {
                                 if (in_array($v->ordine, $ordini)) {
-                                    $ddUl->addChild($this->createLiItem($v->ordine, $v->testo, true, $v->correttezza));
+                                    $ddUl->addChild($this->createLiItem($v->ordine, $v->testo, true, (int)$v->correttezza));
                                 }
                             }
                         }

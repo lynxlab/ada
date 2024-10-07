@@ -23,7 +23,7 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 class SurveyTest extends RootTest
 {
     public const NODE_TYPE = ADA_TYPE_SURVEY;
-    public const CHILD_CLASS = 'TopicTest';
+    public const CHILD_CLASS = TopicTest::class;
 
     /**
      * used to configure object with database's data options

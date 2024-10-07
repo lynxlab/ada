@@ -492,7 +492,7 @@ function toggleVisibility(element) {
 	if (typeof element === 'string' && !element.startsWith('#')) {
 		element = `#${element}`;
 	}
-	$j(element).trigger('toggle');
+	$j(element).toggle();
 }
 
 function addExternalLink() {
@@ -1009,7 +1009,7 @@ function toggleMeHideOthers(addon) {
 	addons_to_hide.forEach( function(a) {
 		$j(`#${a}`).hide();
 	});
-	$j(`#${addon}`).trigger('toggle');
+	$j(`#${addon}`).toggle();
 	//	alert('array: ' + buttons + ' pulsante selezionato: ' + button);
 }
 
@@ -1053,7 +1053,7 @@ function toggleVisibilityByClassName(className, idName, mode)
 
 	const children = $j('ul#'+idName+'.'+className);
 	if (children.length > 0) {
-		children.each((i, el) => $j(el).trigger(mode));
+		children.each((i, el) => $j(el)[mode]());
 	}
 
 	/*
