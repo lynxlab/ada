@@ -15,6 +15,8 @@
  * @version     0.1
  */
 
+define('ADA_CLI', php_sapi_name() === 'cli');
+
 /**
  * Prefix for GET/POST/Cookie variables when imported with
  * import_request_variables
