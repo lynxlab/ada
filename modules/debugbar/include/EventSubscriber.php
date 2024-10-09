@@ -43,7 +43,8 @@ class EventSubscriber implements EventSubscriberInterface
         $this->debugbar = ADADebugBar::getInstance();
         $this->debugBarRender = $this->debugbar->getJavascriptRenderer()
             ->setBaseUrl(MODULES_DEBUGBAR_HTTP . '/vendor/maximebf/debugbar/src/DebugBar/Resources')
-            ->setEnableJqueryNoConflict(false)->setIncludeVendors(true);
+            ->setEnableJqueryNoConflict(false)->setIncludeVendors(true)
+            ->setOpenHandlerUrl(MODULES_DEBUGBAR_HTTP . '/ajax/open.php');
         if ($this->debugbar->hasCollector('time')) {
             $this->debugbar['time']->startMeasure('render');
         }
@@ -162,6 +163,11 @@ class EventSubscriber implements EventSubscriberInterface
      */
     public function onPostModuleInit(CoreEvent $event)
     {
+        $this->debugbar->setStorage(
+            ADADebugBar::buildStorage(
+                ADA_UPLOAD_PATH . '/tmp/' . MODULES_DEBUGBAR_NAME . '/' . ($_SESSION['sess_id_user'] ?? 0)
+            )
+        );
         if ($this->debugbar->hasCollector('time')) {
             $this->debugbar['time']->stopMeasure('module-init');
         }
