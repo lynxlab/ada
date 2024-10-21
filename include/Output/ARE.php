@@ -62,7 +62,7 @@ class ARE
             $event = ADAEventDispatcher::buildEventAndDispatch(
                 [
                     'eventClass' => CoreEvent::class,
-                    'eventName' => 'PAGEPRERENDER',
+                    'eventName' => CoreEvent::PAGEPRERENDER,
                     'eventPrefix' => basename($_SERVER['SCRIPT_FILENAME']),
                 ],
                 basename($_SERVER['SCRIPT_FILENAME']),
@@ -419,7 +419,7 @@ class ARE
                         ADAEventDispatcher::buildEventAndDispatch(
                             [
                                 'eventClass' => MenuEvent::class,
-                                'eventName' => 'PRERENDER',
+                                'eventName' => MenuEvent::PRERENDER,
                             ],
                             $layoutObj->menu,
                             ['userType' => $_SESSION['sess_userObj']->getType()]
@@ -432,7 +432,7 @@ class ARE
                         ADAEventDispatcher::buildEventAndDispatch(
                             [
                                 'eventClass' => MenuEvent::class,
-                                'eventName' => 'POSTRENDER',
+                                'eventName' => MenuEvent::POSTRENDER,
                             ],
                             $layoutObj->menu,
                             ['userType' => $_SESSION['sess_userObj']->getType()]
