@@ -240,6 +240,7 @@ class DFSNavigationBar
         } else {
             $navigationBar = CDOMElement::create('div', 'class:dfsNavigationBar ui basic segment');
             if (!is_null($prevLink)) {
+                $prevLink->setAttribute('id', 'prevNodeBtn');
                 $prevLink->setAttribute('class', 'ui medium left floated red animated button');
                 $iconDIV = CDOMElement::create('div', 'class:hidden content');
                 $iconDIV->addChild(new CText('<i class="left arrow icon"></i>'));
@@ -247,6 +248,7 @@ class DFSNavigationBar
                 $navigationBar->addChild($prevLink);
             }
             if (!is_null($nextLink)) {
+                $nextLink->setAttribute('id', 'nextNodeBtn');
                 $nextLink->setAttribute('class', 'ui medium right floated teal animated button');
                 $iconDIV = CDOMElement::create('div', 'class:hidden content');
                 $iconDIV->addChild(new CText('<i class="right arrow icon"></i>'));
