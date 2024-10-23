@@ -281,7 +281,7 @@ class Node
                     return $msg;
                 }
             }
-            $dataHa->node_id = $new_id_node;
+            $dataHa['node_id'] = $new_id_node;
             $dh->addNode($dataHa); // Array
         } else {
             return translateFN("Un nodo con questo id &egrave; gi&agrave; presente");
@@ -2276,5 +2276,22 @@ class Node
             }
         }
         return $dataAr;
+    }
+
+    /**
+     * Get the value of keywords (aka title)
+     */
+    public function getKeywords()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set the value of keywords (aka title)
+     */
+    public function setKeywords($title): self
+    {
+        $this->title = $title;
+        return $this;
     }
 }
