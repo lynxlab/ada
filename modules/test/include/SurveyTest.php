@@ -10,6 +10,7 @@
 
 namespace Lynxlab\ADA\Module\Test;
 
+use Jawira\CaseConverter\Convert;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\AMADB;
@@ -350,5 +351,33 @@ class SurveyTest extends RootTest
             }
         }
         return ($asArray ? $rowsArray : $surveyTable);
+    }
+
+    /**
+     * Buils the survey csv file info.
+     *
+     * @param int $idUser
+     * @param int $idCourse
+     * @param int $idInstance
+     * @param string $surveyName
+     * @param boolean $http
+     *   true to return the http path, false for filesystem
+     * @param boolean $mustexists
+     *   if true will return null when the fileName does not exists
+     * @return array|null
+     *   array containg fileName and filemtime or null if file not found
+     */
+    public static function buildCSVFileInfo($idUser, $idCourse, $idInstance, $surveyName, $http = false, $mustexists = true) {
+        $filePath = ROOT_DIR . MEDIA_PATH_DEFAULT . $idUser . '/csv-surveys/';
+        $fileName = (new Convert($idCourse . ' ' . $idInstance . ' ' . $surveyName))->toKebab() . '.csv';
+        $filemtime = file_exists($filePath . $fileName) ? filemtime($filePath . $fileName) : 0;
+        if (!$mustexists || ($mustexists && file_exists($filePath . $fileName))) {
+            $filePath = $http ? str_replace(ROOT_DIR, HTTP_ROOT_DIR, $filePath) : $filePath;
+            return [
+                'fileName' => $filePath . $fileName,
+                'filemtime' => $filemtime,
+            ];
+        }
+        return null;
     }
 }
