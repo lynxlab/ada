@@ -87,7 +87,7 @@ if (
     $courseId = $_POST['id_course'];
     $id_tutors_old = $_POST['id_tutors_old'];
 
-    if ($id_tutors_old != 'no' && count($id_tutors_old) > 0) {
+    if ($id_tutors_old != 'no' && !empty($id_tutors_old)) {
         $id_tutors_old = explode(',', $id_tutors_old);
         foreach ($id_tutors_old as $idTutorOld) {
             if ($idTutorOld != '' && is_numeric($idTutorOld) && $idTutorOld > 0) {
@@ -246,7 +246,7 @@ $layout_dataAr['CSS_filename'] = [
 
 $content_dataAr = [
     'data' => $data->getHtml() . $tooltips,
-    'menu' => $menu,
+    'menu' => $menu ?? null,
     'help' => $help,
     'status' => $status,
     'user_name' => $user_name,

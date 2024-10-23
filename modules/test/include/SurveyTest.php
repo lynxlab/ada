@@ -158,7 +158,7 @@ class SurveyTest extends RootTest
                     foreach ($givenAnswers as $givenAnswer) {
                         // get a reference to the answers array to add report data
                         $targetArr = &$reportData['surveys'][$survey->id_nodo]['topics'][$givenAnswer['id_topic']]['questions'][$givenAnswer['id_nodo']]['answers'];
-                        if (count($targetArr) == 0) {
+                        if (count($targetArr ?? []) == 0) {
                             // unset whole question if empty answers
                             unset($reportData['surveys'][$survey->id_nodo]['topics'][$givenAnswer['id_topic']]['questions'][$givenAnswer['id_nodo']]);
                         } else {
@@ -259,9 +259,9 @@ class SurveyTest extends RootTest
                 $topicRow = CDOMElement::create('tr', 'class:topic');
                 $topicRow->setAttribute('data-topicid', $topicID);
                 $topicCell = CDOMElement::create('td');
-                if (strlen($topicData['titolo']) > 0) {
+                if (strlen($topicData['titolo'] ?? '') > 0) {
                     $label = $topicData['titolo'];
-                } elseif (strlen($topicData['nome']) > 0) {
+                } elseif (strlen($topicData['nome'] ?? '') > 0) {
                     $label = $topicData['nome'];
                 }
 
@@ -332,7 +332,7 @@ class SurveyTest extends RootTest
                                 $questionLabelRow->addChild($labelCell);
 
                                 $countCell = CDOMElement::create('td');
-                                $countCell->addChild(new CText($answerData['count']));
+                                $countCell->addChild(new CText($answerData['count'] ?? 0));
                                 if ($asArray) {
                                     array_push($rowsArray[$questionCountRowCount], $answerData['count']);
                                 }
