@@ -45,12 +45,6 @@ class EventSubscriber implements EventSubscriberInterface
              */
             $dh = $GLOBALS['dh'];
             $arguments = $event->getArguments();
-            $fileName = (new Convert(
-                $arguments['idCourse'] . ' ' .
-                $arguments['idCourseInstance'] . ' ' .
-                $arguments['survey']['nome']
-            )
-            )->toKebab();
             $tutorIds = $dh->courseInstanceTutorGet($arguments['idCourseInstance'], 'ALL');
             if (!AMADB::isError($tutorIds)) {
                 $fields = [
@@ -61,11 +55,21 @@ class EventSubscriber implements EventSubscriberInterface
                     Html2Text::convert($arguments[NodeTest::POST_ANSWER_VAR][0][NodeTest::POST_EXTRA_VAR] ?? ''),
                 ];
                 foreach ($tutorIds as $tutorId) {
-                    $filePath = ROOT_DIR . MEDIA_PATH_DEFAULT . $tutorId . DIRECTORY_SEPARATOR . 'csv-surveys';
-                    if (!is_dir($filePath)) {
-                        mkdir($filePath, 0755);
+                    $fileInfo = SurveyTest::buildCSVFileInfo(
+                        $tutorId,
+                        $arguments['idCourse'],
+                        $arguments['idCourseInstance'],
+                        $arguments['survey']['nome'],
+                        false,
+                        false
+                    );
+                    if ($fileInfo['filemtime'] == 0) {
+                        $filePath = pathinfo($fileInfo['fileName'], PATHINFO_DIRNAME);
+                        if (!is_dir($filePath)) {
+                            mkdir($filePath, 0755);
+                        }
                     }
-                    $fp = fopen($filePath . DIRECTORY_SEPARATOR . $fileName . '.csv', 'a');
+                    $fp = fopen($fileInfo['fileName'], 'a');
                     if ($fp) {
                         fputcsv($fp, $fields);
                     }
