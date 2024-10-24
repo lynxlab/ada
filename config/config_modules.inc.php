@@ -39,5 +39,7 @@ if (!Utilities::inInstall()) {
         [ 'name' => 'notifications' ],
         [ 'name' => 'cloneinstance' ],
         [ 'name' => 'instancesreport' ],
+        // timednode is disabled by default in standard ada
+        [ 'name' => 'timednode', 'forcedisable' => true ],
     ]);
 }
