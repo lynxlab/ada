@@ -74,14 +74,51 @@ if (array_key_exists('output', $_GET)) {
     }
 }
 
+if (defined('ADA_SURVEY_TO_CSV') && ADA_SURVEY_TO_CSV) {
+    $reportData['surveys'] = array_filter(
+        $reportData['surveys'],
+        fn ($el) => !empty(SurveyTest::buildCSVFileInfo(
+            $_SESSION['sess_id_user'],
+            $_SESSION['sess_id_course'],
+            $_SESSION['sess_id_course_instance'],
+            $el['nome']
+        ))
+    );
+}
 $hasSurveys = !empty($reportData['surveys']);
 
 if (array_key_exists('surveys', $reportData) && $hasSurveys) {
     $data = CDOMElement::create('div', 'class:surveyreport container');
     foreach ($reportData['surveys'] as $surveyData) {
-        $tObj = SurveyTest::buildSurveyReportTable($surveyData);
-        $tObj->setAttribute('class', $tObj->getAttribute('class') . ' default_table doDataTable ' . ADA_SEMANTICUI_TABLECLASS);
-        $data->addChild($tObj);
+        if (defined('ADA_SURVEY_TO_CSV') && ADA_SURVEY_TO_CSV) {
+            if ($hasSurveys) {
+                $hasSurveys = false;
+                $header = CDOMElement::create('h2', 'class:ui header');
+                $header->addChild(CDOMElement::create('i', 'class:download icon'));
+                $content = CDOMElement::create('div', 'class:content');
+                $content->addChild(new CText('Download risposte sondaggi'));
+                $subh = CDOMElement::create('div', 'class:sub header');
+                $subh->addChild(new CText(translateFN('clicca su un bottone per scaricare il csv delle risposte al relativo sondaggio')));
+                $header->addChild($content);
+                $header->addChild($subh);
+                $data->addChild($header);
+            }
+            $fileInfo = SurveyTest::buildCSVFileInfo(
+                $_SESSION['sess_id_user'],
+                $_SESSION['sess_id_course'],
+                $_SESSION['sess_id_course_instance'],
+                $surveyData['nome'],
+                true
+            );
+            $link = CDOMElement::create('a', 'class: ui fluid button, href:' . $fileInfo['fileName']);
+            $link->setAttribute('style', 'margin-top: 1em;');
+            $link->addChild(new CText($surveyData['nome'] . ' (' . Utilities::ts2dFN($fileInfo['filemtime']) . ')'));
+            $data->addChild($link);
+        } else {
+            $tObj = SurveyTest::buildSurveyReportTable($surveyData);
+            $tObj->setAttribute('class', $tObj->getAttribute('class') . ' default_table doDataTable ' . ADA_SEMANTICUI_TABLECLASS);
+            $data->addChild($tObj);
+        }
     }
 } else {
     $data = CDOMElement::create('div', 'class:ui info icon large message');
@@ -169,11 +206,11 @@ if ($com_enabled) {
 
 
 $layout_dataAr['JS_filename'] = [
-        JQUERY_UI,
+    JQUERY_UI,
 ];
 
 $layout_dataAr['CSS_filename'] = [
-        JQUERY_UI_CSS,
+    JQUERY_UI_CSS,
 ];
 
 $options['onload_func'] = 'initDoc(' . ($hasSurveys ? 'true' : 'false') . ')';

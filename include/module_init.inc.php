@@ -67,6 +67,7 @@ if (ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
         basename($_SERVER['SCRIPT_FILENAME']),
         [
             'isAjax' => stripos($_SERVER['SCRIPT_FILENAME'], 'ajax') !== false,
+            'session' => $_SESSION,
         ]
     );
 }

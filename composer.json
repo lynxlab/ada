@@ -88,11 +88,12 @@
         }
     ],
     "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
         "friendsofphp/php-cs-fixer": "^3.51",
         "phpcompatibility/php-compatibility": "^9.3",
-        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
-        "rector/rector": "^1.0",
-        "phpstan/phpstan": "^1.10"
+        "phpstan/phpstan": "^1.10",
+        "psy/psysh": "@stable",
+        "rector/rector": "^1.0"
     },
     "config": {
         "optimize-autoloader": true,
@@ -134,6 +135,10 @@
         "cs-fixer": "vendor/bin/php-cs-fixer fix --verbose --diff --path-mode=intersection",
         "rector-dry-run": "vendor/bin/rector process --dry-run",
         "rector": "vendor/bin/rector process",
-        "stan": "vendor/bin/phpstan analyze"
+        "stan": "vendor/bin/phpstan analyze",
+        "shell": [
+            "Composer\\Config::disableProcessTimeout",
+            "vendor/bin/psysh -c psysh-config.php"
+        ]
     }
 }

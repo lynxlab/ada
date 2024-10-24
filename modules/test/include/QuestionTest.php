@@ -244,7 +244,7 @@ abstract class QuestionTest extends NodeTest
 
             if ($feedback) {
                 $textArea->setAttribute('disabled', '');
-                $textArea->addChild(new CText($this->givenAnswer['risposta'][self::POST_EXTRA_VAR]));
+                $textArea->addChild(new CText($this->givenAnswer['risposta'][self::POST_EXTRA_VAR] ?? ''));
             } elseif (!empty($post_data[self::POST_EXTRA_VAR])) {
                 $textArea->addChild(new CText($post_data[self::POST_EXTRA_VAR]));
             }

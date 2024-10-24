@@ -2343,14 +2343,14 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         }
 
         if (AMADB::isError($result)) {
-            return new AMAError(AMA_ERR_GET);
+            $result = new AMAError(AMA_ERR_GET);
         }
 
         if (!is_array($result)) {
-            return new AMAError(AMA_ERR_NOT_FOUND);
+            $result = new AMAError(AMA_ERR_NOT_FOUND);
         }
 
-        if ($getAll === false) {
+        if (!AMADB::isError($result) && $getAll === false) {
             $ret_ha['istanza_id'] = $result[0];
             $ret_ha['istanza_ha']['data_inizio'] = $result[1];
             $ret_ha['istanza_ha']['durata'] = $result[2];
@@ -2358,9 +2358,8 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             $ret_ha['livello'] = $result[4];
             $ret_ha['tipo'] = $result[5];
             return $ret_ha;
-        } else {
-            return $result;
         }
+        return $result;
     }
 
     /**

@@ -21,6 +21,7 @@ use Lynxlab\ADA\Main\Traits\ADASingleton;
 use Lynxlab\ADA\Module\DebugBar\DataCollector\ADAAdminerCollector;
 use Lynxlab\ADA\Module\DebugBar\DataCollector\GitInfoCollector;
 use Lynxlab\ADA\Module\DebugBar\DataCollector\GlobalsCollector;
+use Lynxlab\ADA\Module\DebugBar\Storage\ADAFileStorage;
 
 class ADADebugBar extends DebugBar
 {
@@ -57,11 +58,13 @@ class ADADebugBar extends DebugBar
      */
     public static function addMessage(mixed $message)
     {
-        $backfiles = debug_backtrace();
-        $i = count(debug_backtrace()) > 1 ? 1 : 0;
-        $line = $backfiles[$i]['line'] ? 'line ' . $backfiles[$i]['line'] . ': ' : '';
-        $file = $backfiles[$i]['file'] ? basename($backfiles[$i]['file']) : 'info';
-        ADADebugBar::getInstance()['messages']->addMessage($line . $message, $file, is_string($message));
+        if (ADADebugBar::getInstance()->hasCollector('messages')) {
+            $backfiles = debug_backtrace();
+            $i = count(debug_backtrace()) > 1 ? 1 : 0;
+            $line = $backfiles[$i]['line'] ? 'line ' . $backfiles[$i]['line'] . ': ' : '';
+            $file = $backfiles[$i]['file'] ? basename($backfiles[$i]['file']) : 'info';
+            ADADebugBar::getInstance()['messages']->addMessage($line . $message, $file, is_string($message));
+        }
     }
 
     /**
@@ -70,5 +73,21 @@ class ADADebugBar extends DebugBar
     public function getPdoCollector()
     {
         return $this->pdoCollector;
+    }
+
+    /**
+     * Builds the storage for the ADADebugBar
+     *
+     * @param string $path
+     * @return \Lynxlab\ADA\Module\DebugBar\Storage\ADAFileStorage
+     */
+    public static function buildStorage($path)
+    {
+        if (!is_dir($path)) {
+            if (mkdir($path, 0775, true)) {
+                file_put_contents($path . '/.gitignore', "*\n!.gitignore");
+            }
+        }
+        return new ADAFileStorage($path);
     }
 }

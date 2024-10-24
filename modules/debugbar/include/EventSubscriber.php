@@ -10,7 +10,6 @@
 
 namespace Lynxlab\ADA\Module\DebugBar;
 
-use DebugBar\DataCollector\PDO\TraceablePDO;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -44,7 +43,8 @@ class EventSubscriber implements EventSubscriberInterface
         $this->debugbar = ADADebugBar::getInstance();
         $this->debugBarRender = $this->debugbar->getJavascriptRenderer()
             ->setBaseUrl(MODULES_DEBUGBAR_HTTP . '/vendor/maximebf/debugbar/src/DebugBar/Resources')
-            ->setEnableJqueryNoConflict(false)->setIncludeVendors(true);
+            ->setEnableJqueryNoConflict(false)->setIncludeVendors(true)
+            ->setOpenHandlerUrl(MODULES_DEBUGBAR_HTTP . '/ajax/open.php');
         if ($this->debugbar->hasCollector('time')) {
             $this->debugbar['time']->startMeasure('render');
         }
@@ -94,6 +94,15 @@ class EventSubscriber implements EventSubscriberInterface
          */
         if (($_SESSION['sess_id_user'] ?? 0) > 0) {
             $data = $event->getArguments();
+
+            if ($this->debugbar->hasCollector('ARE')) {
+                $this->debugbar['ARE']->setData(reset($data));
+            }
+
+            if ($this->debugbar->hasCollector('dispatcher')) {
+                $this->addDispatcherMsg();
+            }
+
             $debugbarCode = str_ireplace(
                 sprintf(
                     "%s.ajaxHandler.bindToXHR();",
@@ -106,15 +115,6 @@ class EventSubscriber implements EventSubscriberInterface
                 $this->debugBarRender->render()
             );
             $data['dataHa']['adadebugbar'] = $debugbarCode;
-
-            if ($this->debugbar->hasCollector('ARE')) {
-                $this->debugbar['ARE']->setData($data);
-            }
-
-            if ($this->debugbar->hasCollector('dispatcher')) {
-                $this->addDispatcherMsg();
-            }
-
             $event->setArguments($data);
         }
     }
@@ -127,12 +127,18 @@ class EventSubscriber implements EventSubscriberInterface
      */
     public function addPDOCollector(CoreEvent $event)
     {
-        $data = $event->getArguments();
-        // parse the dsn to get a dbname
-        $matched = [];
-        preg_match('/^([a-z]+):\/\/(\S*):(\S*)@(\S*)\/(\S*)$/', $data['dsn'], $matched);
-        [, $dbtype, $username, $password, $dbhost, $dbname] = $matched;
-        $this->debugbar->getPdoCollector()->addConnection(new TraceablePDO($data['db']->connectionObject()), $dbname);
+        if ($this->debugbar->getPdoCollector()) {
+            $data = $event->getArguments();
+            // parse the dsn to get a dbname
+            $matched = [];
+            preg_match('/^([a-z]+):\/\/(\S*):(\S*)@(\S*)\/(\S*)$/', $data['dsn'], $matched);
+            [, $dbtype, $username, $password, $dbhost, $dbname] = $matched;
+            $num = count(array_filter(
+                array_keys($this->debugbar->getPdoCollector()->getConnections()),
+                fn ($el) => str_starts_with($el, $dbname)
+            ));
+            $this->debugbar->getPdoCollector()->addConnection($data['db']->connectionObject(), $dbname . '#' . $num);
+        }
     }
 
     /**
@@ -147,11 +153,6 @@ class EventSubscriber implements EventSubscriberInterface
         if ($this->debugbar->hasCollector('time')) {
             $this->debugbar['time']->startMeasure('module-init');
         }
-        $data = $event->getArguments();
-        if (array_key_exists('isAjax', $data) && $data['isAjax']) {
-            \ob_start();
-            \register_shutdown_function([$this, 'flushHeaders']);
-        }
     }
 
     /**
@@ -162,19 +163,18 @@ class EventSubscriber implements EventSubscriberInterface
      */
     public function onPostModuleInit(CoreEvent $event)
     {
+        $this->debugbar->setStorage(
+            ADADebugBar::buildStorage(
+                ADA_UPLOAD_PATH . '/tmp/' . MODULES_DEBUGBAR_NAME . '/' . ($_SESSION['sess_id_user'] ?? 0)
+            )
+        );
         if ($this->debugbar->hasCollector('time')) {
             $this->debugbar['time']->stopMeasure('module-init');
         }
-    }
-
-    /**
-     * if an ajax call is detected, tell the debugbar to flush the headers
-     *
-     * @return void
-     */
-    public function flushHeaders()
-    {
-        $this->debugbar->sendDataInHeaders(true);
+        $data = $event->getArguments();
+        if (array_key_exists('isAjax', $data) && $data['isAjax']) {
+            $this->debugbar->sendDataInHeaders(true);
+        }
     }
 
     /**

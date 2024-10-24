@@ -16,8 +16,10 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\Utilities;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\Test\NodeTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -123,8 +125,80 @@ abstract class RootTest extends NodeTest
                             $points = $correction;
                             $attachment = null;
                         }
+                        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+                            $realAnswer = $answer_data;
+                            $thisArr = $this->toArray();
+                            $thisArr = reset($thisArr);
+                            $event = ADAEventDispatcher::buildEventAndDispatch(
+                                [
+                                    'eventClass' => ModuleTestEvent::class,
+                                    'eventName' => ModuleTestEvent::PRESAVEANSWER,
+                                ],
+                                static::class,
+                                [
+                                    'answer_data' => $answer_data,
+                                ]
+                            );
+                            $args = $event->getArguments();
+                            if (array_key_exists('answer_data', $args)) {
+                                $answer_data = $args['answer_data'];
+                            }
+                        }
                         $answer_data = $question->serializeAnswers($answer_data);
                         $obj = $dh->testSaveAnswer($this->id_history_test, $_SESSION['sess_id_user'], $topic_id, $question_id, $_SESSION['sess_id_course'], $_SESSION['sess_id_course_instance'], $answer_data, $points, $attachment);
+                        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+                            /**
+                             * $thisArr and $realAnswer are set before the PRESAVEANSWER is dispatched.
+                             */
+                            if (is_array($realAnswer[self::POST_ANSWER_VAR])) {
+                                $realAnswer = array_map(
+                                    fn ($answer) => $thisArr['topics'][$topic_id]['questions'][$question_id]['answers'][$answer],
+                                    $realAnswer[self::POST_ANSWER_VAR]
+                                );
+                            } elseif (array_key_exists(self::POST_ANSWER_VAR, $realAnswer)) {
+                                $realAnswer = [
+                                    array_merge(
+                                        $thisArr['topics'][$topic_id]['questions'][$question_id]['answers'][$realAnswer[self::POST_ANSWER_VAR]] ?? [],
+                                        [self::POST_EXTRA_VAR => $realAnswer[self::POST_EXTRA_VAR] ?? null],
+                                    ),
+                                ];
+                            }
+                            $realAnswer[self::POST_ANSWER_VAR][0]['points'] = $points;
+                            ADAEventDispatcher::buildEventAndDispatch(
+                                [
+                                    'eventClass' => ModuleTestEvent::class,
+                                    'eventName' => ModuleTestEvent::POSTSAVEANSWER,
+                                ],
+                                static::class,
+                                [
+                                    'idHistoryTest' => $this->id_history_test,
+                                    'idUser' => $_SESSION['sess_id_user'],
+                                    'idCourse' => $_SESSION['sess_id_course'],
+                                    'idCourseInstance' => $_SESSION['sess_id_course_instance'],
+                                    'idTopic' => $topic_id,
+                                    'survey' => [
+                                        'id' => $thisArr['id'],
+                                        'nome' => $thisArr['nome'],
+                                        'titolo' => $thisArr['titolo'],
+                                    ],
+                                    self::GET_TOPIC_VAR => [
+                                        'id' => $topic_id,
+                                        'nome' => $thisArr['topics'][$topic_id]['nome'],
+                                        'titolo' => $thisArr['topics'][$topic_id]['titolo'],
+                                    ],
+                                    self::POST_TOPIC_VAR => [
+                                        'id' => $question_id,
+                                        'nome' => $thisArr['topics'][$topic_id]['questions'][$question_id]['nome'],
+                                        'titolo' => $thisArr['topics'][$topic_id]['questions'][$question_id]['titolo'],
+                                        'consegna' => $thisArr['topics'][$topic_id]['questions'][$question_id]['consegna'],
+                                        'answers' => $thisArr['topics'][$topic_id]['questions'][$question_id]['answers'],
+                                    ],
+                                    self::POST_ANSWER_VAR => $realAnswer ?? [],
+                                    'points' => $points,
+                                    'attachment' => $attachment,
+                                ]
+                            );
+                        }
                         if (is_object($obj) && ($obj::class == AMAError::class || is_subclass_of($obj, 'PEAR_Error'))) {
                             $result = false;
                             break 2;
@@ -1050,6 +1124,7 @@ abstract class RootTest extends NodeTest
                 ADA_NEXT_NODE_TEST_RETURN => translateFN('Mostra link al nodo successivo del corso'),
                 ADA_INDEX_TEST_RETURN => translateFN('Mostra link all\'indice del corso'),
                 ADA_COURSE_INDEX_TEST_RETURN => translateFN('Mostra link all\'elenco dei corsi'),
+                ADA_COURSE_FIRSTNODE_TEST_RETURN => translateFN('Mosta link al nodo iniziale del corso'),
             ];
             $returnLink = $options[$this->returnLink];
             $lis[++$i] = CDOMElement::create('li', 'class:li_test_info');

@@ -44,12 +44,14 @@ final class ModuleInit
     {
         //ADALogger::log('session control FN');
 
-        if (!session_start()) {
-            /*
-         * As of PHP 5.3.0 if session fails to star for some reason,
-         * FALSE is returned.
-         */
-            ADALogger::log('session failed to start');
+        if (!ADA_CLI) {
+            if (!session_start()) {
+                /*
+             * As of PHP 5.3.0 if session fails to star for some reason,
+             * FALSE is returned.
+             */
+                ADALogger::log('session failed to start');
+            }
         }
 
         /**
@@ -155,7 +157,7 @@ final class ModuleInit
                 $domain = $pieces['host'] ?? '';
                 $scheme = $pieces['scheme'] ?? '';
                 if (strlen($scheme . $domain) > 0) {
-                    $redirectTo .= '?r=' . urlencode($scheme . '://' . $domain . $_SERVER['REQUEST_URI']);
+                    $redirectTo .= '?r=' . urlencode($scheme . '://' . $domain . ($_SERVER['REQUEST_URI'] ?? ''));
                 }
             }
         } else {
@@ -283,14 +285,14 @@ final class ModuleInit
             /*
          * Check if this user is allowed to access the current module
          */
-            if (!in_array($sess_userObj->getType(), $allowedUsersAr)) {
+            if (!ADA_CLI && !in_array($sess_userObj->getType(), $allowedUsersAr)) {
                 $requestedLink = '';
                 if (!isset($_REQUEST['r']) && $sess_userObj instanceof ADAGuest) {
                     $pieces = parse_url(HTTP_ROOT_DIR);
                     $domain = $pieces['host'] ?? '';
                     $scheme = $pieces['scheme'] ?? '';
                     if (strlen($scheme . $domain) > 0) {
-                        $requestedLink = '?r=' . urlencode($scheme . '://' . $domain . $_SERVER['REQUEST_URI']);
+                        $requestedLink = '?r=' . urlencode($scheme . '://' . $domain . ($_SERVER['REQUEST_URI'] ?? ''));
                     }
                 }
                 header('Location: ' . $sess_userObj->getHomePage() . $requestedLink);
