@@ -1,7 +1,5 @@
 <?php
 
-use FontLib\Table\Type\head;
-use Jawira\CaseConverter\Convert;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\DBRead;
@@ -79,7 +77,7 @@ if (array_key_exists('output', $_GET)) {
 if (defined('ADA_SURVEY_TO_CSV') && ADA_SURVEY_TO_CSV) {
     $reportData['surveys'] = array_filter(
         $reportData['surveys'],
-        fn($el) => !empty(SurveyTest::buildCSVFileInfo(
+        fn ($el) => !empty(SurveyTest::buildCSVFileInfo(
             $_SESSION['sess_id_user'],
             $_SESSION['sess_id_course'],
             $_SESSION['sess_id_course_instance'],
@@ -114,7 +112,7 @@ if (array_key_exists('surveys', $reportData) && $hasSurveys) {
             );
             $link = CDOMElement::create('a', 'class: ui fluid button, href:' . $fileInfo['fileName']);
             $link->setAttribute('style', 'margin-top: 1em;');
-            $link->addChild(new CText($surveyData['nome'] . ' ('. Utilities::ts2dFN($fileInfo['filemtime']) .')'));
+            $link->addChild(new CText($surveyData['nome'] . ' (' . Utilities::ts2dFN($fileInfo['filemtime']) . ')'));
             $data->addChild($link);
         } else {
             $tObj = SurveyTest::buildSurveyReportTable($surveyData);

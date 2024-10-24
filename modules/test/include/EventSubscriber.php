@@ -10,7 +10,6 @@
 
 namespace Lynxlab\ADA\Module\Test;
 
-use Jawira\CaseConverter\Convert;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Soundasleep\Html2Text;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
