@@ -156,7 +156,7 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
             // remove magic words from keywords
             $newKeywords = array_filter(
                 explode(',', $renderData['content_dataAr']['keywords'] ?? ''),
-                fn($keyword) => !static::hasMagicWord(strip_tags($keyword))
+                fn ($keyword) => !static::hasMagicWord(strip_tags($keyword))
             );
             $renderData['content_dataAr']['keywords'] = implode(',', $newKeywords);
 

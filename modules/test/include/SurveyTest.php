@@ -367,7 +367,8 @@ class SurveyTest extends RootTest
      * @return array|null
      *   array containg fileName and filemtime or null if file not found
      */
-    public static function buildCSVFileInfo($idUser, $idCourse, $idInstance, $surveyName, $http = false, $mustexists = true) {
+    public static function buildCSVFileInfo($idUser, $idCourse, $idInstance, $surveyName, $http = false, $mustexists = true)
+    {
         $filePath = ROOT_DIR . MEDIA_PATH_DEFAULT . $idUser . '/csv-surveys/';
         $fileName = (new Convert($idCourse . ' ' . $idInstance . ' ' . $surveyName))->toKebab() . '.csv';
         $filemtime = file_exists($filePath . $fileName) ? filemtime($filePath . $fileName) : 0;
