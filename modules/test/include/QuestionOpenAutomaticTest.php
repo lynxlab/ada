@@ -78,7 +78,7 @@ class QuestionOpenAutomaticTest extends QuestionTest
             $risposte = [];
             if (!empty($this->children)) {
                 foreach ($this->children as $k => $v) {
-                    $risposte[] = $v->testo . ' (' . $v->correttezza . ' ' . translateFN('Punti') . ')';
+                    $risposte[] = $v->testo . ' (' . (int)$v->correttezza . ' ' . translateFN('Punti') . ')';
                 }
             }
             $div->addChild(new CText(implode('<br/>', $risposte)));
@@ -113,7 +113,7 @@ class QuestionOpenAutomaticTest extends QuestionTest
             $points = $this->getMaxScore();
         }
 
-        return ['points' => $points,'attachment' => null];
+        return ['points' => $points, self::POST_ATTACHMENT_VAR => null];
     }
 
     /**

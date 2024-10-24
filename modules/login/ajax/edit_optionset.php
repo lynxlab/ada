@@ -4,6 +4,7 @@ use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Module\Login\AbstractLogin;
 use Lynxlab\ADA\Module\Login\AMALoginDataHandler;
 use Lynxlab\ADA\Module\Login\Constants;
+use Lynxlab\ADA\Module\Login\LdapManagement;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -64,7 +65,7 @@ if (!is_null($optionsClassName)) {
         // build an optionManager with passed POST data
         $optionsManager = new $optionsClassName($_POST);
         // try to save it
-        if (is_a($optionsManager, 'LdapManagement')) {
+        if (is_a($optionsManager, LdapManagement::class)) {
             $res = $GLOBALS['dh']->saveOptionSet($optionsManager->toArray());
             $editElement = 'Fonte';  // translatedFN delayed when building msg
         } else {

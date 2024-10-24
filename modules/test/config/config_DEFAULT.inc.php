@@ -8,6 +8,9 @@
  */
 
 use Jawira\CaseConverter\Convert;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\Test\EventSubscriber;
 
 // MODULE'S OWN DEFINES HERE
 
@@ -19,8 +22,8 @@ define('MODULES_TEST_PATH', MODULES_DIR . DIRECTORY_SEPARATOR . $moduledir->getS
 define('MODULES_TEST_HTTP', HTTP_ROOT_DIR . str_replace(ROOT_DIR, '', MODULES_DIR) . '/' . $moduledir->getSource());
 
 /*
-         * Test and Survey constants (tables: test, history_test, history_answer )
-         */
+ * Test and Survey constants (tables: test, history_test, history_answer )
+ */
 define('ADA_CUSTOM_EXERCISE_TEST', 9); //MUST MATCH ADA_PERSONAL_EXERCISE_TYPE!!!!!!!
 
 //test node type (first character of column "tipo")
@@ -116,3 +119,13 @@ define('ADA_CASE_INSENSITIVE_TEST', 1); //correct the answer with case insensiti
 
 //if true the system allows the redirect to modules/test/index.php
 define('ADA_REDIRECT_TO_TEST', true);
+
+/*
+ * If true, surveys answers are not saved to the db
+ * but in the media dir of each instance tutors.
+ */
+define('ADA_SURVEY_TO_CSV', false);
+
+if (ADA_SURVEY_TO_CSV && ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
+    ADAEventDispatcher::getInstance()->addSubscriber(new EventSubscriber());
+}

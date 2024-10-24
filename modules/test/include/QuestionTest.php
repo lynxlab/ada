@@ -20,7 +20,7 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 abstract class QuestionTest extends NodeTest
 {
     public const NODE_TYPE = ADA_GROUP_QUESTION;
-    public const CHILD_CLASS = 'AnswerTest';
+    public const CHILD_CLASS = AnswerTest::class;
 
     protected $question;
     protected $comment;
@@ -128,7 +128,7 @@ abstract class QuestionTest extends NodeTest
                 if (is_null($this->correttezza)) {
                     $text = '(' . translateFN('Nessun punteggio inserito') . ')';
                 } else {
-                    $text = '(' . $this->correttezza . ' ' . translateFN('punti') . ')';
+                    $text = '(' . (int)$this->correttezza . ' ' . translateFN('punti') . ')';
                 }
             }
 
@@ -244,7 +244,7 @@ abstract class QuestionTest extends NodeTest
 
             if ($feedback) {
                 $textArea->setAttribute('disabled', '');
-                $textArea->addChild(new CText($this->givenAnswer['risposta'][self::POST_EXTRA_VAR]));
+                $textArea->addChild(new CText($this->givenAnswer['risposta'][self::POST_EXTRA_VAR] ?? ''));
             } elseif (!empty($post_data[self::POST_EXTRA_VAR])) {
                 $textArea->addChild(new CText($post_data[self::POST_EXTRA_VAR]));
             }

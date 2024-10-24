@@ -158,11 +158,11 @@ if ($file !== false) {
     header("Content-Description: File Transfer");
     if ($mimetype === 'application/octet-stream' || $mimetype === false) {
         header("Content-Type: application/force-download");
-        header("Content-Disposition: attachment; filename=" . basename($filename));
     } else {
         header("Content-Type: $mimetype");
-        header("Content-Length: " . filesize($download_path . DIRECTORY_SEPARATOR . $complete_file_name));
     }
+    header("Content-Length: " . filesize($download_path . DIRECTORY_SEPARATOR . $complete_file_name));
+    header("Content-Disposition: attachment; filename=" . basename($filename));
     @readfile($download_path . DIRECTORY_SEPARATOR . $complete_file_name);
     exit;
 } else {

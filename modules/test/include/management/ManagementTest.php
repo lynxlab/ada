@@ -113,10 +113,12 @@ abstract class ManagementTest
             }
         }
 
-        foreach([
+        foreach (
+            [
             $this->action,
             (new Convert($this->action))->toCamel(),
-        ] as $method) {
+            ] as $method
+        ) {
             if (method_exists($this, $method)) {
                 $array = [
                     'status' => $this->status(),

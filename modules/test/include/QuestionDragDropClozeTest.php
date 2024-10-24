@@ -190,7 +190,7 @@ class QuestionDragDropClozeTest extends QuestionClozeTest
                     $popup->setAttribute('style', 'display:none;');
                     $popup->addChild(new CText($correctAnswer->testo));
                     if ($this->rating) {
-                        $popup->addChild(new CText(' (' . $correctAnswer->correttezza . ' ' . translateFN('Punti') . ')'));
+                        $popup->addChild(new CText(' (' . (int)$correctAnswer->correttezza . ' ' . translateFN('Punti') . ')'));
                     }
 
                     $obj->setAttribute('class', $class . ' answerPopup');
@@ -233,8 +233,7 @@ class QuestionDragDropClozeTest extends QuestionClozeTest
             if (!empty($this->children)) {
                 foreach ($this->children as $k => $v) {
                     if ($v->ordine == $ordine) {
-                        $v->correttezza = is_null($v->correttezza) ? 0 : $v->correttezza;
-                        $risposte[] = $v->testo . ' (' . $v->correttezza . ' ' . translateFN('Punti') . ')';
+                        $risposte[] = $v->testo . ' (' . (int)$v->correttezza . ' ' . translateFN('Punti') . ')';
                     }
                 }
             }
@@ -272,7 +271,7 @@ class QuestionDragDropClozeTest extends QuestionClozeTest
             $points = $this->getMaxScore();
         }
 
-        return ['points' => $points,'attachment' => null];
+        return ['points' => $points, self::POST_ATTACHMENT_VAR => null];
     }
 
     /**

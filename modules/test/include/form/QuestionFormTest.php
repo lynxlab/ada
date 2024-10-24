@@ -93,18 +93,18 @@ class QuestionFormTest extends FormTest
 
         //titolo
         $this->addTextInput('titolo', translateFN('Titolo') . ':')
-             ->withData($this->data['titolo']);
+             ->withData($this->data['titolo'] ?? '');
 
         //consegna
         $this->addTextarea('consegna', translateFN('Consegna') . ':')
-             ->withData(Node::prepareInternalLinkMediaForEditor($this->data['consegna']));
+             ->withData(Node::prepareInternalLinkMediaForEditor($this->data['consegna'] ?? ''));
 
         //importazione template
         $this->addTemplateEditor($injectTemplate, translateFN('Importare un template (opzionale):'));
 
         //descrizione
         $this->addTextarea('testo', translateFN('Descrizione') . ':')
-             ->withData(Node::prepareInternalLinkMediaForEditor($this->data['testo']));
+             ->withData(Node::prepareInternalLinkMediaForEditor($this->data['testo'] ?? ''));
 
         //commento a fine domanda
         $options = [
@@ -122,7 +122,7 @@ class QuestionFormTest extends FormTest
         //didascalia commento fine domanda
         $didascalia = $this->addTextInput($didascalia, translateFN('Testo commento fine domanda') . ':')
                            ->setValidator(null)
-                           ->withData($this->data[$didascalia]);
+                           ->withData($this->data[$didascalia] ?? '');
         if (isset($this->data[$commento]) && $this->data[$commento] == ADA_YES_TEST_COMMENT) {
             $didascalia->setRequired();
         }

@@ -95,11 +95,11 @@ class TopicFormTest extends FormTest
 
         //titolo
         $this->addTextInput('titolo', translateFN('Titolo') . ':')
-             ->withData($this->data['titolo']);
+             ->withData($this->data['titolo'] ?? '');
 
         //descrizione
         $this->addTextarea('testo', translateFN('Descrizione') . ':')
-             ->withData(Node::prepareInternalLinkMediaForEditor($this->data['testo']));
+             ->withData(Node::prepareInternalLinkMediaForEditor($this->data['testo'] ?? ''));
 
         //durata
         if (false && !is_null($this->id_nodo_parent)) {

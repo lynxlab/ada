@@ -81,7 +81,7 @@ class QuestionManagementTest extends ManagementTest
             5 => 0, //applicable only for certain cloze subtype
         ];
 
-        if ($_POST['step'] == 2 && isset($_SESSION['new_question'][$_GET['id_nodo_parent']])) {
+        if ($_POST['step'] ?? null == 2 && isset($_SESSION['new_question'][$_GET['id_nodo_parent']])) {
             $new_q = &$_SESSION['new_question'][$_GET['id_nodo_parent']];
             $this->tipo[1] = intval($new_q['tipologia']);
             $this->tipo[2] = intval($_POST['commento']);
@@ -117,10 +117,10 @@ class QuestionManagementTest extends ManagementTest
             if (isset($_POST['commento'])) {
                 $this->tipo[2] = intval($_POST['commento']);
             }
-            switch (strval($this->tipo)[1]) {
+            switch ($this->tipo[1]) {
                 case ADA_STANDARD_TEST_TYPE:
                 case ADA_MULTIPLE_CHECK_TEST_TYPE:
-                    $this->tipo[3] = intval($_POST['variant']);
+                    $this->tipo[3] = intval($_POST['variant'] ?? null);
                     break;
                 case ADA_CLOZE_TEST_TYPE:
                     switch (strval($this->tipo)[3]) {
@@ -224,7 +224,7 @@ class QuestionManagementTest extends ManagementTest
                 if (!$bypass) {
                     $_SESSION['new_question'][$_POST['id_nodo_parent']] = $_POST;
                 }
-                $form = $this->instantiateObject($this->test['id_nodo'], $_POST, $_GET['id_nodo_parent'], $_POST['tipologia'], $_POST['cloze']);
+                $form = $this->instantiateObject($this->test['id_nodo'], $_POST, $_GET['id_nodo_parent'], $_POST['tipologia'] ?? null, $_POST['cloze'] ?? null);
                 $html = $form->getHtml();
             } else {
                 $html = $form->getHtml();

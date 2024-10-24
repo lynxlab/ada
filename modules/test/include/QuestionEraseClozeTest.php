@@ -277,7 +277,7 @@ class QuestionEraseClozeTest extends QuestionClozeTest
                     $class .= ' answerPopup';
                     $title = ' title="' . $ref . '"';
 
-                    $popup = '<div id="popup_' . $ref . '" style="display:none;">' . $answer->correttezza . ' ' . translateFN('Punti') . '</div>';
+                    $popup = '<div id="popup_' . $ref . '" style="display:none;">' . (int)$answer->correttezza . ' ' . translateFN('Punti') . '</div>';
                 }
                 $class = ' ' . $class;
             }
@@ -319,8 +319,7 @@ class QuestionEraseClozeTest extends QuestionClozeTest
             $answers = $this->searchChild($ordine, 'ordine', true);
             if (!empty($answers)) {
                 foreach ($answers as $v) {
-                    $v->correttezza = is_null($v->correttezza) ? 0 : $v->correttezza;
-                    $risposte[] = $v->testo . ' (' . $v->correttezza . ' ' . translateFN('Punti') . ')';
+                    $risposte[] = $v->testo . ' (' . (int)$v->correttezza . ' ' . translateFN('Punti') . ')';
                 }
             }
             $div->addChild(new CText(implode('<br/>', $risposte)));
@@ -358,7 +357,7 @@ class QuestionEraseClozeTest extends QuestionClozeTest
             $points = $this->getMaxScore();
         }
 
-        return ['points' => $points,'attachment' => null];
+        return ['points' => $points, self::POST_ATTACHMENT_VAR => null];
     }
 
     /**

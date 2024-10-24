@@ -12,6 +12,8 @@ use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 use Lynxlab\ADA\Module\Test\NodeTest;
+use Lynxlab\ADA\Module\Test\SurveyTest;
+use Lynxlab\ADA\Module\Test\TestTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -111,10 +113,10 @@ if (!AMATestDataHandler::isError($test)) {
     }
 
     if ($id_profile == AMA_TYPE_AUTHOR) {
-        if (is_a($test, 'TestTest')) {
+        if (is_a($test, TestTest::class)) {
             $what = translateFN('test');
             $mode = 'test';
-        } elseif (is_a($test, 'SurveyTest')) {
+        } elseif (is_a($test, SurveyTest::class)) {
             $what = translateFN('sondaggio');
             $mode = 'survey';
         }
@@ -179,7 +181,7 @@ if (isset($other_node_data['private_notes'])) {
 }
 
 if ($reg_enabled && isset($addBookmark)) {
-    $content_dataAr['addBookmark'] = $addBookmark;
+    $content_dataAr['addBookmark'] = $addBookmark ?? null;
 } else {
     $content_dataAr['addBookmark'] = "";
 }

@@ -16,8 +16,10 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\Course\Course;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Main\Utilities;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\Test\NodeTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -118,13 +120,85 @@ abstract class RootTest extends NodeTest
                         $correction = $question->exerciseCorrection($answer_data);
                         if (is_array($correction)) {
                             $points = $correction['points'];
-                            $attachment = $correction['attachment'];
+                            $attachment = $correction[self::POST_ATTACHMENT_VAR];
                         } else {
                             $points = $correction;
                             $attachment = null;
                         }
+                        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+                            $realAnswer = $answer_data;
+                            $thisArr = $this->toArray();
+                            $thisArr = reset($thisArr);
+                            $event = ADAEventDispatcher::buildEventAndDispatch(
+                                [
+                                    'eventClass' => ModuleTestEvent::class,
+                                    'eventName' => ModuleTestEvent::PRESAVEANSWER,
+                                ],
+                                static::class,
+                                [
+                                    'answer_data' => $answer_data,
+                                ]
+                            );
+                            $args = $event->getArguments();
+                            if (array_key_exists('answer_data', $args)) {
+                                $answer_data = $args['answer_data'];
+                            }
+                        }
                         $answer_data = $question->serializeAnswers($answer_data);
                         $obj = $dh->testSaveAnswer($this->id_history_test, $_SESSION['sess_id_user'], $topic_id, $question_id, $_SESSION['sess_id_course'], $_SESSION['sess_id_course_instance'], $answer_data, $points, $attachment);
+                        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+                            /**
+                             * $thisArr and $realAnswer are set before the PRESAVEANSWER is dispatched.
+                             */
+                            if (is_array($realAnswer[self::POST_ANSWER_VAR])) {
+                                $realAnswer = array_map(
+                                    fn ($answer) => $thisArr['topics'][$topic_id]['questions'][$question_id]['answers'][$answer],
+                                    $realAnswer[self::POST_ANSWER_VAR]
+                                );
+                            } elseif (array_key_exists(self::POST_ANSWER_VAR, $realAnswer)) {
+                                $realAnswer = [
+                                    array_merge(
+                                        $thisArr['topics'][$topic_id]['questions'][$question_id]['answers'][$realAnswer[self::POST_ANSWER_VAR]] ?? [],
+                                        [self::POST_EXTRA_VAR => $realAnswer[self::POST_EXTRA_VAR] ?? null],
+                                    ),
+                                ];
+                            }
+                            $realAnswer[self::POST_ANSWER_VAR][0]['points'] = $points;
+                            ADAEventDispatcher::buildEventAndDispatch(
+                                [
+                                    'eventClass' => ModuleTestEvent::class,
+                                    'eventName' => ModuleTestEvent::POSTSAVEANSWER,
+                                ],
+                                static::class,
+                                [
+                                    'idHistoryTest' => $this->id_history_test,
+                                    'idUser' => $_SESSION['sess_id_user'],
+                                    'idCourse' => $_SESSION['sess_id_course'],
+                                    'idCourseInstance' => $_SESSION['sess_id_course_instance'],
+                                    'idTopic' => $topic_id,
+                                    'survey' => [
+                                        'id' => $thisArr['id'],
+                                        'nome' => $thisArr['nome'],
+                                        'titolo' => $thisArr['titolo'],
+                                    ],
+                                    self::GET_TOPIC_VAR => [
+                                        'id' => $topic_id,
+                                        'nome' => $thisArr['topics'][$topic_id]['nome'],
+                                        'titolo' => $thisArr['topics'][$topic_id]['titolo'],
+                                    ],
+                                    self::POST_TOPIC_VAR => [
+                                        'id' => $question_id,
+                                        'nome' => $thisArr['topics'][$topic_id]['questions'][$question_id]['nome'],
+                                        'titolo' => $thisArr['topics'][$topic_id]['questions'][$question_id]['titolo'],
+                                        'consegna' => $thisArr['topics'][$topic_id]['questions'][$question_id]['consegna'],
+                                        'answers' => $thisArr['topics'][$topic_id]['questions'][$question_id]['answers'],
+                                    ],
+                                    self::POST_ANSWER_VAR => $realAnswer ?? [],
+                                    'points' => $points,
+                                    'attachment' => $attachment,
+                                ]
+                            );
+                        }
                         if (is_object($obj) && ($obj::class == AMAError::class || is_subclass_of($obj, 'PEAR_Error'))) {
                             $result = false;
                             break 2;
@@ -385,7 +459,7 @@ abstract class RootTest extends NodeTest
                         if (!empty($sub->children)) {
                             foreach ($sub->children as $i) {
                                 $i->setDisplay(false);
-                                if (is_a($i, 'TopicTest')) {
+                                if (is_a($i, TopicTest::class)) {
                                     if (!empty($i->children)) {
                                         foreach ($i->children as $v) {
                                             $v->setDisplay(false);
@@ -402,10 +476,10 @@ abstract class RootTest extends NodeTest
                     if (isset(self::$nodesArray[$v])) {
                         $q = self::$nodesArray[$v];
                         $q->setDisplay(true);
-                        $t = $q->searchParent('TopicTest');
+                        $t = $q->searchParent(TopicTest::class);
                         if (!is_null($t)) {
                             $t->setDisplay(true);
-                            $t = $t->searchParent('TopicTest');
+                            $t = $t->searchParent(TopicTest::class);
                             if (!is_null($t)) {
                                 $t->setDisplay(true);
                             }
@@ -432,7 +506,7 @@ abstract class RootTest extends NodeTest
                 $i = $sub->children[$r];
                 if (!in_array($i->id_nodo, $tmpList)) {
                     $tmpList[] = $i->id_nodo;
-                    if (is_a($i, 'QuestionTest')) {
+                    if (is_a($i, QuestionTest::class)) {
                         $this->randomQuestion[] = $i->id_nodo;
                     } else {
                         $this->pickRandomQuestionTopic($i);
@@ -591,7 +665,7 @@ abstract class RootTest extends NodeTest
         } else {
             $out = CDOMElement::create('form', 'id:testForm,method:post');
             $out->setAttribute('enctype', 'multipart/form-data');
-            $out->setAttribute('onsubmit', 'return confirmSubmit();');
+            $out->setAttribute('onsubmit', 'confirmSubmit(this); return false;');
             $out->addChild(new CText('<script type="text/javascript">var confirmEmptyAnswers = "' . translateFN('Non hai risposto ad una o più domande. Confermi l\'invio?') . '";</script>'));
         }
 
@@ -664,7 +738,12 @@ abstract class RootTest extends NodeTest
                 $div->setAttribute('class', 'submit_test');
                 if ($this->currentTopic > 0) {
                     $a = CDOMElement::create('a');
-                    $a->setAttribute('href', MODULES_TEST_HTTP . '/index.php?id_test=' . $this->id_nodo . '&topic=' . ($this->currentTopic - 1));
+                    $a->setAttribute(
+                        'href',
+                        MODULES_TEST_HTTP . '/index.php?id_test=' .
+                        $this->id_nodo . '&topic=' .
+                        ((int)($this->currentTopic == self::EOT ? $this->countChildren() : $this->currentTopic) - 1)
+                    );
                     $a->addChild(new CText(translateFN('Pagina precedente')));
                     $div->addChild(new CText(' [ '));
                     $div->addChild($a);
@@ -686,7 +765,12 @@ abstract class RootTest extends NodeTest
 
                 if ($this->currentTopic < count($this->children) - 1) {
                     $a = CDOMElement::create('a');
-                    $a->setAttribute('href', MODULES_TEST_HTTP . '/index.php?id_test=' . $this->id_nodo . '&topic=' . ($this->currentTopic + 1));
+                    $a->setAttribute(
+                        'href',
+                        MODULES_TEST_HTTP . '/index.php?id_test=' .
+                        $this->id_nodo . '&topic=' .
+                        ((int)($this->currentTopic == self::EOT ? $this->countChildren() : $this->currentTopic) + 1)
+                    );
                     $a->addChild(new CText(translateFN('Pagina successiva')));
                     $div->addChild(new CText(' [ '));
                     $div->addChild($a);
@@ -739,7 +823,7 @@ abstract class RootTest extends NodeTest
                     $questions = [];
                     while (!empty($genericItems)) {
                         foreach ($genericItems as $k => $child) {
-                            if (!is_subclass_of($child, 'QuestionTest')) {
+                            if (!is_subclass_of($child, QuestionTest::class)) {
                                 for ($i = 0; $i < $child->countChildren(); $i++) {
                                     $genericItems[] = $child->getChild($i);
                                 }
@@ -1040,6 +1124,7 @@ abstract class RootTest extends NodeTest
                 ADA_NEXT_NODE_TEST_RETURN => translateFN('Mostra link al nodo successivo del corso'),
                 ADA_INDEX_TEST_RETURN => translateFN('Mostra link all\'indice del corso'),
                 ADA_COURSE_INDEX_TEST_RETURN => translateFN('Mostra link all\'elenco dei corsi'),
+                ADA_COURSE_FIRSTNODE_TEST_RETURN => translateFN('Mosta link al nodo iniziale del corso'),
             ];
             $returnLink = $options[$this->returnLink];
             $lis[++$i] = CDOMElement::create('li', 'class:li_test_info');
@@ -1070,7 +1155,7 @@ abstract class RootTest extends NodeTest
             $start = 0;
             $limit = $this->countChildren();
             if ($this->sequenced) {
-                $start = ($this->currentTopic - 1);
+                $start = (int)($this->currentTopic == self::EOT ? $limit : $this->currentTopic) - 1;
                 if ($start < 0) {
                     $start = 0;
                 }
@@ -1080,11 +1165,11 @@ abstract class RootTest extends NodeTest
                 $topic = $this->getChild($i);
                 if (!empty($topic->children)) {
                     foreach ($topic->children as $subTopic) {
-                        if (is_a($subTopic, 'TopicTest')) {
+                        if (is_a($subTopic, TopicTest::class)) {
                             foreach ($subTopic->children as $v) {
                                 $questions[] = $v;
                             }
-                        } elseif (is_a($subTopic, 'QuestionTest')) {
+                        } elseif (is_a($subTopic, QuestionTest::class)) {
                             $questions[] = $subTopic;
                         }
                     }

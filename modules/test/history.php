@@ -50,7 +50,7 @@ if ($userObj->tipo == AMA_TYPE_STUDENT && ($self_instruction)) {
     $self = 'tutor';
 }
 
-if (!isset($course_instanceObj) || !is_a($course_instanceObj, 'CourseInstance')) {
+if (!isset($course_instanceObj) || !is_a($course_instanceObj, CourseInstance::class)) {
     $course_instanceObj = DBRead::readCourseInstanceFromDB($_GET['id_course_instance']);
 }
 
@@ -117,6 +117,9 @@ if ($com_enabled) {
 $layout_dataAr['JS_filename'] = [
     JQUERY,
     JQUERY_UI,
+    JQUERY_DATATABLE,
+    SEMANTICUI_DATATABLE,
+    JQUERY_DATATABLE_DATE,
     JQUERY_NO_CONFLICT,
     MODULES_TEST_PATH . '/js/dragdrop.js',
     ROOT_DIR . '/js/browsing/virtual_keyboard.js',
@@ -129,6 +132,7 @@ if ($userObj->tipo == AMA_TYPE_STUDENT && ($self_instruction)) {
 
 $layout_dataAr['CSS_filename'] = [
     JQUERY_UI_CSS,
+    SEMANTICUI_DATATABLE_CSS,
 ];
 
 if ($userObj->tipo == AMA_TYPE_STUDENT && ($self_instruction)) {
@@ -136,4 +140,5 @@ if ($userObj->tipo == AMA_TYPE_STUDENT && ($self_instruction)) {
         ROOT_DIR . '/modules/test/layout/ada_blu/css/tutor.css';   //for tutorSelfInstruction.tpl
 }
 $menuOptions['self_instruction'] = $self_instruction;
-ARE::render($layout_dataAr, $content_dataAr, null, null, $menuOptions);
+$options['onload_func'] = 'initTestHistory();';
+ARE::render($layout_dataAr, $content_dataAr, null, $options, $menuOptions);

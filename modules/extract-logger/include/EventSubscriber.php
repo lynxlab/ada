@@ -31,7 +31,7 @@ class EventSubscriber implements EventSubscriberInterface
     public function extractLogger(CoreEvent $event)
     {
         $arguments = $event->getArguments();
-        (AMAExtractloggerDataHandler::instance())->logData($arguments['script'], $arguments['class'], $arguments['data']);
+        (AMAExtractloggerDataHandler::getInstance())->logData($arguments['script'], $arguments['class'], $arguments['data']);
         $event->setArguments($arguments);
     }
 }

@@ -1,9 +1,12 @@
 <?php
 
+use FontLib\Table\Type\head;
+use Jawira\CaseConverter\Convert;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\DBRead;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Helper\BrowsingHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Utilities;
@@ -47,7 +50,7 @@ $dh = $GLOBALS['dh'];
 $self = Utilities::whoami();
 
 /** @var \Lynxlab\ADA\Main\Course\CourseInstance $course_instanceObj */
-if (!isset($course_instanceObj) || !is_a($course_instanceObj, 'CourseInstance')) {
+if (!isset($course_instanceObj) || !is_a($course_instanceObj, CourseInstance::class)) {
     $course_instanceObj = DBRead::readCourseInstanceFromDB($_GET['id_course_instance']);
 }
 
@@ -73,14 +76,51 @@ if (array_key_exists('output', $_GET)) {
     }
 }
 
+if (defined('ADA_SURVEY_TO_CSV') && ADA_SURVEY_TO_CSV) {
+    $reportData['surveys'] = array_filter(
+        $reportData['surveys'],
+        fn($el) => !empty(SurveyTest::buildCSVFileInfo(
+            $_SESSION['sess_id_user'],
+            $_SESSION['sess_id_course'],
+            $_SESSION['sess_id_course_instance'],
+            $el['nome']
+        ))
+    );
+}
 $hasSurveys = !empty($reportData['surveys']);
 
 if (array_key_exists('surveys', $reportData) && $hasSurveys) {
     $data = CDOMElement::create('div', 'class:surveyreport container');
     foreach ($reportData['surveys'] as $surveyData) {
-        $tObj = SurveyTest::buildSurveyReportTable($surveyData);
-        $tObj->setAttribute('class', $tObj->getAttribute('class') . ' default_table doDataTable ' . ADA_SEMANTICUI_TABLECLASS);
-        $data->addChild($tObj);
+        if (defined('ADA_SURVEY_TO_CSV') && ADA_SURVEY_TO_CSV) {
+            if ($hasSurveys) {
+                $hasSurveys = false;
+                $header = CDOMElement::create('h2', 'class:ui header');
+                $header->addChild(CDOMElement::create('i', 'class:download icon'));
+                $content = CDOMElement::create('div', 'class:content');
+                $content->addChild(new CText('Download risposte sondaggi'));
+                $subh = CDOMElement::create('div', 'class:sub header');
+                $subh->addChild(new CText(translateFN('clicca su un bottone per scaricare il csv delle risposte al relativo sondaggio')));
+                $header->addChild($content);
+                $header->addChild($subh);
+                $data->addChild($header);
+            }
+            $fileInfo = SurveyTest::buildCSVFileInfo(
+                $_SESSION['sess_id_user'],
+                $_SESSION['sess_id_course'],
+                $_SESSION['sess_id_course_instance'],
+                $surveyData['nome'],
+                true
+            );
+            $link = CDOMElement::create('a', 'class: ui fluid button, href:' . $fileInfo['fileName']);
+            $link->setAttribute('style', 'margin-top: 1em;');
+            $link->addChild(new CText($surveyData['nome'] . ' ('. Utilities::ts2dFN($fileInfo['filemtime']) .')'));
+            $data->addChild($link);
+        } else {
+            $tObj = SurveyTest::buildSurveyReportTable($surveyData);
+            $tObj->setAttribute('class', $tObj->getAttribute('class') . ' default_table doDataTable ' . ADA_SEMANTICUI_TABLECLASS);
+            $data->addChild($tObj);
+        }
     }
 } else {
     $data = CDOMElement::create('div', 'class:ui info icon large message');
@@ -134,19 +174,19 @@ if (isset($other_node_data['private_notes'])) {
 }
 
 if ($reg_enabled && isset($addBookmark)) {
-    $content_dataAr['addBookmark'] = $addBookmark;
+    $content_dataAr['addBookmark'] = $addBookmark ?? null;
 } else {
     $content_dataAr['addBookmark'] = "";
 }
 
 if (isset($bookmark)) {
-    $content_dataAr['bookmark'] = $bookmark;
+    $content_dataAr['bookmark'] = $bookmark ?? null;
 }
 if (isset($go_bookmarks)) {
-    $content_dataAr['go_bookmarks_1'] = $go_bookmarks;
+    $content_dataAr['go_bookmarks_1'] = $go_bookmarks ?? null;
 }
 if (isset($go_bookmarks)) {
-    $content_dataAr['go_bookmarks_2'] = $go_bookmarks;
+    $content_dataAr['go_bookmarks_2'] = $go_bookmarks ?? null;
 }
 
 if ($com_enabled) {
@@ -168,11 +208,11 @@ if ($com_enabled) {
 
 
 $layout_dataAr['JS_filename'] = [
-        JQUERY_UI,
+    JQUERY_UI,
 ];
 
 $layout_dataAr['CSS_filename'] = [
-        JQUERY_UI_CSS,
+    JQUERY_UI_CSS,
 ];
 
 $options['onload_func'] = 'initDoc(' . ($hasSurveys ? 'true' : 'false') . ')';

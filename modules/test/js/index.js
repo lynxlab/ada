@@ -112,8 +112,9 @@ const startTimer = () => {
     }
 }
 
-const closeTest = () => {
-    fetch(`${document.URL}?unload`,{
+const closeTest = async () => {
+    const appendChar = document.location.search.length ? '&' : '?';
+    return await fetch(`${document.URL}${appendChar}unload`,{
         keepalive: true,
     });
 }
@@ -171,7 +172,7 @@ function endsWith(str, suffix) {
 }
 
 var domReady = false;
-function confirmSubmit() {
+async function confirmSubmit(formObj) {
     if (!domReady) {
         return false;
     }
@@ -310,10 +311,25 @@ function confirmSubmit() {
         }
     }
 
+    $j('#confirm, #redo').addClass('disabled').prop("disabled",true);
+
     if (!res) {
-        return confirm(confirmEmptyAnswers);
+        res = confirm(confirmEmptyAnswers);
     }
-    else return res;
+
+    if (res) {
+        if (window.detachEvent) {
+            window.detachEvent('beforeunload', closeTest);
+        } else if (window.removeEventListener) {
+            window.removeEventListener('beforeunload', closeTest);
+        } else {
+            document.removeEventListener('beforeunload', closeTest);
+        }
+        await closeTest();
+        formObj.submit();
+    } else {
+        $j('#confirm, #redo').removeClass('disabled').prop("disabled",false);
+    }
 }
 
 onDOMLoaded(() => {

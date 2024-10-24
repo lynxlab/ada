@@ -162,13 +162,13 @@ class QuestionOpenUploadTest extends QuestionTest
         */
         $file_uploaded = false;
 
-        if ($_FILES[self::POST_TOPIC_VAR]['error'][$topic_id][$question_id] == UPLOAD_ERR_OK) {
-            $filename          = $_FILES[self::POST_TOPIC_VAR]['name'][$topic_id][$question_id];
-            $source            = $_FILES[self::POST_TOPIC_VAR]['tmp_name'][$topic_id][$question_id];
+        if ($_FILES[self::POST_TOPIC_VAR]['error'][$topic_id][$question_id][self::POST_ATTACHMENT_VAR] == UPLOAD_ERR_OK) {
+            $filename          = $_FILES[self::POST_TOPIC_VAR]['name'][$topic_id][$question_id][self::POST_ATTACHMENT_VAR];
+            $source            = $_FILES[self::POST_TOPIC_VAR]['tmp_name'][$topic_id][$question_id][self::POST_ATTACHMENT_VAR];
 
             $file_destination = $this->getFilePath($this->id_utente, $this->id_istanza, $_SESSION['sess_id_user'], $this->id_nodo, $filename);
 
-            $file_move = uploadFile($_FILES, $source, ROOT_DIR . $file_destination);
+            $file_move = uploadFile($_FILES, $source, $file_destination);
 
             if ($file_move[0] == "ok") {
                 $replace = [" " => "_","\'" => "_"];
@@ -179,7 +179,7 @@ class QuestionOpenUploadTest extends QuestionTest
         }
 
         //manual correction: no points gained
-        return ['points' => null, 'attachment' => $file_destination];
+        return ['points' => null, self::POST_ATTACHMENT_VAR => $file_destination];
     }
 
     /**

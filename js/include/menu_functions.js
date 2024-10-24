@@ -21,12 +21,8 @@ const hideSideBarFromSideBar = function () {
 
 }
 
-onDOMLoaded(() => {
-	// wait for jQuery to be loaded before doing stuff
-	if (document.readyState === "complete") {
-	initMenu();
-	}
-});
+// wait for jQuery to be loaded before doing stuff
+onDOMLoaded(() => initMenu());
 
 const initMenu = function() {
 	/**

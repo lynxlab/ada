@@ -10,6 +10,7 @@
 
 namespace Lynxlab\ADA\Module\Test;
 
+use Jawira\CaseConverter\Convert;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\AMADB;
@@ -23,7 +24,7 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 class SurveyTest extends RootTest
 {
     public const NODE_TYPE = ADA_TYPE_SURVEY;
-    public const CHILD_CLASS = 'TopicTest';
+    public const CHILD_CLASS = TopicTest::class;
 
     /**
      * used to configure object with database's data options
@@ -158,7 +159,7 @@ class SurveyTest extends RootTest
                     foreach ($givenAnswers as $givenAnswer) {
                         // get a reference to the answers array to add report data
                         $targetArr = &$reportData['surveys'][$survey->id_nodo]['topics'][$givenAnswer['id_topic']]['questions'][$givenAnswer['id_nodo']]['answers'];
-                        if (count($targetArr) == 0) {
+                        if (count($targetArr ?? []) == 0) {
                             // unset whole question if empty answers
                             unset($reportData['surveys'][$survey->id_nodo]['topics'][$givenAnswer['id_topic']]['questions'][$givenAnswer['id_nodo']]);
                         } else {
@@ -259,9 +260,9 @@ class SurveyTest extends RootTest
                 $topicRow = CDOMElement::create('tr', 'class:topic');
                 $topicRow->setAttribute('data-topicid', $topicID);
                 $topicCell = CDOMElement::create('td');
-                if (strlen($topicData['titolo']) > 0) {
+                if (strlen($topicData['titolo'] ?? '') > 0) {
                     $label = $topicData['titolo'];
-                } elseif (strlen($topicData['nome']) > 0) {
+                } elseif (strlen($topicData['nome'] ?? '') > 0) {
                     $label = $topicData['nome'];
                 }
 
@@ -332,7 +333,7 @@ class SurveyTest extends RootTest
                                 $questionLabelRow->addChild($labelCell);
 
                                 $countCell = CDOMElement::create('td');
-                                $countCell->addChild(new CText($answerData['count']));
+                                $countCell->addChild(new CText($answerData['count'] ?? 0));
                                 if ($asArray) {
                                     array_push($rowsArray[$questionCountRowCount], $answerData['count']);
                                 }
@@ -350,5 +351,33 @@ class SurveyTest extends RootTest
             }
         }
         return ($asArray ? $rowsArray : $surveyTable);
+    }
+
+    /**
+     * Buils the survey csv file info.
+     *
+     * @param int $idUser
+     * @param int $idCourse
+     * @param int $idInstance
+     * @param string $surveyName
+     * @param boolean $http
+     *   true to return the http path, false for filesystem
+     * @param boolean $mustexists
+     *   if true will return null when the fileName does not exists
+     * @return array|null
+     *   array containg fileName and filemtime or null if file not found
+     */
+    public static function buildCSVFileInfo($idUser, $idCourse, $idInstance, $surveyName, $http = false, $mustexists = true) {
+        $filePath = ROOT_DIR . MEDIA_PATH_DEFAULT . $idUser . '/csv-surveys/';
+        $fileName = (new Convert($idCourse . ' ' . $idInstance . ' ' . $surveyName))->toKebab() . '.csv';
+        $filemtime = file_exists($filePath . $fileName) ? filemtime($filePath . $fileName) : 0;
+        if (!$mustexists || ($mustexists && file_exists($filePath . $fileName))) {
+            $filePath = $http ? str_replace(ROOT_DIR, HTTP_ROOT_DIR, $filePath) : $filePath;
+            return [
+                'fileName' => $filePath . $fileName,
+                'filemtime' => $filemtime,
+            ];
+        }
+        return null;
     }
 }

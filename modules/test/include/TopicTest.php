@@ -12,14 +12,13 @@ namespace Lynxlab\ADA\Module\Test;
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
-use Lynxlab\ADA\Module\Test\NodeTest;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 class TopicTest extends NodeTest
 {
     public const NODE_TYPE = ADA_GROUP_TOPIC;
-    public const CHILD_CLASS = 'TopicTest|QuestionTest'; //use pipe character to declare multiple child class
+    public const CHILD_CLASS = TopicTest::class . '|' . QuestionTest::class; //use pipe character to declare multiple child class
 
     protected $randomQuestions;
 
@@ -84,7 +83,7 @@ class TopicTest extends NodeTest
         }
 
         if ($_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {
-            if ($this->durata > 0 && is_a($this->parent, 'RootTest')) {
+            if ($this->durata > 0 && is_a($this->parent, RootTest::class)) {
                 $minuti = round($this->durata / 60, 2);
                 $durata = CDOMElement::create('div', 'class:fright');
                 $durata->addChild(new CText(translateFN('Durata:') . ' ' . $minuti . ' ' . translateFN('minuti')));
@@ -134,7 +133,7 @@ class TopicTest extends NodeTest
 
             $div->addChild(new CText(' ] [ '));
 
-            if (is_a($this->parent, 'RootTest')) {
+            if (is_a($this->parent, RootTest::class)) {
                 $add_topic_link = CDOMElement::create('a');
                 $add_topic_link->setAttribute('href', MODULES_TEST_HTTP . '/edit_topic.php?action=add&id_test=' . $this->id_nodo_radice . '&id_nodo_parent=' . $this->id_nodo . $get_topic);
                 $add_topic_link->addChild(new CText(translateFN('Aggiungi argomento')));
