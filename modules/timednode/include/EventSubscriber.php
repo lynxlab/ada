@@ -160,6 +160,9 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
             );
             $renderData['content_dataAr']['keywords'] = implode(',', $newKeywords);
 
+            // do the timed node only if must spend some more time in the node
+            $timeLeft = $this->getDuration() - $this->getTimeInNode();
+
             // force the navigation bar to always be there passing ADA_MAX_USER_LEVEL
             $renderData['content_dataAr']['navigation_bar'] = (
             new DFSNavigationBar(
@@ -169,10 +172,8 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
                     'nextId' => $_GET['nextId'] ?? null,
                     'userLevel' => ADA_MAX_USER_LEVEL,
                 ]
-            ))->getHtml();
+            ))->setNextEnabled($timeLeft <= 0)->getHtml();
 
-            // do the timed node only if must spend some more time in the node
-            $timeLeft = $this->getDuration() - $this->getTimeInNode();
             if ($timeLeft > 0) {
                 $moduleJS = [
                     'layout_dataAr' => [
