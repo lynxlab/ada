@@ -243,7 +243,7 @@ class DFSNavigationBar
                 $prevLink->setAttribute('id', 'prevNodeBtn');
                 $prevLink->setAttribute('class', 'ui medium left floated red animated button');
                 if (!$this->isPrevEnabled()) {
-                    $nextLink->setAttribute('class', $prevLink->getAttribute('class').' disabled');
+                    $prevLink->setAttribute('class', $prevLink->getAttribute('class').' disabled');
                     $prevLink->setAttribute('style', 'pointer-events: none;');
                 }
                 $iconDIV = CDOMElement::create('div', 'class:hidden content');
