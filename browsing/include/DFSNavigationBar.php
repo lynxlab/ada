@@ -243,7 +243,7 @@ class DFSNavigationBar
                 $prevLink->setAttribute('id', 'prevNodeBtn');
                 $prevLink->setAttribute('class', 'ui medium left floated red animated button');
                 if (!$this->isPrevEnabled()) {
-                    $prevLink->setAttribute('class', $prevLink->getAttribute('class').' disabled');
+                    $prevLink->setAttribute('class', $prevLink->getAttribute('class') . ' disabled');
                     $prevLink->setAttribute('style', 'pointer-events: none;');
                 }
                 $iconDIV = CDOMElement::create('div', 'class:hidden content');
@@ -255,7 +255,7 @@ class DFSNavigationBar
                 $nextLink->setAttribute('id', 'nextNodeBtn');
                 $nextLink->setAttribute('class', 'ui medium right floated teal animated button');
                 if (!$this->isNextEnabled()) {
-                    $nextLink->setAttribute('class', $nextLink->getAttribute('class').' disabled');
+                    $nextLink->setAttribute('class', $nextLink->getAttribute('class') . ' disabled');
                     $nextLink->setAttribute('style', 'pointer-events: none;');
                 }
                 $iconDIV = CDOMElement::create('div', 'class:hidden content');
