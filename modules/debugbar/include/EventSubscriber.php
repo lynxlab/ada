@@ -163,11 +163,13 @@ class EventSubscriber implements EventSubscriberInterface
      */
     public function onPostModuleInit(CoreEvent $event)
     {
-        $this->debugbar->setStorage(
-            ADADebugBar::buildStorage(
-                ADA_UPLOAD_PATH . '/tmp/' . MODULES_DEBUGBAR_NAME . '/' . ($_SESSION['sess_id_user'] ?? 0)
-            )
-        );
+        if ((int)($_SESSION['sess_id_user'] ?? 0) > 0) {
+            $this->debugbar->setStorage(
+                ADADebugBar::buildStorage(
+                    ADA_UPLOAD_PATH . '/tmp/' . MODULES_DEBUGBAR_NAME . '/' . $_SESSION['sess_id_user']
+                )
+            );
+        }
         if ($this->debugbar->hasCollector('time')) {
             $this->debugbar['time']->stopMeasure('module-init');
         }
