@@ -14,6 +14,7 @@
 /vendor/
 /js/vendor/
 /modules/class*/
-*.cache
+*cache*
 *.bak
 *.code-workspace
+.phpactor*
