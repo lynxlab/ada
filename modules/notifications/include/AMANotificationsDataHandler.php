@@ -27,7 +27,6 @@ class AMANotificationsDataHandler extends AMADataHandler
     use WithCUD;
     use WithFind;
     use WithInstance;
-    use WithTransactions;
 
     /**
      * module's own data tables prefix
