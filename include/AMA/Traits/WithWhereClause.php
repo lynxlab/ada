@@ -19,7 +19,9 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 trait WithWhereClause
 {
-    use WithExceptionClass;
+    use WithExceptionClass {
+        WithExceptionClass::buildException as whereClauseException;
+    }
 
     /**
      * Builds an sql where clause
@@ -35,7 +37,7 @@ trait WithWhereClause
         if (!is_null($whereArr) && count($whereArr) > 0) {
             $invalidProperties = array_diff(array_keys($whereArr), $properties);
             if (count($invalidProperties) > 0) {
-                throw static::buildException(translateFN('Proprietà WHERE non valide: ') . implode(', ', $invalidProperties));
+                throw static::whereClauseException(translateFN('Proprietà WHERE non valide: ') . implode(', ', $invalidProperties));
             } else {
                 $sql .= ' WHERE ';
                 $sql .= implode(' AND ', array_map(function ($el) use (&$newWhere, $whereArr) {

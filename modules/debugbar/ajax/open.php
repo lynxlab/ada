@@ -34,7 +34,29 @@ $allowedUsersAr = array_keys($neededObjAr);
  */
 $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR . '/include/module_init.inc.php');
+session_write_close();
 
-$openHandler = new OpenHandler(ADADebugBar::getInstance());
-$openHandler->handle();
+$dbg = ADADebugBar::getInstance();
+$openHandler = new OpenHandler($dbg);
+$response = $openHandler->handle(null, false);
+
+// buffer the output, close the connection with the browser and run a "background" task
+ob_end_clean();
+ignore_user_abort(true);
+// capture output
+ob_start();
+echo $response;
+// these headers tell the browser to close the connection
+header("HTTP/1.1 200 OK");
+// flush all output
+ob_end_flush();
+flush();
+@ob_end_clean();
+if (function_exists('fastcgi_finish_request')) {
+    fastcgi_finish_request();
+}
+
+// clear the storage after 5 sec.
+sleep(5);
+$dbg->getStorage()->clear();
 die();

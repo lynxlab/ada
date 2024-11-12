@@ -5,7 +5,7 @@
 
         constructor(options) {
             if (debug) {
-                options.duration = 5;
+                // options.duration = 5;
             }
             this.interval = null;
             this.options = $j.extend({}, timedNodeManager.defaults, options);
@@ -16,7 +16,9 @@
 
         startManage(duration) {
             if (duration > 0 && this.nextBtn) {
-                this.toggleButton(this.nextBtn);
+                if (this.buttonEnabled(this.nextBtn)) {
+                    this.toggleButton(this.nextBtn);
+                }
                 this.nextBtn.addEventListener('click', (e) => this.clickHanlder(this.nextBtn, e));
                 this.setIntervalCallback(() => {
                     if (--this.timeLeft == 0) {
@@ -24,6 +26,9 @@
                             userId: this.options.userId,
                             instanceId: this.options.instanceId,
                         });
+                    }
+                    if (debug) {
+                        console.log(`timednode: ${this.timeLeft} seconds left`);
                     }
                 });
             }

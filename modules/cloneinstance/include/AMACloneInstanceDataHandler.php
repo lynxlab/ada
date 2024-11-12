@@ -22,7 +22,6 @@ class AMACloneInstanceDataHandler extends AMADataHandler
 {
     use WithCUD;
     use WithFind;
-    use WithTransactions;
 
     /**
      * module's own data tables prefix

@@ -987,16 +987,16 @@ class Student
 
                 // TABLE LABELS
                 $table_labels[0] = $this->generateClassReportHeader();
-
-                /**
-                 * @author giorgio 16/mag/2013
-                 *
-                 * unset the unwanted columns data and labels. unwanted cols are defined in config/config_class_report.inc.php
-                 */
-
-                $arrayToUse = 'report' . $type . 'ColArray';
-                $this->cleanClassReportFN($arrayToUse, $table_labels, $dati_stude);
             }
+
+            /**
+             * @author giorgio 16/mag/2013
+             *
+             * unset the unwanted columns data and labels. unwanted cols are defined in config/config_class_report.inc.php
+             */
+
+            $arrayToUse = 'report' . $type . 'ColArray';
+            $this->cleanClassReportFN($arrayToUse, $table_labels, $dati_stude);
 
             return ['report_generation_date' => $report_generation_TS] + array_merge($table_labels, $dati_stude);
         } else {

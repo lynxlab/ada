@@ -16,3 +16,4 @@
 *.cache
 *.bak
 *.code-workspace
+.phpactor*
