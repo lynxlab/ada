@@ -65,7 +65,7 @@ class EventSubscriber implements EventSubscriberInterface
                     if ($fileInfo['filemtime'] == 0) {
                         $filePath = pathinfo($fileInfo['fileName'], PATHINFO_DIRNAME);
                         if (!is_dir($filePath)) {
-                            mkdir($filePath, 0755);
+                            mkdir($filePath, 0755, true);
                         }
                     }
                     $fp = fopen($fileInfo['fileName'], 'a');

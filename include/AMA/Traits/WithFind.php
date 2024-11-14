@@ -25,7 +25,6 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 trait WithFind
 {
     use WithExceptionClass;
-    use WithWhereClause;
 
     /**
      * loads an array of objects of the passed className with matching where values

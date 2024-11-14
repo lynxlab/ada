@@ -27,7 +27,6 @@ class AMACollaboraACLDataHandler extends AMADataHandler
     use WithInstance;
     use WithCUD;
     use WithFind;
-    use WithTransactions;
 
     /**
      * module's own data tables prefix

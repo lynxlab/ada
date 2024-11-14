@@ -242,6 +242,10 @@ class DFSNavigationBar
             if (!is_null($prevLink)) {
                 $prevLink->setAttribute('id', 'prevNodeBtn');
                 $prevLink->setAttribute('class', 'ui medium left floated red animated button');
+                if (!$this->isPrevEnabled()) {
+                    $prevLink->setAttribute('class', $prevLink->getAttribute('class') . ' disabled');
+                    $prevLink->setAttribute('style', 'pointer-events: none;');
+                }
                 $iconDIV = CDOMElement::create('div', 'class:hidden content');
                 $iconDIV->addChild(new CText('<i class="left arrow icon"></i>'));
                 $prevLink->addChild($iconDIV);
@@ -250,6 +254,10 @@ class DFSNavigationBar
             if (!is_null($nextLink)) {
                 $nextLink->setAttribute('id', 'nextNodeBtn');
                 $nextLink->setAttribute('class', 'ui medium right floated teal animated button');
+                if (!$this->isNextEnabled()) {
+                    $nextLink->setAttribute('class', $nextLink->getAttribute('class') . ' disabled');
+                    $nextLink->setAttribute('style', 'pointer-events: none;');
+                }
                 $iconDIV = CDOMElement::create('div', 'class:hidden content');
                 $iconDIV->addChild(new CText('<i class="right arrow icon"></i>'));
                 $nextLink->addChild($iconDIV);
@@ -432,4 +440,54 @@ class DFSNavigationBar
      * @var string
      */
     protected $testerToUse = null;
+
+    /**
+     * true if next button is enabled
+     *
+     * @var bool
+     */
+    protected $nextEnabled = true;
+
+    /**
+     * true if prev button is enabled
+     *
+     * @var bool
+     */
+    protected $prevEnabled = true;
+
+    /**
+     * Get true if next button is enabled
+     */
+    public function isNextEnabled(): bool
+    {
+        return $this->nextEnabled;
+    }
+
+    /**
+     * Set true if next button is enabled
+     */
+    public function setNextEnabled(bool $nextEnabled): self
+    {
+        $this->nextEnabled = $nextEnabled;
+
+        return $this;
+    }
+
+    /**
+     * Get true if prev button is enabled
+     */
+    public function isPrevEnabled(): bool
+    {
+        return $this->prevEnabled;
+    }
+
+    /**
+     * Set true if prev button is enabled
+     */
+    public function setPrevEnabled(bool $prevEnabled): self
+    {
+        $this->prevEnabled = $prevEnabled;
+
+        return $this;
+    }
 }

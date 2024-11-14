@@ -19,9 +19,9 @@ use ReflectionClass;
 
 trait WithCUD
 {
-    use WithWhereClause;
-    use WithExceptionClass;
-    use WithTransactions;
+    use WithWhereClause, WithExceptionClass, WithTransactions {
+        WithExceptionClass::buildException as cudException;
+    }
 
     /**
      * Builds an sql update query as a string
@@ -126,7 +126,7 @@ trait WithCUD
             return true;
         } else {
             $this->rollBack();
-            return static::buildException($result->getMessage());
+            return static::cudException($result->getMessage());
         }
     }
 

@@ -11,10 +11,14 @@
 namespace Lynxlab\ADA\Module\Timednode;
 
 use Lynxlab\ADA\Browsing\DFSNavigationBar;
+use Lynxlab\ADA\CORE\html4\CDOMElement;
+use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
 use Lynxlab\ADA\Module\EventDispatcher\Subscribers\ADAScriptSubscriberInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
 /**
  * EventSubscriber Class, defines node events names and handlers for this module
@@ -130,7 +134,8 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
              * Duration must be properly set by the
              * author to a string like '<magicword>=h:m:s'
              */
-            if (1 == count($magicWord)) {
+            $this->setDoPrerender(1 == count($magicWord));
+            if ($this->isDoPrerender()) {
                 $magicWord = reset($magicWord);
                 [$magicWord, $time] = explode('=', $magicWord);
                 $timeArr = array_map('trim', explode(':', $time));
@@ -160,6 +165,9 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
             );
             $renderData['content_dataAr']['keywords'] = implode(',', $newKeywords);
 
+            // do the timed node only if must spend some more time in the node
+            $timeLeft = $this->getDuration() - $this->getTimeInNode();
+
             // force the navigation bar to always be there passing ADA_MAX_USER_LEVEL
             $renderData['content_dataAr']['navigation_bar'] = (
             new DFSNavigationBar(
@@ -169,18 +177,33 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
                     'nextId' => $_GET['nextId'] ?? null,
                     'userLevel' => ADA_MAX_USER_LEVEL,
                 ]
-            ))->getHtml();
+            ))->setNextEnabled($timeLeft <= 0)->getHtml();
 
-            // do the timed node only if must spend some more time in the node
-            $timeLeft = $this->getDuration() - $this->getTimeInNode();
             if ($timeLeft > 0) {
+                $help = CDOMElement::create('div', 'id:node-duration, class:ui small message');
+                $help->addChild(CDOMElement::create('i', 'class: ui time icon'));
+                $help->addChild(new CText(
+                    sprintf(translateFN("Tempo di fruizione: %s"), static::formatTimeInNode($this->getDuration()))
+                ));
                 $moduleJS = [
+                    'content_dataAr' => [
+                        'navigation_bar' => [
+                            'initval' => '',
+                            'additems' => fn ($v) => $help->getHtml() . $v,
+                        ],
+                    ],
                     'layout_dataAr' => [
                         'JS_filename' => [
                             'initval' => [],
                             'additems' => [
                                 MODULES_TIMEDNODE_PATH . '/js/modules_define.js.php',
                                 MODULES_TIMEDNODE_PATH . '/js/timedNodeManager.js',
+                            ],
+                        ],
+                        'CSS_filename' => [
+                            'initval' => [],
+                            'additems' => [
+                                MODULES_TIMEDNODE_PATH . '/css/timednode.css',
                             ],
                         ],
                     ],
