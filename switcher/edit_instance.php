@@ -166,7 +166,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                      * An existing chatroom with duration == class duration
                      * already exists, so update this chatroom start and end time.
                      */
-                    $chatroomObj = new Chatroom($id_chatroom, MultiPort::getDSN($_SESSION['sess_selected_tester']));
+                    $chatroomObj = new ChatRoom($id_chatroom, MultiPort::getDSN($_SESSION['sess_selected_tester']));
                     $id_tutor = $dh->courseInstanceTutorGet($id_instance);
                     if (!AMADataHandler::isError($id_tutor)) {
                         $chatroom_data['id_chat_owner'] = $id_tutor;

@@ -124,7 +124,7 @@ if (
                          * An existing chatroom with id class and type = C (chat classroom)
                          * already exists, so update this chatroom owner (= tutor id).
                          */
-                        $chatroomObj = new Chatroom($id_chatroom);
+                        $chatroomObj = new ChatRoom($id_chatroom);
                         $chatroom_data['id_chat_owner'] = $id_tutor_new;
 
                         $result = $chatroomObj->setChatroomFN($chatroomObj::$id_chatroom, $chatroom_data);
