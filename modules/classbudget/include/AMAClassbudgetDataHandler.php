@@ -104,7 +104,7 @@ class AMAClassbudgetDataHandler extends AMADataHandler
          * anymore and must be wiped off from the database.
          */
         if (!AMADB::isError($res) && is_array($res) && count($res) > 0) {
-            $this->cleanCostTable($id_course_instance, 'tutor', count($res));
+            $this->cleanCostTable($id_course_instance, 'tutor', count($res), $res);
         }
         return $res;
     }
@@ -139,7 +139,7 @@ class AMAClassbudgetDataHandler extends AMADataHandler
          * anymore and must be wiped off from the database.
          */
         if (!AMADB::isError($res) && is_array($res) && count($res) > 0) {
-            $this->cleanCostTable($id_course_instance, 'classroom', count($res));
+            $this->cleanCostTable($id_course_instance, 'classroom', count($res), $res);
         }
         return $res;
     }
@@ -281,10 +281,11 @@ class AMAClassbudgetDataHandler extends AMADataHandler
      * @param number $id_course_instance
      * @param string $type which table to clean. Can be 'classroom', 'tutor'
      * @param number $recordcount number of records returned by the joined query
+     * @param array $res rows passed by the caller
      *
      * @access private
      */
-    private function cleanCostTable($id_course_instance, $type, $recordcount)
+    private function cleanCostTable($id_course_instance, $type, $recordcount, $res = [])
     {
         $sql = 'SELECT COUNT(`cost_' . $type . '_id`) ' .
             'FROM `' . self::$PREFIX . 'cost_' . $type . '` WHERE `id_istanza_corso`=?';
