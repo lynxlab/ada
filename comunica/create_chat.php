@@ -380,7 +380,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $chatroom_ha['id_course_instance'] = $_POST['id_course_instance'];
 
             // add chatroom_ha to the database
-            $chatroom = Chatroom::addChatroomFN($chatroom_ha);
+            $chatroom = ChatRoom::addChatroomFN($chatroom_ha);
 
             if (!is_object($chatroom)) {
                 // the chatroom id

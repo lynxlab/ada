@@ -125,7 +125,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $chatroom_ha['id_course_instance'] = $id_istanza_corso;
 
             // add chatroom_ha to the database
-            $chatroom = Chatroom::addChatroomFN($chatroom_ha);
+            $chatroom = ChatRoom::addChatroomFN($chatroom_ha);
 
             /**
              * save budget details if needed
