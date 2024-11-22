@@ -14,7 +14,6 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\Traits\WithCUD;
 use Lynxlab\ADA\Main\AMA\Traits\WithFind;
-use Lynxlab\ADA\Main\AMA\Traits\WithTransactions;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 

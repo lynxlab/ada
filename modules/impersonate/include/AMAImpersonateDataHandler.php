@@ -15,7 +15,6 @@ use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\Traits\WithCUD;
 use Lynxlab\ADA\Main\AMA\Traits\WithFind;
 use Lynxlab\ADA\Main\AMA\Traits\WithInstance;
-use Lynxlab\ADA\Main\AMA\Traits\WithTransactions;
 use Lynxlab\ADA\Module\Impersonate\LinkedUsers;
 
 class AMAImpersonateDataHandler extends AMADataHandler
