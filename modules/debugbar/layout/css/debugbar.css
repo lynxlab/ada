@@ -1,0 +1,8 @@
+body > div.phpdebugbar div.phpdebugbar-panel *:not(i) {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    color: #000000d0;
+}
+
+body > div.phpdebugbar select.phpdebugbar-datasets-switcher {
+    height: 20px;
+}

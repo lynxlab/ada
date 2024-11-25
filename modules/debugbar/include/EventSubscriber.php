@@ -61,6 +61,7 @@ class EventSubscriber implements EventSubscriberInterface
         $data = $event->getArguments();
         if ((($_SESSION['sess_id_user'] ?? 0) > 0) && ($data['renderer'] ?? ARE_HTML_RENDER) == ARE_HTML_RENDER) {
             [$cssFiles, $jsFiles] = $this->debugBarRender->getAssets();
+            $cssFiles[] = MODULES_DEBUGBAR_PATH . '/layout/css/debugbar.css';
 
             foreach (
                 [
