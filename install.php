@@ -226,11 +226,18 @@ function composerInstall($version = '2.7.2')
     }
 }
 
-$created = [
-    'files' => [],
-    'dirs' => [],
-];
-$installSuccess = false;
+/**
+ * redirect to homepage if ADA is installed, either with install script or manually
+ */
+if (is_file(realpath(__DIR__) . '/config_path.inc.php')) {
+    require_once realpath(__DIR__) . '/config_path.inc.php';
+}
+
+if (defined('ROOT_DIR') && is_file(ROOT_DIR . '/config/config_install.inc.php') &&
+    is_dir('clients') && count(glob(ROOT_DIR . "/clients/*/client_conf.inc.php")) > 0) {
+    Utilities::redirect(HTTP_ROOT_DIR);
+    die();
+}
 
 register_shutdown_function('makeClean');
 composerInstall();
@@ -251,22 +258,16 @@ foreach (
         die("NO $mustfile, aborting installation!");
     }
     $destfile = str_replace('_DEFAULT', '', $mustfile);
-    $created['files'][] = $destfile;
     if (!is_file($destfile)) {
         if (false === copy($mustfile, $destfile)) {
             die("Cannot copy to $destfile, aborting installation!");
+        } else {
+            $created['files'][] = $destfile;
         }
     }
 }
 
 require_once realpath(__DIR__) . '/config_path.inc.php';
-
-/**
- * redirect to homepage if ADA is installed, either with install script or manually
- */
-if (is_dir('clients') && count(glob(ROOT_DIR . "/clients/*/client_conf.inc.php")) > 0) {
-    Utilities::redirect(HTTP_ROOT_DIR);
-}
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     define('COMPOSER_INSTALL_CMD', 'install -n --no-progress --no-cache --no-dev');
