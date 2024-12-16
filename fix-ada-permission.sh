@@ -35,6 +35,11 @@ printf "*******************************************\n\n"
 printf "The following commands are about to be run:\n\n"
 
 echo "  chown $WHOAMI:$APACHE_USER ."
+echo "  chmod 775 ."
+if check "chcon" ; then
+  echo "  chcon -t httpd_sys_rw_content_t ."
+fi
+
 for d in "${DIRS[@]}"
 do
   if [ -d "$d" ]; then
@@ -50,6 +55,10 @@ done
 
 if confirm; then
   chown $WHOAMI:$APACHE_USER .
+  chmod 775 .
+  if check "chcon" ; then
+    chcon -t httpd_sys_rw_content_t .
+  fi
   for d in "${DIRS[@]}"
   do
     if [ -d "$d" ]; then
