@@ -16,6 +16,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * EventSubscriber Class for module test
+ *
+ * NOTE: This subscriber is added only if ADA_SURVEY_TO_CSV is true
+ * in config/config.inc.php file of this module!
  */
 class EventSubscriber implements EventSubscriberInterface
 {
@@ -29,11 +32,13 @@ class EventSubscriber implements EventSubscriberInterface
 
     public function onPreSaveAnswer(ModuleTestEvent $event)
     {
-        $args = $event->getArguments();
-        if (array_key_exists('answer_data', $args)) {
-            $args['answer_data'] = ['answer' => ''];
+        if ($event->getSubject() == SurveyTest::class) {
+            $args = $event->getArguments();
+            if (array_key_exists('answer_data', $args)) {
+                $args['answer_data'] = ['answer' => ''];
+            }
+            $event->setArguments($args);
         }
-        $event->setArguments($args);
     }
 
     public function onPostSaveAnswer(ModuleTestEvent $event)
