@@ -200,7 +200,7 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
                             // test non superato.
                             $s = array_filter(
                                 Subscription::findSubscriptionsToClassRoom($this->getInstanceId()),
-                                fn($s) => $this->getUser()->getId() == $s->getSubscriberId()
+                                fn ($s) => $this->getUser()->getId() == $s->getSubscriberId()
                             );
                             /** @var Subscription $s */
                             $s = reset($s);
