@@ -594,6 +594,7 @@ if ($displayTable) {
         $content_dataAr['completeSummary'] = $span->getHtml();
     }
     $GLOBALS['dh']->disconnect();
+    $content_dataAr['extra'] = compact('courseId', 'courseInstanceId');
 }
 
 $layout_dataAr['CSS_filename'] = [
