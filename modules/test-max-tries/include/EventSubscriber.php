@@ -90,6 +90,7 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
                 ],
                 'user.php' => [
                     CoreEvent::PAGEPRERENDER => 'userPreRender',
+                    CoreEvent::POSTMODULEINIT => 'setClassProperties',
                 ],
             ];
         }
@@ -137,20 +138,27 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
                 $args = $event->getArguments();
                 /*
                  * user.php has not yet set the session client, course and instance id,
-                 * try to get them from the $_GET request or user history
+                 * try to get them from the content_dataAr, $_GET request or user history
                  * and then get the provider from the course.
                  */
                 $courseId = null;
                 $instanceId = null;
-                if (isset($_GET['id_course'])) {
+                if (isset($args['content_dataAr']['extra']['courseId'])) {
+                    $courseId = (int)$args['content_dataAr']['extra']['courseId'];
+                } elseif (isset($_GET['id_course'])) {
                     $courseId = (int)$_GET['id_course'];
                 } elseif (isset($this->getUser()->history->id_course)) {
                     $courseId = (int)$this->getUser()->history->id_course;
                 }
-                if (isset($_GET['id_course_instance'])) {
+                if (isset($args['content_dataAr']['extra']['courseInstanceId'])) {
+                    $instanceId = (int)$args['content_dataAr']['extra']['courseInstanceId'];
+                } elseif (isset($_GET['id_course_instance'])) {
                     $instanceId = (int)$_GET['id_course_instance'];
                 } elseif (isset($this->getUser()->history->id_instance)) {
                     $instanceId = (int)$this->getUser()->history->id_course_instance;
+                }
+                if (isset($args['content_dataAr']['extra'])) {
+                    unset($args['content_dataAr']['extra']);
                 }
                 if ($courseId && $instanceId) {
                     $serviceImplementationObj = ServiceImplementor::findImplementor($courseId);
@@ -191,32 +199,36 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
         if (defined('MODULES_MAXTRIES_COUNT') && MODULES_MAXTRIES_COUNT > 0) {
             if ($event->getSubject() == TestTest::class) {
                 if (in_array($this->getUser()->getType(), [AMA_TYPE_STUDENT])) {
-                    if ($this->isRepeatable() && $this->getMinBarrierPoints() > 0) {
-                        $dh = AMAMaxTriesDataHandler::instance(
-                            MultiPort::getDSN($this->getProvider())
-                        );
-                        $tries = $dh->getTriesCount($this->getUser()->getId(), $this->getInstanceId());
-                        if ($this->getPoints() < $this->getMinBarrierPoints()) {
-                            // test non superato.
-                            $s = array_filter(
-                                Subscription::findSubscriptionsToClassRoom($this->getInstanceId()),
-                                fn ($s) => $this->getUser()->getId() == $s->getSubscriberId()
+                    if ($this->getPoints() >= $this->getMinBarrierPoints()) {
+                        $retargs['statusbox'] = self::buildStatusBox(0, MODULES_MAXTRIES_COUNT, 'success');
+                    } else {
+                        if ($this->isRepeatable() && $this->getMinBarrierPoints() > 0) {
+                            $dh = AMAMaxTriesDataHandler::instance(
+                                MultiPort::getDSN($this->getProvider())
                             );
-                            /** @var Subscription $s */
-                            $s = reset($s);
-                            if (++$tries < (int)MODULES_MAXTRIES_COUNT) {
-                                // test non superato e numero tentativi non superato.
-                                $dh->backupUserLog($this->getUser()->getId(), $this->getInstanceId(), $tries);
-                                $courseInstanceObj = new CourseInstance($this->getInstanceId());
-                                $s->setStartStudentLevel($courseInstanceObj->start_level_student);
-                                $s->setSubscriptionStatus($s->getSubscriptionStatus());
-                            } else {
-                                // test non superato e numero tentativi superato.
-                                $s->setSubscriptionStatus(ADA_STATUS_TERMINATED);
+                            $tries = $dh->getTriesCount($this->getUser()->getId(), $this->getInstanceId());
+                            if ($this->getPoints() < $this->getMinBarrierPoints()) {
+                                // test non superato.
+                                $s = array_filter(
+                                    Subscription::findSubscriptionsToClassRoom($this->getInstanceId()),
+                                    fn ($s) => $this->getUser()->getId() == $s->getSubscriberId()
+                                );
+                                /** @var Subscription $s */
+                                $s = reset($s);
+                                if (++$tries < (int)MODULES_MAXTRIES_COUNT) {
+                                    // test non superato e numero tentativi non superato.
+                                    $dh->backupUserLog($this->getUser()->getId(), $this->getInstanceId(), $tries);
+                                    $courseInstanceObj = new CourseInstance($this->getInstanceId());
+                                    $s->setStartStudentLevel($courseInstanceObj->start_level_student);
+                                    $s->setSubscriptionStatus($s->getSubscriptionStatus());
+                                } else {
+                                    // test non superato e numero tentativi superato.
+                                    $s->setSubscriptionStatus(ADA_STATUS_TERMINATED);
+                                }
+                                $dh->updateTriesCount($this->getUser()->getId(), $this->getInstanceId(), $tries);
+                                Subscription::updateSubscription($s);
+                                $retargs['statusbox'] = self::buildStatusBox($tries);
                             }
-                            $dh->updateTriesCount($this->getUser()->getId(), $this->getInstanceId(), $tries);
-                            Subscription::updateSubscription($s);
-                            $retargs['statusbox'] = self::buildStatusBox($tries);
                         }
                     }
                 }
@@ -232,24 +244,35 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
      * @param int $maxtries
      * @return CDOMElement
      */
-    private static function buildStatusBox($tries, $maxtries = MODULES_MAXTRIES_COUNT)
+    private static function buildStatusBox($tries, $maxtries = MODULES_MAXTRIES_COUNT, $what = null)
     {
-        $header = translateFN('Non hai superato il questionario di apprendimento');
         $message = [
             'warning' => [
-                translateFN("In base alla normativa devi ricominciare il corso dall'inizio."),
-                sprintf(translateFN("Questo è il tentativo %d di %d"), $tries, $maxtries),
+                'header' => translateFN('Non hai superato il questionario di apprendimento'),
+                'message' => [
+                    translateFN("In base alla normativa devi ricominciare il corso dall'inizio."),
+                    sprintf(translateFN("Questo è il tentativo %d di %d"), $tries, $maxtries),
+                ],
             ],
             'error' => [
-                translateFN("Hai esaurito i tentativi, in base alla normativa non puoi più ripetere il corso."),
+                'header' => translateFN('Non hai superato il questionario di apprendimento'),
+                'message' => [
+                    translateFN("Hai esaurito i tentativi, in base alla normativa non puoi più ripetere il corso."),
+                ],
+            ],
+            'success' => [
+                'header' => translateFN("Complimenti, hai superato il questionario."),
+                'message' => [translateFN("Per completare il corso compila la scheda di valutazione.")],
             ],
         ];
-        $what = $tries < $maxtries ? 'warning' : 'error';
+        if ($what == null) {
+            $what = $tries < $maxtries ? 'warning' : 'error';
+        }
         $box = CDOMElement::create('div', 'style: margin-top:1em,class:ui message ' . $what);
         $headerDIV = CDOMElement::create('div', 'class:header');
-        $headerDIV->addChild(new CText($header));
+        $headerDIV->addChild(new CText($message[$what]['header']));
         $box->addChild($headerDIV);
-        $box->addChild(new CText(implode('<br/>', $message[$what])));
+        $box->addChild(new CText(implode('<br/>', $message[$what]['message'])));
         return $box;
     }
 
