@@ -50,7 +50,7 @@ class EventSubscriber implements EventSubscriberInterface
             $dh = $GLOBALS['dh'];
             $arguments = $event->getArguments();
             $tutorIds = $dh->courseInstanceTutorGet($arguments['idCourseInstance'], 'ALL');
-            if (!AMADB::isError($tutorIds)) {
+            if ($tutorIds !== false && !AMADB::isError($tutorIds)) {
                 $fields = [
                     $arguments[NodeTest::POST_TOPIC_VAR]['nome'],
                     Html2Text::convert(strip_tags($arguments[NodeTest::POST_TOPIC_VAR]['consegna'])),
