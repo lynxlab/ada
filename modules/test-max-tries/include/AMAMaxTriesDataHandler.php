@@ -133,7 +133,7 @@ class AMAMaxTriesDataHandler extends AMADataHandler
                 'instanceId' => $instanceId,
             ]
         );
-        if ($count > 0) {
+        if (!AMADB::isError($count) && $count > 0) {
             $res = $this->executeCriticalPrepared(
                 "INSERT INTO `" . $table . "` SELECT *, $trycount, NOW() " . $from,
                 [
