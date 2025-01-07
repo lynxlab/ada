@@ -262,18 +262,33 @@ abstract class RootTest extends NodeTest
         } else {
             $tempo_scaduto = 0;
         }
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => ModuleTestEvent::class,
+                    'eventName' => ModuleTestEvent::PRESAVETEST,
+                    'eventPrefix' => realpath($_SERVER['SCRIPT_FILENAME']),
+                ],
+                static::class,
+                array_merge(
+                    ['id_history_test' => $this->id_history_test],
+                    compact('tempo_scaduto', 'points', 'repeatable', 'min_barrier_points', 'level_gained')
+                )
+            );
+        }
         $res = $dh->testSaveTest($this->id_history_test, $tempo_scaduto, $points, $repeatable, $min_barrier_points, $level_gained);
 
         //checking if we got errors
+        $retval = [];
         if (is_object($res) && ($res::class == AMAError::class || is_subclass_of($res, 'PEAR_Error'))) {
             $this->onSaveError = true;
             $this->rollBack();
-            return false;
+            $retval = false;
         } else {
             $id_history_test = $this->id_history_test; //copying this variable that will be destruct with unset($this->_session)
             unset($_SESSION[$this->getSessionKey()]);
             unset($this->session);
-            return [
+            $retval = [
                 'id_history_test' => $id_history_test,
                 'tempo_scaduto' => $tempo_scaduto,
                 'points' => $points,
@@ -282,6 +297,22 @@ abstract class RootTest extends NodeTest
                 'level_gained' => $level_gained,
             ];
         }
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => ModuleTestEvent::class,
+                    'eventName' => ModuleTestEvent::POSTSAVETEST,
+                    'eventPrefix' => realpath($_SERVER['SCRIPT_FILENAME']),
+                ],
+                static::class,
+                $retval
+            );
+            $args = $event->getArguments();
+            if (array_key_exists('retval', $args)) {
+                $retval = $args['retval'];
+            }
+        }
+        return $retval;
     }
 
     /**
@@ -984,6 +1015,25 @@ abstract class RootTest extends NodeTest
             $div->addChild($a);
             $html->addChild(CDOMElement::create('div', 'class:clearfix'));
             $html->addChild($div);
+        }
+
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => ModuleTestEvent::class,
+                    'eventName' => ModuleTestEvent::POSTRENDERENDTEST,
+                    'eventPrefix' => realpath($_SERVER['SCRIPT_FILENAME']),
+                ],
+                static::class,
+            );
+            $args = $event->getArguments();
+            if (array_key_exists('statusbox', $args)) {
+                /* hack to insert statusbox as first element */
+                $newhtml = CDOMElement::create('div');
+                $newhtml->addChild($args['statusbox']);
+                $newhtml->addChild($html);
+                $html = $newhtml;
+            }
         }
 
         if ($return_html) {

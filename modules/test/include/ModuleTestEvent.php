@@ -35,11 +35,38 @@ final class ModuleTestEvent extends GenericEvent
     public const PRESAVEANSWER = self::NAMESPACE . '.presaveanswer';
 
     /**
-     * The POSTSAVEANSWER event occurs before every answer is saved
+     * The POSTSAVEANSWER event occurs after every answer is saved
      *
      * @GenericEvent
      *
      * @var string
      */
     public const POSTSAVEANSWER = self::NAMESPACE . '.postsaveanswer';
+
+    /**
+     * The PRESAVETEST event occurs before the test is submitted by the student
+     *
+     * @GenericEvent
+     *
+     * @var string
+     */
+    public const PRESAVETEST = self::NAMESPACE . '.presavetest';
+
+    /**
+     * The POSTSAVETEST event occurs after the test is submitted by the student
+     *
+     * @GenericEvent
+     *
+     * @var string
+     */
+    public const POSTSAVETEST = self::NAMESPACE . '.postsavetest';
+
+    /**
+     * The POSTRENDERENDTEST event occurs before the RootTest::renderEndTest method returns the html
+     *
+     * @GenericEvent
+     *
+     * @var string
+     */
+    public const POSTRENDERENDTEST = self::NAMESPACE . '.postrenderendtest';
 }

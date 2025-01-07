@@ -233,8 +233,10 @@ if (is_file(realpath(__DIR__) . '/config_path.inc.php')) {
     require_once realpath(__DIR__) . '/config_path.inc.php';
 }
 
-if (defined('ROOT_DIR') && is_file(ROOT_DIR . '/config/config_install.inc.php') &&
-    is_dir('clients') && count(glob(ROOT_DIR . "/clients/*/client_conf.inc.php")) > 0) {
+if (
+    defined('ROOT_DIR') && is_file(ROOT_DIR . '/config/config_install.inc.php') &&
+    is_dir('clients') && count(glob(ROOT_DIR . "/clients/*/client_conf.inc.php")) > 0
+) {
     Utilities::redirect(HTTP_ROOT_DIR);
     die();
 }

@@ -41,5 +41,7 @@ if (!Utilities::inInstall()) {
         [ 'name' => 'instancesreport' ],
         // timednode is disabled by default in standard ada
         [ 'name' => 'timednode', 'forcedisable' => true ],
+        // maxtries is disabled by default in standard ada
+        [ 'name' => 'maxtries', 'dirname' => 'test-max-tries', 'forcedisable' => true ],
     ]);
 }

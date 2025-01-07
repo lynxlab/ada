@@ -81,6 +81,10 @@ class ServiceImplementor
                             $courseAr['id_nodo_iniziale'] = 0;
                         }
 
+                        if (!isset($courseAr['id_course'])) {
+                            $courseAr['id_course'] = $implementorId;
+                        }
+
                         $id_start_node = $courseAr['id_nodo_iniziale'];
                         $id_desc = $implementorId . "_" . $id_start_node;
                         $user_level = "999";
