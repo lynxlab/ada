@@ -154,23 +154,25 @@ class GenericHtml extends Output
             $preg = str_replace('%field_name%', $field, preg_quote($this->replace_field_code, '/'));
             //$replace_string = "<!-- #BeginEditable \"$field\" -->([a-zA-Z0-9_\t;&\n ])*<!-- #EndEditable -->";
 
-            if (gettype($data) == 'array') {
-                $tObj = new Table();
-                $tObj->setTable($data);
-                $tabled_data = $tObj->getTable();
-                if (ADA_STATIC_TEMPLATE_FIELD) {
-                    $tpl = str_replace($ereg, $tabled_data, $tpl); //faster !!!
+            if (0!== preg_match('/' . $preg . '/i', $tpl)) {
+                if (gettype($data) == 'array') {
+                    $tObj = new Table();
+                    $tObj->setTable($data);
+                    $tabled_data = $tObj->getTable();
+                    if (ADA_STATIC_TEMPLATE_FIELD) {
+                        $tpl = str_replace($ereg, $tabled_data, $tpl); //faster !!!
+                    } else {
+                        $tpl = preg_replace('/' . $preg . '/i', $tabled_data, $tpl);
+                        //        $tpl = eregi_replace($ereg,$tabled_data,$tpl);
+                    }
                 } else {
-                    $tpl = preg_replace('/' . $preg . '/i', $tabled_data, $tpl);
-                    //        $tpl = eregi_replace($ereg,$tabled_data,$tpl);
-                }
-            } else {
-                // simple data type
-                if (ADA_STATIC_TEMPLATE_FIELD) {
-                    $tpl = str_replace($ereg, $data ?? '', $tpl); //faster !!!
-                } else {
-                    $tpl = preg_replace('/' . $preg . '/i', $data, $tpl);
-                    //        $tpl = eregi_replace($ereg,$data,$tpl);
+                    // simple data type
+                    if (ADA_STATIC_TEMPLATE_FIELD) {
+                        $tpl = str_replace($ereg, $data ?? '', $tpl); //faster !!!
+                    } else {
+                        $tpl = preg_replace('/' . $preg . '/i', $data, $tpl);
+                        //        $tpl = eregi_replace($ereg,$data,$tpl);
+                    }
                 }
             }
         }
