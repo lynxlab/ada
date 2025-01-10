@@ -440,6 +440,21 @@ table.historytable .NODE_NOT_VIEWABLE::before {
     cursor: pointer;
 }
 
+/*
+ * classe per l'elemento che contiene gli extra dati dell'autore
+ */
+body.ada-autore li.courseNode div.authorExtra.index {
+    display: inline-block;
+    margin-left: 1em;
+}
+
+body.ada-autore li.courseNode div.authorExtra.index .label {
+    font-size: x-small;
+}
+
+body.ada-autore .ui.attached.segment li.courseNode div.authorExtra.index {
+    display: none;
+}
 
 /*
  * TABELLE 5 febbraio 2009

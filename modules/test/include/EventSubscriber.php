@@ -10,26 +10,73 @@
 
 namespace Lynxlab\ADA\Module\Test;
 
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Module\EventDispatcher\Events\NodeEvent;
 use Soundasleep\Html2Text;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * EventSubscriber Class for module test
  *
- * NOTE: This subscriber is added only if ADA_SURVEY_TO_CSV is true
- * in config/config.inc.php file of this module!
+ * @return array
  */
 class EventSubscriber implements EventSubscriberInterface
 {
+    /**
+     * Return the events to subscribe to
+     *
+     * @return array
+     */
     public static function getSubscribedEvents()
     {
-        return [
-            ModuleTestEvent::PRESAVEANSWER => 'onPreSaveAnswer',
-            ModuleTestEvent::POSTSAVEANSWER => 'onPostSaveAnswer',
+        $events = [
+            NodeEvent::POSTSAVE => 'onPostSaveNode',
         ];
+        if (defined('ADA_SURVEY_TO_CSV') && ADA_SURVEY_TO_CSV) {
+            $events = array_merge($events, [
+                ModuleTestEvent::PRESAVEANSWER => 'onPreSaveAnswer',
+                ModuleTestEvent::POSTSAVEANSWER => 'onPostSaveAnswer',
+            ]);
+        }
+        return $events;
     }
 
+    /**
+     * Update the test node level when saving a personal exercise node
+     *
+     * @param NodeEvent $event
+     * @return void
+     */
+    public function onPostSaveNode(NodeEvent $event)
+    {
+        $args = $event->getArguments();
+        $nodeArr = $event->getSubject();
+        if ($args['saveResult'] && str_starts_with($nodeArr['type'] ?? null, (string) constant('ADA_PERSONAL_EXERCISE_TYPE'))) {
+            $testNode = null;
+            $test_db = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+            $res = $test_db->testGetNodes(['id_nodo_riferimento' => $nodeArr['id']]);
+            if (!empty($res) && count($res) == 1 && !AMADataHandler::isError($res)) {
+                $testNode = array_shift($res);
+            }
+            if (!empty($testNode)) {
+                /*
+                 * If the node is a test node, set the testNode level to the node level
+                 * For some resaon the level is in the durata field
+                 */
+                $testNode['durata'] = $nodeArr['level'];
+                $test_db->testUpdateNode($testNode['id_nodo'], $testNode);
+            }
+        }
+    }
+
+    /**
+     * Set the answer_data field to an empty string when saving a SurveyTest
+     *
+     * @param ModuleTestEvent $event
+     * @return void
+     */
     public function onPreSaveAnswer(ModuleTestEvent $event)
     {
         if ($event->getSubject() == SurveyTest::class) {
@@ -41,6 +88,12 @@ class EventSubscriber implements EventSubscriberInterface
         }
     }
 
+    /**
+     * Save the answer of the SurveyTest to a CSV file
+     *
+     * @param ModuleTestEvent $event
+     * @return void
+     */
     public function onPostSaveAnswer(ModuleTestEvent $event)
     {
         if ($event->getSubject() == SurveyTest::class) {
