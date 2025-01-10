@@ -131,6 +131,7 @@ class RootManagementTest extends ManagementTest
                     $nodo_test['pos_y0']            = 0;
                     $nodo_test['pos_x1']            = 0;
                     $nodo_test['pos_y1']            = 0;
+                    $nodo_test['level']             = (int) $_POST['min_level'];
                     $id_nodo_riferimento = $dh->addNode($nodo_test);
 
                     if (!AMATestDataHandler::isError($id_nodo_riferimento)) {
@@ -225,7 +226,11 @@ class RootManagementTest extends ManagementTest
                     'durata' => $_POST['min_level'],
                     'correttezza' => $_POST['correttezza'],
                 ];
-                if ($dh->testUpdateNode($test['id_nodo'], $data)) {
+                if (!AMATestDataHandler::isError($nodo)) {
+                    $nodoHa = (array) $nodo;
+                    $nodoHa['level'] = (int) $_POST['min_level'];
+                }
+                if ($dh->testUpdateNode($test['id_nodo'], $data) && $dh->doEditNode($nodoHa)) {
                     Utilities::redirect(MODULES_TEST_HTTP . '/index.php?id_test=' . $test['id_nodo']);
                 } else {
                     $html = sprintf(translateFN('Errore durante la modifica del %s'), $this->what);

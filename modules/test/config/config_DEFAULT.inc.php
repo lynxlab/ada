@@ -126,6 +126,6 @@ define('ADA_REDIRECT_TO_TEST', true);
  */
 define('ADA_SURVEY_TO_CSV', false);
 
-if (ADA_SURVEY_TO_CSV && ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
+if (ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
     ADAEventDispatcher::getInstance()->addSubscriber(new EventSubscriber());
 }
