@@ -109,6 +109,8 @@ class CourseViewer
             case AMA_TYPE_VISITOR:
                 $callback = 'authorCallback';
                 $course_data = $dh->getCourseData($id_course, 1, $order_by_name);
+                $callback_params['user_type'] = $userObj->getType();
+                $callback_params['user_id'] = $userObj->getId();
                 break;
 
             case AMA_TYPE_TUTOR:
@@ -215,6 +217,8 @@ class CourseViewer
             case AMA_TYPE_VISITOR:
                 $callback = 'authorCallback';
                 $course_data = $dh->getGlossaryData($id_course, 1, $order_by_name);
+                $callback_params['user_type'] = $userObj->getType();
+                $callback_params['user_id'] = $userObj->getId();
                 break;
 
             case AMA_TYPE_TUTOR:
@@ -671,6 +675,23 @@ class CourseViewer
         //      $node_element = CDOMElement::create('a', "href:$http_root_dir/browsing/view.php?id_node={$params['node']['id_nodo']}");
         $node_element->addChild(new CText($params['node']['nome']));
         $list_item->addChild($node_element);
+
+        if ($external_params['user_type'] == AMA_TYPE_AUTHOR) {
+            $authorExtra = [];
+            foreach(['ordine', 'livello'] as $extra) {
+                if (isset($params['node'][$extra])) {
+                    $authorExtra[$extra] = CDOMElement::create('span', 'class:ui small label author index '.$extra);
+                    $authorExtra[$extra]->addChild(new CText(sprintf(translateFN(ucfirst(strtolower($extra)) . ' %d'),$params['node'][$extra])));
+                }
+            }
+            if (count($authorExtra) > 0) {
+                $extraDiv = CDOMElement::create('div', 'class:authorExtra index');
+                foreach($authorExtra as $extra) {
+                    $extraDiv->addChild($extra);
+                }
+                $list_item->addChild($extraDiv);
+            }
+        }
 
         if (isset($show_visits) && $show_visits == true) {
             $visits = 0;
