@@ -14,6 +14,7 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\Logger\ADALogger;
+use Lynxlab\ADA\Main\Utilities;
 
 class AMATestDataHandler extends AMADataHandler
 {
@@ -44,6 +45,7 @@ class AMATestDataHandler extends AMADataHandler
         }
 
         if (!empty($res)) {
+            $res = static::fixNodeAfterGet($res);
             foreach ($res as $v) {
                 $tests[$v['id_nodo']] = $v;
             }
@@ -226,7 +228,7 @@ class AMATestDataHandler extends AMADataHandler
         if (self::isError($res)) {
             return new AMAError(AMA_ERR_GET);
         } else {
-            return $res;
+            return static::fixNodeAfterGet($res);
         }
     }
 
@@ -269,6 +271,7 @@ class AMATestDataHandler extends AMADataHandler
         if (self::isError($tmp_res)) {
             return new AMAError(AMA_ERR_GET);
         } else {
+            $tmp_res = static::fixNodeAfterGet($tmp_res);
             $res = [];
             if (!empty($tmp_res)) {
                 foreach ($tmp_res as $k => $v) {
@@ -323,6 +326,7 @@ class AMATestDataHandler extends AMADataHandler
         if (self::isError($tmp_res)) {
             return new AMAError(AMA_ERR_GET);
         } else {
+            $tmp_res = static::fixNodeAfterGet($tmp_res);
             $res = [];
             if (!empty($tmp_res)) {
                 foreach ($tmp_res as $k => $v) {
@@ -349,7 +353,7 @@ class AMATestDataHandler extends AMADataHandler
     {
         $sql = "SELECT *
 				FROM `" . self::$PREFIX . "nodes` t
-				WHERE t.`tipo` LIKE '3%'
+				WHERE t.`tipo` LIKE '" . ADA_GROUP_TOPIC . "%'
 				AND t.`id_nodo_radice` = ?
 				ORDER BY t.`id_nodo_parent` ASC, t.`ordine` ASC";
 
@@ -357,6 +361,7 @@ class AMATestDataHandler extends AMADataHandler
         if (self::isError($tmp_res)) {
             return new AMAError(AMA_ERR_GET);
         } else {
+            $tmp_res = static::fixNodeAfterGet($tmp_res);
             $res = [];
             if (!empty($tmp_res)) {
                 foreach ($tmp_res as $k => $v) {
@@ -418,6 +423,7 @@ class AMATestDataHandler extends AMADataHandler
         if (self::isError($tmp_res)) {
             return new AMAError(AMA_ERR_GET);
         } else {
+            $tmp_res = static::fixNodeAfterGet($tmp_res);
             $res = [];
             if (!empty($tmp_res)) {
                 foreach ($tmp_res as $k => $v) {
@@ -666,7 +672,7 @@ class AMATestDataHandler extends AMADataHandler
         if (self::isError($res)) {
             return new AMAError(AMA_ERR_GET);
         } else {
-            return $res;
+            return static::fixNodeAfterGet($res);
         }
     }
 
@@ -1002,6 +1008,7 @@ class AMATestDataHandler extends AMADataHandler
             return $res;
         }
 
+        $res = static::fixNodeAfterGet($res);
         $array = [];
         if (!empty($res)) {
             foreach ($res as $v) {
@@ -1037,6 +1044,7 @@ class AMATestDataHandler extends AMADataHandler
 
 
                 if (!empty($res2)) {
+                    $res2 = static::fixNodeAfterGet($res2);
                     foreach ($res2 as $i) {
                         if ($i['test_tipo'][0] == ADA_TYPE_TEST) {
                             $key = 'max_score_test';
@@ -1206,6 +1214,7 @@ class AMATestDataHandler extends AMADataHandler
         if (self::isError($tmp_res)) {
             return new AMAError(AMA_ERR_GET);
         } else {
+            $tmp_res = static::fixNodeAfterGet($tmp_res);
             $res = [];
             if (!empty($tmp_res)) {
                 foreach ($tmp_res as $k => $v) {
@@ -1316,6 +1325,32 @@ class AMATestDataHandler extends AMADataHandler
             '`id_utente_studente` = ? AND `id_nodo` = ? AND `id_istanza_corso`= ?';
 
         return $this->queryPrepared($sql, [time(), $student_id, $node_id, $course_instance_id]);
+    }
+
+    /**
+     * Fix nodes fields after a SELECT query
+     *
+     * @param array $node
+     * @return array
+     */
+    private static function fixNodeAfterGet($node)
+    {
+        $reset = false;
+        if (!Utilities::isMultiArray($node)) {
+            $node = [$node];
+            $reset = true;
+        }
+        foreach ($node as $k => $v) {
+            foreach(['tipo', 'tipo_nodo'] as $testkey) {
+                if (isset($v[$testkey])) {
+                    $node[$k][$testkey] = (string)$v[$testkey];
+                }
+            }
+        }
+        if ($reset) {
+            $node = reset($node);
+        }
+        return $node;
     }
 
     /**
