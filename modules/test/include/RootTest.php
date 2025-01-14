@@ -566,10 +566,10 @@ abstract class RootTest extends NodeTest
 
         //first character delegated to child class
         //second character
-        $this->returnLink = strval($this->tipo)[1];
+        $this->returnLink = $this->tipo[1];
 
         //third character
-        switch (strval($this->tipo)[2]) {
+        switch ($this->tipo[2]) {
             default:
             case ADA_RATING_TEST_INTERACTION:
                 $this->feedback = true;
@@ -594,7 +594,7 @@ abstract class RootTest extends NodeTest
         }
 
         //fourth character
-        switch (strval($this->tipo)[3]) {
+        switch ($this->tipo[3]) {
             default:
             case ADA_ONEPAGE_TEST_MODE:
                 $this->sequenced = false;
@@ -606,7 +606,7 @@ abstract class RootTest extends NodeTest
 
         //fifth character delegated to child class
         //sixth character
-        switch (strval($this->tipo)[5]) {
+        switch ($this->tipo[5]) {
             default:
             case ADA_NO_TEST_REPETEABLE:
                 $this->repeatable = false;

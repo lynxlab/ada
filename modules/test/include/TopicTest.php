@@ -31,12 +31,12 @@ class TopicTest extends NodeTest
     protected function configureProperties()
     {
         //first character
-        if (strval($this->tipo)[0] != self::NODE_TYPE) {
+        if ($this->tipo[0] != self::NODE_TYPE) {
             return false;
         }
 
         //second character
-        switch (strval($this->tipo)[1]) {
+        switch ($this->tipo[1]) {
             default:
             case ADA_PICK_QUESTIONS_NORMAL:
                 $this->randomQuestions = false;

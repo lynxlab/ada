@@ -37,7 +37,7 @@ class TestTest extends RootTest
         $this->shuffle_answers = true;
 
         //first character
-        if (strval($this->tipo)[0] != self::NODE_TYPE) {
+        if ($this->tipo[0] != self::NODE_TYPE) {
             return false;
         }
 
@@ -46,7 +46,7 @@ class TestTest extends RootTest
         //fourth character delegated to parent class
 
         //fifth character
-        switch (strval($this->tipo)[4]) {
+        switch ($this->tipo[4]) {
             default:
             case ADA_NO_TEST_BARRIER:
                 $this->barrier = false;

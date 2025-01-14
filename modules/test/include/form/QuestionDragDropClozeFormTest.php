@@ -40,6 +40,6 @@ class QuestionDragDropClozeFormTest extends QuestionFormTest
 
         //titolo box drag'n'drop
         $this->addTextInput('titolo_dragdrop', translateFN('Titolo box drag\'n\'drop (lasciare vuoto se non usato)') . ':')
-             ->withData($this->data['titolo_dragdrop']);
+             ->withData($this->data['titolo_dragdrop'] ?? '');
     }
 }

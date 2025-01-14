@@ -195,7 +195,7 @@ abstract class NodeTest
         } else {
             //and if data is valid, let's check what kind of object we need to instantiate
             //first character
-            switch (strval($data['tipo'])[0]) {
+            switch ($data['tipo'][0]) {
                 default:
                     return new NullTest($data, $parent);
                     break;
@@ -210,7 +210,7 @@ abstract class NodeTest
                     break;
                 case ADA_GROUP_QUESTION:
                     //second character
-                    switch (strval($data['tipo'])[1]) {
+                    switch ($data['tipo'][1]) {
                         case ADA_MULTIPLE_CHECK_TEST_TYPE:
                             return new QuestionMultipleCheckTest($data, $parent);
                             break;
@@ -229,7 +229,7 @@ abstract class NodeTest
                             break;
                         case ADA_CLOZE_TEST_TYPE:
                             //fourth character
-                            switch (strval($data['tipo'])[3]) {
+                            switch ($data['tipo'][3]) {
                                 case ADA_NORMAL_TEST_SIMPLICITY:
                                     return new QuestionNormalClozeTest($data, $parent);
                                     break;
@@ -293,7 +293,7 @@ abstract class NodeTest
                 //the external loop is used to catch all the nodes that doesn't find a father on first tries
                 while (!empty($data)) {
                     foreach ($data as $k => $v) {
-                        $tipo = strval($v['tipo'])[0];
+                        $tipo = $v['tipo'][0];
                         $parent = $v['id_nodo_parent'];
                         $id = $v['id_nodo'];
 

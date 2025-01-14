@@ -34,7 +34,7 @@ class QuestionSelectClozeTest extends QuestionClozeTest
         }
 
         //fifth character
-        switch (strval($this->tipo)[4]) {
+        switch ($this->tipo[4]) {
             default:
             case ADA_NORMAL_SELECT_TEST:
                 $this->synonym = false;
@@ -134,7 +134,7 @@ class QuestionSelectClozeTest extends QuestionClozeTest
                     $class .= ' empty_answer_test';
                 }
             } else {
-                if ($this->searchParent(RootTest::class)->shuffle_answers) {
+                if ($this->searchParent(RootTest::class)?->shuffle_answers) {
                     shuffle($this->children);
                 }
                 if (!empty($this->children)) {

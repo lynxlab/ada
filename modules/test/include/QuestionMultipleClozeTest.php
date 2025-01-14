@@ -53,8 +53,8 @@ class QuestionMultipleClozeTest extends QuestionClozeTest
         }
 
         //fifth character
-        $this->boxPosition = strval($this->tipo)[4];
-        $this->apostrophe = strval($this->tipo)[5];
+        $this->boxPosition = $this->tipo[4];
+        $this->apostrophe = $this->tipo[5];
         return true;
     }
 
@@ -657,7 +657,7 @@ class QuestionMultipleClozeTest extends QuestionClozeTest
                     $name = $this->getPostFieldName();
                     $post_data = $this->getPostData();
                     $input->setAttribute('name', $name . '[' . self::POST_ANSWER_VAR . '][' . $i . '][' . $j . ']');
-                    $input->setAttribute('value', $post_data[self::POST_ANSWER_VAR][$i][$j]);
+                    $input->setAttribute('value', $post_data !== false ? $post_data[self::POST_ANSWER_VAR][$i][$j] : '');
                 }
 
                 if ($this->feedback) {
@@ -693,7 +693,7 @@ class QuestionMultipleClozeTest extends QuestionClozeTest
                     $ddUl = CDOMElement::create('ul', 'id:drop' . $this->id_nodo . '_' . $y);
                     $ddUl->setAttribute('class', 'multiDragDropBox sortable drop' . $this->id_nodo);
                     if ($edit || $_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {
-                        $ordini = $tableData['answers'][$i][$j];
+                        $ordini = $tableData['answers'][$i][$j] ?? [];
                         if (!empty($ordini)) {
                             $input->setAttribute('value', implode(',', $ordini));
                             foreach ($this->children as $v) {

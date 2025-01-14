@@ -34,7 +34,7 @@ class QuestionDragDropClozeTest extends QuestionClozeTest
         }
 
         //fifth character
-        $this->boxPosition = strval($this->tipo)[4];
+        $this->boxPosition = $this->tipo[4];
         return true;
     }
 
@@ -214,7 +214,7 @@ class QuestionDragDropClozeTest extends QuestionClozeTest
             $input = CDOMElement::create('hidden');
             $input->setAttribute('id', 'dropInput' . $id);
             $input->setAttribute('name', $name . '[' . self::POST_ANSWER_VAR . '][' . $ordine . ']');
-            $input->setAttribute('value', $post_data[self::POST_ANSWER_VAR][$ordine]);
+            $input->setAttribute('value', $post_data[self::POST_ANSWER_VAR][$ordine] ?? '');
             $html .= $input->getHtml();
 
             $ddUl = CDOMElement::create('ul');

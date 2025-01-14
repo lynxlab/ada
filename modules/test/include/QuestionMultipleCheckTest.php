@@ -33,7 +33,7 @@ class QuestionMultipleCheckTest extends QuestionTest
         }
 
         //fourth character: variation
-        $this->variation = strval($this->tipo)[3];
+        $this->variation = $this->tipo[3];
         return true;
     }
 
