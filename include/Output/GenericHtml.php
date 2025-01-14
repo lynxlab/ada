@@ -154,7 +154,7 @@ class GenericHtml extends Output
             $preg = str_replace('%field_name%', $field, preg_quote($this->replace_field_code, '/'));
             //$replace_string = "<!-- #BeginEditable \"$field\" -->([a-zA-Z0-9_\t;&\n ])*<!-- #EndEditable -->";
 
-            if (0!== preg_match('/' . $preg . '/i', $tpl)) {
+            if (0 !== preg_match('/' . $preg . '/i', $tpl)) {
                 if (gettype($data) == 'array') {
                     $tObj = new Table();
                     $tObj->setTable($data);

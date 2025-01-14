@@ -81,9 +81,11 @@ class QuestionManagementTest extends ManagementTest
             5 => 0, //applicable only for certain cloze subtype
         ];
 
-        if (($_POST['step'] ?? null) == 2 &&
-        isset($_GET['id_nodo_parent']) &&
-        isset($_SESSION['new_question'][$_GET['id_nodo_parent']])) {
+        if (
+            ($_POST['step'] ?? null) == 2 &&
+            isset($_GET['id_nodo_parent']) &&
+            isset($_SESSION['new_question'][$_GET['id_nodo_parent']])
+        ) {
             $new_q = &$_SESSION['new_question'][$_GET['id_nodo_parent']];
             $this->tipo[1] = intval($new_q['tipologia']);
             $this->tipo[2] = intval($_POST['commento']);

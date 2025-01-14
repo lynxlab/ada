@@ -1341,7 +1341,7 @@ class AMATestDataHandler extends AMADataHandler
             $reset = true;
         }
         foreach ($node as $k => $v) {
-            foreach(['tipo', 'tipo_nodo'] as $testkey) {
+            foreach (['tipo', 'tipo_nodo'] as $testkey) {
                 if (isset($v[$testkey])) {
                     $node[$k][$testkey] = (string)$v[$testkey];
                 }

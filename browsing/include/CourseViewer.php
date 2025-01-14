@@ -678,15 +678,15 @@ class CourseViewer
 
         if ($external_params['user_type'] == AMA_TYPE_AUTHOR) {
             $authorExtra = [];
-            foreach(['ordine', 'livello'] as $extra) {
+            foreach (['ordine', 'livello'] as $extra) {
                 if (isset($params['node'][$extra])) {
-                    $authorExtra[$extra] = CDOMElement::create('span', 'class:ui small label author index '.$extra);
-                    $authorExtra[$extra]->addChild(new CText(sprintf(translateFN(ucfirst(strtolower($extra)) . ' %d'),$params['node'][$extra])));
+                    $authorExtra[$extra] = CDOMElement::create('span', 'class:ui small label author index ' . $extra);
+                    $authorExtra[$extra]->addChild(new CText(sprintf(translateFN(ucfirst(strtolower($extra)) . ' %d'), $params['node'][$extra])));
                 }
             }
             if (count($authorExtra) > 0) {
                 $extraDiv = CDOMElement::create('div', 'class:authorExtra index');
-                foreach($authorExtra as $extra) {
+                foreach ($authorExtra as $extra) {
                     $extraDiv->addChild($extra);
                 }
                 $list_item->addChild($extraDiv);
