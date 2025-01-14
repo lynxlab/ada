@@ -511,4 +511,9 @@ class Utilities
     {
         return (0 === strcasecmp('install.php', basename($_SERVER['SCRIPT_FILENAME'])));
     }
+
+    public static function isMultiArray($array)
+    {
+        return is_array($array) && count($array) > 0 && is_array($array[array_key_first($array)]);
+    }
 }
