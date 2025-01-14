@@ -64,6 +64,7 @@ function FCKeditor_OnComplete(fckEditor) {
             }
             else {
                 fckEditor.EditorDocument.body.innerHTML = '';
+                fckEditor.InsertHtml('');
                 fckEditor.InsertHtml(value);
             }
         });

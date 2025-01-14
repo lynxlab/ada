@@ -1,5 +1,6 @@
 load_js(`${HTTP_ROOT_DIR}/external/fckeditor/fckeditor.js`,).then(() => {
     function loadFCKeditor(textarea_name, toolbar) {
+        console.log('loadFCKeditor', textarea_name, toolbar);
         if ($j('#' + textarea_name).length == 1) {
             toolbar = (typeof toolbar === 'undefined') ? 'Test' : toolbar;
 
@@ -12,12 +13,11 @@ load_js(`${HTTP_ROOT_DIR}/external/fckeditor/fckeditor.js`,).then(() => {
         }
     }
 
-    var isCloze = false;
     var max_width = parseInt($j('div.fform.form').css('width'));
     $j('select.form').css('max-width', max_width + 'px');
     loadFCKeditor('consegna');
     setTimeout(function () {
-        if (isCloze) {
+        if (window.isCloze ?? false) {
             loadFCKeditor('testo', 'Cloze');
         }
         else {
