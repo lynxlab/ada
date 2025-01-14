@@ -29,12 +29,12 @@ class AnswerTest extends NodeTest
     protected function configureProperties()
     {
         //first character
-        if (strval($this->tipo)[0] != self::NODE_TYPE) {
+        if ($this->tipo[0] != self::NODE_TYPE) {
             return false;
         }
 
         //second character
-        switch (strval($this->tipo)[1]) {
+        switch ($this->tipo[1]) {
             default:
             case ADA_NO_OPEN_TEST_ANSWER:
                 $this->extra_answer = false;
@@ -45,7 +45,7 @@ class AnswerTest extends NodeTest
         }
 
         //third character
-        switch (strval($this->tipo)[2]) {
+        switch ($this->tipo[2]) {
             default:
             case ADA_CASE_SENSITIVE_TEST:
                 $this->compareFunction = "strcmp";

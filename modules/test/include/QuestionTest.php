@@ -39,14 +39,14 @@ abstract class QuestionTest extends NodeTest
     protected function configureProperties()
     {
         //first character
-        if (strval($this->tipo)[0] != self::NODE_TYPE) {
+        if ($this->tipo[0] != self::NODE_TYPE) {
             return false;
         }
 
         //second character delegated to child class
 
         //third character
-        switch (strval($this->tipo)[2]) {
+        switch ($this->tipo[2]) {
             default:
             case ADA_NO_TEST_COMMENT:
                 $this->comment = false;
@@ -194,7 +194,7 @@ abstract class QuestionTest extends NodeTest
             $div->addChild(new CText(' ] '));
 
             $no_managed_answers = [ADA_NO_QUESTION_TEST_TYPE, ADA_OPEN_MANUAL_TEST_TYPE, ADA_OPEN_UPLOAD_TEST_TYPE];
-            if (!in_array(strval($this->tipo)[1], $no_managed_answers)) {
+            if (!in_array($this->tipo[1], $no_managed_answers)) {
                 $div->addChild(new CText(' [ '));
                 $add_question_link = CDOMElement::create('a', 'href:' . MODULES_TEST_HTTP . '/edit_answers.php?id_question=' . $this->id_nodo . $get_topic);
                 $add_question_link->addChild(new CText(translateFN('Risposte')));

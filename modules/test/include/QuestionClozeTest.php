@@ -36,7 +36,7 @@ abstract class QuestionClozeTest extends QuestionTest
         }
 
         //fourth character
-        $this->clozeType = strval($this->tipo)[3];
+        $this->clozeType = $this->tipo[3];
         return true;
     }
 

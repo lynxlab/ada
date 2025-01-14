@@ -64,7 +64,7 @@ class QuestionMediumClozeTest extends QuestionClozeTest
         $class = 'normal_cloze_question_test';
         $obj = CDOMElement::create('text');
         $obj->setAttribute('name', $name . '[' . self::POST_ANSWER_VAR . '][' . $ordine . ']');
-        $obj->setAttribute('value', $post_data[self::POST_ANSWER_VAR][$ordine]);
+        $obj->setAttribute('value', $post_data !== false ? $post_data[self::POST_ANSWER_VAR][$ordine] : '');
         $obj->setAttribute('maxlength', strlen($value));
         $obj->setAttribute('size', strlen($value));
         if ($this->feedback) {

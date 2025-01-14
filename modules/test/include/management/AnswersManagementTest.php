@@ -153,7 +153,7 @@ class AnswersManagementTest
                         'answer' => $_POST['answer'][$k],
                         'value' => intval($_POST['value'][$k]),
                         'case_sensitive' => ($_POST['case_sensitive'][$k] ?? 0 == 1) ? true : false,
-                        'other_answer' => ($_POST['other_answer'][$k] == 1) ? true : false,
+                        'other_answer' => ($_POST['other_answer'][$k] ?? 0 == 1) ? true : false,
                         'record' => $_POST['record'][$k] ?? null,
                         'ordine' => $_POST['ordine'][$k] ?? null,
                     ];
