@@ -352,10 +352,14 @@ if (!AMADataHandler::isError($courseInstances)) {
     $data = new CText('');
 }
 
-$last_access = $userObj->getLastAccessFN(null, "UT", null);
-$last_access = AMADataHandler::tsToDate($last_access);
-if ($last_access == '' || is_null($last_access)) {
-    $last_access = '-';
+$last_access = '-';
+if (isset($courseInstanceId)) {
+    $last_access = $userObj->getLastAccessFN($courseInstanceId, "UT", null);
+    if ($last_access == '-' || $last_access == '' || is_null($last_access)) {
+        $last_access = '-';
+    } else {
+        $last_access = AMADataHandler::tsToDate($last_access);
+    }
 }
 
 $content_dataAr = [

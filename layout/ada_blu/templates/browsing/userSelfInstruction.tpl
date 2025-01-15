@@ -95,11 +95,9 @@
                                     <div class="item">
                                         <i class="ok circle icon"></i>
                                         <span class="lastvisit label">
-								    	<i18n>ultimo accesso</i18n>:
+								    	<!-- <i18n>ultimo accesso</i18n>: -->
 									</span>
-                                        <strong>
 								    	<template_field class="template_field" name="last_visit">last_visit</template_field>
-								    </strong>
                                     </div>
                                     <div class="item">
                                         <i class="ok circle icon"></i>
