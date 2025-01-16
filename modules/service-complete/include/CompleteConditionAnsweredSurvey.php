@@ -54,7 +54,7 @@ class CompleteConditionAnsweredSurvey extends CompleteCondition
      *
      * @var string
      */
-    public static $summaryStr = 'Risposte al sondaggio <em>%s</em>: <strong>%d</strong> su <strong>%d</strong>';
+    public static $summaryStr = 'Risposte al sondaggio <em>%s</em>: <strong>%d</strong> (numero richiesto: <strong>%d</strong>)';
 
     /**
      * description of the condition's own parameter

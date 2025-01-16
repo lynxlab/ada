@@ -52,7 +52,7 @@ class CompleteConditionNodePercentage extends CompleteCondition
      *
      * @var string
      */
-    public static $summaryStr = 'Percentuale di nodi visitati: <strong>%s</strong> su <strong>%s</strong>';
+    public static $summaryStr = 'Percentuale di nodi visitati: <strong>%s</strong> (minimo necessario: <strong>%s</strong>)';
 
     /**
      * description of the condition's own parameter
