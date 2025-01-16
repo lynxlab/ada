@@ -1,5 +1,7 @@
 <?php
 
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
+
 define('CONFIG_CLASS_REPORT', true);
 
 // set to false to include column in report, false to exclude it
@@ -24,6 +26,7 @@ define('REPORT_COLUMN_LEVEL', 15);
 // level plus and less are never put in the pdf, so their constants are just form HTML rendering
 define('REPORT_COLUMN_LEVEL_PLUS', 16);
 define('REPORT_COLUMN_LEVEL_LESS', 17);
+define('REPORT_COLUMN_MAXTRIES', 21);
 
 // add to the relative array only unwanted cols constants
 
@@ -33,4 +36,9 @@ $GLOBALS['reportFILEColArray'] = [ 'REPORT_COLUMN_EXERCISES', 'REPORT_COLUMN_BOO
 if (defined('ADA_SURVEY_TO_CSV') && ADA_SURVEY_TO_CSV) {
     $GLOBALS['reportHTMLColArray'][] = 'REPORT_COLUMN_EXERCISES_SURVEY';
     $GLOBALS['reportFILEColArray'][] = 'REPORT_COLUMN_EXERCISES_SURVEY';
+}
+
+if (!ModuleLoaderHelper::isLoaded('MAXTRIES')) {
+    $GLOBALS['reportHTMLColArray'][] = 'REPORT_COLUMN_MAXTRIES';
+    $GLOBALS['reportFILEColArray'][] = 'REPORT_COLUMN_MAXTRIES';
 }

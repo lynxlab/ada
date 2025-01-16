@@ -25,6 +25,7 @@ use Lynxlab\ADA\Main\History\History;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
 use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Badges\RewardedBadge;
+use Lynxlab\ADA\Module\MaxTries\AMAMaxTriesDataHandler;
 use Lynxlab\ADA\Module\Servicecomplete\AMACompleteDataHandler;
 use Lynxlab\ADA\Module\Servicecomplete\CompleteConditionSet;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
@@ -346,6 +347,7 @@ class Student
                     REPORT_COLUMN_INDEX  => 'index',
                     REPORT_COLUMN_STATUS => 'status',
                     REPORT_COLUMN_BADGES => 'badges',
+                    REPORT_COLUMN_MAXTRIES => 'maxtries',
                     REPORT_COLUMN_LEVEL  => 'level',
                     REPORT_COLUMN_LEVEL_PLUS  => 'level_plus',
                     REPORT_COLUMN_LEVEL_LESS  => 'level_less',
@@ -461,6 +463,12 @@ class Student
                             $tot_exercises_number_survey += $st_exer_number_survey;
                         }
                         //others counter for statistics
+                    }
+
+                    if (array_key_exists(REPORT_COLUMN_MAXTRIES, $columns) && ModuleLoaderHelper::isLoaded('MAXTRIES')) {
+                        $maxdh = AMAMaxTriesDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+                        $dati_stude[$key]['maxtries'] = $maxdh->getTriesCount($id_student, $id_instance);
+                        $maxdh->disconnect();
                     }
 
                     if (array_key_exists(REPORT_COLUMN_BADGES, $columns) && MODULES_BADGES) {
@@ -616,6 +624,10 @@ class Student
                     $tableHeader['level'] = translateFN("Livello");
                     $av_level = ($tot_level / $tot_students);
                     $dati_stude[$av_student]['level'] = '<span id="averageLevel">' . round($av_level, 2) . '</span>';
+                }
+                if (array_key_exists(REPORT_COLUMN_MAXTRIES, $columns) && ModuleLoaderHelper::isLoaded('MAXTRIES')) {
+                    $tableHeader['maxtries'] = translateFN("Tentativi");
+                    $dati_stude[$av_student]['maxtries'] = '-';
                 }
                 if (array_key_exists(REPORT_COLUMN_BADGES, $columns) && MODULES_BADGES) {
                     $tableHeader['badges'] = translateFN("Badges");
