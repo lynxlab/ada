@@ -5933,7 +5933,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
 
         switch ($required_info) {
             case 1: // get NODE n_contatti field, author has no instance
-                $sql = "SELECT N.id_nodo, N.nome, N.tipo, N.id_nodo_parent, N.n_contatti AS numero_visite, N.icona, N.livello, N.ordine
+                $sql = "SELECT N.id_nodo, N.nome, N.tipo, N.id_nodo_parent, N.n_contatti AS numero_visite, N.icona, N.livello, N.ordine, N.titolo as keywords
                 FROM nodo AS N LEFT JOIN nodo AS N2 ON (N.id_nodo_parent = N2.id_nodo  OR N2.id_nodo_parent = 'NULL' OR N2.id_nodo_parent IS NULL)";
                 break;
 
