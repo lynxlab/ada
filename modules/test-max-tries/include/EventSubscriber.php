@@ -170,7 +170,7 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
                         if (++$tries <= (int)MODULES_MAXTRIES_COUNT) {
                             $class = '';
                             $icon = 'ok';
-                            $msg = sprintf(translateFN("Tentativo %d di %d"), $tries, MODULES_MAXTRIES_COUNT);
+                            $msg = sprintf(translateFN("Tentativo %d (massimo: %d)"), $tries, MODULES_MAXTRIES_COUNT);
                         } else {
                             $class = ' unsatisfied';
                             $icon = 'ban';
