@@ -1274,9 +1274,25 @@ abstract class RootTest extends NodeTest
             return true;
         }
 
-        $res = $dh->testGetHistoryTest(['id_nodo' => $this->id_nodo, 'id_utente' => $_SESSION['sess_id_user'], 'consegnato' => 1]);
+        $where = ['id_nodo' => $this->id_nodo, 'id_utente' => $_SESSION['sess_id_user']];
+        if (isset($_SESSION['sess_id_course_instance'])) {
+            $where['id_istanza_corso'] = $_SESSION['sess_id_course_instance'];
+        } else {
+            error_log('*** WARNING!!! $_SESSION[\'sess_id_course_instance\'] not set in ' . __METHOD__ . ': ' . __FILE__ . ':' . __LINE__);
+        }
+        $res = $dh->testGetHistoryTest(
+            array_merge(
+                $where,
+                ['consegnato' => 1]
+            )
+        );
         if ($dh->isError($res) || empty($res)) {
-            $res = $dh->testGetHistoryTest(['id_nodo' => $this->id_nodo, 'id_utente' => $_SESSION['sess_id_user'], 'tempo_scaduto' => 1]);
+            $res = $dh->testGetHistoryTest(
+                array_merge(
+                    $where,
+                    ['tempo_scaduto' => 1]
+                )
+            );
         }
         if (!$dh->isError($res)) {
             if (empty($res)) {
