@@ -651,9 +651,13 @@ body.ada-autore .ui.attached.segment li.courseNode div.authorExtra.index {
 /**
  * Video section
  */
-#outer-video-play-icon  { display: table; }
-#middle-video-play-icon { display: table-cell; vertical-align: middle; }
-
+#outer-video-play-icon {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
 div.media.video button.jp-repeat,
 div.media.video div.jp-details {
     display: none;
