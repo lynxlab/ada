@@ -492,6 +492,34 @@ abstract class NodeTest
     }
 
     /**
+     * Recursively builds a flat array of NodeTest and all its descendants.
+     * Each returned array item has: 'id', 'type' and 'class' keys, such as:
+     *   'id' => '1297'
+     *   'type' => '110011'
+     *   'class' => 'Lynxlab\ADA\Module\Test\TestTest'
+     *
+     * @return array
+     */
+    public function flatChildrenIds()
+    {
+        $nodesArr = [];
+        if (!in_array($this->id_nodo, array_map(fn ($el) => $el['id'], $nodesArr))) {
+            $nodesArr[] = [
+                'id' => $this->id_nodo,
+                'type' => $this->tipo,
+                'class' => $this::class,
+            ];
+        }
+        foreach ($this->children as $child) {
+            $nodesArr = array_merge(
+                $nodesArr,
+                $child->flatChildrenIds($nodesArr)
+            );
+        }
+        return $nodesArr;
+    }
+
+    /**
      * search a node on all children in a breadth-first manner
      *
      * @access public
