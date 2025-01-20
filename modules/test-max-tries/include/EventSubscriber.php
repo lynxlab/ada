@@ -217,7 +217,12 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
                                 $s = reset($s);
                                 if (++$tries < (int)MODULES_MAXTRIES_COUNT) {
                                     // test non superato e numero tentativi non superato.
-                                    $dh->backupUserLog($this->getUser()->getId(), $this->getInstanceId(), $tries);
+                                    $dh->backupUserLog(
+                                        $this->getUser()->getId(),
+                                        $this->getInstanceId(),
+                                        $tries,
+                                        $this->getExcludeNodes()
+                                    );
                                     $courseInstanceObj = new CourseInstance($this->getInstanceId());
                                     $s->setStartStudentLevel($courseInstanceObj->start_level_student);
                                     $s->setSubscriptionStatus($s->getSubscriptionStatus());
@@ -235,6 +240,29 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
             }
         }
         $event->setArguments($retargs);
+    }
+
+    /**
+     * Builds the node exclusion array to be passed to backupUserLog
+     *
+     * @return array
+     *   array with keys: 'TABLENAME' => [ 'COLUMN' => [ IDS TO EXCLUDE ] ]
+     *   e.g. [
+     *      'module_test_history_test' => [
+     *          'id_nodo' => [
+     *              7,
+     *              21,
+     *           ]
+     *       ]
+     *   ]
+     */
+    private function getExcludeNodes() {
+        /**
+         * This is used by the ECM version of ADA to figure out
+         * surveys ids and its children that must not be removed
+         * when backing up student history, log, etc...
+         */
+        return [];
     }
 
     /**
