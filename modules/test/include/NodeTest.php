@@ -510,11 +510,13 @@ abstract class NodeTest
                 'class' => $this::class,
             ];
         }
-        foreach ($this->children as $child) {
-            $nodesArr = array_merge(
-                $nodesArr,
-                $child->flatChildrenIds($nodesArr)
-            );
+        if ($this->countChildren()) {
+            foreach ($this->children as $child) {
+                $nodesArr = array_merge(
+                    $nodesArr,
+                    $child->flatChildrenIds($nodesArr)
+                );
+            }
         }
         return $nodesArr;
     }
