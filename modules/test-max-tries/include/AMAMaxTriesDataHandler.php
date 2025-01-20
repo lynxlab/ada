@@ -102,12 +102,12 @@ class AMAMaxTriesDataHandler extends AMADataHandler
         return !AMADB::isError($res);
     }
 
-    public function backupUserLog($userId, $instanceId, $trycount = 0)
+    public function backupUserLog($userId, $instanceId, $trycount = 0, $excludeArr = [])
     {
         $this->beginTransaction();
         $res = false;
         foreach ($this->getManagedTables() as $table => $sourceTable) {
-            $res = $this->backupTable($table, $sourceTable, $userId, $instanceId, $trycount);
+            $res = $this->backupTable($table, $sourceTable, $userId, $instanceId, $trycount, $excludeArr);
             if (AMADB::isError($res)) {
                 $this->rollBack();
                 break;
@@ -121,10 +121,16 @@ class AMAMaxTriesDataHandler extends AMADataHandler
         return $retval;
     }
 
-    private function backupTable($table, $sourceTable, $userId, $instanceId, $trycount = 0)
+    private function backupTable($table, $sourceTable, $userId, $instanceId, $trycount = 0, $excludeArr)
     {
         $where = " WHERE `" . $sourceTable['table'] . "`.`" . $sourceTable['user'] . "` = :userId AND " .
         "`" . $sourceTable['table'] . "`.`" . $sourceTable['instance'] . "` = :instanceId";
+        if (!empty($excludeArr) && isset($excludeArr[$sourceTable['table']])) {
+            foreach ($excludeArr[$sourceTable['table']] as $field => $ids) {
+                $where .= " AND `" . $sourceTable['table'] . "`.`" . $field . "` NOT IN (".
+                implode(',', $ids). ")";
+            }
+        }
         $from = " FROM `" . $sourceTable['table'] . "` " . $where;
         $count = $this->getOnePrepared(
             "SELECT COUNT(*) FROM `" . $sourceTable['table'] . "` " . $where,
