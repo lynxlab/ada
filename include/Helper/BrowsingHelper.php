@@ -178,11 +178,22 @@ class BrowsingHelper extends ViewBaseHelper
                     if ($is_course_instance_complete) {
                         $s = new Subscription($userObj->getId(), $courseInstanceId);
                         $s->setSubscriptionStatus(ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED);
-                        if (isset($userObj->livello) && intval($userObj->livello) > 0) {
-                            $s->setStartStudentLevel($userObj->livello);
-                        } else {
-                            $s->setStartStudentLevel(null); // null means no level update
-                        }
+                        /**
+                         * Following lines are messing up user level if some code
+                         * updates it in the db and not in the object.
+                         * (e.g. \Lynxlab\ADA\Module\Test\TestTest::saveTest method).
+                         * They're commented because it's not sure if user 'livello'
+                         * is ever set by some code not in
+                         * ADAAbstractUser::getStudentLevel method.
+                         * Should someone every notice some weirdness in userObj->livello
+                         * please decomment them and comment the setStartStudentLevel call below.
+                         */
+                        // if (isset($userObj->livello) && intval($userObj->livello) > 0) {
+                        //     $s->setStartStudentLevel($userObj->livello);
+                        // } else {
+                        //     $s->setStartStudentLevel(null); // null means no level update
+                        // }
+                        $s->setStartStudentLevel(null);
                         $subscribedCount = Subscription::updateSubscription($s);
                         $user_status = ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED;
                     }
