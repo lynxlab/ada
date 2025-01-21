@@ -53,7 +53,7 @@ class CompleteConditionLevel extends CompleteCondition
      *
      * @var string
      */
-    public static $summaryStr = 'Livello raggiunto nel corso: <strong>%d</strong> su <strong>%d</strong>';
+    public static $summaryStr = 'Livello raggiunto: <strong>%d</strong> (minimo necessario: <strong>%d</strong>)';
 
     /**
      * description of the condition's own parameter

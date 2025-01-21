@@ -1,5 +1,6 @@
 (function (window) {
     const debug = false;
+    const VIDEOPLAYERID = 'jquery_jplayer';
 
     class timedNodeManager {
 
@@ -7,10 +8,16 @@
             if (debug) {
                 // options.duration = 5;
             }
+            const firstVideo = Array.from(document.querySelectorAll(`*[id^="${VIDEOPLAYERID}"]`)).reverse().pop();
             this.interval = null;
-            this.options = $j.extend({}, timedNodeManager.defaults, options);
+            this.options = extend(true, timedNodeManager.defaults, options);
             this.nextBtn = window.document.getElementById('nextNodeBtn');
             this.timeLeft = this.options.duration;
+            this.videoElement = window.document.getElementById(firstVideo?.id ?? null);
+            this.ended = {
+                video: (null === this.videoElement), // if no videoElement, video has ended
+                time: false,
+            };
             this.startManage(this.options.duration);
         }
 
@@ -20,15 +27,24 @@
                     this.toggleButton(this.nextBtn);
                 }
                 this.nextBtn.addEventListener('click', (e) => this.clickHanlder(this.nextBtn, e));
+                const saveData = {
+                    userId: this.options.userId,
+                    instanceId: this.options.instanceId,
+                };
+                if (null !== this.videoElement && !this.ended.video) {
+                    // must use jQuery here, the jPlayer is jQuery stuff!
+                    $j(`#${this.videoElement.id}`).bind(`${$j.jPlayer.event.ended}.jp-timednode`, (event) => {
+                        // Using ".jp-timednode" namespace so we can easily remove this event
+                        this.doneVideo(saveData);
+                      });
+                }
                 this.setIntervalCallback(() => {
-                    if (--this.timeLeft == 0) {
-                        this.doneTimer({
-                            userId: this.options.userId,
-                            instanceId: this.options.instanceId,
-                        });
-                    }
+                    this.timeLeft--;
                     if (debug) {
-                        console.log(`timednode: ${this.timeLeft} seconds left`);
+                        console.log(`timednode: ${this.timeLeft} seconds left, ended: ${JSON.stringify(this.ended)}`);
+                    }
+                    if (this.timeLeft == 0) {
+                        this.doneTimer(saveData);
                     }
                 });
             }
@@ -64,14 +80,42 @@
         }
 
         clickHanlder(button, event) {
-            if (button.classList.contains('disabled')) {
+            if (!this.buttonEnabled()) {
                 event.preventDefault();
                 return;
             }
         }
 
+        doneVideo(saveData) {
+            if (debug) {
+                console.log('doneVideo');
+            }
+            if (null !== this.videoElement) {
+                $j(`#${this.videoElement.id}`).unbind(`${$j.jPlayer.event.ended}.jp-timednode`);
+            }
+            this.ended.video = true;
+            this.checkAllEnded(saveData);
+        }
+
         doneTimer(saveData) {
+            if (debug) {
+                console.log('doneTimer');
+            }
             this.clearInterval();
+            this.ended.time = true;
+            this.checkAllEnded(saveData);
+        };
+
+        checkAllEnded(saveData) {
+            if (debug) {
+                console.log(`checkAllEnded: ${JSON.stringify(this.ended)}`);
+            }
+            if (Object.values(this.ended).every(item => item === true)) {
+                this.allEnded(saveData);
+            }
+        };
+
+        allEnded(saveData) {
             const url = new URL(this.nextBtn.getAttribute('href'));
             saveData.nextNode = url.searchParams.get('id_node');
 

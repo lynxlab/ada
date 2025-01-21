@@ -26,18 +26,6 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberInterface
 {
     /**
-     * Magic words that if found in the keywords will trigger the timed node.
-     *
-     * @var array
-     */
-    private static $magicWords = [
-        'durata',
-        'duration',
-        't',
-        'time',
-    ];
-
-    /**
      * Node duration as set by the author, in seconds.
      *
      * @var int
@@ -119,31 +107,20 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
             $this->setInstanceId($args['session']['sess_id_course_instance'] ?? 0)
                 ->setUserId((int) $args['session']['sess_id_user'] ?? 0)
                 ->setNode(new Node($args['session']['sess_id_node'] ?? 0));
-            $magicWord = array_filter(
-                array_map(
-                    'trim',
-                    explode(
-                        ',',
-                        trim($this->getNode()->getKeywords() ?? '')
-                    )
-                ),
-                fn ($el) => static::hasMagicWord($el)
-            );
+            $magicWord = TimedNode::getMagicWord($this->getNode()->getKeywords());
             /*
              * WARNING!!!
              * Duration must be properly set by the
              * author to a string like '<magicword>=h:m:s'
              */
-            $this->setDoPrerender(1 == count($magicWord));
+            $this->setDoPrerender(!empty($magicWord));
             if ($this->isDoPrerender()) {
-                $magicWord = reset($magicWord);
-                [$magicWord, $time] = explode('=', $magicWord);
-                $timeArr = array_map('trim', explode(':', $time));
+                $timeArr = TimedNode::extractTime($magicWord);
                 if (count($timeArr) == 3) {
                     $this->setDuration($timeArr[0] * 3600 + $timeArr[1] * 60 + $timeArr[2]);
                 }
             }
-            $this->setTimeInNode(static::calcTimeSpentInNode($args['session']));
+            $this->setTimeInNode(TimedNode::calcTimeSpentInNode($args['session']));
         }
     }
 
@@ -161,7 +138,7 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
             // remove magic words from keywords
             $newKeywords = array_filter(
                 explode(',', $renderData['content_dataAr']['keywords'] ?? ''),
-                fn ($keyword) => !static::hasMagicWord(strip_tags($keyword))
+                fn ($keyword) => !TimedNode::hasMagicWord(strip_tags($keyword))
             );
             $renderData['content_dataAr']['keywords'] = implode(',', $newKeywords);
 
@@ -262,33 +239,6 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
     }
 
     /**
-     * calc the time a user has spent in a node
-     *
-     * @param array $data
-     *   array used to get the time, must have keys (prefixed by $dataPrefix):
-     *   - id_user
-     *   - id_course_instance
-     *   - id_node
-     * @param string $dataPrefix
-     *   prefix for the keys of the data array ('sess_' if using session)
-     * @return integer
-     *   time the user has spent in node, in seconds
-     */
-    public static function calcTimeSpentInNode($data = [], $dataPrefix = 'sess_'): int
-    {
-        /**
-         * @var \Lynxlab\ADA\Main\AMA\AMATesterDataHandler $dh
-         */
-        $dh = $GLOBALS['dh'];
-
-        $history = array_filter(
-            $dh?->getLastVisitedNodesInPeriod($data[$dataPrefix . 'id_user'], $data[$dataPrefix . 'id_course_instance'], 0) ?? [],
-            fn ($el) => $el['id_nodo'] == $data[$dataPrefix . 'id_node'] ?? -1
-        );
-        return array_sum(array_map(fn ($el) => ($el['data_uscita'] ?? 0) - ($el['data_visita'] ?? 0), $history));
-    }
-
-    /**
      * format the passed time as HH:mm:ss string
      *
      * @param integer $time
@@ -303,25 +253,6 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
         $int_mins = floor($rest_sec / 60);
         $int_secs = floor($time - ($int_hours * 3600) - ($int_mins * 60));
         return sprintf("%02d:%02d:%02d", $int_hours, $int_mins, $int_secs);
-    }
-
-    /**
-     * checks if a keyword is one of the magic words
-     *
-     * @param string $el
-     *   the keyword to check
-     * @return boolean
-     *   true if it's a magic word
-     */
-    private static function hasMagicWord($el): bool
-    {
-        $el = str_replace(' ', '', $el);
-        foreach (static::$magicWords as $magicWord) {
-            if (str_starts_with($el, $magicWord . '=')) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

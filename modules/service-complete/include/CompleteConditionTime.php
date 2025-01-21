@@ -52,7 +52,7 @@ class CompleteConditionTime extends CompleteCondition
      *
      * @var string
      */
-    public static $summaryStr = 'Tempo trascorso nel corso: <strong>%s</strong> su <strong>%s</strong> ore:minuti';
+    public static $summaryStr = 'Tempo trascorso: <strong>%s</strong> ore:minuti (minimo necessario: <strong>%s</strong>)';
 
     /**
      * description of the condition's own parameter

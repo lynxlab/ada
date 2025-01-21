@@ -1174,7 +1174,7 @@ abstract class RootTest extends NodeTest
                 ADA_NEXT_NODE_TEST_RETURN => translateFN('Mostra link al nodo successivo del corso'),
                 ADA_INDEX_TEST_RETURN => translateFN('Mostra link all\'indice del corso'),
                 ADA_COURSE_INDEX_TEST_RETURN => translateFN('Mostra link all\'elenco dei corsi'),
-                ADA_COURSE_FIRSTNODE_TEST_RETURN => translateFN('Mosta link al nodo iniziale del corso'),
+                ADA_COURSE_FIRSTNODE_TEST_RETURN => translateFN('Mostra link al nodo iniziale del corso'),
             ];
             $returnLink = $options[$this->returnLink];
             $lis[++$i] = CDOMElement::create('li', 'class:li_test_info');
@@ -1274,9 +1274,25 @@ abstract class RootTest extends NodeTest
             return true;
         }
 
-        $res = $dh->testGetHistoryTest(['id_nodo' => $this->id_nodo, 'id_utente' => $_SESSION['sess_id_user'], 'consegnato' => 1]);
+        $where = ['id_nodo' => $this->id_nodo, 'id_utente' => $_SESSION['sess_id_user']];
+        if (isset($_SESSION['sess_id_course_instance'])) {
+            $where['id_istanza_corso'] = $_SESSION['sess_id_course_instance'];
+        } else {
+            error_log('*** WARNING!!! $_SESSION[\'sess_id_course_instance\'] not set in ' . __METHOD__ . ': ' . __FILE__ . ':' . __LINE__);
+        }
+        $res = $dh->testGetHistoryTest(
+            array_merge(
+                $where,
+                ['consegnato' => 1]
+            )
+        );
         if ($dh->isError($res) || empty($res)) {
-            $res = $dh->testGetHistoryTest(['id_nodo' => $this->id_nodo, 'id_utente' => $_SESSION['sess_id_user'], 'tempo_scaduto' => 1]);
+            $res = $dh->testGetHistoryTest(
+                array_merge(
+                    $where,
+                    ['tempo_scaduto' => 1]
+                )
+            );
         }
         if (!$dh->isError($res)) {
             if (empty($res)) {

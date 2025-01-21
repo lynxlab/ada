@@ -39,6 +39,7 @@ class MediaViewingHtmlLib
 
 							$j("#jquery_jplayer_' . $divID . '").jPlayer({
 								ready: function () {
+									$j("#outer-video-play-icon").css({"height" : "' . $height . 'px", "margin-top" : "-' . $height . 'px"});
 									$j(this).jPlayer("setMedia", {';
         if (isset($title) && strlen($title) > 0) {
             $jplayerCode .= 'title: "' . $title . '",';
