@@ -117,6 +117,13 @@ abstract class FormControl
         return $this;
     }
     /**
+     * Renders the element as html code.
+     * To be implemented by extending classes
+     *
+     * @return string
+     */
+    public abstract function render();
+    /**
      * Sets this form control as selected.
      *
      * @return FormControl
