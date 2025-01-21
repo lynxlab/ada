@@ -507,7 +507,7 @@ abstract class NodeTest
             $nodesArr[] = [
                 'id' => $this->id_nodo,
                 'type' => $this->tipo,
-                'class' => $this::class,
+                'class' => static::class,
             ];
         }
         if ($this->countChildren()) {

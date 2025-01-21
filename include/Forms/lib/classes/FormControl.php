@@ -122,7 +122,7 @@ abstract class FormControl
      *
      * @return string
      */
-    public abstract function render();
+    abstract public function render();
     /**
      * Sets this form control as selected.
      *
