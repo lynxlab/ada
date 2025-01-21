@@ -121,14 +121,14 @@ class AMAMaxTriesDataHandler extends AMADataHandler
         return $retval;
     }
 
-    private function backupTable($table, $sourceTable, $userId, $instanceId, $trycount = 0, $excludeArr)
+    private function backupTable($table, $sourceTable, $userId, $instanceId, $trycount = 0, $excludeArr = [])
     {
         $where = " WHERE `" . $sourceTable['table'] . "`.`" . $sourceTable['user'] . "` = :userId AND " .
         "`" . $sourceTable['table'] . "`.`" . $sourceTable['instance'] . "` = :instanceId";
         if (!empty($excludeArr) && isset($excludeArr[$sourceTable['table']])) {
             foreach ($excludeArr[$sourceTable['table']] as $field => $ids) {
-                $where .= " AND `" . $sourceTable['table'] . "`.`" . $field . "` NOT IN (".
-                implode(',', $ids). ")";
+                $where .= " AND `" . $sourceTable['table'] . "`.`" . $field . "` NOT IN (" .
+                implode(',', $ids) . ")";
             }
         }
         $from = " FROM `" . $sourceTable['table'] . "` " . $where;

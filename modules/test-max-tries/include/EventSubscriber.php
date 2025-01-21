@@ -256,7 +256,8 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
      *       ]
      *   ]
      */
-    private function getExcludeNodes() {
+    private function getExcludeNodes()
+    {
         /**
          * This is used by the ECM version of ADA to figure out
          * surveys ids and its children that must not be removed

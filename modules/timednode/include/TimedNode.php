@@ -65,9 +65,9 @@ class TimedNode
 
         $history = array_filter(
             $dh?->getLastVisitedNodesInPeriod($data[$dataPrefix . 'id_user'], $data[$dataPrefix . 'id_course_instance'], 0) ?? [],
-            fn($el) => $el['id_nodo'] == $data[$dataPrefix . 'id_node'] ?? -1
+            fn ($el) => $el['id_nodo'] == $data[$dataPrefix . 'id_node'] ?? -1
         );
-        return array_sum(array_map(fn($el) => ($el['data_uscita'] ?? 0) - ($el['data_visita'] ?? 0), $history));
+        return array_sum(array_map(fn ($el) => ($el['data_uscita'] ?? 0) - ($el['data_visita'] ?? 0), $history));
     }
 
     public static function timeFromKeyWords($keywords)
@@ -111,7 +111,7 @@ class TimedNode
                     trim($keywords ?? '')
                 )
             ),
-            fn($el) => static::hasMagicWord($el)
+            fn ($el) => static::hasMagicWord($el)
         );
         if (is_array($found) && count($found) == 1) {
             $retval = reset($found);
