@@ -249,7 +249,7 @@ class Subscription
      */
     public function getSubscriptionDate()
     {
-        return $this->subscriptionDate;
+        return (string) $this->subscriptionDate;
     }
     /**
      *
