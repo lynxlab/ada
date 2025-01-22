@@ -67,7 +67,7 @@ class AMACloneInstanceDataHandler extends AMADataHandler
                             $this->beginTransaction();
                             foreach ($destCoursesID as $courseID) {
                                 $instanceID = $this->courseInstanceAdd($courseID, $instanceArr);
-                                if (\intval($instanceID) > 0) {
+                                if (!AMADB::isError($instanceID) && intval($instanceID) > 0) {
                                     // add subscriptions
                                     // this will be modified by inserMultiRow
                                     $saveSubsArr = array_map(fn ($el) => array_merge($el, ['id_istanza_corso' => $instanceID]), $subscriptionArr);
