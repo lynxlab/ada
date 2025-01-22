@@ -462,7 +462,7 @@ input.right_answer_test, select.right_answer_test {
 
 #divLoading {
 	background: url('../img/ajax-loader.gif') no-repeat center center;
-	display: hidden;
+	display: none;
 }
 
 .clozePopup {
