@@ -88,7 +88,7 @@ class CompleteConditionLevel extends CompleteCondition
                     if (!AMADB::isError($course_id) && is_numeric($course_id)) {
                         $max_level = intval($GLOBALS['dh']->getCourseMaxLevel($course_id));
                         if (!AMADB::isError($max_level) && is_numeric($max_level)) {
-                            $retval = intval($level) > intval($max_level);
+                            $retval = intval($level) >= intval($max_level);
                         }
                     }
                 } elseif (is_numeric($this->param)) {
@@ -109,6 +109,9 @@ class CompleteConditionLevel extends CompleteCondition
         }
 
         if (!is_null($summary) && is_array($summary)) {
+            if (intval($this->param) === 0) {
+                $max_level--;
+            }
             $summary[self::class] = [
                 'isSatisfied' => $retval,
                 'param' => intval($max_level ?? $this->param),
