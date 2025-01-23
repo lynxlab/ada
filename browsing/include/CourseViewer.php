@@ -408,7 +408,16 @@ class CourseViewer
             }
             $node_info = $dh->getNodeInfo($id_toc);
             if (!AMADataHandler::isError($node_info)) {
-                $principale = ['id_nodo' => $id_toc, 'id_nodo_parent' => $id_toc, 'nome' => $node_info['name']/*translateFN('Principale')*/, 'tipo' => ADA_GROUP_TYPE, 'icona' => $node_info['icon']/*'group.png'*/, 'livello' => $node_info['level']];
+                $principale = [
+                    'id_nodo' => $id_toc,
+                    'id_nodo_parent' => $id_toc,
+                    'nome' => $node_info['name']/*translateFN('Principale')*/,
+                    'tipo' => ADA_GROUP_TYPE,
+                    'icona' => $node_info['icon']/*'group.png'*/,
+                    'livello' => $node_info['level'],
+                    'ordine' => $node_info['order'],
+                    'keywords' => $node_info['title'],
+                ];
             } else {
                 $principale = ['id_nodo' => $id_toc, 'id_nodo_parent' => $id_toc, 'nome' => translateFN('Principale'), 'tipo' => ADA_GROUP_TYPE, 'icona' => 'group.png', 'livello' => 0];
             }
@@ -483,7 +492,18 @@ class CourseViewer
             $node_visits = reset($hasToc)['numero_visite'];
         }
         if (!AMADataHandler::isError($node_info)) {
-            $principale = ['numero_visite' => $node_visits, 'id_nodo' => $id_toc, 'id_nodo_parent' => $id_toc, 'nome' => $node_info['name']/*translateFN('Principale')*/, 'tipo' => ADA_GROUP_TYPE, 'icona' => $node_info['icon']/*'group.png'*/, 'root' => true, 'livello' => $node_info['level']];
+            $principale = [
+                'numero_visite' => $node_visits,
+                'id_nodo' => $id_toc,
+                'id_nodo_parent' => $id_toc,
+                'nome' => $node_info['name']/*translateFN('Principale')*/,
+                'tipo' => ADA_GROUP_TYPE,
+                'icona' => $node_info['icon']/*'group.png'*/,
+                'root' => true,
+                'livello' => $node_info['level'],
+                'ordine' => $node_info['order'],
+                'keywords' => $node_info['title'],
+            ];
         } else {
             $principale = ['numero_visite' => $node_visits, 'id_nodo' => $id_toc, 'id_nodo_parent' => $id_toc, 'nome' => translateFN('Principale'), 'tipo' => ADA_GROUP_TYPE, 'icona' => 'group.png', 'root' => true, 'livello' => 0];
         }
