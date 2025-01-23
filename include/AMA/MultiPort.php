@@ -916,7 +916,8 @@ class MultiPort
                      *
                      */
                     if ($userObj->hasExtra()) {
-                        $tester_dh = AMADataHandler::instance(MultiPort::getDSN($user_testersAr[0]));
+                        $utester = $_SESSION['sess_selected_tester'] ?? $user_testersAr[0];
+                        $tester_dh = AMADataHandler::instance(MultiPort::getDSN($utester));
                         $extraAr = $tester_dh->getExtraData($userObj);
                         if (!AMADB::isError($extraAr)) {
                             $userObj->setExtras($extraAr);
