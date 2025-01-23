@@ -120,7 +120,6 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
                     $this->setDuration($timeArr[0] * 3600 + $timeArr[1] * 60 + $timeArr[2]);
                 }
             }
-            $this->setTimeInNode(TimedNode::calcTimeSpentInNode($args['session']));
         }
     }
 
@@ -133,6 +132,14 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
     public function viewPreRender(CoreEvent $event)
     {
         if ($this->isDoPrerender() && $this->getDuration() > 0) {
+            $this->setTimeInNode(TimedNode::calcTimeSpentInNode(
+                [
+                    'id_user' => $this->getUserId(),
+                    'id_course_instance' => $this->getInstanceId(),
+                    'id_node' => $this->getNode()->id,
+                ],
+                ''
+            ));
             $renderData = $event->getArguments();
 
             // remove magic words from keywords
@@ -159,9 +166,25 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
             if ($timeLeft > 0) {
                 $help = CDOMElement::create('div', 'id:node-duration, class:ui small message');
                 $help->addChild(CDOMElement::create('i', 'class: ui time icon'));
-                $help->addChild(new CText(
-                    sprintf(translateFN("Tempo di fruizione: %s"), static::formatTimeInNode($this->getDuration()))
-                ));
+
+                $helpTextCont = CDOMElement::create('div','id:help-text-container');
+
+                $helpTextLbl = CDOMElement::create('span','id:node-time-label');
+                $helpTextLbl->addChild(new CText(translateFN('Tempo di fruizione:').'&nbsp;'));
+                $helpTextCont->addChild($helpTextLbl);
+
+                $helpText = CDOMElement::create('span','id:node-time-left');
+                $helpText->addChild(new CText(static::formatTimeInNode($this->getDuration())));
+                $helpTextCont->addChild($helpText);
+
+                $help->addChild($helpTextCont);
+
+                $waitAnim = CDOMElement::create('div', 'class:lds-ellipsis');
+                for ($w = 0; $w < 4; $w++) {
+                    $waitAnim->addChild(CDOMElement::create('div'));
+                }
+                $help->addChild($waitAnim);
+
                 $moduleJS = [
                     'content_dataAr' => [
                         'navigation_bar' => [
