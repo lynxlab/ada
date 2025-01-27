@@ -150,7 +150,7 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
             $renderData['content_dataAr']['keywords'] = implode(',', $newKeywords);
 
             // do the timed node only if must spend some more time in the node
-            $timeLeft = $this->getDuration() - $this->getTimeInNode();
+            $timeLeft = TimedNode::ceilMinute($this->getDuration() - $this->getTimeInNode());
 
             // force the navigation bar to always be there passing ADA_MAX_USER_LEVEL
             $renderData['content_dataAr']['navigation_bar'] = (
@@ -167,13 +167,13 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
                 $help = CDOMElement::create('div', 'id:node-duration, class:ui small message');
                 $help->addChild(CDOMElement::create('i', 'class: ui time icon'));
 
-                $helpTextCont = CDOMElement::create('div','id:help-text-container');
+                $helpTextCont = CDOMElement::create('div', 'id:help-text-container');
 
-                $helpTextLbl = CDOMElement::create('span','id:node-time-label');
-                $helpTextLbl->addChild(new CText(translateFN('Tempo di fruizione:').'&nbsp;'));
+                $helpTextLbl = CDOMElement::create('span', 'id:node-time-label');
+                $helpTextLbl->addChild(new CText(translateFN('Tempo di fruizione:') . '&nbsp;'));
                 $helpTextCont->addChild($helpTextLbl);
 
-                $helpText = CDOMElement::create('span','id:node-time-left');
+                $helpText = CDOMElement::create('span', 'id:node-time-left');
                 $helpText->addChild(new CText(static::formatTimeInNode($this->getDuration())));
                 $helpTextCont->addChild($helpText);
 

@@ -70,6 +70,17 @@ class TimedNode
         return array_sum(array_map(fn ($el) => ($el['data_uscita'] ?? 0) - ($el['data_visita'] ?? 0), $history));
     }
 
+    /**
+     * If a positive timestamp is passed, round it to nearest upper minute.
+     *
+     * @param int $timestamp
+     * @return int rounded timestamp or passed timestamp
+     */
+    public static function ceilMinute($timestamp)
+    {
+        return ($timestamp > 0 ? ceil($timestamp / 60) * 60 : $timestamp);
+    }
+
     public static function timeFromKeyWords($keywords)
     {
         $magic = static::getMagicWord($keywords);
