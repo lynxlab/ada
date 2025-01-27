@@ -5,7 +5,34 @@
     padding: 0.2em 0;
 }
 
+@-webkit-keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
 
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.fadeOut {
+    -webkit-animation-name: fadeOut;
+    animation-name: fadeOut;
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+}
 
 .lds-ellipsis,
 .lds-ellipsis div {
