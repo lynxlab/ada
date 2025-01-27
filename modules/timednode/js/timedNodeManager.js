@@ -1,6 +1,7 @@
 (function (window) {
     const debug = false;
     const VIDEOPLAYERID = 'jquery_jplayer';
+    const TIMELEFTID = 'node-time-left';
 
     class timedNodeManager {
 
@@ -12,6 +13,7 @@
             this.interval = null;
             this.options = extend(true, timedNodeManager.defaults, options);
             this.nextBtn = window.document.getElementById('nextNodeBtn');
+            this.timeLeftEl = window.document.getElementById(TIMELEFTID);
             this.timeLeft = this.options.duration;
             this.videoElement = window.document.getElementById(firstVideo?.id ?? null);
             this.ended = {
@@ -25,6 +27,9 @@
             if (duration > 0 && this.nextBtn) {
                 if (this.buttonEnabled(this.nextBtn)) {
                     this.toggleButton(this.nextBtn);
+                }
+                if (null !== this.timeLeftEl) {
+                    this.timeLeftEl.innerHTML = this.formatHMS(duration);
                 }
                 this.nextBtn.addEventListener('click', (e) => this.clickHanlder(this.nextBtn, e));
                 const saveData = {
@@ -42,6 +47,9 @@
                     this.timeLeft--;
                     if (debug) {
                         console.log(`timednode: ${this.timeLeft} seconds left, ended: ${JSON.stringify(this.ended)}`);
+                    }
+                    if (null !== this.timeLeftEl && 0 === this.timeLeft % 60) {
+                        this.timeLeftEl.innerHTML = this.formatHMS(this.timeLeft);
                     }
                     if (this.timeLeft == 0) {
                         this.doneTimer(saveData);
@@ -74,6 +82,13 @@
                 button.style.pointerEvents = "none";
                 button.classList.add('disabled');
             } else {
+                if (null !== this.timeLeftEl.parentElement?.parentElement) {
+                    this.timeLeftEl.parentElement.parentElement.addEventListener("animationend", () => {
+                        this.timeLeftEl.parentElement.parentElement.style.display = "none";
+                        this.timeLeftEl.parentElement.parentElement.remove();
+                    });
+                    this.timeLeftEl.parentElement.parentElement.classList.add('fadeOut');
+                }
                 button.style.pointerEvents = "auto";
                 button.classList.remove('disabled');
             }
@@ -157,6 +172,10 @@
                     console.log(body);
                 }
             });
+        };
+
+        formatHMS(timestamp) {
+            return new Date(timestamp * 1000).toISOString().substring(11, 19);
         };
     }
 
