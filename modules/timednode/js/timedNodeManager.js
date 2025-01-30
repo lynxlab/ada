@@ -2,13 +2,38 @@
     const debug = false;
     const VIDEOPLAYERID = 'jquery_jplayer';
     const TIMELEFTID = 'node-time-left';
+    const DURATIONCONT = 'node-duration';
+    const PAUSEDCONT = 'node-paused';
 
     class timedNodeManager {
+        /**
+         * private property for visibiliyState
+         *
+         * @type {visibilityState}
+         * @private
+         */
+        #vState;
+
+        /**
+         * DOM elements visibility
+         */
+        #elementVisibility = {
+            NONE: 'none',
+            DURATIONCONT: 'flex',
+            PAUSEDCONT: 'flex',
+        };
 
         constructor(options) {
             if (debug) {
                 // options.duration = 5;
             }
+
+            // bind causes a fixed `this` context to be assigned to methods.
+            this.onVisibilityChange = this.onVisibilityChange.bind(this);
+            this.#vState = new visibilityState();
+            this.#vState.on(visibilityState.events.onstatechange, this.onVisibilityChange);
+            this.isPaused = this.#vState.getState() !== visibilityState.states.active;
+
             const firstVideo = Array.from(document.querySelectorAll(`*[id^="${VIDEOPLAYERID}"]`)).reverse().pop();
             this.interval = null;
             this.options = extend(true, timedNodeManager.defaults, options);
@@ -41,20 +66,65 @@
                     $j(`#${this.videoElement.id}`).bind(`${$j.jPlayer.event.ended}.jp-timednode`, (event) => {
                         // Using ".jp-timednode" namespace so we can easily remove this event
                         this.doneVideo(saveData);
-                      });
+                    });
                 }
                 this.setIntervalCallback(() => {
-                    this.timeLeft--;
-                    if (debug) {
-                        console.log(`timednode: ${this.timeLeft} seconds left, ended: ${JSON.stringify(this.ended)}`);
-                    }
-                    if (null !== this.timeLeftEl && 0 === this.timeLeft % 60) {
-                        this.timeLeftEl.innerHTML = this.formatHMS(this.timeLeft);
-                    }
-                    if (this.timeLeft == 0) {
-                        this.doneTimer(saveData);
+                    if (!this.isPaused) {
+                        this.timeLeft--;
+                        if (debug) {
+                            console.log(`timednode: ${this.timeLeft} seconds left, ended: ${JSON.stringify(this.ended)}`);
+                        }
+                        if (null !== this.timeLeftEl && 0 === this.timeLeft % 60) {
+                            this.timeLeftEl.innerHTML = this.formatHMS(this.timeLeft);
+                        }
+                        if (this.timeLeft == 0) {
+                            this.doneTimer(saveData);
+                        }
                     }
                 });
+            }
+        }
+
+        onVisibilityChange(e) {
+            if (debug) {
+                console.log(e);
+            }
+            if (e && 'state' in e) {
+                if (e.state !== visibilityState.states.active) {
+                    this.pause();
+                } else {
+                    this.resume();
+                }
+            }
+        }
+
+        pause() {
+            if (debug) {
+                console.log('pausing timedNode');
+            }
+            this.isPaused = true;
+            if (null !== document.getElementById(DURATIONCONT) && null !== document.getElementById(PAUSEDCONT)) {
+                document.getElementById(DURATIONCONT).style.display = this.#elementVisibility.NONE;
+                document.getElementById(PAUSEDCONT).style.display = this.#elementVisibility.PAUSEDCONT;
+            }
+            if (null !== this.videoElement && !this.ended.video) {
+                // must use jQuery here, the jPlayer is jQuery stuff!
+                $j(`#${this.videoElement.id}`).jPlayer('pause');
+            }
+        }
+
+        resume() {
+            if (debug) {
+                console.log('resuming timedNode');
+            }
+            this.isPaused = false;
+            if (null !== document.getElementById(DURATIONCONT) && null !== document.getElementById(PAUSEDCONT)) {
+                document.getElementById(DURATIONCONT).style.display = this.#elementVisibility.DURATIONCONT;
+                document.getElementById(PAUSEDCONT).style.display = this.#elementVisibility.NONE;
+            }
+            if (null !== this.videoElement && !this.ended.video) {
+                // must use jQuery here, the jPlayer is jQuery stuff!
+                $j(`#${this.videoElement.id}`).jPlayer('play');
             }
         }
 
@@ -119,7 +189,7 @@
             this.clearInterval();
             this.ended.time = true;
             this.checkAllEnded(saveData);
-        };
+        }
 
         checkAllEnded(saveData) {
             if (debug) {
@@ -128,11 +198,12 @@
             if (Object.values(this.ended).every(item => item === true)) {
                 this.allEnded(saveData);
             }
-        };
+        }
 
         allEnded(saveData) {
             const url = new URL(this.nextBtn.getAttribute('href'));
             saveData.nextNode = url.searchParams.get('id_node');
+            this.#vState.removeListener(visibilityState.events.onstatechange, this.onVisibilityChange);
 
             if (debug) {
                 console.log(`calling url: ${this.options.url}/ajax/nodeTimerExp.php`);
@@ -172,11 +243,11 @@
                     console.log(body);
                 }
             });
-        };
+        }
 
         formatHMS(timestamp) {
             return new Date(timestamp * 1000).toISOString().substring(11, 19);
-        };
+        }
     }
 
     timedNodeManager.defaults = {
