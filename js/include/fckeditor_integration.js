@@ -873,7 +873,7 @@ function enterUploadFileState() {
 	}
 
 	// disable fckeditor toolbar
-	FCKEDITOR_TOOLBAR_BUTTONS.each( function(button) {
+	FCKEDITOR_TOOLBAR_BUTTONS.forEach( function(button) {
 		oFCKeditor.EditorWindow.parent.FCKToolbarItems.LoadedItems[button]
 				.Disable();
 	});
@@ -905,7 +905,7 @@ function exitUploadFileState(error, filename, filetype) {
 	}
 
 	// enable fckeditor toolbar
-	FCKEDITOR_TOOLBAR_BUTTONS.each( function(button) {
+	FCKEDITOR_TOOLBAR_BUTTONS.forEach( function(button) {
 		oFCKeditor.EditorWindow.parent.FCKToolbarItems.LoadedItems[button]
 				.Enable();
 	});
