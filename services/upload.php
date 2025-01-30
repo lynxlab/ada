@@ -261,7 +261,7 @@ if (isset($_GET['caller']) && $_GET['caller'] == 'editor') {
     ?>
 <script type="text/javascript">
     var error    = <?php echo $error_code; ?>;
-    var filename = '<?php echo $filename_prefix ?? '' . $filename; ?>';
+    var filename = '<?php echo ($filename_prefix ?? '') . $filename; ?>';
     var filetype = <?php echo $ada_filetype; ?>;
     window.parent.exitUploadFileState(error, filename, filetype);
 </script>

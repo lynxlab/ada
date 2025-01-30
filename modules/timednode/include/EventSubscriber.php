@@ -185,11 +185,26 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
                 }
                 $help->addChild($waitAnim);
 
+                $paused = CDOMElement::create('div', 'id:node-paused, class:ui small warning message');
+                $paused->addChild(CDOMElement::create('i', 'class: ui pause icon'));
+
+                $pausedTextCont = CDOMElement::create('div','id:paused-text-container');
+
+                $pausedTextLbl = CDOMElement::create('span','id:node-paused-label');
+                $pausedTextLbl->addChild(new CText(translateFN('In pausa, cliccare questa finestra per continuare')));
+                $pausedTextCont->addChild($pausedTextLbl);
+
+                $paused->addChild($pausedTextCont);
+
+                $timedNodeCont = CDOMElement::create('div','id:timed-node-container');
+                $timedNodeCont->addChild($help);
+                $timedNodeCont->addChild($paused);
+
                 $moduleJS = [
                     'content_dataAr' => [
                         'navigation_bar' => [
                             'initval' => '',
-                            'additems' => fn ($v) => $help->getHtml() . $v,
+                            'additems' => fn ($v) => $timedNodeCont->getHtml() . $v,
                         ],
                     ],
                     'layout_dataAr' => [
