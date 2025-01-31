@@ -13,6 +13,7 @@ namespace Lynxlab\ADA\Module\Timednode;
 use Lynxlab\ADA\Browsing\DFSNavigationBar;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Node\Node;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
 use Lynxlab\ADA\Module\EventDispatcher\Subscribers\ADAScriptSubscriberInterface;
@@ -107,6 +108,20 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
             $this->setInstanceId($args['session']['sess_id_course_instance'] ?? 0)
                 ->setUserId((int) $args['session']['sess_id_user'] ?? 0)
                 ->setNode(new Node($args['session']['sess_id_node'] ?? 0));
+
+            global $dh;
+            /** @var AMADataHandler $dh */
+            $currentLevel = (int) $dh->getStudentLevel($this->getUserId(), $this->getInstanceId());
+            if ((int) $this->getNode()->level > $currentLevel) {
+                /*
+                    * If node level is greater than user level, redirect to default node.
+                    */
+                if (array_key_exists('sess_navigation_history', $args['session'])) {
+                    $args['session']['sess_navigation_history']->removeLastItem();
+                }
+                redirect('view.php?id_node=' . $args['session']['sess_id_course'] . '_' . ADA_DEFAULT_NODE);
+            }
+
             $magicWord = TimedNode::getMagicWord($this->getNode()->getKeywords());
             /*
              * WARNING!!!
