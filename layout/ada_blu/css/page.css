@@ -4,9 +4,17 @@
 @import url("footer.css");
 @import url('fonts/titillium.css');
 
-html, * {
-    font-family: "Titillium Web", "Helvetica Neue", "Helvetica", Arial, Lucida Sans, Verdana, Geneva, Arial, Helvetica, sans-serif;
-    font-size: medium;
+@media only screen {
+    html, * {
+        font-family: "Titillium Web", "Helvetica Neue", "Helvetica", Arial, Lucida Sans, Verdana, Geneva, Arial, Helvetica, sans-serif;
+        font-size: medium;
+    }
+}
+@media only print {
+    html, body {
+        font-family: "Helvetica Neue", "Helvetica", Arial, Lucida Sans,Verdana, Geneva, Arial, Helvetica, sans-serif;
+        font-size: 0.9em;
+    }
 }
 
 html, body { margin: 0; padding: 5px; color: #000; background: #fff; height: 99.5%; }
