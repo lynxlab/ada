@@ -166,7 +166,7 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
             $renderData['content_dataAr']['keywords'] = implode(',', $newKeywords);
 
             // do the timed node only if must spend some more time in the node
-            $timeLeft = 1800; //TimedNode::ceilMinute($this->getDuration() - $this->getTimeInNode());
+            $timeLeft = TimedNode::ceilMinute($this->getDuration() - $this->getTimeInNode());
 
             // force the navigation bar to always be there passing ADA_MAX_USER_LEVEL
             $renderData['content_dataAr']['navigation_bar'] = (
