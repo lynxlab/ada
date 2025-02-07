@@ -15,6 +15,7 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Node\Node;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
 use Lynxlab\ADA\Module\EventDispatcher\Subscribers\ADAScriptSubscriberInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -119,7 +120,7 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
                 if (array_key_exists('sess_navigation_history', $args['session'])) {
                     $args['session']['sess_navigation_history']->removeLastItem();
                 }
-                redirect('view.php?id_node=' . $args['session']['sess_id_course'] . '_' . ADA_DEFAULT_NODE);
+                Utilities::redirect('view.php?id_node=' . $args['session']['sess_id_course'] . '_' . ADA_DEFAULT_NODE);
             }
 
             $magicWord = TimedNode::getMagicWord($this->getNode()->getKeywords());
