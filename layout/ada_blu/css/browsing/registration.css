@@ -27,11 +27,36 @@ div.policy.text p {
 	margin-top: 1em;
 }
 
-div.fform form li {
-    position: relative;
+form li.hidden {
+    display: none !important;
 }
 
-div.fform form input[type=text], div.fform form input[type=password], div.fform form select {
-    position: absolute;
-    right: 0;
+div.first {
+   width: 80%;
+   margin: 0 auto;
+}
+
+div.fform form fieldset.form ol.form,
+div.fform form fieldset.form ol.form li.form {
+    display: flex;
+    flex-direction: column;
+}
+
+div.fform form fieldset.form ol.form li.form {
+    flex-direction: row;
+}
+
+div.fform form fieldset.form ol.form li.form label.form {
+    display: inline-block;
+    max-width: 50%;
+    text-transform: capitalize;
+}
+
+div.fform form fieldset.form ol.form li.form input[type=text],
+div.fform form fieldset.form ol.form li.form input[type=password] {
+    width: calc(100% - 10px);
+}
+
+div.fform form fieldset.form ol.form li.form select {
+    width: 100%;
 }

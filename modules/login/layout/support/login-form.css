@@ -63,7 +63,6 @@ select#p_selected_language {
 	border:0 none;
 	width: 100%;
 	padding: 0.5em;
-	line-height: 1;
 	-webkit-appearance:none;
 }
 
