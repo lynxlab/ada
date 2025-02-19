@@ -374,6 +374,7 @@ class SurveyTest extends RootTest
         $filemtime = file_exists($filePath . $fileName) ? filemtime($filePath . $fileName) : 0;
         if (!$mustexists || ($mustexists && file_exists($filePath . $fileName))) {
             $filePath = $http ? str_replace(ROOT_DIR, HTTP_ROOT_DIR, $filePath) : $filePath;
+            $fileName = $http ? urlencode($fileName) : $fileName;
             return [
                 'fileName' => $filePath . $fileName,
                 'filemtime' => $filemtime,
