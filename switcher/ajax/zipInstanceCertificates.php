@@ -132,8 +132,6 @@ if (is_null($data)) {
         }
 
         ini_set('memory_limit', '512M');
-        $_GET['forcereturn'] = true;
-        $_GET['id_course_instance'] = $courseInstanceObj->getId();
         // These are needed by the Rendering Engine called by the userCertificate inclusion
         $self = 'userCertificate';
         $GLOBALS['self'] = $self;
@@ -149,8 +147,10 @@ if (is_null($data)) {
         foreach ($subscriptions as $subscription) {
             ++$count;
             ADAFileLogger::log(sprintf("student ID %4d (%03d/%03d) [Mem.%5s]", $subscription->getSubscriberId(), $count, $total, formatBytes(memory_get_peak_usage(true))), $logfile);
-            // must set the id_user to be used by userCertificate
-            $_GET['id_user'] = $subscription->getSubscriberId();
+            // must set the id_user, course_instance and forcereturn to be used by userCertificate
+            $GLOBALS['zipcert-forcereturn'] = true;
+            $GLOBALS['zipcert-id_course_instance'] = $courseInstanceObj->getId();
+            $GLOBALS['zipcert-id_user'] = $subscription->getSubscriberId();
             set_time_limit(120);
             $pdfArr = include ROOT_DIR . '/browsing/userCertificate.php';
             if (array_key_exists('content', $pdfArr) && strlen($pdfArr['content']) > 0) {
