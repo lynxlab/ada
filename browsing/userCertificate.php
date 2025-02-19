@@ -99,7 +99,10 @@ if (MULTIPROVIDER === false) {
 }
 
 $id_user = DataValidator::checkInputValues('id_user', 'Integer', INPUT_GET, $_SESSION['sess_id_user'] ?? null);
-$id_instance = DataValidator::checkInputValues('id_instance', 'Integer', INPUT_GET, $_SESSION['sess_id_course_instance'] ?? null);
+if (null == ($id_instance = DataValidator::checkInputValues('id_instance', 'Integer', INPUT_GET, $_SESSION['sess_id_course_instance'] ?? null))) {
+    // try id_course_instance $_GET param
+    $id_instance = DataValidator::checkInputValues('id_course_instance', 'Integer', INPUT_GET, null);
+}
 
 //instance
 if (!(isset($courseInstanceObj) && $courseInstanceObj instanceof CourseInstance)) {
