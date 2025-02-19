@@ -34,8 +34,9 @@ $neededObjAr = [
     AMA_TYPE_STUDENT => ['layout', 'course', 'course_instance'],
 ];
 
-if (isset($_GET['forcereturn'])) {
-    $forcereturn = (bool)intval($_GET['forcereturn']);
+if (isset($GLOBALS['zipcert-forcereturn'])) {
+    $forcereturn = (bool)intval($GLOBALS['zipcert-forcereturn']);
+    unset($GLOBALS['zipcert-forcereturn']);
 } else {
     $forcereturn = false;
 }
@@ -98,10 +99,21 @@ if (MULTIPROVIDER === false) {
     }
 }
 
-$id_user = DataValidator::checkInputValues('id_user', 'Integer', INPUT_GET, $_SESSION['sess_id_user'] ?? null);
-if (null == ($id_instance = DataValidator::checkInputValues('id_instance', 'Integer', INPUT_GET, $_SESSION['sess_id_course_instance'] ?? null))) {
-    // try id_course_instance $_GET param
-    $id_instance = DataValidator::checkInputValues('id_course_instance', 'Integer', INPUT_GET, null);
+if (!$forcereturn) {
+    $inputType = (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') ? INPUT_POST : INPUT_GET;
+    $id_user = DataValidator::checkInputValues('id_user', 'Integer', $inputType, $_SESSION['sess_id_user'] ?? null);
+    if (null == ($id_instance = DataValidator::checkInputValues('id_instance', 'Integer', $inputType, $_SESSION['sess_id_course_instance'] ?? null))) {
+        // try id_course_instance param
+        $id_instance = DataValidator::checkInputValues('id_course_instance', 'Integer', $inputType, null);
+    }
+} else {
+    $id_user = (int) $GLOBALS['zipcert-id_user'] ?? null;
+    $id_instance = (int) $GLOBALS['zipcert-id_course_instance'] ?? null;
+    foreach (['zipcert-id_user', 'zipcert-id_course_instance'] as $gKey) {
+        if (isset($GLOBALS[$gKey])) {
+            unset($GLOBALS[$gKey]);
+        }
+    }
 }
 
 //instance
