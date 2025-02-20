@@ -101,7 +101,11 @@ class TimedNode
     public static function extractTime($keyword)
     {
         [$keyword, $time] = explode('=', $keyword);
-        return array_map('trim', explode(':', $time));
+        $retArray = array_map('trim', explode(':', $time));
+        if (count($retArray) != 3) {
+            throw new TimedNodeException('Invalid time format, please use hh:mm:ss');
+        }
+        return $retArray;
     }
 
     /**
