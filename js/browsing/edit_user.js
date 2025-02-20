@@ -115,7 +115,7 @@ function initUserRegistrationForm(hasTabs, useAjax) {
                 // if unsaved data ask user if really wants to switch tab
                 var theId = ui.oldPanel.attr('id').replace(/^\D+/g, '');
 
-                if ($j('#tabSaveIcon' + theId).css('visibility') != 'hidden' &&
+                if ($j('#tabSaveIcon' + theId).is(':visible') &&
                     !confirm(i18n['confirmTabChange']))
                     event.preventDefault();
                 else // reset the proper form and hide it if visible
@@ -270,7 +270,11 @@ function initUserRegistrationForm(hasTabs, useAjax) {
  * @param visibility css visibility to set, as a string (e.g. 'visible' or 'hidden')
  */
 function setSaveIconVisibility(iconNumber, visibility) {
-    $j('#tabSaveIcon' + iconNumber).css('visibility', visibility);
+    if (visibility == 'visible') {
+        $j('#tabSaveIcon' + iconNumber).show();
+    } else {
+        $j('#tabSaveIcon' + iconNumber).hide();
+    }
 }
 
 /**
@@ -293,42 +297,9 @@ function initFormsInitialValues() {
  * inits jquery buttons
  */
 function initButtons() {
-    /**
-     * edit button
-     */
-    $j(".extraEditButton").button({
-        icons: {
-            primary: "ui-icon-gear"
-        }
-    });
-
-    /**
-     * delete button
-     */
-    $j(".extraDeleteButton").button({
-        icons: {
-            primary: "ui-icon-trash"
-        }
-    });
-
-    /**
-     * new button
-     */
-    $j(".showFormButton").button({
-        icons: {
-            primary: "ui-icon-circle-plus"
-        }
-    });
-
-    /**
-     * close discarding changes
-     */
-    $j(".hideFormButton").button({
-        icons: {
-            primary: "ui-icon-circle-close"
-        }
-    });
-
+    document.querySelectorAll('input[type="submit"]').forEach(
+        (el) => el.classList.add('ui', 'button')
+    );
 }
 
 /**
@@ -399,7 +370,9 @@ function resetFormWithHidden(theForm) {
     var fieldID = formName.charAt(0).toUpperCase() + formName.slice(1);
     $j('#id' + fieldID).val('0');
     // hide all save icons
-    $j('span[id^=tabSaveIcon]').each(function () { $j(this).css('visibility', 'hidden'); });
+    $j('span[id^=tabSaveIcon]').each(
+        function (i, el) { setSaveIconVisibility(i, 'hidden'); }
+    );
     // init form initial values
     initFormsInitialValues();
 }
@@ -428,7 +401,7 @@ function editExtra(extraTableName, extraID) {
         var elementID = arrayVals[1];
         // sets corresponding form element to the selected value
 
-        $j('form[name=' + extraTableName + '] #' + elementID).val($j(this).html());
+        $j('form[name=' + extraTableName + '] #' + elementID).val($j(this).html()).trigger('change');
         if (firstElementID == null) firstElementID = elementID;
     });
 
@@ -523,7 +496,9 @@ window.onbeforeunload = function () {
     var msg = i18n['confirmLeavePage'];
     var mustSave = false;
 
-    $j('span[id^=tabSaveIcon]').each(function () { mustSave = mustSave || ($j(this).css('visibility') != 'hidden'); });
+    $j('span[id^=tabSaveIcon]').each(
+        function () { mustSave = mustSave || ($j(this).is(':visible')); }
+    );
 
     if (mustSave == true) return msg;
 };
