@@ -13,6 +13,7 @@ use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\ForumEvent;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 use Lynxlab\ADA\Module\Timednode\TimedNode;
+use Lynxlab\ADA\Module\Timednode\TimedNodeException;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -702,18 +703,25 @@ class CourseViewer
             foreach (['ordine', 'livello', 'keywords'] as $extra) {
                 if (isset($params['node'][$extra])) {
                     $label = null;
+                    $extraCss = '';
                     if ($extra == 'keywords') {
                         if (ModuleLoaderHelper::isLoaded('TIMEDNODE')) {
-                            $time = TimedNode::timeFromKeyWords($params['node'][$extra]);
-                            if (!empty($time)) {
-                                $label = translateFN('Tempo') . ' ' . $time;
+                            try {
+                                $time = TimedNode::timeFromKeyWords($params['node'][$extra]);
+                                if (!empty($time)) {
+                                    $label = translateFN('Tempo') . ' ' . $time;
+                                    $extraCss .= ' blue';
+                                }
+                            } catch (TimedNodeException $e) {
+                                $label = sprintf("%s (%s)", translateFN('Tempo non valido'), $params['node'][$extra]);
+                                $extraCss .= ' red';
                             }
                         }
                     } else {
                         $label = sprintf(translateFN(ucfirst(strtolower($extra)) . ' %d'), $params['node'][$extra]);
                     }
                     if (!empty($label)) {
-                        $authorExtra[$extra] = CDOMElement::create('span', 'class:ui small label author index ' . $extra);
+                        $authorExtra[$extra] = CDOMElement::create('span', 'class:ui small label author index ' . $extra . $extraCss);
                         $authorExtra[$extra]->addChild(new CText($label));
                     }
                 }

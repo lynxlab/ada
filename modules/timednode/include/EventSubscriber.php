@@ -131,9 +131,11 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
              */
             $this->setDoPrerender(!empty($magicWord));
             if ($this->isDoPrerender()) {
-                $timeArr = TimedNode::extractTime($magicWord);
-                if (count($timeArr) == 3) {
+                try {
+                    $timeArr = TimedNode::extractTime($magicWord);
                     $this->setDuration($timeArr[0] * 3600 + $timeArr[1] * 60 + $timeArr[2]);
+                } catch (TimedNodeException $e) {
+                    $this->setDuration(MODULES_TIMEDNODE_DEFAULTDURATION);
                 }
             }
         }
