@@ -269,13 +269,15 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
 
                 $showButton = CDOMElement::create('a');
                 $showButton->setAttribute('href', 'javascript:toggleForm(\'' . $form->getName() . '\', true);');
-                $showButton->setAttribute('class', 'showFormButton ' . $form->getName());
+                $showButton->setAttribute('class', 'ui small button showFormButton ' . $form->getName());
+                $showButton->addChild(CDOMElement::create('i','class:add sign icon'));
                 $showButton->addChild(new CText(translateFN('Nuova scheda')));
 
                 $hideButton = CDOMElement::create('a');
                 $hideButton->setAttribute('href', 'javascript:toggleForm(\'' . $form->getName() . '\');');
-                $hideButton->setAttribute('class', 'hideFormButton ' . $form->getName());
+                $hideButton->setAttribute('class', 'ui small button hideFormButton ' . $form->getName());
                 $hideButton->setAttribute('style', 'display:none');
+                $hideButton->addChild(CDOMElement::create('i','class:remove sign icon'));
                 $hideButton->addChild(new CText(translateFN('Chiudi e scarta modifiche')));
 
                 $divButton->addChild($showButton);
@@ -327,10 +329,14 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
             if (isset($container) || isset($currentForm)) {
                 // create a LI
                 $tabsLI = CDOMElement::create('li');
+                $tabsCont = CDOMElement::create('div','class:tabLabelContainer');
                 // add the save icon to the link
-                $tabsLI->addChild(CDOMElement::create('span', 'class:ui-icon ui-icon-disk,id:tabSaveIcon' . $currTab));
+                $iSpan = CDOMElement::create('span', 'class:save icon,id:tabSaveIcon' . $currTab);
+                $iSpan->addChild(CDOMElement::create('i','class:save icon'));
+                $tabsCont->addChild($iSpan);
                 // add a link to the div that holds tab content
-                $tabsLI->addChild(BaseHtmlLib::link('#divTab' . $currTab, $tabsArray [$currTab][0]));
+                $tabsCont->addChild(BaseHtmlLib::link('#divTab' . $currTab, $tabsArray [$currTab][0]));
+                $tabsLI->addChild($tabsCont);
                 $tabsUL->addChild($tabsLI);
                 $tabContents [$currTab] = CDOMElement::create('div', 'id:divTab' . $currTab);
 
