@@ -703,5 +703,12 @@ switch ($op) {
          */
         $content_dataAr['test_history'] = 'op=test&id_course_instance=' . $sess_id_course_instance . '&id_course=' . $sess_id_course;
 
+        /**
+         * Send cross orgin isolation headers
+         * Only needed for zomm web sdk to work,
+         * but looks harmless to always be sent
+         */
+        Utilities::sendCrossOriginIsolation();
+
         ARE::render($layout_dataAR, $content_dataAr, null, $optionsAr, $menuOptions);
 }
