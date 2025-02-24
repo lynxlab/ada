@@ -15,7 +15,7 @@
  * @name CONNECT DATA SERVER
  */
 if (!defined('ZOOM_WEBSDK_VERSION')) {
-    define('ZOOM_WEBSDK_VERSION', '2.16.0');
+    define('ZOOM_WEBSDK_VERSION', '3.1.6');
 }
 
 define('ZOOMCONF_ZOOMUSER', 'me');

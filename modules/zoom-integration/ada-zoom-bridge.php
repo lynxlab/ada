@@ -1,4 +1,7 @@
 <?php
+
+use Lynxlab\ADA\Main\Utilities;
+
 require_once '../../config_path.inc.php';
 $allowedUsersAr = [AMA_TYPE_STUDENT, AMA_TYPE_TUTOR]; //, AMA_TYPE_AUTHOR, AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER);
 /**
@@ -12,6 +15,8 @@ $neededObjAr = [
     // AMA_TYPE_SWITCHER => array('node', 'layout', 'course')
 ];
 $trackPageToNavigationHistory = false;
+
+Utilities::sendCrossOriginIsolation();
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 require_once ROOT_DIR . '/comunica/include/ZoomConf.config.inc.php';

@@ -1197,7 +1197,8 @@ class Node
             $nwURL = HTTP_ROOT_DIR . '/adaProxy.php?q=';
             $urlhashes = [];
             foreach ($unique as $i => $url) {
-                if (stripos($url, 'vimeo.com') === false && stripos($url, 'youtube.com') === false && !str_starts_with($url, HTTP_ROOT_DIR)) {
+                if (stripos($url, 'clevercast.com') === false && stripos($url, 'scorm.com') === false &&
+                    stripos($url, 'vimeo.com') === false && stripos($url, 'youtube.com') === false && !str_starts_with($url, HTTP_ROOT_DIR)) {
                     $enc = openssl_encrypt($url, 'BF-ECB', ADAPROXY_ENC_KEY);
                     if (false === $enc) {
                         $enc = $url;

@@ -29,6 +29,8 @@ use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Widgets\Widget;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 /**
  * Common initializations and include files
  */
@@ -108,108 +110,111 @@ foreach ($twDatas as $k => $twitterAr) {
     $mediaSearchURLs = [];
     $mediaReplaceURLs = [];
 
-    // checks if it's retweeted
-    if (property_exists($twitterAr, 'retweeted_status') && is_object($twitterAr->retweeted_status)) {
-        $username = $twitterAr->retweeted_status->user->name;
-        $screenname = $twitterAr->retweeted_status->user->screen_name;
-        $displayText = $twitterAr->retweeted_status->text;
-        $isRetweeded = true;
-    } else {
-        $username = $twitterAr->user->name;
-        $screenname = $twitterAr->user->screen_name;
-        $displayText = $twitterAr->text;
-        $isRetweeded = false;
-    }
-
-    $firstLine = "<a href='" . $baseUserLink . $screenname . "' target='_blank'>$username <s>@</s>" . $screenname . "</a>";
-
-    // makes the hashtags links
-    $curr = 0;
-    if (is_object($twitterAr->entities) &&  $twitterAr->entities->hashtags) {
-        foreach ($twitterAr->entities->hashtags as $hastag) {
-            $hashText[++$curr] = $hastag->text;
-            $linkHref = str_replace("<HASHTAG>", $hashText[$curr], $baseHashTagLink);
-            $hashLinks[$curr] = "<a href='" . $linkHref . "' target='_blank'><s>#</s>" . $hashText[$curr] . "</a>";
-            $hashText[$curr] = '#' . $hashText[$curr];
-        }
-    }
-    $displayText = str_replace($hashText, $hashLinks, $displayText);
-
-    // makes the link address links
-    $curr = 0;
-    $urlsObj = $isRetweeded ? $twitterAr->retweeted_status->entities->urls : $twitterAr->entities->urls;
-    if ($urlsObj) {
-        foreach ($urlsObj as $url) {
-            $searchURLs[++$curr] = $url->url;
-            $replaceForBuildURL =  [$searchURLs[$curr], $url->expanded_url, $url->display_url];
-            $replaceURLs[$curr] = str_replace($searchForBuildURL, $replaceForBuildURL, $baseLinkHref);
-        }
-    }
-    $displayText = str_replace($searchURLs, $replaceURLs, $displayText);
-
-    // makes media links
-    $curr = 0;
-
-    $mediaObj = false;
-    if ($isRetweeded && property_exists($twitterAr->retweeted_status->entities, 'media')) {
-        $mediaObj = $twitterAr->retweeted_status->entities->media;
-    } elseif (property_exists($twitterAr->entities, 'media')) {
-        $mediaObj = $twitterAr->entities->media;
-    }
-
-    if ($mediaObj) {
-        foreach ($mediaObj as $aMedia) {
-            $mediaSearchURLs[++$curr] = $aMedia->url;
-            $replaceForBuildURL =  [$mediaSearchURLs[$curr], $aMedia->expanded_url, $aMedia->display_url];
-            $mediaReplaceURLs[$curr] = str_replace($searchForBuildURL, $replaceForBuildURL, $baseLinkHref);
-        }
-    }
-    $displayText = str_replace($mediaSearchURLs, $mediaReplaceURLs, $displayText);
-
-    // makes the username links
-    $curr = 0;
-    if ($twitterAr->entities->user_mentions) {
-        foreach ($twitterAr->entities->user_mentions as $user) {
-            $searchUser[++$curr] = $user->screen_name;
-            $replaceUser[$curr] = "<a href='" . $baseUserLink . $searchUser[$curr] . "' target='_blank'><s>@</s>" . $searchUser[$curr] . "</a>";
-            $searchUser[$curr] = "@" . $searchUser[$curr];
-        }
-    }
-    $displayText = str_replace($searchUser, $replaceUser, $displayText);
-
     $twitterDIV = CDOMElement::create('div', 'class:event');
     $twitterText = CDOMElement::create('div', 'class:content');
-    /**
-     * TODO: add date? to twitterText
-     */
 
-    $twitterSummary = CDOMElement::create('div', 'class:summary');
-    $twitterText->addChild($twitterSummary);
-
-    $twitterHeader = CDOMElement::create('div', 'class:header');
-    $twitterHeader->addChild(new CText($firstLine));
-    $twitterSummary->addChild($twitterHeader);
-
-    $textEl = CDOMElement::create('div', 'class:extra text');
-    $twitterSummary->addChild($textEl);
-    $textEl->addChild(new CText($displayText));
-
-    if ($showImage) {
-        $imgUrl = ($isRetweeded) ? $twitterAr->retweeted_status->user->profile_image_url : $twitterAr->user->profile_image_url;
-        $imgUrl = preg_replace('#^https?://#', '', rtrim($imgUrl, '/'));
-        $protocol = 'http';
-        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
-            $protocol .= 's';
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || !empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] == 'on') {
-            $protocol .= 's';
+    // checks if it's retweeted
+    if (is_object($twitterAr)) {
+        if (property_exists($twitterAr, 'retweeted_status') && is_object($twitterAr->retweeted_status)) {
+            $username = $twitterAr->retweeted_status->user->name;
+            $screenname = $twitterAr->retweeted_status->user->screen_name;
+            $displayText = $twitterAr->retweeted_status->text;
+            $isRetweeded = true;
+        } else {
+            $username = $twitterAr->user->name;
+            $screenname = $twitterAr->user->screen_name;
+            $displayText = $twitterAr->text;
+            $isRetweeded = false;
         }
-        $protocol .= '://';
-        $twitterLabel = CDOMElement::create('div', 'class:label');
-        $twitterImage = CDOMElement::create('img', 'src:' . $protocol . $imgUrl);
-        $twitterImage->setAttribute('class', 'ui mini image' . ($circularImage ? ' circular' : ''));
+        $firstLine = "<a href='" . $baseUserLink . $screenname . "' target='_blank'>$username <s>@</s>" . $screenname . "</a>";
 
-        $twitterLabel->addChild($twitterImage);
-        $twitterDIV->addChild($twitterLabel);
+        // makes the hashtags links
+        $curr = 0;
+        if (is_object($twitterAr->entities) &&  $twitterAr->entities->hashtags) {
+            foreach ($twitterAr->entities->hashtags as $hastag) {
+                $hashText[++$curr] = $hastag->text;
+                $linkHref = str_replace("<HASHTAG>", $hashText[$curr], $baseHashTagLink);
+                $hashLinks[$curr] = "<a href='" . $linkHref . "' target='_blank'><s>#</s>" . $hashText[$curr] . "</a>";
+                $hashText[$curr] = '#' . $hashText[$curr];
+            }
+        }
+        $displayText = str_replace($hashText, $hashLinks, $displayText);
+        // makes the link address links
+        $curr = 0;
+        $urlsObj = $isRetweeded ? $twitterAr->retweeted_status->entities->urls : $twitterAr->entities->urls;
+        if ($urlsObj) {
+            foreach ($urlsObj as $url) {
+                $searchURLs[++$curr] = $url->url;
+                $replaceForBuildURL =  [$searchURLs[$curr], $url->expanded_url, $url->display_url];
+                $replaceURLs[$curr] = str_replace($searchForBuildURL, $replaceForBuildURL, $baseLinkHref);
+            }
+        }
+        $displayText = str_replace($searchURLs, $replaceURLs, $displayText);
+
+        // makes media links
+        $curr = 0;
+
+        $mediaObj = false;
+        if ($isRetweeded && property_exists($twitterAr->retweeted_status->entities, 'media')) {
+            $mediaObj = $twitterAr->retweeted_status->entities->media;
+        } elseif (property_exists($twitterAr->entities, 'media')) {
+            $mediaObj = $twitterAr->entities->media;
+        }
+
+            if ($mediaObj) {
+                foreach ($mediaObj as $aMedia) {
+                    $mediaSearchURLs[++$curr] = $aMedia->url;
+                    $replaceForBuildURL =  [$mediaSearchURLs[$curr], $aMedia->expanded_url, $aMedia->display_url];
+                    $mediaReplaceURLs[$curr] = str_replace($searchForBuildURL, $replaceForBuildURL, $baseLinkHref);
+                }
+            }
+            $displayText = str_replace($mediaSearchURLs, $mediaReplaceURLs, $displayText);
+
+            // makes the username links
+            $curr = 0;
+            if ($twitterAr->entities->user_mentions) {
+                foreach ($twitterAr->entities->user_mentions as $user) {
+                    $searchUser[++$curr] = $user->screen_name;
+                    $replaceUser[$curr] = "<a href='" . $baseUserLink . $searchUser[$curr] . "' target='_blank'><s>@</s>" . $searchUser[$curr] . "</a>";
+                    $searchUser[$curr] = "@" . $searchUser[$curr];
+                }
+            }
+            $displayText = str_replace($searchUser, $replaceUser, $displayText);
+
+                /**
+                 * TODO: add date? to twitterText
+                 */
+
+                $twitterSummary = CDOMElement::create('div', 'class:summary');
+                $twitterText->addChild($twitterSummary);
+
+                $twitterHeader = CDOMElement::create('div', 'class:header');
+                $twitterHeader->addChild(new CText($firstLine));
+                $twitterSummary->addChild($twitterHeader);
+
+                $textEl = CDOMElement::create('div', 'class:extra text');
+                $twitterSummary->addChild($textEl);
+                $textEl->addChild(new CText($displayText));
+
+                if ($showImage) {
+                    $imgUrl = ($isRetweeded) ? $twitterAr->retweeted_status->user->profile_image_url : $twitterAr->user->profile_image_url;
+                    $imgUrl = preg_replace('#^https?://#', '', rtrim($imgUrl, '/'));
+                    $protocol = 'http';
+                    if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
+                        $protocol .= 's';
+                    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || !empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] == 'on') {
+                        $protocol .= 's';
+                    }
+                    $protocol .= '://';
+                    $twitterLabel = CDOMElement::create('div', 'class:label');
+                    $twitterImage = CDOMElement::create('img', 'src:' . $protocol . $imgUrl);
+                    $twitterImage->setAttribute('class', 'ui mini image' . ($circularImage ? ' circular' : ''));
+
+                    $twitterLabel->addChild($twitterImage);
+                    $twitterDIV->addChild($twitterLabel);
+                }
+    } else {
+        $twitterText->addChild(new CText(translateFN('Errore caricamento twitter')));
     }
     $twitterDIV->addChild($twitterText);
 

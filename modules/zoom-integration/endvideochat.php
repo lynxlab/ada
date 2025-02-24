@@ -13,11 +13,14 @@ use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
+use Lynxlab\ADA\Main\Utilities;
 
 /**
  * Base config file
  */
 require_once realpath(__DIR__) . '/../../config_path.inc.php';
+
+Utilities::sendCrossOriginIsolation();
 
 if (!defined('CONFERENCE_TO_INCLUDE')) {
     define('CONFERENCE_TO_INCLUDE', 'ZoomConf');

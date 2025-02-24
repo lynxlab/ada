@@ -78,6 +78,7 @@ if (debug) {
     console.log(JSON.stringify(ZoomMtg.checkFeatureRequirements()));
 }
 
+ZoomMtg.setZoomJSLib('https://source.zoom.us/<?php echo ZOOM_WEBSDK_VERSION; ?>/lib', '/av');
 ZoomMtg.preLoadWasm();
 if ('function' == typeof ZoomMtg.prepareWebSDK) {
     typeof ZoomMtg.prepareWebSDK();
@@ -86,11 +87,10 @@ if ('function' == typeof ZoomMtg.prepareWebSDK) {
 }
 
 //Add the language code to the internationalization.reload method.
-ZoomMtg.i18n.load("<?php echo strtolower($_SESSION['sess_user_language']).'-'.strtoupper($_SESSION['sess_user_language']); ?>");
-ZoomMtg.i18n.reload("<?php echo strtolower($_SESSION['sess_user_language']).'-'.strtoupper($_SESSION['sess_user_language']); ?>");
+ZoomMtg.i18n.load("<?php echo strtolower($_SESSION['sess_user_language'] ?? 'it').'-'.strtoupper($_SESSION['sess_user_language'] ?? 'IT'); ?>");
+ZoomMtg.i18n.reload("<?php echo strtolower($_SESSION['sess_user_language'] ?? 'it').'-'.strtoupper($_SESSION['sess_user_language'] ?? 'IT'); ?>");
 //Add the language code to the ZoomMtg.reRender method.
-ZoomMtg.reRender({lang: "<?php echo strtolower($_SESSION['sess_user_language']).'-'.strtoupper($_SESSION['sess_user_language']); ?>"});
-ZoomMtg.setZoomJSLib('https://source.zoom.us/<?php echo ZOOM_WEBSDK_VERSION; ?>/lib', '/av');
+// ZoomMtg.reRender({lang: "<?php echo strtolower($_SESSION['sess_user_language']).'-'.strtoupper($_SESSION['sess_user_language']); ?>"});
 
 const API_KEY = "<?php echo ZOOMCONF_APIKEY; ?>";
 
@@ -104,6 +104,9 @@ const meetingConfig = {
     apiKey: API_KEY,
     meetingNumber: '<?php echo $videoroomObj->getMeetingID(); ?>',
     leaveUrl: '<?php echo $videoroomObj->getLogoutUrl(); ?>',
+    disableCORP: !window.crossOriginIsolated,
+    enableHD: true,
+    enableFullHD: true,
     userName: '<?php echo $userObj->getFullName(); ?>',
     userEmail: '<?php echo $userObj->getEmail(); ?>',
     passWord: '<?php echo $videoroomObj->getMeetingPWD(); ?>', // if required

@@ -516,4 +516,23 @@ class Utilities
     {
         return is_array($array) && count($array) > 0 && is_array($array[array_key_first($array)]);
     }
+
+    /**
+     * send headers Implementing Cross-Origin Isolation
+     *
+     * @return bool true on headers sent
+     */
+    public static function sendCrossOriginIsolation()
+    {
+        $filename = '';
+        $line = 0;
+        if (!headers_sent($filename, $line)) {
+            header("Cross-Origin-Embedder-Policy: credentialless");
+            header("Cross-Origin-Opener-Policy: same-origin");
+            return true;
+        } else {
+            error_log(__METHOD__ . sprintf(" headers already sent by %s:%s", $filename, $line));
+        }
+        return false;
+    }
 }
