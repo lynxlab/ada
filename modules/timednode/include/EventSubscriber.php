@@ -135,6 +135,7 @@ class EventSubscriber implements ADAScriptSubscriberInterface, EventSubscriberIn
                     $timeArr = TimedNode::extractTime($magicWord);
                     $this->setDuration($timeArr[0] * 3600 + $timeArr[1] * 60 + $timeArr[2]);
                 } catch (TimedNodeException $e) {
+                    error_log($e);
                     $this->setDuration(MODULES_TIMEDNODE_DEFAULTDURATION);
                 }
             }
