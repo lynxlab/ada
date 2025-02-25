@@ -10,6 +10,8 @@
 
 namespace Lynxlab\ADA\Module\ZoomIntegration;
 
+use DateTimeImmutable;
+use DateTimeZone;
 use Exception;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Module\ZoomIntegration\AMAZoomIntegrationDataHandler;
@@ -52,7 +54,7 @@ class ADAZoomApi
                 'topic' => $meetingData['room_name'],
                 'agenda' => $meetingData['room_name'],
                 'type'  => 2, // scheduled meeting
-                'start_time' => date_format(date_create(null, timezone_open($timezone)), "Y-m-d\TH:i:s"),
+                'start_time' => (new DateTimeImmutable('now', new DateTimeZone($timezone)))->format("Y-m-d\TH:i:s"),
                 'timezone' => $timezone,
                 'duration' => 4 * 60, // four hours
                 'password' => $meetingData['meetingPWD'],
@@ -74,7 +76,8 @@ class ADAZoomApi
             }
 
             return $meetingData;
-        } catch (Exception) {
+        } catch (Exception $e) {
+            error_log($e);
             return false;
         }
     }
@@ -100,7 +103,8 @@ class ADAZoomApi
             }
 
             return $meetingData;
-        } catch (Exception) {
+        } catch (Exception $e) {
+            error_log($e);
             return [];
         }
     }

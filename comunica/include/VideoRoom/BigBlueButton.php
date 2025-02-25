@@ -23,7 +23,7 @@ use Lynxlab\ADA\Module\BBBIntegration\BBBIntegrationException;
 
 class BigBlueButton extends VideoRoom implements IVideoRoom
 {
-    public const IFRAMEATTR = ' class=\'ada-videochat-embed bbb\' allowfullscreen allow=\'camera ' . BBB_SERVER . '; microphone ' . BBB_SERVER . '\'';
+    public const IFRAMEATTR = ' id=\'bbb\' class=\'ada-videochat-embed bbb\' allowfullscreen allow=\'camera ' . BBB_SERVER . '; microphone ' . BBB_SERVER . '\'';
     public const VIDEOCHATTYPE = 'B';
 
     private $bbbAPI = null;
@@ -103,8 +103,8 @@ class BigBlueButton extends VideoRoom implements IVideoRoom
             $nome . ' ' . $cognome,
             ($id_profile == AMA_TYPE_TUTOR ? $this->moderatorPW : $this->attendeePW)
         );
-        $joinMeetingParams->setRedirect(true)->setUserId($sess_id_user)->setJoinViaHtml5(true);
-        $joinResponse = $this->bbbAPI->getJoinMeetingURL($joinMeetingParams);
+        $joinMeetingParams->setRedirect(true)->setUserId($sess_id_user);
+        $joinResponse = $this->bbbAPI->getUrlBuilder()->getJoinMeetingURL($joinMeetingParams);
         $this->link_to_room = $joinResponse;
     }
 

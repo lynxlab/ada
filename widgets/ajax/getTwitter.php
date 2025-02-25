@@ -161,58 +161,58 @@ foreach ($twDatas as $k => $twitterAr) {
             $mediaObj = $twitterAr->entities->media;
         }
 
-            if ($mediaObj) {
-                foreach ($mediaObj as $aMedia) {
-                    $mediaSearchURLs[++$curr] = $aMedia->url;
-                    $replaceForBuildURL =  [$mediaSearchURLs[$curr], $aMedia->expanded_url, $aMedia->display_url];
-                    $mediaReplaceURLs[$curr] = str_replace($searchForBuildURL, $replaceForBuildURL, $baseLinkHref);
-                }
+        if ($mediaObj) {
+            foreach ($mediaObj as $aMedia) {
+                $mediaSearchURLs[++$curr] = $aMedia->url;
+                $replaceForBuildURL =  [$mediaSearchURLs[$curr], $aMedia->expanded_url, $aMedia->display_url];
+                $mediaReplaceURLs[$curr] = str_replace($searchForBuildURL, $replaceForBuildURL, $baseLinkHref);
             }
-            $displayText = str_replace($mediaSearchURLs, $mediaReplaceURLs, $displayText);
+        }
+        $displayText = str_replace($mediaSearchURLs, $mediaReplaceURLs, $displayText);
 
-            // makes the username links
-            $curr = 0;
-            if ($twitterAr->entities->user_mentions) {
-                foreach ($twitterAr->entities->user_mentions as $user) {
-                    $searchUser[++$curr] = $user->screen_name;
-                    $replaceUser[$curr] = "<a href='" . $baseUserLink . $searchUser[$curr] . "' target='_blank'><s>@</s>" . $searchUser[$curr] . "</a>";
-                    $searchUser[$curr] = "@" . $searchUser[$curr];
-                }
+        // makes the username links
+        $curr = 0;
+        if ($twitterAr->entities->user_mentions) {
+            foreach ($twitterAr->entities->user_mentions as $user) {
+                $searchUser[++$curr] = $user->screen_name;
+                $replaceUser[$curr] = "<a href='" . $baseUserLink . $searchUser[$curr] . "' target='_blank'><s>@</s>" . $searchUser[$curr] . "</a>";
+                $searchUser[$curr] = "@" . $searchUser[$curr];
             }
-            $displayText = str_replace($searchUser, $replaceUser, $displayText);
+        }
+        $displayText = str_replace($searchUser, $replaceUser, $displayText);
 
-                /**
-                 * TODO: add date? to twitterText
-                 */
+        /**
+         * TODO: add date? to twitterText
+         */
 
-                $twitterSummary = CDOMElement::create('div', 'class:summary');
-                $twitterText->addChild($twitterSummary);
+        $twitterSummary = CDOMElement::create('div', 'class:summary');
+        $twitterText->addChild($twitterSummary);
 
-                $twitterHeader = CDOMElement::create('div', 'class:header');
-                $twitterHeader->addChild(new CText($firstLine));
-                $twitterSummary->addChild($twitterHeader);
+        $twitterHeader = CDOMElement::create('div', 'class:header');
+        $twitterHeader->addChild(new CText($firstLine));
+        $twitterSummary->addChild($twitterHeader);
 
-                $textEl = CDOMElement::create('div', 'class:extra text');
-                $twitterSummary->addChild($textEl);
-                $textEl->addChild(new CText($displayText));
+        $textEl = CDOMElement::create('div', 'class:extra text');
+        $twitterSummary->addChild($textEl);
+        $textEl->addChild(new CText($displayText));
 
-                if ($showImage) {
-                    $imgUrl = ($isRetweeded) ? $twitterAr->retweeted_status->user->profile_image_url : $twitterAr->user->profile_image_url;
-                    $imgUrl = preg_replace('#^https?://#', '', rtrim($imgUrl, '/'));
-                    $protocol = 'http';
-                    if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
-                        $protocol .= 's';
-                    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || !empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] == 'on') {
-                        $protocol .= 's';
-                    }
-                    $protocol .= '://';
-                    $twitterLabel = CDOMElement::create('div', 'class:label');
-                    $twitterImage = CDOMElement::create('img', 'src:' . $protocol . $imgUrl);
-                    $twitterImage->setAttribute('class', 'ui mini image' . ($circularImage ? ' circular' : ''));
+        if ($showImage) {
+            $imgUrl = ($isRetweeded) ? $twitterAr->retweeted_status->user->profile_image_url : $twitterAr->user->profile_image_url;
+            $imgUrl = preg_replace('#^https?://#', '', rtrim($imgUrl, '/'));
+            $protocol = 'http';
+            if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
+                $protocol .= 's';
+            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || !empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] == 'on') {
+                $protocol .= 's';
+            }
+            $protocol .= '://';
+            $twitterLabel = CDOMElement::create('div', 'class:label');
+            $twitterImage = CDOMElement::create('img', 'src:' . $protocol . $imgUrl);
+            $twitterImage->setAttribute('class', 'ui mini image' . ($circularImage ? ' circular' : ''));
 
-                    $twitterLabel->addChild($twitterImage);
-                    $twitterDIV->addChild($twitterLabel);
-                }
+            $twitterLabel->addChild($twitterImage);
+            $twitterDIV->addChild($twitterLabel);
+        }
     } else {
         $twitterText->addChild(new CText(translateFN('Errore caricamento twitter')));
     }

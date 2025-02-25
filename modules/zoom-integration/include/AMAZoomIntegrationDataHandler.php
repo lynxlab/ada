@@ -74,7 +74,7 @@ class AMAZoomIntegrationDataHandler extends AMADataHandler
                 $this->saveMeeting(
                     array_map(
                         function ($el) {
-                            if (method_exists($el, 'getBytes')) {
+                            if (is_object($el) && method_exists($el, 'getBytes')) {
                                 return $el->getBytes();
                             } else {
                                 return $el;

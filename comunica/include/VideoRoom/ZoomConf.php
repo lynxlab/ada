@@ -23,7 +23,7 @@ use Lynxlab\ADA\Module\ZoomIntegration\ZoomIntegrationException;
 
 class ZoomConf extends VideoRoom implements IVideoRoom
 {
-    public const IFRAMEATTR = ' class=\'ada-videochat-embed zoom\' allowfullscreen allow=\'camera; microphone;\' sandbox=\'allow-forms allow-scripts allow-same-origin\'';
+    public const IFRAMEATTR = ' id=\'zoom\' class=\'ada-videochat-embed zoom\' allowfullscreen allow=\'camera; microphone;\' sandbox=\'allow-forms allow-scripts allow-same-origin\'';
     public const VIDEOCHATTYPE = 'Z';
 
     private $zoomAPI = null;

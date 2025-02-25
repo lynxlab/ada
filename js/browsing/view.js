@@ -132,6 +132,8 @@ function initDoc() {
 							if (status == "error") {
 								var msg = "Sorry but there was an error: ";
 								$j(elID).html(msg + xhr.status + " " + xhr.statusText);
+							} else {
+								fixCredentiallessIframes(supportedVideochat);
 							}
 						});
 					}
@@ -139,7 +141,34 @@ function initDoc() {
 			}
 		});
 	}
+
+	fixCredentiallessIframes(supportedVideochat);
 } // end initDoc
+
+function fixCredentiallessIframes(supportedVideochat) {
+
+	const callback = (el, credentialless) => {
+		el.style.visibility = 'visible';
+	}
+
+	Array.from(document.getElementsByTagName('iframe')).map((el) => {
+		if (el) {
+			if (!([...supportedVideochat, 'chatframe'].includes(el.id))) {
+				/**
+				 * if not a supportedVideochat or chatframe
+				 * set the iframe to be credentialless
+				 */
+				el.credentialless = true;
+				el.src += ''; // trigger iframe reload
+				el.onload = () => {
+					callback(el, true);
+				};
+			} else {
+				callback(el, false);
+			}
+		}
+	});
+}
 
 if (window.attachEvent) {
 	window.attachEvent('onload', () => { setInterval( doPing, 600000 ); }); // 10 minutes
