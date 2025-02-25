@@ -89,12 +89,12 @@ class UserExtraModuleHtmlLib
 
         $editbutton    = CDOMElement::create('a', 'class:extraEditButton ui small button');
         $editbutton->setAttribute('href', 'javascript:editExtra(\'' . $className . '\',' . $extraObject->$keyProperty . ');');
-        $editbutton->addChild(CDOMElement::create('i','class:edit icon'));
+        $editbutton->addChild(CDOMElement::create('i', 'class:edit icon'));
         $editbutton->addChild(new CText(translateFN('Modifica')));
 
         $deletebutton = CDOMElement::create('a', 'class:extraDeleteButton ui small button');
         $deletebutton->setAttribute('href', 'javascript:deleteExtra(\'' . $className . '\',' . $extraObject->$keyProperty . ',\'' . $extraObject::getForeignKeyProperty() . '\');');
-        $deletebutton->addChild(CDOMElement::create('i','class:trash icon'));
+        $deletebutton->addChild(CDOMElement::create('i', 'class:trash icon'));
         $deletebutton->addChild(new CText(translateFN('Cancella')));
 
         $buttonsdiv->addChild($editbutton);

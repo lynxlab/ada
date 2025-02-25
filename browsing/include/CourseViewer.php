@@ -712,7 +712,7 @@ class CourseViewer
                                     $label = translateFN('Tempo') . ' ' . $time;
                                     $extraCss .= ' blue';
                                 }
-                            } catch (TimedNodeException $e) {
+                            } catch (TimedNodeException) {
                                 $label = sprintf("%s (%s)", translateFN('Tempo non valido'), $params['node'][$extra]);
                                 $extraCss .= ' red';
                             }
