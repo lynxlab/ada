@@ -527,7 +527,7 @@ class Utilities
         $filename = '';
         $line = 0;
         if (!headers_sent($filename, $line)) {
-            header("Cross-Origin-Embedder-Policy: credentialless");
+            header("Cross-Origin-Embedder-Policy: require-corp");
             header("Cross-Origin-Opener-Policy: same-origin");
             return true;
         } else {

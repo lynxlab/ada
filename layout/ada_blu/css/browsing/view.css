@@ -176,3 +176,7 @@ div#contentcontent .ui.accordion {
 iframe.ada-videochat-embed {
 	border: none;
 }
+
+iframe {
+	visibility: hidden;
+}

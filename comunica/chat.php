@@ -242,5 +242,8 @@ $content_dataAr = [
   'status'     => translateFN('Chatroom'),
 ];
 
+if ($request_arguments['isIframe'] ?? null) {
+    Utilities::sendCrossOriginIsolation();
+}
 
 ARE::render($layout_dataAr, $content_dataAr, null, $optionsAr);
