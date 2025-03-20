@@ -94,7 +94,7 @@ class DFSNavigationBar
             if (isset($GLOBALS['dh'])) {
                 $GLOBALS['dh']->disconnect();
             }
-            $test_db = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+            $test_db = AMATestDataHandler::instance(MultiPort::getDSN($this->testerToUse));
             if (!is_null($n->id)) {
                 $res = $test_db->testGetNodes(['id_nodo_riferimento' => $n->id]);
             } else {
