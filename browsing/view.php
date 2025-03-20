@@ -91,8 +91,10 @@ if (isset($courseInstanceObj) && $courseInstanceObj instanceof CourseInstance) {
     $self_instruction = null;
 }
 
+$dsfExtraParams = [];
 if ($userObj instanceof ADAGuest) {
     $self = 'guest_view';
+    $dsfExtraParams['testerToUse'] = ADA_PUBLIC_TESTER;
 } elseif ($userObj->tipo == AMA_TYPE_STUDENT) {
     /**
      * before doing anything, check if the passed node is in an autosubscribe course
@@ -143,7 +145,7 @@ if ($nodeObj->type != ADA_NOTE_TYPE && $nodeObj->type != ADA_PRIVATE_NOTE_TYPE) 
         'prevId' => $_GET['prevId'] ?? null,
         'nextId' => $_GET['nextId'] ?? null,
         'userLevel' => $user_level,
-    ]);
+    ] + $dsfExtraParams);
 } else {
     $navBar = new CText('');
 }
