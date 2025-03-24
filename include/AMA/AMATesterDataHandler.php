@@ -2788,7 +2788,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      *
      * @param $id_course the course model id
      *
-     * @return a nested array containing the list, or an AMAError object or a DB_Error object if something goes wrong
+     * @return array a nested array containing the list, or an AMAError object or a DB_Error object if something goes wrong
      * The form of the nested array is:
      *     array(array(ID1, 'field_1_1', 'field_1_2'),
      *           array(ID2, 'field_2_1', 'field_2_2'),

@@ -11,7 +11,6 @@
  * @version     0.1
  */
 
-use Lynxlab\ADA\ADAPHPMailer\ADAPHPMailer;
 use Lynxlab\ADA\Browsing\CourseViewer;
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
@@ -19,14 +18,15 @@ use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
-use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\AMA\DBRead;
-use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\ServiceHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\User\ADAAuthor;
 use Lynxlab\ADA\Main\User\ADALoggableUser;
 use Lynxlab\ADA\Main\Utilities as MainUtilities;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\EventDispatcher\Events\NodeEvent;
 use Lynxlab\ADA\Services\NodeEditing\NodeEditing;
 use Lynxlab\ADA\Services\NodeEditing\NodeEditingViewer;
 use Lynxlab\ADA\Services\NodeEditing\PreferenceSelector;
@@ -466,190 +466,15 @@ switch ($op) {
 
         unset($_SESSION['sess_node_editing']);
 
-        /* notifying all students of the editing
-         * we should verify:
-         * - that the platform allows for brodcasting the news
-         * - the the user accept receiving the notification
-         * - the way the user prefers to receive the notification
-         */
-        // fake configuration data, TO BE MOVED IN CONFIG_INSTALL //
-        define('ADA_BROADCAST_UPDATE', 1);
-        define('ADA_BROADCAST_NOUPDATE', 0);
-        define('ADA_USER_AUTOMATIC_RECEIVE_UPDATE', 1);
-        define('ADA_USER_AUTOMATIC_DONOT_RECEIVE_UPDATE', 0);
-        define('ADA_NOTIFICATION_REALTIME', 0);
-        define('ADA_NOTIFICATION_DAILY', 1);
-        define('ADA_NOTIFICATION_WEEKLY', 7);
-        define('ADA_NOTIFICATION_MONTHLY', 30);
+        header("Location: $http_root_dir/browsing/view.php?id_node={$content_dataAr['id']}");
 
-        /* read the configuration for the platform installation (from config_install file...) */
-        $broadcast_update = ADA_BROADCAST_UPDATE;
-        /* read the configuration for the user (from profile...? now fixed to 1)*/
-        $user_receive_updates = ADA_USER_AUTOMATIC_RECEIVE_UPDATE;
-        /* read the preferred way of notification (from profile...? now fixed to mail*/
-        $user_preferred_notification_channel = ADA_MSG_MAIL;
-        /* notification interval (from config_install)(0= realtime; 1 = daily; 7 = weekly; 30 = monthly)  */
-        $notification_interval = ADA_NOTIFICATION_REALTIME;
-
-        // version
-        /* we should add an option to the form to let the author choose if there have been an update of the version
-         * now it is forced to TRUE
-         */
-        //  if ($content_dataAr['version'] <> $nodeObj->version){
-        $is_updated_version = true;
-        //  } else {
-        //      $is_updated_version = FALSE;
-        //  }
-
-
-        if (
-            ($broadcast_update == ADA_BROADCAST_UPDATE) &&
-            ($user_receive_updates == ADA_USER_AUTOMATIC_RECEIVE_UPDATE) &&
-            ($is_updated_version)
-        ) {
-            //...
-
-            /* get the students subscribed to this course instance
-               *
-               * this is userful if we want use ths snippet of code form outside
-               *  here we use AMA getStudentsForCourseInstance() instead
-               */
-            /*
-              $tester = $_SESSION['sess_selected_tester'];
-              $tester_info_Ar = $common_dh->getTesterInfoFromPointer($tester);
-              $tester_name = $tester_info_Ar[1];
-              $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester));
-              $students_Ar = $tester_dh->getUniqueStudentsForCourseInstances($sess_id_course_instance);
-
-             */
-            if ($dh->courseHasInstances($sess_id_course)) {
-                $field_list_ar = [];
-                $course_instanceAr = $dh->courseInstanceStartedGetList($field_list_ar, $sess_id_course);
-                $students_Ar = [];
-                $res_course_instanceAr = [];
-                foreach ($course_instanceAr as $course_instance) {
-                    $id_course_instance = $course_instance[0];
-                    if ($id_course_instance <> null) {
-                        $res_course_instanceAr[] = $id_course_instance;
-                    }
-                }
-                $course_instance_students_Ar =  $dh->getUniqueStudentsForCourseInstances($res_course_instanceAr);
-                foreach ($course_instance_students_Ar as $course_instance_student) {
-                    $students_Ar[] = $course_instance_student['username'];
-                }
-                $destinatari = implode(',', $students_Ar);
-
-                /*
-                  //get the sender: the admin???
-
-                  $admtypeAr = array(AMA_TYPE_ADMIN);
-                  $admList = $dh->getUsersByType($admtypeAr);
-                  // $admList = $tester_dh-> getUsersByType($admtypeAr); ???
-
-                  if (!AMADataHandler::isError($admList)){
-                                $adm_uname = $admList[0]['username'];
-                  } else {
-                                $adm_uname = ""; // ??? FIXME: serve un superadmin nel file di config?
-                  }
-                 * $sender =  $adm_uname;
-                 */
-                $author_name = $userObj->username;
-                $sender =  $author_name;
-                /*
-               * Prepare the text of the message
-                */
-                $node_title = $content_dataAr['name'];
-
-                $base_text1 = translateFN("Gentile utente, ti segnaliamo che il nodo %s è stato aggiornato.");
-                $base_text2 = translateFN("Please visit %s to see the new contents.");
-                $footer_text = "\n"
-                             . "\n"
-                             . '-----'
-                             . "\n"
-                             . translateFN('This message has been sent to you by ADA. For additional information please visit the following address: ')
-                             . "\n";
-
-                $node_url = $http_root_dir . '/browsing/view.php?id_course=' . $sess_id_course . '&id_course_instance=' . $id_course_instance . '&id_node=' . $content_dataAr['id'];
-
-                $message_text  = sprintf($base_text1, $node_title);
-                $message_text .= "\n" . $node_url . "\n\n";
-                $message_text .= sprintf($base_text2, HTTP_ROOT_DIR . "/browsing/user.php");
-                $message_text .= $footer_text . HTTP_ROOT_DIR;
-
-                $link_to_node = CDOMElement::create('a', "href:$node_url");
-                $link_to_node->addChild(new CText($node_title));
-
-                $link_to_home = CDOMElement::create('a', "href:" . HTTP_ROOT_DIR . "/browsing/user.php");
-                $link_to_home->addChild(new CText(translateFN('your home page')));
-
-                $link_to_footer = CDOMElement::create('a', "href:" . HTTP_ROOT_DIR);
-                $link_to_footer->addChild(new CText(HTTP_ROOT_DIR));
-
-                $message_html = sprintf($base_text1, $link_to_node->getHtml());
-                $message_html .= "<br/><br/>";
-                $message_html .= sprintf($base_text2, $link_to_home->getHtml());
-                $message_html .= nl2br($footer_text) . $link_to_footer->getHtml();
-
-                if ($notification_interval == ADA_NOTIFICATION_REALTIME) {
-
-                    /**
-                     * Send the message an email message
-                     * via PHPMailer
-                     */
-                    $phpmailer = new ADAPHPMailer();
-                    $phpmailer->CharSet = 'UTF-8';
-                    $phpmailer->configSend();
-                    $phpmailer->SetFrom(ADA_NOREPLY_MAIL_ADDRESS);
-                    $phpmailer->IsHTML(true);
-                    $phpmailer->Priority = 2;
-                    $phpmailer->Subject = PORTAL_NAME . ' - ' . translateFN("Aggiornamento dei contenuti del corso");
-
-                    $phpmailer->AddAddress(ADA_NOREPLY_MAIL_ADDRESS);
-                    foreach ($students_Ar as $destinatario) {
-                        /**
-                         * TODO: should check if $user_preferred_notification_channel
-                         *       for current iteration user is ADA_MSG_MAIL. As of
-                         *       29/apr/2014 this feature is not supported and every student
-                         *       shall receive the notification by email only.
-                         */
-                        if (DataValidator::validateEmail($destinatario)) {
-                            $phpmailer->AddBCC($destinatario);
-                        }
-                    }
-
-                    $phpmailer->Body = $message_html;
-                    $phpmailer->AltBody = $message_text;
-                    if (!$phpmailer->Send()) {
-                        $result = new AMAError(AMA_ERR_SEND_MSG);
-                    } else {
-                        $result = true;
-                    }
-
-                    //$message_handler = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
-
-                    //                           $message_handler = MessageHandler::instance();
-                    //                           $message_ha['destinatari'] =  $destinatari ;
-                    //                           $message_ha['data_ora']    = "now";
-                    //                           $message_ha['tipo']        = $user_preferred_notification_channel;
-                    //                           $message_ha['mittente']    = $sender; // author??
-                    //                           $message_ha['testo']       = $message_text;
-                    //                           $message_ha['titolo']      = translateFN("Aggiornamento dei contenuti del corso");
-                    //                           $message_ha['priorita']    = 2;
-
-                    //                           $result = $message_handler->sendMessage($message_ha);
-
-                    if (AMADataHandler::isError($result)) {
-                        $errObj = new ADAError($result, translateFN("Errore nell'invio del messaggio di notifica dell'aggiornamento."));
-                    }
-                } else {
-                    // we should add to a list of programmed notifications, create a module that is called by CRON, ... etc
-                }
-            }
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            ADAEventDispatcher::buildEventAndDispatch([
+            'eventClass' => NodeEvent::class,
+            'eventName' => NodeEvent::POSTEDITREDIRECT,
+            ], $content_dataAr);
         }
 
-
-        // end notification
-        header("Location: $http_root_dir/browsing/view.php?id_node={$content_dataAr['id']}");
         exit();
         //    $data['form'] = translateFN("Le modifiche al nodo sono state salvate correttamente.");
         //    $self="edit_node";

@@ -453,7 +453,7 @@ if ($op == 'add_node') {
     if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
         ADAEventDispatcher::buildEventAndDispatch([
         'eventClass' => NodeEvent::class,
-        'eventName' => 'POSTADDREDIRECT',
+        'eventName' => NodeEvent::POSTADDREDIRECT,
         ], $node_data);
     }
 

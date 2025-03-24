@@ -76,6 +76,8 @@
                         button.toggleClass('disabled');
                     });
             });
+
+            return this;
         }
 
         saveNotification(saveData) {

@@ -59,4 +59,17 @@ final class NodeEvent extends GenericEvent
      * @var string
      */
     public const POSTADDREDIRECT = self::NAMESPACE . 'add.postredirect';
+
+    /**
+     * The POSTEDITREDIRECT event occurs after the node is modified (i.e. saved)
+     * and the redirect header has been sent
+     *
+     * This event allows you to add actions after the node has been created,
+     * you may close the connection with the browser and do some "background" task
+     *
+     * @GenericEvent
+     *
+     * @var string
+     */
+    public const POSTEDITREDIRECT = self::NAMESPACE . 'edit.postredirect';
 }

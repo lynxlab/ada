@@ -40,4 +40,15 @@ class ADAPHPMailer extends PHPMailer
             $this->isSendmail();
         }
     }
+
+    public function send()
+    {
+        if (
+            !defined('DEV_ALLOW_SENDING_EMAILS') ||
+            (defined('DEV_ALLOW_SENDING_EMAILS') && DEV_ALLOW_SENDING_EMAILS)
+        ) {
+            return parent::send();
+        }
+        return true;
+    }
 }

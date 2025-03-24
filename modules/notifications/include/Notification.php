@@ -27,6 +27,8 @@ class Notification extends NotificationBase
 
     public const TYPES = [
         ADA_NOTE_TYPE => 1,
+        ADA_LEAF_TYPE => 2,
+        ADA_GROUP_TYPE => 2,
     ];
 
     protected $notificationId;
