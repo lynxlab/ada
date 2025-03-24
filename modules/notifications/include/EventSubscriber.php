@@ -42,6 +42,7 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
         return [
             ForumEvent::INDEXACTIONINIT => 'addForumIndexActions',
             NodeEvent::POSTADDREDIRECT => 'postAddRedircet',
+            NodeEvent::POSTEDITREDIRECT => 'postEditRedirect',
         ];
     }
 
@@ -164,36 +165,67 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
                 $renderData = $event->getArguments();
 
                 $ntDH = AMANotificationsDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
-                $notification = $ntDH->findOneBy('Notification', [
+                $noteNotification = $ntDH->findOneBy('Notification', [
                     'userId' => $GLOBALS['userObj']->getId(),
                     'nodeId' => $GLOBALS['nodeObj']->id,
                     'instanceId' => $GLOBALS['courseInstanceObj']->getId(),
                     'notificationType' => Notification::getNotificationFromNodeType(ADA_NOTE_TYPE),
-                    'isActive' => true,
+                    // 'isActive' => true,
                 ]);
 
                 $nodeData = (array) $GLOBALS['nodeObj'];
                 $nodeData['id_nodo'] = $nodeData['id'];
-                $nodeData['id_istanza'] = $GLOBALS['courseInstanceObj']->getId();
 
-                if ($notification instanceof Notification) {
-                    $nodeData['hasNotifications'] = true;
-                    $nodeData['notificationId'] = $notification->getNotificationId();
+                if ($noteNotification instanceof Notification) {
+                    $nodeData['hasNotifications'] = $noteNotification->getIsActive();
+                    $nodeData['notificationId'] = $noteNotification->getNotificationId();
                 } else {
                     $nodeData['hasNotifications'] = false;
                 }
-                $container = CDOMElement::create('div', 'class:noteActions');
+                $noteContainer = CDOMElement::create('div', 'class:noteActions');
                 $span = CDOMElement::create('span');
-                $span->addChild(new CText(translateFN('Notifiche')));
-                $button = self::buildNotificationButton($nodeData, Notification::getNotificationFromNodeType(ADA_NOTE_TYPE));
-                $container->addChild($span);
-                $container->addChild($button);
+                $span->addChild(new CText(translateFN('Notifiche Note')));
+                $button = self::buildNotificationButton([
+                    'id_istanza' => $GLOBALS['courseInstanceObj']->getId(),
+                ] + $nodeData, Notification::getNotificationFromNodeType(ADA_NOTE_TYPE));
+                $noteContainer->addChild($span);
+                $noteContainer->addChild($button);
+
+                $nodeContainer = null;
+                if (!in_array($nodeData['type'], [ADA_NOTE_TYPE])) {
+                    $nodeNotification = $ntDH->findOneBy('Notification', [
+                        'userId' => $GLOBALS['userObj']->getId(),
+                        'nodeId' => $GLOBALS['nodeObj']->id,
+                        'instanceId' => null,
+                        'notificationType' => Notification::getNotificationFromNodeType(ADA_LEAF_TYPE),
+                        // 'isActive' => true,
+                    ]);
+                    if ($nodeNotification instanceof Notification) {
+                        $nodeData['hasNotifications'] = $nodeNotification->getIsActive();
+                        $nodeData['notificationId'] = $nodeNotification->getNotificationId();
+                    } else {
+                        $nodeData['hasNotifications'] = false;
+                        if (isset($nodeData['notificationId'])) {
+                            unset($nodeData['notificationId']);
+                        }
+                    }
+                    $nodeContainer = CDOMElement::create('div', 'class:nodeActions');
+                    $span = CDOMElement::create('span');
+                    $span->addChild(new CText(translateFN('Notifiche Contenuto')));
+                    $button = self::buildNotificationButton($nodeData, Notification::getNotificationFromNodeType(ADA_LEAF_TYPE));
+                    $nodeContainer->addChild($span);
+                    $nodeContainer->addChild($button);
+                }
 
                 $moduleJS = [
                     'content_dataAr' => [
-                        'notification_subscribe' => [
+                        'note_notification_subscribe' => [
                             'initval' => '',
-                            'additems' => $container->getHtml(),
+                            'additems' => $noteContainer?->getHtml(),
+                        ],
+                        'node_notification_subscribe' => [
+                            'initval' => '',
+                            'additems' => $nodeContainer?->getHtml(),
                         ],
                     ],
                     'layout_dataAr' => [
@@ -215,7 +247,8 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
                     'options' => [
                         'onload_func' => [
                             'initval' => '',
-                            'additems' => fn ($v) => $v . '; new NotificationsManager().addSubscribeHandler(\'.noteActions\',\'button.noteSubscribe\');',
+                            'additems' => fn ($v) => $v .
+                                '; new NotificationsManager().addSubscribeHandler(\'.noteActions\',\'button.noteSubscribe\').addSubscribeHandler(\'.nodeActions\',\'button.nodeSubscribe\');',
                         ],
                     ],
                 ];
@@ -319,7 +352,87 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
     }
 
     /**
-     * Enquues a notification email for each student and tutor subscribed to note instance
+     * Closes the browser connection, then enqueues the course ndoe notification and runs the queue
+     *
+     * @param \Lynxlab\ADA\Module\EventDispatcher\Events\NodeEvent $event
+     *
+     * @return void
+     */
+    public function postEditRedirect(NodeEvent $event)
+    {
+        self::closeBrowserConnection();
+        // populate the email queue
+        $this->enqueueCourseNode($event, true);
+        // run the queuemanager on the emailqueue, using a dayly log file (true param)
+        (new QueueManager(EmailQueueItem::fqcn()))->run(true);
+    }
+
+    /**
+     * Enques a notification email for each student subscribed to the course
+     *
+     * NOTE: As of 2025 Mar 24, course notification preferences are not managed yet!
+     *
+     * @param \Lynxlab\ADA\Module\EventDispatcher\Events\NodeEvent $event
+     * @param boolean $isNewNode
+     *
+     * @return void
+     */
+    public function enqueueCourseNode(NodeEvent $event, $isNewNode = true)
+    {
+        $nodeData = $event->getSubject();
+        $nodeId = $nodeData['id'] ?? '';
+        $courseId =  substr($nodeId, 0, strpos($nodeId, '_'));
+        $studentsList = [];
+
+        if ($courseId && $nodeId && $isNewNode) {
+            if (in_array($nodeData['type'], [ADA_LEAF_TYPE, ADA_GROUP_TYPE])) {
+                $ntDH = AMANotificationsDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+                $notificationType = Notification::getNotificationFromNodeType($nodeData['type']);
+
+                if ($ntDH->courseHasInstances($courseId)) {
+                    $fieldListAr = [];
+                    $instances = $ntDH->courseInstanceStartedGetList($fieldListAr, $courseId);
+                    if (!AMADB::isError($instances)) {
+                        $instances = array_map(fn ($el) => $el[0], $instances);
+                        foreach ($instances as $i) {
+                            $sList = $ntDH->getStudentsForCourseInstance($i);
+                            if (!AMADB::isError($sList)) {
+                                $studentsList[$i] = array_filter(
+                                    $sList,
+                                    fn ($el) => $el['status'] == ADA_STATUS_SUBSCRIBED
+                                );
+
+                                if (!empty($studentsList[$i])) {
+                                    // load users notification preferences for the course node content
+                                    $notifyUserList = $ntDH->findBy('Notification', [
+                                        'userId' => [
+                                            'op' => 'IN',
+                                            'value' => sprintf("(%s)", implode(', ', array_map(fn ($el) => $el['id_utente'], $studentsList[$i]))),
+                                        ],
+                                        'nodeId' => $nodeId,
+                                        'instanceId' => null,
+                                        'notificationType' => $notificationType,
+                                        'isActive' => true,
+                                    ]);
+                                    if (!AMADB::isError($notifyUserList) && !empty($notifyUserList)) {
+                                        $this->buildAndEnqueueNotifications(
+                                            array_map(fn (Notification $el) => $el->setInstanceId($i), $notifyUserList),
+                                            $studentsList[$i],
+                                            ['id_instance' => $i] + $nodeData,
+                                            EmailQueueItem::EDITCOURSENODE
+                                        );
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Enques a notification email for each student and tutor subscribed to note instance
      * and having set their notification preferences to receive emails
      *
      * @param \Lynxlab\ADA\Module\EventDispatcher\Events\NodeEvent $event
@@ -332,7 +445,6 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
         $nodeData = $event->getSubject();
         if ($isNewNode) {
             if (in_array($nodeData['type'], [ADA_NOTE_TYPE])) {
-                $nodeId = $nodeData['id'];
                 $instanceId = array_key_exists('id_instance', $nodeData) ? $nodeData['id_instance'] : $_SESSION['sess_id_course_instance'];
                 $instanceSubscribedList = [];
                 $notifyUserList = [];
@@ -372,80 +484,102 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
                         'notificationType' => Notification::getNotificationFromNodeType($nodeData['type']),
                         'isActive' => true,
                     ]);
-                    if (is_array($notifyUserList) && count($notifyUserList) > 0) {
-                        $qItem = new EmailQueueItem();
-                        $qItem->setEmailType(EmailQueueItem::NEWFORUMNOTE);
-                        // prepare data for the emailqueue: course, course instance, layout objects
-                        $instanceObj = new CourseInstance($instanceId);
-                        $courseObj = new Course($instanceObj->getCourseId());
-                        $layoutObj = Notification::getLayoutObj(EmailQueueItem::getEmailConfigFromType($qItem->getEmailType())['template']);
-                        $qItem->setSubject(
-                            trim(
-                                sprintf(
-                                    "[%s] %s %s",
-                                    PORTAL_NAME,
-                                    translateFN(EmailQueueItem::getEmailConfigFromType($qItem->getEmailType())['subject']),
-                                    $courseObj->getTitle()
-                                )
-                            )
-                        );
-                        $qItem->setStatus(EmailQueueItem::STATUS_ENQUEUED);
-
-                        $saveData = [];
-                        // foreach notifyUserList, build an EmailQueueItem with rendered template fields
-                        foreach ($notifyUserList as $notifyUser) {
-                            $userData = array_filter($instanceSubscribedList, fn ($el) => $notifyUser->getUserId() == $el['id_utente'] && strlen($el['e_mail']) > 0);
-                            if (is_array($userData) && count($userData) > 0) {
-                                $userData = reset($userData);
-                                $qItem->setUserId($userData['id_utente']);
-                                $qItem->setRecipientEmail($userData['e_mail']);
-                                $qItem->setRecipientFullName($userData['nome'] . ' ' . $userData['cognome']);
-                                $qItem->setBody(
-                                    trim(
-                                        Notification::HTMLFromTPL(
-                                            EmailQueueItem::getEmailConfigFromType($qItem->getEmailType())['template'],
-                                            [
-                                                'userFirstName' => $userData['nome'],
-                                                'userLastName' => $userData['cognome'],
-                                                'courseTitle' => $courseObj->getTitle(),
-                                                'instanceTitle' => $instanceObj->getTitle(),
-                                                'nodeName' => $nodeData['name'],
-                                                'nodeContent' => $nodeData['text'],
-                                                'indexHref' => sprintf(
-                                                    "%s/browsing/main_index.php?op=forum&id_course=%d&id_course_instance=%d#%s",
-                                                    HTTP_ROOT_DIR,
-                                                    $courseObj->getId(),
-                                                    $instanceObj->getId(),
-                                                    $nodeId
-                                                ),
-                                                'replyHref' => sprintf(
-                                                    "%s/services/addnode.php?id_parent=%s&id_course=%d&id_course_instance=%d&type=NOTE",
-                                                    HTTP_ROOT_DIR,
-                                                    $nodeId,
-                                                    $courseObj->getId(),
-                                                    $instanceObj->getId()
-                                                ),
-                                                'nodeHref' => sprintf(
-                                                    "%s/browsing/view.php?id_node=%s&id_course=%d&id_course_instance=%d",
-                                                    HTTP_ROOT_DIR,
-                                                    $nodeId,
-                                                    $courseObj->getId(),
-                                                    $instanceObj->getId()
-                                                ),
-                                            ],
-                                            MODULES_NOTIFICATIONS_PATH,
-                                            $layoutObj
-                                        )
-                                    )
-                                );
-                                $qItem->setEnqueueTS(time());
-                            }
-                            $saveData[] = $qItem->toArray();
-                        }
-                        // add entries to the queue table
-                        $result = $ntDH->multiSaveEmailQueueItems($saveData);
-                    }
+                    $this->buildAndEnqueueNotifications($notifyUserList, $instanceSubscribedList, $nodeData, EmailQueueItem::NEWFORUMNOTE);
                 }
+            }
+        }
+    }
+
+    /**
+     * builds and enqueues notifications on the emailqueue
+     *
+     * @param array $notifyUserList
+     *   Array of \Lynxlab\ADA\Module\Notifications\Notification objects
+     * @param array $recipientsList
+     *   Array of recipients (i.e. users array as returned by AMATesterDataHandler::getStudentsForCourseInstance )
+     * @param array $nodeData
+     *   Node object as an array
+     * @param string $emailType
+     *   One of the EmailQueueItem constants, (i.e. NEWFORUMNOTE or EDITCOURSENODE...)
+     * @return void
+     */
+    private function buildAndEnqueueNotifications($notifyUserList, $recipientsList, $nodeData, $emailType)
+    {
+        if (is_array($notifyUserList) && count($notifyUserList) > 0) {
+            $ntDH = AMANotificationsDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+            $instanceId = array_key_exists('id_instance', $nodeData) ? $nodeData['id_instance'] : $_SESSION['sess_id_course_instance'];
+            $qItem = new EmailQueueItem();
+            $qItem->setEmailType($emailType);
+            // prepare data for the emailqueue: course, course instance, layout objects
+            $instanceObj = new CourseInstance($instanceId);
+            $courseObj = new Course($instanceObj->getCourseId());
+            $layoutObj = Notification::getLayoutObj(EmailQueueItem::getEmailConfigFromType($qItem->getEmailType())['template']);
+            $qItem->setSubject(
+                trim(
+                    sprintf(
+                        "[%s] %s %s",
+                        PORTAL_NAME,
+                        translateFN(EmailQueueItem::getEmailConfigFromType($qItem->getEmailType())['subject']),
+                        $courseObj->getTitle()
+                    )
+                )
+            );
+            $qItem->setStatus(EmailQueueItem::STATUS_ENQUEUED);
+
+            $saveData = [];
+            // foreach notifyUserList, build an EmailQueueItem with rendered template fields
+            foreach ($notifyUserList as $notifyUser) {
+                $userData = array_filter($recipientsList, fn ($el) => $notifyUser->getUserId() == $el['id_utente'] && strlen($el['e_mail']) > 0);
+                if (is_array($userData) && count($userData) > 0) {
+                    $userData = reset($userData);
+                    $qItem->setUserId($userData['id_utente']);
+                    $qItem->setRecipientEmail($userData['e_mail']);
+                    $qItem->setRecipientFullName($userData['nome'] . ' ' . $userData['cognome']);
+                    $qItem->setBody(
+                        trim(
+                            Notification::HTMLFromTPL(
+                                EmailQueueItem::getEmailConfigFromType($qItem->getEmailType())['template'],
+                                [
+                                    'userFirstName' => $userData['nome'],
+                                    'userLastName' => $userData['cognome'],
+                                    'courseTitle' => $courseObj->getTitle(),
+                                    'instanceTitle' => $instanceObj->getTitle(),
+                                    'nodeName' => $nodeData['name'],
+                                    'nodeContent' => $nodeData['text'],
+                                    'indexHref' => sprintf(
+                                        "%s/browsing/main_index.php?op=forum&id_course=%d&id_course_instance=%d#%s",
+                                        HTTP_ROOT_DIR,
+                                        $courseObj->getId(),
+                                        $instanceObj->getId(),
+                                        $nodeData['id']
+                                    ),
+                                    'replyHref' => sprintf(
+                                        "%s/services/addnode.php?id_parent=%s&id_course=%d&id_course_instance=%d&type=NOTE",
+                                        HTTP_ROOT_DIR,
+                                        $nodeData['id'],
+                                        $courseObj->getId(),
+                                        $instanceObj->getId()
+                                    ),
+                                    'nodeHref' => sprintf(
+                                        "%s/browsing/view.php?id_node=%s&id_course=%d&id_course_instance=%d",
+                                        HTTP_ROOT_DIR,
+                                        $nodeData['id'],
+                                        $courseObj->getId(),
+                                        $instanceObj->getId()
+                                    ),
+                                ],
+                                MODULES_NOTIFICATIONS_PATH,
+                                $layoutObj
+                            )
+                        )
+                    );
+                    $qItem->setEnqueueTS(time());
+                    $saveData[] = $qItem->toArray();
+                }
+            }
+            // add entries to the queue table
+            if (!empty($saveData)) {
+                $result = $ntDH->multiSaveEmailQueueItems($saveData);
             }
         }
     }
@@ -484,7 +618,12 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
      */
     private static function buildNotificationButton($nodeData, $notificationType)
     {
-        $button = CDOMElement::create('button', 'class:ui tiny icon button noteSubscribe');
+        if ($notificationType == Notification::TYPES[ADA_NOTE_TYPE]) {
+            $cssClass = 'noteSubscribe';
+        } elseif (in_array($notificationType, [Notification::TYPES[ADA_LEAF_TYPE], Notification::TYPES[ADA_GROUP_TYPE]])) {
+            $cssClass = 'nodeSubscribe';
+        }
+        $button = CDOMElement::create('button', 'class:ui tiny icon button ' . ($cssClass ?? ''));
         $title = [
             'red' => translateFN('Non ricevi notifiche; clicca per attivarle'),
             'green' => translateFN('Ricevi notifiche; clicca per disattivarle'),
@@ -505,7 +644,9 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
         $button->setAttribute('class', $button->getAttribute('class') . ' ' . $color);
         $button->setAttribute('title', $title[$color]);
         $button->setAttribute('data-node-id', $nodeData['id_nodo']);
-        $button->setAttribute('data-instance-id', $nodeData['id_istanza']);
+        if (array_key_exists('id_istanza', $nodeData) && !empty($nodeData['id_istanza'])) {
+            $button->setAttribute('data-instance-id', $nodeData['id_istanza']);
+        }
         $button->setAttribute('data-is-active', (int)$isActive);
         $button->setAttribute('data-notification-type', $notificationType);
         return $button;

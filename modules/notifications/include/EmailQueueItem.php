@@ -26,11 +26,16 @@ class EmailQueueItem extends NotificationBase
     public const EMAILS_PER_HOUR = MODULES_NOTIFICATIONS_EMAILPERHOUR;
 
     public const NEWFORUMNOTE = 'new/forumnote';
+    public const EDITCOURSENODE = 'edit/coursenode';
 
     public const EMAILCONFIGS = [
         self::NEWFORUMNOTE => [
             'template' => 'newforumnote.tpl',
             'subject' => 'Nuovo post nel forum del corso:',
+        ],
+        self::EDITCOURSENODE => [
+            'template' => 'editcoursenode.tpl',
+            'subject' => 'Contenuto modificato nel corso:',
         ],
     ];
 

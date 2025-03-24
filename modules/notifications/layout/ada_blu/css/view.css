@@ -1,3 +1,4 @@
+div.right.sidebar .accordion .content.field> .nodeActions,
 div.right.sidebar .accordion .content.field> .noteActions {
     margin:0 9px 0 47px;
     text-decoration: none;
@@ -8,6 +9,7 @@ div.right.sidebar .accordion .content.field> .noteActions {
     height: 47px;
  }
 
+ div.right.sidebar .accordion .content.field> .nodeActions .nodeSubscribe.button,
  div.right.sidebar .accordion .content.field> .noteActions .noteSubscribe.button {
      transform: scale(0.8);
  }
