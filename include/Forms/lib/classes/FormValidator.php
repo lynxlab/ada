@@ -105,7 +105,7 @@ class FormValidator
     //const USERNAME_VALIDATOR_REGEXP = '/^[a-zA-Z][\d\w\.]{8,20}$/';
     public const USERNAME_VALIDATOR_REGEXP = '/^[A-Za-z0-9_][A-Za-z0-9_@\-\.]{7,255}$/';
     public const PASSWORD_VALIDATOR_REGEXP = '/^[\d\w\_]{8,20}$/';
-    public const EMAIL_VALIDATOR_REGEXP = '/^(?:[a-zA-Z0-9_\-\.\+\^!#\$%&*+\/\=\?\`\|\{\}~\'\[\]]+)@(?:(?:(?:[a-z0-9][a-z0-9\-_\[\]]*\.)+(?:aero|arpa|biz|com|cat|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel|mobi|media|[a-z]{2}))|(?:[0-9]{1,3}(?:\.[0-9]{1,3}){3})|(?:[0-9a-fA-F]{1,4}(?:\:[0-9a-fA-F]{1-4}){7}))$/i';
+    public const EMAIL_VALIDATOR_REGEXP = '/^(?:[a-zA-Z0-9_\-\.\+\^!#\$%&*+\/\=\?\`\|\{\}~\'\[\]]+)@(?:(?:(?:[a-z0-9][a-z0-9\-_\[\]]*\.)+(?:aero|arpa|biz|com|cat|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel|mobi|media|education|[a-z]{2}))|(?:[0-9]{1,3}(?:\.[0-9]{1,3}){3})|(?:[0-9a-fA-F]{1,4}(?:\:[0-9a-fA-F]{1-4}){7}))$/i';
     public const NON_NEGATIVE_NUMBER_VALIDATOR_REGEXP = '/^[0]|[1-9][0-9]*$/';
     public const POSITIVE_NUMBER_VALIDATOR_REGEXP = '/^[1-9][0-9]*$/';
     public const FIRSTNAME_LASTNAME_VALIDATOR_REGEXP = '/^.{2,}$/';
