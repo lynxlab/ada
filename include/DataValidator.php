@@ -14,6 +14,8 @@
 
 namespace Lynxlab\ADA\Main;
 
+use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
+
 class DataValidator
 {
     private const MINPASSWORDLEN = 8;
@@ -114,7 +116,7 @@ class DataValidator
 
     public static function validateDateFormat(?string $date): bool|string
     {
-        $pattern = '/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/';
+        $pattern = FormValidator::DATE_VALIDATOR_REGEXP;
         return static::validateValueWithPattern($date, $pattern);
     }
 
@@ -210,7 +212,7 @@ class DataValidator
         /* username is the user's email
          * ->  return self::validate_email($username);
          * */
-        $pattern = '/^[A-Za-z0-9_][A-Za-z0-9_@\-\.]{7,255}$/';
+        $pattern = FormValidator::USERNAME_VALIDATOR_REGEXP;
         return static::validateValueWithPattern($username, $pattern);
     }
 
@@ -283,7 +285,7 @@ class DataValidator
 
     public static function validateEmail(?string $email): bool|string
     {
-        $pattern = '/(?:[a-zA-Z0-9_\-\.\+\^!#\$%&*+\/\=\?\`\|\{\}~\'\[\]]+)@(?:(?:(?:[a-z0-9][a-z0-9\-_\[\]]*\.)+(?:aero|arpa|biz|com|cat|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel|mobi|media|[a-z]{2}))|(?:[0-9]{1,3}(?:\.[0-9]{1,3}){3})|(?:[0-9a-fA-F]{1,4}(?:\:[0-9a-fA-F]{1-4}){7}))$/';
+        $pattern = FormValidator::EMAIL_VALIDATOR_REGEXP;
         return static::validateValueWithPattern($email, $pattern);
     }
 
