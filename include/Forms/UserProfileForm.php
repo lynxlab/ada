@@ -74,7 +74,7 @@ class UserProfileForm extends UserRegistrationForm
         $provincia = FormControl::create(FormControl::INPUT_TEXT, 'provincia', translateFN('Provincia'));
         $countries = CountriesList::getCountriesList($_SESSION['sess_user_language']);
         $nazione = FormControl::create(FormControl::SELECT, 'nazione', translateFN('Nazione'));
-        $nazione->withData($countries);
+        $nazione->withData($countries, 'IT');
         $this->addFieldset(translateFN('Dati residenza'), 'residenza')->withData([$indirizzo,$cap,$citta,$provincia,$nazione,$telefono]);
 
         //        $this->addTextInput('indirizzo', translateFN('Indirizzo'));
