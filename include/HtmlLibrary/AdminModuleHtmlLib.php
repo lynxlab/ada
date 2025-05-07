@@ -174,8 +174,8 @@ class AdminModuleHtmlLib
         'F' => 'F',
         ];
 
-        $user_sex = FormElementCreator::addSelect('user_sex', 'Sesso', $sexAr, $user_dataAr);
-        $form->addChild($user_sex);
+        // $user_sex = FormElementCreator::addSelect('user_sex', 'Sesso', $sexAr, $user_dataAr);
+        // $form->addChild($user_sex);
 
         $user_phone = FormElementCreator::addTextInput('user_phone', 'Telefono', $user_dataAr, $errorsAr);
         $form->addChild($user_phone);
@@ -494,13 +494,13 @@ class AdminModuleHtmlLib
         $user_birthprovince = FormElementCreator::addTextInput('user_birthprovince', 'Provincia di nascita', $user_dataAr, $errorsAr);
         $form->addChild($user_birthprovince);
 
-        $sexAr = [
-        'M' => 'M',
-        'F' => 'F',
-        ];
+        // $sexAr = [
+        // 'M' => 'M',
+        // 'F' => 'F',
+        // ];
 
-        $user_sex = FormElementCreator::addSelect('user_sex', 'Sesso', $sexAr, $user_dataAr);
-        $form->addChild($user_sex);
+        // $user_sex = FormElementCreator::addSelect('user_sex', 'Sesso', $sexAr, $user_dataAr);
+        // $form->addChild($user_sex);
 
         $user_phone = FormElementCreator::addTextInput('user_phone', 'Telefono', $user_dataAr, $errorsAr);
         $form->addChild($user_phone);

@@ -34,7 +34,7 @@ $client = DataValidator::checkInputValues('client', 'Testername', INPUT_GET, nul
 if ($client !== null) {
     $_SESSION['x-adaadminer-client'] = $client;
 } else {
-    $client = $_SESSION['x-adaadminer-client'];
+    $client = $_SESSION['x-adaadminer-client'] ?? $client;
 }
 
 function adminer_object()

@@ -103,7 +103,7 @@ if (DataValidator::isUinteger($id) !== false) {
     translateFN('Data di Nascita')        => $tutoredUserObj->getBirthDate(),
     translateFN('Comune o stato estero di nascita') => $tutoredUserObj->getBirthCity(),
     translateFN('Provincia di nascita')   => $tutoredUserObj->getBirthProvince(),
-    translateFN('Sesso')                  => $tutoredUserObj->getGender(),
+    // translateFN('Sesso')                  => $tutoredUserObj->getGender(),
     translateFN('Telefono')               => $tutoredUserObj->getPhoneNumber(),
     translateFN('Status')                 => $tutoredUserObj->getStatus(),
     ];
