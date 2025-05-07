@@ -151,9 +151,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $errorsAr['user_birthprovince'] = true;
     }
 
-    if (DataValidator::validateString($_POST['user_sex']) === false) {
-        $errorsAr['user_sex'] = true;
-    }
+    // if (DataValidator::validateString($_POST['user_sex']) === false) {
+    //     $errorsAr['user_sex'] = true;
+    // }
 
     if (DataValidator::validatePhone($_POST['user_phone']) === false) {
         $errorsAr['user_phone'] = true;
@@ -201,7 +201,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $userToEditObj->setCountry($_POST['user_country']);
         $userToEditObj->setFiscalCode($_POST['user_fiscal_code']);
         $userToEditObj->setBirthDate($_POST['user_birthdate']);
-        $userToEditObj->setGender($_POST['user_sex']);
+        // $userToEditObj->setGender($_POST['user_sex']);
         $userToEditObj->setPhoneNumber($_POST['user_phone']);
         $userToEditObj->setBirthCity($_POST['user_birthcity']);
         $userToEditObj->setBirthProvince($_POST['user_birthprovince']);
@@ -255,7 +255,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         'user_country' => $user_dataAr['nazione'],
         'user_fiscal_code' => $user_dataAr['codice_fiscale'],
         'user_birthdate' => $user_dataAr['birthdate'],
-        'user_sex' => $user_dataAr['sesso'],
+        'user_sex' => null, // $user_dataAr['sesso'],
         'user_phone' => $user_dataAr['telefono'],
      //'user_status'=> $user_dataAr['stato']
         'user_tester' => $tester,

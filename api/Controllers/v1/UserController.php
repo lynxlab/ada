@@ -46,7 +46,7 @@ class UserController extends AbstractController implements AdaApiInterface
     private static $userKeyMappings = [
         'tipo' => 'type',
         'codice_fiscale' => 'tax_code',
-        'sesso' => 'gender',
+        // 'sesso' => 'gender',
         'stato' => 'status',
         'matricola' => 'student_number',
     ];
