@@ -504,7 +504,11 @@ switch ($op) {
                * him there.
         */
         if (strcmp($navigation_history->previousItem(), __FILE__) !== 0) {
-            $_SESSION['page_to_load_on_cancel_editing'] = $navigation_history->previousPage();
+            if (isset($id_course) && isset($id_node)) {
+                $_SESSION['page_to_load_on_cancel_editing'] = HTTP_ROOT_DIR . '/browsing/view.php?id_course=' . $id_course . '&id_node=' . $id_node;
+            } else {
+                $_SESSION['page_to_load_on_cancel_editing'] = $navigation_history->previousPage();
+            }
         }
         $need_to_unset_session = strcmp($navigation_history->previousItem(), __FILE__);
         if (!isset($_SESSION['sess_node_editing']['node_data'])  || $need_to_unset_session !== 0) {

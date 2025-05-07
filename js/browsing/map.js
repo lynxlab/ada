@@ -16,34 +16,34 @@
 var isFirefox = /Firefox/.test(navigator.userAgent) ? true : false;
 var isChrome = /Chrome/.test(navigator.userAgent) ? true : false;
 var isSafari = /Safari/.test(navigator.userAgent) ? true : false;
-var isIE =  /MSIE/.test(navigator.userAgent) ? true : false;
-var isOpera =  /Opera/.test(navigator.userAgent) ? true : false;
-var isPhone =  /android/i.test(navigator.userAgent) || /iphone/i.test(navigator.userAgent)? true : false;
+var isIE = /MSIE/.test(navigator.userAgent) ? true : false;
+var isOpera = /Opera/.test(navigator.userAgent) ? true : false;
+var isPhone = /android/i.test(navigator.userAgent) || /iphone/i.test(navigator.userAgent) ? true : false;
 
 
 
 /* --------------------------------------------------------- *\
 
-	  Function    : transform()
-	  Description : rotate a given line whit a given angle.
-	  Usage       : transform( line, deg)
-	  Arguments   : line - a given line (HTMLDivElement),
-	  		deg - angle ( rad )
+      Function    : transform()
+      Description : rotate a given line whit a given angle.
+      Usage       : transform( line, deg)
+      Arguments   : line - a given line (HTMLDivElement),
+                deg - angle ( rad )
 
 \* ---------------------------------------------------------- */
-function transform( line, deg){
+function transform(line, deg) {
 
-	var rotDeg = deg/Math.PI*180;
+    var rotDeg = deg / Math.PI * 180;
 
-	if( isFirefox ) line.style.MozTransform = "rotate("+rotDeg+"deg)";
+    if (isFirefox) line.style.MozTransform = "rotate(" + rotDeg + "deg)";
 
-	else if( isChrome || isSafari ) line.style.webkitTransform = "rotate("+rotDeg+"deg)"
+    else if (isChrome || isSafari) line.style.webkitTransform = "rotate(" + rotDeg + "deg)"
 
-	else if( isOpera ) line.style.OTransform = "rotate("+rotDeg+"deg)"
+    else if (isOpera) line.style.OTransform = "rotate(" + rotDeg + "deg)"
 
-	else if( isIE ) line.style.filter =  "progid:DXImageTransform.Microsoft.Matrix(M11="+Math.cos(deg)+", M12="+(- Math.sin(deg))+", M21="+ Math.sin(deg)+", M22="+(Math.cos(deg))+",sizingMethod='auto expand')";
+    else if (isIE) line.style.filter = "progid:DXImageTransform.Microsoft.Matrix(M11=" + Math.cos(deg) + ", M12=" + (- Math.sin(deg)) + ", M21=" + Math.sin(deg) + ", M22=" + (Math.cos(deg)) + ",sizingMethod='auto expand')";
 
-	else return;
+    else return;
 
 }
 
@@ -51,94 +51,61 @@ function transform( line, deg){
 
 /* --------------------------------------------------------- *\
 
-	  Function    : setAllLinesFromNode()
-	  Description : set all lines from a node
-	  Usage       : setAllLinesFromNode( element )
-	  Arguments   : element - the node who to add lines
-	  		(HTMLDivElement)
+      Function    : setAllLinesFromNode()
+      Description : set all lines from a node
+      Usage       : setAllLinesFromNode( element )
+      Arguments   : element - the node who to add lines
+                (HTMLDivElement)
 
 \* ---------------------------------------------------------- */
-function setAllLinesFromNode( element ){
+function setAllLinesFromNode(element) {
 
-	for(var i = 0; i < element.linkArray.length; i++){
+    for (var i = 0; i < element.linkArray.length; i++) {
 
-		var Node = element.linkArray[i].node
+        var Node = element.linkArray[i].node
 
-		var line = element.linkArray[i].line
+        var line = element.linkArray[i].line
 
-		var X0 = parseInt(element.style.left.replace("px","") );
+        var X0 = parseInt(element.style.left.replace("px", ""));
 
-		var Y0 = parseInt( element.style.top.replace("px","") );
+        var Y0 = parseInt(element.style.top.replace("px", ""));
 
-		var X1 = parseInt( Node.style.left.replace("px","") )
+        var X1 = parseInt(Node.style.left.replace("px", ""))
 
-		var Y1 = parseInt( Node.style.top.replace("px","") )
+        var Y1 = parseInt(Node.style.top.replace("px", ""))
 
-		var elemWidth = element.style.width.replace("px","").replace("pt","");
-
-
-		if( elemWidth == "" ) elemWidth = element.offsetWidth
+        var elemWidth = element.style.width.replace("px", "").replace("pt", "");
 
 
-		setLine(line, X0, Y0, X1, Y1 )
-
-		var form_ex = $j('#form_map').length > 0;
-
-        if(!!form_ex) try{$j(`#input_${element.id}`)[0].value = `${X0},${Y0},${elemWidth},0`;}catch(e){}
-
-	}
+        if (elemWidth == "") elemWidth = element.offsetWidth
 
 
-	// if node has'nt links
-	if( element.linkArray.length == 0 ){
+        setLine(line, X0, Y0, X1, Y1)
 
-		X0 = parseInt(element.style.left.replace("px","") );
+        var form_ex = $j('#form_map').length > 0;
 
-		Y0 = parseInt( element.style.top.replace("px","") );
+        if (!!form_ex) try { $j(`#input_${element.id}`)[0].value = `${X0},${Y0},${elemWidth},0`; } catch (e) { }
 
-		elemWidth = element.style.width.replace("px","").replace("pt","");
-
-
-		if( elemWidth == "" ) elemWidth = element.offsetWidth
-
-		var form_ex = $j('#form_map').length > 0;
-
-		if(!!form_ex)	try{$j(`#input_${element.id}`)[0].value = `${X0},${Y0},${elemWidth},0`;}catch(e){}
-
-	}
-
-}
+    }
 
 
+    // if node has'nt links
+    if (element.linkArray.length == 0) {
+
+        X0 = parseInt(element.style.left.replace("px", ""));
+
+        Y0 = parseInt(element.style.top.replace("px", ""));
+
+        elemWidth = element.style.width.replace("px", "").replace("pt", "");
 
 
+        if (elemWidth == "") elemWidth = element.offsetWidth
 
+        var form_ex = $j('#form_map').length > 0;
 
-/* --------------------------------------------------------- *\
+        if (!!form_ex) try { $j(`#input_${element.id}`)[0].value = `${X0},${Y0},${elemWidth},0`; } catch (e) { }
 
-	  Function    : setMapMinY()
-	  Description : set dinamically the height of map
-	  Usage       : setMapMinY()
-	  Arguments   :
-
-\* ---------------------------------------------------------- */
-function setMapMinY(){
-
-	var thismap = $j('#map_content');
-
-	var maxY = 0;
-
-	for( var i = 0; i < $j(".newNodeMap").length; i++){
-
-		var thisNode = $j(".newNodeMap")[i];
-
-		var thisNodeHeight = parseInt(thisNode.style.top.replace("px",""))
-
-		if( thisNodeHeight > maxY ) maxY = thisNodeHeight
-
-		thismap[0].style.height = (maxY +50 ) +"px"
-
-	};
+    }
 
 }
 
@@ -147,278 +114,31 @@ function setMapMinY(){
 
 
 
-
 /* --------------------------------------------------------- *\
 
-	  Function    : Node()
-	  Description : Node Object
-	  Usage       : new Node();
-	  Arguments   :
+      Function    : setMapMinY()
+      Description : set dinamically the height of map
+      Usage       : setMapMinY()
+      Arguments   :
 
 \* ---------------------------------------------------------- */
-var Node = function( element ){
+function setMapMinY() {
 
-	// PROPERTIES
-	element.parent = this;
+    var thismap = $j('#map_content');
 
-	element.linkArray = new Array();
+    var maxY = 0;
 
-	element.linkFromArray = new Array();
+    for (var i = 0; i < $j(".newNodeMap").length; i++) {
 
-	element.left = parseInt(element.style.left.replace("px",""))
+        var thisNode = $j(".newNodeMap")[i];
 
-	element.top = parseInt(element.style.top.replace("px",""))
+        var thisNodeHeight = parseInt(thisNode.style.top.replace("px", ""))
 
-	element.width = parseInt(element.style.width.replace("px",""))
+        if (thisNodeHeight > maxY) maxY = thisNodeHeight
 
-	element.style.zIndex = 100;
+        thismap[0].style.height = (maxY + 50) + "px"
 
-
-	if(!isIE) element.height = parseInt(element.getHeight())
-
-	else element.height = element.offsetHeight
-
-
-	// defining the rectangle occupied from node
-	element.rect = {
-		el: element,
-		xFrom: element.left,
-		xTo: (element.left+element.width),
-		yFrom: element.top,
-		yTo: (element.top + element.height)
-	};
-
-
-
-	// METHODS
-
-	// verify if a element is in a rectangle
-	element.isInRect = function( obj ){
-
-		var xInRect = false
-
-		var yInRect = false
-
-		if( element.left >= obj.xFrom && element.left  <=  obj.xTo  ) xInRect = true
-
-		if( (element.left + element.width ) >= obj.xFrom && (element.left+element.width)  <=  obj.xTo  ) xInRect = true
-
-		if( element.top  >= obj.yFrom && element.top  <= obj.yTo  ) yInRect = true
-
-		if( (element.top + element.height ) >= obj.yFrom && (element.top + element.height )  <=  obj.yTo ) yInRect = true
-
-
-		if( !!xInRect && !!yInRect ) return true;
-
-		return false;
-
-	}
-
-
-	// count links from a node
-	element.link = function(){
-
-		var linksDiv = element.getElementsByTagName("div");
-
-		var thisLinks = linksDiv[linksDiv.length - 1]
-
-
-		if(thisLinks.innerHTML =="") return;
-
-		else element.links = new Array();
-
-
-		var linksArray = thisLinks.innerHTML.split(",");
-
-		for( var i = 0; i < linksArray.length; i++){
-
-			element.links.push( linksArray[i] );
-
-			element.linkTo( linksArray[i]);
-
-		};
-	}
-
-
-
-	// create a links ( line ) from a node
-	element.linkTo = function( nodeId ){
-
-		var exist = $j(`#${nodeId}`).length > 0;
-
-		if( !exist ) return; // link esterni al gruppo
-
-		var node = $j(`#${nodeId}`)[0];
-
-		var X0 = parseInt(element.left)
-
-		var Y0 = parseInt(element.top)
-
-		var X1 = parseInt(node.left)
-
-		var Y1 = parseInt(node.top)
-
-		newLine(element,node,X0,Y0,X1,Y1);
-
-	}
-
-
-
-	// create draggable
-	$j(element).draggable({
-
-		handle: element.getElementsByTagName("img")[0], // handle on icon
-
-		drag: function(event, ui){
-
-			const drgObj = {
-				element: ui.helper[0],
-			};
-
-
-			// case node has negative y-coordinate
-			if( parseInt(drgObj.element.style.top.replace("px","")) < 0 ){
-
-				if( drgObj.element.out == true ) return;
-
-				drgObj.element.top = "0px";
-
-				drgObj.element.style.top = drgObj.element.top;
-
-				drgObj.element.left = drgObj.element.style.left;
-
-				drgObj.element.out = true;
-
-				return;
-
-			};
-
-			// case node has negative x-coordinate
-			if( parseInt(drgObj.element.style.left.replace("px","")) < 0 ){
-
-				if( drgObj.element.out == true ) return;
-
-				drgObj.element.left = "0px";
-
-				drgObj.element.style.left = drgObj.element.left;
-
-				drgObj.element.top = drgObj.element.style.top;
-
-				drgObj.element.out = true;
-
-				return;
-
-			};
-
-			// case node has y-coordinate > of map height
-			if( parseInt(drgObj.element.style.left.replace("px","")) > parseInt( $j('#map_content')[0].style.maxWidth.replace("px","")) ){
-
-				if( drgObj.element.out == true ) return;
-
-				drgObj.element.left = $j('#map_content')[0].style.maxWidth;
-
-				drgObj.element.style.left = drgObj.element.left;
-
-				drgObj.element.top = drgObj.element.style.top;
-
-				drgObj.element.out = true;
-
-				return;
-
-			};
-
-			drgObj.element.out = false;
-
-			setMapMinY();
-
-			setAllLinesFromNode( drgObj.element )
-
-
-
-		},
-
-
-		// on end drag re-set all lines ( needed for [the slow] Internet explorer )
-		stop: function(event, ui){
-
-			const drgObj = {
-				element: ui.helper[0],
-			};
-
-			if( !!drgObj.element.out ){
-
-				drgObj.element.style.top = drgObj.element.top
-
-				drgObj.element.style.left = drgObj.element.left
-
-				setAllLinesFromNode( drgObj.element )
-
-
-			}
-
-		}
-
-	});
-
-
-}
-
-
-
-
-
-/* --------------------------------------------------------- *\
-
-	  Function    : setChildDisposition()
-	  Description : if a node is in a rectangle of another
-	  		node change x and y coordinates
-	  Usage       : setChildDisposition()
-	  Arguments   :
-
-\* ---------------------------------------------------------- */
-function setChildDisposition(){
-
-	for(i = 0; i < this.nodeList.length; i++){
-
-		var elem = this.nodeList[i];
-
-		if(elem.style.left == "100px" && elem.style.top == "100px") elem.orig = true;
-
-		else elem.orig = false;
-
-		for( j = 0; j < this.nodeList.length; j++){
-
-			var elemToContr = this.nodeList[j];
-
-			  if( elem != elemToContr && !rectangleIsFree(elemToContr.rect) && !!elem.orig){
-
-
-				elem.style.left = (elemToContr.rect.xTo + 2)+"px";
-
-				elem.style.top = (elemToContr.rect.yTo + 2) +"px";
-
-				elem.rect.xFrom = parseInt( elem.style.left.replace("px",""))
-
-				elem.rect.yFrom = parseInt( elem.style.top.replace("px",""))
-
-				elem.rect.xTo = elem.rect.xFrom + elem.width
-
-				elem.rect.yTo = elem.rect.yFrom + elem.height
-
-				elem.left = elem.rect.xFrom
-
-				elem.top = elem.rect.yFrom
-
-				this.setChildDisposition();
-
-				return;
-
-			}
-
-		};
-	};
-
-
+    };
 
 }
 
@@ -430,217 +150,212 @@ function setChildDisposition(){
 
 /* --------------------------------------------------------- *\
 
-	  Function    : Map()
-	  Description : Map Object
-	  Usage       : new Map();
-	  Arguments   :
+      Function    : Node()
+      Description : Node Object
+      Usage       : new Node();
+      Arguments   :
 
 \* ---------------------------------------------------------- */
-var Map = function(){
+var Node = function (element) {
 
+    // PROPERTIES
+    element.parent = this;
 
-	// PROPERTIES
+    element.linkArray = new Array();
 
-	this.root = $j('#map_content')[0];
+    element.linkFromArray = new Array();
 
-	$j('#map_content')[0].map = this;
+    element.left = parseInt(element.style.left.replace("px", ""))
 
-	this.root.style.maxWidth = this.root.offsetWidth+"px"
+    element.top = parseInt(element.style.top.replace("px", ""))
 
-	this.addNode = Node;
+    element.width = parseInt(element.style.width.replace("px", ""))
 
-	this.nodeList = new Array();
+    element.style.zIndex = 100;
 
-	this.setChildDisposition = setChildDisposition;
+    element.height = parseInt(element.offsetHeight);
 
-	this.notFree = new Array();
 
-	this.maxY = 0;
+    // defining the rectangle occupied from node
+    element.rect = {
+        el: element,
+        xFrom: element.left,
+        xTo: (element.left + element.width),
+        yFrom: element.top,
+        yTo: (element.top + element.height)
+    };
 
 
-	// creating nodes
-	for( i = 0; i < this.root.childNodes.length; i++){
 
-		if( this.root.childNodes[i].className == "newNodeMap"){
+    // METHODS
 
-			this.addNode(this.root.childNodes[i]);
+    // verify if a element is in a rectangle
+    element.isInRect = function (obj) {
 
-			this.nodeList.push( this.root.childNodes[i] );
-		};
+        var xInRect = false
 
-	};
+        var yInRect = false
 
-	this.setChildDisposition();
+        if (element.left >= obj.xFrom && element.left <= obj.xTo) xInRect = true
 
+        if ((element.left + element.width) >= obj.xFrom && (element.left + element.width) <= obj.xTo) xInRect = true
 
-	// creating links from nodes (lines)
-	for( var i = 0; i< this.nodeList.length; i++) this.nodeList[i].link();
+        if (element.top >= obj.yFrom && element.top <= obj.yTo) yInRect = true
 
-	var form_ex = $j('#form_map').length > 0;
+        if ((element.top + element.height) >= obj.yFrom && (element.top + element.height) <= obj.yTo) yInRect = true
 
-	try{
-		for( var i = 0; i < $j(".newNodeMap").length; i++){
 
-			var thisNode = $j(".newNodeMap")[i];
+        if (!!xInRect && !!yInRect) return true;
 
-			var X0 = parseInt( thisNode.style.left.replace("px","").replace("pt","") );
+        return false;
 
-			var Y0 = parseInt( thisNode.style.top.replace("px","").replace("pt","") );
+    }
 
-			var values = X0+","+Y0+","+parseInt( thisNode.offsetWidth )+",0";
 
-			if(!!form_ex) $j('#form_map')[0].innerHTML += "<input type='hidden' name='input_"+thisNode.id+"' value='"+values+"' id='input_"+thisNode.id+"'/>\n";
+    // count links from a node
+    element.link = function () {
 
-			var y = parseInt(thisNode.style.top.replace("px",""))
+        var linksDiv = element.getElementsByTagName("div");
 
-			if( y > this.maxY )  this.maxY = y;
+        var thisLinks = linksDiv[linksDiv.length - 1]
 
 
+        if (thisLinks.innerHTML == "") return;
 
+        else element.links = new Array();
 
-		}
 
-		this.root.height = this.maxY +50
+        var linksArray = thisLinks.innerHTML.split(",");
 
-		this.root.style.height = this.root.height+"px"
+        for (var i = 0; i < linksArray.length; i++) {
 
+            element.links.push(linksArray[i]);
 
+            element.linkTo(linksArray[i]);
 
-		if(!!form_ex){
+        };
+    }
 
-                    $j('#form_map')[0].innerHTML += "<input type='hidden' value='"+i+"' name='nNodeMap'/>\n"; // number of nodes in map
 
-                    // creating submit button (ONLY FOR AUTHOR)
-                    var subm_butt = document.createElement("input")
 
-                    subm_butt.type = "button"
+    // create a links ( line ) from a node
+    element.linkTo = function (nodeId) {
 
-                    subm_butt.style.position = "absolute"
+        var exist = $j(`#${nodeId}`).length > 0;
 
-                    subm_butt.style.right = "10px"
+        if (!exist) return; // link esterni al gruppo
 
-                    subm_butt.style.top = "10px"
+        var node = $j(`#${nodeId}`)[0];
 
-                    subm_butt.value = "salva"
+        var X0 = parseInt(element.left)
 
-                    subm_butt.onclick = function(){
+        var Y0 = parseInt(element.top)
 
-                            $j("#form_map").trigger('submit');
-                    }
+        var X1 = parseInt(node.left)
 
-                    $j('#map_content').append( subm_butt )
-                };
+        var Y1 = parseInt(node.top)
 
-	}catch(e){}
+        newLine(element, node, X0, Y0, X1, Y1);
 
-}
+    }
 
 
 
+    // create draggable
+    $j(element).draggable({
 
-/* --------------------------------------------------------- *\
+        handle: element.getElementsByTagName("img")[0], // handle on icon
 
-	  Function    : newLine()
-	  Description : create a new line from a element( a node)
-	  		to another node
-	  Usage       : newLine(element, node, X0, Y0, X1, Y1)
-	  Arguments   : element - the element who lines comes from (HTMLDivElement)
-	  		node - the element who lines arrive (HTMLDivElement)
-	  		X0 - x-coordinate of left-side of element
-	  		Y0 - y-coordinate of top-side of element
-	  		X1 - theoretically the width of object ( always 100 )
-	  		Y1 - theoretically the height of object ( always 100 )
+        drag: function (event, ui) {
 
-\* ---------------------------------------------------------- */
+            const drgObj = {
+                element: ui.helper[0],
+            };
 
-function newLine(element, node, X0, Y0, X1, Y1){
 
-	// simple geometry
-	var dx = X0 - X1
+            // case node has negative y-coordinate
+            if (parseInt(drgObj.element.style.top.replace("px", "")) < 0) {
 
-	var dy = Y0 - Y1
+                if (drgObj.element.out == true) return;
 
-	var lineLength = Math.sqrt( ( dx * dx ) + ( dy * dy ) );
+                drgObj.element.top = "0px";
 
-	var deg = Math.atan2( dy, dx );
+                drgObj.element.style.top = drgObj.element.top;
 
-	var A01 = Math.cos( deg );
+                drgObj.element.left = drgObj.element.style.left;
 
+                drgObj.element.out = true;
 
+                return;
 
+            };
 
-	// lines are div whit a border bottom line visible...
-	var line = document.createElement("div");
+            // case node has negative x-coordinate
+            if (parseInt(drgObj.element.style.left.replace("px", "")) < 0) {
 
-	line.style.width = lineLength + "px";
+                if (drgObj.element.out == true) return;
 
-	line.style.height = "2px";
+                drgObj.element.left = "0px";
 
-	line.style.borderBottom = "1px dashed #999999";
+                drgObj.element.style.left = drgObj.element.left;
 
-	line.style.position="absolute";
+                drgObj.element.top = drgObj.element.style.top;
 
+                drgObj.element.out = true;
 
+                return;
 
+            };
 
-	// setting position of lines
+            // case node has y-coordinate > of map height
+            if (parseInt(drgObj.element.style.left.replace("px", "")) > parseInt($j('#map_content')[0].style.maxWidth.replace("px", ""))) {
 
-	if( !isIE ){// the line rotates around his center
+                if (drgObj.element.out == true) return;
 
-		line.left = ( ( X0 + X1 ) / 2 - ( lineLength / 2 * A01 ) - ( lineLength / 2 ) * ( 1 - A01 ) ) + 10
+                drgObj.element.left = $j('#map_content')[0].style.maxWidth;
 
-		line.top = ( ( Y0 + Y1 ) / 2 )+ 10
+                drgObj.element.style.left = drgObj.element.left;
 
+                drgObj.element.top = drgObj.element.style.top;
 
-	}else{// the line rotates 'attached' to his top and left side ( need four cases )
+                drgObj.element.out = true;
 
-		if( deg <= -Math.PI/2){
+                return;
 
-			line.left = X0+10;
+            };
 
-			line.top = Y0+10;
+            drgObj.element.out = false;
 
-		}else if(deg <= 0 && deg > -Math.PI/2){
+            setMapMinY();
 
-			line.left = X1+10;
+            setAllLinesFromNode(drgObj.element)
 
-			line.top = Y0+10;
 
 
-		}else if(deg >= Math.PI/2){
+        },
 
-			line.left = X0+10;
 
-			line.top = Y1+10;
+        // on end drag re-set all lines ( needed for [the slow] Internet explorer )
+        stop: function (event, ui) {
 
+            const drgObj = {
+                element: ui.helper[0],
+            };
 
-		}else{
-			line.left = X1+10;
+            if (!!drgObj.element.out) {
 
-			line.top = Y1+10;
+                drgObj.element.style.top = drgObj.element.top
 
+                drgObj.element.style.left = drgObj.element.left
 
-		}
+                setAllLinesFromNode(drgObj.element)
 
-	}
 
+            }
 
-	line.style.left = line.left + "px"
+        }
 
-	line.style.top  = line.top + "px"
-
-	line.style.zIndex = 1;
-
-
-
-
-	transform(line, deg)
-
-	element.linkArray.push({"node":node,"line":line })
-
-	node.linkArray.push({"node":element,"line":line})
-
-	$j("#map_content").append(line);
+    });
 
 
 }
@@ -651,105 +366,387 @@ function newLine(element, node, X0, Y0, X1, Y1){
 
 /* --------------------------------------------------------- *\
 
-	  Function    : setLine()
-	  Description : trasforming a given line whit coordinates
-	  Usage       : setLine(line, X0, Y0, X1, Y1)
-	  Arguments   : line - the line to transform (HTMLDivElement)
-	  		X0 - x-coordinate of left-side of element
-	  		Y0 - y-coordinate of top-side of element
-	  		X1 - theoretically the width of object ( always 100 )
-	  		Y1 - theoretically the height of object ( always 100 )
+      Function    : setChildDisposition()
+      Description : if a node is in a rectangle of another
+                node change x and y coordinates
+      Usage       : setChildDisposition()
+      Arguments   :
+
+\* ---------------------------------------------------------- */
+function setChildDisposition() {
+
+    for (i = 0; i < this.nodeList.length; i++) {
+
+        var elem = this.nodeList[i];
+
+        if (elem.style.left == "100px" && elem.style.top == "100px") elem.orig = true;
+
+        else elem.orig = false;
+
+        for (j = 0; j < this.nodeList.length; j++) {
+
+            var elemToContr = this.nodeList[j];
+
+            if (elem != elemToContr && !rectangleIsFree(elemToContr.rect) && !!elem.orig) {
+
+
+                elem.style.left = (elemToContr.rect.xTo + 2) + "px";
+
+                elem.style.top = (elemToContr.rect.yTo + 2) + "px";
+
+                elem.rect.xFrom = parseInt(elem.style.left.replace("px", ""))
+
+                elem.rect.yFrom = parseInt(elem.style.top.replace("px", ""))
+
+                elem.rect.xTo = elem.rect.xFrom + elem.width
+
+                elem.rect.yTo = elem.rect.yFrom + elem.height
+
+                elem.left = elem.rect.xFrom
+
+                elem.top = elem.rect.yFrom
+
+                this.setChildDisposition();
+
+                return;
+
+            }
+
+        };
+    };
+
+
+
+}
+
+
+
+
+
+
+
+/* --------------------------------------------------------- *\
+
+      Function    : Map()
+      Description : Map Object
+      Usage       : new Map();
+      Arguments   :
+
+\* ---------------------------------------------------------- */
+var Map = function () {
+
+
+    // PROPERTIES
+
+    this.root = $j('#map_content')[0];
+
+    $j('#map_content')[0].map = this;
+
+    this.root.style.maxWidth = this.root.offsetWidth + "px"
+
+    this.addNode = Node;
+
+    this.nodeList = new Array();
+
+    this.setChildDisposition = setChildDisposition;
+
+    this.notFree = new Array();
+
+    this.maxY = 0;
+
+
+    // creating nodes
+    for (i = 0; i < this.root.childNodes.length; i++) {
+
+        if (this.root.childNodes[i].className == "newNodeMap") {
+
+            this.addNode(this.root.childNodes[i]);
+
+            this.nodeList.push(this.root.childNodes[i]);
+        };
+
+    };
+
+    this.setChildDisposition();
+
+
+    // creating links from nodes (lines)
+    for (var i = 0; i < this.nodeList.length; i++) this.nodeList[i].link();
+
+    var form_ex = $j('#form_map').length > 0;
+
+    try {
+        for (var i = 0; i < $j(".newNodeMap").length; i++) {
+
+            var thisNode = $j(".newNodeMap")[i];
+
+            var X0 = parseInt(thisNode.style.left.replace("px", "").replace("pt", ""));
+
+            var Y0 = parseInt(thisNode.style.top.replace("px", "").replace("pt", ""));
+
+            var values = X0 + "," + Y0 + "," + parseInt(thisNode.offsetWidth) + ",0";
+
+            if (!!form_ex) $j('#form_map')[0].innerHTML += "<input type='hidden' name='input_" + thisNode.id + "' value='" + values + "' id='input_" + thisNode.id + "'/>\n";
+
+            var y = parseInt(thisNode.style.top.replace("px", ""))
+
+            if (y > this.maxY) this.maxY = y;
+
+
+
+
+        }
+
+        this.root.height = this.maxY + 50
+
+        this.root.style.height = this.root.height + "px"
+
+
+
+        if (!!form_ex) {
+
+            $j('#form_map')[0].innerHTML += "<input type='hidden' value='" + i + "' name='nNodeMap'/>\n"; // number of nodes in map
+
+            // creating submit button (ONLY FOR AUTHOR)
+            var subm_butt = document.createElement("input")
+
+            subm_butt.type = "button"
+
+            subm_butt.style.position = "absolute"
+
+            subm_butt.style.right = "10px"
+
+            subm_butt.style.top = "10px"
+
+            subm_butt.value = "salva"
+
+            subm_butt.onclick = function () {
+
+                $j("#form_map").trigger('submit');
+            }
+
+            $j('#map_content').append(subm_butt)
+        };
+
+    } catch (e) { }
+
+}
+
+
+
+
+/* --------------------------------------------------------- *\
+
+      Function    : newLine()
+      Description : create a new line from a element( a node)
+                to another node
+      Usage       : newLine(element, node, X0, Y0, X1, Y1)
+      Arguments   : element - the element who lines comes from (HTMLDivElement)
+                node - the element who lines arrive (HTMLDivElement)
+                X0 - x-coordinate of left-side of element
+                Y0 - y-coordinate of top-side of element
+                X1 - theoretically the width of object ( always 100 )
+                Y1 - theoretically the height of object ( always 100 )
+
+\* ---------------------------------------------------------- */
+
+function newLine(element, node, X0, Y0, X1, Y1) {
+
+    // simple geometry
+    var dx = X0 - X1
+
+    var dy = Y0 - Y1
+
+    var lineLength = Math.sqrt((dx * dx) + (dy * dy));
+
+    var deg = Math.atan2(dy, dx);
+
+    var A01 = Math.cos(deg);
+
+
+
+
+    // lines are div whit a border bottom line visible...
+    var line = document.createElement("div");
+
+    line.style.width = lineLength + "px";
+
+    line.style.height = "2px";
+
+    line.style.borderBottom = "1px dashed #999999";
+
+    line.style.position = "absolute";
+
+
+
+
+    // setting position of lines
+
+    if (!isIE) {// the line rotates around his center
+
+        line.left = ((X0 + X1) / 2 - (lineLength / 2 * A01) - (lineLength / 2) * (1 - A01)) + 10
+
+        line.top = ((Y0 + Y1) / 2) + 10
+
+
+    } else {// the line rotates 'attached' to his top and left side ( need four cases )
+
+        if (deg <= -Math.PI / 2) {
+
+            line.left = X0 + 10;
+
+            line.top = Y0 + 10;
+
+        } else if (deg <= 0 && deg > -Math.PI / 2) {
+
+            line.left = X1 + 10;
+
+            line.top = Y0 + 10;
+
+
+        } else if (deg >= Math.PI / 2) {
+
+            line.left = X0 + 10;
+
+            line.top = Y1 + 10;
+
+
+        } else {
+            line.left = X1 + 10;
+
+            line.top = Y1 + 10;
+
+
+        }
+
+    }
+
+
+    line.style.left = line.left + "px"
+
+    line.style.top = line.top + "px"
+
+    line.style.zIndex = 1;
+
+
+
+
+    transform(line, deg)
+
+    element.linkArray.push({ "node": node, "line": line })
+
+    node.linkArray.push({ "node": element, "line": line })
+
+    $j("#map_content").append(line);
+
+
+}
+
+
+
+
+
+/* --------------------------------------------------------- *\
+
+      Function    : setLine()
+      Description : trasforming a given line whit coordinates
+      Usage       : setLine(line, X0, Y0, X1, Y1)
+      Arguments   : line - the line to transform (HTMLDivElement)
+                X0 - x-coordinate of left-side of element
+                Y0 - y-coordinate of top-side of element
+                X1 - theoretically the width of object ( always 100 )
+                Y1 - theoretically the height of object ( always 100 )
 
 \* ---------------------------------------------------------- */
 
 // see comment for newLine()
-function setLine( line, X0, Y0, X1, Y1){
+function setLine(line, X0, Y0, X1, Y1) {
 
-	var dx = X0 - X1;
+    var dx = X0 - X1;
 
-	var dy = Y0 - Y1;
+    var dy = Y0 - Y1;
 
-	var lineLength = Math.sqrt( ( dx * dx ) + ( dy * dy ) );
+    var lineLength = Math.sqrt((dx * dx) + (dy * dy));
 
-	var deg = Math.atan2( dy, dx );
+    var deg = Math.atan2(dy, dx);
 
-	var A01 = Math.cos( deg )
+    var A01 = Math.cos(deg)
 
-	line.style.width = lineLength + "px";
+    line.style.width = lineLength + "px";
 
-	line.style.height = "2px"
-
-
-	if(!isIE){
-		line.left = ( ( X0 + X1 ) / 2 - ( lineLength / 2 * A01 ) - ( lineLength / 2 ) * ( 1 - A01 ) ) + 10
-
-		line.top  = ( ( Y0 + Y1 ) / 2 )+ 10
-	}else{
+    line.style.height = "2px"
 
 
-		if( deg < -Math.PI/2){
+    if (!isIE) {
+        line.left = ((X0 + X1) / 2 - (lineLength / 2 * A01) - (lineLength / 2) * (1 - A01)) + 10
 
-			line.left = X0+10;
+        line.top = ((Y0 + Y1) / 2) + 10
+    } else {
 
-			line.top = Y0+10;
+
+        if (deg < -Math.PI / 2) {
+
+            line.left = X0 + 10;
+
+            line.top = Y0 + 10;
 
 
-		}else if(deg <= 0 && deg > -Math.PI/2){
+        } else if (deg <= 0 && deg > -Math.PI / 2) {
 
-			line.left = X1+10;
+            line.left = X1 + 10;
 
-			line.top = Y0+10;
+            line.top = Y0 + 10;
 
-		}else if(deg > Math.PI/2){
+        } else if (deg > Math.PI / 2) {
 
-			line.left = X0+10;
+            line.left = X0 + 10;
 
-			line.top = Y1+10;
+            line.top = Y1 + 10;
 
-		}else if(deg >= 0 && deg <= Math.PI/2){
+        } else if (deg >= 0 && deg <= Math.PI / 2) {
 
-			line.left = X1+10;
+            line.left = X1 + 10;
 
-			line.top = Y1+10;
+            line.top = Y1 + 10;
 
-		}
-	}
+        }
+    }
 
-	line.style.left = line.left + "px"
+    line.style.left = line.left + "px"
 
-	line.style.top  = line.top + "px"
+    line.style.top = line.top + "px"
 
-	transform(line, deg)
+    transform(line, deg)
 
 
 }
 
-function rectangleIsFree( obj ){
+function rectangleIsFree(obj) {
 
-        var xFree = true
+    var xFree = true
 
-        var yFree = true
-
-
-        for(var i = 0; i < $j("#map_content")[0].map.nodeList; i++){
-
-                var element = $j("#map_content")[0].map.nodeList[i];
-
-                if( element.left >= obj.xFrom && element.left  <=  obj.xTo  ) xFree= false
-
-                if( (element.left + element.width ) >= obj.xFrom && (element.left+element.width)  <=  obj.xTo  ) xFree = false
-
-                if( element.top  >= obj.yFrom && element.top  <= obj.yTo  ) yFree = false
-
-                if( (element.top + element.height ) >= obj.yFrom && (element.top + element.height )  <=  obj.yTo ) yFree = false
-
-        }
+    var yFree = true
 
 
+    for (var i = 0; i < $j("#map_content")[0].map.nodeList; i++) {
 
-        if( !!xFree && !!yFree ) return true;
+        var element = $j("#map_content")[0].map.nodeList[i];
 
-        return false;
+        if (element.left >= obj.xFrom && element.left <= obj.xTo) xFree = false
+
+        if ((element.left + element.width) >= obj.xFrom && (element.left + element.width) <= obj.xTo) xFree = false
+
+        if (element.top >= obj.yFrom && element.top <= obj.yTo) yFree = false
+
+        if ((element.top + element.height) >= obj.yFrom && (element.top + element.height) <= obj.yTo) yFree = false
+
+    }
+
+
+
+    if (!!xFree && !!yFree) return true;
+
+    return false;
 
 }
 

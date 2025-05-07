@@ -1,15 +1,15 @@
-﻿/*
-* jQuery Cascading Select Lists plug-in 0.8
-*
-* Licensed under the "do whatever you want with it" licence.
-*/
+﻿/**
+ * jQuery Cascading Select Lists plug-in 0.8
+ *
+ * Licensed under the "do whatever you want with it" licence.
+ */
 
-(function($) {
-    $j.extend($j.fn, {
-        cascade: function(options) {
-            var dependendentDdl = $j('#' + options.cascaded);
+(function ($) {
+    $.extend($.fn, {
+        cascade: function (options) {
+            var dependendentDdl = $('#' + options.cascaded);
 
-            var options = $j.extend({}, $j.fn.cascade.defaults, {
+            var options = $.extend({}, $.fn.cascade.defaults, {
                 source: options.source, // Source's url
                 cascaded: options.cascaded // The ddl element that depends on this list
             }, options);
@@ -21,63 +21,62 @@
                 }
             }
 
-            return this.each(function() {
-                var sourceDdl = $j(this);
+            return this.each(function () {
+                var sourceDdl = $(this);
 
-                sourceDdl.change(function() {
+                sourceDdl.change(function () {
                     var extraParams = {
                         timestamp: +new Date()
                     };
 
-                    $j.each(options.extraParams, function(key, param) {
+                    $.each(options.extraParams, function (key, param) {
                         extraParams[key] = typeof param == "function" ? param() : param;
                     });
-                    
-                    var data = $j.extend({ selected: $j(this).val() }, extraParams);
+
+                    var data = $.extend({ selected: $(this).val() }, extraParams);
 
                     dependendentDdl.empty()
-                                    .attr('disabled', 'disabled')
-                                    .append('<option>' + options.dependentLoadingLabel + '</option>');
+                        .attr('disabled', 'disabled')
+                        .append('<option>' + options.dependentLoadingLabel + '</option>');
 
 
                     if (options.spinnerImg) {
                         dependendentDdl.next('.' + options.spinnerClass).remove();
 
-                        var spinner = $j('<img />').attr('src', options.spinnerImg);
-                        $j('<span class="' + options.spinnerClass + '" />').append(spinner).insertAfter(dependendentDdl);
+                        var spinner = $('<img />').attr('src', options.spinnerImg);
+                        $('<span class="' + options.spinnerClass + '" />').append(spinner).insertAfter(dependendentDdl);
                     }
 
-//                    $j.getJSON(options.source, data).   
-                    $j.ajax({
-                    	type : 'GET',
-                    	url  : options.source,
-                    	data : data,
-                    	dataType : 'json',
-                    	async : false                    	
+                    $.ajax({
+                        type: 'GET',
+                        url: options.source,
+                        data: data,
+                        dataType: 'json',
+                        async: false
                     })
-                    .done ( function(response) {
+                    .done(function (response) {
                         dependendentDdl.empty().attr('disabled', null);
                         dependendentDdl.next('.' + options.spinnerClass).remove();
                         if (response.length > 0) {
-                            $j.each(response, function(i, item) {
+                            $.each(response, function (i, item) {
                                 dependendentDdl.append('<option value=' + item.value + '>' + item.label + '</option>');
                             });
                         } else {
                             dependendentDdl.empty()
-                                    .attr('disabled', 'disabled')
-                                    .append('<option>' + options.dependentNothingFoundLabel + '</option>');
+                                .attr('disabled', 'disabled')
+                                .append('<option>' + options.dependentNothingFoundLabel + '</option>');
                         }
                         options.callback();
                     })
-                    .always ( function() {
-                    	
+                    .always(function () {
+
                     });
                 });
             });
         }
     });
 
-    $j.fn.cascade.defaults = {
+    $.fn.cascade.defaults = {
         sourceStartingLabel: "Select one first",
         dependentNothingFoundLabel: "No elements found",
         dependentStartingLabel: "Select one",
