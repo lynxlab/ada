@@ -722,7 +722,30 @@ class CourseViewer
                     }
                     if (!empty($label)) {
                         $authorExtra[$extra] = CDOMElement::create('span', 'class:ui small label author index ' . $extra . $extraCss);
-                        $authorExtra[$extra]->addChild(new CText($label));
+                        if ($extra != 'keywords') {
+                            $arrow = CDOMElement::create('a');
+                            $arrow->setAttribute('href', 'javascript:void(0);');
+                            $arrow->setAttribute('onclick', 'javascript:mainIndexMove(this.parentElement, \'' . $params['node']['id_nodo'] . '\', \'up\',\'' . $extra . '\');');
+                            $arrow->setAttribute('class', 'detail');
+                            $arrow->addChild(CDOMElement::create('i', 'class:up triangle icon'));
+                            $authorExtra[$extra]->addChild($arrow);
+                        }
+                        $span = CDOMElement::create('span', 'class:ui small label');
+                        $span->setAttribute('style', 'padding:0;background:transparent;');
+                        $span->addChild(new CText($label));
+                        $authorExtra[$extra]->addChild($span);
+                        if ($extra != 'keywords') {
+                            $arrow = CDOMElement::create('a');
+                            $arrow->setAttribute('href', 'javascript:void(0);');
+                            $arrow->setAttribute('onclick', 'javascript:mainIndexMove(this.parentElement, \'' . $params['node']['id_nodo'] . '\', \'down\',\'' . $extra . '\');');
+                            $arrow->setAttribute('class', 'detail');
+                            $icon = CDOMElement::create('i', 'class:down triangle icon');
+                            if ($params['node'][$extra] <= 0) {
+                                $icon->setAttribute('style', 'visibility:hidden;');
+                            }
+                            $arrow->addChild($icon);
+                            $authorExtra[$extra]->addChild($arrow);
+                        }
                     }
                 }
             }
