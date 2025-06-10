@@ -723,6 +723,11 @@ class NodeEditingViewer
             // @author giorgio 14/jun/2019 end checkbox
         }
 
+        $saveBtn = CDOMElement::create('input_button', 'id:saveAttributesBtn, class: ui tiny button');
+        $saveBtn->setAttribute('value', translateFN('Salva'));
+        $saveBtn->setAttribute('onclick', 'saveNodeAttributes();');
+        $node_data_div->addChild($saveBtn);
+
         $node_data_div->addChild(CDOMElement::create('hidden', "id:id,name:id,value:{$node_data['id']}"));
         $node_data_div->addChild(CDOMElement::create('hidden', "id:jsparent_id,name:parent_id,value:{$node_data['parent_id']}"));
         $node_data_div->addChild(CDOMElement::create('hidden', "id:id_node_author,name:id_node_author,value:{$node_data['id_node_author']}"));
@@ -874,6 +879,9 @@ class NodeEditingViewer
             $form->setAttribute('onclick', 'enterUploadFileState();');
 
             $span_file = CDOMElement::create('div', 'id:span_upload_file_input, class:editor_input');
+            $linput_file = CDOMElement::create('label', 'for:id_multimedia,class:ui tiny button');
+            $linput_file->addChild(new CText('Scegli file'));
+            $span_file->addChild($linput_file);
             $input_file = CDOMElement::create('file', 'id:id_multimedia, name:file_up, class:donotDisable');
             $span_file->addChild($input_file);
 
@@ -883,7 +891,7 @@ class NodeEditingViewer
             $input_hidden_4 = CDOMElement::create('hidden', "class:donotDisable,name:node_id, value:$id_node");
 
             $span_button = CDOMElement::create('div', 'id:span_upload_file_button, class:editor_input');
-            $input_button = CDOMElement::create('submit', 'class:donotDisable');
+            $input_button = CDOMElement::create('submit', 'class:donotDisable ui tiny button');
             $input_button->setAttribute('value', translateFN("Invia questo file"));
             $span_button->addChild($input_button);
 
@@ -1005,7 +1013,7 @@ class NodeEditingViewer
         $span_select->addChild($select);
 
         //        $span_button = CDOMElement::create('div','id:span_select_media_button, class:editor_input');
-        $input_button = CDOMElement::create('input_button');
+        $input_button = CDOMElement::create('input_button', 'class:ui tiny button');
         $author_id = $_SESSION['sess_id_user'];
         $input_button->setAttribute('onclick', "manageMultimediaProperties(getFileDataFromSelect('jsid_select_files'),$author_id);");
         $input_button->setAttribute('value', translateFN("Gestisci proprietà media"));
@@ -1013,7 +1021,7 @@ class NodeEditingViewer
         //        $span_button->addChild($input_button);
 
         $span_button_media_properties = CDOMElement::create('div', 'id:span_properties_media_button, class:editor_input');
-        $input_button_media_properties = CDOMElement::create('input_button');
+        $input_button_media_properties = CDOMElement::create('input_button', 'class:ui tiny button');
         $input_button_media_properties->setAttribute('onclick', "addMultimedia(getFileDataFromSelect('jsid_select_files'));");
         $input_button_media_properties->setAttribute('value', translateFN("Aggiungi questo media"));
         $span_button_media_properties->addChild($input_button);
@@ -1149,12 +1157,12 @@ class NodeEditingViewer
         */
         $author_id = $_SESSION['sess_id_user'];
         $span_button_media_properties = CDOMElement::create('div', 'id:span_properties_media_button, class:editor_input');
-        $input_button = CDOMElement::create('input_button');
+        $input_button = CDOMElement::create('input_button', 'class:ui tiny button');
         $input_button->setAttribute('onclick', "saveMultimediaProperties(getFileDataFromSelect('jsid_select_files'),$author_id);");
         $input_button->setAttribute('value', translateFN("Salva proprietà media"));
         $span_button_media_properties->addChild($input_button);
 
-        $input_button_media_properties = CDOMElement::create('input_button');
+        $input_button_media_properties = CDOMElement::create('input_button', 'class:ui tiny button');
         $input_button_media_properties->setAttribute('onclick', "toggleVisibility('jsid_div_media_properties');");
         $input_button_media_properties->setAttribute('value', translateFN("Chiudi"));
         $span_button_media_properties->addChild($input_button_media_properties);
