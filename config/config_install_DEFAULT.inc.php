@@ -464,6 +464,7 @@ $ADA_MIME_TYPE["application/vnd.ms-powerpoint"]['permission'] = _GO;
 $ADA_MIME_TYPE["application/vnd.ms-excel"]['permission'] = _GO;
 $ADA_MIME_TYPE["application/vnd.ms-office"]['permission'] = _GO;
 $ADA_MIME_TYPE["application/x-xml"]['permission'] = _GO;
+$ADA_MIME_TYPE["application/csv"]['permission'] = _GO;
 // docx, xslx, pptx etc...
 $ADA_MIME_TYPE["application/vnd.openxmlformats-officedocument.wordprocessingml.document"]['permission'] = _GO;
 $ADA_MIME_TYPE["application/vnd.openxmlformats-officedocument.wordprocessingml.template"]['permission'] = _GO;
@@ -533,6 +534,7 @@ $ADA_MIME_TYPE["application/vnd.ms-powerpoint"]['type'] = _DOC;
 $ADA_MIME_TYPE["application/vnd.ms-excel"]['type'] = _DOC;
 $ADA_MIME_TYPE["application/vnd.ms-office"]['type'] = _DOC;
 $ADA_MIME_TYPE["application/x-xml"]['type'] = _DOC;
+$ADA_MIME_TYPE["application/csv"]['type'] = _DOC;
 // docx, xslx, pptx etc...
 $ADA_MIME_TYPE["application/vnd.openxmlformats-officedocument.wordprocessingml.document"]['type'] = _DOC;
 $ADA_MIME_TYPE["application/vnd.openxmlformats-officedocument.wordprocessingml.template"]['type'] = _DOC;

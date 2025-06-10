@@ -173,7 +173,9 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
                                  * add the user to the providers of the session user (that is a switcher)
                                  */
                                 MultiPort::setUser($subscriberObj, $providers, false);
-                                $usersToAdd[] = $subscriberObj->getId();
+                                if (!in_array($subscriberObj->getId(), $usersToAdd)) {
+                                    $usersToAdd[] = $subscriberObj->getId();
+                                }
                             }
                         } else {
                             // not array or less than expected fields
@@ -193,10 +195,13 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
                                 array_map(fn ($el) => '(' . $retArr['group']->getId() . ',' . $el . ')', $usersToAdd)
                             )
                         );
-                        $this->executeCriticalPrepared($sql);
+                        $addGroupResult = $this->executeCriticalPrepared($sql);
                     }
                     @unlink($groupscsv);
                 }
+            }
+            if (isset($addGroupResult) && AMADB::isError($addGroupResult)) {
+                return new StudentsGroupsException(translateFN('Errore durante l\'associazione degli studenti al gruppo'));
             }
             return $retArr;
         } else {

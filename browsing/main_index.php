@@ -602,4 +602,10 @@ $layout_dataAr['CSS_filename'] = [
  'main_index.css',
 ];
 
+if ($userObj->getType() == AMA_TYPE_AUTHOR) {
+    $layout_dataAr['JS_filename'] = [
+        'main_index.js',
+    ];
+}
+
 ARE::render($layout_dataAr, $content_dataAr);

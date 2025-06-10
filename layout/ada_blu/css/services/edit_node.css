@@ -3,3 +3,7 @@
 #editor_form_div {
     border: none;
 }
+
+#id_multimedia[type=file]::file-selector-button {
+    display: none;
+}

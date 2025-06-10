@@ -81,7 +81,7 @@ switch ($mode) {
         $out_fields_ar = ['data_visita','id_utente_studente','id_istanza_corso'];
         $clause = "id_nodo = '$id_node'";
 
-        $visits_ar = $dh->findNodesHistoryList($out_fields_ar, $clause);
+        $visits_ar = $dh->doFindNodesHistoryList($out_fields_ar, $clause);
         if (AMADataHandler::isError($visits_ar)) {
             $msg = $visits_ar->getMessage();
             print '$msg';
@@ -177,7 +177,7 @@ switch ($mode) {
 
                 // FIXME: verificare quale fra queste due usare
                 //         $visits = $dh->findNodesHistoryList($out_fields_ar,'', '', $node_id);
-                $visits = $dh->findNodesHistoryList($out_fields_ar, $clause);
+                $visits = $dh->doFindNodesHistoryList($out_fields_ar, $clause);
 
                 if (AMADataHandler::isError($visits)) {
                     $msg = $visits->getMessage();

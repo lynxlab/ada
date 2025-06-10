@@ -302,7 +302,7 @@ function ajaxSubmitGroupForm(data) {
     })
         .done(function (JSONObj) {
             if (JSONObj.status.length > 0) {
-                $j.when(showHideDiv('', JSONObj.msg, JSONObj.status == 'OK')).then(function () {
+                $j.when(showHideDiv('', JSONObj.msg, JSONObj.status == 'OK', 5000)).then(function () {
                     if (null !== table) table.ajax.reload(null, false);
                     else self.document.location.reload();
                 });

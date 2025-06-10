@@ -170,6 +170,7 @@ var ADA_FILE_UPLOAD_ERROR_UPLOAD_PATH = 104;
  */
 var SAVE_MEDIA_URL   = HTTP_ROOT_DIR + '/services/media_manager.php';
 var READ_MEDIA_URL   = HTTP_ROOT_DIR + '/services/media_manager.php?op=read';
+var SAVE_ATTRIBUTES_URL = HTTP_ROOT_DIR + '/services/ajax/saveNodeAttributes.php';
 
 var DO_NOT_DISABLE_EL_CLASS = 'donotDisable';
 
@@ -779,6 +780,55 @@ var ADA_MEDIA_AUDIO_PRONOUNCE_LABEL = "audio pronucia";
     }
 
     toggleVisibility('jsid_div_media_properties');
+}
+
+async function saveNodeAttributes() {
+	const inputs = [
+		'id',
+		'name',
+		'title', // aka keywords
+		'level',
+		'icon',
+		'type',
+		'position',
+		'order',
+	];
+
+	const parameters = new FormData();
+	inputs.forEach(val => parameters.append(val, $j(`#${val}`).val().trim()));
+
+	parameters.append('forcecreationupdate', $j('#forcecreationupdate').is(':checked') ? 1 : 0);
+	parameters.append('isforkedpaths', $j('#isforkedpaths').is(':checked') ? 1 : 0);
+
+	[...inputs, 'forcecreationupdate', 'isforkedpaths', 'saveAttributesBtn'].forEach(el => {
+		$j(`#${el}`).prop('disabled', 'disabled').addClass('disabled');
+	});
+
+	await fetch(SAVE_ATTRIBUTES_URL, {
+		method: 'post',
+		body: parameters,
+	})
+		.then(response => {
+			//Here body is not ready yet, throw promise
+			if (!response.ok) throw response;
+			return response.json();
+		})
+		.then(json => {
+			if (json.error == 0) {
+				// alert('save completed');
+			}
+			else {
+				alert(json.message)
+			}
+		})
+		.catch(async response => {
+			var body = await response.text();
+			body = body.length ? `:\n${body}` : body;
+			alert(`save attributes error${body}`);
+		});
+		[...inputs, 'forcecreationupdate', 'isforkedpaths', 'saveAttributesBtn'].forEach(el => {
+			$j(`#${el}`).prop('disabled', false).removeClass('disabled');
+		});
 }
 
 function saveMultimediaProperties(media, id_author) {
