@@ -145,7 +145,7 @@ class PdfClass extends Cezpdf
         if (strlen($headerText)) {
             $this->addText(
                 $this->ez['leftMargin'] + $this->headerImgWidth + 10,
-                $this->ez['pageHeight'] - $this->ez['marginTop'] - $this->headerImgHeight,
+                $this->ez['pageHeight'] - $this->headerImgHeight,
                 $size,
                 $headerText
             );
@@ -179,7 +179,7 @@ class PdfClass extends Cezpdf
     {
         $textVerticalOffset = (int) ($size * 1.3);
         if ($pageNumbers) {
-            $this->ezStartPageNumbers($this->ez['pageWidth'] - $this->ez['rightMargin'], $this->footerHeight - $textVerticalOffset, $size, '', 'Pag. {PAGENUM} / {TOTALPAGENUM}');
+            $this->ezStartPageNumbers($this->ez['pageWidth'] - $this->ez['rightMargin'] * 2, $this->footerHeight - $textVerticalOffset, $size, '', 'Pag. {PAGENUM} / {TOTALPAGENUM}');
         }
         if ($footerText != '') {
             $footerObj = $this->openObject();

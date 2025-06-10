@@ -429,7 +429,7 @@ switch ($op) {
         $filename = 'course_' . $id_course . '_class_' . $id_instance . '.' . $type;
 
         if ($type === 'pdf') {
-            $pdf = new PdfClass('landscape', strip_tags(html_entity_decode($courses_student['caption'])));
+            $pdf = new PdfClass('landscape', strip_tags(html_entity_decode($courses_student['caption'] ?? '')));
 
             $pdf->addHeader(
                 strip_tags(html_entity_decode($caption)),
@@ -446,7 +446,7 @@ switch ($op) {
                 if (preg_match('/img/', $val) !== 0) {
                     continue;
                 }
-                $cols[$key] = strip_tags($val);
+                $cols[$key] = trim(strip_tags(html_entity_decode($val)));
             }
 
             array_shift($courses_student);
@@ -455,13 +455,15 @@ switch ($op) {
             $i = 0;
             foreach ($courses_student as $num => $elem) {
                 foreach ($elem as $key => $val) {
-                    $data[$i][$key] = strip_tags($val);
+                    $data[$i][$key] = trim(strip_tags(html_entity_decode($val)));
                 }
                 $i++;
             }
+            array_shift($data);
             $pdf->ezTable(
                 $data,
                 $cols,
+                strip_tags(html_entity_decode($courses_student['caption'] ?? '')),
                 ['width' => $pdf->ez['pageWidth'] - $pdf->ez['leftMargin'] - $pdf->ez['rightMargin']]
             );
             $pdf->saveAs($filename);
