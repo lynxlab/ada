@@ -78,7 +78,7 @@ $help = translateFN('Da qui ogni autore di un nodo  può vederne  in dettaglio l
 $out_fields_ar = ['data_visita','id_utente_studente','id_istanza_corso'];
 $clause = "id_nodo = '$id_node'";
 
-$visits_ar = $dh->findNodesHistoryList($out_fields_ar, $clause);
+$visits_ar = $dh->doFindNodesHistoryList($out_fields_ar, $clause);
 if (AMADataHandler::isError($visits_ar)) {
     $msg = $visits_ar->getMessage();
 }
