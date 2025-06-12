@@ -126,3 +126,28 @@ body.ada-autore #editor_form_div {
 #editPanel > .editPanelContent > #jsnode_data_div > #show_node_isforkedpaths label {
     width: initial;
 }
+
+#id_multimedia[type=file]::file-selector-button {
+    display: none;
+}
+
+#span_upload_file_button,
+#span_properties_media_button,
+#span_select_external_link_button,
+#span_insert_external_link_button {
+    margin: 0.5em 0;
+}
+
+#span_switch_to_adacode_button {
+    margin-bottom: 0.5em;
+}
+
+@media only screen and (max-width: 800px) {
+  #jseditor_form {
+    flex-direction: column;
+  }
+  #editPanel {
+    margin: 1em 0 !important;
+    width: 100%;
+  }
+}
