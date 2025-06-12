@@ -36,7 +36,9 @@ class DocumentViewer
             case 1:
             case 2:
             default:
-                $exploded_document = '<a data-type="doc" href="' . $http_file_path . $media_value . '" target="_blank"><img data-type="doc" src="img/_doc.png" border="0" alt="' . $media_value . '"></a>';
+                $exploded_document = '<a data-type="doc" href="' . $http_file_path . $media_value .
+                    '" target="_blank"><img data-type="doc" src="img/_doc.png" border="0" alt="' . $media_value .
+                    '">' . $media_value . '</a>';
                 break;
         }
         return $exploded_document;
@@ -55,6 +57,6 @@ class DocumentViewer
             '<a data-type="doc" href="' . $http_file_path . $real_file_name . '" target="_blank" title="' . $complete_file_name . '">' . $file_name . '</a>',
         ];
         //        return $link;
-        return '<img data-type="doc" src="img/_doc.png"><a data-type="doc" href="' . $http_file_path . $real_file_name . '" target="_blank" title="' . $complete_file_name . '">' . $file_name . '</a>';
+        return implode('', $link);
     }
 }
