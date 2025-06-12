@@ -120,67 +120,68 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
                     if (MULTIPROVIDER) {
                         array_unshift($providers, ADA_PUBLIC_TESTER);
                     }
-                    $usersToSubscribe = file($groupscsv);
 
-                    /* remove blank lines form array */
-                    foreach ($usersToSubscribe as $key => $value) {
-                        if (!trim($value)) {
-                            unset($usersToSubscribe[$key]);
-                        }
-                    }
-
-                    foreach ($usersToSubscribe as $row) {
-                        ++$counters['total'];
-                        $userDataAr = explode(',', $row);
-                        if (is_array($userDataAr) && count($userDataAr) == MODULES_STUDENTSGROUPS_FIELDS_IN_CSVROW) {
-                            $userDataAr = array_map('trim', explode(',', $row));
-                            $subscriberObj = MultiPort::findUserByUsername($userDataAr[2]);
-                            if ($subscriberObj == null) {
-                                $subscriberObj = new ADAUser(
-                                    [
-                                        'nome' => trim($userDataAr[0]),
-                                        'cognome' => trim($userDataAr[1]),
-                                        'email' => trim($userDataAr[2]),
-                                        'tipo' => AMA_TYPE_STUDENT,
-                                        'username' => trim($userDataAr[2]),
-                                        'stato' => ADA_STATUS_REGISTERED, // these students will never get the confirm email
-                                        'birthcity' => '',
-                                    ]
+                    if (($handle = fopen($groupscsv, "r")) !== false) {
+                        while (($userDataAr = fgetcsv($handle)) !== false) {
+                            ++$counters['total'];
+                            if (is_array($userDataAr) && count($userDataAr) == MODULES_STUDENTSGROUPS_FIELDS_IN_CSVROW) {
+                                $userDataAr = array_map(
+                                    fn ($el) => trim(
+                                        str_replace('"', '', $el)
+                                    ),
+                                    $userDataAr
                                 );
-                                if (DataValidator::validatePassword($userDataAr[3], $userDataAr[3])) {
-                                    $subscriberObj->setPassword($userDataAr[3]);
-                                    if (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) {
-                                        $subscriberObj->setEmail('');
-                                    }
-                                    /**
-                                     * save the user and add it to the providers of the session user (that is a switcher)
-                                     */
-                                    $result = MultiPort::addUser($subscriberObj, $providers);
-                                    if ($result > 0) {
-                                        ++$counters['registered'];
-                                        $usersToAdd[] = $result;
+
+                                $subscriberObj = MultiPort::findUserByUsername($userDataAr[2]);
+                                if ($subscriberObj == null) {
+                                    $subscriberObj = new ADAUser(
+                                        [
+                                            'nome' => trim($userDataAr[0]),
+                                            'cognome' => trim($userDataAr[1]),
+                                            'email' => trim($userDataAr[2]),
+                                            'tipo' => AMA_TYPE_STUDENT,
+                                            'username' => trim($userDataAr[2]),
+                                            'stato' => ADA_STATUS_REGISTERED, // these students will never get the confirm email
+                                            'birthcity' => '',
+                                        ]
+                                    );
+                                    if (DataValidator::validatePassword($userDataAr[3], $userDataAr[3])) {
+                                        $subscriberObj->setPassword($userDataAr[3]);
+                                        if (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) {
+                                            $subscriberObj->setEmail('');
+                                        }
+                                        /**
+                                         * save the user and add it to the providers of the session user (that is a switcher)
+                                         */
+                                        $result = MultiPort::addUser($subscriberObj, $providers);
+                                        if ($result > 0) {
+                                            ++$counters['registered'];
+                                            $usersToAdd[] = $result;
+                                        } else {
+                                            ++$counters['errors'];
+                                        }
                                     } else {
                                         ++$counters['errors'];
+                                        ++$counters['invalidpasswords'];
                                     }
                                 } else {
-                                    ++$counters['errors'];
-                                    ++$counters['invalidpasswords'];
+                                    // user was found by findUserByUsername
+                                    ++$counters['duplicates'];
+                                    /**
+                                     * add the user to the providers of the session user (that is a switcher)
+                                     */
+                                    MultiPort::setUser($subscriberObj, $providers, false);
+                                    if (!in_array($subscriberObj->getId(), $usersToAdd)) {
+                                        $usersToAdd[] = $subscriberObj->getId();
+                                    }
                                 }
                             } else {
-                                // user was found by findUserByUsername
-                                ++$counters['duplicates'];
-                                /**
-                                 * add the user to the providers of the session user (that is a switcher)
-                                 */
-                                MultiPort::setUser($subscriberObj, $providers, false);
-                                if (!in_array($subscriberObj->getId(), $usersToAdd)) {
-                                    $usersToAdd[] = $subscriberObj->getId();
-                                }
+                                // not array or less than expected fields
+                                ++$counters['errors'];
                             }
-                        } else {
-                            // not array or less than expected fields
-                            ++$counters['errors'];
                         }
+                    } else {
+                        return new StudentsGroupsException(translateFN('Errore durante la lettura del file'));
                     }
                     $retArr['importResults'] = $counters;
                     if (!empty($usersToAdd)) {
@@ -192,7 +193,7 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
                             Groups::UTENTERELTABLE,
                             implode(
                                 ',',
-                                array_map(fn ($el) => '(' . $retArr['group']->getId() . ',' . $el . ')', $usersToAdd)
+                                array_map(fn($el) => '(' . $retArr['group']->getId() . ',' . $el . ')', $usersToAdd)
                             )
                         );
                         $addGroupResult = $this->executeCriticalPrepared($sql);
@@ -230,7 +231,7 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
                     ];
                     $group = reset($result);
                     $courseProviderAr = AMACommonDataHandler::getInstance()->getTesterInfoFromIdCourse($saveData['courseId']);
-                    $subscribedIds = array_map(fn ($s) => $s->getSubscriberId(), Subscription::findSubscriptionsToClassRoom($saveData['instanceId'], true));
+                    $subscribedIds = array_map(fn($s) => $s->getSubscriberId(), Subscription::findSubscriptionsToClassRoom($saveData['instanceId'], true));
                     foreach ($group->getMembers() as $student) {
                         if (!in_array($student->getId(), $subscribedIds)) {
                             if (!in_array($courseProviderAr['puntatore'], $student->getTesters())) {
