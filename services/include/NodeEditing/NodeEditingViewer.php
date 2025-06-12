@@ -69,7 +69,7 @@ class NodeEditingViewer
         $textarea_div = CDOMElement::create('div', 'id:jstextarea_div');
         if ($flags & EDITOR_ALLOW_SWITCHING_BETWEEN_EDITING_MODES) {
             $switch_to_fckeditor = CDOMElement::create('div', 'id:span_switch_to_fckeditor_button, class:editor_input');
-            $input_button = CDOMElement::create('input_button');
+            $input_button = CDOMElement::create('input_button', 'class: ui tiny button');
             $input_button->setAttribute('value', translateFN('Passa ad FCKeditor'));
             $input_button->setAttribute('onclick', 'switchToFCKeditor();');
             $switch_to_fckeditor->addChild($input_button);
@@ -172,7 +172,7 @@ class NodeEditingViewer
         $fckeditor_div->setAttribute('style', 'display: none');
         if ($flags & EDITOR_ALLOW_SWITCHING_BETWEEN_EDITING_MODES) {
             $switch_to_adacode = CDOMElement::create('div', 'id:span_switch_to_adacode_button, class:editor_input');
-            $input_button = CDOMElement::create('input_button', 'id:switch_to_adacode, disabled:disabled');
+            $input_button = CDOMElement::create('input_button', 'id:switch_to_adacode, disabled:disabled, class:ui tiny button');
             $input_button->setAttribute('value', translateFN('Passa al codice del nodo'));
             $input_button->setAttribute('onclick', 'switchToADACode();');
             $switch_to_adacode->addChild($input_button);
@@ -274,7 +274,7 @@ class NodeEditingViewer
         */
 
         $span_preview = CDOMElement::create('div', 'id:span_preview_button,class:editor_input');
-        $button       = CDOMElement::create('submit', 'id:preview, name:anteprima');
+        $button       = CDOMElement::create('submit', 'id:preview, name:anteprima,class:ui tiny button');
         $button->setAttribute('value', translateFN('Mostra anteprima'));
         $span_preview->addChild($button);
 
@@ -661,7 +661,7 @@ class NodeEditingViewer
             $span_text->addChild(new CText($parent_id));
 
             $span_selector = CDOMElement::create('div', 'id:parent_node_selector, class:editor_input');
-            $input_button = CDOMElement::create('input_button');
+            $input_button = CDOMElement::create('input_button', 'class:ui tiny button');
             $input_button->setAttribute('value', translateFN('Modifica'));
             $input_button->setAttribute('onclick', "toggleVisibility('jsparent_node_selector');");
             $span_selector->addChild($input_button);
@@ -832,7 +832,7 @@ class NodeEditingViewer
             $span_input->addChild($input);
 
             $span_button = CDOMElement::create('div', 'id:span_insert_external_link_button, class:editor_button');
-            $input_button = CDOMElement::create('input_button');
+            $input_button = CDOMElement::create('input_button', 'class:ui tiny button');
             $input_button->setAttribute('onclick', 'addExternalLink();');
             $input_button->setAttribute('value', translateFN("Aggiungi questo link"));
             $span_button->addChild($input_button);
@@ -1201,7 +1201,7 @@ class NodeEditingViewer
         $span_select->addChild($select);
 
         $span_input = CDOMElement::create('div', 'id:span_select_external_link_button, class:editor_input');
-        $input_button = CDOMElement::create('input_button');
+        $input_button = CDOMElement::create('input_button', 'class:ui tiny button');
         $input_button->setAttribute('onclick', "addMultimedia(getFileDataFromSelect('jsid_select_external_links'));");
         $input_button->setAttribute('value', translateFN("Aggiungi questo link"));
         $span_input->addChild($input_button);
