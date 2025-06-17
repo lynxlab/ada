@@ -2297,4 +2297,16 @@ class Node
         $this->title = $title;
         return $this;
     }
+
+    /**
+     * Checks if the node code has an element with id='zoom-placeholder'
+     *
+     * @return bool
+     */
+    public function hasZoomMeeting(): bool
+    {
+        return
+            ModuleLoaderHelper::isLoaded('zoomconf') &&
+            1 === preg_match('/id=["\']zoom-placeholder["\']/', $this->text);
+    }
 }
