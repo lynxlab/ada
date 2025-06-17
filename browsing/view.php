@@ -707,10 +707,11 @@ switch ($op) {
 
         /**
          * Send cross orgin isolation headers
-         * Only needed for zomm web sdk to work,
-         * but looks harmless to always be sent
+         * Only needed for zoom web sdk to work.
          */
-        Utilities::sendCrossOriginIsolation();
+        if ($nodeObj->hasZoomMeeting()) {
+            Utilities::sendCrossOriginIsolation();
+        }
 
         ARE::render($layout_dataAR, $content_dataAr, null, $optionsAr, $menuOptions);
 }
