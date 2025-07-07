@@ -285,6 +285,11 @@ final class ModuleInit
             /*
          * Check if this user is allowed to access the current module
          */
+            if (in_array(AMA_TYPE_SUPERTUTOR, $allowedUsersAr)) {
+                $allowedUsersAr = array_replace($allowedUsersAr, [
+                    array_search(AMA_TYPE_SUPERTUTOR, $allowedUsersAr) => AMA_TYPE_TUTOR
+                ]);
+            }
             if (!ADA_CLI && !in_array($sess_userObj->getType(), $allowedUsersAr)) {
                 $requestedLink = '';
                 if (!isset($_REQUEST['r']) && $sess_userObj instanceof ADAGuest) {
