@@ -182,17 +182,19 @@ if (is_array($usersAr) && count($usersAr) > 0) {
 
         $actionsArr = [];
 
-        if ($user[5] == ADA_STATUS_REGISTERED) {
+        if ($user[5] != ADA_STATUS_ANONYMIZED) {
             $edit_link = BaseHtmlLib::link("edit_user.php?id_user=$userId&usertype=" . $user[4], $edit_img->getHtml());
             $edit_link->setAttribute('class', 'tooltip');
             $edit_link->setAttribute('title', translateFN('Modifica dati utente'));
             $actionsArr[] = $edit_link;
-
+        } else {
             $view_link = BaseHtmlLib::link("view_user.php?id_user=$userId", $view_img->getHtml());
             $view_link->setAttribute('class', 'tooltip');
             $view_link->setAttribute('title', translateFN('Visualizza dati utente'));
             $actionsArr[] = $view_link;
+        }
 
+        if ($user[5] == ADA_STATUS_REGISTERED) {
             $delete_link = BaseHtmlLib::link("delete_user.php?id_user=$userId", $delete_img->getHtml());
             $delete_link->setAttribute('class', 'tooltip');
             $delete_link->setAttribute('title', translateFN('Cancella utente'));
