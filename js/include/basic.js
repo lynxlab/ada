@@ -66,28 +66,30 @@ function validateContent(elements, regexps, formName) {
         var regexp = regexps[i];
         var value = null;
         var id = null;
-        if ($j(`#${element}`).length && $j(`#${element}`).val) {
-            if ($j(`#${element}`).is(':radio') || $j(`#${element}`).is(':checkbox')) {
+        const elSelector = `[id="${element}"]`;
+        const lblSelector = `[id="${label}"]`;
+        if ($j(elSelector).length && $j(elSelector).val) {
+            if ($j(elSelector).is(':radio') || $j(elSelector).is(':checkbox')) {
                 value = $j(`#${element}:checked`).val() || null;
-            } else if ($j(`#${element}`).is('select')) {
-                value = $j(`#${element}>option:selected`).val() || null;
+            } else if ($j(elSelector).is('select')) {
+                value = $j(`${elSelector}>option:selected`).val() || null;
             } else {
-                value = $j(`#${element}`).val();
+                value = $j(elSelector).val();
             }
-            id = $j(`#${element}`).attr('id');
+            id = $j(elSelector).attr('id');
         }
 
         if (value != null && typeof value == 'string') {
             if (!value.match(regexp)) {
-                if ($j(`#${label}`).length) {
-                    $j(`#${label}`).addClass('error');
+                if ($j(lblSelector).length) {
+                    $j(lblSelector).addClass('error');
                 }
                 error_found = true;
             }
             else {
 
-                if ($j(`#${label}`).length) {
-                    $j(`#${label}`).removeClass('error');
+                if ($j(lblSelector).length) {
+                    $j(lblSelector).removeClass('error');
                 }
                 /**
                  * giorgio, if element it's a date field it may validate the regexp,
@@ -108,8 +110,8 @@ function validateContent(elements, regexps, formName) {
                     else ok = false;
 
                     if (!ok) {
-                        if ($j(`#${label}`).length) {
-                            $j(`#${label}`).addClass('error');
+                        if ($j(lblSelector).length) {
+                            $j(lblSelector).addClass('error');
                         }
                         error_found = true;
                     }
