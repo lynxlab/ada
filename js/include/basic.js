@@ -70,9 +70,9 @@ function validateContent(elements, regexps, formName) {
         const lblSelector = `[id="${label}"]`;
         if ($j(elSelector).length && $j(elSelector).val) {
             if ($j(elSelector).is(':radio') || $j(elSelector).is(':checkbox')) {
-                value = $j(`#${element}:checked`).val() || null;
+                value = $j(`#${element}:checked`).val() || '';
             } else if ($j(elSelector).is('select')) {
-                value = $j(`${elSelector}>option:selected`).val() || null;
+                value = $j(`${elSelector}>option:selected`).val() || '';
             } else {
                 value = $j(elSelector).val();
             }
