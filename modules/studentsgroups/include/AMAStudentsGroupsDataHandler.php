@@ -193,7 +193,7 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
                             Groups::UTENTERELTABLE,
                             implode(
                                 ',',
-                                array_map(fn($el) => '(' . $retArr['group']->getId() . ',' . $el . ')', $usersToAdd)
+                                array_map(fn ($el) => '(' . $retArr['group']->getId() . ',' . $el . ')', $usersToAdd)
                             )
                         );
                         $addGroupResult = $this->executeCriticalPrepared($sql);
@@ -231,7 +231,7 @@ class AMAStudentsGroupsDataHandler extends AMADataHandler
                     ];
                     $group = reset($result);
                     $courseProviderAr = AMACommonDataHandler::getInstance()->getTesterInfoFromIdCourse($saveData['courseId']);
-                    $subscribedIds = array_map(fn($s) => $s->getSubscriberId(), Subscription::findSubscriptionsToClassRoom($saveData['instanceId'], true));
+                    $subscribedIds = array_map(fn ($s) => $s->getSubscriberId(), Subscription::findSubscriptionsToClassRoom($saveData['instanceId'], true));
                     foreach ($group->getMembers() as $student) {
                         if (!in_array($student->getId(), $subscribedIds)) {
                             if (!in_array($courseProviderAr['puntatore'], $student->getTesters())) {
