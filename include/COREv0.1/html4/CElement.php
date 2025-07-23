@@ -11,6 +11,7 @@ namespace Lynxlab\ADA\CORE\html4;
 
 use Lynxlab\ADA\CORE\html4\CBaseAttributesElement;
 use Lynxlab\ADA\CORE\html4\CHtmlTags;
+use Lynxlab\ADA\Main\Forms\lib\classes\FormControl;
 use ReflectionObject;
 use ReflectionProperty;
 
@@ -51,7 +52,7 @@ abstract class CElement extends CBaseAttributesElement
         $this->reject   = [];
     }
 
-    public function addChild(CBase $child)
+    public function addChild(CBase|FormControl $child)
     {
         $child_classname = $child::class;
         if (count($this->accept) > 0) {
@@ -107,7 +108,11 @@ abstract class CElement extends CBaseAttributesElement
                     if (!isset($attribute[$match]) || strlen($attribute[$match]) <= 0) {
                         $attribute[$match] = '';
                     }
-                    $attribute[$match] .= $child->getHtml();
+                    if (method_exists($child, 'render')) {
+                        $attribute[$match] .= $child->render();
+                    } else {
+                        $attribute[$match] .= $child->getHtml();
+                    }
                 }
             } else {
                 if (!property_exists($this, $attr) || $this->$attr === false) {

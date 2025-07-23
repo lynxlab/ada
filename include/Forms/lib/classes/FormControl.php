@@ -223,6 +223,16 @@ abstract class FormControl
         return $this->controlId;
     }
     /**
+     * Set the id of this form control.
+     *
+     * @return self
+     */
+    public function setId($controlId)
+    {
+        $this->controlId = $controlId;
+        return $this;
+    }
+    /**
      * Returns the data contained in this form control.
      *
      * @return mixed
