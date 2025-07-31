@@ -86,16 +86,16 @@ class FCFieldset extends FormControl
                 $this->renderAttributes() .
                 '><ol class="' . self::DEFAULT_CLASS . '">';
         foreach ($this->controls as $control) {
-            $html .= '<li class="' . self::DEFAULT_CLASS . '">' . $control->render() . '</li>';
             $hidden = '';
             if ($control instanceof CBaseElement) {
-                $html .= $control->getHtml();
+                $controlHtml = $control->getHtml();
             } else {
                 if ($control->isHidden()) {
                     $hidden .= ' hidden';
                 }
-                $html .= '<li class=" ' . FormControl::DEFAULT_CLASS . $hidden .  '">' . $control->render() . '</li>';
+                $controlHtml = $control->render();
             }
+            $html .= '<li class=" ' . FormControl::DEFAULT_CLASS . $hidden .  '">' . $controlHtml . '</li>';
         }
         $html .= '</ol></fieldset>';
         return $html;
