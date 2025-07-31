@@ -510,10 +510,12 @@ abstract class FForm
                     }
                 } else {
                     foreach ($control->getControls() as $field) {
-                        $vField = $field->getValidator();
-                        if ($field->isRequired()) {
-                            $jsFields[] = $field->getId();
-                            $jsRegexps[] = $validator->getRegexpForValidator($vField);
+                        if ($field instanceof FormControl) {
+                            $vField = $field->getValidator();
+                            if ($field->isRequired()) {
+                                $jsFields[] = $field->getId();
+                                $jsRegexps[] = $validator->getRegexpForValidator($vField);
+                            }
                         }
                     }
                 }
