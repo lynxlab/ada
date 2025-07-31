@@ -22,6 +22,8 @@
 
 namespace Lynxlab\ADA\Main\Forms\lib\classes;
 
+use Lynxlab\ADA\CORE\html4\CBaseElement;
+
 class FCFieldset extends FormControl
 {
     public function withData($data)
@@ -47,6 +49,17 @@ class FCFieldset extends FormControl
         return $this->controls;
     }
 
+    public function addCDOM($element)
+    {
+        return $this->addControl($element);
+    }
+
+    public function addControl($element)
+    {
+        $this->controls[] = $element;
+        return $this;
+    }
+
     /**
      * Returns the label for this form control.
      *
@@ -69,9 +82,20 @@ class FCFieldset extends FormControl
     public function render()
     {
         $html = $this->label() .
-                '<fieldset id="' . $this->controlId . '" class="' . self::DEFAULT_CLASS . '"><ol class="' . self::DEFAULT_CLASS . '">';
+                '<fieldset id="' . $this->controlId . '" class="' . self::DEFAULT_CLASS . '"' .
+                $this->renderAttributes() .
+                '><ol class="' . self::DEFAULT_CLASS . '">';
         foreach ($this->controls as $control) {
             $html .= '<li class="' . self::DEFAULT_CLASS . '">' . $control->render() . '</li>';
+            $hidden = '';
+            if ($control instanceof CBaseElement) {
+                $html .= $control->getHtml();
+            } else {
+                if ($control->isHidden()) {
+                    $hidden .= ' hidden';
+                }
+                $html .= '<li class=" ' . FormControl::DEFAULT_CLASS . $hidden .  '">' . $control->render() . '</li>';
+            }
         }
         $html .= '</ol></fieldset>';
         return $html;
