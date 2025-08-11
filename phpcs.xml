@@ -8,6 +8,7 @@
     <config name="testVersion" value="7.4-"/>
 
     <!--Ignore -->
+    <exclude-pattern>.rector.cache/*</exclude-pattern>
     <exclude-pattern>*/vendor/*</exclude-pattern>
     <exclude-pattern>services/media/*</exclude-pattern>
     <exclude-pattern>upload_file/*</exclude-pattern>

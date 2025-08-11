@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\Config\RectorConfig;
 use Rector\Php53\Rector\FuncCall\DirNameFileConstantToDirConstantRector;
 use Rector\Php53\Rector\Ternary\TernaryToElvisRector;
@@ -39,6 +40,7 @@ return RectorConfig::configure()
     ->withBootstrapFiles([
         __DIR__ . '/config_path.inc.php',
     ])
+    ->withPaths([__DIR__])
     ->withSkip([
         __DIR__ . '/services/media/**/*',
         __DIR__ . '/upload_file',
@@ -75,4 +77,10 @@ return RectorConfig::configure()
         // SetCookieRector::class,
         // TernaryToNullCoalescingRector::class,
         // PowToExpRector::class,
-    ]);
+    ])
+    ->withCache(
+        // ensure file system caching is used instead of in-memory
+        cacheClass: FileCacheStorage::class,
+        // specify a path that works locally as well as on CI job runners
+        cacheDirectory: __DIR__ . '/.rector.cache'
+    );
