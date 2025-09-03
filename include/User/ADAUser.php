@@ -36,6 +36,7 @@ use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
 use Lynxlab\ADA\Main\User\ADAAbstractUser;
 use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Switcher\Subscription;
@@ -84,8 +85,11 @@ class ADAUser extends ADAAbstractUser
      * Public properties.
      * PLS set the list of properties you want the extra user to have, and the class code
      * should take care of the rest. If no extra properites are needed, delete them all!
+     * NOTE: check getExtraFieldsProps method to match returned properties.
      */
     //  public $samplefield;
+
+    public const FIELDPREFIX = '';
 
     /**
      * boolean to tell if the class is for a customization
@@ -340,11 +344,20 @@ class ADAUser extends ADAAbstractUser
         }
     }
 
-    public static function getExtraFieldsLabels()
+    public static function getExtraFieldsProps()
     {
         return [
-            // 'samplefield' => 'Campo di esempio',
+            // self::FIELDPREFIX . 'samplefield' => [
+            //     'label' => 'Esempio',
+            //     'required' => false,
+            //     'validator' => FormValidator::NOT_EMPTY_STRING_VALIDATOR,
+            // ],
         ];
+    }
+
+    public static function getExtraFieldsLabels()
+    {
+        return array_map(fn($el) => $el['label'], static::getExtraFieldsProps());
     }
 
     public static function getLinkedTables()
@@ -352,6 +365,7 @@ class ADAUser extends ADAAbstractUser
         if (property_exists(static::class, 'linkedTables') && !empty(self::$linkedTables)) {
             return self::$linkedTables;
         }
+        return [];
     }
 
     public static function getTablesPrefix()

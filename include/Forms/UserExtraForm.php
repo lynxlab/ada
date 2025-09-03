@@ -14,7 +14,7 @@
 namespace Lynxlab\ADA\Main\Forms;
 
 use Lynxlab\ADA\Main\Forms\lib\classes\FForm;
-use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
+use Lynxlab\ADA\Main\User\ADAUser;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -47,11 +47,42 @@ class UserExtraForm extends FForm
         self::addExtraControls($this);
     }
 
+    protected static function mapUserToUserExtra($formData)
+    {
+        /**
+         * look for array keys containing ADAUser::FIELDPREFIX
+         * and if the value is empty, copy the array keys stripped
+         * from ADAUser::FIELDPREFIX (i.e. user data)
+         */
+        foreach ($formData as $key => $value) {
+            if (str_starts_with($key, ADAUser::FIELDPREFIX) && strlen($value) <= 0) {
+                $formData[$key] = $formData[str_replace(ADAUser::FIELDPREFIX, '', $key)];
+            }
+        }
+        return $formData;
+    }
+
+    public function fillWithArrayData($formData = [])
+    {
+        return parent::fillWithArrayData(self::mapUserToUserExtra($formData));
+    }
+
     public static function addExtraControls(FForm $theForm, $withforceSaveExtra = false)
     {
-        $theForm->addTextInput('samplefield', translateFN('Esempio'))
-        ->setRequired()
-        ->setValidator(FormValidator::NOT_EMPTY_STRING_VALIDATOR);
+        $eprops = ADAUser::getExtraFieldsProps();
+        foreach ($eprops as $fieldname => $fieldprops) {
+            $f = $theForm->addTextInput($fieldname, translateFN($fieldprops['label']));
+            if ($fieldprops['required'] === true) {
+                $f->setRequired();
+            }
+            if (!is_null($fieldprops['validator'] ?? null)) {
+                $f->setValidator($fieldprops['validator']);
+            }
+        }
+
+        // $theForm->addTextInput('samplefield', translateFN('Esempio'))
+        // ->setRequired()
+        // ->setValidator(FormValidator::NOT_EMPTY_STRING_VALIDATOR);
 
         // add an extra field if we're embedding the controls
         // in the standard edit_user form
