@@ -346,7 +346,7 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
                 } elseif (isset($currentForm)) {
                     // if form of current tab wants the UserExtraForm fields embedded, obey it
                     if (isset($tabsArray[$currTab]['withExtra']) && $tabsArray[$currTab]['withExtra'] === true) {
-                        UserExtraForm::addExtraControls($currentForm);
+                        UserExtraForm::addExtraControls($currentForm, $tabsArray[$currTab]['withExtra']);
                         $currentForm->fillWithArrayData($user_dataAr);
                     }
                     $tabContents [$currTab]->addChild(new CText($currentForm->render()));

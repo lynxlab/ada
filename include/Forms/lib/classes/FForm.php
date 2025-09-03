@@ -84,7 +84,7 @@ abstract class FForm
     /**
      * Fills the controls in the form with contents of the given array.
      */
-    final public function fillWithArrayData($formData = [])
+    public function fillWithArrayData($formData = [])
     {
         foreach ($this->controls as $control) {
             if (!($control instanceof FormControl)) {
