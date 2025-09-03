@@ -36,7 +36,6 @@ use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
-use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
 use Lynxlab\ADA\Main\User\ADAAbstractUser;
 use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Switcher\Subscription;
@@ -357,7 +356,7 @@ class ADAUser extends ADAAbstractUser
 
     public static function getExtraFieldsLabels()
     {
-        return array_map(fn($el) => $el['label'], static::getExtraFieldsProps());
+        return array_map(fn ($el) => $el['label'], static::getExtraFieldsProps());
     }
 
     public static function getLinkedTables()
