@@ -6,7 +6,7 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 
 class ADAAdminerHelper
 {
-    private const ADMINER_VERSION = '4.8.1';
+    private const ADMINER_VERSION = '4.17.1';
 
     /**
      * Checks if adminer is available.
@@ -135,7 +135,7 @@ class ADAAdminerHelper
         }
 
         $fp = fopen('./adminer/plugins/plugin.php', 'w+');
-        $ch = curl_init('https://raw.github.com/vrana/adminer/master/plugins/plugin.php');
+        $ch = curl_init('https://github.com/vrana/adminer/raw/refs/tags/v' . self::ADMINER_VERSION . '/plugins/plugin.php');
         curl_setopt($ch, CURLOPT_TIMEOUT, 50);
         //disable ssl cert verification to allow copying files from HTTPS
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
