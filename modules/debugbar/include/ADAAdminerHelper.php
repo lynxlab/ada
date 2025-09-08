@@ -6,7 +6,7 @@ use Lynxlab\ADA\Main\AMA\MultiPort;
 
 class ADAAdminerHelper
 {
-    private const ADMINER_VERSION = '4.17.1';
+    private const ADMINER_VERSION = '5.3.0';
 
     /**
      * Checks if adminer is available.
@@ -124,26 +124,8 @@ class ADAAdminerHelper
         // get curl response
         $contents = curl_exec($ch);
         if ($contents !== false) {
-            fwrite($fp, preg_replace('/(error_reporting)\(\d+\);/', '$1(0);', $contents));
-        }
-        curl_close($ch);
-        fclose($fp);
-
-        // make dir and download adminer plugin base class.
-        if (!is_dir('./adminer/plugins')) {
-            mkdir('./adminer/plugins');
-        }
-
-        $fp = fopen('./adminer/plugins/plugin.php', 'w+');
-        $ch = curl_init('https://github.com/vrana/adminer/raw/refs/tags/v' . self::ADMINER_VERSION . '/plugins/plugin.php');
-        curl_setopt($ch, CURLOPT_TIMEOUT, 50);
-        //disable ssl cert verification to allow copying files from HTTPS
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        // get curl response
-        $contents = curl_exec($ch);
-        if ($contents !== false) {
+            $contents = preg_replace('/(error_reporting)\(\d+\);/', '$1(0);', $contents);
+            $contents = preg_replace('/session_start\(\);/', ';', $contents);
             fwrite($fp, $contents);
         }
         curl_close($ch);
