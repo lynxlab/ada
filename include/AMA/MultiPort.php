@@ -23,6 +23,7 @@ use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Logger\ADALogger;
 use Lynxlab\ADA\Main\User\ADAAdmin;
 use Lynxlab\ADA\Main\User\ADAAuthor;
@@ -33,6 +34,8 @@ use Lynxlab\ADA\Main\User\ADAPractitioner;
 use Lynxlab\ADA\Main\User\ADASwitcher;
 use Lynxlab\ADA\Main\User\ADAUser;
 use Lynxlab\ADA\Main\Utilities;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\EventDispatcher\Events\UserEvent;
 use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use PDOException;
 
@@ -44,7 +47,7 @@ class MultiPort
     /**
      * apply the function passed as first parameter to all tester for a given user
      * @param $DHfunction string
-     * @param  $ADAUser $userObj
+     * @param  \Lynxlab\ADA\Main\ADAGenericUser $userObj
      * @param  $field_list_ar array
      * @param  $clause string
      * @return $dataHa array
@@ -383,6 +386,22 @@ class MultiPort
             }
         }
 
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => UserEvent::class,
+                    'eventName' => UserEvent::PRESAVE,
+                ],
+                [
+                    'userObj' => $userObj,
+                ],
+                ['isUpdate' => false]
+            );
+            foreach ($event->getArguments() as $key => $val) {
+                ${$key} = $val;
+            }
+        }
+
         /*
          * If the user has subscribed to at least one tester, add the user
          * to the tester database.
@@ -450,6 +469,19 @@ class MultiPort
                   }
             */
         }
+
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => UserEvent::class,
+                    'eventName' => UserEvent::POSTSAVE,
+                ],
+                [
+                    'userObj' => $userObj,
+                ],
+                ['isUpdate' => false]
+            );
+        }
         // mod steve 5/10/09
         //return true; ???????????
         return $user_id;
@@ -489,6 +521,22 @@ class MultiPort
 
         if ($update_user_data) {
             $idFromPublicTester = 0;
+
+            if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+                $event = ADAEventDispatcher::buildEventAndDispatch(
+                    [
+                        'eventClass' => UserEvent::class,
+                        'eventName' => UserEvent::PRESAVE,
+                    ],
+                    [
+                        'userObj' => $userObj,
+                    ],
+                    ['isUpdate' => true]
+                );
+                foreach ($event->getArguments() as $key => $val) {
+                    ${$key} = $val;
+                }
+            }
 
             foreach ($testers as $tester) {
                 $tester_dh = AMADataHandler::instance(MultiPort::getDSN($tester));
@@ -549,6 +597,19 @@ class MultiPort
                         // handle excpetion here if needed
                     }
                 }
+            }
+
+            if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+                ADAEventDispatcher::buildEventAndDispatch(
+                    [
+                        'eventClass' => UserEvent::class,
+                        'eventName' => UserEvent::POSTSAVE,
+                    ],
+                    [
+                        'userObj' => $userObj,
+                    ],
+                    ['isUpdate' => true]
+                );
             }
         }
 
@@ -1158,7 +1219,7 @@ class MultiPort
 
     /**
      * get all services to which a given user has subscribed
-     * @param  $ADAUser $userObj
+     * @param  \Lynxlab\ADA\Main\ADAGenericUser $userObj
      * @param  $field_list_ar array
      * @param  $clause string
      * @return $sub_course_dataHa array
@@ -1375,7 +1436,7 @@ class MultiPort
      * get_messages
      *
      * get all messages for  a given user
-     * @param  $ADAUser $userObj
+     * @param  \Lynxlab\ADA\Main\ADALoggableUser $userObj
      * @return $msgs_ha array
      */
     private static function getSentMessages(ADALoggableUser $userObj, $msgType = ADA_MSG_SIMPLE, $msgFlags = [])
@@ -1449,7 +1510,7 @@ class MultiPort
      * get_messages
      *
      * get all messages for  a given user
-     * @param  $ADAUser $userObj
+     * @param  \Lynxlab\ADA\Main\ADALoggableUser $userObj
      * @return $msgs_ha array
      */
     private static function getMessages(ADALoggableUser $userObj, $msgType = ADA_MSG_SIMPLE, $msgFlags = [], $retrieve_only_unread_events = false)

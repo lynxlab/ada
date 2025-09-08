@@ -261,7 +261,7 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
                  */
                 $form = new $extraTableFormClass();
                 $form->fillWithArrayData([
-                        $extraTableClass::getForeignKeyProperty() => $editUserObj->getId(),
+                    $extraTableClass::getForeignKeyProperty() => $editUserObj->getId(),
                 ]);
 
                 // create a div for placing 'new' and 'discard changes button'
@@ -335,24 +335,24 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
                 $iSpan->addChild(CDOMElement::create('i', 'class:save icon'));
                 $tabsCont->addChild($iSpan);
                 // add a link to the div that holds tab content
-                $tabsCont->addChild(BaseHtmlLib::link('#divTab' . $currTab, $tabsArray [$currTab][0]));
+                $tabsCont->addChild(BaseHtmlLib::link('#divTab' . $currTab, $tabsArray[$currTab][0]));
                 $tabsLI->addChild($tabsCont);
                 $tabsUL->addChild($tabsLI);
-                $tabContents [$currTab] = CDOMElement::create('div', 'id:divTab' . $currTab);
+                $tabContents[$currTab] = CDOMElement::create('div', 'id:divTab' . $currTab);
 
                 if (isset($container)) {
                     // add the container to the current tab
-                    $tabContents [$currTab]->addChild($container);
+                    $tabContents[$currTab]->addChild($container);
                 } elseif (isset($currentForm)) {
                     // if form of current tab wants the UserExtraForm fields embedded, obey it
                     if (isset($tabsArray[$currTab]['withExtra']) && $tabsArray[$currTab]['withExtra'] === true) {
                         UserExtraForm::addExtraControls($currentForm, $tabsArray[$currTab]['withExtra']);
                         $currentForm->fillWithArrayData($user_dataAr);
                     }
-                    $tabContents [$currTab]->addChild(new CText($currentForm->render()));
+                    $tabContents[$currTab]->addChild(new CText($currentForm->render()));
                     unset($currentForm);
                 }
-                $tabsContainer->addChild($tabContents [$currTab]);
+                $tabsContainer->addChild($tabContents[$currTab]);
             }
         } // end cycle through all tabs
 
@@ -376,20 +376,20 @@ $label = translateFN('Modifica dati utente');
 $help =  $label; // or set it to whatever you like
 
 $layout_dataAr['JS_filename'] = [
-        JQUERY,
-        JQUERY_UI,
-        JQUERY_MASKEDINPUT,
-        JS_VENDOR_DIR . '/dropzone/dist/min/dropzone.min.js',
-        ROOT_DIR . '/js/include/dropzone/adaDropzone.js',
+    JQUERY,
+    JQUERY_UI,
+    JQUERY_MASKEDINPUT,
+    JS_VENDOR_DIR . '/dropzone/dist/min/dropzone.min.js',
+    ROOT_DIR . '/js/include/dropzone/adaDropzone.js',
 ];
 
 $tplFamily = $_SESSION['sess_userObj']?->template_family;
 $tplFamily = empty($tplFamily) ? ADA_TEMPLATE_FAMILY : $tplFamily;
 
 $layout_dataAr['CSS_filename'] = [
-        JQUERY_UI_CSS,
-        JS_VENDOR_DIR . '/dropzone/dist/min/dropzone.min.css',
-        ROOT_DIR . '/layout/' . $tplFamily . '/css/adadropzone.css',
+    JQUERY_UI_CSS,
+    JS_VENDOR_DIR . '/dropzone/dist/min/dropzone.min.css',
+    ROOT_DIR . '/layout/' . $tplFamily . '/css/adadropzone.css',
 ];
 //if a course instance is self_instruction
 $self_instruction = DataValidator::checkInputValues('self_instruction', 'Value', INPUT_GET, null);
@@ -452,7 +452,7 @@ $content_dataAr = [
     'last_visit' => $last_access,
     'help' => $help,
     'user_level' => $user_level,
-    ];
+];
 
 /**
  * If it's a switcher the renderer is called by switcher/edit_user.php
