@@ -1,30 +1,25 @@
 <?php
 
-namespace Lynxlab\ADA\Module\DebugBar;
+namespace Adminer;
 
-use AdminerPlugin;
+use Lynxlab\ADA\Module\DebugBar\ADAAdminerHelper;
 
-require_once realpath(__DIR__) . '/../adminer/plugins/plugin.php';
-
-class ADAAdminerPlugin extends AdminerPlugin
+class ADAAdminerPlugin extends Adminer
 {
     private $client;
 
-    public function __construct($plugins, $client)
+    public function __construct($client)
     {
         $this->client = $client;
-        parent::__construct($plugins);
     }
 
-    public function head()
+    public function head($Ab = null)
     {
-        ?>
-        <style>
+        echo "<style>
             p.logout {
                 display: none;
             }
-        </style>
-        <?php
+        </style>";
         return true;
     }
 

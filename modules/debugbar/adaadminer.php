@@ -2,7 +2,6 @@
 
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Module\DebugBar\ADAAdminerHelper;
-use Lynxlab\ADA\Module\DebugBar\ADAAdminerPlugin;
 
 /**
  * Base config file
@@ -39,10 +38,10 @@ if ($client !== null) {
 
 function adminer_object()
 {
+    require_once (MODULES_DEBUGBAR_PATH . '/adminer/adminer-plugins/ADAAdminerPlugin.php');
     // read client from "outside"
     global $client;
-    $plugins = [];
-    return new ADAAdminerPlugin($plugins, $client);
+    return new Adminer\ADAAdminerPlugin($client);
 }
 
 if (!isset($_GET['db'])) {
