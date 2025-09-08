@@ -295,7 +295,7 @@ class NodeEditing
         if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
             ADAEventDispatcher::buildEventAndDispatch([
                 'eventClass' => NodeEvent::class,
-                'eventName' => 'PRESAVE',
+                'eventName' => NodeEvent::PRESAVE,
             ], $node_data, ['isUpdate' => true]);
         }
 
@@ -304,7 +304,7 @@ class NodeEditing
         if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
             ADAEventDispatcher::buildEventAndDispatch([
                 'eventClass' => NodeEvent::class,
-                'eventName' => 'POSTSAVE',
+                'eventName' => NodeEvent::POSTSAVE,
             ], $node_data, ['isUpdate' => true, 'saveResult' => $result]);
         }
 
