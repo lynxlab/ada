@@ -55,7 +55,7 @@ class UserExtraForm extends FForm
          * from ADAUser::FIELDPREFIX (i.e. user data)
          */
         foreach ($formData as $key => $value) {
-            if (str_starts_with($key, ADAUser::FIELDPREFIX) && strlen($value) <= 0) {
+            if (str_starts_with($key, ADAUser::FIELDPREFIX) && strlen($value ?? '') <= 0) {
                 $formData[$key] = $formData[str_replace(ADAUser::FIELDPREFIX, '', $key)];
             }
         }
