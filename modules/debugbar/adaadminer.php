@@ -1,5 +1,6 @@
 <?php
 
+use Adminer\ADAAdminerPlugin;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Module\DebugBar\ADAAdminerHelper;
 
@@ -38,10 +39,10 @@ if ($client !== null) {
 
 function adminer_object()
 {
-    require_once (MODULES_DEBUGBAR_PATH . '/adminer/adminer-plugins/ADAAdminerPlugin.php');
+    require_once(MODULES_DEBUGBAR_PATH . '/adminer/adminer-plugins/ADAAdminerPlugin.php');
     // read client from "outside"
     global $client;
-    return new Adminer\ADAAdminerPlugin($client);
+    return new ADAAdminerPlugin($client);
 }
 
 if (!isset($_GET['db'])) {
