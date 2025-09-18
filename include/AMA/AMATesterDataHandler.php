@@ -25,6 +25,7 @@ use Lynxlab\ADA\Main\Traits\ADASingleton;
 use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CourseEvent;
+use Lynxlab\ADA\Module\EventDispatcher\Events\CourseInstanceEvent;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 use Lynxlab\ADA\Switcher\Subscription;
@@ -2423,6 +2424,22 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      */
     public function courseInstanceAdd($id_corso, $istanza_ha)
     {
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CourseInstanceEvent::class,
+                    'eventName' => CourseInstanceEvent::PRESAVE,
+                ],
+                array_merge(['id_corso' => $id_corso], $istanza_ha),
+                ['isUpdate' => false]
+            );
+            foreach ($event->getArguments() as $key => $val) {
+                if (array_key_exists($key, $istanza_ha)) {
+                    $istanza_ha[$key] = $val;
+                }
+            }
+        }
+
         // prepare values
         $data_inizio = $this->orZero($istanza_ha['data_inizio'] ?? '');
         $durata = $this->orZero($istanza_ha['durata'] ?? '');
@@ -2494,7 +2511,37 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         if (AMADB::isError($res)) {
             return $res;
         }
-        return $this->lastInsertID();
+        $id = $this->lastInsertID();
+
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CourseInstanceEvent::class,
+                    'eventName' => CourseInstanceEvent::POSTSAVE,
+                ],
+                compact([
+                    'id',
+                    'id_corso',
+                    'data_inizio',
+                    'durata',
+                    'data_inizio_previsto',
+                    'id_layout',
+                    'data_fine',
+                    'price',
+                    'self_instruction',
+                    'self_registration',
+                    'title',
+                    'duration_subscription',
+                    'start_level_student',
+                    'open_subscription',
+                    'duration_hours',
+                    'tipo_servizio',
+                ]),
+                ['isUpdate' => false]
+            );
+        }
+
+        return $id;
     }
 
     /**
@@ -2821,6 +2868,22 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      */
     public function courseInstanceSet($id, $istanza_ha)
     {
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CourseInstanceEvent::class,
+                    'eventName' => CourseInstanceEvent::PRESAVE,
+                ],
+                array_merge(['id' => $id], $istanza_ha),
+                ['isUpdate' => true]
+            );
+            foreach ($event->getArguments() as $key => $val) {
+                if (array_key_exists($key, $istanza_ha)) {
+                    $istanza_ha[$key] = $val;
+                }
+            }
+        }
+
         // prepare values
         $data_inizio = $this->orNull($istanza_ha['data_inizio']);
         $durata = $this->orZero($istanza_ha['durata']);
@@ -2889,6 +2952,32 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             if (intval($data_inizio) > 0) {
                 $this->updateStudentsSubscriptionAfterCourseInstanceSet($id, intval($duration_subscription));
             }
+        }
+
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CourseInstanceEvent::class,
+                    'eventName' => CourseInstanceEvent::POSTSAVE,
+                ],
+                compact([
+                    'data_inizio',
+                    'durata',
+                    'data_inizio_previsto',
+                    'data_fine',
+                    'self_instruction',
+                    'title',
+                    'self_registration',
+                    'price',
+                    'duration_subscription',
+                    'start_level_student',
+                    'open_subscription',
+                    'duration_hours',
+                    'tipo_servizio',
+                    'id',
+                ]),
+                ['isUpdate' => true]
+            );
         }
 
         return true;
