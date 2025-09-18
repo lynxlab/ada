@@ -25,6 +25,8 @@ use Lynxlab\ADA\Main\Traits\ADASingleton;
 use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CourseEvent;
+use Lynxlab\ADA\Module\EventDispatcher\Events\CourseInstanceEvent;
+use Lynxlab\ADA\Module\EventDispatcher\Events\SubscriptionEvent;
 use Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode;
 use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 use Lynxlab\ADA\Switcher\Subscription;
@@ -1832,6 +1834,30 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             return new AMAError(AMA_ERR_UNIQUE_KEY);
         }
         $data_iscrizione = time();
+
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => SubscriptionEvent::class,
+                    'eventName' => SubscriptionEvent::PRESUBSCRIBE,
+                ],
+                array_merge(
+                    ['status' => ADA_STATUS_PRESUBSCRIBED],
+                    compact([
+                        'id_studente',
+                        'id_istanza_corso',
+                        'livello',
+                        'data_iscrizione',
+                        'data_iscrizione',
+                    ])
+                ),
+                ['isUpdate' => false]
+            );
+            foreach ($event->getArguments() as $key => $val) {
+                ${$key} = $val;
+            }
+        }
+
         // insert a row into table iscrizioni
         $sql1 =  "insert into iscrizioni (id_utente_studente, id_istanza_corso, livello, status,data_iscrizione,laststatusupdate)";
         $sql1 .= " values (?, ?, ?, ?, ?, ?);";
@@ -1840,6 +1866,27 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         if (AMADB::isError($res)) { // || $db->affectedRows()==0)
             return new AMAError(AMA_ERR_ADD);
         }
+
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => SubscriptionEvent::class,
+                    'eventName' => SubscriptionEvent::POSTSUBSCRIBE,
+                ],
+                array_merge(
+                    ['status' => ADA_STATUS_PRESUBSCRIBED],
+                    compact([
+                        'id_studente',
+                        'id_istanza_corso',
+                        'livello',
+                        'data_iscrizione',
+                        'data_iscrizione',
+                    ])
+                ),
+                ['isUpdate' => false]
+            );
+        }
+
         return true;
     }
 
@@ -2166,10 +2213,36 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             $sql .= ", livello=:livello";
             $values['livello'] = $user_level;
         }
+
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => SubscriptionEvent::class,
+                    'eventName' => SubscriptionEvent::PRESUBSCRIBE,
+                ],
+                $values,
+                ['isUpdate' => true]
+            );
+            foreach ($event->getArguments() as $key => $val) {
+                ${$key} = $val;
+            }
+        }
+
         $sql .= " where id_istanza_corso=:id_istanza_corso and id_utente_studente=:id_utente_studente";
         $res = $this->queryPrepared($sql, $values);
         if (AMADB::isError($res)) {
             return new AMAError(AMA_ERR_UPDATE);
+        }
+
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => SubscriptionEvent::class,
+                    'eventName' => SubscriptionEvent::POSTSUBSCRIBE,
+                ],
+                $values,
+                ['isUpdate' => true]
+            );
         }
 
         return true;
@@ -2208,10 +2281,37 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             $sql .= " and id_utente_studente=? ";
             $params[] = $studente;
         }
+
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => SubscriptionEvent::class,
+                    'eventName' => SubscriptionEvent::PREUNSUBSCRIBE,
+                ],
+                $params,
+                ['isUpdate' => true]
+            );
+            foreach ($event->getArguments() as $key => $val) {
+                ${$key} = $val;
+            }
+        }
+
         $affected_rows = $this->queryPrepared($sql, $params);
         if (AMADB::isError($affected_rows)) {
             return $affected_rows;
         }
+
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => SubscriptionEvent::class,
+                    'eventName' => SubscriptionEvent::POSTUNSUBSCRIBE,
+                ],
+                $params,
+                ['isUpdate' => true]
+            );
+        }
+
         return $affected_rows;
     }
 
@@ -2423,6 +2523,22 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      */
     public function courseInstanceAdd($id_corso, $istanza_ha)
     {
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CourseInstanceEvent::class,
+                    'eventName' => CourseInstanceEvent::PRESAVE,
+                ],
+                array_merge(['id_corso' => $id_corso], $istanza_ha),
+                ['isUpdate' => false]
+            );
+            foreach ($event->getArguments() as $key => $val) {
+                if (array_key_exists($key, $istanza_ha)) {
+                    $istanza_ha[$key] = $val;
+                }
+            }
+        }
+
         // prepare values
         $data_inizio = $this->orZero($istanza_ha['data_inizio'] ?? '');
         $durata = $this->orZero($istanza_ha['durata'] ?? '');
@@ -2494,7 +2610,37 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         if (AMADB::isError($res)) {
             return $res;
         }
-        return $this->lastInsertID();
+        $id = $this->lastInsertID();
+
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CourseInstanceEvent::class,
+                    'eventName' => CourseInstanceEvent::POSTSAVE,
+                ],
+                compact([
+                    'id',
+                    'id_corso',
+                    'data_inizio',
+                    'durata',
+                    'data_inizio_previsto',
+                    'id_layout',
+                    'data_fine',
+                    'price',
+                    'self_instruction',
+                    'self_registration',
+                    'title',
+                    'duration_subscription',
+                    'start_level_student',
+                    'open_subscription',
+                    'duration_hours',
+                    'tipo_servizio',
+                ]),
+                ['isUpdate' => false]
+            );
+        }
+
+        return $id;
     }
 
     /**
@@ -2821,6 +2967,22 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      */
     public function courseInstanceSet($id, $istanza_ha)
     {
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CourseInstanceEvent::class,
+                    'eventName' => CourseInstanceEvent::PRESAVE,
+                ],
+                array_merge(['id' => $id], $istanza_ha),
+                ['isUpdate' => true]
+            );
+            foreach ($event->getArguments() as $key => $val) {
+                if (array_key_exists($key, $istanza_ha)) {
+                    $istanza_ha[$key] = $val;
+                }
+            }
+        }
+
         // prepare values
         $data_inizio = $this->orNull($istanza_ha['data_inizio']);
         $durata = $this->orZero($istanza_ha['durata']);
@@ -2889,6 +3051,32 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             if (intval($data_inizio) > 0) {
                 $this->updateStudentsSubscriptionAfterCourseInstanceSet($id, intval($duration_subscription));
             }
+        }
+
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CourseInstanceEvent::class,
+                    'eventName' => CourseInstanceEvent::POSTSAVE,
+                ],
+                compact([
+                    'data_inizio',
+                    'durata',
+                    'data_inizio_previsto',
+                    'data_fine',
+                    'self_instruction',
+                    'title',
+                    'self_registration',
+                    'price',
+                    'duration_subscription',
+                    'start_level_student',
+                    'open_subscription',
+                    'duration_hours',
+                    'tipo_servizio',
+                    'id',
+                ]),
+                ['isUpdate' => true]
+            );
         }
 
         return true;
