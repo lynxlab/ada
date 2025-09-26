@@ -103,11 +103,11 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
     $form->fillWithPostData();
 
     if ($form->isValid()) {
-        $user_layout = $_POST['layout'];
+        $user_layout = $_POST['layout'] ?? ADA_TEMPLATE_FAMILY;
 
         $editUserObj->fillWithArrayData($_POST);
 
-        $password = trim($_POST['password']);
+        $password = trim($_POST['password'] ?? '');
         if ($password != '') {
             $editUserObj->setPassword($password);
         }
