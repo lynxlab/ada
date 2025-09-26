@@ -14,12 +14,14 @@ function toggleDetails(user_id,imgObj) {
 
 //    }
 //    $j('.imgDetls').on('click', function () {
+    var promise = $j.Deferred();
     var nTr = $j(imgObj).parents('tr')[0];
     if ( oTable.fnIsOpen(nTr) )
     {
         /* This row is already open - close it */
         imgObj.src = HTTP_ROOT_DIR+"/layout/"+ADA_TEMPLATE_FAMILY+"/img/details_open.png";
         oTable.fnClose( nTr );
+        promise.resolve({error:false, data: {}, action: 'close', row: nTr});
     }
     else
     {
@@ -38,16 +40,19 @@ function toggleDetails(user_id,imgObj) {
 	                      "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
 	            	}
                 });
+                promise.resolve({error:false, data: JSONObj, action: 'open', row: nTr});
             }
        })
        .fail   (function() {
             console.log("ajax call has failed");
+            promise.resolve({error:true, data: JSONObj, action: 'open', row: nTr});
 	} )
         .always(function (){
             imageReference.src = HTTP_ROOT_DIR+"/layout/"+ADA_TEMPLATE_FAMILY+"/img/details_close.png";
         });
 
     }
+    return promise.promise();
 }
 
 
