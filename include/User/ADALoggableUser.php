@@ -84,12 +84,12 @@ abstract class ADALoggableUser extends ADAGenericUser
             $this->setFirstName($dataArr['nome']);
             $this->setLastName($dataArr['cognome']);
             $this->setFiscalCode($dataArr['codice_fiscale']);
-            $this->setEmail($dataArr['email']);
-            if (trim($dataArr['password']) != '') {
+            $this->setEmail($dataArr['email'] ?? '');
+            if (trim($dataArr['password'] ?? '') != '') {
                 $this->setPassword($dataArr['password']);
             }
             $this->setSerialNumber(isset($dataArr['matricola']) ?: null);
-            $this->setLayout($dataArr['layout']);
+            $this->setLayout($dataArr['layout'] ?? ADA_TEMPLATE_FAMILY);
             $this->setAddress($dataArr['indirizzo']);
             $this->setCity($dataArr['citta']);
             $this->setProvince($dataArr['provincia']);
