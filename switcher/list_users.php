@@ -9,6 +9,8 @@ use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Utilities;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\EventDispatcher\Events\ActionsEvent;
 use Lynxlab\ADA\Module\Impersonate\AMAImpersonateDataHandler;
 use Lynxlab\ADA\Module\Impersonate\ImpersonateException;
 use Lynxlab\ADA\Module\Impersonate\Utils;
@@ -225,6 +227,22 @@ if (is_array($usersAr) && count($usersAr) > 0) {
         unset($imgDetails);
 
         $tbody_data[] = $tmpArray;
+    }
+    if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+        $event = ADAEventDispatcher::buildEventAndDispatch(
+            [
+                'eventClass' => ActionsEvent::class,
+                'eventName' => ActionsEvent::LIST_USERS,
+            ],
+            ['userType' => $amaUserType],
+            ['thead' => $thead_data, 'tbody' => $tbody_data]
+        );
+        try {
+            $thead_data = $event->getArgument('thead');
+            $tbody_data = $event->getArgument('tbody');
+        } catch (InvalidArgumentException) {
+            // do nothing
+        }
     }
     $data = BaseHtmlLib::tableElement('id:table_users', $thead_data, $tbody_data);
     $data->setAttribute('class', $data->getAttribute('class') . ' ' . ADA_SEMANTICUI_TABLECLASS);

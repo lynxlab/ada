@@ -29,4 +29,9 @@ final class ActionsEvent extends GenericEvent
      * occurs before the actions menu in the switcher/list_instances.php is rendered
      */
     public const LIST_INSTANCES = self::NAMESPACE . '.listinstances';
+
+    /**
+     * occurs before the users table in the switcher/list_users.php is rendered
+     */
+    public const LIST_USERS = self::NAMESPACE . '.listusers';
 }
