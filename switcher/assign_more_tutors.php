@@ -7,9 +7,12 @@ use Lynxlab\ADA\Main\ADAError;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\Course\CourseInstance;
 use Lynxlab\ADA\Main\Forms\TutorSecondaryAssignmentForm;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Utilities;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\EventDispatcher\Events\CourseInstanceEvent;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -86,9 +89,30 @@ if (
     $courseInstanceId = $_POST['id_course_instance'];
     $courseId = $_POST['id_course'];
     $id_tutors_old = $_POST['id_tutors_old'];
+    $redirectTo = 'list_instances.php?id_course=' . $courseId;
 
     if ($id_tutors_old != 'no' && !empty($id_tutors_old)) {
         $id_tutors_old = explode(',', $id_tutors_old);
+
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CourseInstanceEvent::class,
+                    'eventName' => CourseInstanceEvent::PRETUTORUNSUBSCRIBE,
+                ],
+                basename($_SERVER['SCRIPT_FILENAME']),
+                [
+                    'courseId' => $courseId,
+                    'courseInstanceId' => $courseInstanceId,
+                    'id_tutors_old' => $id_tutors_old,
+                    'redirectTo' => $redirectTo,
+                ]
+            );
+            foreach ($event->getArguments() as $key => $val) {
+                ${$key} = $val;
+            }
+        }
+
         foreach ($id_tutors_old as $idTutorOld) {
             if ($idTutorOld != '' && is_numeric($idTutorOld) && $idTutorOld > 0) {
                 $result = $dh->courseInstanceTutorUnsubscribe($courseInstanceId, $idTutorOld);
@@ -97,8 +121,47 @@ if (
                 }
             }
         }
+
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CourseInstanceEvent::class,
+                    'eventName' => CourseInstanceEvent::POSTTUTORUNSUBSCRIBE,
+                ],
+                basename($_SERVER['SCRIPT_FILENAME']),
+                [
+                    'courseId' => $courseId,
+                    'courseInstanceId' => $courseInstanceId,
+                    'id_tutors_old' => $id_tutors_old,
+                    'redirectTo' => $redirectTo,
+                    'result' => $result,
+                ]
+            );
+            foreach ($event->getArguments() as $key => $val) {
+                ${$key} = $val;
+            }
+        }
     }
     if (is_array($id_tutors_new)) {
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CourseInstanceEvent::class,
+                    'eventName' => CourseInstanceEvent::PRETUTORSUBSCRIBE,
+                ],
+                basename($_SERVER['SCRIPT_FILENAME']),
+                [
+                    'courseId' => $courseId,
+                    'courseInstanceId' => $courseInstanceId,
+                    'id_tutors_new' => $id_tutors_new,
+                    'redirectTo' => $redirectTo,
+                ]
+            );
+            foreach ($event->getArguments() as $key => $val) {
+                ${$key} = $val;
+            }
+        }
+
         foreach ($id_tutors_new as $id_tutor_new) {
             if ($id_tutor_new != '' && is_numeric($id_tutor_new) && $id_tutor_new > 0) {
                 $result = $dh->courseInstanceTutorSubscribe($courseInstanceId, $id_tutor_new);
@@ -136,8 +199,28 @@ if (
                 }
             }
         }
+
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CourseInstanceEvent::class,
+                    'eventName' => CourseInstanceEvent::POSTTUTORSUBSCRIBE,
+                ],
+                basename($_SERVER['SCRIPT_FILENAME']),
+                [
+                    'courseId' => $courseId,
+                    'courseInstanceId' => $courseInstanceId,
+                    'id_tutors_new' => $id_tutors_new,
+                    'redirectTo' => $redirectTo,
+                    'result' => $result,
+                ]
+            );
+            foreach ($event->getArguments() as $key => $val) {
+                ${$key} = $val;
+            }
+        }
     }
-    header('Location: list_instances.php?id_course=' . $courseId);
+    header('Location: ' . $redirectTo);
     exit();
 } else {
     //    $id_course = $_GET['id_course'];
