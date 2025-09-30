@@ -2570,7 +2570,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         /**
          * giorgio 13/01/2021: force data_fine to have time set to 23:59:59
          */
-        $data_fine = strtotime('tomorrow midnight', $data_fine) - 1;
+        $data_fine = strtotime('today midnight', $data_fine) - 1;
 
         // check if corso exists
         $sql  = "select id_corso from modello_corso where id_corso=?";
@@ -3013,7 +3013,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         /**
          * giorgio 13/01/2021: force data_fine to have time set to 23:59:59
          */
-        $data_fine = strtotime('tomorrow midnight', $data_fine) - 1;
+        $data_fine = strtotime('today midnight', $data_fine) - 1;
 
         // verify that the record exists
         $res_id =  $this->getRowPrepared("select id_istanza_corso from istanza_corso where id_istanza_corso=?", [$id]);
@@ -3102,7 +3102,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
                 /**
                  * giorgio 13/01/2021: force subscritionEndDate to have time set to 23:59:59
                  */
-                $subscritionEndDate = strtotime('tomorrow midnight', $subscritionEndDate) - 1;
+                $subscritionEndDate = strtotime('today midnight', $subscritionEndDate) - 1;
                 // never update status if it's completed
                 if ($subscription->getSubscriptionStatus() != ADA_STATUS_COMPLETED) {
                     if (
