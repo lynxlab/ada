@@ -44,4 +44,44 @@ final class CourseInstanceEvent extends GenericEvent
      * @var string
      */
     public const POSTSAVE = self::NAMESPACE . '.postsave';
+
+    /**
+     * The PRETUTORSUBSCRIBE event occurs before
+     * a tutor is assigned to a course instance
+     *
+     * @CourseInstanceEvent
+     *
+     * @var string
+     */
+    public const PRETUTORSUBSCRIBE = self::NAMESPACE . '.pretutorsubscribe';
+
+    /**
+     * The POSTTUTORSUBSCRIBE event occurs before
+     * a tutor is assigned to a course instance
+     *
+     * @CourseInstanceEvent
+     *
+     * @var string
+     */
+    public const POSTTUTORSUBSCRIBE = self::NAMESPACE . '.posttutorsubscribe';
+
+    /**
+     * The PRETUTORUNSUBSCRIBE event occurs before
+     * a tutor is unassigned to a course instance
+     *
+     * @CourseInstanceEvent
+     *
+     * @var string
+     */
+    public const PRETUTORUNSUBSCRIBE = self::NAMESPACE . '.pretutorunsubscribe';
+
+    /**
+     * The POSTTUTORUNSUBSCRIBE event occurs before
+     * a tutor is unassigned to a course instance
+     *
+     * @CourseInstanceEvent
+     *
+     * @var string
+     */
+    public const POSTTUTORUNSUBSCRIBE = self::NAMESPACE . '.posttutorunsubscribe';
 }
