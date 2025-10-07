@@ -17,6 +17,7 @@ use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Logger\ADALogger;
 use Lynxlab\ADA\Main\Stack\RBStack;
+use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
 use PDO;
@@ -638,15 +639,6 @@ abstract class AbstractAMADataHandler
          */
 
         /**
-         * let's check if $sql has alreay been prepared, and let's do it if it's not.
-         */
-        if (!$sql instanceof PDOStatement) {
-            $stmt = $db->prepare($sql);
-        } else {
-            $stmt = $sql;
-        }
-
-        /**
          * if $values is a scalar, let's transform it into a one-element array
          */
         if ($values === null) {
@@ -657,8 +649,53 @@ abstract class AbstractAMADataHandler
             $values =  [$values];
         }
 
+        if (ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CoreEvent::class,
+                    'eventName' => CoreEvent::PREPREPAREANDEXECUTE,
+                ],
+                Utilities::getCallingMethodName(),
+                [
+                    'sql' => $sql,
+                    'values' => $values,
+                ]
+            );
+            foreach ($event->getArguments() as $key => $val) {
+                ${$key} = $val;
+            }
+        }
+
+        /**
+         * let's check if $sql has alreay been prepared, and let's do it if it's not.
+         */
+        if (!$sql instanceof PDOStatement) {
+            $stmt = $db->prepare($sql);
+        } else {
+            $stmt = $sql;
+        }
+
         try {
             $resultObj = $stmt->execute($values);
+
+            if (ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
+                $event = ADAEventDispatcher::buildEventAndDispatch(
+                    [
+                        'eventClass' => CoreEvent::class,
+                        'eventName' => CoreEvent::POSTPREPAREANDEXECUTE,
+                    ],
+                    Utilities::getCallingMethodName(),
+                    [
+                        'stmt' => $stmt,
+                        'values' => $values,
+                        'resultObj' => $resultObj,
+                    ]
+                );
+                foreach ($event->getArguments() as $key => $val) {
+                    ${$key} = $val;
+                }
+            }
+
             if ($resultObj) {
                 return $stmt;
             } else {
@@ -676,7 +713,7 @@ abstract class AbstractAMADataHandler
     }
 
     /**
-     * This is the prepared version of the AMADB getRow() method.
+     * * Gets one row from the DB.
      *
      * @param  string $sql       - the sql query with placeholders
      * @param  array  $values    - the values to bind with the prepared statement
@@ -699,17 +736,51 @@ abstract class AbstractAMADataHandler
 
         $resultObj = $this->prepareAndExecute($sql, $values);
 
+        if (ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CoreEvent::class,
+                    'eventName' => CoreEvent::PREFETCH,
+                ],
+                Utilities::getCallingMethodName(),
+                [
+                    'resultObj' => $resultObj,
+                ]
+            );
+            foreach ($event->getArguments() as $key => $val) {
+                ${$key} = $val;
+            }
+        }
+
         if (AMADB::isError($resultObj)) {
             return $resultObj;
         }
 
         $resultAr = $resultObj->fetch($fetchmode ?? AMA_FETCH_BOTH);
+
+        if (ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CoreEvent::class,
+                    'eventName' => CoreEvent::POSTFETCH,
+                ],
+                Utilities::getCallingMethodName(),
+                [
+                    'resultObj' => $resultObj,
+                    'resultAr' => $resultAr,
+                ]
+            );
+            foreach ($event->getArguments() as $key => $val) {
+                ${$key} = $val;
+            }
+        }
+
         $resultObj->closeCursor();
         return $resultAr;
     }
 
     /**
-     * This is the prepared version of the AMADB getAll() method.
+     * Gets all records from DB.
      *
      * @param  string $sql       - the sql query with placeholders
      * @param  array  $values    - the values to bind with the prepared statement
@@ -732,6 +803,22 @@ abstract class AbstractAMADataHandler
 
         $resultObj = $this->prepareAndExecute($sql, $values);
 
+        if (ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CoreEvent::class,
+                    'eventName' => CoreEvent::PREFETCHALL,
+                ],
+                Utilities::getCallingMethodName(),
+                [
+                    'resultObj' => $resultObj,
+                ]
+            );
+            foreach ($event->getArguments() as $key => $val) {
+                ${$key} = $val;
+            }
+        }
+
         if (AMADB::isError($resultObj)) {
             return $resultObj;
         }
@@ -742,12 +829,29 @@ abstract class AbstractAMADataHandler
             $resultAr = $resultObj->fetchAll($fetchmode ?? AMA_FETCH_BOTH, intval($col));
         }
 
+        if (ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CoreEvent::class,
+                    'eventName' => CoreEvent::POSTFETCHALL,
+                ],
+                Utilities::getCallingMethodName(),
+                [
+                    'resultObj' => $resultObj,
+                    'resultAr' => $resultAr,
+                ]
+            );
+            foreach ($event->getArguments() as $key => $val) {
+                ${$key} = $val;
+            }
+        }
+
         $resultObj->closeCursor();
         return $resultAr;
     }
 
     /**
-     * This is the prepared version of the AMADB getOne() method.
+     * Gets one row, one column from the DB.
      *
      * @param  string $sql       - the sql query with placeholders
      * @param  array  $values    - the values to bind with the prepared statement
@@ -761,7 +865,7 @@ abstract class AbstractAMADataHandler
     }
 
     /**
-     * This is the prepared version of the AMADB getCol() method.
+     * Gets a single column from the DB.
      *
      * @param  string $sql       - the sql query with placeholders
      * @param  array  $values    - the values to bind with the prepared statement
@@ -775,7 +879,7 @@ abstract class AbstractAMADataHandler
     }
 
     /**
-     * This is the prepared version of the AMADB query() method.
+     * query the DB.
      *
      * @param  string $sql       - the sql query with placeholders
      * @param  array  $values    - the values to bind with the prepared statement
