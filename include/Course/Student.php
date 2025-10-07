@@ -475,22 +475,18 @@ class Student
                         $dati_stude[$key]['badges'] = RewardedBadge::buildStudentRewardHTML($id_course, $id_instance, $id_student)->getHtml();
                     }
 
-                    [$firstanme, $lastname] = explode('::', $dati_stude[$key]["student"]);
+                    $firstname = $dati_stude[$key]["student"];
+                    $lastname = $dati_stude[$key]["lastname"];
                     // build HTML for name and surname
                     $st_name = "<a href=" .  $http_root_dir . "/tutor/tutor.php?op=zoom_student&id_student=" . $id_student;
                     $st_name .= "&id_course=" . $id_course . "&id_instance=" . $id_instance . ">";
-                    $st_name .= $firstanme . "</a>";
+                    $st_name .= $firstname . "</a>";
                     $dati_stude[$key]["student"] = $st_name;
 
                     $st_lastname = "<a href=" .  $http_root_dir . "/tutor/tutor.php?op=zoom_student&id_student=" . $id_student;
                     $st_lastname .= "&id_course=" . $id_course . "&id_instance=" . $id_instance . ">";
                     $st_lastname .= $lastname . "</a>";
-
-                    // insert lastname after student (aka firstname)
-                    $nameIndex = 1 + array_search("student", array_keys($dati_stude[$key]));
-                    $dati_stude[$key] = array_slice($dati_stude[$key], 0, $nameIndex, true) +
-                        ["lastname" => $st_lastname] +
-                        array_slice($dati_stude[$key], $nameIndex, count($dati_stude[$key]) - $nameIndex, true);
+                    $dati_stude[$key]["lastname"] = $st_lastname;
 
                     if (array_key_exists(REPORT_COLUMN_ADDED_NOTES, $columns)) {
                         // build HTML for added_notes

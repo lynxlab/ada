@@ -156,14 +156,14 @@ class ChatSpool extends Spool
         }
 
         if ($type == ADA_MSG_CHAT) {
-            $sql  = "SELECT CONCAT(U.nome, \" \",U.cognome) AS `nome`, M.id_messaggio, M.data_ora, M.tipo, M.testo, M.id_mittente as `id_mittente`
+            $sql  = "SELECT U.nome, U.cognome, M.id_messaggio, M.data_ora, M.tipo, M.testo, M.id_mittente as `id_mittente`
                        FROM  (SELECT id_messaggio, data_ora, tipo, id_mittente, testo FROM messaggi
                                WHERE id_group=$id_group $message_id_sql AND tipo='$type') AS M
                              LEFT JOIN utente AS U ON (U.id_utente = M.id_mittente)";
         } elseif ($type == ADA_MSG_PRV_CHAT) {
             $user = $this->user_id;
 
-            $sql = "SELECT CONCAT(U.nome, \" \",U.cognome) AS `nome`, M.id_messaggio, M.data_ora, M.tipo, M.testo, M.id_mittente as `id_mittente`
+            $sql = "SELECT U.nome, U.cognome, M.id_messaggio, M.data_ora, M.tipo, M.testo, M.id_mittente as `id_mittente`
                   FROM (SELECT id_messaggio, data_ora, tipo, id_mittente, testo FROM messaggi
                              WHERE id_group=$id_group $message_id_sql AND tipo='$type') AS M
                            LEFT JOIN utente AS U ON (U.id_utente = M.id_mittente)
@@ -173,7 +173,7 @@ class ChatSpool extends Spool
             ";
         }
 
-        $result = $db->getAll($sql, null, AMA_FETCH_ASSOC);
+        $result = $this->getAllPrepared($sql, [], AMA_FETCH_ASSOC);
         if (AMADataHandler::isError($result)) {
             $retval = new AMAError(AMA_ERR_GET);
             return $retval;

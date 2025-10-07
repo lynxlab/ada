@@ -190,7 +190,7 @@ $json_data = array_map(fn ($message) => [
 'id' => $message['id_messaggio'],
 'tipo' => $message['tipo'],
 'time' => Utilities::ts2tmFN($message['data_ora']),
-'sender' => $message['nome'],
+'sender' => $message['nome'] . ' ' . $message['cognome'],
 'text' => stripslashes($message['testo']),
 ], $messages_display_Ha);
 
