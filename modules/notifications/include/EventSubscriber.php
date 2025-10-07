@@ -13,6 +13,7 @@ namespace Lynxlab\ADA\Module\Notifications;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
 use Lynxlab\ADA\Main\AMA\AMADB;
+use Lynxlab\ADA\Main\AMA\AMATesterDataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Course\Course;
 use Lynxlab\ADA\Main\Course\CourseInstance;
@@ -37,6 +38,8 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
  */
 class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscriberInterface, EventSubscriberInterface
 {
+    private const WORKINGTABLE = 'nodo';
+
     public static function getSubscribedEvents()
     {
         return [
@@ -49,9 +52,9 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
     public static function getSubscribedMethods()
     {
         return [
-            'AMATesterDataHandler::getNotesForThisCourseInstance' => [
-                CoreEvent::AMAPDOPREGETALL => 'preGetNotes',
-                CoreEvent::AMAPDOPOSTGETALL => 'postGetNotes',
+            AMATesterDataHandler::class . '::getNotesForThisCourseInstance' => [
+                CoreEvent::PREPREPAREANDEXECUTE => 'preGetNotes',
+                CoreEvent::POSTFETCHALL => 'postGetNotes',
             ],
         ];
     }
@@ -77,19 +80,29 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
     public function preGetNotes(CoreEvent $event)
     {
         $args = $event->getArguments();
-        $queryParts = new PHPSQLParser($args['query']);
-        $add = new PHPSQLParser('SELECT N.id_istanza');
-        if (is_array($queryParts->parsed['SELECT']) && count($queryParts->parsed['SELECT']) > 0) {
-            // set delimiter of the last parsed SELECT
-            $queryParts->parsed['SELECT'][count($queryParts->parsed['SELECT']) - 1]['delim'] = ',';
+        $queryParts = new PHPSQLParser($args['sql']);
+        $fromNode = array_filter(
+            $queryParts->parsed['FROM'],
+            fn ($el) => $el['table'] == self::WORKINGTABLE
+        );
+        if (!empty($fromNode)) {
+            $fromNode = reset($fromNode);
+            $alias = $fromNode['alias']['name'] ?? $fromNode['table'];
+            $add = new PHPSQLParser("SELECT `$alias`.`id_istanza`");
+            if (is_array($queryParts->parsed['SELECT']) && count($queryParts->parsed['SELECT']) > 0) {
+                // set delimiter of the last parsed SELECT
+                $queryParts->parsed['SELECT'][count($queryParts->parsed['SELECT']) - 1]['delim'] = ',';
+            }
+            // add own fields
+            foreach ($add->parsed['SELECT'] as $v) {
+                $queryParts->parsed['SELECT'][] = $v;
+            }
+            $query = new PHPSQLCreator($queryParts->parsed);
+            $args['sql'] = $query->created;
         }
-        // add own fields
-        foreach ($add->parsed['SELECT'] as $v) {
-            $queryParts->parsed['SELECT'][] = $v;
-        }
-        $query = new PHPSQLCreator($queryParts->parsed);
-        $args['query'] = $query->created;
         $event->setArguments($args);
+        $event->stopPropagation();
+        return $event;
     }
 
     /**
@@ -101,30 +114,36 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
     public function postGetNotes(CoreEvent $event)
     {
         $args = $event->getArguments();
-        $values = $args['retval'];
-        $id_instance = intval(reset($values)['id_istanza']);
-        $ntDH = AMANotificationsDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
-        $result = $ntDH->findBy('Notification', [
-            'userId' => $_SESSION['sess_userObj']->getId(),
-            'instanceId' => $id_instance,
-            'notificationType' => Notification::getNotificationFromNodeType(ADA_NOTE_TYPE),
-        ]);
-        $notificationNodes = [];
-        foreach ($result as $notification) {
-            $notificationNodes[$notification->getNodeId()] = [
-                'notificationId' => $notification->getNotificationId(),
-                'isActive' => $notification->getIsActive(),
-            ];
-        }
-        $values = array_map(function ($el) use ($notificationNodes) {
-            if (array_key_exists($el['id_nodo'], $notificationNodes)) {
-                $el['hasNotifications'] = $notificationNodes[$el['id_nodo']]['isActive'];
-                $el['notificationId'] = $notificationNodes[$el['id_nodo']]['notificationId'];
+        $queryParts = new PHPSQLParser($args['resultObj']->queryString);
+        $tables = array_map(fn ($el) => $el['table'], $queryParts->parsed['FROM']);
+        if (in_array(self::WORKINGTABLE, $tables)) {
+            $values = $args['resultAr'];
+            $id_instance = intval(reset($values)['id_istanza']);
+            $ntDH = AMANotificationsDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+            $result = $ntDH->findBy('Notification', [
+                'userId' => $_SESSION['sess_userObj']->getId(),
+                'instanceId' => $id_instance,
+                'notificationType' => Notification::getNotificationFromNodeType(ADA_NOTE_TYPE),
+            ]);
+            $notificationNodes = [];
+            foreach ($result as $notification) {
+                $notificationNodes[$notification->getNodeId()] = [
+                    'notificationId' => $notification->getNotificationId(),
+                    'isActive' => $notification->getIsActive(),
+                ];
             }
-            return $el;
-        }, $values);
-        $args['retval'] = $values;
+            $values = array_map(function ($el) use ($notificationNodes) {
+                if (array_key_exists($el['id_nodo'], $notificationNodes)) {
+                    $el['hasNotifications'] = $notificationNodes[$el['id_nodo']]['isActive'];
+                    $el['notificationId'] = $notificationNodes[$el['id_nodo']]['notificationId'];
+                }
+                return $el;
+            }, $values);
+            $args['resultAr'] = $values;
+        }
+        $event->stopPropagation();
         $event->setArguments($args);
+        return $event;
     }
 
     /**
