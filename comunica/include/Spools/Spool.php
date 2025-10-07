@@ -371,12 +371,6 @@ class Spool extends AbstractAMADataHandler
         $user_id = $this->user_id;
         $type = $this->type;
 
-        $db = &parent::getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
-
-
         //prepare fields list
         if ($fields_list != "") {
             $fields = "id_messaggio, " . implode(",", $fields_list);
@@ -410,7 +404,7 @@ class Spool extends AbstractAMADataHandler
         //   } else {
 
         // linear array
-        $res_ar = $db->getCol($sql);
+        $res_ar = $this->getColPrepared($sql);
 
         //  }
 
@@ -447,12 +441,6 @@ class Spool extends AbstractAMADataHandler
 
         $user_id = $this->user_id;
         $type    = $this->type;
-
-        $db = &parent::getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
-
 
         if ($fields_list != "") {
             $fields = "messaggi.id_messaggio, " . implode(",", $fields_list);
@@ -518,10 +506,19 @@ class Spool extends AbstractAMADataHandler
         // logger("performing query: $sql", 4);
         if ($fields_list != "") {
             // bidimensional array
-            $res_ar = $db->getAssoc($sql);
+            $dbar = $this->getAllPrepared($sql);
+            if (AMADB::isError($dbar)) {
+                $res_ar = $dbar;
+            } else {
+                $res_ar = [];
+                foreach ($dbar as $dbrow) {
+                    // remove id_messaggio and its numeric key. (2 items)
+                    $res_ar[$dbrow['id_messaggio']] = array_slice($dbrow, 2);
+                }
+            }
         } else {
             // linear array
-            $res_ar = $db->getCol($sql);
+            $res_ar = $this->getColPrepared($sql);
         }
 
         if (AMADB::isError($res_ar)) {
@@ -542,12 +539,6 @@ class Spool extends AbstractAMADataHandler
          */
         $type = $this->type;
         $id_group = $this->id_chatroom;
-
-        $db = &parent::getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
-
 
         //prepare fields list
         if ($fields_list != "") {
@@ -576,7 +567,7 @@ class Spool extends AbstractAMADataHandler
 
         // logger("performing query: $sql", 4);
 
-        $res_ar = $db->getAll($sql);
+        $res_ar = $this->getAllPrepared($sql);
 
         if (AMADB::isError($res_ar)) {
             $retval = new AMAError(AMA_ERR_GET);
@@ -616,11 +607,6 @@ class Spool extends AbstractAMADataHandler
 
         $user_id = $this->user_id;
         $type = $this->type;
-
-        $db = &parent::getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
 
         //prepare fields list
         if ($fields_list != "") {
@@ -664,9 +650,9 @@ class Spool extends AbstractAMADataHandler
 
         // linear array
         if ($fields_list != "") {
-            $res_ar = $db->getAll($sql, null, AMA_FETCH_ASSOC);
+            $res_ar = $this->getAllPrepared($sql, [], AMA_FETCH_ASSOC);
         } else {
-            $res_ar = $db->getCol($sql);
+            $res_ar = $this->getColPrepared($sql);
         }
         //  }
 

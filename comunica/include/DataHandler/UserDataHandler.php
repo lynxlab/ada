@@ -71,11 +71,6 @@ class UserDataHandler extends AbstractAMADataHandler
     public function &findUsersList($fields_list_ar, $clause = "")
     {
         // logger("UserDataHandler::find_users_list entered", 3);
-        $db = & parent::getConnection();
-        if (AMADB::isError($db)) {
-            return $db;
-        }
-
         // build comma separated string out of $field_list_ar array
         $n_fields = count($fields_list_ar);
         if ($n_fields > 1) {
@@ -95,7 +90,7 @@ class UserDataHandler extends AbstractAMADataHandler
         // do the query
         $sql = "select id_utente$more_fields from utente $clause";
         // logger("performing query: $sql", 4);
-        $users_ar = $db->getAll($sql);
+        $users_ar = $this->getAllPrepared($sql);
         if (AMADB::isError($users_ar)) {
             //return $db;
             return new AMAError(AMA_ERR_GET);
@@ -103,23 +98,5 @@ class UserDataHandler extends AbstractAMADataHandler
         // logger("query succeeded", 4);
         // return nested array in the form
         return $users_ar;
-    }
-
-    /**
-     * get a list of all users data in the utente table
-     *
-     * @access  public
-     *
-     * @param   $fields_list_ar - a list of fields to return
-     *
-     * @return  a refrerence to a 2-dim array,
-     *           each row will have id_utente in the 0 element
-     *           and the fields specified in the list in the others
-     *          an AMAError object if something goes wrong
-     *
-     **/
-    public function &getUsersList($fields_list_ar)
-    {
-        return $this->findUsersList($fields_list_ar);
     }
 }
