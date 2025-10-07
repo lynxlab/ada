@@ -93,11 +93,24 @@ class ADAEventDispatcher extends EventDispatcher implements EventDispatcherInter
                     if (!is_null($eventName)) {
                         $event = new $classname($subject, $arguments);
                         $eventPrefix = array_key_exists('eventPrefix', $eventData) ? trim($eventData['eventPrefix']) . self::PREFIX_SEPARATOR : '';
-                        // first dispatch the prefixed event
-                        $event = self::getInstance()->dispatch($event, $eventPrefix . $eventName);
-                        if (!$event->isPropagationStopped() && strlen($eventPrefix) > 0) {
+                        $listeners = self::getInstance()->getListeners();
+                        $dbt = array_unique(array_map(
+                            fn ($el) => $el['class'] . '::' . $el['function'],
+                            array_filter(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), fn ($el) => array_key_exists('class', $el))
+                        ));
+                        $dispatched = false;
+                        foreach ($dbt as $prefix) {
+                            if (array_key_exists($prefix . self::PREFIX_SEPARATOR . $eventName, $listeners)) {
+                                if (!$event->isPropagationStopped()) {
+                                    // first dispatch the prefixed event
+                                    $event = self::getInstance()->dispatch($event, $prefix . self::PREFIX_SEPARATOR . $eventName);
+                                    $dispatched = true;
+                                }
+                            }
+                        }
+                        if (!$event->isPropagationStopped() && !$dispatched) {
                             // then dispatch to all, without prefix
-                            $event = self::getInstance()->dispatch($event, $eventName);
+                            $event = self::getInstance()->dispatch($event, $eventPrefix . $eventName);
                         }
                         return $event;
                     } else {
@@ -121,6 +134,7 @@ class ADAEventDispatcher extends EventDispatcher implements EventDispatcherInter
      */
     public function dispatch(object $event, string $eventName = null): object
     {
+
         // check if $eventName is a regexp
         set_error_handler(function () {
         }, E_WARNING);
