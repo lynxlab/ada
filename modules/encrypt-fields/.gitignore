@@ -1,0 +1,5 @@
+/vendor/
+/composer.phar
+*.bak*
+*.key*
+/config/config.inc.php
