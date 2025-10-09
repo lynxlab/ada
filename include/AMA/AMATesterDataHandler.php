@@ -1416,7 +1416,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
     public function getStudentsReport($id_instance, $id_course, $requestedColumn, $indexWeights = [])
     {
         // the fields id and student return always
-        $select = "SELECT  utente.id_utente AS id, CONCAT(utente.nome ,'::',utente.cognome) AS student ";
+        $select = "SELECT utente.id_utente AS id, utente.nome AS student, utente.cognome AS lastname ";
         $from = "
             FROM  (
                 (Select * from iscrizioni WHERE id_istanza_corso = $id_instance and status <> " . ADA_STATUS_VISITOR . " ) as iscrizioni

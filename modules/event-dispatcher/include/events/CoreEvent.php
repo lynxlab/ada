@@ -37,28 +37,6 @@ final class CoreEvent extends GenericEvent
     public const PAGEPRERENDER = self::NAMESPACE . '.page.prerender';
 
     /**
-     * The AMAPDOPREGETALL event occurs before the AMAPDOWrapper::getAll runs its query
-     *
-     * This event allows you manipulate the query being executed
-     *
-     * @CoreEvent
-     *
-     * @var string
-     */
-    public const AMAPDOPREGETALL = self::NAMESPACE . '.amapdo.pregetall';
-
-    /**
-     * The AMAPDOPOSTGETALL event occurs after the AMAPDOWrapper::getAll is run
-     *
-     * This event allows you to manipulate the retunred results array
-     *
-     * @CoreEvent
-     *
-     * @var string
-     */
-    public const AMAPDOPOSTGETALL = self::NAMESPACE . '.amapdo.postgetall';
-
-    /**
      * The HELPERINITEXTRACT event occurs before ViewBaseHelper::extract
      * sets the $GLOBALS array keys.
      *
@@ -129,7 +107,7 @@ final class CoreEvent extends GenericEvent
      *
      * @var string
      */
-    public const PREFILLINTEMPLATE = self::NAMESPACE . 'fillintemplate.pre';
+    public const PREFILLINTEMPLATE = self::NAMESPACE . '.fillintemplate.pre';
 
     /**
      * The POSTFILLINTEMPLATE event occurs after ARE:render has filled in the template fields.
@@ -138,5 +116,65 @@ final class CoreEvent extends GenericEvent
      *
      * @var string
      */
-    public const POSTFILLINTEMPLATE = self::NAMESPACE . 'fillintemplate.post';
+    public const POSTFILLINTEMPLATE = self::NAMESPACE . '.fillintemplate.post';
+
+    /**
+     * The PREPREPAREANDEXECUTE event occurs before the AbstractAMADataHandler::prepareAndExecute
+     * method prepares and executes the query.
+     *
+     * @CoreEvent
+     *
+     * @var string
+     */
+    public const PREPREPAREANDEXECUTE = self::NAMESPACE . '.prepareandexecute.pre';
+
+    /**
+     * The POSTPREPAREANDEXECUTE event occurs after the AbstractAMADataHandler::prepareAndExecute
+     * method prepares and executes the query, just before returning.
+     *
+     * @CoreEvent
+     *
+     * @var string
+     */
+    public const POSTPREPAREANDEXECUTE = self::NAMESPACE . '.prepareandexecute.post';
+
+    /**
+     * The PREFETCH event occurs before the AbstractAMADataHandler::getRowPrepared
+     * method fetches the results to be returned.
+     *
+     * @CoreEvent
+     *
+     * @var string
+     */
+    public const PREFETCH = self::NAMESPACE . '.fetch.pre';
+
+    /**
+     * The POSTFETCH event occurs after the AbstractAMADataHandler::getRowPrepared
+     * method fetches the results to be returned, just before returning.
+     *
+     * @CoreEvent
+     *
+     * @var string
+     */
+    public const POSTFETCH = self::NAMESPACE . '.fetch.post';
+
+    /**
+     * The PREFETCHALL event occurs before the AbstractAMADataHandler::getAllPrepared
+     * method fetches the results to be returned.
+     *
+     * @CoreEvent
+     *
+     * @var string
+     */
+    public const PREFETCHALL = self::NAMESPACE . '.fetchall.pre';
+
+    /**
+     * The POSTFETCHALL event occurs after the AbstractAMADataHandler::getAllPrepared
+     * method fetches the results to be returned, just before returning.
+     *
+     * @CoreEvent
+     *
+     * @var string
+     */
+    public const POSTFETCHALL = self::NAMESPACE . '.fetchall.post';
 }

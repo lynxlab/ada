@@ -1,0 +1,18 @@
+{
+    "name" : "lynxlab/encrypt-fields",
+    "description" : "This is the ada module for database fields encryption (data-at-rest).",
+    "license" : "GPL",
+    "authors" : [{
+        "name" : "Giorgio Consorti",
+        "email" : "g.consorti@lynxlab.com"
+    }],
+    "autoload" : {
+        "psr-4" : {
+            "Lynxlab\\ADA\\Module\\Encryptfields\\" : ["include/", "include/form"]
+	    }
+    },
+    "require": {
+        "greenlion/php-sql-parser": "^4.7",
+        "phpseclib/phpseclib": "^3.0"
+    }
+}

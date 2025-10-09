@@ -13,6 +13,7 @@
 
 namespace Lynxlab\ADA\Module\Newsletter\Functions;
 
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Module\Newsletter\AMANewsletterDataHandler;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -91,6 +92,11 @@ function convertFilterArrayToString($filterArray, $dh, $futureSentence = true)
             $html .= " " . translateFN("dell' istanza") . ': <strong>';
             $instanceInfo = $dh->courseInstanceGet(intval($filterArray['idInstance']));
             $html .= '<instancename></strong>';
+            if (AMADB::isError($instanceInfo)) {
+                $instanceInfo = [
+                    'title' => '<span class="ui red horizontal label">' . translateFN('Errore') . ': ' . translateFN('Istanza non trovata') . '</span>',
+                ];
+            }
         } else {
             $html .= " <strong>" . translateFN("di tutte le istanze") . "</strong>";
         }
@@ -99,6 +105,11 @@ function convertFilterArrayToString($filterArray, $dh, $futureSentence = true)
             $html .= " " . translateFN("del corso") . ': <strong>';
             $courseInfo = $dh->getCourse(intval($filterArray['idCourse']));
             $html .= '<coursename></strong>';
+            if (AMADB::isError($courseInfo)) {
+                $courseInfo = [
+                    'nome' => '<span class="ui red horizontal label">' . translateFN('Errore') . ': ' . translateFN('Corso non trovato') . '</span>',
+                ];
+            }
         } else {
             $html .= " <strong>" . translateFN("di tutti i corsi") . "</strong>";
         }

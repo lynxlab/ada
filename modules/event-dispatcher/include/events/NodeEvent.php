@@ -58,7 +58,7 @@ final class NodeEvent extends GenericEvent
      *
      * @var string
      */
-    public const POSTADDREDIRECT = self::NAMESPACE . 'add.postredirect';
+    public const POSTADDREDIRECT = self::NAMESPACE . '.add.postredirect';
 
     /**
      * The POSTEDITREDIRECT event occurs after the node is modified (i.e. saved)
@@ -71,5 +71,5 @@ final class NodeEvent extends GenericEvent
      *
      * @var string
      */
-    public const POSTEDITREDIRECT = self::NAMESPACE . 'edit.postredirect';
+    public const POSTEDITREDIRECT = self::NAMESPACE . '.edit.postredirect';
 }
