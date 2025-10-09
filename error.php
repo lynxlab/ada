@@ -68,8 +68,8 @@ if (false === $error_message = DataValidator::checkInputValues('err_msg', 'Value
 $content_dataAr = [
     'home_link' => $homepage,
     'today' => $ymdhms,
-    'user_name' => $user_name,
-    'user_type' => $user_type,
+    'user_name' => $user_name ?? null,
+    'user_type' => $user_type ?? null,
     'course_title' => translateFN('Notifica errore'),
     'data' => $error_message,
     'status' => translateFN('Notifica di errore'),
