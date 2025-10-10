@@ -10,8 +10,14 @@
 
 namespace Lynxlab\ADA\Module\Encryptfields;
 
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
+use Lynxlab\ADA\Module\Encryptfields\Events\EncryptFieldsEvents;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+
 class FieldsConfig
 {
+    protected const EVENTSUBJECT = 'externalfields';
+
     /**
      * Gets all tables and field that require en/decryption
      * for the passed table using table alias
@@ -35,7 +41,8 @@ class FieldsConfig
      */
     public static function getAllFields(): array
     {
-        return [
+        $extFields = [];
+        $fields = [
             'utente' => [
                 'fields' => [
                     'nome',
@@ -47,6 +54,26 @@ class FieldsConfig
                 ],
             ],
         ];
+        if (ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => EncryptFieldsEvents::class,
+                    'eventName' => EncryptFieldsEvents::POSTFIELDSCONFIG,
+                ],
+                self::EVENTSUBJECT
+            );
+            if ($event->hasArgument(self::EVENTSUBJECT)) {
+                foreach ($event->getArgument(self::EVENTSUBJECT) as $table => $externalfields) {
+                    $extFields[$table] = array_merge($extFields[$table] ?? [], $externalfields);
+                }
+            }
+        }
+        foreach ($extFields as $table => $exField) {
+            if (!array_key_exists($table, $fields)) {
+                $fields[$table] = $exField;
+            }
+        }
+        return $fields;
     }
 
     /**
