@@ -68,7 +68,7 @@ class ADAEventDispatcher extends EventDispatcher implements EventDispatcherInter
      * @param array $eventData Associative array to build the event. MUST have 'eventClass' and 'eventName' keys
      * @param mixed $subject   Subject passed to the dispatcher
      * @param array $arguments Arguments passed to the dispatcher
-     * @return object as returned by the dispatch method
+     * @return \Symfony\Component\EventDispatcher\GenericEvent as returned by the dispatch method
      */
     public static function buildEventAndDispatch(array $eventData = [], $subject = null, array $arguments = [])
     {
@@ -132,7 +132,7 @@ class ADAEventDispatcher extends EventDispatcher implements EventDispatcherInter
      *
      * eventName can be a regexp and will dispatch all events that matches
      */
-    public function dispatch(object $event, string $eventName = null): object
+    public function dispatch(object $event, ?string $eventName = null): object
     {
 
         // check if $eventName is a regexp
