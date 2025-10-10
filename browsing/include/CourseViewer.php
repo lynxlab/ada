@@ -1044,7 +1044,7 @@ class CourseViewer
             ADAEventDispatcher::buildEventAndDispatch(
                 [
                     'eventClass' => ForumEvent::class,
-                    'eventName' => 'INDEXACTIONINIT',
+                    'eventName' => ForumEvent::INDEXACTIONINIT,
                 ],
                 $actionsContainer,
                 [
@@ -1069,7 +1069,7 @@ class CourseViewer
             ADAEventDispatcher::buildEventAndDispatch(
                 [
                     'eventClass' => ForumEvent::class,
-                    'eventName' => 'INDEXACTIONDONE',
+                    'eventName' => ForumEvent::INDEXACTIONDONE,
                 ],
                 $actionsContainer,
                 [
