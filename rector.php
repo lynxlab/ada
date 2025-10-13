@@ -51,7 +51,7 @@ return RectorConfig::configure()
         ChangeSwitchToMatchRector::class,
         RemoveExtraParametersRector::class,
         ArrayKeyExistsOnPropertyRector::class,
-        MixedTypeRector::class,
+        // MixedTypeRector::class,
         ClassPropertyAssignToConstructorPromotionRector::class,
 
         // ClassOnObjectRector::class,
