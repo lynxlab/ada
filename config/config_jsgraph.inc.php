@@ -1,4 +1,5 @@
 <?php
+
 /******************************************************
 // Standard configuration file for ADA versione 1.8
 // Copyright Lynx 2006

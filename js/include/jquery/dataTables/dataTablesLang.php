@@ -1,4 +1,5 @@
 <?php
+
 /**
  * dataTables jQuery plugin dynamic translation file for ADA.
  *
