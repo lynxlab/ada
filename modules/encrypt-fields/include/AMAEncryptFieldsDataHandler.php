@@ -70,10 +70,11 @@ class AMAEncryptFieldsDataHandler extends AMADataHandler
                 }
                 if ($db instanceof AbstractAMADataHandler) {
                     $dbclient = array_reverse(explode('/', (string) $db->dsn))[0];
-                    echo EchoHelper::ok("\n$dbclient\n");
+                    echo EchoHelper::ok("$dbclient\n\n");
                     foreach ($encData as $table => $fields) {
                         $desc = $db->getAllPrepared("DESC `$table`");
                         if (!AMADB::isError($desc)) {
+                            echo sprintf("\tTable: $table\n");
                             $primaryKeys = array_filter(
                                 $desc,
                                 fn ($el) => ($el['Key'] ?? null) == 'PRI'
@@ -87,8 +88,15 @@ class AMAEncryptFieldsDataHandler extends AMADataHandler
                                             fn ($el) => in_array($el['Field'], $fields['fields'])
                                         )
                                     );
+                                    $discarded = array_diff(
+                                        $encData[$table]['fields'] ?? [],
+                                        array_map(fn ($el) => $el['Field'], $processFields)
+                                    );
+                                    if (is_array($discarded) && !empty($discarded)) {
+                                        echo EchoHelper::error(sprintf("\tDiscarding configured fields: %s\n", implode(', ', $discarded)));
+                                    }
                                     foreach ($processFields as $pField) {
-                                        $alterSQL = sprintf(self::ENCRYPT_SQL_ALTER, $table, $pField['Field'], $pField['Field'], self::ENCRYPT_SQL_TYPE);
+                                        $alterSQL = sprintf("\t" . self::ENCRYPT_SQL_ALTER, $table, $pField['Field'], $pField['Field'], self::ENCRYPT_SQL_TYPE);
                                         if ($dryRun) {
                                             echo  "$alterSQL\n";
                                         } else {
@@ -102,7 +110,7 @@ class AMAEncryptFieldsDataHandler extends AMADataHandler
                                     $selectString = implode('`, `', array_merge([$primaryKey], $encFields));
                                     echo EchoHelper::warn(
                                         sprintf(
-                                            "will %s %s from table `%s`\n",
+                                            "\twill %s %s from table `%s`\n",
                                             ($encrypt ? 'encrypt' : 'decrypt'),
                                             '`' . implode('`, `', $encFields) . '` ',
                                             $table
@@ -115,7 +123,7 @@ class AMAEncryptFieldsDataHandler extends AMADataHandler
                                         AMA_FETCH_ASSOC
                                     );
                                     if (!AMADB::isError($encRows)) {
-                                        echo "selected " . count($encRows) . " rows for " . ($encrypt ? 'en' : 'de') . "cryption\n";
+                                        echo "\tselected " . count($encRows) . " rows for " . ($encrypt ? 'en' : 'de') . "cryption\n";
                                         $updateString = implode(
                                             ', ',
                                             array_map(
@@ -123,7 +131,7 @@ class AMAEncryptFieldsDataHandler extends AMADataHandler
                                                 $encFields
                                             )
                                         );
-                                        $updateSql = sprintf(self::UPDATE_ENC_DATA, $table, $updateString, $primaryKey);
+                                        $updateSql = sprintf("\t" . self::UPDATE_ENC_DATA, $table, $updateString, $primaryKey);
                                         $encCount = 0;
                                         foreach ($encRows as $row) {
                                             if ($encrypt) {
@@ -143,7 +151,7 @@ class AMAEncryptFieldsDataHandler extends AMADataHandler
                                         }
                                     }
                                     $echoMethod = $encCount == count($encRows) ? 'ok' : 'error';
-                                    echo EchoHelper::{$echoMethod}(($encrypt ? 'en' : 'de') . "crypted $encCount rows\n");
+                                    echo EchoHelper::{$echoMethod}("\t" . ($encrypt ? 'en' : 'de') . "crypted $encCount rows\n\n");
                                     // all done! disconnect the DB
                                     $db->disconnect();
                                 } else {
