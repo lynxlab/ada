@@ -108,9 +108,9 @@ class ADAEventDispatcher extends EventDispatcher implements EventDispatcherInter
                                 }
                             }
                         }
-                        if (!$event->isPropagationStopped() && !$dispatched) {
+                        if (!$event->isPropagationStopped()) {
                             // then dispatch to all, without prefix
-                            $event = self::getInstance()->dispatch($event, $eventPrefix . $eventName);
+                            $event = self::getInstance()->dispatch($event, $eventName);
                         }
                         return $event;
                     } else {
