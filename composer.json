@@ -22,7 +22,7 @@
         "npm-asset/datatables.net-se": "^1.13",
         "npm-asset/dropzone": "^5.9",
         "npm-asset/jplayer": "^2.9",
-        "npm-asset/jquery": "~3.4.0",
+        "npm-asset/jquery": "~3.7.0",
         "npm-asset/jquery-blockui": "^2.70",
         "npm-asset/jquery-migrate": "^3.4",
         "npm-asset/jquery-ui": "1.13.3",
@@ -89,12 +89,12 @@
     ],
     "require-dev": {
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
-        "friendsofphp/php-cs-fixer": "^3.51",
+        "friendsofphp/php-cs-fixer": "^3.88",
         "phpcompatibility/php-compatibility": "^9.3",
         "phpmd/phpmd": "^2.15",
-        "phpstan/phpstan": "^1.10",
+        "phpstan/phpstan": "^2.1",
         "psy/psysh": "@stable",
-        "rector/rector": "^1.0"
+        "rector/rector": "^2.0"
     },
     "config": {
         "optimize-autoloader": true,
