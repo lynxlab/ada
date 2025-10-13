@@ -12,6 +12,7 @@ namespace Lynxlab\ADA\Module\Encryptfields;
 
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Utilities;
+use Lynxlab\ADA\Module\Encryptfields\Events\EncryptFieldsEvents;
 use Lynxlab\ADA\Module\Encryptfields\Exceptions\EncryptFieldsException;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
 use Lynxlab\ADA\Module\EventDispatcher\Subscribers\ADAMethodSubscriberInterface;
@@ -35,13 +36,24 @@ class EventSubscriber implements EventSubscriberInterface, ADAMethodSubscriberIn
      */
     public static function getSubscribedEvents()
     {
+        $subsEvts = [
+            EncryptFieldsEvents::FIELDSCONFIG => [
+                'encryptFieldsConfig',
+                // we want this listener to be run as last
+                // so mark it with a negative priority
+                -9999,
+            ],
+        ];
         if (php_sapi_name() == "cli") {
-            return [];
+            return $subsEvts;
         } else {
-            return [
-                CoreEvent::POSTFETCHALL => 'postFetchAll',
-                CoreEvent::POSTFETCH => 'postFetch',
-            ];
+            return array_merge(
+                $subsEvts,
+                [
+                    CoreEvent::POSTFETCHALL => 'postFetchAll',
+                    CoreEvent::POSTFETCH => 'postFetch',
+                ]
+            );
         }
     }
 
@@ -62,6 +74,33 @@ class EventSubscriber implements EventSubscriberInterface, ADAMethodSubscriberIn
                 ],
             ];
         }
+    }
+
+    /**
+     * Return the event with the argument for encrypt fields configuration
+     *
+     * @param EncryptFieldsEvents $event
+     * @return EncryptFieldsEvents
+     */
+    public function encryptFieldsConfig(EncryptFieldsEvents $event)
+    {
+        $fields = [
+            'utente' => [
+                'fields' => [
+                    'nome',
+                    'cognome',
+                    'nome_destinatario', // alias in comunica/include/Spools/Spool.php:649
+                    'cognome_destinatario', // alias in comunica/include/Spools/Spool.php:649
+                    'student', // alias in include/AMA/AMATesterDataHandler.php:1419
+                    'lastname', //alias in include/AMA/AMATesterDataHandler.php:1419
+                ],
+            ],
+        ];
+        if ($event->hasArgument($event->getSubject())) {
+            $fields = array_merge_recursive($event->getArgument($event->getSubject()), $fields);
+        }
+        $event->setArgument($event->getSubject(), $fields);
+        return $event;
     }
 
     /**
