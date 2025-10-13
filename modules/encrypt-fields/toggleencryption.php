@@ -6,30 +6,39 @@ use Lynxlab\ADA\Module\Encryptfields\EchoHelper;
 require_once(realpath(__DIR__) . '/../../config_path.inc.php');
 
 if (php_sapi_name() == "cli") {
-    if ($argc < 3) {
-        die(EchoHelper::error('Usage: ') . $argv[0] . '--encrypt|--decrypt --dry-run|--force' . PHP_EOL);
-    }
+    try {
+        if ($argc < 3) {
+            die(EchoHelper::error('Usage: ') . $argv[0] . '--encrypt|--decrypt --dry-run|--force' . PHP_EOL);
+        }
 
-    if (isset($argv[1]) && $argv[1] === "--encrypt") {
-        echo EchoHelper::warn('Doing a database fields encryption', true);
-        $encrypt = true;
-    } elseif (isset($argv[1]) && $argv[1] === "--decrypt") {
-        echo EchoHelper::ok('Doing a database fields decryption', true);
-        $encrypt = false;
-    } else {
-        die(EchoHelper::error('ERROR') . ' Please pass --encrypt or --decrypt as command' . PHP_EOL);
-    }
+        if (isset($argv[1]) && $argv[1] === "--encrypt") {
+            echo EchoHelper::warn('Doing a database fields encryption', true);
+            $encrypt = true;
+        } elseif (isset($argv[1]) && $argv[1] === "--decrypt") {
+            echo EchoHelper::ok('Doing a database fields decryption', true);
+            $encrypt = false;
+        } else {
+            die(EchoHelper::error('ERROR') . ' Please pass --encrypt or --decrypt as command' . PHP_EOL);
+        }
 
-    if (isset($argv[2]) && $argv[2] === "--dry-run") {
-        echo EchoHelper::warn('Doing a dry-run as requested, nothing will be persisted to the DB', true);
-        $dryRun = true;
-    } elseif (isset($argv[2]) && $argv[2] === "--force") {
-        echo EchoHelper::ok('--force option passed, persisting imported data to the DB', true);
-        $dryRun = false;
-    } else {
-        die(EchoHelper::error('ERROR') . ' Please pass --dry-run or --force as command' . PHP_EOL);
-    }
-    if (isset($dryRun) && isset($encrypt)) {
-        CypherUtils::toggleEncryption($dryRun, $encrypt);
+        if (isset($argv[2]) && $argv[2] === "--dry-run") {
+            echo EchoHelper::warn('Doing a dry-run as requested, nothing will be persisted to the DB' . PHP_EOL, true);
+            $dryRun = true;
+        } elseif (isset($argv[2]) && $argv[2] === "--force") {
+            echo EchoHelper::ok('--force option passed, persisting imported data to the DB' . PHP_EOL, true);
+            $dryRun = false;
+        } else {
+            die(EchoHelper::error('ERROR') . ' Please pass --dry-run or --force as command' . PHP_EOL);
+        }
+        if (isset($dryRun) && isset($encrypt)) {
+            CypherUtils::toggleEncryption($dryRun, $encrypt);
+        }
+    } catch (Throwable $e) {
+        $m = $e->getMessage();
+        echo sprintf("\nFatal error: %s\n", $m);
+        if (str_starts_with($m, 'Class') && str_ends_with($m, 'not found')) {
+            echo "Check that module is enababled in config_modules.inc.php\n";
+        }
+        echo "\n";
     }
 }
