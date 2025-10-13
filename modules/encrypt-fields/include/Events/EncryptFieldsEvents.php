@@ -42,5 +42,5 @@ final class EncryptFieldsEvents extends GenericEvent
      *
      * @var string
      */
-    public const POSTFIELDSCONFIG = self::NAMESPACE . '.fieldsconfig.post';
+    public const FIELDSCONFIG = self::NAMESPACE . '.fieldsconfig.post';
 }

@@ -22,7 +22,7 @@ return (new PhpCsFixer\Config())
             ],
             'sort_algorithm' => 'alpha',
         ],
-        '@PHP83Migration' => true,
+        '@PHP8x3Migration' => true,
         'heredoc_indentation' => false,
         'octal_notation' => false,
     ])

@@ -35,30 +35,20 @@ class FieldsConfig
     }
 
     /**
-     * Gets all tables and field that require en/decryption
+     * Gets all tables and field that require en/decryption by
+     * dispatching an EncryptFieldsEvents::FIELDSCONFIG event
      *
      * @return array
      */
     public static function getAllFields(): array
     {
         $extFields = [];
-        $fields = [
-            'utente' => [
-                'fields' => [
-                    'nome',
-                    'cognome',
-                    'nome_destinatario', // alias in comunica/include/Spools/Spool.php:649
-                    'cognome_destinatario', // alias in comunica/include/Spools/Spool.php:649
-                    'student', // alias in include/AMA/AMATesterDataHandler.php:1419
-                    'lastname', //alias in include/AMA/AMATesterDataHandler.php:1419
-                ],
-            ],
-        ];
+        $fields = [];
         if (ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
             $event = ADAEventDispatcher::buildEventAndDispatch(
                 [
                     'eventClass' => EncryptFieldsEvents::class,
-                    'eventName' => EncryptFieldsEvents::POSTFIELDSCONFIG,
+                    'eventName' => EncryptFieldsEvents::FIELDSCONFIG,
                 ],
                 self::EVENTSUBJECT
             );
