@@ -96,8 +96,8 @@ class ADAEventDispatcher extends EventDispatcher implements EventDispatcherInter
                         $eventPrefix = array_key_exists('eventPrefix', $eventData) ? trim($eventData['eventPrefix']) . self::PREFIX_SEPARATOR : '';
                         $listeners = self::getInstance()->getListeners();
                         $dbt = array_unique(array_map(
-                            fn($el) => $el['class'] . '::' . $el['function'],
-                            array_filter(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), fn($el) => array_key_exists('class', $el))
+                            fn ($el) => $el['class'] . '::' . $el['function'],
+                            array_filter(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), fn ($el) => array_key_exists('class', $el))
                         ));
                         $dbt[] = basename($_SERVER['SCRIPT_NAME']);
                         foreach ($dbt as $prefix) {
@@ -142,7 +142,8 @@ class ADAEventDispatcher extends EventDispatcher implements EventDispatcherInter
     {
 
         // check if $eventName is a regexp
-        set_error_handler(function () {}, E_WARNING);
+        set_error_handler(function () {
+        }, E_WARNING);
         $isRegularExpression = preg_match($eventName, "") !== false;
         restore_error_handler();
         if ($isRegularExpression) {
