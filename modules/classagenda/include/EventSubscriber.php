@@ -59,7 +59,8 @@ class EventSubscriber implements EventSubscriberInterface
             $item = array_filter($left, fn ($el) => $el['label'] === strtolower(translateFN('strumenti')));
             if (!empty($item)) {
                 $itemKey = key($item);
-                if (empty(array_filter($left[$itemKey]['children'] ?? [], fn ($el) => $el['href_path'] == 'calendars.php'))) {
+                $calitem = array_filter($left[$itemKey]['children'] ?? [], fn ($el) => $el['href_path'] == 'calendars.php');
+                if (empty($calitem)) {
                     $left[$itemKey]['children'][] = array_merge($baseItem, [
                         'label' => 'Calendario corsi',
                         'icon' => 'calendar outline',
@@ -67,6 +68,12 @@ class EventSubscriber implements EventSubscriberInterface
                         'order' => 30,
                     ]);
                     uasort($left[$itemKey]['children'], fn ($a, $b) => $a['order'] - $b['order']);
+                } else {
+                    foreach (array_keys($calitem) as $key) {
+                        if (!isset($_SESSION['sess_selected_tester'])) {
+                            unset($left[$itemKey]['children'][$key]);
+                        }
+                    }
                 }
             }
 
