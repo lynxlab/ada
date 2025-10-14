@@ -11,7 +11,6 @@ if (ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
         [
             'eventClass' => CoreEvent::class,
             'eventName' => CoreEvent::PREMODULEINIT,
-            'eventPrefix' => basename($_SERVER['SCRIPT_FILENAME']),
         ],
         basename($_SERVER['SCRIPT_FILENAME']),
         [
@@ -62,7 +61,6 @@ if (ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
         [
             'eventClass' => CoreEvent::class,
             'eventName' => CoreEvent::POSTMODULEINIT,
-            'eventPrefix' => basename($_SERVER['SCRIPT_FILENAME']),
         ],
         basename($_SERVER['SCRIPT_FILENAME']),
         [

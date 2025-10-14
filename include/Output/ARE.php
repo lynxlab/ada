@@ -63,7 +63,6 @@ class ARE
                 [
                     'eventClass' => CoreEvent::class,
                     'eventName' => CoreEvent::PAGEPRERENDER,
-                    'eventPrefix' => basename($_SERVER['SCRIPT_FILENAME']),
                 ],
                 basename($_SERVER['SCRIPT_FILENAME']),
                 [

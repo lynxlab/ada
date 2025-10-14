@@ -137,7 +137,6 @@ class GenericHtml extends Output
                 [
                     'eventClass' => CoreEvent::class,
                     'eventName' => CoreEvent::PREFILLINTEMPLATE,
-                    'eventPrefix' => basename($_SERVER['SCRIPT_FILENAME']),
                 ],
                 basename($_SERVER['SCRIPT_FILENAME']),
                 [
@@ -209,7 +208,6 @@ class GenericHtml extends Output
                 [
                     'eventClass' => CoreEvent::class,
                     'eventName' => CoreEvent::POSTFILLINTEMPLATE,
-                    'eventPrefix' => basename($_SERVER['SCRIPT_FILENAME']),
                 ],
                 basename($_SERVER['SCRIPT_FILENAME']),
                 [
@@ -744,7 +742,6 @@ class GenericHtml extends Output
                         [
                             'eventClass' => CoreEvent::class,
                             'eventName' => CoreEvent::HTMLOUTPUT,
-                            'eventPrefix' => basename($_SERVER['SCRIPT_FILENAME']),
                         ],
                         basename($_SERVER['SCRIPT_FILENAME']),
                         [
