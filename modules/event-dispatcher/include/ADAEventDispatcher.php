@@ -91,26 +91,32 @@ class ADAEventDispatcher extends EventDispatcher implements EventDispatcherInter
                         }
                     }
                     if (!is_null($eventName)) {
+                        $dispatchArr = [];
                         $event = new $classname($subject, $arguments);
                         $eventPrefix = array_key_exists('eventPrefix', $eventData) ? trim($eventData['eventPrefix']) . self::PREFIX_SEPARATOR : '';
                         $listeners = self::getInstance()->getListeners();
                         $dbt = array_unique(array_map(
-                            fn ($el) => $el['class'] . '::' . $el['function'],
-                            array_filter(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), fn ($el) => array_key_exists('class', $el))
+                            fn($el) => $el['class'] . '::' . $el['function'],
+                            array_filter(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), fn($el) => array_key_exists('class', $el))
                         ));
-                        $dispatched = false;
+                        $dbt[] = basename($_SERVER['SCRIPT_NAME']);
                         foreach ($dbt as $prefix) {
                             if (array_key_exists($prefix . self::PREFIX_SEPARATOR . $eventName, $listeners)) {
-                                if (!$event->isPropagationStopped()) {
-                                    // first dispatch the prefixed event
-                                    $event = self::getInstance()->dispatch($event, $prefix . self::PREFIX_SEPARATOR . $eventName);
-                                    $dispatched = true;
-                                }
+                                // ADD Event prefixed by class::method or by SCRIPT_NAME
+                                $dispatchArr[] = $prefix . self::PREFIX_SEPARATOR . $eventName;
                             }
                         }
-                        if (!$event->isPropagationStopped()) {
-                            // then dispatch to all, without prefix
-                            $event = self::getInstance()->dispatch($event, $eventName);
+                        if (!empty($eventPrefix)) {
+                            // ADD Event prefixed by $eventPrefix (can be a custom sting, such as script full path)
+                            $dispatchArr[] = $eventPrefix . $eventName;
+                        }
+                        // ADD Event name without perfix
+                        $dispatchArr[] = $eventName;
+
+                        foreach (array_unique($dispatchArr) as $dispatchName) {
+                            if (!$event->isPropagationStopped()) {
+                                $event = self::getInstance()->dispatch($event, $dispatchName);
+                            }
                         }
                         return $event;
                     } else {
@@ -136,8 +142,7 @@ class ADAEventDispatcher extends EventDispatcher implements EventDispatcherInter
     {
 
         // check if $eventName is a regexp
-        set_error_handler(function () {
-        }, E_WARNING);
+        set_error_handler(function () {}, E_WARNING);
         $isRegularExpression = preg_match($eventName, "") !== false;
         restore_error_handler();
         if ($isRegularExpression) {
