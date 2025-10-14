@@ -106,7 +106,6 @@ abstract class AbstractAMADataHandler
                     [
                         'eventClass' => CoreEvent::class,
                         'eventName' => CoreEvent::AMADBPRECONNECT,
-                        'eventPrefix' => basename($_SERVER['SCRIPT_FILENAME']),
                     ],
                     basename($_SERVER['SCRIPT_FILENAME']),
                     [
@@ -129,7 +128,6 @@ abstract class AbstractAMADataHandler
                     [
                         'eventClass' => CoreEvent::class,
                         'eventName' => CoreEvent::AMADBPOSTCONNECT,
-                        'eventPrefix' => basename($_SERVER['SCRIPT_FILENAME']),
                     ],
                     basename($_SERVER['SCRIPT_FILENAME']),
                     [
