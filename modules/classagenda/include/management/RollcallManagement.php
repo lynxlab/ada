@@ -70,7 +70,7 @@ class RollcallManagement extends AbstractClassAgendaManagement
             case MODULES_CLASSAGENDA_DO_ROLLCALLHISTORY:
                 $htmlObj = CDOMElement::create('div', 'id:rollcallContainer');
                 if (
-                    empty($this->eventData) ||
+                    ($action == MODULES_CLASSAGENDA_DO_ROLLCALL && empty($this->eventData)) ||
                     !isset($this->id_course_instance) || is_null($this->id_course_instance) ||
                     strlen($this->id_course_instance) <= 0 || !is_numeric($this->id_course_instance) ||
                     !$this->isTutorOfInstance()
