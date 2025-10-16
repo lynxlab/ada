@@ -22,7 +22,7 @@
         "npm-asset/datatables.net-se": "^1.13",
         "npm-asset/dropzone": "^5.9",
         "npm-asset/jplayer": "^2.9",
-        "npm-asset/jquery": "~3.7.0",
+        "npm-asset/jquery": "~3.4.0",
         "npm-asset/jquery-blockui": "^2.70",
         "npm-asset/jquery-migrate": "^3.4",
         "npm-asset/jquery-ui": "1.13.3",

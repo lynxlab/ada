@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c250094dabab4f35fb10ff04cbece47b",
+    "content-hash": "4f93cbddaaa0266bd8fb4bea9a103494",
     "packages": [
         {
             "name": "bower-asset/jquery.maskedinput",
@@ -1196,10 +1196,10 @@
         },
         {
             "name": "npm-asset/jquery",
-            "version": "3.7.1",
+            "version": "3.4.1",
             "dist": {
                 "type": "tar",
-                "url": "https://registry.npmjs.org/jquery/-/jquery-3.7.1.tgz"
+                "url": "https://registry.npmjs.org/jquery/-/jquery-3.4.1.tgz"
             },
             "type": "npm-asset",
             "license": [
