@@ -179,8 +179,8 @@ class CalendarsManagement extends AbstractClassAgendaManagement
                 $onlySelectedCHECK->setAttribute('name', 'onlySelectedInstance');
                 $onlySelectedLABEL = CDOMElement::create('label', 'for:onlySelectedInstance');
                 $onlySelectedLABEL->addChild(new CText(translateFN('Mostra solo gli eventi della classe selezionata')));
+                $onlySelectedCHECK->setAttribute('checked', 'checked');
                 if ($_SESSION['sess_userObj']->getType() != AMA_TYPE_SWITCHER) {
-                    $onlySelectedCHECK->setAttribute('checked', 'checked');
                     $onlySelectedCHECK->setAttribute('style', 'display:none;');
                     $onlySelectedLABEL->setAttribute('style', 'display:none;');
                 }
