@@ -123,7 +123,7 @@ if (AMADataHandler::isError($msg_ha)) {
     );
 }
 
-$mittente = $msg_ha['mittente'];
+$mittente = $msg_ha['mittenteFullname'];
 /*
  * usare $msg_ha['id_mittente'] e $sess_id_user per ottenere corso e istanza corso comuni.
  * cosa fare se entrambe gli utenti sono iscritti a due classi?
@@ -131,7 +131,7 @@ $mittente = $msg_ha['mittente'];
 
 $Data_messaggio = AMADataHandler::tsToDate($msg_ha['data_ora'], "%d/%m/%Y - %H:%M:%S");
 $oggetto        = $msg_ha['titolo'];
-$destinatario   = str_replace(",", ", ", $msg_ha['destinatari']);
+$destinatario   = str_replace(",", ", ", $msg_ha['destinatariFullnames']);
 $message_text   = $msg_ha['testo'];
 $node_title = ""; // empty
 

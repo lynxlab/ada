@@ -955,8 +955,8 @@ class CommunicationModuleHtmlLib
                 $priority       = $appointment_Ar[3];
                 $read_timestamp = $appointment_Ar[4];
                 $date_time_zone = $date_time + $offset;
-                $zone           = translateFN("Time zone:") . " " . $tester_TimeZone;
-                $data_msg        = AMADataHandler::tsToDate($date_time_zone, "%d/%m/%Y - %H:%M:%S") . " " . $zone;
+                // $zone           = translateFN("Time zone:") . " " . $tester_TimeZone;
+                $data_msg        = AMADataHandler::tsToDate($date_time_zone, "%d/%m/%Y - %H:%M:%S"); // . " " . $zone;
 
                 // transform sender's id into sender's name
                 //        $res_ar = $udh->findUsersList(array("username"), "id_utente=$sender_id");
@@ -966,7 +966,7 @@ class CommunicationModuleHtmlLib
                 //        else {
                 //          $sender_username = $res_ar[0][1];
                 //        }
-                $sender_username = $appointment_Ar[6];
+                $sender_username = $appointment_Ar['nome'] . ' ' . $appointment_Ar['cognome'];
 
                 //$msg_id = $tester_info_Ar[0].'_'.$appointment_id;
                 $msg_id = $tester_id . '_' . $appointment_id;
@@ -1066,8 +1066,8 @@ class CommunicationModuleHtmlLib
                 $read_timestamp = $appointment_Ar[4];
 
                 $date_time_zone = $date_time + $offset;
-                $zone           = translateFN("Time zone:") . " " . $tester_TimeZone;
-                $data_msg        = AMADataHandler::tsToDate($date_time_zone, "%d/%m/%Y - %H:%M:%S") . " " . $zone;
+                // $zone           = translateFN("Time zone:") . " " . $tester_TimeZone;
+                $data_msg        = AMADataHandler::tsToDate($date_time_zone, "%d/%m/%Y - %H:%M:%S"); // . " " . $zone;
 
                 //        $data_msg        = AMADataHandler::tsToDate($date_time, "%d/%m/%Y - %H:%M:%S");
 
@@ -1079,7 +1079,7 @@ class CommunicationModuleHtmlLib
                 //        else {
                 //          $sender_username = $res_ar[0][1];
                 //        }
-                $sender_username = $appointment_Ar[6];
+                $sender_username = $appointment_Ar['nome'] . ' ' . $appointment_Ar['cognome'];
 
                 //$msg_id = $tester_info_Ar[0].'_'.$appointment_id;
                 $msg_id = $tester_id . '_' . $appointment_id;
