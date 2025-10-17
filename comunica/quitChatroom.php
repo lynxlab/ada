@@ -2,7 +2,9 @@
 
 use Lynxlab\ADA\Comunica\ChatRoom;
 use Lynxlab\ADA\Comunica\DataHandler\MessageHandler;
+use Lynxlab\ADA\Comunica\DataHandler\UserDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
+use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\Helper\ComunicaHelper;
 use Lynxlab\ADA\Main\Utilities;
 
@@ -134,12 +136,23 @@ switch ($exit_reason) {
         if (AMADataHandler::isError($mh)) {
             exitWithJSONError(translateFN("Errore nella creazione dell'oggetto MessageHandler"));
         }
+        $udh = UserDataHandler::instance($_SESSION['sess_selected_tester_dsn']);
+        if (AMADataHandler::isError($udh)) {
+            exitWithJSONError(translateFN("Errore nella creazione dell'oggetto UserDataHandler"));
+        }
+        $res_ar = $udh->findUsersList(["nome, cognome"], "username='$user_uname'");
+        if (!AMADB::isError($res_ar)) {
+            $res_ar = reset($res_ar);
+            $fullname = $res_ar['nome'] . ' ' . $res_ar['cognome'];
+        } else {
+            $fullname = $user_uname;
+        }
         // send a message to announce the entrance of the user
         $message_ha['tipo']     = ADA_MSG_CHAT;
         $message_ha['data_ora'] = "now";
         $message_ha['mittente'] = $user_uname;//"admin";
         $message_ha['id_group'] = $id_chatroom;
-        $message_ha['testo']    = addslashes(sprintf(translateFN("L'utente %s e' uscito dalla stanza!"), $user_uname));
+        $message_ha['testo']    = addslashes(sprintf(translateFN("L'utente %s e' uscito dalla stanza!"), $fullname));
         // delegate sending to the message handler
         $result = $mh->sendMessage($message_ha);
         if (AMADataHandler::isError($result)) {

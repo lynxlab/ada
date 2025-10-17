@@ -120,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
 
-        if (!isset($destinatari) || DataValidator::validateNotEmptyString($destinatari) === false) {
+        if (!isset($destinatari) || DataValidator::validateNotEmptyString(trim(implode('', $destinatari))) === false) {
             $errors['destinatari'] = ADA_EVENT_PROPOSAL_ERROR_RECIPIENT;
         }
 

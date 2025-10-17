@@ -484,7 +484,7 @@ class MessageHandler
         // transform sender id into sender username
         $sender_id = $message_ha['id_mittente'];
         $res_ar = $udh->findUsersList(
-            ["username"],
+            ["username", "nome", "cognome"],
             "id_utente=$sender_id"
         );
         if (AMADataHandler::isError($res_ar)) {
@@ -492,14 +492,16 @@ class MessageHandler
             return $retval;
         }
 
-        $sender_username = $res_ar[0][1];
+        $sender_username = $res_ar[0]['username'];
+        $sender_fullname = $res_ar[0]['nome'] . ' ' . $res_ar[0]['cognome'];
 
         // transform recipients' ids array into usernames array
         $recipients_usernames_ar = [];
+        $recipients_fullnames_ar = [];
         foreach ($recipients_ids_ar as $rid) {
             // get username of the current id ($rid)
             $res_ar = $udh->findUsersList(
-                ["username"],
+                ["username", "nome", "cognome"],
                 "id_utente=$rid"
             );
             if (AMADataHandler::isError($res_ar)) {
@@ -507,16 +509,20 @@ class MessageHandler
                 return $retval;
             }
             if (array_key_exists(0, $res_ar)) {
-                $recipients_usernames_ar[] = $res_ar[0][1];
+                $recipients_usernames_ar[] = $res_ar[0]['username'];
+                $recipients_fullnames_ar[] = $res_ar[0]['nome'] . ' ' . $res_ar[0]['cognome'];
             }
         }
 
         // create CSV list starting from array
         $recipients_usernames = implode(",", $recipients_usernames_ar);
+        $recipients_fullnames = implode(",", $recipients_fullnames_ar);
 
         // adapt message hash
         $message_ha['mittente'] = $sender_username;
+        $message_ha['mittenteFullname'] = $sender_fullname;
         $message_ha['destinatari'] = $recipients_usernames;
+        $message_ha['destinatariFullnames'] = $recipients_fullnames;
 
         // set message as read
         $res = $spool->setMessage($msg_id, "read", 'R');

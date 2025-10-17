@@ -30,7 +30,7 @@ function initDoc(){
         });
     } else if ($j('#authorReport').length>0) {
     	moreColDefs = [{"aTargets": [lastCol-3], "sWidth" : "7%", "sClass":"centerAlign" },
-    	               {"aTargets": [0], "sType":"formatted-num" }];
+    	               {"aTargets": [0], "sType":"formatted-num" }, {"aTargets": [lastCol-2], visible: false}];
     } else if ($j('#authorZoom').length>0) {
     	colDefs = [{"aTargets": [lastCol-1], "sWidth" : "15%", "sClass" : "centerAlign" },
     	           {"aTargets": [0], "sType":"date-eu" }];

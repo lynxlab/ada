@@ -147,7 +147,7 @@ $offset          = Utilities::getTimezoneOffset($tester_TimeZone, SERVER_TIMEZON
 $date_time       = $msg_ha['data_ora'];
 $date_time_zone  = $date_time + $offset;
 $zone            = translateFN("Time zone:") . " " . $tester_TimeZone;
-$Data_messaggio  = AMADataHandler::tsToDate($date_time_zone, "%d/%m/%Y - %H:%M:%S") . " " . $zone;
+$Data_messaggio  = AMADataHandler::tsToDate($date_time_zone, "%d/%m/%Y - %H:%M:%S"); // . " " . $zone;
 //$Data_messaggio = AMADataHandler::tsToDate($msg_ha['data_ora'], "%d/%m/%Y - %H:%M:%S");
 
 /*
@@ -156,9 +156,9 @@ $Data_messaggio  = AMADataHandler::tsToDate($date_time_zone, "%d/%m/%Y - %H:%M:%
 $oggetto = ADAEventProposal::removeEventToken($msg_ha['titolo']);
 
 
-$mittente = $msg_ha['mittente'];
+$mittente = $msg_ha['mittenteFullname'];
 
-$destinatario = str_replace(",", ", ", $msg_ha['destinatari']);
+$destinatario = str_replace(",", ", ", $msg_ha['destinatariFullnames']);
 // $destinatario = $msg_ha['destinatari'];
 
 

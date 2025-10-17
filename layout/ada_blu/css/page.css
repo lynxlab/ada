@@ -334,11 +334,11 @@ a:visited {text-decoration: none; }
 }
 
 #com_tools .ui.popup {
-	max-width: 40rem;
+	max-width: 60rem;
 }
 
 #com_tools .ui.popup table {
-	width: 40rem;
+	width: 60rem;
 	color: #000000;
 }
 

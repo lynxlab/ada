@@ -1006,9 +1006,9 @@ class CourseViewer
             $list_item->setAttribute('class', $css_classname);
         }
 
-        if (isset($params['node']['username'])) {
+        if (isset($params['node']['nome']) && isset($params['node']['cognome'])) {
             $username = CDOMElement::create('span', 'class:username');
-            $username->addChild(new CText($params['node']['username']));
+            $username->addChild(new CText($params['node']['nome'] . ' ' . $params['node']['cognome']));
             $username->setAttribute('data-user-id', $params['node']['id_utente']);
         }
         if (isset($params['node']['data_creazione'])) {

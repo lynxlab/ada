@@ -401,7 +401,11 @@ class NodeEditingViewer
                 $author_name->addChild(new CText(translateFN('Tu hai scritto:')));
             } else {
                 //  $author_name = $parentNodeObj->author['username']." ".translateFN("ha scritto:");
-                $author_name->addChild(new CText(sprintf(translateFN("%s ha scritto: "), $parentNodeObj->author['username'])));
+                $author_name->addChild(new CText(sprintf(
+                    translateFN("%s %s ha scritto: "),
+                    $parentNodeObj->author['nome'],
+                    $parentNodeObj->author['cognome']
+                )));
             }
 
             $replied_node_data->addChild($author_name);
