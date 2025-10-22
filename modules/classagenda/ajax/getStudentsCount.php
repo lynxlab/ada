@@ -77,6 +77,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
         if (!AMADB::isError($result)) {
             $retVal = intval(count($result));
         }
+        header('Content-Type: application/json');
         echo json_encode(['value' => $retVal]);
     }
 }

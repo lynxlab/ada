@@ -129,5 +129,6 @@ if (
     }
 }
 if (!is_null($retArray)) {
+    header('Content-Type: application/json');
     die(json_encode($retArray));
 }

@@ -82,4 +82,5 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
         }
     }
 }
+header('Content-Type: application/json');
 die(json_encode($retVal));

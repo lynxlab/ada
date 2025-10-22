@@ -94,5 +94,5 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 if (empty($retArray)) {
     $retArray = ["status" => "ERROR", "msg" => translateFN("Errore sconosciuto")];
 }
-
+header('Content-Type: application/json');
 echo json_encode($retArray);

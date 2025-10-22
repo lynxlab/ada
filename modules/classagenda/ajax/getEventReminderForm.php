@@ -80,4 +80,5 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
         $retArray['html'] = 'ERROR: Invalid form';
     }
 }
+header('Content-Type: application/json');
 die(json_encode($retArray));
