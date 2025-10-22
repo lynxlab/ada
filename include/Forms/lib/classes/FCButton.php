@@ -26,7 +26,7 @@ class FCButton extends FormControl
 {
     public function render()
     {
-        $html = '<button id="' . $this->controlId . '" type="button" name="' . $this->controlId . '"' . $this->renderAttributes() . '>' . $this->labelText . '</button>';
+        $html = '<button id="' . $this->getId() . '" type="button" name="' . $this->getName() . '"' . $this->renderAttributes() . '>' . $this->labelText . '</button>';
         return $html;
     }
 }

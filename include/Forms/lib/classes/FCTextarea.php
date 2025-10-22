@@ -26,7 +26,7 @@ class FCTextarea extends FormControl
 {
     public function render()
     {
-        $html = '<textarea id="' . $this->controlId . '" name="' . $this->controlId . '"' . $this->renderAttributes() . ' >' . $this->controlData . '</textarea><div class="' . self::DEFAULT_CLASS . ' clear"></div>';
+        $html = '<textarea id="' . $this->getId() . '" name="' . $this->getName() . '"' . $this->renderAttributes() . ' >' . $this->controlData . '</textarea><div class="' . self::DEFAULT_CLASS . ' clear"></div>';
         return $this->label() . $html;
     }
 }

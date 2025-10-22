@@ -81,17 +81,14 @@ SwitcherHelper::init($neededObjAr);
 /*
  * Handle practitioner assignment
  */
-if (
-    isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'
-    //        && isset($id_tutors_new) && !empty($id_tutors_new)) {
-    && (isset($id_tutors_new) || !empty($_POST['id_tutors_old']))
-) {
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+    $id_tutors_new = (array) (($_POST['id_tutors_new'] ?? null) ?: []);
     $courseInstanceId = $_POST['id_course_instance'];
     $courseId = $_POST['id_course'];
-    $id_tutors_old = $_POST['id_tutors_old'];
+    $id_tutors_old = ($_POST['id_tutors_old'] ?? null) ?: [];
     $redirectTo = 'list_instances.php?id_course=' . $courseId;
 
-    if ($id_tutors_old != 'no' && !empty($id_tutors_old)) {
+    if (!empty($id_tutors_old)) {
         $id_tutors_old = explode(',', $id_tutors_old);
 
         if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
@@ -142,7 +139,7 @@ if (
             }
         }
     }
-    if (is_array($id_tutors_new)) {
+    if (!empty($id_tutors_new)) {
         if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
             $event = ADAEventDispatcher::buildEventAndDispatch(
                 [
@@ -235,7 +232,7 @@ if (
             $errObj = new ADAError($result, translateFN('Errore in lettura tutor'));
         }
         if ($result === false) {
-            $id_tutors_old = 'no';
+            $id_tutors_old = [];
         } else {
             $id_tutors_old = $result;
         }
@@ -247,21 +244,34 @@ if (
             $errObj = new ADAError($tutors_ar, translateFN('Errore in lettura dei tutor'));
         }
 
+        // order by cognome, nome with checked tutors first
+        $tutorsSplitted = function () use ($tutors_ar, $id_tutors_old) {
+            // try to optimize mem usage using yeld
+            yield from [
+                'selected' => array_filter($tutors_ar, fn ($t) => in_array($t[0], $id_tutors_old)),
+                'unselected' => array_filter($tutors_ar, fn ($t) => !in_array($t[0], $id_tutors_old)),
+            ];
+        };
+        $tutors_ar = [];
+        foreach ($tutorsSplitted() as $tv) {
+            usort(
+                $tv,
+                fn ($t1, $t2) => strcasecmp($t1[2] . $t1[1], $t2[2] . $t2[1])
+            );
+            $tutors_ar = array_merge($tutors_ar, $tv);
+        }
+        unset($tutorsSplitted);
 
         $tutors = [];
         $ids_tutor = [];
 
-        if ($id_tutors_old == 'no') {
-            $tutors['no'] = translateFN('Nessun tutor');
-        }
-
         foreach ($tutors_ar as $tutor) {
             $ids_tutor[] = $tutor[0];
             $nome = $tutor[1] . ' ' . $tutor[2];
-            $link = CDOMElement::create('a');
+            $link = CDOMElement::create('div');
             $link->setAttribute('id', 'tooltip' . $tutor[0]);
             $link->setAttribute('title', ''); // this is needed by the jquery-ui tooltip
-            $link->setAttribute('href', 'javascript:void(0);');
+            $link->setAttribute('style', 'cursor:pointer');
             $link->addChild(new CText($nome));
             $tutors[$tutor[0]] = $link->getHtml();
         }

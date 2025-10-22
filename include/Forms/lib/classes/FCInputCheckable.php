@@ -36,8 +36,7 @@ class FCInputCheckable extends FormControl
                 break;
         }
 
-        $html = '<input type="' . $this->controlType . '" id="' . $this->controlId . '" name="' . $this->controlId . '"';
-        //$html = '<input type="'.$this->controlType.'" name="'.$this->controlId.'"';
+        $html = '<input type="' . $this->controlType . '" id="' . $this->getId() . '" name="' . $this->getName() . '"';
         if ($this->controlData !== null) {
             $html .= ' value="' . $this->controlData . '"';
         }
@@ -46,7 +45,7 @@ class FCInputCheckable extends FormControl
         }
         $html .= $this->renderAttributes();
         $html .= ' />'
-              . '<label for="' . $this->controlId . '">' . $this->labelText . '</label>';
+              . '<label for="' . $this->getId() . '">' . $this->labelText . '</label>';
         return $html;
     }
 

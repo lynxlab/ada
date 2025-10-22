@@ -67,7 +67,7 @@ class FCFieldset extends FormControl
      */
     protected function label()
     {
-        $html = '<span id="l_' . $this->controlId . '" class="' . self::DEFAULT_CLASS;
+        $html = '<span id="l_' . $this->getId() . '" class="' . self::DEFAULT_CLASS;
         if ($this->isMissing) {
             $html .= ' error';
         }
@@ -82,7 +82,7 @@ class FCFieldset extends FormControl
     public function render()
     {
         $html = $this->label() .
-                '<fieldset id="' . $this->controlId . '" class="' . self::DEFAULT_CLASS . '"' .
+                '<fieldset id="' . $this->getId() . '" class="' . self::DEFAULT_CLASS . '"' .
                 $this->renderAttributes() .
                 '><ol class="' . self::DEFAULT_CLASS . '">';
         foreach ($this->controls as $control) {

@@ -277,9 +277,16 @@ abstract class FForm
     {
         $checkboxButtons = [];
         if (is_array($data) && count($data) > 0) {
+            $count = 0;
             foreach ($data as $value => $text) {
                 $control = FormControl::create(FormControl::INPUT_CHECKBOX, $id, $text)
                          ->withData($value);
+                if (str_contains($id, '[]')) {
+                    $newid = preg_replace('/\[\]/', '[' . ($count++) . ']', $id);
+                    if ($newid != null && $id != $newid) {
+                        $control->setName($id)->setId($newid);
+                    }
+                }
                 if (
                     (!is_array($checked) && $value == $checked) ||
                     (is_array($checked) && in_array($value, $checked))
