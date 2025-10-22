@@ -40,6 +40,12 @@ var UIEvents = [];
  */
 var UIDeletedEvents = [];
 
+/**
+ * events cancelled from the UI only,
+ * used when reloading events from ajax
+ */
+var UIcancelledEvents = [];
+
 function initDoc(passedUserType) {
     // save passed user type in its own global
     userType = passedUserType;
@@ -289,6 +295,7 @@ function buildAndPlaceEvent(newEvent, doCheckTutorOverlap) {
         const endDate = moment(newEvent.end);
         newEvent.title = buildEventTitle(newEvent);
         if (newEvent.tutorID > 0) newEvent.eventID = addToUIEvents(newEvent);
+        newEvent.cancelled = false;
         calendar.fullCalendar('renderEvent', newEvent, true);
         calendar.fullCalendar('unselect');
         if (!mustSave) setMustSave(true);
@@ -327,8 +334,12 @@ function initCancelButton() {
         event.preventDefault();
 
         var doReset = function () {
+            UIcancelledEvents = [];
             // refetch calendar events
-            if ('undefined' != typeof calendar) calendar.fullCalendar('refetchEvents');
+            if ('undefined' != typeof calendar) {
+                calendar.fullCalendar('removeEvents', (e) => e.cancelled !== false);
+                calendar.fullCalendar('refetchEvents');
+            }
             // reload instance details: allocated_hours and lessons_count
             $j('#instancesList').trigger('change');
             setMustSave(false);
@@ -475,6 +486,9 @@ function unselectSelectedEvent(checkReminder) {
     if (selEvent.length > 0) {
         selEvent[0].isSelected = false;
         selEvent[0].className = '';
+        if (selEvent[0].cancelled !== false) {
+            selEvent[0].className += ' cancelledClassroomEvent';
+        }
         calendar.fullCalendar('updateEvent', selEvent[0]);
     }
 
@@ -500,6 +514,9 @@ function setSelectedEvent(event) {
     });
     if (selEvent.length > 0) {
         selEvent[0].className = 'selectedClassroomEvent';
+        if (selEvent[0].cancelled !== false) {
+            selEvent[0].className += ' cancelledClassroomEvent';
+        }
         selEvent[0].isSelected = true;
         setSelectedClassroom(selEvent[0].classroomID);
         setSelectedTutor(selEvent[0].tutorID);
@@ -509,7 +526,11 @@ function setSelectedEvent(event) {
          * check if the selected event has a reminder
          */
         $j.when(checkReminderSent()).always(function () {
-            $j('#reminderButton').button({ disabled: !canDelete });
+            if (selEvent[0].cancelled !== false) {
+                $j('#repeatButton, #reminderButton, #cancelButton').button({ disabled: true });
+            } else {
+                $j('#reminderButton').button({ disabled: !canDelete });
+            }
         });
     }
 }
@@ -555,6 +576,9 @@ function rerenderAllEvents() {
             } else allEvents[i].editable = false;
             allEvents[i].className = (!allEvents[i].editable) ? 'noteditableClassroomEvent' : 'editableClassroomEvent';
             if (allEvents[i].isSelected) allEvents[i].className = 'selectedClassroomEvent';
+            if (allEvents[i].cancelled !== false) {
+                allEvents[i].className += ' cancelledClassroomEvent';
+            }
         }
         calendar.fullCalendar('rerenderEvents');
     }
@@ -823,7 +847,8 @@ function saveClassRoomEvents() {
                 start: calEvents[i].start.format(),
                 end: calEvents[i].end.format(),
                 classroomID: calEvents[i].classroomID,
-                tutorID: calEvents[i].tutorID
+                tutorID: calEvents[i].tutorID,
+                cancelled: (false === calEvents[i].cancelled ?? false) ? 0 : calEvents[i].cancelled,
             };
         }
     }
@@ -972,8 +997,15 @@ function reloadClassRoomEvents() {
                     // set as editable only events of the selected course instance
                     if ((userType == AMA_TYPE_SWITCHER) || (userType == AMA_TYPE_TUTOR)) {
                         JSONObj[i].editable = (JSONObj[i].instanceID == selectedInstanceID);
-                    } else JSONObj[i].eidtable = false;
+                    } else JSONObj[i].editable = false;
                     JSONObj[i].className = (!JSONObj[i].editable) ? 'noteditableClassroomEvent' : 'editableClassroomEvent';
+                    // restore cancelled value if found in UIcancelledEvents
+                    if (JSONObj[i].cancelled === false && UIcancelledEvents[JSONObj[i].id] !== undefined) {
+                        JSONObj[i].cancelled = UIcancelledEvents[JSONObj[i].id];
+                    }
+                    if (JSONObj[i].cancelled !== false) {
+                        JSONObj[i].className += ' cancelledClassroomEvent';
+                    }
 
                     calendar.fullCalendar('unselect');
                     eventsToDraw.push(JSONObj[i]);
@@ -1279,6 +1311,24 @@ function repeatSelectedEvent() {
 }
 
 /**
+ * set event cancel date time
+ */
+function cancelSelectedEvent() {
+    const event = getSelectedEvent();
+    const startDate = moment(event.start);
+    const endDate = moment(event.end);
+    event.cancelled = moment().format('YYYY-MM-DDTHH:mm:ss');
+    event.className += ' cancelledClassroomEvent';
+    updateSelectedEvent(event);
+    updateAllocatedHours(moment.duration(endDate.subtract(startDate)).asMilliseconds(), -1);
+    setCanDelete(false);
+    if (!mustSave) setMustSave(true);
+    if ('undefined' !== typeof event.id && UIcancelledEvents.indexOf(event.id) == -1) {
+        UIcancelledEvents[event.id] = event.cancelled;
+    }
+}
+
+/**
  * opens up the dialog to set and send the email
  * reminder to subscribed students
  */
@@ -1510,7 +1560,7 @@ function setMustSave(status) {
  */
 function setCanDelete(status) {
     canDelete = status;
-    $j('#deleteButton, #repeatButton, #reminderButton').button({ disabled: !canDelete });
+    $j('#deleteButton, #repeatButton, #reminderButton, #cancelButton').button({ disabled: !canDelete });
 }
 
 /**

@@ -13,6 +13,7 @@
 
 namespace Lynxlab\ADA\Module\Classagenda;
 
+use DateTimeImmutable;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
@@ -158,6 +159,12 @@ class AMAClassagendaDataHandler extends AMADataHandler
             $params[] = intval($venueID);
         }
 
+        if (defined('MODULES_CLASSAGENDA_EVENT_CANCEL') && MODULES_CLASSAGENDA_EVENT_CANCEL && $_SESSION['sess_userObj']->getType() != AMA_TYPE_SWITCHER) {
+            /**
+             * if it's not a swithcer, select not cancelled events only
+             */
+            $sql .= ' AND `CAL`.`cancelled` IS NULL';
+        }
 
         $result = $this->getAllPrepared($sql, $params, AMA_FETCH_ASSOC);
 
@@ -214,6 +221,15 @@ class AMAClassagendaDataHandler extends AMADataHandler
         $endTimestamp = $this->dateToTs($day . '/' . $month . '/' . $year, $time);
 
         /**
+         * prepare cancel datetime
+         */
+        if (defined('MODULES_CLASSAGENDA_EVENT_CANCEL') && MODULES_CLASSAGENDA_EVENT_CANCEL && 0 != ($eventData['cancelled'] ?? null)) {
+            $cancelled = (DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s', $eventData['cancelled']))->format('Y-m-d H:i:s');
+        } else {
+            $cancelled = null;
+        }
+
+        /**
          * set classroom to null if no module classroom is there
          */
         if (strlen($eventData['classroomID']) <= 0 || !ModuleLoaderHelper::isLoaded('MODULES_CLASSROOM')) {
@@ -222,15 +238,27 @@ class AMAClassagendaDataHandler extends AMADataHandler
 
         $values = [$startTimestamp, $endTimestamp, $course_instance_id, $eventData['classroomID'], $eventData['tutorID']];
 
+        if (defined('MODULES_CLASSAGENDA_EVENT_CANCEL') && MODULES_CLASSAGENDA_EVENT_CANCEL) {
+            $values[] = $cancelled;
+        }
+
         if (isset($eventData['id']) && strlen($eventData['id']) > 0) {
             $isInsert = false;
             $sql = 'UPDATE `' . self::$PREFIX . 'calendars` SET start=?, end=?, ' .
-                'id_istanza_corso=?, id_classroom=?, id_utente_tutor=? WHERE ' . self::$PREFIX . 'calendars_id=?';
+                'id_istanza_corso=?, id_classroom=?, id_utente_tutor=?';
+            if (defined('MODULES_CLASSAGENDA_EVENT_CANCEL') && MODULES_CLASSAGENDA_EVENT_CANCEL) {
+                $sql .= ', `cancelled`=?';
+            }
+            $sql .= ' WHERE ' . self::$PREFIX . 'calendars_id=?';
             array_push($values, intval($eventData['id']));
         } else {
             $isInsert = true;
             // null is passed to generate a new autoincrement
-            $sql = 'INSERT INTO `' . self::$PREFIX . 'calendars` VALUES(null,?,?,?,?,?)';
+            $sql = 'INSERT INTO `' . self::$PREFIX . 'calendars` VALUES(null,?,?,?,?,?';
+            if (defined('MODULES_CLASSAGENDA_EVENT_CANCEL') && MODULES_CLASSAGENDA_EVENT_CANCEL) {
+                $sql .= ',?';
+            }
+            $sql .= ')';
         }
 
         $result = $this->queryPrepared($sql, $values);
@@ -259,6 +287,9 @@ class AMAClassagendaDataHandler extends AMADataHandler
             if (!is_null($course_instance_id) && strlen($course_instance_id) > 0 && is_numeric($course_instance_id)) {
                 $sql .= ' AND `id_istanza_corso`=?';
                 $params[] = $course_instance_id;
+            }
+            if (defined('MODULES_CLASSAGENDA_EVENT_CANCEL') && MODULES_CLASSAGENDA_EVENT_CANCEL) {
+                $sql .= ' AND `' . self::$PREFIX . 'calendars`.`cancelled` IS NULL';
             }
             // date is today
             $sql .= ' AND DATE(FROM_UNIXTIME(start))>=CURDATE() AND' .
@@ -396,6 +427,9 @@ class AMAClassagendaDataHandler extends AMADataHandler
         if (!is_null($eventID)) {
             $sql .= ' AND `' . self::$PREFIX . 'calendars_id` != :eventID';
             $params = array_merge($params, [':eventID' => $eventID]);
+        }
+        if (defined('MODULES_CLASSAGENDA_EVENT_CANCEL') && MODULES_CLASSAGENDA_EVENT_CANCEL) {
+            $sql .= ' AND `' . self::$PREFIX . 'calendars`.`cancelled` IS NULL';
         }
 
         $sql .= ' AND (`start`= :startTS OR `end`= :endTS OR ' .
@@ -558,22 +592,31 @@ class AMAClassagendaDataHandler extends AMADataHandler
      * gets instance calendar export data
      *
      * @param number $instanceID
+     * @param bool $withcancelled if true will include cancelled events
      *
      * @return array|AMA_Error
      *
      * @access public
      */
-    public function getInstanceFullCalendar($instanceID)
+    public function getInstanceFullCalendar($instanceID, $withcancelled = false)
     {
 
         $sql =  'SELECT CAL.*, USER.`nome`,USER.`cognome`' .
             ' FROM  `' . self::$PREFIX . 'calendars` AS CAL' .
             ' LEFT JOIN `utente` AS USER ON CAL.`id_utente_tutor`=USER.`id_utente`' .
             ' WHERE `id_istanza_corso`=?';
+        if (defined('MODULES_CLASSAGENDA_EVENT_CANCEL') && MODULES_CLASSAGENDA_EVENT_CANCEL) {
+            if ($withcancelled === false) {
+                $sql .= ' AND `CAL`.`cancelled` IS NULL';
+            }
+        } else {
+            $sql .= ' AND `CAL`.`cancelled` IS NULL';
+        }
 
         $retres = $this->getAllPrepared($sql, $instanceID, AMA_FETCH_ASSOC);
         $retval = [];
         if (!AMADB::isError($retres)) {
+            $classroomAPI = new ClassroomAPI();
             foreach ($retres as $i => $result) {
                 $retval[$i]['date'] = Utilities::ts2dFN($result['start']);
                 $retval[$i]['eventstart'] = substr(Utilities::ts2tmFN($result['start']), 0, -3);
@@ -584,7 +627,6 @@ class AMAClassagendaDataHandler extends AMADataHandler
                     /**
                      * get data about classroom and venue
                      */
-                    $classroomAPI = new ClassroomAPI();
                     $classroomresult = $classroomAPI->getClassroom(intval($result['id_classroom']));
                     if (!is_null($result['id_classroom']) && intval($result['id_classroom']) > 0) {
                         if (!AMADB::isError($classroomresult)) {

@@ -16,6 +16,7 @@
 #deleteAllButtonContainer,
 #reminderButtonContainer,
 #repeatButtonContainer,
+#cancelButtonContainer,
 #buttonsContainer { border: 1px dotted gray; padding: 1em; margin: 0 0 1em 0 ; width: calc(100% - 2em); }
 /**
  * #classrooms div starts hidden, it will
@@ -30,6 +31,7 @@
 #deleteAllButtonContainer,
 #reminderButtonContainer,
 #repeatButtonContainer,
+#cancelButtonContainer,
 #buttonsContainer { border:none; text-align: center; padding-top:0; padding-bottom:0; }
 
 #reminderButtonContainer { width: 100%; margin: 0; padding: 0; }
@@ -58,6 +60,8 @@ span.studentcount { display: block; margin-top: 5px; }
 
 a.noteditableClassroomEvent { background: lightslategray; opacity:0.9; z-index:1 !important; pointer-events: none; }
 a.editableClassroomEvent { z-index: 2 !important; }
+a.cancelledClassroomEvent { z-index: 0 !important; opacity: 0.5;}
+a.cancelledClassroomEvent > div { text-decoration: line-through; }
 /**
  * details, alert and confirm dialogs
  */

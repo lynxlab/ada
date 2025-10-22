@@ -127,6 +127,15 @@ class CalendarsManagement extends AbstractClassAgendaManagement
                     $deleteAllButtonDIV->addChild($deleteAllButton);
 
                     /**
+                     * cancel classroom event button
+                     */
+                    $cancelButtonDIV = CDOMElement::create('div', 'id:cancelButtonContainer');
+                    $cancelButton = CDOMElement::create('input_button', 'id:cancelButton');
+                    $cancelButton->setAttribute('onclick', 'javascript:cancelSelectedEvent();');
+                    $cancelButton->setAttribute('value', translateFN('Annulla Elemento Selezionato'));
+                    $cancelButtonDIV->addChild($cancelButton);
+
+                    /**
                      * delete classroom event button
                      */
                     $deleteButtonDIV = CDOMElement::create('div', 'id:deleteButtonContainer');
@@ -431,6 +440,9 @@ class CalendarsManagement extends AbstractClassAgendaManagement
                 }
                 if (isset($repeatButtonDIV)) {
                     $calendarBoxes->addChild($repeatButtonDIV);
+                }
+                if (defined('MODULES_CLASSAGENDA_EVENT_CANCEL') && MODULES_CLASSAGENDA_EVENT_CANCEL && isset($cancelButtonDIV)) {
+                    $calendarBoxes->addChild($cancelButtonDIV);
                 }
                 if (isset($deleteButtonDIV)) {
                     $calendarBoxes->addChild($deleteButtonDIV);

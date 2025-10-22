@@ -149,8 +149,14 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             [$day, $month, $year] = explode('/', Utilities::ts2dFN($aResult['end']));
             $retArray[$i]['end'] = $year . '-' . $month . '-' . $day . 'T' . Utilities::ts2tmFN($aResult['end']);
 
+            $retArray[$i]['cancelled'] = false;
+            if (defined('MODULES_CLASSAGENDA_EVENT_CANCEL') && MODULES_CLASSAGENDA_EVENT_CANCEL && (null !== $aResult['cancelled'] ?? null)) {
+                $retArray[$i]['cancelled'] = (DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $aResult['cancelled']))->format('Y-m-d\TH:i:s');
+            }
+
             $i++;
         }
+        header('Content-Type: application/json');
         die(json_encode($retArray));
     }
 }

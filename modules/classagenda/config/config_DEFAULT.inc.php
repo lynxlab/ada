@@ -42,6 +42,8 @@ define('MODULES_CLASSAGENDA_EMAILS_PER_HOUR', 60); // numer of emails per hour t
 
 define('PDF_EXPORT_FOOTER', 'ADA è un software opensource rilasciato sotto licenza GPL © Lynx s.r.l. - Roma');
 
+define('MODULES_CLASSAGENDA_EVENT_CANCEL', false); // true to enable event cancel
+
 if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
     ADAEventDispatcher::getInstance()->addSubscriber(new EventSubscriber());
 } else {

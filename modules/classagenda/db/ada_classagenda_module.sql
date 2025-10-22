@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS `module_classagenda_calendars` (
   `id_istanza_corso` int(10) UNSIGNED NOT NULL,
   `id_classroom` int(10) UNSIGNED DEFAULT NULL,
   `id_utente_tutor` int(10) UNSIGNED NOT NULL,
+  `cancelled` DATETIME NULL DEFAULT NULL,
   PRIMARY KEY (`module_classagenda_calendars_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
