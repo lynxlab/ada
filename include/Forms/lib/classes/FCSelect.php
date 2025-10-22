@@ -76,7 +76,7 @@ class FCSelect extends FormControl
 
     public function render()
     {
-        $html = '<select id="' . $this->controlId . '" name="' . $this->controlId . '"';
+        $html = '<select id="' . $this->getId() . '" name="' . $this->getName() . '"';
         $html .= $this->renderAttributes();
         $html .=  ' >';
         foreach ($this->options as $option) {

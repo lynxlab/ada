@@ -33,7 +33,7 @@ class FCInputHidden extends FormControl
     public function render()
     {
         $this->setAttribute('class', 'input_hidden');
-        $html = '<input type="' . $this->controlType . '" id="' . $this->controlId . '" name="' . $this->controlId . '"';
+        $html = '<input type="' . $this->controlType . '" id="' . $this->getId() . '" name="' . $this->getName() . '"';
         if ($this->controlData !== null) {
             $html .= ' value="' . $this->controlData . '"';
         }

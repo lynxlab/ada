@@ -36,6 +36,7 @@ abstract class FormControl
         $this->hidden = false;
 
         $this->validator = FormValidator::DEFAULT_VALIDATOR;
+        $this->setName($this->getId());
     }
     /**
      * Creates a new FormControl object.
@@ -79,7 +80,7 @@ abstract class FormControl
      */
     protected function label()
     {
-        $html = '<label for="' . $this->controlId . '" id="l_' . $this->controlId . '" class="' . self::DEFAULT_CLASS;
+        $html = '<label for="' . $this->getId() . '" id="l_' . $this->getId() . '" class="' . self::DEFAULT_CLASS;
         if ($this->isMissing) {
             $html .= ' error';
         }
@@ -263,10 +264,32 @@ abstract class FormControl
         return $this;
     }
     /**
+     * Get the value of controlName
+     */
+    public function getName(): string
+    {
+        return $this->controlName;
+    }
+
+    /**
+     * Set the value of controlName
+     */
+    public function setName(string $controlName): self
+    {
+        $this->controlName = $controlName;
+
+        return $this;
+    }
+    /**
      *
      * @var string
      */
     protected $controlId;
+    /**
+     *
+     * @var string
+     */
+    protected $controlName;
     /**
      *
      * @var string

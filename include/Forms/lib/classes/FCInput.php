@@ -28,7 +28,7 @@ class FCInput extends FormControl
     {
         $this->setAttribute('class', 'input_text');
 
-        $html = '<input type="' . $this->controlType . '" id="' . $this->controlId . '" name="' . $this->controlId . '"';
+        $html = '<input type="' . $this->controlType . '" id="' . $this->getId() . '" name="' . $this->getName() . '"';
         if ($this->controlData !== null) {
             $html .= ' value="' . $this->controlData . '"';
         }
