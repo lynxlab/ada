@@ -939,7 +939,10 @@ function loadCourseInstances() {
                     $j('#classroomlist').html('');
                     $j('#classrooms').hide();
                     $j('#serviceduration').hide();
-                    calendar.fullCalendar('removeEvents');
+                    $j('#buttonsContainer, [id$="ButtonContainer"]').remove();
+                    if (calendar) {
+                        calendar.fullCalendar('removeEvents');
+                    }
                 }
             }
         }).always(function () {
