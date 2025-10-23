@@ -931,6 +931,7 @@ function loadCourseInstances() {
                 if (getSelectedCourseInstance() != 0) {
                     // trigger onchange event to update number of students when page loads
                     $j('#instancesList').trigger('change');
+                    $j('#buttonsContainer, [id$="ButtonContainer"]').show();
                 } else {
                     $j('#servicetype').text('--');
                     $j('#studentcount').text('--');
@@ -939,7 +940,7 @@ function loadCourseInstances() {
                     $j('#classroomlist').html('');
                     $j('#classrooms').hide();
                     $j('#serviceduration').hide();
-                    $j('#buttonsContainer, [id$="ButtonContainer"]').remove();
+                    $j('#buttonsContainer, [id$="ButtonContainer"]').hide();
                     if (calendar) {
                         calendar.fullCalendar('removeEvents');
                     }
