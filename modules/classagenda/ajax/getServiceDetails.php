@@ -84,6 +84,9 @@ if (
         $retArray['courseID'] = intval($courseID);
         $retArray['duration_hours'] = $courseInstanceObj->getDurationHours();
         $eventsArr = $GLOBALS['dh']->getClassRoomEventsForCourseInstance($instanceID, null);
+        if (defined('MODULES_CLASSAGENDA_EVENT_CANCEL') && MODULES_CLASSAGENDA_EVENT_CANCEL) {
+            $eventsArr = array_filter($eventsArr, fn ($el) => empty($el['cancelled']));
+        }
         $retArray['allocated_hours'] = 0;
         $retArray['lessons_count'] = 0;
         $retArray['endDate'] = $courseInstanceObj->getEndDate();
