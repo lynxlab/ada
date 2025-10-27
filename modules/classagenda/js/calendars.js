@@ -165,7 +165,7 @@ function initCalendar() {
              */
             eventClick: function (calEvent, jsEvent, view) {
 
-                if (!calEvent.editable || isCheckingReminder) return;
+                if (!calEvent.editable || isCheckingReminder || (calEvent.cancelled ?? false)) return;
 
                 var doSelection = true;
 
@@ -209,6 +209,8 @@ function initCalendar() {
             },
             eventDrop: function (event, delta, revertFunc) {
 
+                if (event.cancelled ?? false) revertFunc();
+
                 var data = prepareDataForCheckTutorOverlap(event);
 
                 var placeEvent = function () {
@@ -235,6 +237,8 @@ function initCalendar() {
 
             },
             eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {
+
+                if (event.cancelled ?? false) revertFunc();
 
                 data = prepareDataForCheckTutorOverlap(event);
 
@@ -548,15 +552,34 @@ function buildEventTitle(event) {
 
     // add room and tutor name to the event title
 
-    if ($j('input[name="classroomradio"]').is(':visible') && $j('input[name="classroomradio"]').length > 0) {
-        // remove (xx seats) from radiobutton label and use it
-        var roomName = getClassroomRadioLabel(event.classroomID).replace(/ \(.*\)/, '');
-        title += '<span class="roomnameInEvent">' + roomName + '</span>';
+    if ($j('input[name="classroomradio"]').is(':visible')) {
+        var roomName = '';
+        if ('classroomName' in event && event.classroomName?.toString().trim().length > 0) {
+            roomName = event.classroomName?.toString().trim();
+        } else {
+            // remove (xx seats) from radiobutton label and use it
+            roomName = getClassroomRadioLabel(event.classroomID).replace(/ \(.*\)/, '');
+            event.classroomName = roomName;
+        }
+        title += `<span class="roomnameInEvent">${roomName}</span>`;
     }
 
-    if ($j('#tutorSelect').is(':visible') && $j('#tutorSelect').length > 0) {
-        title += '<span class="tutornameInEvent">' +
-            getTutorFromSelect(event.tutorID) + '</span>';
+    if ($j('#tutorSelect').is(':visible')) {
+        var tutorName = [];
+        if ('tutorFirstname' in event && event.tutorFirstname?.toString().trim().length > 0) {
+            tutorName.push(event.tutorFirstname.toString().trim());
+        }
+        if ('tutorLastname' in event && event.tutorLastname?.toString().trim().length > 0) {
+            tutorName.push(event.tutorLastname.toString().trim());
+        }
+        if (tutorName.length > 0) {
+            tutorName = tutorName.join(' ');
+        } else {
+            tutorName = getTutorFromSelect(event.tutorID) ?? '';
+            event.tutorFirstname = tutorName.slice(0, tutorName.indexOf(' '));
+            event.tutorLastname = tutorName.slice(tutorName.indexOf(' ') + 1);
+        }
+        title += `<span class="tutornameInEvent">${tutorName}</span>`;
     }
 
     return title;
@@ -710,6 +733,7 @@ function updateStudentCountOnInstanceChange() {
 function updateEventOnClassRoomChange() {
     var event = getSelectedEvent(), classroomid = getSelectedClassroom();
     if (event != null && classroomid > 0) {
+        event.classroomName = null;
         event.classroomID = classroomid;
         event.title = buildEventTitle(event);
         updateSelectedEvent(event);
@@ -724,6 +748,8 @@ function updateEventOnTutorChange() {
     var event = getSelectedEvent(), tutorid = getSelectedTutor();
     var setTutor = function () {
         event.tutorID = tutorid;
+        event.tutorFirstname = null;
+        event.tutorLastname = null;
         event.title = buildEventTitle(event);
         updateSelectedEvent(event);
         if (!mustSave) setMustSave(true);
@@ -928,7 +954,7 @@ function loadCourseInstances() {
                 } else {
                     $j('#instancesList option[value="' + oldSelectedInstance + '"]').attr('selected', 'selected');
                 }
-                if (getSelectedCourseInstance() != 0) {
+                if (getSelectedCourseInstance() != null) {
                     // trigger onchange event to update number of students when page loads
                     $j('#instancesList').trigger('change');
                     $j('#buttonsContainer, [id$="ButtonContainer"]').show();
@@ -974,67 +1000,82 @@ function reloadClassRoomEvents() {
      */
     var deferred = $j.Deferred();
 
-    $j.ajax({
-        type: 'GET',
-        url: 'ajax/getCalendarForInstance.php',
-        data: data,
-        dataType: 'json'
-    }).done(function (JSONObj) {
-        /**
-         * store the selected event in a var
-         */
-        var selectedEvent = getSelectedEvent();
-        if (null != selectedEvent) unselectSelectedEvent(false);
-
-        if (!mustSave) calendar.fullCalendar('removeEvents');
-
-        if (JSONObj) {
-            /**
-             * add all loaded events to the calendar
-             */
-            var selectedIndex = -1;
-            var eventsToDraw = [];
-            for (var i = 0; i < JSONObj.length; i++) {
-                if (venueID == null || (venueID != null && JSONObj[i].venueID == venueID)) {
-                    if (null != selectedEvent && JSONObj[i].id == selectedEvent.id) selectedIndex = i;
-                    JSONObj[i].title = buildEventTitle(JSONObj[i]);
-                    // set as editable only events of the selected course instance
-                    if ((userType == AMA_TYPE_SWITCHER) || (userType == AMA_TYPE_TUTOR)) {
-                        JSONObj[i].editable = (JSONObj[i].instanceID == selectedInstanceID);
-                    } else JSONObj[i].editable = false;
-                    JSONObj[i].className = (!JSONObj[i].editable) ? 'noteditableClassroomEvent' : 'editableClassroomEvent';
-                    // restore cancelled value if found in UIcancelledEvents
-                    if (JSONObj[i].cancelled === false && UIcancelledEvents[JSONObj[i].id] !== undefined) {
-                        JSONObj[i].cancelled = UIcancelledEvents[JSONObj[i].id];
-                    }
-                    if (JSONObj[i].cancelled !== false) {
-                        JSONObj[i].className += ' cancelledClassroomEvent';
-                    }
-
-                    calendar.fullCalendar('unselect');
-                    eventsToDraw.push(JSONObj[i]);
+    if (selectedInstanceID > 0)
+    {
+        $j.ajax({
+            type: 'GET',
+            url: 'ajax/getCalendarForInstance.php',
+            data: data,
+            dataType: 'json',
+            beforeSend: () => {
+                if ($j('#selectInstanceMsg').is(':visible')) {
+                    $j('#selectInstanceMsg').hide();
+                    $j('#infoHeader, #classcalendar, #calendar-boxes-container, #filterInstanceState, label[for="filterInstanceState"]').css({opacity:1});
                 }
             }
-
-            if (selectedIndex > -1) {
-                if (JSONObj[selectedIndex].editable) setSelectedEvent(JSONObj[selectedIndex]);
-            }
-
-            $j('a.noteditableClassroomEvent').on('click', function (event) {
-                event.preventDefault();
-            });
-
+        }).done(function (JSONObj) {
             /**
-             * resolve the promise returning the events to be rendered
+             * store the selected event in a var
              */
-            deferred.resolve(eventsToDraw);
+            var selectedEvent = getSelectedEvent();
+            if (null != selectedEvent) unselectSelectedEvent(false);
 
+            if (!mustSave) calendar.fullCalendar('removeEvents');
+
+            if (JSONObj) {
+                /**
+                 * add all loaded events to the calendar
+                 */
+                var selectedIndex = -1;
+                var eventsToDraw = [];
+                for (var i = 0; i < JSONObj.length; i++) {
+                    if (venueID == null || (venueID != null && JSONObj[i].venueID == venueID)) {
+                        if (null != selectedEvent && JSONObj[i].id == selectedEvent.id) selectedIndex = i;
+                        JSONObj[i].title = buildEventTitle(JSONObj[i]);
+                        // set as editable only events of the selected course instance
+                        if ((userType == AMA_TYPE_SWITCHER) || (userType == AMA_TYPE_TUTOR)) {
+                            JSONObj[i].editable = (JSONObj[i].instanceID == selectedInstanceID);
+                        } else JSONObj[i].editable = false;
+                        JSONObj[i].className = (!JSONObj[i].editable) ? 'noteditableClassroomEvent' : 'editableClassroomEvent';
+                        // restore cancelled value if found in UIcancelledEvents
+                        if (JSONObj[i].cancelled === false && UIcancelledEvents[JSONObj[i].id] !== undefined) {
+                            JSONObj[i].cancelled = UIcancelledEvents[JSONObj[i].id];
+                        }
+                        if (JSONObj[i].cancelled !== false) {
+                            JSONObj[i].className += ' cancelledClassroomEvent';
+                        }
+
+                        calendar.fullCalendar('unselect');
+                        eventsToDraw.push(JSONObj[i]);
+                    }
+                }
+
+                if (selectedIndex > -1) {
+                    if (JSONObj[selectedIndex].editable) setSelectedEvent(JSONObj[selectedIndex]);
+                }
+
+                $j('a.noteditableClassroomEvent').on('click', function (event) {
+                    event.preventDefault();
+                });
+
+                /**
+                 * resolve the promise returning the events to be rendered
+                 */
+                deferred.resolve(eventsToDraw);
+
+            }
+        }).fail(deferred.reject).always(function () {
+            if (getSelectedEvent() == null) setCanDelete(false);
+            UIEvents = [];
+            UIDeletedEvents = [];
+        });
+    } else {
+        if (!$j('#selectInstanceMsg').is(':visible')) {
+            $j('#selectInstanceMsg').show();
+            $j('#infoHeader, #classcalendar, #calendar-boxes-container, #filterInstanceState, label[for="filterInstanceState"]').css({opacity:0});
         }
-    }).fail(deferred.reject).always(function () {
-        if (getSelectedEvent() == null) setCanDelete(false);
-        UIEvents = [];
-        UIDeletedEvents = [];
-    });
+        deferred.resolve([]);
+    }
 
     return deferred.promise();
 }
