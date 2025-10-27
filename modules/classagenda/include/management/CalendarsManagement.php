@@ -272,7 +272,23 @@ class CalendarsManagement extends AbstractClassAgendaManagement
                     $onlySelectedVenueCHECK->setAttribute('value', 1);
                     $onlySelectedVenueCHECK->setAttribute('name', 'onlySelectedVenue');
                     $onlySelectedVenueLABEL = CDOMElement::create('label', 'for:onlySelectedVenue');
-                    $onlySelectedVenueLABEL->addChild(new CText(translateFN('Mostra solo il luogo selezionato')));
+                    $onlySelectedVenueLABEL->addChild(new CText(
+                        sprintf(
+                            "%s (%s)",
+                            translateFN('Mostra solo il luogo selezionato'),
+                            translateFN('Tutte le aule')
+                        )
+                    ));
+                    $onlySelectedClassroomCHECK = CDOMElement::create('checkbox', 'id:onlySelectedClassroom');
+                    $onlySelectedClassroomCHECK->setAttribute('value', 1);
+                    $onlySelectedClassroomCHECK->setAttribute('name', 'onlySelectedClassroom');
+                    $onlySelectedClassroomLABEL = CDOMElement::create('label', 'for:onlySelectedClassroom');
+                    $onlySelectedClassroomLABEL->addChild(new CText(
+                        sprintf(
+                            "%s",
+                            translateFN("Mostra solo l'aula selezionata"),
+                        )
+                    ));
 
                     $venuesLABEL = CDOMElement::create('label', 'for:venuesList,class:venuesListLabel');
                     $venuesLABEL->addChild(new CText(translateFN('Seleziona un luogo') . ': '));
@@ -288,6 +304,9 @@ class CalendarsManagement extends AbstractClassAgendaManagement
                     $classroomsDIV->addChild($venuesSELECT);
                     $classroomsDIV->addChild($onlySelectedVenueCHECK);
                     $classroomsDIV->addChild($onlySelectedVenueLABEL);
+                    $classroomsDIV->addChild(CDOMElement::create('div', 'class:clearfix'));
+                    $classroomsDIV->addChild($onlySelectedClassroomCHECK);
+                    $classroomsDIV->addChild($onlySelectedClassroomLABEL);
                     $classroomsDIV->addChild($classroomSPAN);
                     $classroomsDIV->addChild($classroomlistDIV);
                     if ($_SESSION['sess_userObj']->getType() != AMA_TYPE_SWITCHER) {

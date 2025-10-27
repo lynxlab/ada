@@ -72,7 +72,7 @@ function initDoc(passedUserType) {
     }
 
     if ($j('#filterInstanceState').length > 0 || $j('#onlySelectedInstance').length > 0) {
-        $j('#filterInstanceState, #onlySelectedInstance, #onlySelectedVenue').on('change', function () {
+        $j('#filterInstanceState, #onlySelectedInstance, #onlySelectedVenue, #onlySelectedClassroom').on('change', function () {
             /**
              * reload course instances list only when #filterInstanceState changes
              */
@@ -86,7 +86,8 @@ function initDoc(passedUserType) {
 
         $j('#filterInstanceState, label[for="filterInstanceState"],' +
             '#onlySelectedInstance, label[for="onlySelectedInstance"],' +
-            '#onlySelectedVenue, label[for="onlySelectedVenue"]').on('mousedown', function () {
+            '#onlySelectedVenue, label[for="onlySelectedVenue"]' +
+            '#onlySelectedClassroom, label[for="onlySelectedClassroom"]').on('mousedown', function (event) {
                 if (mustSave) {
                     event.preventDefault();
                     jQueryConfirm('#confirmDialog', '#filterInstanceStatequestion',
@@ -386,6 +387,15 @@ function getSelectedVenue() {
 }
 
 /**
+ * gets the selected classroom option value
+ *
+ * @returns selected classroom id or null
+ */
+function getSelectedFilterClassroom() {
+    return ($j('#onlySelectedClassroom').is(':checked') ? getSelectedClassroom() : null);
+}
+
+/**
  * gets the selected course instance option
  *
  * @returns selected course instance id or null
@@ -551,34 +561,35 @@ function buildEventTitle(event) {
     title += ($j('#instancesList').length > 0) ? ($j('#instancesList option[value=' + event.instanceID + ']').text()) : '';
 
     // add room and tutor name to the event title
-
-    if ($j('input[name="classroomradio"]').is(':visible')) {
-        var roomName = '';
-        if ('classroomName' in event && event.classroomName?.toString().trim().length > 0) {
-            roomName = event.classroomName?.toString().trim();
-        } else {
-            // remove (xx seats) from radiobutton label and use it
-            roomName = getClassroomRadioLabel(event.classroomID).replace(/ \(.*\)/, '');
-            event.classroomName = roomName;
-        }
+    var roomName = '';
+    if ('classroomName' in event && event.classroomName?.toString().trim().length > 0) {
+        roomName = event.classroomName?.toString().trim();
+    } else if ($j('input[name="classroomradio"]').is(':visible')) {
+        // remove (xx seats) from radiobutton label and use it
+        roomName = getClassroomRadioLabel(event.classroomID).replace(/ \(.*\)/, '');
+        event.classroomName = roomName;
+    }
+    if (roomName.length > 0) {
         title += `<span class="roomnameInEvent">${roomName}</span>`;
     }
 
-    if ($j('#tutorSelect').is(':visible')) {
-        var tutorName = [];
-        if ('tutorFirstname' in event && event.tutorFirstname?.toString().trim().length > 0) {
-            tutorName.push(event.tutorFirstname.toString().trim());
-        }
-        if ('tutorLastname' in event && event.tutorLastname?.toString().trim().length > 0) {
-            tutorName.push(event.tutorLastname.toString().trim());
-        }
-        if (tutorName.length > 0) {
-            tutorName = tutorName.join(' ');
-        } else {
-            tutorName = getTutorFromSelect(event.tutorID) ?? '';
-            event.tutorFirstname = tutorName.slice(0, tutorName.indexOf(' '));
-            event.tutorLastname = tutorName.slice(tutorName.indexOf(' ') + 1);
-        }
+    var tutorName = [];
+    if ('tutorFirstname' in event && event.tutorFirstname?.toString().trim().length > 0) {
+        tutorName.push(event.tutorFirstname.toString().trim());
+    }
+    if ('tutorLastname' in event && event.tutorLastname?.toString().trim().length > 0) {
+        tutorName.push(event.tutorLastname.toString().trim());
+    }
+    if (tutorName.length > 0) {
+        tutorName = tutorName.join(' ');
+    } else if ($j('#tutorSelect').is(':visible')) {
+        tutorName = getTutorFromSelect(event.tutorID) ?? '';
+        event.tutorFirstname = tutorName.slice(0, tutorName.indexOf(' '));
+        event.tutorLastname = tutorName.slice(tutorName.indexOf(' ') + 1);
+    } else {
+        tutorName = '';
+    }
+    if (tutorName.length > 0) {
         title += `<span class="tutornameInEvent">${tutorName}</span>`;
     }
 
@@ -633,6 +644,9 @@ function updateClassroomsOnVenueChange() {
                         $j('input[name="classroomradio"]').first().prop('checked', true);
                         $j('input[name="classroomradio"]').on('change', function (userEvent) {
                             updateEventOnClassRoomChange();
+                            if (null !== getSelectedFilterClassroom()) {
+                                $j('#onlySelectedClassroom').trigger('change');
+                            }
                         });
                     }
                 }
@@ -986,12 +1000,13 @@ function reloadClassRoomEvents() {
         filterInstanceState: getFilterInstanceState()
     };
     var venueID = getSelectedVenue();
+    var filterClassroomID = getSelectedFilterClassroom();
     var selectedInstanceID = getSelectedCourseInstance();
 
     if (getShowSelectedInstance()) {
         $j.extend(data, {
             instanceID: selectedInstanceID,
-            courseID: getSelectedCourseFromInstance()
+            courseID: getSelectedCourseFromInstance(),
         });
     }
 
@@ -1028,26 +1043,34 @@ function reloadClassRoomEvents() {
                  */
                 var selectedIndex = -1;
                 var eventsToDraw = [];
+                if (venueID !== null) {
+                    JSONObj = JSONObj.filter((e) => e.venueID == venueID);
+                }
+                if (filterClassroomID !== null) {
+                    JSONObj = JSONObj.filter((e) => e.classroomID == filterClassroomID);
+                }
                 for (var i = 0; i < JSONObj.length; i++) {
-                    if (venueID == null || (venueID != null && JSONObj[i].venueID == venueID)) {
-                        if (null != selectedEvent && JSONObj[i].id == selectedEvent.id) selectedIndex = i;
-                        JSONObj[i].title = buildEventTitle(JSONObj[i]);
-                        // set as editable only events of the selected course instance
-                        if ((userType == AMA_TYPE_SWITCHER) || (userType == AMA_TYPE_TUTOR)) {
-                            JSONObj[i].editable = (JSONObj[i].instanceID == selectedInstanceID);
-                        } else JSONObj[i].editable = false;
-                        JSONObj[i].className = (!JSONObj[i].editable) ? 'noteditableClassroomEvent' : 'editableClassroomEvent';
-                        // restore cancelled value if found in UIcancelledEvents
-                        if (JSONObj[i].cancelled === false && UIcancelledEvents[JSONObj[i].id] !== undefined) {
-                            JSONObj[i].cancelled = UIcancelledEvents[JSONObj[i].id];
-                        }
-                        if (JSONObj[i].cancelled !== false) {
-                            JSONObj[i].className += ' cancelledClassroomEvent';
-                        }
-
-                        calendar.fullCalendar('unselect');
-                        eventsToDraw.push(JSONObj[i]);
+                    if (null != selectedEvent && JSONObj[i].id == selectedEvent.id) {
+                        selectedIndex = i;
                     }
+                    JSONObj[i].title = buildEventTitle(JSONObj[i]);
+
+                    // set as editable only events of the selected course instance
+                    if ((userType == AMA_TYPE_SWITCHER) || (userType == AMA_TYPE_TUTOR)) {
+                        JSONObj[i].editable = (JSONObj[i].instanceID == selectedInstanceID);
+                    } else JSONObj[i].editable = false;
+                    JSONObj[i].className = (!JSONObj[i].editable) ? 'noteditableClassroomEvent' : 'editableClassroomEvent';
+
+                    // restore cancelled value if found in UIcancelledEvents
+                    if (JSONObj[i].cancelled === false && UIcancelledEvents[JSONObj[i].id] !== undefined) {
+                        JSONObj[i].cancelled = UIcancelledEvents[JSONObj[i].id];
+                    }
+                    if (JSONObj[i].cancelled !== false) {
+                        JSONObj[i].className += ' cancelledClassroomEvent';
+                    }
+
+                    calendar.fullCalendar('unselect');
+                    eventsToDraw.push(JSONObj[i]);
                 }
 
                 if (selectedIndex > -1) {
