@@ -116,3 +116,4 @@ div#confirmDialog #tutorOverlapquestion {
 #infoHeader, #classcalendar, #calendar-boxes-container { opacity: 0; }
 .first { position: relative; }
 #selectInstanceMsg { display: none; position: absolute; top: 100px }
+label[disabled="disabled"] { opacity: 0.4; pointer-events: none; cursor: default; }

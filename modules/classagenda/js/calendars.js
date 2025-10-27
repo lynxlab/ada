@@ -76,6 +76,10 @@ function initDoc(passedUserType) {
             /**
              * reload course instances list only when #filterInstanceState changes
              */
+            if ($j(this).attr('id') == 'onlySelectedClassroom') {
+                $j('#onlySelectedVenue').prop('checked', true);
+                $j('#onlySelectedVenue, label[for="onlySelectedVenue"]').attr('disabled', $j(this).is(':checked'));
+            }
             if ($j(this).attr('id') == 'filterInstanceState') {
                 $j.when(loadCourseInstances()).done(function () {
                     if (getSelectedCourseInstance() != 0) calendar.fullCalendar('refetchEvents');
@@ -593,7 +597,7 @@ function buildEventTitle(event) {
         title += `<span class="tutornameInEvent">${tutorName}</span>`;
     }
 
-    return title;
+    return `<div class="eventDetails">${title}</div>`;
 }
 
 function rerenderAllEvents() {
@@ -637,18 +641,18 @@ function updateClassroomsOnVenueChange() {
                 if (htmlcode && htmlcode.length > 0) {
                     $j('#classroomlist').html(htmlcode);
                     initFacilitiesTooltips();
-                    if (getSelectedVenue() == null) rerenderAllEvents();
-                    else calendar.fullCalendar('refetchEvents');
                     // select the first radio button
                     if ($j('input[name="classroomradio"]').length > 0) {
-                        $j('input[name="classroomradio"]').first().prop('checked', true);
                         $j('input[name="classroomradio"]').on('change', function (userEvent) {
                             updateEventOnClassRoomChange();
                             if (null !== getSelectedFilterClassroom()) {
                                 $j('#onlySelectedClassroom').trigger('change');
                             }
                         });
+                        $j('input[name="classroomradio"]').first().prop('checked', true).attr('checked', true);
                     }
+                    if (getSelectedVenue() == null) rerenderAllEvents();
+                    else calendar.fullCalendar('refetchEvents');
                 }
             });
         });
@@ -1043,6 +1047,9 @@ function reloadClassRoomEvents() {
                  */
                 var selectedIndex = -1;
                 var eventsToDraw = [];
+
+                console.log('filter', {venueID: venueID, filterClassroomID: filterClassroomID});
+
                 if (venueID !== null) {
                     JSONObj = JSONObj.filter((e) => e.venueID == venueID);
                 }
