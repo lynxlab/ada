@@ -93,6 +93,19 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                 }
                 $htmlElement->addChild(CDOMElement::create('div', 'class:clearfix'));
                 $htmlElement->addChild($select);
+
+                $onlySelectedTutorCHECK = CDOMElement::create('checkbox', 'id:onlySelectedTutor');
+                $onlySelectedTutorCHECK->setAttribute('value', 1);
+                $onlySelectedTutorCHECK->setAttribute('name', 'onlySelectedTutor');
+                $onlySelectedTutorLABEL = CDOMElement::create('label', 'for:onlySelectedTutor');
+                $onlySelectedTutorLABEL->addChild(new CText(
+                    sprintf(
+                        "%s",
+                        translateFN("Mostra solo il tutor selezionato"),
+                    )
+                ));
+                $htmlElement->addChild($onlySelectedTutorCHECK);
+                $htmlElement->addChild($onlySelectedTutorLABEL);
                 $retVal = $htmlElement->getHtml();
             }
         }

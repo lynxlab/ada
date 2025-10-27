@@ -91,7 +91,8 @@ function initDoc(passedUserType) {
         $j('#filterInstanceState, label[for="filterInstanceState"],' +
             '#onlySelectedInstance, label[for="onlySelectedInstance"],' +
             '#onlySelectedVenue, label[for="onlySelectedVenue"]' +
-            '#onlySelectedClassroom, label[for="onlySelectedClassroom"]').on('mousedown', function (event) {
+            '#onlySelectedClassroom, label[for="onlySelectedClassroom"]' +
+            '#onlySelectedTutor, label[for="onlySelectedTutor"]').on('mousedown', function (event) {
                 if (mustSave) {
                     event.preventDefault();
                     jQueryConfirm('#confirmDialog', '#filterInstanceStatequestion',
@@ -391,12 +392,21 @@ function getSelectedVenue() {
 }
 
 /**
- * gets the selected classroom option value
+ * gets the selected classroom option value to filter
  *
  * @returns selected classroom id or null
  */
 function getSelectedFilterClassroom() {
     return ($j('#onlySelectedClassroom').is(':checked') ? getSelectedClassroom() : null);
+}
+
+/**
+ * gets the selected tutor option value to filter
+ *
+ * @returns selected tutor id or null
+ */
+function getSelectedFilterTutor() {
+    return ($j('#onlySelectedTutor').is(':checked') ? getSelectedTutor() : null);
 }
 
 /**
@@ -862,8 +872,16 @@ function updateTutorsListOnInstanceChange() {
                     } else initCalendar();
                     // select the first radio button
                     if ($j('#tutorSelect').length > 0) {
+                        $j('#onlySelectedTutor').on('change', function () {
+                            // if the tutor filter is active, do the
+                            // filtering by triggering a change event on onlySelectedVenue
+                            $j('#onlySelectedVenue').trigger('change');
+                        });
                         $j("#tutorSelect option:first").attr('selected', 'selected');
                         $j('#tutorSelect').on('change', function () {
+                            if ($j('#onlySelectedTutor').is(':checked')) {
+                                $j('#onlySelectedTutor').trigger('change');
+                            }
                             updateEventOnTutorChange();
                         });
                     }
@@ -1005,6 +1023,7 @@ function reloadClassRoomEvents() {
     };
     var venueID = getSelectedVenue();
     var filterClassroomID = getSelectedFilterClassroom();
+    var filterTutorID = getSelectedFilterTutor();
     var selectedInstanceID = getSelectedCourseInstance();
 
     if (getShowSelectedInstance()) {
@@ -1048,14 +1067,16 @@ function reloadClassRoomEvents() {
                 var selectedIndex = -1;
                 var eventsToDraw = [];
 
-                console.log('filter', {venueID: venueID, filterClassroomID: filterClassroomID});
-
                 if (venueID !== null) {
                     JSONObj = JSONObj.filter((e) => e.venueID == venueID);
                 }
                 if (filterClassroomID !== null) {
                     JSONObj = JSONObj.filter((e) => e.classroomID == filterClassroomID);
                 }
+                if (filterTutorID !== null) {
+                    JSONObj = JSONObj.filter((e) => e.tutorID == filterTutorID);
+                }
+
                 for (var i = 0; i < JSONObj.length; i++) {
                     if (null != selectedEvent && JSONObj[i].id == selectedEvent.id) {
                         selectedIndex = i;
