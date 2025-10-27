@@ -121,11 +121,12 @@ class AMAClassagendaDataHandler extends AMADataHandler
             $venueID = null;
         }
 
-        $sql = 'SELECT CAL.* ';
+        $sql = 'SELECT CAL.*, U.`nome`, U.`cognome` ';
         if (ModuleLoaderHelper::isLoaded('MODULES_CLASSROOM')) {
-            $sql .= ',CROOMS.`id_venue` ';
+            $sql .= ',CROOMS.`id_venue`, CROOMS.`name` AS `classroomname`, VENUES.`name` AS `venuename` ';
         }
         $sql .= 'FROM `' . self::$PREFIX . 'calendars` AS CAL';
+        $sql .= ' LEFT JOIN `utente` AS U ON U.id_utente = CAL.id_utente_tutor';
 
         $params = null;
 
@@ -134,7 +135,9 @@ class AMAClassagendaDataHandler extends AMADataHandler
              * must get null classrooms and venues as well, so use a LEFT JOIN here
              */
             $sql .= ' LEFT JOIN `' . AMAClassroomDataHandler::$PREFIX . 'classrooms` AS CROOMS' .
-                ' ON CAL.id_classroom = CROOMS.id_classroom';
+            ' ON CAL.id_classroom = CROOMS.id_classroom';
+            $sql .= ' LEFT JOIN `' . AMAClassroomDataHandler::$PREFIX . 'venues` AS VENUES' .
+                ' ON `CROOMS`.`id_venue` = `VENUES`.`id_venue`';
         }
 
         $sql .= ' WHERE 1';

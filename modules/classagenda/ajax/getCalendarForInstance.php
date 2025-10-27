@@ -136,11 +136,17 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             $retArray[$i]['instanceID'] = (int) $aResult['id_istanza_corso'];
             $retArray[$i]['classroomID'] = ((int) $aResult['id_classroom'] > 0) ? (int) $aResult['id_classroom'] : null;
             $retArray[$i]['tutorID'] = (int) $aResult['id_utente_tutor'];
+            $retArray[$i]['tutorFirstname'] = $aResult['nome'];
+            $retArray[$i]['tutorLastname'] = $aResult['cognome'];
             $retArray[$i]['isSelected'] = false;
             if (ModuleLoaderHelper::isLoaded('MODULES_CLASSROOM') && !is_null($aResult['id_venue'])) {
                 $retArray[$i]['venueID'] = (int) $aResult['id_venue'];
+                $retArray[$i]['venueName'] = $aResult['venuename'];
+                $retArray[$i]['classroomName'] = $aResult['classroomname'];
             } else {
                 $retArray[$i]['venueID'] = null;
+                $retArray[$i]['venueName'] = null;
+                $retArray[$i]['classroomName'] = null;
             }
 
             [$day, $month, $year] = explode('/', Utilities::ts2dFN($aResult['start']));
