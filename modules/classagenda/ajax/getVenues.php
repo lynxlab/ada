@@ -76,7 +76,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 
     if (ModuleLoaderHelper::isLoaded('MODULES_CLASSROOM')) {
         $classroomAPI = new ClassroomAPI($selTester);
-        $venues = $classroomAPI->getAllVenues();
+        $venues = $classroomAPI->getAllVenuesWithClassrooms();
         if (!AMADB::isError($venues) && is_array($venues) && count($venues) > 0) {
             foreach ($venues as $venue) {
                 $dataAr[$venue['id_venue']] = $venue['name'];
