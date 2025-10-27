@@ -180,7 +180,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 
 
     if (strlen($returnHTML) > 0) {
-        $returnHTML = "<option value='0' data-idcourse='0'>" . translateFN('Seleziona una classe') ."</option>" . $returnHTML;
+        $returnHTML = "<option value='0' data-idcourse='0'>" . translateFN('Seleziona una classe') . "</option>" . $returnHTML;
         die($returnHTML);
     }
 }
