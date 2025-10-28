@@ -88,10 +88,10 @@ function initDoc(passedUserType) {
 
         });
 
-        $j('#filterInstanceState, label[for="filterInstanceState"],' +
-            '#onlySelectedInstance, label[for="onlySelectedInstance"],' +
-            '#onlySelectedVenue, label[for="onlySelectedVenue"]' +
-            '#onlySelectedClassroom, label[for="onlySelectedClassroom"]' +
+        $j('#filterInstanceState, label[for="filterInstanceState"], ' +
+            '#onlySelectedInstance, label[for="onlySelectedInstance"], ' +
+            '#onlySelectedVenue, label[for="onlySelectedVenue"], ' +
+            '#onlySelectedClassroom, label[for="onlySelectedClassroom"], ' +
             '#onlySelectedTutor, label[for="onlySelectedTutor"]').on('mousedown', function (event) {
                 if (mustSave) {
                     event.preventDefault();
@@ -202,9 +202,9 @@ function initCalendar() {
                             end: endDate.format(),
                             isSelected: false,
                             editable: true,
-                            instanceID: getSelectedCourseInstance(),
-                            classroomID: getSelectedClassroom(),
-                            tutorID: getSelectedTutor()
+                            instanceID: parseInt(getSelectedCourseInstance()),
+                            classroomID: parseInt(getSelectedClassroom()),
+                            tutorID: parseInt(getSelectedTutor()),
                         }, true);
                     }
                 },
@@ -957,6 +957,8 @@ function saveClassRoomEvents() {
          * disable save button
          */
         setMustSave(false);
+        UIEvents = [];
+        UIDeletedEvents = [];
         /**
          * display popup message and reload calendar data
          */
@@ -1077,6 +1079,10 @@ function reloadClassRoomEvents() {
                     JSONObj = JSONObj.filter((e) => e.tutorID == filterTutorID);
                 }
 
+                if (UIDeletedEvents.length > 0) {
+                    JSONObj = JSONObj.filter((e) => UIDeletedEvents.indexOf(e.id.toString()) == -1);
+                }
+
                 for (var i = 0; i < JSONObj.length; i++) {
                     if (null != selectedEvent && JSONObj[i].id == selectedEvent.id) {
                         selectedIndex = i;
@@ -1115,10 +1121,14 @@ function reloadClassRoomEvents() {
                 deferred.resolve(eventsToDraw);
 
             }
-        }).fail(deferred.reject).always(function () {
-            if (getSelectedEvent() == null) setCanDelete(false);
+        })
+        .fail(function() {
             UIEvents = [];
             UIDeletedEvents = [];
+            deferred.reject();
+        })
+        .always(function () {
+            if (getSelectedEvent() == null) setCanDelete(false);
         });
     } else {
         if (!$j('#selectInstanceMsg').is(':visible')) {
@@ -1335,29 +1345,39 @@ function deleteSelectedEvent() {
 /**
  * delete all classroom events
  */
-function deleteAllEvents() {
+function deleteAllEvents(onlyFuture = true) {
 
     const doDeleteAllEvents = () => {
         const selectedInstance = getSelectedCourseInstance();
         if (null != selectedInstance) {
             var selectedDuration = null;
+            var removedCount = 0;
             var eventIDs = [];
+            const tomorrow = moment().add(1, 'day').startOf('day');
             calendar.fullCalendar('removeEvents', function (clEvent) {
-                if (clEvent.instanceID == selectedInstance) {
+                var retval = false;
+                const futureCheck = onlyFuture ? tomorrow.isBefore(clEvent.start) : true;
+                if (clEvent.instanceID == selectedInstance && futureCheck) {
                     if (selectedDuration == null) {
                         selectedDuration = moment.duration();
                     }
-                    selectedDuration.add(clEvent.end.subtract(clEvent.start));
-                    if ('undefined' != typeof clEvent.eventID) eventIDs.push(clEvent.eventID);
-                    else if ('undefined' != typeof clEvent.id) eventIDs.push(clEvent.id + '');
-                    // console.log(clEvent);
-                    return true;
-                } else return false;
+                    if (!(clEvent.processRemove ?? false)) {
+                        clEvent.processRemove = true;
+                        selectedDuration.add(clEvent.end.subtract(clEvent.start));
+                        removedCount--;
+                        if ('undefined' != typeof clEvent.eventID) eventIDs.push(clEvent.eventID);
+                        else if ('undefined' != typeof clEvent.id) eventIDs.push(clEvent.id + '');
+                    }
+                    retval = true;
+                }
+                return retval;
             });
 
             setCanDelete(false);
             if (!mustSave) setMustSave(true);
-            if (selectedDuration != null) updateAllocatedHours(selectedDuration, -1 * eventIDs.length);
+            if (selectedDuration != null && removedCount < 0) {
+                updateAllocatedHours(selectedDuration, removedCount);
+            }
             if (eventIDs.length > 0) {
                 /**
                  * add events to UIDeletedEvents array only if
@@ -1396,9 +1416,9 @@ function repeatSelectedEvent() {
                 end: end.format('YYYY-MM-DDTHH:mm:ss'),
                 isSelected: false,
                 editable: true,
-                instanceID: getSelectedCourseInstance(),
-                classroomID: getSelectedClassroom(),
-                tutorID: getSelectedTutor()
+                instanceID: parseInt(getSelectedCourseInstance()),
+                classroomID: parseInt(getSelectedClassroom()),
+                tutorID: parseInt(getSelectedTutor()),
             }, doCheckTutorOverlap);
             start = start.add(oneWeek);
             end = end.add(oneWeek);
@@ -1734,7 +1754,9 @@ function addToUIEvents(event) {
         event.eventID = 'tmp_' + timestamp;
     }
 
-    UIEvents[event.eventID] = event;
+    if (!(event.eventID in UIEvents)) {
+        UIEvents[event.eventID] = event;
+    }
 
     return event.eventID;
 }
