@@ -574,6 +574,7 @@ function buildEventTitle(event) {
     var title = '';
     title += ($j('#instancesList').length > 0) ? ($j('#instancesList option[value=' + event.instanceID + ']').text()) : '';
 
+    eventDetails = [];
     // add room and tutor name to the event title
     var roomName = '';
     if ('classroomName' in event && event.classroomName?.toString().trim().length > 0) {
@@ -584,7 +585,7 @@ function buildEventTitle(event) {
         event.classroomName = roomName;
     }
     if (roomName.length > 0) {
-        title += `<span class="roomnameInEvent">${roomName}</span>`;
+        eventDetails.push(`<span class="roomnameInEvent">${roomName}</span>`);
     }
 
     var tutorName = [];
@@ -604,10 +605,13 @@ function buildEventTitle(event) {
         tutorName = '';
     }
     if (tutorName.length > 0) {
-        title += `<span class="tutornameInEvent">${tutorName}</span>`;
+        eventDetails.push(`<span class="tutornameInEvent">${tutorName}</span>`);
+    }
+    if (eventDetails.length > 0) {
+        title += '<div class="eventDetails">' + eventDetails.join("\n") + '</div>';
     }
 
-    return `<div class="eventDetails">${title}</div>`;
+    return title;
 }
 
 function rerenderAllEvents() {
@@ -1040,8 +1044,7 @@ function reloadClassRoomEvents() {
      */
     var deferred = $j.Deferred();
 
-    if (selectedInstanceID > 0)
-    {
+    if (selectedInstanceID > 0) {
         $j.ajax({
             type: 'GET',
             url: 'ajax/getCalendarForInstance.php',
@@ -1050,7 +1053,7 @@ function reloadClassRoomEvents() {
             beforeSend: () => {
                 if ($j('#selectInstanceMsg').is(':visible')) {
                     $j('#selectInstanceMsg').hide();
-                    $j('#infoHeader, #classcalendar, #calendar-boxes-container, #filterInstanceState, label[for="filterInstanceState"]').css({opacity:1});
+                    $j('#infoHeader, #classcalendar, #calendar-boxes-container, #filterInstanceState, label[for="filterInstanceState"]').css({ opacity: 1 });
                 }
             }
         }).done(function (JSONObj) {
@@ -1122,7 +1125,7 @@ function reloadClassRoomEvents() {
 
             }
         })
-        .fail(function() {
+        .fail(function () {
             UIEvents = [];
             UIDeletedEvents = [];
             deferred.reject();
@@ -1133,7 +1136,7 @@ function reloadClassRoomEvents() {
     } else {
         if (!$j('#selectInstanceMsg').is(':visible')) {
             $j('#selectInstanceMsg').show();
-            $j('#infoHeader, #classcalendar, #calendar-boxes-container, #filterInstanceState, label[for="filterInstanceState"]').css({opacity:0});
+            $j('#infoHeader, #classcalendar, #calendar-boxes-container, #filterInstanceState, label[for="filterInstanceState"]').css({ opacity: 0 });
         }
         deferred.resolve([]);
     }
