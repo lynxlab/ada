@@ -122,8 +122,8 @@ class CalendarsManagement extends AbstractClassAgendaManagement
                      */
                     $deleteAllButtonDIV = CDOMElement::create('div', 'id:deleteAllButtonContainer');
                     $deleteAllButton = CDOMElement::create('input_button', 'id:deleteAllButton');
-                    $deleteAllButton->setAttribute('onclick', 'javascript:deleteAllEvents();');
-                    $deleteAllButton->setAttribute('value', translateFN('Cancella Tutti gli eventi'));
+                    $deleteAllButton->setAttribute('onclick', 'javascript:deleteAllEvents(true);');
+                    $deleteAllButton->setAttribute('value', translateFN('Cancella Tutti gli eventi futuri'));
                     $deleteAllButtonDIV->addChild($deleteAllButton);
 
                     /**
@@ -411,7 +411,7 @@ class CalendarsManagement extends AbstractClassAgendaManagement
                 $confirmCancelCalendarSPAN->addChild(new CText(translateFN('Ci sono dei dati non salvati, ricaricare il calendario?')));
                 // question asked when deleting all instance events
                 $confirmDeleteAllSPAN = CDOMElement::create('span', 'id:deleteAllButtonquestion,class:dialogQuestion');
-                $confirmDeleteAllSPAN->addChild(new CText(translateFN('Confermi la cancellazione di tutti gli eventi della classe') . ' '));
+                $confirmDeleteAllSPAN->addChild(new CText(translateFN('Confermi la cancellazione di tutti gli eventi <strong>futuri</strong> della classe') . ' '));
                 $confirmDeleteAllSPAN->addChild(CDOMElement::create('span', 'id:deleteAllButtonInstanceName'));
                 $confirmDeleteAllSPAN->addChild(new CText('?'));
                 // this shall become the ok button label inside the dialog
