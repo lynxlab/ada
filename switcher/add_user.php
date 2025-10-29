@@ -114,7 +114,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 $userObj = new ADAAdmin($user_dataAr);
                 break;
         }
-        $userObj->setPassword($_POST['password']);
+        $userObj->setPassword($_POST['password'] ?? null);
         $result = MultiPort::addUser($userObj, [$sess_selected_tester]);
         if ($result > 0) {
             if (ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true) {
