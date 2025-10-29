@@ -121,13 +121,19 @@ class EventSubscriber implements EventSubscriberInterface, ADAMethodSubscriberIn
                 try {
                     foreach ($encode as $table => $fields) {
                         foreach ($fields as $fData) {
-                            // ENCRYPT ASSOC ELEMENTS
-                            if (array_key_exists($fData['name'], $results)) {
-                                $results[$fData['name']] = $cUtils->encrypt($results[$fData['name']]);
-                            }
-                            // ENCRYPT NUM ELEMENTS
-                            if (array_key_exists($fData['index'], $results)) {
-                                $results[$fData['index']] = $cUtils->encrypt($results[$fData['index']]);
+                            foreach (['name', 'index'] as $what) {
+                                // ENCRYPT FETCH ASSOC AND NUM ELEMENTS
+                                if (array_key_exists($fData[$what], $results)) {
+                                    try {
+                                        /**
+                                         * if decryption throws an exception, most
+                                         * probably the string needs to be encrypted
+                                         */
+                                        $cUtils->decrypt($results[$fData[$what]]);
+                                    } catch (EncryptFieldsException) {
+                                        $results[$fData[$what]] = $cUtils->encrypt($results[$fData[$what]]);
+                                    }
+                                }
                             }
                         }
                     }

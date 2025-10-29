@@ -12,6 +12,7 @@ namespace Lynxlab\ADA\Module\Encryptfields;
 
 use Lynxlab\ADA\Module\Encryptfields\Exceptions\EncryptFieldsException;
 use phpseclib3\Crypt\AES;
+use Throwable;
 
 /**
  * Utility class to manage and crypt/decrypt data.
@@ -106,17 +107,23 @@ class CypherUtils
      */
     public function decrypt(string $encrypted): string
     {
-        [$encWithTag, $iv] = explode(self::SEPARATOR, $encrypted);
-        $combined = base64_decode($encWithTag);
-        $tag = substr($combined, -self::TAGLENGTH);
-        $encryptedMessage = substr($combined, 0, -self::TAGLENGTH);
+        try {
+            $parts = explode(self::SEPARATOR, $encrypted);
+            $encWithTag = $parts[0] ?? null;
+            $iv = $parts[1] ?? null;
+            $combined = base64_decode($encWithTag);
+            $tag = substr($combined, -self::TAGLENGTH);
+            $encryptedMessage = substr($combined, 0, -self::TAGLENGTH);
 
-        $aes = new AES(self::AESMODE);
-        $aes->setKey($this->getKey());
-        $aes->setNonce($iv);
-        $aes->setTag($tag);
-        $decryptedMessage = $aes->decrypt($encryptedMessage);
-        return $decryptedMessage;
+            $aes = new AES(self::AESMODE);
+            $aes->setKey($this->getKey());
+            $aes->setNonce($iv);
+            $aes->setTag($tag);
+            $decryptedMessage = $aes->decrypt($encryptedMessage);
+            return $decryptedMessage;
+        } catch (Throwable $e) {
+            throw new EncryptFieldsException($e->getMessage(), $e->getCode());
+        }
     }
 
     /**
