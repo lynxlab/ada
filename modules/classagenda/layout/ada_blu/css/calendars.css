@@ -102,8 +102,7 @@ div#confirmDialog #tutorOverlapquestion {
 
 #classcalendar a.selectedClassroomEvent { background: red; }
 #reminderDialog,
-#onlySelectedInstance, label[for="onlySelectedInstance"],
-#filterInstanceState, label[for="filterInstanceState"] { display: none; }
+#onlySelectedInstance, label[for="onlySelectedInstance"] { display: none; }
 #reminderDialogContent { width: 80%; float:left; }
 #reminderLegend { width: 19%; float:right; border: 1px dotted gray; position: relative; margin-top: 9px; }
 #reminderLegend ol { padding: 0 0 0 30px; margin: 5px 0 10px 10px; }
@@ -113,7 +112,8 @@ div#confirmDialog #tutorOverlapquestion {
 #reminderDialogContent div.fform { width: 100%; padding:0; margin:0; }
 #reminderDialogContent div.fform label { display: block; width: 100%; }
 #reminderDialogContent div.fform form fieldset li { padding:0; border:none; cursor: pointer; }
-#infoHeader, #classcalendar, #calendar-boxes-container { opacity: 0; }
+#infoHeader, #classcalendar, #calendar-boxes-container,
+#filterInstanceState, label[for="filterInstanceState"] { opacity: 0; }
 .first { position: relative; }
 #selectInstanceMsg { display: none; position: absolute; top: 100px }
 label[disabled="disabled"] { opacity: 0.4; pointer-events: none; cursor: default; }
