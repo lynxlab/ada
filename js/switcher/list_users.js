@@ -16,11 +16,11 @@ function toggleDetails(user_id,imgObj) {
 //    $j('.imgDetls').on('click', function () {
     var promise = $j.Deferred();
     var nTr = $j(imgObj).parents('tr')[0];
-    if ( oTable.fnIsOpen(nTr) )
+    if ( oTable.row(nTr).child.isShown() )
     {
         /* This row is already open - close it */
         imgObj.src = HTTP_ROOT_DIR+"/layout/"+ADA_TEMPLATE_FAMILY+"/img/details_open.png";
-        oTable.fnClose( nTr );
+        oTable.row(nTr).child.hide();
         promise.resolve({error:false, data: {}, action: 'close', row: nTr});
     }
     else
@@ -31,7 +31,7 @@ function toggleDetails(user_id,imgObj) {
         $j.when(fnFormatDetails(user_id))
         .done   (function( JSONObj )
        {
-            oTable.fnOpen( nTr, JSONObj.html, 'details' );
+            oTable.row(nTr).child(JSONObj.html, 'details').show();
             if(JSONObj.status==='OK'){
                 $j('.User_table').not('.dataTable').dataTable({
 	                'aoColumnDefs': JSONObj.columnDefs,
@@ -58,11 +58,12 @@ function toggleDetails(user_id,imgObj) {
 
 function createDataTable() {
 
-    oTable = $j('#table_users').dataTable({
+    oTable = $j('#table_users').DataTable({
         "bFilter": true,
         "bInfo": true,
         "bSort": true,
         "bAutoWidth": true,
+        stateSave: true,
         "aaSorting": [[ 1, "asc" ]],
         'aoColumnDefs': [{"bSortable": false, "bSearchable": false, "aTargets": [ 0 ],"sClass":"expandCol"},
         				 {"bSortable": false, "bSearchable": false, "aTargets": [ 5 ],"sClass":"actionCol" },
