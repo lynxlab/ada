@@ -1703,9 +1703,8 @@ class AMACommonDataHandler extends AbstractAMADataHandler
             return new AMAError(AMA_ERR_GET);
         }
         // ottenere l'id per il messaggio appena inserito
-
-        $sql_id_message    = "SELECT id_messaggio FROM messaggi_sistema WHERE testo_messaggio=$sql_prepared_message";
-        $id_message = $this->getOnePrepared($sql_id_message);
+        $sql_id_message = "SELECT id_messaggio FROM messaggi_sistema WHERE testo_messaggio=?";
+        $id_message = $this->getOnePrepared($sql_id_message, [$sql_prepared_message]);
         if (AMADB::isError($id_message)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -1715,8 +1714,8 @@ class AMACommonDataHandler extends AbstractAMADataHandler
             /**
              * Insert the messagge in the translation table named $table_name
              */
-            $sql_insert_message_in_translation_table = "INSERT INTO $table_name(id_messaggio,testo_messaggio) VALUES($id_message,$sql_prepared_message)";
-            $result = $this->queryPrepared($sql_insert_message_in_translation_table);
+            $sql_insert_message_in_translation_table = "INSERT INTO $table_name(id_messaggio,testo_messaggio) VALUES(?, ?)";
+            $result = $this->queryPrepared($sql_insert_message_in_translation_table, [$id_message, $sql_prepared_message]);
             /**
              * If an error occurs while adding the message into this table, then add an empty string, since
              * we don't want to loose identifier one-to-one mapping between this table and table messaggi_sistema
