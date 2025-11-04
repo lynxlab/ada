@@ -147,9 +147,9 @@ function initFacilitiesTooltips() {
     }
 }
 
-function initCalendar() {
+function initCalendar(options = {}) {
     if ($j('#classcalendar').length > 0) {
-        calendar = $j('#classcalendar').fullCalendar({
+        calendar = $j('#classcalendar').fullCalendar($j.extend({
             // put your options and callbacks here
             theme: true,	// enables jQuery UI theme
             firstDay: 1,		// monday is the first day
@@ -287,7 +287,7 @@ function initCalendar() {
                 if (isLoading) showLoading();
                 else hideLoading();
             }
-        });
+        }, options));
 
         // initialize save button and set must save to false
         setMustSave(false);
@@ -623,9 +623,7 @@ function rerenderAllEvents() {
         for (var i = 0; i < allEvents.length; i++) {
             allEvents[i].title = buildEventTitle(allEvents[i]);
             // set as editable only events of the selected course instance
-            if ((userType == AMA_TYPE_SWITCHER) || (userType == AMA_TYPE_TUTOR)) {
-                allEvents[i].editable = (allEvents[i].instanceID == selectedInstanceID);
-            } else allEvents[i].editable = false;
+            JSONObj[i].editable = isEditable(JSONObj[i], selectedInstanceID);
             allEvents[i].className = (!allEvents[i].editable) ? 'noteditableClassroomEvent' : 'editableClassroomEvent';
             if (allEvents[i].isSelected) allEvents[i].className = 'selectedClassroomEvent';
             if (allEvents[i].cancelled !== false) {
@@ -1093,9 +1091,7 @@ function reloadClassRoomEvents() {
                     JSONObj[i].title = buildEventTitle(JSONObj[i]);
 
                     // set as editable only events of the selected course instance
-                    if ((userType == AMA_TYPE_SWITCHER) || (userType == AMA_TYPE_TUTOR)) {
-                        JSONObj[i].editable = (JSONObj[i].instanceID == selectedInstanceID);
-                    } else JSONObj[i].editable = false;
+                    JSONObj[i].editable = isEditable(JSONObj[i], selectedInstanceID);
                     JSONObj[i].className = (!JSONObj[i].editable) ? 'noteditableClassroomEvent' : 'editableClassroomEvent';
 
                     // restore cancelled value if found in UIcancelledEvents
@@ -1744,6 +1740,13 @@ function moveInsideCalendarHeader(elementID) {
          */
         if ('undefined' != typeof clonedLabel) $j(targetElement).append(clonedLabel);
     }
+}
+
+function isEditable(event, selectedInstanceID) {
+    if ((userType == AMA_TYPE_SWITCHER) || (userType == AMA_TYPE_TUTOR)) {
+        return event.instanceID == selectedInstanceID;
+    }
+    return false;
 }
 
 function addToUIEvents(event) {
