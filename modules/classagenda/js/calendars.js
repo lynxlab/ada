@@ -623,7 +623,7 @@ function rerenderAllEvents() {
         for (var i = 0; i < allEvents.length; i++) {
             allEvents[i].title = buildEventTitle(allEvents[i]);
             // set as editable only events of the selected course instance
-            JSONObj[i].editable = isEditable(JSONObj[i], selectedInstanceID);
+            allEvents[i].editable = isEditable(allEvents[i], selectedInstanceID);
             allEvents[i].className = (!allEvents[i].editable) ? 'noteditableClassroomEvent' : 'editableClassroomEvent';
             if (allEvents[i].isSelected) allEvents[i].className = 'selectedClassroomEvent';
             if (allEvents[i].cancelled !== false) {
@@ -1775,13 +1775,13 @@ function addToUIEvents(event) {
  * @param OKcallback ok button callback
  * @param CancelCallBack cancel button callback
  */
-function jQueryConfirm(id, questionId, OKcallback, CancelCallBack) {
+function jQueryConfirm(id, questionId, OKcallback, CancelCallBack, options = {}) {
     var okLbl = $j(id + ' .confirmOKLbl').html();
     var cancelLbl = $j(id + ' .confirmCancelLbl').html();
 
     setModalDialogText(id, questionId);
 
-    $j(id).dialog({
+    $j(id).dialog($j.extend({
         resizable: false,
         width: "auto",
         modal: true,
@@ -1808,7 +1808,7 @@ function jQueryConfirm(id, questionId, OKcallback, CancelCallBack) {
                 $j(this).dialog("close");
             }
         }]
-    });
+    }, options));
 }
 
 function objectSize(obj) {
