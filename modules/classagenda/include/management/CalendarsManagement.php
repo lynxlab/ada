@@ -402,7 +402,9 @@ class CalendarsManagement extends AbstractClassAgendaManagement
                 $confirmTutorOverlap->addChild(CDOMElement::create('span', 'id:overlapStartTime'));
                 $confirmTutorOverlap->addChild(new CText(' ' . translateFN('alle ore') . ' '));
                 $confirmTutorOverlap->addChild(CDOMElement::create('span', 'id:overlapEndTime'));
-                $confirmTutorOverlap->addChild(new CText('<br/>' . translateFN('Vuoi mantenere la modifica fatta?')));
+                $tutorOverlapKeepQuestion = CDOMElement::create('div', 'id:tutorOverlapKeepQuestion');
+                $tutorOverlapKeepQuestion->addChild(new CText(translateFN('Vuoi mantenere la modifica fatta?')));
+                $confirmTutorOverlap->addChild($tutorOverlapKeepQuestion);
                 // question asked when sending a reminder on a non saved event
                 $confirmReminderNonSavedEvent = CDOMElement::create('span', 'id:reminderNonSavedEventquestion,class:dialogQuestion');
                 $confirmReminderNonSavedEvent->addChild(new CText(translateFN('È necessario salvare il calendario prima di inviare un promemoria. Lo salvo?')));
