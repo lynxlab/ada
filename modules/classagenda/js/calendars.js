@@ -1177,23 +1177,50 @@ function updateAllocatedHours(durationDelta, lessonsDelta) {
  */
 function checkTutorOverlapOnUIEvents(event) {
     if (objectSize(UIEvents) > 0) {
-
-        newStart = moment(event.start);
-        newEnd = moment(event.end);
+        const debug = false;
+        const newStart = moment(event.start);
+        const newEnd = moment(event.end);
+        const newStartTS = newStart.unix();
+        const newEndTS = newEnd.unix();
 
         for (var prop in UIEvents) {
             if (UIEvents.hasOwnProperty(prop)) {
                 var currentEvent = UIEvents[prop];
             } else continue;
 
-            loadedStart = moment(currentEvent.start);
-            loadedEnd = moment(currentEvent.end);
+            const loadedStart = moment(currentEvent.start);
+            const loadedEnd = moment(currentEvent.end);
+            const loadedStartTS = loadedStart.unix();
+            const loadedEndTS = loadedEnd.unix();
 
+            if (debug) {
+                console.group('checkTutorOverlapOnUIEvents');
+                console.log({
+                    new: {
+                        start: newStartTS,
+                        end: newEndTS,
+                    },
+                    loaded: {
+                        start: loadedStartTS,
+                        end: loadedEndTS,
+                    },
+                });
+                console.log('starts during an existing event',(newStartTS > loadedStartTS && newStartTS < loadedEndTS));
+                console.log('ends during an existing event',(newEndTS > loadedStartTS && newEndTS < loadedEndTS));
+                console.log('starts before and ends after or perfectly overlaps an existing event',(newStartTS <= loadedStartTS && newEndTS >= loadedEndTS));
+                console.groupEnd();
+            }
+
+            /**
+             * - new event starts during an existing event
+             * - new event ends during an existing event
+             * - new event starts before and ends after or perfectly overlaps an existing event
+             */
             if (event.tutorID == currentEvent.tutorID && event.eventID != currentEvent.eventID &&
-                (loadedStart.isSame(newStart) || loadedEnd.isSame(newEnd) ||
-                    loadedStart.isSame(newEnd) || loadedEnd.isSame(newStart) ||
-                    (newStart.isBefore(loadedStart) && newEnd.isAfter(loadedStart)) ||
-                    (newStart.isAfter(loadedStart) && newStart.isBefore(loadedEnd))
+                (
+                    (newStartTS > loadedStartTS && newStartTS < loadedEndTS) ||
+                    (newEndTS > loadedStartTS && newEndTS < loadedEndTS) ||
+                    (newStartTS <= loadedStartTS && newEndTS >= loadedEndTS)
                 )) {
 
                 prepareTutorOverlapDialog({
