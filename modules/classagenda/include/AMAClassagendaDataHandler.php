@@ -412,10 +412,10 @@ class AMAClassagendaDataHandler extends AMADataHandler
     /**
      * checks if the passed tutor has already an event scheduled between the passed timestamps
      *
-     * @param unknown $startTS start timestamp
-     * @param unknown $endTS end timestamp
-     * @param unknown $tutorID tutor ID
-     * @param unknown $eventID event ID
+     * @param int $startTS start timestamp
+     * @param int $endTS end timestamp
+     * @param int $tutorID tutor ID
+     * @param int $eventID event ID
      *
      * @return mixed
      *
@@ -435,11 +435,16 @@ class AMAClassagendaDataHandler extends AMADataHandler
             $sql .= ' AND `' . self::$PREFIX . 'calendars`.`cancelled` IS NULL';
         }
 
-        $sql .= ' AND (`start`= :startTS OR `end`= :endTS OR ' .
-            '`start`= :endTS OR `end`= :startTS OR ' .
-            '(:startTS <=`start` AND :endTS >=`start`) OR ' .
-            '(:startTS >=`start` AND :startTS <=`end`))';
-
+        /**
+         * - new event starts during an existing event
+         * - new event ends during an existing event
+         * - new event starts before and ends after or perfectly overlaps an existing event
+         */
+        $sql .= ' AND (
+            (:startTS > `start` AND :startTS < `end`) OR
+            (:endTS > `start` AND :endTS < `end`) OR
+            (:startTS <= `start` AND :endTS >= `end`)
+            )';
         $params = array_merge($params, [':startTS' => $startTS, ':endTS' => $endTS]);
 
         return $this->getRowPrepared($sql, $params, AMA_FETCH_ASSOC);
