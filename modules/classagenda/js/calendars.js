@@ -946,8 +946,9 @@ function saveClassRoomEvents() {
                 // must look for the event having id==newSelectedID
                 // and set its isSelected to true, so it will be re-selected
                 var selEvent = getSelectedEvent();
-                if (selEvent != null) {
-                    selEvent.id = JSONObj.newSelectedID;
+                newSelectedID = parseInt(JSONObj.newSelectedID.newSelectedID ?? null);
+                if (selEvent != null && !isNaN(newSelectedID)) {
+                    selEvent.id = newSelectedID;
                     updateSelectedEvent(selEvent);
                 }
             }
