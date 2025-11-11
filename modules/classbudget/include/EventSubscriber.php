@@ -16,8 +16,10 @@ namespace Lynxlab\ADA\Module\Classbudget;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Module\Encryptfields\Events\EncryptFieldsEvents;
 use Lynxlab\ADA\Module\EventDispatcher\Events\ActionsEvent;
 use Lynxlab\ADA\Module\EventDispatcher\Events\MenuEvent;
+use Lynxlab\ADA\Module\EventDispatcher\Subscribers\ADAMethodSubscriberInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -25,7 +27,7 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 /**
  * EventSubscriber Class, defines node events names and handlers for this module
  */
-class EventSubscriber implements EventSubscriberInterface
+class EventSubscriber implements EventSubscriberInterface, ADAMethodSubscriberInterface
 {
     public static function getSubscribedEvents()
     {
@@ -33,6 +35,35 @@ class EventSubscriber implements EventSubscriberInterface
             ActionsEvent::LIST_INSTANCES => 'addListInstancesActions',
             MenuEvent::PRERENDER => 'addMenuItems',
         ];
+    }
+
+    public static function getSubscribedMethods()
+    {
+        if (ModuleLoaderHelper::isLoaded('ENCRYPTFIELDS')) {
+            return [
+                AMAClassbudgetDataHandler::class . '::getTutorCostForInstance' => [
+                    EncryptFieldsEvents::FIELDSCONFIG => 'encryptFieldsConfig',
+                ],
+            ];
+        }
+        return [];
+    }
+
+    public function encryptFieldsConfig(EncryptFieldsEvents $event)
+    {
+        $fields = [
+            'user' => [
+                'fields' => [
+                    'name',
+                    'lastname',
+                ],
+            ],
+        ];
+        if ($event->hasArgument($event->getSubject())) {
+            $fields = array_merge_recursive($event->getArgument($event->getSubject()), $fields);
+        }
+        $event->setArgument($event->getSubject(), $fields);
+        return $event;
     }
 
     public function addListInstancesActions(ActionsEvent $e)
