@@ -1052,7 +1052,7 @@ function reloadClassRoomEvents() {
             beforeSend: () => {
                 if ($j('#selectInstanceMsg').is(':visible')) {
                     $j('#selectInstanceMsg').hide();
-                    $j('#infoHeader, #classcalendar, #calendar-boxes-container, #filterInstanceState, label[for="filterInstanceState"]').css({ opacity: 1 });
+                    $j('#infoHeader, #classcalendar, #calendar-boxes-container, #filterInstanceState, label[for="filterInstanceState"]').css({ opacity: 1, 'pointer-events': 'auto' });
                 }
             }
         }).done(function (JSONObj) {
@@ -1133,7 +1133,7 @@ function reloadClassRoomEvents() {
     } else {
         if (!$j('#selectInstanceMsg').is(':visible')) {
             $j('#selectInstanceMsg').show();
-            $j('#infoHeader, #classcalendar, #calendar-boxes-container, #filterInstanceState, label[for="filterInstanceState"]').css({ opacity: 0 });
+            $j('#infoHeader, #classcalendar, #calendar-boxes-container, #filterInstanceState, label[for="filterInstanceState"]').css({ opacity: 0, 'pointer-events': 'none' });
         }
         deferred.resolve([]);
     }

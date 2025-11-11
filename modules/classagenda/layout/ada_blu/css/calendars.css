@@ -113,7 +113,7 @@ div#confirmDialog #tutorOverlapquestion {
 #reminderDialogContent div.fform label { display: block; width: 100%; }
 #reminderDialogContent div.fform form fieldset li { padding:0; border:none; cursor: pointer; }
 #infoHeader, #classcalendar, #calendar-boxes-container,
-#filterInstanceState, label[for="filterInstanceState"] { opacity: 0; }
+#filterInstanceState, label[for="filterInstanceState"] { opacity: 0; pointer-events: none; }
 .first { position: relative; }
 #selectInstanceMsg { display: none; position: absolute; top: 100px }
 label[disabled="disabled"] { opacity: 0.4; pointer-events: none; cursor: default; }
