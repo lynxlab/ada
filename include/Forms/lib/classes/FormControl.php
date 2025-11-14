@@ -274,7 +274,7 @@ abstract class FormControl
     /**
      * Set the value of controlName
      */
-    public function setName(string $controlName): self
+    public function setName(?string $controlName): self
     {
         $this->controlName = $controlName;
 
