@@ -13,10 +13,14 @@
 
 namespace Lynxlab\ADA\Module\Classbudget;
 
+use DateTimeImmutable;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
+use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\AMA\Traits\WithInstance;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
+use Lynxlab\ADA\Module\Classagenda\AMAClassagendaDataHandler;
 
 class AMAClassbudgetDataHandler extends AMADataHandler
 {
@@ -107,6 +111,165 @@ class AMAClassbudgetDataHandler extends AMADataHandler
             $this->cleanCostTable($id_course_instance, 'tutor', count($res), $res);
         }
         return $res;
+    }
+
+    /**
+     * Gets the costs for a list of events
+     *
+     * @param array $ids event ids
+     * @return array
+     */
+    public function getCostsForEvents(array $ids = [])
+    {
+        $dateFormat = str_replace('%', '', ADA_DATE_FORMAT) . ' - H:i';
+        $tutors = array_map(
+            fn($el) => $el + [
+                'duration' => $el['end'] - $el['start'],
+                'startformatted' => (new DateTimeImmutable())->setTimestamp($el['start'])->format($dateFormat),
+                'endformatted' => (new DateTimeImmutable())->setTimestamp($el['end'])->format($dateFormat)
+            ],
+            $this->getTutorsCostsForEvents($ids)
+        );
+        $classrooms = array_map(
+            fn($el) => $el + [
+                'duration' => $el['end'] - $el['start'],
+                'startformatted' => (new DateTimeImmutable())->setTimestamp($el['start'])->format($dateFormat),
+                'endformatted' => (new DateTimeImmutable())->setTimestamp($el['end'])->format($dateFormat)
+            ],
+            $this->getClassroomsCostsForEvents($ids)
+        );
+        $eventids = array_unique(
+            array_merge(
+                array_column($tutors, 'id_event'),
+                array_column($classrooms, 'id_event')
+            )
+        );
+        $instances = [];
+        foreach (array_merge($tutors, $classrooms) as $item) {
+            if (!isset($instances[$item['id_istanza_corso']])) {
+                $instances[$item['id_istanza_corso']] = [
+                    'id' => $item['id_istanza_corso'],
+                    'title' => $item['instancetitle'],
+                    'course' => [
+                        'id' => $item['id_corso'],
+                        'title' => $item['coursetitle'],
+                        'code' => $item['coursename'],
+                    ],
+                ];
+            }
+        }
+        $retval = [
+            'instances' => [],
+            'events' => [],
+        ];
+        $GLOBALS['dh'] = AMAClassbudgetDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+        foreach (array_keys($instances) as $instanceid) {
+            $costItem = new CostitemBudgetManagement($instanceid);
+            $costItem->run();
+            $retval['instances'][$instanceid] = [
+                $instances[$instanceid] + [
+                    'costs' => array_values(array_map(
+                        fn($el) => $el + [
+                            'total' => $el['totalqty'] * $el['unitprice'],
+                        ],
+                        $costItem->dataCostsArr,
+                    )),
+                    'events' => array_unique(
+                        array_merge(
+                            array_column(
+                                array_filter($tutors, fn($x) => $x['id_istanza_corso'] == $instanceid),
+                                'id_event'
+                            ),
+                            array_column(
+                                array_filter($classrooms, fn($x) => $x['id_istanza_corso'] == $instanceid),
+                                'id_event'
+                            )
+                        )
+                    ),
+                ]
+            ];
+        }
+
+        foreach (
+            [
+                'tutors' => $tutors,
+                'classrooms' => $classrooms
+            ] as $element => $items
+        ) {
+            foreach ($items as $key => $item) {
+                unset(${$element}[$key]['id_corso']);
+                unset(${$element}[$key]['coursetitle']);
+                unset(${$element}[$key]['coursename']);
+                unset(${$element}[$key]['instancetitle']);
+            }
+        }
+
+        foreach ($eventids as $eventid) {
+            $retval['events'][$eventid] = [
+                'tutor' => array_values(array_filter($tutors, fn($x) => $x['id_event'] == $eventid)),
+                'classroom' => array_values(array_filter($classrooms, fn($x) => $x['id_event'] == $eventid)),
+            ];
+        }
+        return $retval;
+    }
+
+    /**
+     * Gets the tutors costs for a list of events
+     *
+     * @param array $ids event ids
+     * @return array
+     */
+    public function getTutorsCostsForEvents(array $ids = [])
+    {
+        if (ModuleLoaderHelper::isLoaded('CLASSAGENDA') && count($ids) > 0) {
+            $sql = 'SELECT ' . AMAClassagendaDataHandler::$PREFIX . 'calendars_id as id_event, ' .
+                'C.`id_corso`, IC.`id_istanza_corso`, C.`titolo` AS coursetitle, C.`nome` AS coursename, ' .
+                'IC.`title` AS instancetitle, CAL.`id_utente_tutor` AS `id_tutor`, USER.`nome` as `name`, ' .
+                'USER.`cognome` AS `lastname`, TUTORS.`tariffa` AS `default_rate`, ' .
+                'CAL.`start`, CAL.`end`, ' .
+                'TUTORCOST.`hourly_rate` AS `cost_rate` FROM `module_classagenda_calendars` AS CAL ' .
+                'LEFT JOIN `istanza_corso` AS IC ON IC.`id_istanza_corso` = CAL.id_istanza_corso ' .
+                'LEFT JOIN `modello_corso` AS C ON C.`id_corso` = IC.`id_corso` ' .
+                'JOIN `tutor` AS TUTORS ON CAL.`id_utente_tutor` = TUTORS.`id_utente_tutor` ' .
+                'LEFT JOIN `module_classbudget_cost_tutor` AS TUTORCOST ON CAL.`id_utente_tutor` = TUTORCOST.`id_tutor` ' .
+                'JOIN `utente` AS USER ON USER.`id_utente`= TUTORS.`id_utente_tutor` ' .
+                'WHERE CAL.`module_classagenda_calendars_id` IN (' . implode(',', array_fill(0, count($ids), '?'))  . ');';
+            $tutorCosts = $this->getAllPrepared($sql, $ids, AMA_FETCH_ASSOC);
+            if (!AMADB::isError($tutorCosts)) {
+                return $tutorCosts;
+            }
+        }
+        return [];
+    }
+
+    /**
+     * Gets the classrooms costs for a list of events
+     *
+     * @param array $ids event ids
+     * @return array
+     */
+    public function getClassroomsCostsForEvents(array $ids = [])
+    {
+        if (ModuleLoaderHelper::isLoaded('CLASSROOM') && count($ids) > 0) {
+            $sql = 'SELECT ' . AMAClassagendaDataHandler::$PREFIX . 'calendars_id as id_event, ' .
+                'C.`id_corso`, IC.`id_istanza_corso`, C.`titolo` AS coursetitle, C.`nome` AS coursename, ' .
+                'IC.`title` AS instancetitle, CAL.`id_classroom`, ' .
+                'VENUES.`name` as `venuename`, ROOMS.`name` AS `roomname`, ROOMS.`hourly_rate` AS `default_rate`, ' .
+                'CAL.`start`, CAL.`end`, ' .
+                'ROOMCOST.`hourly_rate` AS `cost_rate`, ROOMCOST.`cost_classroom_id` ' .
+                'FROM `module_classagenda_calendars` AS CAL ' .
+                'LEFT JOIN `istanza_corso` AS IC ON IC.`id_istanza_corso` = CAL.id_istanza_corso ' .
+                'LEFT JOIN `modello_corso` AS C ON C.`id_corso` = IC.`id_corso` ' .
+                'JOIN `module_classroom_classrooms` AS ROOMS ON CAL.`id_classroom` = ROOMS.`id_classroom` ' .
+                'LEFT JOIN `module_classbudget_cost_classroom` AS ROOMCOST ON CAL.`id_classroom` = ROOMCOST.`id_classroom` ' .
+                'JOIN `module_classroom_venues` AS VENUES ON VENUES.`id_venue`= ROOMS.`id_venue` ' .
+                'WHERE CAL.`module_classagenda_calendars_id` IN (' . implode(',', array_fill(0, count($ids), '?'))  . ');';
+            $classCosts = $this->getAllPrepared($sql, $ids, AMA_FETCH_ASSOC);
+            if (!AMADB::isError($classCosts)) {
+                return $classCosts;
+            }
+        }
+        return [];
     }
 
     /**
