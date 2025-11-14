@@ -44,6 +44,9 @@ class EventSubscriber implements EventSubscriberInterface, ADAMethodSubscriberIn
                 AMAClassbudgetDataHandler::class . '::getTutorCostForInstance' => [
                     EncryptFieldsEvents::FIELDSCONFIG => 'encryptFieldsConfig',
                 ],
+                AMAClassbudgetDataHandler::class . '::getTutorCostForEvents' => [
+                    EncryptFieldsEvents::FIELDSCONFIG => 'encryptFieldsConfig',
+                ],
             ];
         }
         return [];
