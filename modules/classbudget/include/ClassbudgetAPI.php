@@ -67,15 +67,15 @@ class ClassbudgetAPI
     /**
      * Gets a budget object for a course instance
      *
-     * @param int $course_instance_id the instance id to load object for
+     * @param int $courseInstanceId the instance id to load object for
      *
      * @return BudgetCourseInstanceManagement|AMA_Error
      *
      * @access public
      */
-    public function getBudgetCourseInstance($course_instance_id)
+    public function getBudgetCourseInstance($courseInstanceId)
     {
-        $dataAr = $this->dh->getBudgetCourseInstanceByInstanceID($course_instance_id);
+        $dataAr = $this->dh->getBudgetCourseInstanceByInstanceID($courseInstanceId);
         if (!AMADB::isError($dataAr)) {
             return new BudgetCourseInstanceManagement($dataAr);
         } else {
@@ -86,14 +86,25 @@ class ClassbudgetAPI
     /**
      * Deletes a budget row for a course instance
      *
-     * @param int $course_instance_id the instance id to delete row for
+     * @param int $courseInstanceId the instance id to delete row for
      *
      * @return AMAError|int of affected rows
      *
      * @access public
      */
-    public function deleteBudgetCourseInstance($course_instance_id)
+    public function deleteBudgetCourseInstance($courseInstanceId)
     {
-        return $this->dh->deleteBudgetCourseInstanceByInstanceID($course_instance_id);
+        return $this->dh->deleteBudgetCourseInstanceByInstanceID($courseInstanceId);
+    }
+
+    /**
+     * Gets the costs for a list of events
+     *
+     * @param array $ids event ids
+     * @return array
+     */
+    public function getInvoiceDataForEvents(array $ids = [])
+    {
+        return $this->dh->getCostsForEvents($ids);
     }
 }
