@@ -664,4 +664,27 @@ class AMAClassagendaDataHandler extends AMADataHandler
 
         return ((count($retval) > 0) ? $retval : new AMAError(AMA_ERR_GET));
     }
+
+    /**
+     * Gets students data in the passed events list
+     *
+     * @param array $eventIDS
+     * @return array
+     */
+    public function getStudentsInEvents(array $eventIDS)
+    {
+        if (!empty($eventIDS)) {
+            $sql = 'SELECT DISTINCT(`U`.`id_utente`), `U`.`nome`, `U`.`cognome`, ' .
+                '`U`.`indirizzo`, `U`.`citta`, `U`.`provincia`, ' .
+                '`U`.`nazione`, `U`.`cap`, `U`.`codice_fiscale` ' .
+                'FROM `' .  self::$PREFIX . 'calendars` AS `CAL` ' .
+                'LEFT JOIN `iscrizioni` AS `I` ON `CAL`.`id_istanza_corso` = `I`.`id_istanza_corso` ' .
+                'LEFT JOIN `utente` AS `U` ON `I`.`id_utente_studente` = `U`.`id_utente` ' .
+                'WHERE `' . self::$PREFIX . 'calendars_id` IN (' .
+                implode(',', array_fill(0, count($eventIDS), '?')) . ')';
+
+            return $this->getAllPrepared($sql, $eventIDS, AMA_FETCH_ASSOC);
+        }
+        return [];
+    }
 }
