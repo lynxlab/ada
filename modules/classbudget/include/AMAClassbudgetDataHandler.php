@@ -123,18 +123,18 @@ class AMAClassbudgetDataHandler extends AMADataHandler
     {
         $dateFormat = str_replace('%', '', ADA_DATE_FORMAT) . ' - H:i';
         $tutors = array_map(
-            fn($el) => $el + [
+            fn ($el) => $el + [
                 'duration' => $el['end'] - $el['start'],
                 'startformatted' => (new DateTimeImmutable())->setTimestamp($el['start'])->format($dateFormat),
-                'endformatted' => (new DateTimeImmutable())->setTimestamp($el['end'])->format($dateFormat)
+                'endformatted' => (new DateTimeImmutable())->setTimestamp($el['end'])->format($dateFormat),
             ],
             $this->getTutorsCostsForEvents($ids)
         );
         $classrooms = array_map(
-            fn($el) => $el + [
+            fn ($el) => $el + [
                 'duration' => $el['end'] - $el['start'],
                 'startformatted' => (new DateTimeImmutable())->setTimestamp($el['start'])->format($dateFormat),
-                'endformatted' => (new DateTimeImmutable())->setTimestamp($el['end'])->format($dateFormat)
+                'endformatted' => (new DateTimeImmutable())->setTimestamp($el['end'])->format($dateFormat),
             ],
             $this->getClassroomsCostsForEvents($ids)
         );
@@ -169,7 +169,7 @@ class AMAClassbudgetDataHandler extends AMADataHandler
             $retval['instances'][$instanceid] = [
                 $instances[$instanceid] + [
                     'costs' => array_values(array_map(
-                        fn($el) => $el + [
+                        fn ($el) => $el + [
                             'total' => $el['totalqty'] * $el['unitprice'],
                         ],
                         $costItem->dataCostsArr,
@@ -177,23 +177,23 @@ class AMAClassbudgetDataHandler extends AMADataHandler
                     'events' => array_unique(
                         array_merge(
                             array_column(
-                                array_filter($tutors, fn($x) => $x['id_istanza_corso'] == $instanceid),
+                                array_filter($tutors, fn ($x) => $x['id_istanza_corso'] == $instanceid),
                                 'id_event'
                             ),
                             array_column(
-                                array_filter($classrooms, fn($x) => $x['id_istanza_corso'] == $instanceid),
+                                array_filter($classrooms, fn ($x) => $x['id_istanza_corso'] == $instanceid),
                                 'id_event'
                             )
                         )
                     ),
-                ]
+                ],
             ];
         }
 
         foreach (
             [
                 'tutors' => $tutors,
-                'classrooms' => $classrooms
+                'classrooms' => $classrooms,
             ] as $element => $items
         ) {
             foreach ($items as $key => $item) {
@@ -206,8 +206,8 @@ class AMAClassbudgetDataHandler extends AMADataHandler
 
         foreach ($eventids as $eventid) {
             $retval['events'][$eventid] = [
-                'tutor' => array_values(array_filter($tutors, fn($x) => $x['id_event'] == $eventid)),
-                'classroom' => array_values(array_filter($classrooms, fn($x) => $x['id_event'] == $eventid)),
+                'tutor' => array_values(array_filter($tutors, fn ($x) => $x['id_event'] == $eventid)),
+                'classroom' => array_values(array_filter($classrooms, fn ($x) => $x['id_event'] == $eventid)),
             ];
         }
         return $retval;
