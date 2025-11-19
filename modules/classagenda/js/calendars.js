@@ -464,7 +464,10 @@ function getTutorFromSelect(tutorid) {
  * @returns string the retreived label
  */
 function getClassroomRadioLabel(classroomid) {
-    return $j('input[name="classroomradio"][value=' + classroomid + ']+ label').text();
+    if (classroomid > 0) {
+        return $j('input[name="classroomradio"][value=' + classroomid + ']+ label').text();
+    }
+    return '&nbsp;';
 }
 
 /**
@@ -762,7 +765,7 @@ function updateStudentCountOnInstanceChange() {
  */
 function updateEventOnClassRoomChange() {
     var event = getSelectedEvent(), classroomid = getSelectedClassroom();
-    if (event != null && classroomid > 0) {
+    if (event != null && classroomid >= 0) {
         event.classroomName = null;
         event.classroomID = classroomid;
         event.title = buildEventTitle(event);
@@ -910,7 +913,7 @@ function saveClassRoomEvents() {
                 wasSelected: (calEvents[i].isSelected ? 1 : 0),
                 start: calEvents[i].start.format(),
                 end: calEvents[i].end.format(),
-                classroomID: calEvents[i].classroomID,
+                classroomID: calEvents[i].classroomID > 0 ? calEvents[i].classroomID : null ,
                 tutorID: calEvents[i].tutorID,
                 cancelled: (false === calEvents[i].cancelled ?? false) ? 0 : calEvents[i].cancelled,
             };
@@ -1072,10 +1075,10 @@ function reloadClassRoomEvents() {
                 var eventsToDraw = [];
 
                 if (venueID !== null) {
-                    JSONObj = JSONObj.filter((e) => e.venueID == venueID);
+                    JSONObj = JSONObj.filter((e) => (null == e.venueID) || (e.venueID == venueID));
                 }
                 if (filterClassroomID !== null) {
-                    JSONObj = JSONObj.filter((e) => e.classroomID == filterClassroomID);
+                    JSONObj = JSONObj.filter((e) => (null == e.classroomID && filterClassroomID == 0) || (e.classroomID  == filterClassroomID));
                 }
                 if (filterTutorID !== null) {
                     JSONObj = JSONObj.filter((e) => e.tutorID == filterTutorID);

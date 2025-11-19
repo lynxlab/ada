@@ -82,6 +82,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             if (!is_array($firstEl)) {
                 $result = [$result];
             }
+            $radios[0] = [
+                'name' => translateFN('Nessuna'),
+                'seats' => '',
+            ];
             foreach ($result as $classroom) {
                 $radios[$classroom['id_classroom']] = [
                     'name' => $classroom['name'],
