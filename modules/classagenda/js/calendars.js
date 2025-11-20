@@ -194,84 +194,29 @@ function initCalendar(options = {}) {
             /**
              * creates a new event
              */
-            select:
-                function (startDate, endDate, jsEvent, view) {
-                    if (startDate.hasTime() && endDate.hasTime()) {
-                        buildAndPlaceEvent({
-                            start: startDate.format(),
-                            end: endDate.format(),
-                            isSelected: false,
-                            editable: true,
-                            instanceID: parseInt(getSelectedCourseInstance()),
-                            classroomID: parseInt(getSelectedClassroom()),
-                            tutorID: parseInt(getSelectedTutor()),
-                        }, true);
-                    }
-                },
+            select: function (startDate, endDate, jsEvent, view) {
+                if (startDate.hasTime() && endDate.hasTime()) {
+                    buildAndPlaceEvent({
+                        start: startDate.format(),
+                        end: endDate.format(),
+                        isSelected: false,
+                        editable: true,
+                        instanceID: parseInt(getSelectedCourseInstance()),
+                        classroomID: parseInt(getSelectedClassroom()),
+                        tutorID: parseInt(getSelectedTutor()),
+                    }, true);
+                }
+            },
             eventRender: function (event, element, view) {
                 // allows html to be used inside the title
                 var htmlEl = ('month' != view.name) ? 'div' : 'span';
                 element.find(htmlEl + '.fc-title').html(element.find(htmlEl + '.fc-title').text());
             },
-            eventDrop: function (event, delta, revertFunc) {
-
-                if (event.cancelled ?? false) revertFunc();
-
-                var data = prepareDataForCheckTutorOverlap(event);
-
-                var placeEvent = function () {
-                    if (parseInt(delta.as('minutes')) != 0 && !mustSave) setMustSave(true);
-                    if (data.tutorID > 0) addToUIEvents(data);
-                }
-                /**
-                 * do the checkTutorOverlap only if a tutor is there
-                 */
-                if (data.tutorID > 0) {
-                    $j.when(checkTutorOverlap(data)).done(function (overlaps) {
-                        if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
-                            placeEvent();
-                        } else {
-                            jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
-                                function () { placeEvent(); },
-                                function () { revertFunc(); });
-                        }
-                    }).fail(function () {
-                        console.log('error while checking overlapping events in eventDrop');
-                        revertFunc();
-                    });
-                } else placeEvent();
-
+            eventDrop: (event, delta, revertFunc) => {
+                return eventDropAndResizeHandler('drop', event, delta, revertFunc);
             },
-            eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {
-
-                if (event.cancelled ?? false) revertFunc();
-
-                data = prepareDataForCheckTutorOverlap(event);
-
-                var placeEvent = function () {
-                    if (parseInt(delta.as('minutes')) != 0 && !mustSave) setMustSave(true);
-                    updateAllocatedHours(delta.asMilliseconds(), 0);
-                    if (data.tutorID > 0) addToUIEvents(data);
-                }
-
-                /**
-                 * do the checkTutorOverlap only if a tutor is there
-                 */
-                if (data.tutorID > 0) {
-                    $j.when(checkTutorOverlap(data)).done(function (overlaps) {
-                        if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
-                            placeEvent();
-                        } else {
-                            jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
-                                function () { placeEvent(); },
-                                function () { revertFunc(); });
-                        }
-                    }).fail(function () {
-                        console.log('error while checking overlapping events in eventResize');
-                        revertFunc();
-                    });
-                } else placeEvent();
-
+            eventResize: (event, delta, revertFunc, jsEvent, ui, view) => {
+                return eventDropAndResizeHandler('resize', event, delta, revertFunc, jsEvent, ui, view);
             },
             header: {
                 left: 'prev,next today',
@@ -296,6 +241,38 @@ function initCalendar(options = {}) {
 
         moveInsideCalendarHeader('onlySelectedInstance');
     }
+}
+
+function eventDropAndResizeHandler(eventName, event, delta, revertFunc, jsEvent = null, ui = null, view = null) {
+    if (event.cancelled ?? false) revertFunc();
+
+    data = prepareDataForCheckTutorOverlap(event);
+
+    var placeEvent = function () {
+        if (parseInt(delta.as('minutes')) != 0 && !mustSave) setMustSave(true);
+        if (eventName == 'resize') {
+            updateAllocatedHours(delta.asMilliseconds(), 0);
+        }
+        if (data.tutorID > 0) addToUIEvents(data);
+    }
+
+    /**
+     * do the checkTutorOverlap only if a tutor is there
+     */
+    if (data.tutorID > 0) {
+        $j.when(checkTutorOverlap(data)).done(function (overlaps) {
+            if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
+                placeEvent();
+            } else {
+                jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
+                    function () { placeEvent(); },
+                    function () { revertFunc(); });
+            }
+        }).fail(function () {
+            console.log('error while checking overlapping events in eventResize');
+            revertFunc();
+        });
+    } else placeEvent();
 }
 
 function buildAndPlaceEvent(newEvent, doCheckTutorOverlap) {
