@@ -410,7 +410,7 @@ class AMAClassagendaDataHandler extends AMADataHandler
     }
 
     /**
-     * checks if the passed tutor has already an event scheduled between the passed timestamps
+     * checks if the passed condition has already an event scheduled between the passed timestamps
      *
      * @param int $startTS start timestamp
      * @param int $endTS end timestamp
@@ -421,12 +421,18 @@ class AMAClassagendaDataHandler extends AMADataHandler
      *
      * @access public
      */
-    public function checkTutorOverlap($startTS, $endTS, $tutorID, $eventID)
+    public function checkEventsOverlap($startTS, $endTS, $conditions, $eventID)
     {
 
-        $params = [':tutorID' => $tutorID];
-        $sql = 'SELECT * FROM `' . self::$PREFIX . 'calendars` WHERE id_utente_tutor= :tutorID';
+        $sql = 'SELECT * FROM `' . self::$PREFIX . 'calendars` WHERE 1';
+        $params = [];
 
+        foreach ($conditions as $key => $val) {
+            if (!is_null($val)) {
+                $params[":$key"] = $val;
+                $sql .= " AND `$key` = :$key";
+            }
+        }
         if (!is_null($eventID)) {
             $sql .= ' AND `' . self::$PREFIX . 'calendars_id` != :eventID';
             $params = array_merge($params, [':eventID' => $eventID]);

@@ -49,8 +49,10 @@ $dh = AMAClassagendaDataHandler::instance(MultiPort::getDSN($_SESSION['sess_sele
 
 $retVal['isOverlap'] = false;
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
-    if (isset($start) && strlen($start) > 0 && isset($end) && strlen($end) > 0 && isset($tutorID) && intval($tutorID) > 0) {
+    if (isset($start) && strlen($start) > 0 && isset($end) && strlen($end) > 0) {
         $eventID = (isset($eventID) && intval($eventID) > 0) ? intval($eventID) : null;
+        $tutorID = (isset($tutorID) && intval($tutorID) > 0) ? intval($tutorID) : null;
+        $classroomID = (isset($classroomID) && intval($classroomID) > 0) ? intval($classroomID) : null;
 
         [$startDate, $startTime] = explode('T', $start);
         [$endDate, $endTime] = explode('T', $end);
@@ -58,19 +60,17 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
         [$startYear, $startMonth, $startDay] = explode('-', $startDate);
         [$endYear, $endMonth, $endDay] = explode('-', $endDate);
 
+        $startTS = $dh::dateToTs($startDay . '/' . $startMonth . '/' . $startYear, $startTime);
+        $endTS = $dh::dateToTs($endDay . '/' . $endMonth . '/' . $endYear, $endTime);
+
         foreach (
             [
-            'tutor' => 'checkTutorOverlap',
-            ] as $what => $method
+            'tutor' => fn() => ($tutorID > 0 ? $dh->checkEventsOverlap($startTS, $endTS, ['id_utente_tutor' => (int) $tutorID], $eventID) : false),
+            'classroom' => fn() => ($classroomID > 0 ? $dh->checkEventsOverlap($startTS, $endTS, ['id_classroom' => (int) $classroomID], $eventID) : false),
+            ] as $what => $checkCallBack
         ) {
             if (!$retVal['isOverlap']) {
-                $result = $dh->$method(
-                    $dh::dateToTs($startDay . '/' . $startMonth . '/' . $startYear, $startTime),
-                    $dh::dateToTs($endDay . '/' . $endMonth . '/' . $endYear, $endTime),
-                    intval($tutorID),
-                    $eventID
-                );
-
+                $result = $checkCallBack();
                 if (!AMADB::isError($result) && $result !== false && count($result) > 0) {
                     $retVal['isOverlap'] = true;
                     $retVal['data'] = $result;

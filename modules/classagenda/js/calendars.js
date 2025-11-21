@@ -202,8 +202,8 @@ function initCalendar(options = {}) {
                         isSelected: false,
                         editable: true,
                         instanceID: parseInt(getSelectedCourseInstance()),
-                        classroomID: parseInt(getSelectedClassroom()),
-                        tutorID: parseInt(getSelectedTutor()),
+                        classroomID: isNaN(parseInt(getSelectedClassroom())) ? 0 : parseInt(getSelectedClassroom()),
+                        tutorID: isNaN(parseInt(getSelectedTutor())) ? 0 : parseInt(getSelectedTutor()),
                     }, true);
                 }
             },
@@ -257,9 +257,9 @@ function eventDropAndResizeHandler(eventName, event, delta, revertFunc, jsEvent 
     }
 
     /**
-     * do the checkEventsOverlap only if a tutor is there
+     * do the checkEventsOverlap only if a tutor or a classroom is there
      */
-    if (data.tutorID > 0) {
+    if (data.tutorID > 0 || data.classroomID > 0) {
         $j.when(checkEventsOverlap(data)).done(function (overlaps) {
             if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
                 placeEvent();
@@ -281,7 +281,9 @@ function buildAndPlaceEvent(newEvent, doCheckEventsOverlap) {
         const startDate = moment(newEvent.start);
         const endDate = moment(newEvent.end);
         newEvent.title = buildEventTitle(newEvent);
-        if (newEvent.tutorID > 0) newEvent.eventID = addToUIEvents(newEvent);
+        if (newEvent.tutorID > 0 || newEvent.classroomID > 0) {
+            newEvent.eventID = addToUIEvents(newEvent);
+        }
         newEvent.cancelled = false;
         calendar.fullCalendar('renderEvent', newEvent, true);
         calendar.fullCalendar('unselect');
@@ -290,9 +292,9 @@ function buildAndPlaceEvent(newEvent, doCheckEventsOverlap) {
     }
 
     /**
-     * do the checkEventsOverlap only if a tutor is there
+     * do the checkEventsOverlap only if a tutor or a classroom is there
      */
-    if (doCheckEventsOverlap && newEvent.tutorID > 0) {
+    if (doCheckEventsOverlap && (newEvent.tutorID > 0 || newEvent.classroomID > 0)) {
         $j.when(checkEventsOverlap(newEvent)).done(function (overlaps) {
             if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
                 placeEvent();
@@ -742,12 +744,28 @@ function updateStudentCountOnInstanceChange() {
  */
 function updateEventOnClassRoomChange() {
     var event = getSelectedEvent(), classroomid = getSelectedClassroom();
-    if (event != null && classroomid >= 0) {
-        event.classroomName = null;
+    var setClassroom = function () {
+        event.classroomName = null
         event.classroomID = classroomid;
         event.title = buildEventTitle(event);
         updateSelectedEvent(event);
         if (!mustSave) setMustSave(true);
+    };
+
+    if (event != null && classroomid >= 0) {
+        event.classroomID = classroomid;
+        data = prepareDataForCheckEventsOverlap(event);
+        $j.when(checkEventsOverlap(data)).done(function (overlaps) {
+            if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
+                setClassroom();
+            } else {
+                jQueryConfirm('#confirmDialog', '#eventsOverlapquestion',
+                    function () { setClassroom(); },
+                    function () { return null; });
+            }
+        }).fail(function () {
+            console.log('error while checking overlapping events in updateEventOnClassroomChange');
+        });
     }
 }
 
@@ -1199,14 +1217,19 @@ function checkEventsOverlapOnUIEvents(event) {
              * - new event ends during an existing event
              * - new event starts before and ends after or perfectly overlaps an existing event
              */
-            if (event.tutorID == currentEvent.tutorID && event.eventID != currentEvent.eventID &&
+            if (event.eventID != currentEvent.eventID &&
                 (
                     (newStartTS > loadedStartTS && newStartTS < loadedEndTS) ||
                     (newEndTS > loadedStartTS && newEndTS < loadedEndTS) ||
                     (newStartTS <= loadedStartTS && newEndTS >= loadedEndTS)
                 )) {
-                retObj.isOverlap = true;
-                retObj.what = 'tutor';
+                    if (event.tutorID > 0 && currentEvent.tutorID && event.tutorID == currentEvent.tutorID) {
+                    retObj.isOverlap = true;
+                    retObj.what = 'tutor';
+                } else if (event.classroomID > 0 && currentEvent.classroomID && event.classroomID == currentEvent.classroomID) {
+                    retObj.isOverlap = true;
+                    retObj.what = 'classroom';
+                }
             }
 
             if (retObj.isOverlap) {
@@ -1216,7 +1239,7 @@ function checkEventsOverlapOnUIEvents(event) {
                     date: newStart.format('L'),
                     start: loadedStart.format('HH:mm'),
                     end: loadedEnd.format('HH:mm'),
-                    classroomID: event.classroomID,
+                    id_classroom: event.classroomID,
                     what: retObj.what ?? null,
                 });
             }
@@ -1270,9 +1293,15 @@ function checkEventsOverlapOnServer(event) {
  */
 function prepareEventsOverlapDialog(event) {
     $j('.overlapquestionlabel').text('');
-    $j('#overlapQuestionName').text(getTutorFromSelect(event.id_utente_tutor));
+    $j('#overlapQuestionName').text('');
     if ('undefined' != event.what) {
         $j(`.overlapquestionlabel.${event.what}`).text($j(`.overlapquestionlabel.${event.what}`).data('text') ?? '');
+        if (event.what == 'tutor') {
+            $j('#overlapQuestionName').text(getTutorFromSelect(event.id_utente_tutor));
+        } else if (event.what == 'classroom') {
+            // remove (xx seats) from radiobutton label
+            $j('#overlapQuestionName').text(getClassroomRadioLabel(event.id_classroom).replace(/ \(.*\)/, ''));
+        }
     }
     if ('undefined' != typeof event.instanceName) {
         $j('#overlapInstanceName').html(($j('#instancesList').length > 0) ? event.instanceName : '');
@@ -1301,7 +1330,7 @@ function prepareDataForCheckEventsOverlap(event) {
     return ({
         start: event.start.format(),
         end: event.end.format(),
-        tutorID: parseInt(event.tutorID),
+        tutorID: isNaN(parseInt(event.tutorID)) ? null : parseInt(event.tutorID),
         instanceID: getSelectedCourseInstance(),
         classroomID: isNaN(parseInt(event.classroomID)) ? null : parseInt(event.classroomID),
         eventID: theEventID
@@ -1436,8 +1465,8 @@ function repeatSelectedEvent() {
                 isSelected: false,
                 editable: true,
                 instanceID: parseInt(getSelectedCourseInstance()),
-                classroomID: parseInt(getSelectedClassroom()),
-                tutorID: parseInt(getSelectedTutor()),
+                classroomID: isNaN(parseInt(getSelectedClassroom())) ? 0 : parseInt(getSelectedClassroom()),
+                tutorID: isNaN(parseInt(getSelectedTutor())) ? 0 : parseInt(getSelectedTutor()),
             }, doCheckEventsOverlap);
             start = start.add(oneWeek);
             end = end.add(oneWeek);

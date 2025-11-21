@@ -395,6 +395,7 @@ class CalendarsManagement extends AbstractClassAgendaManagement
                 foreach (
                     [
                     'tutor' => 'Il tutor',
+                    'classroom' => "L' aula",
                     ] as $what => $message
                 ) {
                     $qLabel = CDOMElement::create('span', 'class:overlapquestionlabel ' . $what);
