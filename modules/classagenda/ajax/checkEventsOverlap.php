@@ -58,25 +58,34 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
         [$startYear, $startMonth, $startDay] = explode('-', $startDate);
         [$endYear, $endMonth, $endDay] = explode('-', $endDate);
 
-        $result = $dh->checkTutorOverlap(
-            $dh::dateToTs($startDay . '/' . $startMonth . '/' . $startYear, $startTime),
-            $dh::dateToTs($endDay . '/' . $endMonth . '/' . $endYear, $endTime),
-            intval($tutorID),
-            $eventID
-        );
+        foreach (
+            [
+            'tutor' => 'checkTutorOverlap',
+            ] as $what => $method
+        ) {
+            if (!$retVal['isOverlap']) {
+                $result = $dh->$method(
+                    $dh::dateToTs($startDay . '/' . $startMonth . '/' . $startYear, $startTime),
+                    $dh::dateToTs($endDay . '/' . $endMonth . '/' . $endYear, $endTime),
+                    intval($tutorID),
+                    $eventID
+                );
 
-        if (!AMADB::isError($result) && $result !== false && count($result) > 0) {
-            $retVal['isOverlap'] = true;
-            $retVal['data'] = $result;
-            $retVal['data']['date'] = Utilities::ts2dFN($result['start']);
-            $retVal['data']['start'] = substr(Utilities::ts2tmFN($result['start']), 0, -3);
-            $retVal['data']['end'] = substr(Utilities::ts2tmFN($result['end']), 0, -3);
+                if (!AMADB::isError($result) && $result !== false && count($result) > 0) {
+                    $retVal['isOverlap'] = true;
+                    $retVal['data'] = $result;
+                    $retVal['data']['date'] = Utilities::ts2dFN($result['start']);
+                    $retVal['data']['start'] = substr(Utilities::ts2tmFN($result['start']), 0, -3);
+                    $retVal['data']['end'] = substr(Utilities::ts2tmFN($result['end']), 0, -3);
+                    $retVal['data']['what'] = $what;
 
-            $courseInstance = $dh->courseInstanceGet($result['id_istanza_corso']);
-            if (!AMADB::isError($courseInstance)) {
-                $course = $dh->getCourseInfoForCourseInstance($result['id_istanza_corso']);
-                if (!AMADB::isError($course)) {
-                    $retVal['data']['instanceName'] = $course['titolo'] . ' &gt; ' . $courseInstance['title'];
+                    $courseInstance = $dh->courseInstanceGet($result['id_istanza_corso']);
+                    if (!AMADB::isError($courseInstance)) {
+                        $course = $dh->getCourseInfoForCourseInstance($result['id_istanza_corso']);
+                        if (!AMADB::isError($course)) {
+                            $retVal['data']['instanceName'] = $course['titolo'] . ' &gt; ' . $courseInstance['title'];
+                        }
+                    }
                 }
             }
         }

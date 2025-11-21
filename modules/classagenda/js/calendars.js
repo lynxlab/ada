@@ -246,7 +246,7 @@ function initCalendar(options = {}) {
 function eventDropAndResizeHandler(eventName, event, delta, revertFunc, jsEvent = null, ui = null, view = null) {
     if (event.cancelled ?? false) revertFunc();
 
-    data = prepareDataForCheckTutorOverlap(event);
+    data = prepareDataForCheckEventsOverlap(event);
 
     var placeEvent = function () {
         if (parseInt(delta.as('minutes')) != 0 && !mustSave) setMustSave(true);
@@ -257,14 +257,14 @@ function eventDropAndResizeHandler(eventName, event, delta, revertFunc, jsEvent 
     }
 
     /**
-     * do the checkTutorOverlap only if a tutor is there
+     * do the checkEventsOverlap only if a tutor is there
      */
     if (data.tutorID > 0) {
-        $j.when(checkTutorOverlap(data)).done(function (overlaps) {
+        $j.when(checkEventsOverlap(data)).done(function (overlaps) {
             if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
                 placeEvent();
             } else {
-                jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
+                jQueryConfirm('#confirmDialog', '#eventsOverlapquestion',
                     function () { placeEvent(); },
                     function () { revertFunc(); });
             }
@@ -275,7 +275,7 @@ function eventDropAndResizeHandler(eventName, event, delta, revertFunc, jsEvent 
     } else placeEvent();
 }
 
-function buildAndPlaceEvent(newEvent, doCheckTutorOverlap) {
+function buildAndPlaceEvent(newEvent, doCheckEventsOverlap) {
 
     var placeEvent = function () {
         const startDate = moment(newEvent.start);
@@ -290,14 +290,14 @@ function buildAndPlaceEvent(newEvent, doCheckTutorOverlap) {
     }
 
     /**
-     * do the checkTutorOverlap only if a tutor is there
+     * do the checkEventsOverlap only if a tutor is there
      */
-    if (doCheckTutorOverlap && newEvent.tutorID > 0) {
-        $j.when(checkTutorOverlap(newEvent)).done(function (overlaps) {
+    if (doCheckEventsOverlap && newEvent.tutorID > 0) {
+        $j.when(checkEventsOverlap(newEvent)).done(function (overlaps) {
             if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
                 placeEvent();
             } else {
-                jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
+                jQueryConfirm('#confirmDialog', '#eventsOverlapquestion',
                     function () { placeEvent(); },
                     function () { calendar.fullCalendar('unselect'); });
             }
@@ -767,12 +767,12 @@ function updateEventOnTutorChange() {
 
     if (event != null && tutorid > 0) {
         event.tutorID = tutorid;
-        data = prepareDataForCheckTutorOverlap(event);
-        $j.when(checkTutorOverlap(data)).done(function (overlaps) {
+        data = prepareDataForCheckEventsOverlap(event);
+        $j.when(checkEventsOverlap(data)).done(function (overlaps) {
             if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
                 setTutor();
             } else {
-                jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
+                jQueryConfirm('#confirmDialog', '#eventsOverlapquestion',
                     function () { setTutor(); },
                     function () { return null; });
             }
@@ -1155,7 +1155,10 @@ function updateAllocatedHours(durationDelta, lessonsDelta) {
  * @param event
  * @return boolean
  */
-function checkTutorOverlapOnUIEvents(event) {
+function checkEventsOverlapOnUIEvents(event) {
+    const retObj = {
+        isOverlap: false,
+    };
     if (objectSize(UIEvents) > 0) {
         const debug = false;
         const newStart = moment(event.start);
@@ -1174,7 +1177,7 @@ function checkTutorOverlapOnUIEvents(event) {
             const loadedEndTS = loadedEnd.unix();
 
             if (debug) {
-                console.group('checkTutorOverlapOnUIEvents');
+                console.group('checkEventsOverlapOnUIEvents');
                 console.log({
                     new: {
                         start: newStartTS,
@@ -1202,20 +1205,24 @@ function checkTutorOverlapOnUIEvents(event) {
                     (newEndTS > loadedStartTS && newEndTS < loadedEndTS) ||
                     (newStartTS <= loadedStartTS && newEndTS >= loadedEndTS)
                 )) {
+                retObj.isOverlap = true;
+                retObj.what = 'tutor';
+            }
 
-                prepareTutorOverlapDialog({
+            if (retObj.isOverlap) {
+                prepareEventsOverlapDialog({
                     instanceName: ($j('#instancesList').length > 0) ? ($j('#instancesList option[value=' + event.instanceID + ']').text()) : '',
                     id_utente_tutor: event.tutorID,
                     date: newStart.format('L'),
                     start: loadedStart.format('HH:mm'),
-                    end: loadedEnd.format('HH:mm')
+                    end: loadedEnd.format('HH:mm'),
+                    classroomID: event.classroomID,
+                    what: retObj.what ?? null,
                 });
-
-                return true;
             }
         }
     }
-    return false;
+    return retObj;
 }
 
 /**
@@ -1225,10 +1232,10 @@ function checkTutorOverlapOnUIEvents(event) {
  * @param event
  * @return jQuery promise
  */
-function checkTutorOverlapOnServer(event) {
+function checkEventsOverlapOnServer(event) {
     return $j.ajax({
         type: 'GET',
-        url: 'ajax/checkTutorOverlap.php',
+        url: 'ajax/checkEventsOverlap.php',
         data: event,
         dataType: 'json'
     }).done(function (JSONObj) {
@@ -1245,9 +1252,10 @@ function checkTutorOverlapOnServer(event) {
                      * If the server reports an overlap on an event that has been
                      * moved or resized but not saved yet, then check it against the UIEvents array
                      */
-                    JSONObj.isOverlap = checkTutorOverlapOnUIEvents(event);
+                    $j.extend(JSONObj, checkEventsOverlapOnUIEvents(event));
+                    // JSONObj.isOverlap = checkEventsOverlapOnUIEvents(event);
                 } else {
-                    prepareTutorOverlapDialog(JSONObj.data);
+                    prepareEventsOverlapDialog(JSONObj.data);
                 }
 
             }
@@ -1260,8 +1268,12 @@ function checkTutorOverlapOnServer(event) {
  *
  * @param event
  */
-function prepareTutorOverlapDialog(event) {
-    $j('#overlapTutorName').text(getTutorFromSelect(event.id_utente_tutor));
+function prepareEventsOverlapDialog(event) {
+    $j('.overlapquestionlabel').text('');
+    $j('#overlapQuestionName').text(getTutorFromSelect(event.id_utente_tutor));
+    if ('undefined' != event.what) {
+        $j(`.overlapquestionlabel.${event.what}`).text($j(`.overlapquestionlabel.${event.what}`).data('text') ?? '');
+    }
     if ('undefined' != typeof event.instanceName) {
         $j('#overlapInstanceName').html(($j('#instancesList').length > 0) ? event.instanceName : '');
     }
@@ -1277,11 +1289,11 @@ function prepareTutorOverlapDialog(event) {
 }
 
 /**
- * prepares the object needed by checkTutorOverlap
+ * prepares the object needed by checkEventsOverlap
  *
  * @param event
  */
-function prepareDataForCheckTutorOverlap(event) {
+function prepareDataForCheckEventsOverlap(event) {
     var theEventID = null;
     if ('undefined' != typeof event.eventID) theEventID = event.eventID;
     else if ('undefind' != typeof event.id) theEventID = event.id;
@@ -1291,6 +1303,7 @@ function prepareDataForCheckTutorOverlap(event) {
         end: event.end.format(),
         tutorID: parseInt(event.tutorID),
         instanceID: getSelectedCourseInstance(),
+        classroomID: isNaN(parseInt(event.classroomID)) ? null : parseInt(event.classroomID),
         eventID: theEventID
     });
 }
@@ -1304,15 +1317,14 @@ function prepareDataForCheckTutorOverlap(event) {
  * @param event
  * @returns jQuery promise
  */
-function checkTutorOverlap(event) {
-    if (checkTutorOverlapOnUIEvents(event)) {
+function checkEventsOverlap(event) {
+    const checkObj = checkEventsOverlapOnUIEvents(event);
+    if (checkObj.isOverlap) {
         var aDeferred = $j.Deferred();
-        aDeferred.resolve({
-            isOverlap: true
-        });
+        aDeferred.resolve(checkObj);
         return aDeferred.promise();
     } else {
-        return checkTutorOverlapOnServer(event);
+        return checkEventsOverlapOnServer(event);
     }
 }
 
@@ -1414,7 +1426,7 @@ function repeatSelectedEvent() {
         const oneWeek = moment.duration(1, 'week');
         const repeatEnd = moment($j('#enddate').text(), 'DD/MM/YYYY');
         const oneYear = moment(end.format()).add(moment.duration(1, 'year'));
-        const doCheckTutorOverlap = false;
+        const doCheckEventsOverlap = false;
         start = start.add(oneWeek);
         end = end.add(oneWeek);
         while (end.isBefore(oneYear) && end.isBefore(repeatEnd)) {
@@ -1426,7 +1438,7 @@ function repeatSelectedEvent() {
                 instanceID: parseInt(getSelectedCourseInstance()),
                 classroomID: parseInt(getSelectedClassroom()),
                 tutorID: parseInt(getSelectedTutor()),
-            }, doCheckTutorOverlap);
+            }, doCheckEventsOverlap);
             start = start.add(oneWeek);
             end = end.add(oneWeek);
         }
@@ -1687,7 +1699,7 @@ function setCanDelete(status) {
 }
 
 /**
- * sets the text of the modal dialogù
+ * sets the text of the modal dialog
  *
  * @param windowId id of the div containing the dialog
  * @param spanId id of the span containing the text to set

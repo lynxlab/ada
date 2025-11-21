@@ -86,7 +86,7 @@ div#confirmDialog .dialogQuestion {
     overflow: none;
 }
 
-div#confirmDialog #tutorOverlapquestion {
+div#confirmDialog #eventsOverlapquestion {
 	margin-top: 5px;
 	line-height: 1.4em;
 }
@@ -96,7 +96,7 @@ div#confirmDialog #tutorOverlapquestion {
 #overlapDate,
 #overlapStartTime,
 #overlapEndTime,
-#overlapTutorName {
+#overlapQuestionName {
 	font-weight: bold;
 }
 
