@@ -13,6 +13,7 @@
 
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Classagenda\AMAClassagendaDataHandler;
 
@@ -53,6 +54,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
         $eventID = (isset($eventID) && intval($eventID) > 0) ? intval($eventID) : null;
         $tutorID = (isset($tutorID) && intval($tutorID) > 0) ? intval($tutorID) : null;
         $classroomID = (isset($classroomID) && intval($classroomID) > 0) ? intval($classroomID) : null;
+        $instanceID = (isset($instanceID) && intval($instanceID) > 0) ? intval($instanceID) : null;
 
         [$startDate, $startTime] = explode('T', $start);
         [$endDate, $endTime] = explode('T', $end);
@@ -65,8 +67,25 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 
         foreach (
             [
-            'tutor' => fn() => ($tutorID > 0 ? $dh->checkEventsOverlap($startTS, $endTS, ['id_utente_tutor' => (int) $tutorID], $eventID) : false),
-            'classroom' => fn() => ($classroomID > 0 ? $dh->checkEventsOverlap($startTS, $endTS, ['id_classroom' => (int) $classroomID], $eventID) : false),
+                'sameevent' => function () use ($dh, $startTS, $endTS, $tutorID, $classroomID, $instanceID, $eventID) {
+                    $conds = [
+                        'id_utente_tutor' => ((int) $tutorID === 0) ? null : (int) $tutorID,
+                        'id_istanza_corso' => ((int) $instanceID === 0) ? null : (int) $instanceID,
+                        'start' => $startTS,
+                        'end' => $endTS,
+                    ];
+                    if (ModuleLoaderHelper::isLoaded('CLASSROOM')) {
+                        $conds['id_classroom'] = ((int) $classroomID === 0) ? null : (int) $classroomID;
+                    }
+                    return $dh->checkEventsOverlap($startTS, $endTS, $conds, $eventID);
+                },
+                'tutor' => fn () => ($tutorID > 0 ? $dh->checkEventsOverlap($startTS, $endTS, ['id_utente_tutor' => (int) $tutorID], $eventID) : false),
+                'classroom' => function () use ($dh, $startTS, $endTS, $classroomID, $eventID) {
+                    if (ModuleLoaderHelper::isLoaded('CLASSROOM') && $classroomID > 0) {
+                        return $dh->checkEventsOverlap($startTS, $endTS, ['id_classroom' => (int) $classroomID], $eventID);
+                    }
+                    return false;
+                },
             ] as $what => $checkCallBack
         ) {
             if (!$retVal['isOverlap']) {

@@ -117,3 +117,4 @@ div#confirmDialog #eventsOverlapquestion {
 .first { position: relative; }
 #selectInstanceMsg { display: none; position: absolute; top: 100px }
 label[disabled="disabled"] { opacity: 0.4; pointer-events: none; cursor: default; }
+#eventsOverlapquestion > #overlapQuestionType:after { content: "\A"; display: block; }

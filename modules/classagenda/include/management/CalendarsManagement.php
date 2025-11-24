@@ -403,7 +403,10 @@ class CalendarsManagement extends AbstractClassAgendaManagement
                     $confirmEventsOverlap->addChild($qLabel);
                 }
                 $confirmEventsOverlap->addChild(CDOMElement::create('span', 'id:overlapQuestionName'));
-                $confirmEventsOverlap->addChild(new CText(' ' . translateFN('ha già un evento per la classe') . '<br/>'));
+                $eventsOverlapQuestionType = CDOMElement::create('span', 'id:overlapQuestionType');
+                $eventsOverlapQuestionType->setAttribute('data-text-default', translateFN('ha già un evento per la classe'));
+                $eventsOverlapQuestionType->setAttribute('data-text-sameevent', translateFN('Evento duplicato per la classe'));
+                $confirmEventsOverlap->addChild($eventsOverlapQuestionType);
                 $confirmEventsOverlap->addChild(CDOMElement::create('span', 'id:overlapInstanceName'));
                 $confirmEventsOverlap->addChild(new CText('<br/>' . translateFN('in data') . ' '));
                 $confirmEventsOverlap->addChild(CDOMElement::create('span', 'id:overlapDate'));
