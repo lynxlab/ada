@@ -84,7 +84,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             }
             $radios[0] = [
                 'name' => translateFN('Nessuna'),
-                'seats' => '',
+                'seats' => translateFN('Nessun luogo'),
             ];
             foreach ($result as $classroom) {
                 $radios[$classroom['id_classroom']] = [
@@ -101,7 +101,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 
                 if (strlen($radio['seats']) > 0) {
                     $labelSPAN = CDOMElement::create('span');
-                    $labelSPAN->addChild(new CText(' (' . $radio['seats'] . ' ' . translateFN('posti') . ')'));
+                    $labelSPAN->addChild(new CText(
+                        ' (' .
+                            $radio['seats'] .
+                            ((int)$radio['seats'] > 0 ? ' ' . translateFN('posti') : '') . ')'
+                    ));
                     $labelEL->addChild($labelSPAN);
                 }
 
