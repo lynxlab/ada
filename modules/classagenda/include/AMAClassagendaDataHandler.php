@@ -446,12 +446,14 @@ class AMAClassagendaDataHandler extends AMADataHandler
          * - new event ends during an existing event
          * - new event starts before and ends after or perfectly overlaps an existing event
          */
-        $sql .= ' AND (
-            (:startTS > `start` AND :startTS < `end`) OR
-            (:endTS > `start` AND :endTS < `end`) OR
-            (:startTS <= `start` AND :endTS >= `end`)
-            )';
-        $params = array_merge($params, [':startTS' => $startTS, ':endTS' => $endTS]);
+        if (!array_key_exists(':start', $params) && !array_key_exists(':end', $params)) {
+            $sql .= ' AND (
+                (:start > `start` AND :start < `end`) OR
+                (:end > `start` AND :end < `end`) OR
+                (:start <= `start` AND :end >= `end`)
+                )';
+            $params = array_merge($params, [':start' => $startTS, ':end' => $endTS]);
+        }
 
         return $this->getRowPrepared($sql, $params, AMA_FETCH_ASSOC);
     }
