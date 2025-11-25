@@ -103,6 +103,67 @@ class AMAClassagendaDataHandler extends AMADataHandler
     }
 
     /**
+     * Gets the base query to get classroom events
+     *
+     * @return string
+     */
+    private function getClassRoomEventsBaseQuery(): string
+    {
+        $sql = 'SELECT CAL.*, U.`nome`, U.`cognome` ';
+        if (ModuleLoaderHelper::isLoaded('MODULES_CLASSROOM')) {
+            $sql .= ',CROOMS.`id_venue`, CROOMS.`name` AS `classroomname`, VENUES.`name` AS `venuename` ';
+        }
+        $sql .= 'FROM `' . self::$PREFIX . 'calendars` AS CAL';
+        $sql .= ' LEFT JOIN `utente` AS U ON U.id_utente = CAL.id_utente_tutor';
+
+        if (ModuleLoaderHelper::isLoaded('MODULES_CLASSROOM')) {
+            /**
+             * must get null classrooms and venues as well, so use a LEFT JOIN here
+             */
+            $sql .= ' LEFT JOIN `' . AMAClassroomDataHandler::$PREFIX . 'classrooms` AS CROOMS' .
+            ' ON CAL.id_classroom = CROOMS.id_classroom';
+            $sql .= ' LEFT JOIN `' . AMAClassroomDataHandler::$PREFIX . 'venues` AS VENUES' .
+                ' ON `CROOMS`.`id_venue` = `VENUES`.`id_venue`';
+        }
+        $sql .= ' WHERE 1 ';
+
+        return $sql;
+    }
+
+    /**
+     * Gets all events for a classroom id
+     *
+     * @param int $classroomID
+     * @param boolean $onlyActive true to get only non cancelled events
+     *
+     * @return array|AMAError
+     */
+    public function getClassRoomEventsForClassroom($classroomID = null, $onlyActive = false)
+    {
+        $sql = $this->getClassRoomEventsBaseQuery();
+        $params = [];
+        if (ModuleLoaderHelper::isLoaded('MODULES_CLASSROOM')) {
+            if (is_null($classroomID)) {
+                $sql .= ' AND CAL.`id_classroom` IS NULL';
+            } else {
+                $sql .= ' AND CAL.`id_classroom`=?';
+                if (is_null($params)) {
+                    $params = [];
+                }
+                $params[] = intval($classroomID);
+            }
+        }
+
+        if (defined('MODULES_CLASSAGENDA_EVENT_CANCEL') && MODULES_CLASSAGENDA_EVENT_CANCEL && $onlyActive) {
+            /**
+             * if requested, select not cancelled (aka active) events only
+             */
+            $sql .= ' AND `CAL`.`cancelled` IS NULL';
+        }
+        return $this->getAllPrepared($sql, $params, AMA_FETCH_ASSOC);
+    }
+
+    /**
      * gets all the classroom events for the passed instance and venue
      *
      * @param number $course_instance_id
@@ -116,31 +177,11 @@ class AMAClassagendaDataHandler extends AMADataHandler
      */
     public function getClassRoomEventsForCourseInstance($course_instance_id, $venueID, $start = 0, $end = 0)
     {
-
         if (!isset($venueID)) {
             $venueID = null;
         }
-
-        $sql = 'SELECT CAL.*, U.`nome`, U.`cognome` ';
-        if (ModuleLoaderHelper::isLoaded('MODULES_CLASSROOM')) {
-            $sql .= ',CROOMS.`id_venue`, CROOMS.`name` AS `classroomname`, VENUES.`name` AS `venuename` ';
-        }
-        $sql .= 'FROM `' . self::$PREFIX . 'calendars` AS CAL';
-        $sql .= ' LEFT JOIN `utente` AS U ON U.id_utente = CAL.id_utente_tutor';
-
         $params = null;
-
-        if (ModuleLoaderHelper::isLoaded('MODULES_CLASSROOM')) {
-            /**
-             * must get null classrooms and venues as well, so use a LEFT JOIN here
-             */
-            $sql .= ' LEFT JOIN `' . AMAClassroomDataHandler::$PREFIX . 'classrooms` AS CROOMS' .
-            ' ON CAL.id_classroom = CROOMS.id_classroom';
-            $sql .= ' LEFT JOIN `' . AMAClassroomDataHandler::$PREFIX . 'venues` AS VENUES' .
-                ' ON `CROOMS`.`id_venue` = `VENUES`.`id_venue`';
-        }
-
-        $sql .= ' WHERE 1';
+        $sql = $this->getClassRoomEventsBaseQuery();
 
         if ($start > 0 && $end > 0) {
             $sql .= ' AND (start>=? AND end<=?)';
@@ -204,9 +245,9 @@ class AMAClassagendaDataHandler extends AMADataHandler
      *
      * @return AMA_Error on failure|updated element id (zero if it's a newly inserted element)
      *
-     * @access private
+     * @access public
      */
-    private function saveClassroomEvent($course_instance_id, $eventData)
+    public function saveClassroomEvent($course_instance_id, $eventData)
     {
         /**
          * prepare start timestamp
