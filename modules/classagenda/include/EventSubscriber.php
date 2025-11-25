@@ -13,7 +13,13 @@
 
 namespace Lynxlab\ADA\Module\Classagenda;
 
+use DateTimeImmutable;
+use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
+use Lynxlab\ADA\Module\Classroom\AMAClassroomDataHandler;
+use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
 use Lynxlab\ADA\Module\EventDispatcher\Events\MenuEvent;
+use Lynxlab\ADA\Module\EventDispatcher\Subscribers\ADAMethodSubscriberInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -21,13 +27,85 @@ use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 /**
  * EventSubscriber Class, defines node events names and handlers for this module
  */
-class EventSubscriber implements EventSubscriberInterface
+class EventSubscriber implements EventSubscriberInterface, ADAMethodSubscriberInterface
 {
     public static function getSubscribedEvents()
     {
         return [
             MenuEvent::PRERENDER => 'addMenuItems',
         ];
+    }
+
+    public static function getSubscribedMethods()
+    {
+        $subscriptions = [];
+        if (ModuleLoaderHelper::isLoaded('CLASSROOM')) {
+            $subscriptions[AMAClassroomDataHandler::class . '::classroomDeleteClassroom'] = [
+                CoreEvent::PREPREPAREANDEXECUTE => 'setNullClassroom',
+            ];
+        }
+        return $subscriptions;
+    }
+
+    /**
+     * set events classroomid to null when the
+     * classroom module is deleting a classroom
+     *
+     * @param CoreEvent $event
+     * @return CoreEvent
+     */
+    public function setNullClassroom(CoreEvent $event)
+    {
+        if (str_starts_with(strtoupper($event->getArgument('sql')->queryString), 'DELETE')) {
+            $values = $event->getArgument('values') ?? [];
+            if (!empty($values)) {
+                $classroomID = array_shift($values);
+                if ($classroomID > 0) {
+                    $events = $this->getDH()->getClassRoomEventsForClassroom($classroomID);
+                    $instanceIDs = array_unique(array_column($events, 'id_istanza_corso'));
+                    $dh = $this->getDH();
+                    /**
+                     * double foreach to get all events with same instanceID and venueID
+                     */
+                    foreach ($instanceIDs as $instanceID) {
+                        $venueIDs = array_unique(
+                            array_column(
+                                array_filter($events, fn ($el) => $el['id_istanza_corso'] == $instanceID),
+                                'id_venue'
+                            )
+                        );
+                        foreach ($venueIDs as $venueID) {
+                            $eventsData = array_map(
+                                fn ($el) => [
+                                    'id' => $el[AMAClassagendaDataHandler::$PREFIX . 'calendars_id'],
+                                    'start' => (new DateTimeImmutable())->setTimestamp($el['start'])->format('Y-m-d\TH:i:s'),
+                                    'end' => (new DateTimeImmutable())->setTimestamp($el['end'])->format('Y-m-d\TH:i:s'),
+                                    'cancelled' => ($el['cancelled']) != null ?
+                                        (DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $el['cancelled']))->format('Y-m-d\TH:i:s')
+                                        : null,
+                                    'classroomID' => null,
+                                    'tutorID' => $el['id_utente_tutor'],
+                                ],
+                                array_values(
+                                    array_filter($events, fn ($el) => $el['id_istanza_corso'] == $instanceID && $el['id_venue'] == $venueID)
+                                )
+                            );
+                            if (!empty($eventsData)) {
+                                foreach ($eventsData as $anEvent) {
+                                    $dh->saveClassroomEvent($instanceID, $anEvent);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return $event;
+    }
+
+    private function getDH(): AMAClassagendaDataHandler
+    {
+        return AMAClassagendaDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
     }
 
     public function addMenuItems(MenuEvent $event)
