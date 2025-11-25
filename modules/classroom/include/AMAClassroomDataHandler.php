@@ -84,8 +84,14 @@ class AMAClassroomDataHandler extends AMADataHandler
      */
     public function classroomDeleteVenue($id_venue)
     {
+        $classrooms = $this->classroomGetClassroom(null, $id_venue);
+        foreach ($classrooms as $classroom) {
+            $delclass = $this->classroomDeleteClassroom($classroom['id_classroom']);
+            if (AMADB::isError($delclass)) {
+                return $delclass;
+            }
+        }
         $sql = 'DELETE FROM `' . self::$PREFIX . 'venues` WHERE `id_venue`=?';
-        // TODO: delete classroom
         return $this->executeCriticalPrepared($sql, $id_venue);
     }
 
@@ -199,12 +205,15 @@ class AMAClassroomDataHandler extends AMADataHandler
     /**
      * deletes the classroom having the passed id
      *
+     * NOTE:
+     * The classagenda event listener will set to null the classroomid
+     * of all the events in the deleted classroom
+     *
      * @param number $id_classroom
      */
     public function classroomDeleteClassroom($id_classroom)
     {
         $sql = 'DELETE FROM `' . self::$PREFIX . 'classrooms` WHERE `id_classroom`=?';
-        // TODO: delete calendar (?)
         return $this->executeCriticalPrepared($sql, $id_classroom);
     }
 
