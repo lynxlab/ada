@@ -423,6 +423,9 @@ class CalendarsManagement extends AbstractClassAgendaManagement
                 // question for not saved events (case #cancelCalendar button is clicked)
                 $confirmCancelCalendarSPAN = CDOMElement::create('span', 'id:cancelCalendarquestion,class:dialogQuestion');
                 $confirmCancelCalendarSPAN->addChild(new CText(translateFN('Ci sono dei dati non salvati, ricaricare il calendario?')));
+                // question asked when deleting the selected event
+                $confirmDeleteSelectedSPAN = CDOMElement::create('span', 'id:deleteSelectedQuestion,class:dialogQuestion');
+                $confirmDeleteSelectedSPAN->addChild(new CText(translateFN("Confermi la cancellazione dell'evento selezionato ?")));
                 // question asked when deleting all instance events
                 $confirmDeleteAllSPAN = CDOMElement::create('span', 'id:deleteAllButtonquestion,class:dialogQuestion');
                 $confirmDeleteAllSPAN->addChild(new CText(translateFN('Confermi la cancellazione di tutti gli eventi <strong>futuri</strong> della classe') . ' '));
@@ -445,6 +448,7 @@ class CalendarsManagement extends AbstractClassAgendaManagement
                 $confirmDIV->addChild($confirmEventsOverlap);
                 $confirmDIV->addChild($confirmReminderNonSavedEvent);
                 $confirmDIV->addChild($confirmCancelCalendarSPAN);
+                $confirmDIV->addChild($confirmDeleteSelectedSPAN);
                 $confirmDIV->addChild($confirmDeleteAllSPAN);
                 $confirmDIV->setAttribute('style', 'display:none;');
 

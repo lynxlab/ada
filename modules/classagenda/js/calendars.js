@@ -927,7 +927,7 @@ function saveClassRoomEvents() {
                 wasSelected: (calEvents[i].isSelected ? 1 : 0),
                 start: calEvents[i].start.format(),
                 end: calEvents[i].end.format(),
-                classroomID: calEvents[i].classroomID > 0 ? calEvents[i].classroomID : null ,
+                classroomID: calEvents[i].classroomID > 0 ? calEvents[i].classroomID : null,
                 tutorID: calEvents[i].tutorID,
                 cancelled: (false === calEvents[i].cancelled ?? false) ? 0 : calEvents[i].cancelled,
             };
@@ -1389,33 +1389,38 @@ function checkEventsOverlap(event) {
  * deletes the select calendar event
  */
 function deleteSelectedEvent() {
-    var selectedDuration = null;
-    var eventID = null;
-    calendar.fullCalendar('removeEvents', function (clEvent) {
-        if (typeof clEvent.isSelected != "undefined" && clEvent.isSelected == true) {
-            if (selectedDuration == null) {
-                selectedDuration = moment.duration();
-                selectedDuration.add(clEvent.end.subtract(clEvent.start));
-            }
-            if (eventID == null) {
-                if ('undefined' != typeof clEvent.eventID) eventID = clEvent.eventID;
-                else if ('undefined' != typeof clEvent.id) eventID = clEvent.id + '';
-            }
-            return true;
-        } else return false;
-    });
 
-    setCanDelete(false);
-    if (!mustSave) setMustSave(true);
-    if (selectedDuration != null) updateAllocatedHours(selectedDuration, -1);
-    if (eventID != null) {
-        /**
-         * add event to UIDeletedEvents array only if
-         * it was not a new event and has not been previously added
-         */
-        if (eventID.search('tmp_') == -1 && UIDeletedEvents.indexOf(eventID) == -1) UIDeletedEvents.push(eventID);
-        if ('undefined' != typeof UIEvents[eventID]) delete UIEvents[eventID];
-    }
+    const doDeleteSelectedEvent = () => {
+        var selectedDuration = null;
+        var eventID = null;
+        calendar.fullCalendar('removeEvents', function (clEvent) {
+            if (typeof clEvent.isSelected != "undefined" && clEvent.isSelected == true) {
+                if (selectedDuration == null) {
+                    selectedDuration = moment.duration();
+                    selectedDuration.add(clEvent.end.subtract(clEvent.start));
+                }
+                if (eventID == null) {
+                    if ('undefined' != typeof clEvent.eventID) eventID = clEvent.eventID;
+                    else if ('undefined' != typeof clEvent.id) eventID = clEvent.id + '';
+                }
+                return true;
+            } else return false;
+        });
+
+        setCanDelete(false);
+        if (!mustSave) setMustSave(true);
+        if (selectedDuration != null) updateAllocatedHours(selectedDuration, -1);
+        if (eventID != null) {
+            /**
+             * add event to UIDeletedEvents array only if
+             * it was not a new event and has not been previously added
+             */
+            if (eventID.search('tmp_') == -1 && UIDeletedEvents.indexOf(eventID) == -1) UIDeletedEvents.push(eventID);
+            if ('undefined' != typeof UIEvents[eventID]) delete UIEvents[eventID];
+        }
+    };
+
+    jQueryConfirm('#confirmDialog', '#deleteSelectedQuestion', doDeleteSelectedEvent, () => { });
 }
 
 /**
