@@ -328,6 +328,7 @@ function initCancelButton() {
 
         var doReset = function () {
             UIcancelledEvents = [];
+            UIEvents = [];
             // refetch calendar events
             if ('undefined' != typeof calendar) {
                 calendar.fullCalendar('removeEvents', (e) => e.cancelled !== false);
@@ -347,6 +348,21 @@ function initCancelButton() {
 }
 
 /**
+ * select the selected venue option
+ *
+ * @param venueid the id of the venueto be selected
+ */
+function setSelectedVenue(venueid) {
+    if (hasVenues && venueid != $j('#venuesList').val()) {
+        $j('#venuesList').val(venueid);
+        $j('#venuesList option').attr('selected', false);
+        $j(`#venuesList option[value="${venueid}"]`).attr('selected', 'selected');
+        return $j('#venuesList').triggerHandler('change');
+    }
+    return $j.Deferred().resolve().promise();
+}
+
+/**
  * checks the selected classroom radio button
  *
  * @param classroomid the id of the classroom to be checked
@@ -356,9 +372,9 @@ function setSelectedClassroom(classroomid) {
 }
 
 /**
- * checks the selected tutor radio button
+ * select the selected tutor option
  *
- * @param tutorid the id of the tutor to be checked
+ * @param tutorid the id of the tutor to be selected
  */
 function setSelectedTutor(tutorid) {
     if ($j('#tutorSelect').length > 0) {
@@ -535,7 +551,11 @@ function setSelectedEvent(event) {
             selEvent[0].className += ' cancelledClassroomEvent';
         }
         selEvent[0].isSelected = true;
-        setSelectedClassroom(selEvent[0].classroomID);
+        $j.when(setSelectedVenue(selEvent[0].venueID)).done(
+            () => {
+                setSelectedClassroom(selEvent[0].classroomID);
+            }
+        );
         setSelectedTutor(selEvent[0].tutorID);
         if (!canDelete) setCanDelete(true);
         calendar.fullCalendar('updateEvent', selEvent[0]);
@@ -630,6 +650,7 @@ function rerenderAllEvents() {
 function updateClassroomsOnVenueChange() {
     if (hasVenues) {
         $j('#venuesList').on('change', function () {
+            var deferred = $j.Deferred();
             $j.ajax({
                 type: 'GET',
                 url: 'ajax/getClassrooms.php',
@@ -655,7 +676,11 @@ function updateClassroomsOnVenueChange() {
                     if (getSelectedVenue() == null) rerenderAllEvents();
                     else calendar.fullCalendar('refetchEvents');
                 }
+                deferred.resolve();
+            }).fail(() => {
+                deferred.reject();
             });
+            return deferred;
         });
     }
 }
@@ -760,7 +785,7 @@ function updateEventOnClassRoomChange() {
     };
 
     if (event != null && classroomid >= 0) {
-        data = prepareDataForCheckEventsOverlap($j.extend({}, event, {classroomID : classroomid}));
+        data = prepareDataForCheckEventsOverlap($j.extend({}, event, { classroomID: classroomid }));
         $j.when(checkEventsOverlap(data))
             .done(function (overlaps) {
                 if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
@@ -797,7 +822,7 @@ function updateEventOnTutorChange() {
     };
 
     if (event != null && tutorid > 0) {
-        data = prepareDataForCheckEventsOverlap($j.extend({}, event, {tutorID : tutorid}));
+        data = prepareDataForCheckEventsOverlap($j.extend({}, event, { tutorID: tutorid }));
         $j.when(checkEventsOverlap(data))
             .done(function (overlaps) {
                 if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
@@ -824,18 +849,22 @@ function updateEventOnTutorChange() {
  * wants to change course instance or venue, ask to save
  */
 function askChangeInstanceOrVenueConfirm() {
-    var selector = '';
-    if ($j('#instancesList').length > 0) selector += '#instancesList';
-    if ($j('#venuesList').length > 0) selector += ',#venuesList';
+    var selector = [];
+    if ($j('#instancesList').length > 0) selector.push('#instancesList');
+    if ($j('#venuesList').length > 0) selector.push('#venuesList');
 
     if (selector.length > 0) {
-        $j(selector).on('mousedown', function (event) {
+        $j(selector.join(',')).on('mousedown', function (event) {
             // check if there's something to save here
             if (mustSave) {
                 event.preventDefault();
                 jQueryConfirm('#confirmDialog', '#' + $j(this).attr('id') + 'question',
                     function () { saveClassRoomEvents(); },
-                    function () { event.preventDefault(); });
+                    function () {
+                        event.preventDefault();
+                        mustSave = false;
+                        $j('#cancelCalendar').trigger('click');
+                    });
             }
         });
     }
@@ -1092,7 +1121,7 @@ function reloadClassRoomEvents() {
                     JSONObj = JSONObj.filter((e) => (null == e.venueID) || (e.venueID == venueID));
                 }
                 if (filterClassroomID !== null) {
-                    JSONObj = JSONObj.filter((e) => (null == e.classroomID && filterClassroomID == 0) || (e.classroomID  == filterClassroomID));
+                    JSONObj = JSONObj.filter((e) => (null == e.classroomID && filterClassroomID == 0) || (e.classroomID == filterClassroomID));
                 }
                 if (filterTutorID !== null) {
                     JSONObj = JSONObj.filter((e) => e.tutorID == filterTutorID);
@@ -1139,14 +1168,14 @@ function reloadClassRoomEvents() {
 
             }
         })
-        .fail(function () {
-            UIEvents = [];
-            UIDeletedEvents = [];
-            deferred.reject();
-        })
-        .always(function () {
-            if (getSelectedEvent() == null) setCanDelete(false);
-        });
+            .fail(function () {
+                UIEvents = [];
+                UIDeletedEvents = [];
+                deferred.reject();
+            })
+            .always(function () {
+                if (getSelectedEvent() == null) setCanDelete(false);
+            });
     } else {
         if (!$j('#selectInstanceMsg').is(':visible')) {
             $j('#selectInstanceMsg').show();
@@ -1195,6 +1224,7 @@ function updateAllocatedHours(durationDelta, lessonsDelta) {
 function checkEventsOverlapOnUIEvents(event) {
     const retObj = {
         isOverlap: false,
+        data: {},
     };
     if (objectSize(UIEvents) > 0) {
         const debug = false;
@@ -1227,9 +1257,9 @@ function checkEventsOverlapOnUIEvents(event) {
                         end: loadedEndTS,
                     },
                 });
-                console.log('starts during an existing event',(newStartTS > loadedStartTS && newStartTS < loadedEndTS));
-                console.log('ends during an existing event',(newEndTS > loadedStartTS && newEndTS < loadedEndTS));
-                console.log('starts before and ends after or perfectly overlaps an existing event',(newStartTS <= loadedStartTS && newEndTS >= loadedEndTS));
+                console.log('starts during an existing event', (newStartTS > loadedStartTS && newStartTS < loadedEndTS));
+                console.log('ends during an existing event', (newEndTS > loadedStartTS && newEndTS < loadedEndTS));
+                console.log('starts before and ends after or perfectly overlaps an existing event', (newStartTS <= loadedStartTS && newEndTS >= loadedEndTS));
                 console.groupEnd();
             }
 
@@ -1247,13 +1277,13 @@ function checkEventsOverlapOnUIEvents(event) {
                 if (newStartTS == loadedStartTS && newEndTS == loadedEndTS &&
                     event.tutorID == currentEvent.tutorID && event.classroomID == currentEvent.classroomID && event.instanceID == currentEvent.instanceID) {
                     retObj.isOverlap = true;
-                    retObj.what = 'sameevent';
+                    retObj.data.what = 'sameevent';
                 } else if (event.tutorID > 0 && currentEvent.tutorID > 0 && event.tutorID == currentEvent.tutorID) {
                     retObj.isOverlap = true;
-                    retObj.what = 'tutor';
+                    retObj.data.what = 'tutor';
                 } else if (event.classroomID > 0 && currentEvent.classroomID > 0 && event.classroomID == currentEvent.classroomID) {
                     retObj.isOverlap = true;
-                    retObj.what = 'classroom';
+                    retObj.data.what = 'classroom';
                 }
             }
 
@@ -1265,7 +1295,7 @@ function checkEventsOverlapOnUIEvents(event) {
                     start: loadedStart.format('HH:mm'),
                     end: loadedEnd.format('HH:mm'),
                     id_classroom: event.classroomID,
-                    what: retObj.what ?? null,
+                    what: retObj.data.what ?? null,
                 });
             }
         }
@@ -1864,7 +1894,6 @@ function jQueryConfirm(id, questionId, OKcallback, CancelCallBack, options = {})
     setModalDialogText(id, questionId);
 
     if ('what' in options && options.what == 'sameevent') {
-        cancelLbl = okLbl;
         $j('#eventsOverlapKeepQuestion').hide();
         options.buttons = [{
             text: 'OK',
