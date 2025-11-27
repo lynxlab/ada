@@ -353,7 +353,8 @@ function initCancelButton() {
  * @param venueid the id of the venueto be selected
  */
 function setSelectedVenue(venueid) {
-    if (hasVenues && venueid != $j('#venuesList').val()) {
+    venueid = venueid == null ? 0 : venueid;
+    if (hasVenues && venueid > 0 && venueid != $j('#venuesList').val()) {
         $j('#venuesList').val(venueid);
         $j('#venuesList option').attr('selected', false);
         $j(`#venuesList option[value="${venueid}"]`).attr('selected', 'selected');
@@ -368,6 +369,7 @@ function setSelectedVenue(venueid) {
  * @param classroomid the id of the classroom to be checked
  */
 function setSelectedClassroom(classroomid) {
+    classroomid = classroomid == null ? 0 : classroomid;
     if ($j('input[name="classroomradio"]').length > 0) $j(`input[name="classroomradio"][value="${classroomid}"]`).prop('checked', true);
 }
 
