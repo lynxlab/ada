@@ -37,7 +37,7 @@ trait WithFind
      * @throws Exception
      * @return array
      */
-    public function findBy($className, array $whereArr = null, array $orderByArr = null, AbstractAMADataHandler $dbToUse = null)
+    public function findBy($className, ?array $whereArr = null, ?array $orderByArr = null, ?AbstractAMADataHandler $dbToUse = null)
     {
         $reflection = new ReflectionClass(static::class);
         $namespace = $reflection->getConstant('MODELNAMESPACE');
@@ -128,7 +128,7 @@ trait WithFind
         }
     }
 
-    public function findOneBy($className, array $whereArr = null, array $orderByArr = null, AbstractAMADataHandler $dbToUse = null)
+    public function findOneBy($className, ?array $whereArr = null, ?array $orderByArr = null, ?AbstractAMADataHandler $dbToUse = null)
     {
         $retval = $this->findBy($className, $whereArr, $orderByArr, $dbToUse);
         if (is_array($retval) && count($retval) > 0) {
@@ -148,7 +148,7 @@ trait WithFind
      * @param AbstractAMADataHandler $dbToUse object used to run the queries. If null, use 'this'
      * @return array
      */
-    public function findAll($className, array $orderBy = null, AbstractAMADataHandler $dbToUse = null)
+    public function findAll($className, ?array $orderBy = null, ?AbstractAMADataHandler $dbToUse = null)
     {
         return $this->findBy($className, null, $orderBy, $dbToUse);
     }
