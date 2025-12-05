@@ -52,7 +52,7 @@ $self = 'impexport';
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'  && !empty($_POST)) {
     $importHelper = new ImportHelper($_POST);
-    $result = $importHelper->runImport();
+    $result = $importHelper->runImportAll();
 
     if (AMADB::isError($result)) {
         $data = translateFN("ERRORE NELL'IMPORTAZIONE: ") . $result->errorMessage();

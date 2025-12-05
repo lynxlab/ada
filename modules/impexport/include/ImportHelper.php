@@ -22,6 +22,8 @@ use Lynxlab\ADA\Module\Test\AMATestDataHandler;
 use SimpleXMLElement;
 use ZipArchive;
 
+use function Lynxlab\ADA\Main\Output\Functions\translateFN;
+
 class ImportHelper
 {
     /**
@@ -213,9 +215,93 @@ class ImportHelper
     }
 
     /**
+     * Import either a single zipped course or
+     * multiple zipped courses in the uploaded zip
+     *
+     * @return mixed AMAError on error |array recpArray on success
+     */
+    public function runImportAll()
+    {
+        $zipFileName = $this->importFile;
+        $zip = new ZipArchive();
+        if ($zip->open($zipFileName)) {
+            if (static::checkMultiZip($zipFileName)) { // is a multi-file export?
+                $toExtract = [];
+                $retArray = [];
+                for ($i = 0; $i < $zip->numFiles; $i++) {
+                    $filename = $zip->getNameIndex($i);
+                    $toExtract[] = $filename;
+                    $x = $zip->extractTo(ADA_UPLOAD_PATH . $_SESSION['sess_userObj']->getId() . '/', $filename);
+                    $this->importFile = ADA_UPLOAD_PATH . $_SESSION['sess_userObj']->getId() . '/' . $filename;
+                    $this->importStartTime = $this->dh->dateToTs('now');
+                    $this->selectedCourseID = null;
+                    $this->selectedNodeID =  null;
+                    $result = $this->runImport();
+                    if (is_file($this->importFile)) {
+                        unlink($this->importFile);
+                    }
+                    if (AMADB::isError($result)) {
+                        return $result;
+                    }
+                }
+                $zip->close();
+                if (is_file($zipFileName)) {
+                    unlink($zipFileName);
+                }
+                return $this->recapArray;
+
+                /*
+                    echo "Courses imported: $i\n";
+                    foreach ($toExtract as $extracted){
+                        echo $extracted."\n";
+                    }
+                */
+            } else { // no, so do the standard import:
+                return $this->runImport();
+            }
+        } else {
+            unset($zip);
+            unlink($zipFileName);
+            return new AMAError($this->importFile . ': ' . translateFN('non è un file zip'));
+        }
+    }
+
+    /**
+     * Check if a zipfile contains multiple zipped courses to be imported
+     *
+     * @param string $zipFile
+     * @return boolean
+     */
+    private static function checkMultiZip(string $zipFile): bool
+    {
+        /* Checks if zipfile is a multi-export */
+        if (!str_contains($zipFile, ADA_UPLOAD_PATH)) {
+            $zipFileName = ADA_UPLOAD_PATH . $zipFile;
+        } else {
+            $zipFileName = $zipFile;
+        }
+        $zip = new ZipArchive();
+        if ($zip->open($zipFileName)) {
+            if ($zip->numFiles == 1) {
+                $zip->close();
+                return false;
+            }
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                $filename = $zip->getNameIndex($i);
+                if (!str_ends_with($filename, '.zip')) {
+                    $zip->close();
+                    return false;
+                }
+            }
+            $zip->close();
+        }
+        return true;
+    }
+
+    /**
      * runs the actual import
      *
-     * @return Ambigous AMAError on error |array recpArray on success
+     * @return mixed AMAError on error |array recpArray on success
      *
      * @access public
      */
@@ -235,8 +321,8 @@ class ImportHelper
             $XMLObj = new SimpleXMLElement($XMLfile);
 
             $this->progressResetValues(substr_count($XMLfile, '</nodo>') +
-                    substr_count($XMLfile, '<survey ') +
-                    substr_count($XMLfile, '</test>'));
+                substr_count($XMLfile, '<survey ') +
+                substr_count($XMLfile, '</test>'));
 
             foreach ($XMLObj as $objName => $course) {
                 // first level object must be 'modello_corso'
@@ -257,7 +343,7 @@ class ImportHelper
                      * sets the log file name that will be used from now on!
                      */
                     $this->logFile = MODULES_IMPEXPORT_LOGDIR . "import-" . $this->courseOldID .
-                    "_" . date('d-m-Y_His') . ".log";
+                        "_" . date('d-m-Y_His') . ".log";
 
                     $this->logMessage('**** IMPORT STARTED at ' . date('d/m/Y H:i:s') . '(timestamp: ' . $this->dh->dateToTs('now') . ') ****');
 
@@ -450,7 +536,7 @@ class ImportHelper
      * @param SimpleXMLElement $extObj the element to be saved
      * @param int $courseNewID the generated ID of the imported course
      *
-     * @return boolean on debug|AMAError on error|true on success
+     * @return mixed boolean on debug|AMAError on error|true on success
      *
      * @access private
      */
@@ -687,7 +773,7 @@ class ImportHelper
             // make some adjustments to invoke the test datahandler's testAddNode method
 
             $this->logMessage(__METHOD__ . ' Saving test node. course id=' . $courseNewID .
-                    ' so far ' . $count . ' nodes have been imported');
+                ' so far ' . $count . ' nodes have been imported');
 
             $count++;
             $this->progressIncrement();
@@ -766,7 +852,7 @@ class ImportHelper
         if ($currentElement->test) {
             for ($i = 0; $i < count($currentElement->test); $i++) {
                 $this->logMessage(__METHOD__ . ' RECURRING TEST NODES: depth=' . (++$depth) .
-                        ' This test has ' . count($currentElement->test) . ' kids and is the brother n.' . $i);
+                    ' This test has ' . count($currentElement->test) . ' kids and is the brother n.' . $i);
 
                 $this->importTests($currentElement->test[$i], $courseNewID);
             }
@@ -809,12 +895,12 @@ class ImportHelper
         }
 
         $outArr = [];
-        $resourcesArr = [ 0 => 'unused' ];
+        $resourcesArr = [0 => 'unused'];
 
         $currentElement = $xml;
 
-        $outArr ['id'] = (string) $currentElement['id'];
-        $outArr ['id_parent'] = (string) $currentElement['parent_id'];
+        $outArr['id'] = (string) $currentElement['id'];
+        $outArr['id_parent'] = (string) $currentElement['parent_id'];
 
         foreach ($currentElement->children() as $name => $value) {
             if ($name === 'posizione') {
@@ -842,7 +928,7 @@ class ImportHelper
 
         if ($outArr['id'] != '') {
             $this->logMessage(__METHOD__ . ' Saving course node. course id=' . $courseNewID .
-                    ' so far ' . $count . ' nodes have been imported');
+                ' so far ' . $count . ' nodes have been imported');
 
             // add the node to the counted elements
             $count++;
@@ -872,11 +958,11 @@ class ImportHelper
 
             $outArr['icon'] = str_replace('<root_dir/>', ROOT_DIR, $outArr['icon']);
             $outArr['icon'] = str_replace('<id_autore/>', $this->assignedAuthorID, $outArr['icon']);
-            $outArr['icon'] = str_replace('<http_path/>', parse_url(HTTP_ROOT_DIR, PHP_URL_PATH), $outArr['icon']);
+            $outArr['icon'] = str_replace('<http_path/>', parse_url(HTTP_ROOT_DIR, PHP_URL_PATH) ?? '', $outArr['icon']);
 
             $outArr['text'] = str_replace('<id_autore/>', $this->assignedAuthorID, $outArr['text']);
             $outArr['text'] = str_replace('<http_root/>', HTTP_ROOT_DIR, $outArr['text']);
-            $outArr['text'] = str_replace('<http_path/>', parse_url(HTTP_ROOT_DIR, PHP_URL_PATH), $outArr['text']);
+            $outArr['text'] = str_replace('<http_path/>', parse_url(HTTP_ROOT_DIR, PHP_URL_PATH) ?? '', $outArr['text']);
 
             // oldID is needed below, for creating the array that maps the old node id
             // to the new node id. This must be done AFTER node is saved.
@@ -904,9 +990,9 @@ class ImportHelper
                     print_r($outArr);
                     echo "<hr/>";
                 } else {
-                    var_dump($outArr['id']);
-                    var_dump($outArr['parent_id']);
-                    var_dump($outArr['name']);
+                    var_dump($outArr['id'] ?? '-');
+                    var_dump($outArr['parent_id'] ?? '-');
+                    var_dump($outArr['name'] ?? '-');
                 }
             }
 
@@ -938,7 +1024,7 @@ class ImportHelper
         if ($currentElement->nodo) {
             for ($i = 0; $i < count($currentElement->nodo); $i++) {
                 $this->logMessage(__METHOD__ . ' RECURRING COURSE NODES: depth=' . (++$depth) .
-                        ' This node has ' . count($currentElement->test) . ' kids and is the brother n.' . $i);
+                    ' This node has ' . count($currentElement->test) . ' kids and is the brother n.' . $i);
 
                 $this->importNodi($currentElement->nodo[$i], $courseNewID);
             }
@@ -1003,13 +1089,13 @@ class ImportHelper
             $retval = $courseNewID;
             // add a row in common.servizio
             $service_dataAr = [
-                    'service_name' => $courseArr['titolo'],
-                    'service_description' => $courseArr['descr'],
-                    'service_level' => 1,
-                    'service_duration' => 0,
-                    'service_min_meetings' => 0,
-                    'service_max_meetings' => 0,
-                    'service_meeting_duration' => 0,
+                'service_name' => $courseArr['titolo'],
+                'service_description' => $courseArr['descr'],
+                'service_level' => 1,
+                'service_duration' => 0,
+                'service_min_meetings' => 0,
+                'service_max_meetings' => 0,
+                'service_meeting_duration' => 0,
             ];
             $id_service = $this->common_dh->addService($service_dataAr);
             if (!AMADB::isError($id_service)) {
@@ -1256,7 +1342,9 @@ class ImportHelper
          * sets a session array for progrss displaying to the poor user
          */
         session_write_close();
-        session_start();
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
         if (isset($_SESSION['importProgress'])) {
             unset($_SESSION['importProgress']);
         }
@@ -1269,7 +1357,6 @@ class ImportHelper
      */
     private function progressDestroy()
     {
-        session_start();
         if (isset($_SESSION['importProgress'])) {
             unset($_SESSION['importProgress']);
         }
@@ -1285,7 +1372,6 @@ class ImportHelper
      */
     private function progressResetValues($total)
     {
-        session_start();
         $_SESSION['importProgress']['totalItems'] = $total;
         $_SESSION['importProgress']['currentItem'] = 0;
         $_SESSION['importProgress']['status'] = 'ITEMS';
@@ -1299,7 +1385,6 @@ class ImportHelper
      */
     private function progressSetStatus($status)
     {
-        session_start();
         $_SESSION['importProgress']['status'] = $status;
         session_write_close();
     }
@@ -1309,7 +1394,6 @@ class ImportHelper
      */
     private function progressIncrement()
     {
-        session_start();
         $_SESSION['importProgress']['currentItem']++;
         session_write_close();
     }
@@ -1321,7 +1405,6 @@ class ImportHelper
      */
     private function progressSetTitle($title)
     {
-        session_start();
         $_SESSION['importProgress']['courseName'] = $title;
         session_write_close();
     }
