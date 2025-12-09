@@ -240,6 +240,7 @@ function initCalendar(options = {}) {
         setCanDelete(false);
 
         moveInsideCalendarHeader('onlySelectedInstance');
+        return calendar;
     }
 }
 
