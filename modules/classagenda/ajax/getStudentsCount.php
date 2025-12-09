@@ -71,13 +71,14 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 
     $GLOBALS['dh'] = AMAClassagendaDataHandler::instance(MultiPort::getDSN($selTester));
 
+    $retVal = '';
     if (isset($instanceID) && intval($instanceID) > 0) {
         $retVal = 0;
         $result = $GLOBALS['dh']->getUniqueStudentsForCourseInstances([intval($instanceID)]);
         if (!AMADB::isError($result)) {
             $retVal = intval(count($result));
         }
-        header('Content-Type: application/json');
-        echo json_encode(['value' => $retVal]);
     }
+    header('Content-Type: application/json');
+    echo json_encode(['value' => $retVal]);
 }

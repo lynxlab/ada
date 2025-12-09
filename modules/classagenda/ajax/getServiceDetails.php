@@ -52,7 +52,15 @@ $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR . '/include/module_init.inc.php');
 
 
-$retArray['serviceTypeString'] = translateFN('Tipo di corso sconosciuto');
+$retArray = [
+    'serviceTypeString' => translateFN('Tipo di corso sconosciuto'),
+    'courseID' => 0,
+    'duration_hours' => 0,
+    'endDate' => '',
+    'isOnline' => true,
+    'isPresence' => false,
+    'lessons_count' => '',
+];
 
 if (
     isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
