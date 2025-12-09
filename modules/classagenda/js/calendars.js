@@ -596,9 +596,7 @@ function buildEventTitle(event) {
         roomName = getClassroomRadioLabel(event.classroomID).replace(/ \(.*\)/, '');
         event.classroomName = roomName;
     }
-    if (roomName.length > 0) {
-        eventDetails.push(`<span class="roomnameInEvent">${roomName}</span>`);
-    }
+    eventDetails.push(`<span class="roomnameInEvent">${roomName ?? ''}</span>`);
 
     var tutorName = [];
     if ('tutorFirstname' in event && event.tutorFirstname?.toString().trim().length > 0) {
@@ -616,9 +614,8 @@ function buildEventTitle(event) {
     } else {
         tutorName = '';
     }
-    if (tutorName.length > 0) {
-        eventDetails.push(`<span class="tutornameInEvent">${tutorName}</span>`);
-    }
+    eventDetails.push(`<span class="tutornameInEvent">${tutorName ?? ''}</span>`);
+
     if (eventDetails.length > 0) {
         title += '<div class="eventDetails">' + eventDetails.join("\n") + '</div>';
     }
@@ -1850,10 +1847,14 @@ function moveInsideCalendarHeader(elementID) {
 
         targetElement += ' > .' + customClass;
         $j(targetElement).html(cloned);
+        $j(cloned).show();
         /**
          * add the clonedLabel if it's there
          */
-        if ('undefined' != typeof clonedLabel) $j(targetElement).append(clonedLabel);
+        if ('undefined' != typeof clonedLabel) {
+            $j(targetElement).append(clonedLabel);
+            $j(clonedLabel).show();
+        }
     }
 }
 
