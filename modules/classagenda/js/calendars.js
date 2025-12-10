@@ -1017,18 +1017,18 @@ function saveClassRoomEvents() {
     });
 }
 
-function loadCourseInstances() {
+function loadCourseInstances(options = {}) {
     if ($j('#instancesList').length > 0) {
 
         var oldSelectedInstance = getSelectedCourseInstance();
 
         $j('#instancesList').prop('disabled', 'disabled');
-        return $j.ajax({
+        return $j.ajax($j.extend({}, {
             type: 'GET',
             url: 'ajax/getInstances.php',
             data: { filterInstanceState: getFilterInstanceState() },
             dataType: 'html'
-        }).done(function (htmlcode) {
+        }, options)).done(function (htmlcode) {
             if (htmlcode.length > 0) {
                 $j('#instancesList').html(htmlcode);
                 /**
