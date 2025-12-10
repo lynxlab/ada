@@ -109,12 +109,13 @@ class AMAClassagendaDataHandler extends AMADataHandler
      */
     private function getClassRoomEventsBaseQuery(): string
     {
-        $sql = 'SELECT CAL.*, U.`nome`, U.`cognome` ';
+        $sql = 'SELECT CAL.*, U.`nome`, U.`cognome`, IC.`tipo_servizio` ';
         if (ModuleLoaderHelper::isLoaded('MODULES_CLASSROOM')) {
             $sql .= ',CROOMS.`id_venue`, CROOMS.`name` AS `classroomname`, VENUES.`name` AS `venuename` ';
         }
         $sql .= 'FROM `' . self::$PREFIX . 'calendars` AS CAL';
         $sql .= ' LEFT JOIN `utente` AS U ON U.id_utente = CAL.id_utente_tutor';
+        $sql .= ' LEFT JOIN `istanza_corso` IC ON IC.`id_istanza_corso` = CAL.`id_istanza_corso`';
 
         if (ModuleLoaderHelper::isLoaded('MODULES_CLASSROOM')) {
             /**
