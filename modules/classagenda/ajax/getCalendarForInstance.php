@@ -139,6 +139,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             $retArray[$i]['tutorFirstname'] = $aResult['nome'];
             $retArray[$i]['tutorLastname'] = $aResult['cognome'];
             $retArray[$i]['isSelected'] = false;
+            $retArray[$i]['serviceType'] = $aResult['tipo_servizio'] ?? 0;
             if (ModuleLoaderHelper::isLoaded('MODULES_CLASSROOM') && !is_null($aResult['id_venue'])) {
                 $retArray[$i]['venueID'] = (int) $aResult['id_venue'];
                 $retArray[$i]['venueName'] = $aResult['venuename'];
