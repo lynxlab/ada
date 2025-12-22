@@ -314,8 +314,9 @@ abstract class FForm
         $radioButtons = [];
         if (is_array($data) && count($data) > 0) {
             foreach ($data as $value => $text) {
-                $control = FormControl::create(FormControl::INPUT_RADIO, $id, $text)
+                $control = FormControl::create(FormControl::INPUT_RADIO, $id . '-' . $value, $text)
                          ->withData($value);
+                $control->setName($id);
                 //$this->addControl($control);
                 $radioButtons[] = $control;
                 if ($value == $checked) {
