@@ -104,8 +104,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'  &
     $providerCourses = $dh->getCoursesList(['nome','titolo']);
 
     $courses = [];
-    foreach ($providerCourses as $course) {
-        $courses[$course[0]] = '(' . $course[0] . ') ' . $course[1] . ' - ' . $course[2];
+    if (!empty($providerCourses) && !AMADB::isError($providerCOurses)) {
+        foreach ($providerCourses as $course) {
+            $courses[$course[0]] = '(' . $course[0] . ') ' . $course[1] . ' - ' . $course[2];
+        }
     }
 
     if (empty($authors)) {
