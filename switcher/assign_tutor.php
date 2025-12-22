@@ -213,6 +213,9 @@ if (
     exit();
 } else {
     if ($courseInstanceObj instanceof CourseInstance && $courseInstanceObj->isFull()) {
+        $id_course = $courseInstanceObj->getCourseId();
+        $className = $courseInstanceObj->getTitle();
+        $idInstance = $courseInstanceObj->getId();
         $result = $dh->courseInstanceTutorGet($courseInstanceObj->getId());
         if (AMADataHandler::isError($result)) {
             // FIXME: verificare che si venga redirezionati alla home page del'utente
@@ -243,10 +246,9 @@ if (
         foreach ($tutors_ar as $tutor) {
             $ids_tutor[] = $tutor[0];
             $nome = $tutor[1] . ' ' . $tutor[2];
-            $link = CDOMElement::create('a');
+            $link = CDOMElement::create('div');
             $link->setAttribute('id', 'tooltip' . $tutor[0]);
             $link->setAttribute('title', ''); // this is needed by the jquery-ui tooltip
-            $link->setAttribute('href', 'javascript:void(0);');
             $link->addChild(new CText($nome));
             $tutors[$tutor[0]] = $link->getHtml();
         }
@@ -255,7 +257,6 @@ if (
 
         //create tooltips with tutor's assignments (html + javascript)
         $tooltips = '';
-        $js = '<script type="text/javascript">';
         foreach ($tutor_monitoring as $k => $v) {
             $ul = CDOMElement::create('ul');
             if (!empty($v)) {
@@ -273,16 +274,16 @@ if (
             }
 
             $tip = CDOMElement::create('div', 'id:tooltipContent' . $k);
-            $tip->setAttribute('style', 'display:none');
-            $tip->addChild(new CText(translateFN('Tutor assegnato ai seguenti corsi:<br />')));
-            $tip->addChild($ul);
+            $tip->setAttribute('class', 'ui large modal transition hidden');
+            $tip->addChild(CDOMElement::create('i', 'class: close icon'));
+            $tiph = CDOMElement::create('div', 'class: header');
+            $tiph->addChild(new CText(translateFN('Tutor assegnato ai seguenti corsi:')));
+            $tipc = CDOMElement::create('div', 'class: content');
+            $tipc->addChild($ul);
+            $tip->addChild($tiph);
+            $tip->addChild($tipc);
             $tooltips .= $tip->getHtml();
-            $js .= "\$j('#tooltip$k').tooltip({
-                content: () => '<div class=\'assigntutor\'>' + \$j('#tooltipContent$k').html() + '</div>'
-            });";
         }
-        $js .= '</script>';
-        $tooltips .= $js;
         //end
 
         $data = new TutorAssignmentForm($tutors, $id_tutor_old);
@@ -299,7 +300,8 @@ if (
 }
 
 $title = translateFN('Assegnazione di un tutor alla classe');
-$help = translateFN('Da qui il Provider Admin può assegnare un tutor ad una classe');
+$help = translateFN('Da qui il Provider Admin può assegnare un tutor alla classe');
+$help .= ' ' . $className . ' (id: ' . $idInstance . ') - ' . translateFN('Corso') . ':  ' . $courseObj->getTitle() . ' (id : ' . $id_course . ')';
 $status = translateFN('Assegnazione tutor');
 
 $layout_dataAr['JS_filename'] = [
@@ -322,4 +324,6 @@ $content_dataAr = [
     'agenda' => $user_agenda->getHtml(),
 ];
 
-ARE::render($layout_dataAr, $content_dataAr);
+$optionsAr = ['onload_func' => "initDoc();"];
+
+ARE::render($layout_dataAr, $content_dataAr, null, $optionsAr);

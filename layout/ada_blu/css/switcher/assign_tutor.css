@@ -1,0 +1,49 @@
+.ui.modal {
+    top: 5% !important;
+}
+div.fform form fieldset.form,
+div.fform form > fieldset.form > ol > li {
+    border: none;
+}
+
+[id^=tooltipContent] .content ul {
+    line-height: 1.5em;
+    max-height: 30em;
+    overflow-y: auto;
+}
+
+[id^=id_tutors_new] [id^=tooltip].hasprofile {
+    font-weight: 600;
+}
+
+[id^=id_tutor_new] li.form,
+[id^=id_tutors_new] li.form {
+    display: flex;
+    align-items: center;
+}
+
+[id^=id_tutor_new] li.form label[for^=id_tutor_new],
+[id^=id_tutors_new] li.form label[for^=id_tutors_new] {
+    width: 100%;
+}
+
+label[for^="id_tutor_new"] > div,
+[id^=id_tutors_new] li.form .ui.info.icon {
+    cursor: pointer;
+}
+[id^=id_tutor_new] li.form .ui.popup,
+[id^=id_tutors_new] li.form .ui.popup {
+    width: 50em;
+    max-width: 50em;
+}
+
+[id^=id_tutor_new] li.form .ui.popup ul
+[id^=id_tutors_new] li.form .ui.popup ul {
+    padding-left: 1em;
+}
+
+[id^=id_tutor_new] li.form .ui.popup ul li,
+[id^=id_tutors_new] li.form .ui.popup ul li {
+    list-style: decimal;
+    border: none;
+}

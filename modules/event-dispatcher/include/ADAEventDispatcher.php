@@ -92,7 +92,7 @@ class ADAEventDispatcher extends EventDispatcher implements EventDispatcherInter
                     }
                     if (!is_null($eventName)) {
                         $dispatchArr = [];
-                        $event = new $classname($subject, $arguments);
+                        $event = new $classname($subject, $arguments, $eventName);
                         $eventPrefix = array_key_exists('eventPrefix', $eventData) ? trim($eventData['eventPrefix']) . self::PREFIX_SEPARATOR : '';
                         $listeners = self::getInstance()->getListeners();
                         $dbt = array_unique(array_map(

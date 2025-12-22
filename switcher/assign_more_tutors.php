@@ -271,7 +271,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $link = CDOMElement::create('div');
             $link->setAttribute('id', 'tooltip' . $tutor[0]);
             $link->setAttribute('title', ''); // this is needed by the jquery-ui tooltip
-            $link->setAttribute('style', 'cursor:pointer');
+            // $link->setAttribute('style', 'cursor:pointer');
             $link->addChild(new CText($nome));
             $tutors[$tutor[0]] = $link->getHtml();
         }
@@ -280,7 +280,6 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
         //create tooltips with tutor's assignments (html + javascript)
         $tooltips = '';
-        $js = '<script type="text/javascript">';
         foreach ($tutor_monitoring as $k => $v) {
             $ul = CDOMElement::create('ul');
             if (!empty($v)) {
@@ -298,16 +297,16 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             }
 
             $tip = CDOMElement::create('div', 'id:tooltipContent' . $k);
-            $tip->setAttribute('style', 'display:none');
-            $tip->addChild(new CText(translateFN('Tutor assegnato ai seguenti corsi:<br />')));
-            $tip->addChild($ul);
+            $tip->setAttribute('class', 'ui large modal transition hidden');
+            $tip->addChild(CDOMElement::create('i', 'class: close icon'));
+            $tiph = CDOMElement::create('div', 'class: header');
+            $tiph->addChild(new CText(translateFN('Tutor assegnato ai seguenti corsi:')));
+            $tipc = CDOMElement::create('div', 'class: content');
+            $tipc->addChild($ul);
+            $tip->addChild($tiph);
+            $tip->addChild($tipc);
             $tooltips .= $tip->getHtml();
-            $js .= "\$j('#tooltip$k').tooltip({
-                content: () => '<div class=\'assigntutor more\'>' + \$j('#tooltipContent$k').html() + '</div>'
-            });";
         }
-        $js .= '</script>';
-        $tooltips .= $js;
         //end
 
         $data = new TutorSecondaryAssignmentForm($tutors, $id_tutors_old);
@@ -325,7 +324,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
 $title = translateFN('Assegnazione di tutors alla classe');
 $help = translateFN('Da qui il Provider Admin può assegnare dei tutors alla classe');
-$help .= ' ' . $className . ' id: ' . $idInstance . ' - ' . translateFN('Corso') . ' ' . $id_course;
+$help .= ' ' . $className . ' (id: ' . $idInstance . ') - ' . translateFN('Corso') . ':  ' . $courseObj->getTitle() . ' (id : ' . $id_course . ')';
 $status = translateFN('Assegnazione tutor');
 
 $layout_dataAr['JS_filename'] = [
@@ -348,4 +347,6 @@ $content_dataAr = [
     'agenda' => $user_agenda->getHtml(),
 ];
 
-ARE::render($layout_dataAr, $content_dataAr);
+$optionsAr = ['onload_func' => "initDoc();"];
+
+ARE::render($layout_dataAr, $content_dataAr, null, $optionsAr);
