@@ -167,7 +167,7 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
             $title = $instance[5];
 
             $assign_tutor_link = [];
-            foreach($tutorFullNames as $tutorFullName) {
+            foreach ($tutorFullNames as $tutorFullName) {
                 $assign_tutor_link[] = BaseHtmlLib::link("assign_tutor.php?id_course=$courseId&id_course_instance=$instanceId", $tutorFullName);
             }
             $subscriptions_link = BaseHtmlLib::link(
@@ -181,7 +181,7 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
                 $duration,
                 $start_date,
                 $end_date,
-                implode('<br/>', array_map(fn($el) => $el?->getHtml(), $assign_tutor_link)),
+                implode('<br/>', array_map(fn ($el) => $el?->getHtml(), $assign_tutor_link)),
                 $subscriptions_link,
                 $actions,
             ];
