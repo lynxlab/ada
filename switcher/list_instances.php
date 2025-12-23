@@ -112,16 +112,19 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
              * Da migliorare, spostare l'ottenimento dei dati necessari in un'unica query
              * per ogni istanza corso (qualcosa che vada a sostituire courseInstanceGetList solo in questo caso.
              */
-            $tutorId = $dh->courseInstanceTutorGet($instanceId);
-            if (!AMADataHandler::isError($tutorId) && $tutorId !== false) {
-                $tutor_infoAr = $dh->getTutor($tutorId);
-                if (!AMADataHandler::isError($tutor_infoAr)) {
-                    $tutorFullName = $tutor_infoAr['nome'] . ' ' . $tutor_infoAr['cognome'];
-                } else {
-                    $tutorFullName = translateFN('Utente non trovato');
+            $tutorIds = $dh->courseInstanceTutorGet($instanceId, 'ALL');
+            $tutorFullNames = [];
+            if (!AMADataHandler::isError($tutorIds) && $tutorIds !== false && count($tutorIds) > 0) {
+                foreach ($tutorIds as $tutorId) {
+                    $tutorInfoAr = $dh->getTutor($tutorId);
+                    if (!AMADataHandler::isError($tutorInfoAr)) {
+                        $tutorFullNames[] = $tutorInfoAr['nome'] . ' ' . $tutorInfoAr['cognome'];
+                    } else {
+                        $tutorFullNames[] = translateFN('Utente non trovato');
+                    }
                 }
             } else {
-                $tutorFullName = translateFN('Nessun tutor');
+                $tutorFullNames[] = translateFN('Nessun tutor');
             }
 
             $edit_link = BaseHtmlLib::link("edit_instance.php?id_course=$courseId&id_course_instance=$instanceId", $edit_img->getHtml());
@@ -163,7 +166,10 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
             $end_date =  AMADataHandler::tsToDate($instance[4]);
             $title = $instance[5];
 
-            $assign_tutor_link = BaseHtmlLib::link("assign_tutor.php?id_course=$courseId&id_course_instance=$instanceId", $tutorFullName);
+            $assign_tutor_link = [];
+            foreach($tutorFullNames as $tutorFullName) {
+                $assign_tutor_link[] = BaseHtmlLib::link("assign_tutor.php?id_course=$courseId&id_course_instance=$instanceId", $tutorFullName);
+            }
             $subscriptions_link = BaseHtmlLib::link(
                 "course_instance.php?id_course=$courseId&id_course_instance=$instanceId",
                 translateFN('Lista studenti')
@@ -175,7 +181,7 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
                 $duration,
                 $start_date,
                 $end_date,
-                $assign_tutor_link,
+                implode('<br/>', array_map(fn($el) => $el?->getHtml(), $assign_tutor_link)),
                 $subscriptions_link,
                 $actions,
             ];
