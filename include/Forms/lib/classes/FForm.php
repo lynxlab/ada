@@ -90,12 +90,16 @@ abstract class FForm
             if (!($control instanceof FormControl)) {
                 continue;
             }
-            if (isset($formData[$control->getId()]) && (!($control instanceof FCFieldset))) {
-                $control->withData($formData[$control->getId()]);
+            $key = ($control instanceof FCInputCheckable) ? $control->getName() : $control->getId();
+            if (!($control instanceof FCFieldset)) {
+                if (isset($formData[$key])) {
+                    $control->withData($formData[$key]);
+                }
             } elseif ($control instanceof FCFieldset) {
                 foreach ($control->getControls() as $field) {
-                    if (isset($formData[$field->getId()])) {
-                        $field->withData($formData[$field->getId()]);
+                    $key = ($field instanceof FCInputCheckable) ? $field->getName() : $field->getId();
+                    if (isset($formData[$key])) {
+                        $field->withData($formData[$key]);
                     }
                 }
             }
