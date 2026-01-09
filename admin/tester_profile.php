@@ -91,19 +91,19 @@ if ($id_tester !== false) {
     } else {
         $testersAr = [];
         $tester_dataAr = [
-        [translateFN('id'), $tester_infoAr[0]],
-        [translateFN('Nome'), $tester_infoAr[1]],
-        [translateFN('Ragione Sociale'), $tester_infoAr[2]],
-        [translateFN('Indirizzo'), $tester_infoAr[3]],
-        [translateFN('Citt&agrave'), $tester_infoAr[4]],
-        [translateFN('Provincia'), $tester_infoAr[5]],
-        [translateFN('Nazione'), $tester_infoAr[6]],
-        [translateFN('Telefono'), $tester_infoAr[7]],
-        [translateFN('E-mail'), $tester_infoAr[8]],
-        [translateFN('Descrizione'), $tester_infoAr[11]],
-        [translateFN('Responsabile'), $tester_infoAr[9]],
-        [translateFN('IBAN'), $tester_infoAr[12]],
-        [translateFN('Puntatore al database'), $tester_infoAr[10]],
+        [translateFN('id'), $tester_infoAr['id_tester']],
+        [translateFN('Nome'), $tester_infoAr['nome']],
+        [translateFN('Ragione Sociale'), $tester_infoAr['ragione_sociale']],
+        [translateFN('Indirizzo'), $tester_infoAr['indirizzo']],
+        [translateFN('Citt&agrave'), $tester_infoAr['citta']],
+        [translateFN('Provincia'), $tester_infoAr['provincia']],
+        [translateFN('Nazione'), $tester_infoAr['nazione']],
+        [translateFN('Telefono'), $tester_infoAr['telefono']],
+        [translateFN('E-mail'), $tester_infoAr['e_mail']],
+        [translateFN('Descrizione'), $tester_infoAr['descrizione']],
+        [translateFN('Responsabile'), $tester_infoAr['responsabile']],
+        [translateFN('IBAN'), $tester_infoAr['iban']],
+        [translateFN('Puntatore al database'), $tester_infoAr['puntatore']],
         ];
         //$tester_data = BaseHtmlLib::tableElement('',array(),$tester_dataAr);
 
