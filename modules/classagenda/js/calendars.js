@@ -1026,7 +1026,7 @@ function loadCourseInstances(options = {}) {
         return $j.ajax($j.extend({}, {
             type: 'GET',
             url: 'ajax/getInstances.php',
-            data: { filterInstanceState: getFilterInstanceState() },
+            data: $j.extend({}, { filterInstanceState: getFilterInstanceState() }, options.data ?? {}),
             dataType: 'html'
         }, options)).done(function (htmlcode) {
             if (htmlcode.length > 0) {
