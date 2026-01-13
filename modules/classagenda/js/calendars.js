@@ -1023,7 +1023,8 @@ function loadCourseInstances(options = {}) {
         var oldSelectedInstance = getSelectedCourseInstance();
 
         $j('#instancesList').prop('disabled', 'disabled');
-        return $j.ajax($j.extend({}, {
+        const deferred = $j.Deferred();
+        $j.ajax($j.extend({}, {
             type: 'GET',
             url: 'ajax/getInstances.php',
             data: $j.extend({}, { filterInstanceState: getFilterInstanceState() }, options.data ?? {}),
@@ -1058,10 +1059,14 @@ function loadCourseInstances(options = {}) {
                         calendar.fullCalendar('removeEvents');
                     }
                 }
+                deferred.resolve(htmlcode);
             }
         }).always(function () {
             $j('#instancesList').prop('disabled', false);
+        }).fail(function() {
+            promise.reject();
         });
+        return deferred.promise();
     }
 }
 
