@@ -88,6 +88,7 @@ class FieldsConfig
             'u' => 'utente',
             'u1' => 'utente',
             'u2' => 'utente',
+            'user' => 'utente',
         ];
     }
 }
