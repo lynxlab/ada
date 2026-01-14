@@ -156,7 +156,7 @@ function initCalendar(options = {}) {
             minTime: "08:00",	// events starts at 08AM ,
             maxTime: "20:00",	// events ends at 08PM
             weekends: false,	// hide weekends
-            defaultEventMinutes: 60,
+            defaultTimedEventDuration: '01:00:00',
             height: 564,
             editable: (userType == AMA_TYPE_SWITCHER) || (userType == AMA_TYPE_TUTOR),
             eventStartEditable: (userType == AMA_TYPE_SWITCHER),
@@ -198,7 +198,7 @@ function initCalendar(options = {}) {
                 if (startDate.hasTime() && endDate.hasTime()) {
                     buildAndPlaceEvent({
                         start: startDate.format(),
-                        end: endDate.format(),
+                        end: 0, // zero will get the defaultTimedEventDuration
                         isSelected: false,
                         editable: true,
                         instanceID: parseInt(getSelectedCourseInstance()),
