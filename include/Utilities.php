@@ -395,6 +395,7 @@ class Utilities
                 'avi',
                 'sxw',
                 'odt',
+                'ods',
                 'xlsx',
                 'xltx',
                 'docx',
