@@ -198,7 +198,7 @@ function initCalendar(options = {}) {
                 if (startDate.hasTime() && endDate.hasTime()) {
                     buildAndPlaceEvent({
                         start: startDate.format(),
-                        end: 0, // zero will get the defaultTimedEventDuration
+                        end: startDate.add(calendar.fullCalendar('option', 'defaultTimedEventDuration')).format(),
                         isSelected: false,
                         editable: true,
                         instanceID: parseInt(getSelectedCourseInstance()),
