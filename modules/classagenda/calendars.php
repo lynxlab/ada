@@ -71,9 +71,9 @@ $layout_dataAr['CSS_filename'] = [JQUERY_UI_CSS];
 
 // NOTE: if i18n file is not found it'll be discarded by the rendering engine
 array_push($layout_dataAr['JS_filename'], MODULES_CLASSAGENDA_PATH . '/js/vendor/moment/min/moment.min.js');
-array_push($layout_dataAr['JS_filename'], MODULES_CLASSAGENDA_PATH . '/js/vendor/fullcalendar/dist/fullcalendar.js');
+array_push($layout_dataAr['JS_filename'], MODULES_CLASSAGENDA_PATH . '/js/vendor/fullcalendar/dist/fullcalendar.min.js');
 array_push($layout_dataAr['JS_filename'], MODULES_CLASSAGENDA_PATH . '/js/vendor/fullcalendar/dist/locale/' . $_SESSION['sess_user_language'] . '.js');
-array_push($layout_dataAr['JS_filename'], MODULES_CLASSAGENDA_PATH . '/js/vendor/fullcalendar/dist/gcal.js');
+array_push($layout_dataAr['JS_filename'], MODULES_CLASSAGENDA_PATH . '/js/vendor/fullcalendar/dist/gcal.min.js');
 array_push($layout_dataAr['CSS_filename'], MODULES_CLASSAGENDA_PATH . '/js/vendor/fullcalendar/dist/fullcalendar.min.css');
 
 //  $optionsAr ['onload_func'] = 'initDoc(\''.htmlentities(json_encode($datetimesAr)).'\',\''.htmlentities(json_encode($inputProposalNames)).'\','.MAX_PROPOSAL_COUNT.');';
