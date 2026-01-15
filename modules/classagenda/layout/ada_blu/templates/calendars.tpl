@@ -66,6 +66,7 @@
     <div id="footer">
         <template_field class="microtemplate_field" name="footer">footer</template_field>
     </div>
+    <div style="display:none;" id="eventrepeatmsg"><i18n>Evento ripetuto fino al</i18n></div>
     <!-- / piede -->
 
 </body>
