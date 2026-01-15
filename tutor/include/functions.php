@@ -76,8 +76,8 @@ function getCoursesTutorFN($id_user, $isSuper = false)
 
                         if (defined('VIDEOCHAT_REPORT') && VIDEOCHAT_REPORT) {
                             $videochatlog = BaseHtmlLib::link(
-                            $http_root_dir . '/tutor/videochatlog.php?id_course=' . $id_course . '&id_course_instance=' . $id_instance,
-                            '<img src="img/videochatlog.png"  alt="' . translateFN('log videochat') . '" title="' . translateFN('log videochat') . '" class="tooltip" border="0">'
+                                $http_root_dir . '/tutor/videochatlog.php?id_course=' . $id_course . '&id_course_instance=' . $id_instance,
+                                '<img src="img/videochatlog.png"  alt="' . translateFN('log videochat') . '" title="' . translateFN('log videochat') . '" class="tooltip" border="0">'
                             );
                             $actions[] = $videochatlog;
                         }
