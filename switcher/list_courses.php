@@ -7,6 +7,8 @@ use Lynxlab\ADA\Main\Helper\SwitcherHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Utilities;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\EventDispatcher\Events\ActionsEvent;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -194,6 +196,22 @@ if (is_array($coursesAr) && count($coursesAr) > 0) {
             $div_delete->setAttribute('class', 'tooltip');
             $div_delete->addChild(($delete_course_link));
             $actions[] = $div_delete;
+        }
+
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => ActionsEvent::class,
+                    'eventName' => ActionsEvent::LIST_COURSES,
+                ],
+                ['id_course' => $courseId],
+                ['actionsArr' => $actions]
+            );
+            try {
+                $actions = $event->getArgument('actionsArr');
+            } catch (InvalidArgumentException) {
+                // do nothing
+            }
         }
 
         $actions = BaseHtmlLib::plainListElement('class:inline_menu', $actions);

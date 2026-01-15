@@ -26,6 +26,16 @@ final class ActionsEvent extends GenericEvent
     public const NAMESPACE = 'actions';
 
     /**
+     * occurs before the actions menu in the switcher/list_courses.php is rendered
+     */
+    public const LIST_COURSES = self::NAMESPACE . '.listcourses';
+
+    /**
+     * occurs before the actions menu in the tutor/tutor.php is rendered
+     */
+    public const LIST_TUTOR_COURSES = self::NAMESPACE . '.listtutorcourses';
+
+    /**
      * occurs before the actions menu in the switcher/list_instances.php is rendered
      */
     public const LIST_INSTANCES = self::NAMESPACE . '.listinstances';

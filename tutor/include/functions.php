@@ -94,6 +94,21 @@ function getCoursesTutorFN($id_user, $isSuper = false)
                             $badges_link = BaseHtmlLib::link(MODULES_BADGES_HTTP . '/user-badges.php?id_instance=' . $id_instance . '&id_course=' . $id_course, $badges_img->getHtml());
                             $actions[] = $badges_link;
                         }
+                        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+                            $event = ADAEventDispatcher::buildEventAndDispatch(
+                                [
+                                    'eventClass' => ActionsEvent::class,
+                                    'eventName' => ActionsEvent::LIST_TUTOR_COURSES,
+                                ],
+                                ['id_course' => $id_course, 'id_course_instance' => $id_instance],
+                                ['actionsArr' => $actions]
+                            );
+                            try {
+                                $actions = $event->getArgument('actionsArr');
+                            } catch (InvalidArgumentException) {
+                                // do nothing
+                            }
+                        }
                         $dati_corso[$num_courses][$azioni_key] = implode('', array_map(fn ($e) => $e->getHtml(), $actions));
                     }
                 }
