@@ -95,10 +95,13 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                 // ... get the subscribeable course instance list...
                 if ($filterInstanceState == MODULES_CLASSAGENDA_STARTED_INSTANCES) {
                     $courseInstances = $dh->courseInstanceFindList(['title'], 'id_corso=' . $courseItem[0] .
-                        ' AND data_inizio>0 and durata>0');
+                        ' AND data_inizio>0 AND data_fine>=' . time() . ' and durata>0');
                 } elseif ($filterInstanceState == MODULES_CLASSAGENDA_NONSTARTED_INSTANCES) {
                     $courseInstances = $dh->courseInstanceFindList(['title'], 'id_corso=' . $courseItem[0] .
                         ' AND data_inizio<=0');
+                } elseif ($filterInstanceState == MODULES_CLASSAGENDA_CLOSED_INSTANCES) {
+                    $courseInstances = $dh->courseInstanceFindList(['title'], 'id_corso=' . $courseItem[0] .
+                        ' AND data_fine<' . time());
                 } else {
                     $courseInstances = $dh->courseInstanceGetList(['title'], $courseItem[0]);
                 }
