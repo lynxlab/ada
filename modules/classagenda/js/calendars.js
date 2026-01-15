@@ -254,7 +254,7 @@ function eventDropAndResizeHandler(eventName, event, delta, revertFunc, jsEvent 
         if (eventName == 'resize') {
             updateAllocatedHours(delta.asMilliseconds(), 0);
         }
-        addToUIEvents(data);
+        addToUIEvents($j.extend({}, event, data));
     }
 
     /**
@@ -278,7 +278,7 @@ function eventDropAndResizeHandler(eventName, event, delta, revertFunc, jsEvent 
         });
 }
 
-function buildAndPlaceEvent(newEvent, doCheckEventsOverlap) {
+function buildAndPlaceEvent(newEvent, doCheckEventsOverlap, skipEventOnOverlap = false) {
 
     var placeEvent = function () {
         const startDate = moment(newEvent.start);
@@ -301,11 +301,15 @@ function buildAndPlaceEvent(newEvent, doCheckEventsOverlap) {
                 if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
                     placeEvent();
                 } else {
-                    jQueryConfirm('#confirmDialog', '#eventsOverlapquestion',
-                        function () { placeEvent(); },
-                        function () { calendar.fullCalendar('unselect'); },
-                        { what: overlaps.data.what }
-                    );
+                    if (!skipEventOnOverlap) {
+                        jQueryConfirm('#confirmDialog', '#eventsOverlapquestion',
+                            function () { placeEvent(); },
+                            function () { calendar.fullCalendar('unselect'); },
+                            { what: overlaps.data.what }
+                        );
+                    } else {
+                        console.log('skipping event. overlap data:', overlaps.data);
+                    }
                 }
             })
             .fail(function () {
@@ -511,6 +515,7 @@ function updateSelectedEvent(event) {
     if (selEvent.length > 0) {
         selEvent[0] = event;
         calendar.fullCalendar('updateEvent', event);
+        addToUIEvents(event);
     }
 }
 
@@ -1160,7 +1165,7 @@ function reloadClassRoomEvents() {
                     }
 
                     calendar.fullCalendar('unselect');
-                    eventsToDraw.push(JSONObj[i]);
+                    eventsToDraw.push(JSONObj[i].id in UIEvents ? UIEvents[JSONObj[i].id] : JSONObj[i]);
                 }
 
                 if (selectedIndex > -1) {
@@ -1520,19 +1525,20 @@ function deleteAllEvents(onlyFuture = true) {
     jQueryConfirm('#confirmDialog', '#deleteAllButtonquestion', doDeleteAllEvents, () => { });
 }
 
-function repeatSelectedEvent() {
+function repeatSelectedEvent(buildEventData = {}) {
     if ($j('#enddate').text().length > 0) {
         const sourceEvent = getSelectedEvent();
         var start = moment(sourceEvent.start.format());
         var end = moment(sourceEvent.end.format());
         const oneWeek = moment.duration(1, 'week');
-        const repeatEnd = moment($j('#enddate').text(), 'DD/MM/YYYY');
+        const repeatEnd = moment($j('#enddate').text(), 'DD/MM/YYYY').add(moment.duration(1, 'day'));
         const oneYear = moment(end.format()).add(moment.duration(1, 'year'));
-        const doCheckEventsOverlap = false;
+        const doCheckEventsOverlap = true;
+        const skipEventOnOverlap = true;
         start = start.add(oneWeek);
         end = end.add(oneWeek);
         while (end.isBefore(oneYear) && end.isBefore(repeatEnd)) {
-            buildAndPlaceEvent({
+            buildAndPlaceEvent($j.extend({}, {
                 start: start.format('YYYY-MM-DDTHH:mm:ss'),
                 end: end.format('YYYY-MM-DDTHH:mm:ss'),
                 isSelected: false,
@@ -1540,10 +1546,18 @@ function repeatSelectedEvent() {
                 instanceID: parseInt(getSelectedCourseInstance()),
                 classroomID: isNaN(parseInt(getSelectedClassroom())) ? 0 : parseInt(getSelectedClassroom()),
                 tutorID: isNaN(parseInt(getSelectedTutor())) ? 0 : parseInt(getSelectedTutor()),
-            }, doCheckEventsOverlap);
+            }, buildEventData), doCheckEventsOverlap, skipEventOnOverlap);
             start = start.add(oneWeek);
             end = end.add(oneWeek);
         }
+        $j.when(
+            showHideDiv(
+                '',
+                $j('#eventrepeatmsg').html() + ' ' + repeatEnd.subtract(moment.duration(1, 'day')).format('DD/MM/YYYY'),
+                true)
+        ).then(() => {
+            unselectSelectedEvent();
+        });
     }
 }
 
@@ -1883,12 +1897,11 @@ function addToUIEvents(event) {
          * Code is made compatibile with IE8 with the Date.now check
          */
         var timestamp = (!Date.now) ? new Date().getTime() : Date.now();
-        event.eventID = 'tmp_' + timestamp;
+        event.eventID = event.id ?? 'tmp_' + timestamp;
     }
 
-    if (!(event.eventID in UIEvents)) {
-        UIEvents[event.eventID] = event;
-    }
+    // add or update the event in the UIEvents
+    UIEvents[event.eventID] = event;
 
     return event.eventID;
 }
