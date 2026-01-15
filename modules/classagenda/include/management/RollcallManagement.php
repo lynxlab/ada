@@ -247,6 +247,9 @@ class RollcallManagement extends AbstractClassAgendaManagement
     private function isTutorOfInstance()
     {
         if (is_null($this->userObj) || $this->userObj->getType() != AMA_TYPE_TUTOR) {
+            if ($this->userObj->getType() == AMA_TYPE_SWITCHER) {
+                return true;
+            }
             return false;
         }
 
