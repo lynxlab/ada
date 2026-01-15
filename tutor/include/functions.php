@@ -2,6 +2,7 @@
 
 namespace Lynxlab\ADA\Tutor\Functions;
 
+use InvalidArgumentException;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\HtmlElements\Table;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
@@ -9,6 +10,8 @@ use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\Course\Student;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\EventDispatcher\Events\ActionsEvent;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -51,10 +54,17 @@ function getCoursesTutorFN($id_user, $isSuper = false)
                         $titolo = $info_course['titolo'];
                         $id_toc = $info_course['id_nodo_toc'];
                         $durata_corso = sprintf(translateFN('%d giorni'), $instance_course_ha['durata']);
-                        $naviga = '<a href="' . $http_root_dir . '/browsing/view.php?id_node=' . $id_course . '_' . $id_toc . '&id_course=' . $id_course . '&id_course_instance=' . $id_instance . '">' .
-                            '<img src="img/timon.png"  alt="' . translateFN('naviga') . '" title="' . translateFN('naviga') . '" class="tooltip" border="0"></a>';
-                        $valuta = '<a href="' . $http_root_dir . '/tutor/tutor.php?op=student&id_instance=' . $id_instance . '&id_course=' . $id_course . '">' .
-                            '<img src="img/magnify.png"  alt="' . translateFN('valuta') . '" title="' . translateFN('valuta') . '" class="tooltip" border="0"></a>';
+                        $actions = [];
+                        $naviga = BaseHtmlLib::link(
+                            $http_root_dir . '/browsing/view.php?id_node=' . $id_course . '_' . $id_toc . '&id_course=' . $id_course . '&id_course_instance=' . $id_instance,
+                            '<img src="img/timon.png"  alt="' . translateFN('naviga') . '" title="' . translateFN('naviga') . '" class="tooltip" border="0">'
+                        );
+                        $actions[] = $naviga;
+                        $valuta = BaseHtmlLib::link(
+                            $http_root_dir . '/tutor/tutor.php?op=student&id_instance=' . $id_instance . '&id_course=' . $id_course . '">',
+                            '<img src="img/magnify.png"  alt="' . translateFN('valuta') . '" title="' . translateFN('valuta') . '" class="tooltip" border="0">'
+                        );
+                        $actions[] = $valuta;
                         $data_inizio = AMADataHandler::tsToDate($instance_course_ha['data_inizio'], "%d/%m/%Y");
 
                         $dati_corso[$num_courses][$id_corso_key] = $instance_course_ha['id_corso'];
@@ -63,27 +73,28 @@ function getCoursesTutorFN($id_user, $isSuper = false)
                         $dati_corso[$num_courses][$nome_key] =  $instance_course_ha['title'];
                         $dati_corso[$num_courses][$data_inizio_key] = $data_inizio;
                         $dati_corso[$num_courses][$durata_key] = $durata_corso;
-                        $dati_corso[$num_courses][$azioni_key] = $naviga;
-                        $dati_corso[$num_courses][$azioni_key] .= $valuta;
 
                         if (defined('VIDEOCHAT_REPORT') && VIDEOCHAT_REPORT) {
-                            $videochatlog = '<a href="' . $http_root_dir . '/tutor/videochatlog.php?id_course=' . $id_course . '&id_course_instance=' . $id_instance . '">' .
-                            '<img src="img/videochatlog.png"  alt="' . translateFN('log videochat') . '" title="' . translateFN('log videochat') . '" class="tooltip" border="0"></a>';
-                            $dati_corso[$num_courses][$azioni_key] .= $videochatlog;
+                            $videochatlog = BaseHtmlLib::link(
+                            $http_root_dir . '/tutor/videochatlog.php?id_course=' . $id_course . '&id_course_instance=' . $id_instance,
+                            '<img src="img/videochatlog.png"  alt="' . translateFN('log videochat') . '" title="' . translateFN('log videochat') . '" class="tooltip" border="0">'
+                            );
+                            $actions[] = $videochatlog;
                         }
 
                         if (ModuleLoaderHelper::isLoaded('TEST')) {
                             $survey_title = translateFN('Report Sondaggi');
                             $survey_img = CDOMElement::create('img', 'src:img/_exer.png,alt:' . $survey_title . ',class:tooltip,title:' . $survey_title);
                             $survey_link = BaseHtmlLib::link(MODULES_TEST_HTTP . '/surveys_report.php?id_course_instance=' . $id_instance . '&id_course=' . $id_course, $survey_img->getHtml());
-                            $dati_corso[$num_courses][$azioni_key] .= $survey_link->getHtml();
+                            $actions[] = $survey_link;
                         }
                         if (ModuleLoaderHelper::isLoaded('BADGES')) {
                             $badges_title = translateFN('Badges disponibili');
                             $badges_img = CDOMElement::create('img', 'src:' . MODULES_BADGES_HTTP . '/layout/' . $_SESSION['sess_template_family'] . '/img/course-badges.png,alt:' . $badges_title . ',class:tooltip,title:' . $badges_title);
                             $badges_link = BaseHtmlLib::link(MODULES_BADGES_HTTP . '/user-badges.php?id_instance=' . $id_instance . '&id_course=' . $id_course, $badges_img->getHtml());
-                            $dati_corso[$num_courses][$azioni_key] .= $badges_link->getHtml();
+                            $actions[] = $badges_link;
                         }
+                        $dati_corso[$num_courses][$azioni_key] = implode('', array_map(fn ($e) => $e->getHtml(), $actions));
                     }
                 }
             }
