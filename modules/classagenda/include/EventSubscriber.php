@@ -14,9 +14,12 @@
 namespace Lynxlab\ADA\Module\Classagenda;
 
 use DateTimeImmutable;
+use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
+use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Module\Classroom\AMAClassroomDataHandler;
+use Lynxlab\ADA\Module\EventDispatcher\Events\ActionsEvent;
 use Lynxlab\ADA\Module\EventDispatcher\Events\CoreEvent;
 use Lynxlab\ADA\Module\EventDispatcher\Events\MenuEvent;
 use Lynxlab\ADA\Module\EventDispatcher\Subscribers\ADAMethodSubscriberInterface;
@@ -32,6 +35,7 @@ class EventSubscriber implements EventSubscriberInterface, ADAMethodSubscriberIn
     public static function getSubscribedEvents()
     {
         return [
+            ActionsEvent::LIST_TUTOR_COURSES => 'addListTutorCoursesActions',
             MenuEvent::PRERENDER => 'addMenuItems',
         ];
     }
@@ -188,5 +192,36 @@ class EventSubscriber implements EventSubscriberInterface, ADAMethodSubscriberIn
             }
         }
         $menu->setLeftItemsArray($left);
+    }
+
+    public function addListTutorCoursesActions(ActionsEvent $event)
+    {
+        $actionsArr = $event->getArgument('actionsArr');
+
+        [$courseId, $instanceId] = array_values($event->getSubject());
+
+        if (ModuleLoaderHelper::isLoaded('CLASSAGENDA')) {
+            $presenzeImg = CDOMElement::create('img', 'alt:' . translateFN('presenze') . ',class:tooltip, title:' . translateFN('presenze'));
+            $presenzeImg->setAttribute('src', HTTP_ROOT_DIR . '/layout/' .
+                ($GLOBALS['template_family'] ?? ADA_TEMPLATE_FAMILY) . '/img/badge.png');
+            $presenzeLink = BaseHtmlLib::link(
+                MODULES_CLASSAGENDA_HTTP . '/rollcall.php?id_course=' . $courseId . '&id_course_instance=' . $instanceId,
+                $presenzeImg->getHtml()
+            );
+            $registroImg = CDOMElement::create('img', 'alt:' . translateFN('registro') . ',class:tooltip, title:' . translateFN('registro'));
+            $registroImg->setAttribute('src', HTTP_ROOT_DIR . '/layout/' .
+                ($GLOBALS['template_family'] ?? ADA_TEMPLATE_FAMILY) . '/img/registro.png');
+            $registroLink = BaseHtmlLib::link(
+                MODULES_CLASSAGENDA_HTTP . '/rollcallhistory.php?id_course=' . $courseId . '&id_course_instance=' . $instanceId,
+                $registroImg->getHtml()
+            );
+            /**
+             * insert links after videochat report link
+             */
+            array_splice($actionsArr, 3, 0, [$presenzeLink, $registroLink]);
+        }
+        // set argument to be returned
+        $event->setArgument('actionsArr', $actionsArr);
+        return $event;
     }
 }
