@@ -1021,13 +1021,18 @@ function loadCourseInstances(options = {}) {
     if ($j('#instancesList').length > 0) {
 
         var oldSelectedInstance = getSelectedCourseInstance();
+        var getData = { filterInstanceState: getFilterInstanceState() };
+        if ('data' in options) {
+            getData = $j.extend({}, getData, options.data ?? {});
+            delete options.data;
+        }
 
         $j('#instancesList').prop('disabled', 'disabled');
         const deferred = $j.Deferred();
         $j.ajax($j.extend({}, {
             type: 'GET',
             url: 'ajax/getInstances.php',
-            data: $j.extend({}, { filterInstanceState: getFilterInstanceState() }, options.data ?? {}),
+            data: getData,
             dataType: 'html'
         }, options)).done(function (htmlcode) {
             if (htmlcode.length > 0) {
