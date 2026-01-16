@@ -42,3 +42,8 @@ if (!ModuleLoaderHelper::isLoaded('MAXTRIES')) {
     $GLOBALS['reportHTMLColArray'][] = 'REPORT_COLUMN_MAXTRIES';
     $GLOBALS['reportFILEColArray'][] = 'REPORT_COLUMN_MAXTRIES';
 }
+
+if (!ModuleLoaderHelper::isLoaded('TEST')) {
+    array_push($GLOBALS['reportHTMLColArray'], 'REPORT_COLUMN_EXERCISES_TEST', 'REPORT_COLUMN_EXERCISES_SURVEY');
+    array_push($GLOBALS['reportFILEColArray'], 'REPORT_COLUMN_EXERCISES_TEST', 'REPORT_COLUMN_EXERCISES_SURVEY');
+}
