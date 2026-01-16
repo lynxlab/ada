@@ -333,6 +333,7 @@ function initCancelButton() {
 
         var doReset = function () {
             UIcancelledEvents = [];
+            UIDeletedEvents = [];
             UIEvents = [];
             // refetch calendar events
             if ('undefined' != typeof calendar) {
