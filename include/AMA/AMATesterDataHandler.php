@@ -1543,8 +1543,10 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
                 "select" => " status AS 'status'",
                 "from" => "",
             ],
+        ];
 
-            "test" => [
+        if (ModuleLoaderHelper::isLoaded('TEST')) {
+            $allPossibleFields["test"] = [
                 "select" => " CONCAT(IFNULL(punteggio.puntitest,0),' su ',IFNULL(lst_max.maxtest,0)) as exercises_test,
                              CONCAT(IFNULL(punteggio.puntisondaggi,0),' su ',IFNULL(lst_max.maxsondaggi,0)) as exercises_survey",
                 "from" => "
@@ -1603,8 +1605,8 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
                             WHERE  (uu.`domande` like CONCAT ('%\"',innerMax.id_nodo,'\"%'))
                             GROUP by uu.id_utente) as lst_max
                             ON (utente.id_utente = lst_max.`id_utente` )",
-            ],
-        ];
+            ];
+        }
 
         $test_already_added = false;
         // Build final query
