@@ -10,6 +10,7 @@
 
 namespace Lynxlab\ADA\Module\Encryptfields;
 
+use Lynxlab\ADA\Main\AMA\AMATesterDataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\Encryptfields\Events\EncryptFieldsEvents;
@@ -50,7 +51,7 @@ class EventSubscriber implements EventSubscriberInterface, ADAMethodSubscriberIn
             return array_merge(
                 $subsEvts,
                 [
-                    CoreEvent::POSTFETCHALL => 'postFetchAll',
+                    CoreEvent::POSTFETCHALL => ['postFetchAll', 256],
                     CoreEvent::POSTFETCH => 'postFetch',
                 ]
             );
@@ -71,6 +72,14 @@ class EventSubscriber implements EventSubscriberInterface, ADAMethodSubscriberIn
                 ],
                 MultiPort::class . '::setUser' => [
                     CoreEvent::PREPREPAREANDEXECUTE => 'encryptBeforeSave',
+                ],
+                /**
+                 * the notifications module is listening to this method
+                 * and stopping the event propagation.
+                 * Add it here with higher priority for decrypt to work.
+                 */
+                AMATesterDataHandler::class . '::getNotesForThisCourseInstance' => [
+                    CoreEvent::POSTFETCHALL => ['postFetchAll', 256],
                 ],
             ];
         }
