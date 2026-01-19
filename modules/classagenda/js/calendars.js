@@ -703,6 +703,8 @@ function updateServiceTypeOnInstanceChange() {
                 $j('#headerInstanceTitle').text($j(this).find('option:selected').text());
             }
 
+            $j('li.item.calendarexportmenuitem').first().parents('li.item')[(getSelectedCourseInstance() > 0 ? 'show' : 'hide')]();
+
             if ($j('#servicetype').length > 0) {
                 $j.ajax({
                     type: 'GET',
