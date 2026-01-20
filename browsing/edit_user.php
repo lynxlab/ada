@@ -343,6 +343,7 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
                 if (isset($container)) {
                     // add the container to the current tab
                     $tabContents[$currTab]->addChild($container);
+                    unset($container);
                 } elseif (isset($currentForm)) {
                     // if form of current tab wants the UserExtraForm fields embedded, obey it
                     if (isset($tabsArray[$currTab]['withExtra']) && $tabsArray[$currTab]['withExtra'] === true) {
