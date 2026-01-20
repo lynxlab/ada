@@ -46,4 +46,24 @@ final class UserEvent extends GenericEvent
      * @var string
      */
     public const POSTSAVE = self::NAMESPACE . '.postsave';
+
+    /**
+     * Dispatched in ADAUser::getClassForLinkedTable
+     * so that modules may define their own classes for the method
+     *
+     * @GenericEvent
+     *
+     * @var string
+     */
+    public const GETCLASSFORLINKEDTABLE = self::NAMESPACE . 'getclassforlinkedtable';
+
+    /**
+     * Dispatched in ADAUser::getClassForLinkedTable
+     * so that modules may define their own classes for the method
+     *
+     * @GenericEvent
+     *
+     * @var string
+     */
+    public const GETFORMCLASSFORLINKEDTABLE = self::NAMESPACE . 'getformclassforlinkedtable';
 }

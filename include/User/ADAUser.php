@@ -29,6 +29,7 @@
 
 namespace Lynxlab\ADA\Main\User;
 
+use InvalidArgumentException;
 use Jawira\CaseConverter\Convert;
 use Lynxlab\ADA\Main\AMA\AMACommonDataHandler;
 use Lynxlab\ADA\Main\AMA\AMADataHandler;
@@ -36,8 +37,11 @@ use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMAError;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\User\ADAAbstractUser;
 use Lynxlab\ADA\Main\Utilities;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\EventDispatcher\Events\UserEvent;
 use Lynxlab\ADA\Switcher\Subscription;
 use ReflectionClass;
 use ReflectionProperty;
@@ -396,6 +400,20 @@ class ADAUser extends ADAAbstractUser
      */
     public static function getFormClassForLinkedTable($linkedTable)
     {
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => UserEvent::class,
+                    'eventName' => UserEvent::GETFORMCLASSFORLINKEDTABLE,
+                ],
+                $linkedTable
+            );
+            try {
+                return $event->getArgument('retclass');
+            } catch (InvalidArgumentException) {
+            };
+        }
+
         if (in_array($linkedTable, static::getLinkedTables())) {
             $mainNamespace = (new ReflectionClass(Utilities::class))->getNamespaceName();
             $retclass = $mainNamespace . "\\Forms\\User" . (new Convert($linkedTable))->toPascal() . "Form";
@@ -414,6 +432,20 @@ class ADAUser extends ADAAbstractUser
      */
     public static function getClassForLinkedTable($linkedTable)
     {
+        if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => UserEvent::class,
+                    'eventName' => UserEvent::GETCLASSFORLINKEDTABLE,
+                ],
+                $linkedTable
+            );
+            try {
+                return $event->getArgument('retclass');
+            } catch (InvalidArgumentException) {
+            };
+        }
+
         if (in_array($linkedTable, static::getLinkedTables())) {
             $mainNamespace = (new ReflectionClass(Utilities::class))->getNamespaceName();
             $retclass = $mainNamespace . "\\" . (new Convert($linkedTable))->toPascal();
