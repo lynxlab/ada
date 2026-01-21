@@ -64,49 +64,4 @@ class OneToManyDataSample extends UserExtraTables
         ];
         parent::__construct($dataAr);
     }
-
-    /**
-     * THE FOLLOWING METHODS, DOWN TO THE END OF THE CLASS
-     * MUST BE COPY&PAST-ED INTO NEW CLASSES YOU MAY WRITE
-     */
-
-    /**
-     * Gets the field list for this class (aka table),
-     * that's to say a list of all its public properties.
-     *
-     * Must be overridden in each class because
-     * it must pass __CLASS__ to the parent.
-     */
-    public static function getFields($className = self::class)
-    {
-        return parent::doGetFields($className);
-    }
-
-    public static function buildArrayFromPOST($postData)
-    {
-        return parent::doBuildArrayFromPOST(self::class, $postData);
-    }
-
-    public static function getKeyProperty()
-    {
-        if (property_exists(static::class, 'keyProperty')) {
-            return self::$keyProperty;
-        }
-    }
-
-    public static function getForeignKeyProperty()
-    {
-        if (property_exists(static::class, 'foreignKeyProperty')) {
-            return self::$foreignKeyProperty;
-        }
-    }
-
-    public function getLabel($index)
-    {
-        if ($index < 0 || $index >= count($this->labels)) {
-            return null;
-        } else {
-            return $this->labels[$index];
-        }
-    }
 }
