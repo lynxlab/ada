@@ -55,7 +55,7 @@ final class UserEvent extends GenericEvent
      *
      * @var string
      */
-    public const GETCLASSFORLINKEDTABLE = self::NAMESPACE . 'getclassforlinkedtable';
+    public const GETCLASSFORLINKEDTABLE = self::NAMESPACE . '.getclassforlinkedtable';
 
     /**
      * Dispatched in ADAUser::getClassForLinkedTable
@@ -65,5 +65,15 @@ final class UserEvent extends GenericEvent
      *
      * @var string
      */
-    public const GETFORMCLASSFORLINKEDTABLE = self::NAMESPACE . 'getformclassforlinkedtable';
+    public const GETFORMCLASSFORLINKEDTABLE = self::NAMESPACE . '.getformclassforlinkedtable';
+
+    /**
+     * Dispatched when getting the value to be used in the user extra data
+     * row object, so that every module can define their own callback
+     *
+     * @GenericEvent
+     *
+     * @var string
+     */
+    public const USEREXTRAOBJECTROWVALUE = self::NAMESPACE . '.userextraobjectrowvalue';
 }

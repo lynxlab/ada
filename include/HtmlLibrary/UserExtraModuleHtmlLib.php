@@ -12,8 +12,12 @@
 
 namespace Lynxlab\ADA\Main\HtmlLibrary;
 
+use InvalidArgumentException;
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\EventDispatcher\Events\UserEvent;
 use ReflectionClass;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
@@ -34,11 +38,12 @@ class UserExtraModuleHtmlLib
      * @param extraTable derived object $extraObject
      * @param int how many columns per row $columnsPerRow
      */
-    public static function extraObjectRow($extraObject, $columnsPerRow = 3)
+    public static function extraObjectRow($extraObject)
     {
         $className = $extraObject::class;
         $keyProperty = $className::getKeyProperty();
         $fields = $className::getFields();
+        $columnsPerRow = $className::getColumnsPerRow();
         $className = lcfirst((new ReflectionClass($className))->getShortName());
 
         $table = CDOMElement::create('table', 'class:extraTableDatas ' . $className . ',id:' . $className . '_' . $extraObject->$keyProperty);
@@ -59,11 +64,31 @@ class UserExtraModuleHtmlLib
             $columnLbl->addChild(new CText($label . ": "));
             $row->addChild($columnLbl);
 
+            $value = $extraObject->$propertyName;
+            if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+                $event = ADAEventDispatcher::buildEventAndDispatch(
+                    [
+                        'eventClass' => UserEvent::class,
+                        'eventName' => UserEvent::USEREXTRAOBJECTROWVALUE,
+                    ],
+                    $extraObject::class,
+                    [
+                        'property' => $propertyName,
+                        'value' => $value
+                    ]
+                );
+                try {
+                    $value = $event->getArgument('value');
+                } catch (InvalidArgumentException) {
+                };
+            }
+
             $columnVal = CDOMElement::create('td', 'class:extraTableValue valueCol-' . $numCol++ . ',id:val_' . $propertyName . '_' . $extraObject->$keyProperty);
-            $columnVal->addChild(new CText($extraObject->$propertyName));
+            $columnVal->setAttribute('data-value', $extraObject->$propertyName);
+            $columnVal->addChild(new CText($value));
             $row->addChild($columnVal);
 
-            if ((++$printedRows % $columnsPerRow) === 0) {
+            if ((++$printedRows % $columnsPerRow) === 0 && $printedRows != $columnsPerRow) {
                 $tbody->addChild($row);
                 $row = null;
             }
@@ -100,10 +125,14 @@ class UserExtraModuleHtmlLib
         $buttonsdiv->addChild($editbutton);
         $buttonsdiv->addChild($deletebutton);
 
+        $columnBtn = CDOMElement::create('td', 'class:extraTableValue buttons,id:btn_' . $propertyName . '_' . $extraObject->$keyProperty);
+        $columnBtn->addChild($buttonsdiv);
+        $row->addChild($columnBtn);
+
         // generate a div for wrapping up the table
         $div = CDOMElement::create('div', 'class:extraTableContainer ' . $className . ',id:extraDIV_' . $extraObject->$keyProperty);
         $div->addChild($table);
-        $div->addChild($buttonsdiv);
+        // $div->addChild($buttonsdiv);
 
         return $div->getHtml() . CDOMElement::create('div', 'class:clearfix')->getHtml();
     }
