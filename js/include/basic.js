@@ -73,6 +73,9 @@ function validateContent(elements, regexps, formName) {
                 value = $j(`#${element}:checked`).val() || '';
             } else if ($j(elSelector).is('select')) {
                 value = $j(`${elSelector}>option:selected`).val() || '';
+                if (value.length <= 0) {
+                    value = $j(`${elSelector}>optgroup>option:selected`).val() || '';
+                }
             } else {
                 value = $j(elSelector).val();
             }
