@@ -74,7 +74,7 @@ class UserExtraModuleHtmlLib
                     $extraObject::class,
                     [
                         'property' => $propertyName,
-                        'value' => $value
+                        'value' => $value,
                     ]
                 );
                 try {
