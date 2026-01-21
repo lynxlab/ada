@@ -400,8 +400,7 @@ function editExtra(extraTableName, extraID) {
         var arrayVals = cellID.split('_');
         var elementID = arrayVals[1];
         // sets corresponding form element to the selected value
-
-        $j('form[name=' + extraTableName + '] #' + elementID).val($j(this).html()).trigger('change');
+        $j('form[name=' + extraTableName + '] #' + elementID).val($j(this).data('value') ?? $j(this).html()).trigger('change');
         if (firstElementID == null) firstElementID = elementID;
     });
 

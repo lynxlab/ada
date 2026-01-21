@@ -114,7 +114,9 @@ class CypherUtils
             $combined = base64_decode($encWithTag);
             $tag = substr($combined, -self::TAGLENGTH);
             $encryptedMessage = substr($combined, 0, -self::TAGLENGTH);
-
+            if (empty($encryptedMessage)) {
+                throw new EncryptFieldsException('Trying to decrypt an empty string');
+            }
             $aes = new AES(self::AESMODE);
             $aes->setKey($this->getKey());
             $aes->setNonce($iv);
