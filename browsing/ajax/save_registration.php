@@ -110,6 +110,7 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
         $password = trim($_POST['password'] ?? '');
         if ($password != '') {
             $editUserObj->setPassword($password);
+            unset($_POST['password']);
         }
 
         // save extra datas if it has been forced
