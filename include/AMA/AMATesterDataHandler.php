@@ -8475,7 +8475,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      *
      * @param $id the user's id
      *
-     * @return an array containing all the informations about a user
+     * @return array containing all the informations about a user
      *        res_ha['nome']
      *        res_ha['cognome']
      *        res_ha['tipo']
@@ -9843,6 +9843,8 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             $retVal['tree_id'] = $menuCandidate['tree_id'];
             $retVal['isVertical'] = $menuCandidate['isVertical'];
             $retVal['dbToUse'] = $dbToUse;
+            $retVal['module'] = $currentModule;
+            $retVal['script'] = $currentScript;
             // if is a linked tree, set the actual tree_id to the linked one
             if (!is_null($menuCandidate['linked_tree_id'])) {
                 $retVal['tree_id'] = $menuCandidate['linked_tree_id'];

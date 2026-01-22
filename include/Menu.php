@@ -81,6 +81,16 @@ class Menu
     private $rightItemsArray;
 
     /**
+     * The module found in the DB for the menu
+     */
+    private $module;
+
+    /**
+     * The script found in the DB for the menu
+     */
+    private $script;
+
+    /**
      * name constructor, set menu options and get the
      * left and right submenus from the DataHandler
      */
@@ -110,6 +120,8 @@ class Menu
             if (isset($res['linked_from'])) {
                 $this->linked_from = $res['linked_from'];
             }
+            $this->module = $res['module'] ?? null;
+            $this->script = $res['script'] ?? null;
 
             // get menu items
             $resItems = $dh->getMenuChildren($this->tree_id, $res['dbToUse'], $getAllMenuItems);
@@ -247,7 +259,7 @@ class Menu
      * builds and adds the common stuff to the CBaseElement that
      * is being generated: an icon, a label and the extraHTML
      *
-     * @param CBaseElement $DOMitem the target CBaseElement
+     * @param Lynxlab\ADA\CORE\html4\CBaseElement $DOMitem the target CBaseElement
      * @param array $item the source generating item
      *
      * @access private
@@ -708,5 +720,21 @@ class Menu
         $this->rightItemsArray = $_rightItemsArray;
 
         return $this;
+    }
+
+    /**
+     * Get the module found in the DB for the menu
+     */
+    public function getModule()
+    {
+        return $this->module;
+    }
+
+    /**
+     * Get the script found in the DB for the menu
+     */
+    public function getScript()
+    {
+        return $this->script;
     }
 }
