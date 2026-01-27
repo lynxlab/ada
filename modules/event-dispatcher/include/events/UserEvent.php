@@ -76,4 +76,24 @@ final class UserEvent extends GenericEvent
      * @var string
      */
     public const USEREXTRAOBJECTROWVALUE = self::NAMESPACE . '.userextraobjectrowvalue';
+
+    /**
+     * The PREREMOVEUSEREXTRAROW event occurs before the ADataHandler::removeUserExtraRow
+     * method prepares and executes the query.
+     *
+     * @GenericEvent
+     *
+     * @var string
+     */
+    public const PREREMOVEUSEREXTRAROW = self::NAMESPACE . '.preremoveuserextrarow';
+
+    /**
+     * The POSTREMOVEUSEREXTRAROW event occurs after the ADataHandler::removeUserExtraRow
+     * method prepares and executes the query.
+     *
+     * @GenericEvent
+     *
+     * @var string
+     */
+    public const POSTREMOVEUSEREXTRAROW = self::NAMESPACE . '.postremoveuserextrarow';
 }

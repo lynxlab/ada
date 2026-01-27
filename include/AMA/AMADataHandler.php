@@ -30,8 +30,11 @@ namespace Lynxlab\ADA\Main\AMA;
 use Lynxlab\ADA\Main\AMA\AMADB;
 use Lynxlab\ADA\Main\AMA\AMATesterDataHandler;
 use Lynxlab\ADA\Main\AMA\MultiPort;
+use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\User\ADAUser;
 use Lynxlab\ADA\Main\Utilities;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\EventDispatcher\Events\UserEvent;
 
 /**
  * AMADataHandler.
@@ -76,7 +79,7 @@ class AMADataHandler extends AMATesterDataHandler
                 // aka Extra, stored in ADAUser::getExtraTableKeyProperty() table
                 // usually is the 'studente' table
                 $user_id_sql =  'SELECT ' . ADAUser::getExtraTableKeyProperty() .
-                ' FROM ' . $extraTableName . ' WHERE ' . ADAUser::getExtraTableKeyProperty() . '=?';
+                    ' FROM ' . $extraTableName . ' WHERE ' . ADAUser::getExtraTableKeyProperty() . '=?';
 
                 $user_id = $this->getOnePrepared($user_id_sql, [$id_student]);
 
@@ -91,7 +94,7 @@ class AMADataHandler extends AMATesterDataHandler
                         if ($user_id === false) {
                             $saveQry = "INSERT INTO " . $extraTableName . " ( " . ADAUser::getExtraTableKeyProperty() . ", ";
                             $saveQry .= implode(", ", $extraFields);
-                            $saveQry .= ") VALUES (" . $id_student . str_repeat(",?", count($extraFields)) . ")" ;
+                            $saveQry .= ") VALUES (" . $id_student . str_repeat(",?", count($extraFields)) . ")";
                         } else {
                             $saveQry = "UPDATE " . $extraTableName . " SET ";
                             foreach ($extraFields as $num => $field) {
@@ -229,8 +232,8 @@ class AMADataHandler extends AMATesterDataHandler
          * get extras from table ADAUser::getExtraTableKeyProperty()
          */
         $selQry = "SELECT " . implode(", ", $userObj->getExtraFields()) .
-                  " FROM " . ADAUser::getExtraTableName() .
-                  " WHERE " . ADAUser::getExtraTableKeyProperty() . "=?";
+            " FROM " . ADAUser::getExtraTableName() .
+            " WHERE " . ADAUser::getExtraTableKeyProperty() . "=?";
         $returnArr = $this->getRowPrepared($selQry, [$userObj->getId()], AMA_FETCH_ASSOC);
 
         /**
@@ -250,8 +253,8 @@ class AMADataHandler extends AMATesterDataHandler
                 $class = ADAUser::getClassForLinkedTable($table);
                 if (!empty($table) && class_exists($class)) {
                     $selQry = "SELECT " . implode(", ", $class::getFields()) .
-                    " FROM " . $tablesPrefix . $table . " WHERE " . $class::getForeignKeyProperty() . "=?" .
-                    " ORDER BY " . $class::getKeyProperty() . " ASC";
+                        " FROM " . $tablesPrefix . $table . " WHERE " . $class::getForeignKeyProperty() . "=?" .
+                        " ORDER BY " . $class::getKeyProperty() . " ASC";
 
                     $extraArr = $this->getAllPrepared($selQry, [$userObj->getId()], AMA_FETCH_ASSOC);
                     if (!AMADB::isError($extraArr) && is_array($extraArr) && count($extraArr) > 0) {
@@ -290,9 +293,52 @@ class AMADataHandler extends AMATesterDataHandler
         $extraTableClass = ADAUser::getClassForLinkedTable($extraTable);
 
         $delQry = "DELETE FROM " . $tablesPrefix . $extraTable .
-        " WHERE " . $extraTableClass::getForeignKeyProperty() . "=? AND " . $extraTableClass::getKeyProperty() . "=?";
+            " WHERE " . $extraTableClass::getForeignKeyProperty() . "=? AND " . $extraTableClass::getKeyProperty() . "=?";
+
+        if (ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => UserEvent::class,
+                    'eventName' => UserEvent::PREREMOVEUSEREXTRAROW,
+                ],
+                $extraTableClass,
+                [
+                    'foreignKeyProperty' => $extraTableClass::getForeignKeyProperty(),
+                    'keyProperty' => $extraTableClass::getKeyProperty(),
+                    'foreignKeyValue' => $user_id,
+                    'keyValue' => $extraTableId,
+                    'userObjProperty' => 'tbl_' . $extraTable,
+                    'sql' => $delQry,
+                ]
+            );
+            foreach ($event->getArguments() as $key => $val) {
+                $this->{$key} = $val;
+            }
+        }
 
         $result = $this->queryPrepared($delQry, [$user_id, $extraTableId]);
+
+        if (ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
+            $event = ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => UserEvent::class,
+                    'eventName' => UserEvent::POSTREMOVEUSEREXTRAROW,
+                ],
+                $extraTableClass,
+                [
+                    'foreignKeyProperty' => $extraTableClass::getForeignKeyProperty(),
+                    'keyProperty' => $extraTableClass::getKeyProperty(),
+                    'foreignKeyValue' => $user_id,
+                    'keyValue' => $extraTableId,
+                    'userObjProperty' => 'tbl_' . $extraTable,
+                    'sql' => $delQry,
+                    'result' => $result,
+                ]
+            );
+            foreach ($event->getArguments() as $key => $val) {
+                $this->{$key} = $val;
+            }
+        }
 
         return $result;
     }
