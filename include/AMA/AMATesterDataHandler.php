@@ -1728,10 +1728,10 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
     {
         if (is_array($id_student)) {
             $sql = "SELECT id_nodo, data_visita, data_uscita, session_id, id_utente_studente " .
-            "FROM history_nodi WHERE id_utente_studente IN (" . implode(',', $id_student) . ") AND id_istanza_corso=$id_course_instance ORDER BY session_id,data_uscita ASC";
+                "FROM history_nodi WHERE id_utente_studente IN (" . implode(',', $id_student) . ") AND id_istanza_corso=$id_course_instance ORDER BY session_id,data_uscita ASC";
         } else {
             $sql = "SELECT id_nodo, data_visita, data_uscita, session_id " .
-            "FROM history_nodi WHERE id_utente_studente=? AND id_istanza_corso=? ORDER BY session_id,data_uscita ASC";
+                "FROM history_nodi WHERE id_utente_studente=? AND id_istanza_corso=? ORDER BY session_id,data_uscita ASC";
         }
 
         $result = $this->getAllPrepared($sql, [$id_student, $id_course_instance], AMA_FETCH_ASSOC);
@@ -1991,6 +1991,27 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         }
 
         return $res;
+    }
+
+    /**
+     * Remove one student form multiple course instances
+     *
+     * @param array $id_istanze_corso ids of course instances
+     * @param int $id_studente
+     * @return bool|AMAError
+     */
+    public function courseInstancesStudentRemove(array $id_istanze_corso, $id_studente)
+    {
+        $sql = 'DELETE FROM `iscrizioni` WHERE `id_utente_studente` = ? AND `id_istanza_corso` IN (';
+        $sql .= ltrim(str_repeat(",?", count($id_istanze_corso)), ',');
+        $sql .= ')';
+        $res = $this->queryPrepared($sql, [$id_studente, ...$id_istanze_corso]);
+        if (AMADB::isError($res)) {
+            return new AMAError(AMA_ERR_REMOVE);
+        }
+        // reset auto increment
+        $this->queryPrepared('ALTER TABLE `iscrizioni` AUTO_INCREMENT = 0');
+        return true;
     }
 
     /**
@@ -8778,7 +8799,11 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
                         '`log_videochat`.`id_user`=`utente`.`id_utente` ' .
                         'WHERE `id_istanza_corso`=? AND `id_room`=? AND ((`entrata`>=? AND `uscita`<=?) OR (`entrata`>=? AND `uscita` IS NULL))';
                     $values = [
-                        $id_instance, $showChatRoom['id_room'], $showChatRoom['entrata'], $showChatRoom['uscita'], $showChatRoom['entrata'],
+                        $id_instance,
+                        $showChatRoom['id_room'],
+                        $showChatRoom['entrata'],
+                        $showChatRoom['uscita'],
+                        $showChatRoom['entrata'],
                     ];
                     if (!is_null($id_user)) {
                         $sql .= ' AND `log_videochat`.`id_user`=?';
