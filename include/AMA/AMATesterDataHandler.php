@@ -2414,7 +2414,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         $currentTime = time();
         $sql = 'SELECT C.id_corso, C.titolo, IC.id_istanza_corso, IC.self_instruction,'
             . ' IC.data_inizio, IC.durata, IC.data_inizio_previsto, IC.data_fine, I.status, C.crediti,'
-            . ' I.data_iscrizione, IC.duration_subscription, C.tipo_servizio'
+            . ' IC.title, I.data_iscrizione, IC.duration_subscription, C.tipo_servizio'
             . ' FROM modello_corso AS C, istanza_corso AS IC, iscrizioni AS I'
             . ' WHERE I.id_utente_studente=?'
             . ' AND IC.id_istanza_corso = I.id_istanza_corso'
@@ -2462,7 +2462,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         if ($getAll === false) {
             $result = $this->getRowPrepared($sql, [$id_course, $id_student]);
         } else {
-            $result = $this->getAllPrepared($sql, null, AMA_FETCH_ASSOC);
+            $result = $this->getAllPrepared($sql, [$id_course, $id_student], AMA_FETCH_ASSOC);
         }
 
         if (AMADB::isError($result)) {
