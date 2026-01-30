@@ -175,10 +175,12 @@ if ($file !== false) {
         if (ModuleLoaderHelper::isLoaded('COLLABORAACL')) {
             $aclDH = AMACollaboraACLDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
             $filesACL = $aclDH->findBy('FileACL', [ 'id_corso' => $id_course, 'id_istanza' => $id_course_instance, 'id_nodo' => $id_node ]);
-            $elencofile = array_filter($elencofile, function ($fileel) use ($filesACL, $userObj) {
-                $elPath = str_replace(ROOT_DIR . DIRECTORY_SEPARATOR, '', $fileel['path_to_file']);
-                return FileACL::isAllowed($filesACL, $userObj->getId(), $elPath, CollaboraACLActions::READ_FILE);
-            });
+            if ($userObj->getType() != AMA_TYPE_TUTOR) {
+                $elencofile = array_filter($elencofile, function ($fileel) use ($filesACL, $userObj) {
+                    $elPath = str_replace(ROOT_DIR . DIRECTORY_SEPARATOR, '', $fileel['path_to_file']);
+                    return FileACL::isAllowed($filesACL, $userObj->getId(), $elPath, CollaboraACLActions::READ_FILE);
+                });
+            }
             $aclDH->disconnect();
         }
         //          $fstop = count($elencofile);
@@ -286,11 +288,6 @@ if ($file !== false) {
 
                                     if ($userObj->getType() == AMA_TYPE_TUTOR) {
                                         $td = CDOMElement::create('td');
-                                        $buttonDel = CDOMElement::create('button', 'class:ui icon button deleteButton');
-                                        $buttonDel->addChild(CDOMElement::create('i', 'class:trash icon'));
-                                        $buttonDel->setAttribute('onclick', 'javascript:deleteFile(\'' . rawurlencode(translateFN('Confermi la cancellazione del file') . ' ' . $filename . ' ?') . '\',\'' . rawurlencode($complete_file_name) . '\',\'row' . $i . '\');');
-                                        $buttonDel->setAttribute('title', translateFN('Clicca per cancellare il file'));
-                                        $td->addChild($buttonDel);
                                         if (ModuleLoaderHelper::isLoaded('COLLABORAACL')) {
                                             $aclId = FileACL::getIdFromFileName($filesACL, $singleFile['path_to_file']);
                                             if (!is_null($aclId)) {
@@ -299,6 +296,11 @@ if ($file !== false) {
                                                 $aclObj = null;
                                             }
                                             if ((is_null($aclObj) && $id_sender == $userObj->getId()) || (!is_null($aclObj) && $aclObj->getIdOwner() == $userObj->getId())) {
+                                                $buttonDel = CDOMElement::create('button', 'class:ui icon button deleteButton');
+                                                $buttonDel->addChild(CDOMElement::create('i', 'class:trash icon'));
+                                                $buttonDel->setAttribute('onclick', 'javascript:deleteFile(\'' . rawurlencode(translateFN('Confermi la cancellazione del file') . ' ' . $filename . ' ?') . '\',\'' . rawurlencode($complete_file_name) . '\',\'row' . $i . '\');');
+                                                $buttonDel->setAttribute('title', translateFN('Clicca per cancellare il file'));
+                                                $td->addChild($buttonDel);
                                                 $buttonACL = CDOMElement::create('button', 'class:ui icon button aclButton');
                                                 $buttonACL->addChild(CDOMElement::create('i', 'class:basic add user icon'));
                                                 $buttonACL->setAttribute('title', translateFN('Imposta chi può vedere il file'));

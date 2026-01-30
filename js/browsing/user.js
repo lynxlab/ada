@@ -1,5 +1,5 @@
 function initDoc() {
-
+    const deferred = $j.Deferred();
     var lastCol = $j('table.doDataTable thead th').length;
     var colDefs = [
            {"aTargets" : [0], "sWidth":"50%" },
@@ -18,7 +18,10 @@ function initDoc() {
         "aoColumnDefs": colDefs,
         "oLanguage": {
            "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
-        }
+        },
+        initComplete: function (settings, json) {
+            deferred.resolve(datatable);
+        },
     });
 
     var icon = $j('#bagesPopupLink').siblings('.icon').first();
@@ -77,5 +80,6 @@ function initDoc() {
             });
         }
     }
+    return deferred.promise();
 }
 
