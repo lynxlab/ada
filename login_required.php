@@ -96,7 +96,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 $loginProviderID = $selectedLoginProviderID ?? null;
                 $loginObj = new $className($selectedLoginProviderID);
                 $userObj = $loginObj->doLogin($username, $password, $p_remindme, $p_selected_language);
-                if ((is_object($userObj)) && ($userObj instanceof Exception)) {
+                if (!$loginObj->isFinal() && (is_object($userObj)) && ($userObj instanceof Exception)) {
                     // try the adalogin before giving up the login process
                     $lastTry = MultiPort::loginUser($username, $password);
                     if ((is_object($lastTry)) && ($lastTry instanceof ADALoggableUser)) {

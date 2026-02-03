@@ -64,6 +64,15 @@ abstract class AbstractLogin implements ILogin
     protected $successfulOptionsID = null;
 
     /**
+     * True to set the login provider as 'final'
+     * i.e. will not try the  adalogin before
+     * giving up the login process
+     *
+     * @var boolean
+     */
+    protected $isFinal = false;
+
+    /**
      * datahandler to be used
      *
      * @var AMALoginDataHandler
@@ -406,5 +415,13 @@ abstract class AbstractLogin implements ILogin
     {
         $r = new ReflectionClass(self::class);
         return $r->getNamespaceName();
+    }
+
+    /**
+     * Get giving up the login process
+     */
+    public function isFinal(): bool
+    {
+        return $this->isFinal;
     }
 }
