@@ -17,6 +17,8 @@
 
 namespace Lynxlab\ADA\Main\User;
 
+use Throwable;
+use DateTimeImmutable;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
@@ -597,5 +599,32 @@ abstract class ADAGenericUser
 
     public static function isVisitedFN($node_id)
     {
+    }
+
+    /**
+     * check if the user is an adult or not
+     *
+     * @return bool true if adult, false if not or error
+     */
+    public function isAdult(): bool
+    {
+        try {
+            $isAdult = false;
+            $birthDate = DateTimeImmutable::createFromFormat(str_replace('%', '', ADA_DATE_FORMAT), $this->getBirthDate());
+            $today = new DateTimeImmutable();
+            $bMonth = (int) $birthDate->format('n');
+            $bDay = (int) $birthDate->format('j');
+            $bLeap = (int) $birthDate->format('L') === 1;
+            $monthLength = [31, $bLeap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+            // Check the range of the day
+            $dateOK = $bDay > 0 && $bDay <= $monthLength[$bMonth - 1];
+            if ($dateOK) {
+                $diff = $today->diff($birthDate);
+                $isAdult = $diff->y >= 18;
+            }
+        } catch (Throwable) {
+            $isAdult = false;
+        }
+        return $isAdult;
     }
 }
