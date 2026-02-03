@@ -53,7 +53,7 @@ function initRegistration() {
 			$j('#registrationError').modal('show');
 			return;
 		}
-		if (!checkAllPoliciesAccepted()) {
+		if ('function' ==  typeof checkAllPoliciesAccepted && !checkAllPoliciesAccepted()) {
 			e.preventDefault();
 			$j('#acceptPoliciesMSG').modal('show');
 			return;
