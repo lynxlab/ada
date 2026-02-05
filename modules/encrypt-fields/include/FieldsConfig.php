@@ -54,7 +54,8 @@ class FieldsConfig
             );
             if ($event->hasArgument(self::EVENTSUBJECT)) {
                 foreach ($event->getArgument(self::EVENTSUBJECT) as $table => $externalfields) {
-                    $extFields[$table] = array_merge($extFields[$table] ?? [], $externalfields);
+                    $useTable = static::tableAlias()[$table] ?? $table;
+                    $extFields[$useTable] = array_merge_recursive($extFields[$useTable] ?? [], $externalfields);
                 }
             }
         }
