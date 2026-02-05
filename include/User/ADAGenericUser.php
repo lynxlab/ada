@@ -17,11 +17,11 @@
 
 namespace Lynxlab\ADA\Main\User;
 
-use Throwable;
 use DateTimeImmutable;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\User\ADAPractitioner;
+use Throwable;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
