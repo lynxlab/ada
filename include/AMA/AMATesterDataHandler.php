@@ -255,9 +255,9 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      *
      * @see find_authors_list
      */
-    public function &getAuthorsList($field_list_ar)
+    public function &getAuthorsList($field_list_ar, $getQuery = false)
     {
-        return $this->findAuthorsList($field_list_ar);
+        return $this->findAuthorsList($field_list_ar, '', $getQuery);
     }
 
     /**
@@ -291,7 +291,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      *           array(ID2, 'field_2_1', 'field_2_2'),
      *           array(ID3, 'field_3_1', 'field_3_2'))
      */
-    public function &findAuthorsList($field_list_ar, $clause = '')
+    public function &findAuthorsList($field_list_ar, $clause = '', $getQuery = false)
     {
         // FIXME: the queries performef by this method aren't prepared.
 
@@ -306,7 +306,11 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             $clause = 'and ' . $clause;
         }
         // do the query
-        $authors_ar =  $this->getAllPrepared("select id_utente$more_fields from utente, autore where id_utente=id_utente_autore $clause");
+        $sql = "select id_utente$more_fields from utente, autore where id_utente=id_utente_autore $clause";
+        if ($getQuery) {
+            return $sql;
+        }
+        $authors_ar =  $this->getAllPrepared($sql);
 
         if (AMADB::isError($authors_ar)) {
             //return $authors_ar;
@@ -7388,14 +7392,14 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      * @param $field_list_ar an array containing the desired fields' names
      *        possible values are: nome, cognome, e-mail, username, password, telefono
      *
-     * @return a nested array containing the list, or an AMAError object or a DB_Error object if something goes wrong
+     * @return array|string nested array containing the list, or an AMAError object or a DB_Error object if something goes wrong
      * The form of the nested array is:
      *     array(array(ID1, 'field_1_1', 'field_1_2'),
      *           array(ID2, 'field_2_1', 'field_2_2'),
      *           array(ID3, 'field_3_1', 'field_3_2'))
      *
      */
-    public function &getStudentsList($field_list_ar)
+    public function &getStudentsList($field_list_ar, $getQuery = false)
     {
         $more_fields = '';
         // build comma separated string out of $field_list_ar array
@@ -7403,7 +7407,11 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
             $more_fields = ', ' . implode(', ', $field_list_ar);
         }
         // do the query
-        $students_ar =  $this->getAllPrepared("select id_utente$more_fields from utente, studente where  tipo=" . AMA_TYPE_STUDENT . " and id_utente=id_utente_studente");
+        $sql = "select id_utente$more_fields from utente, studente where  tipo=" . AMA_TYPE_STUDENT . " and id_utente=id_utente_studente";
+        if ($getQuery) {
+            return $sql;
+        }
+        $students_ar =  $this->getAllPrepared($sql);
         if (AMADB::isError($students_ar)) {
             return new AMAError(AMA_ERR_GET);
         }
@@ -7411,6 +7419,47 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         // return nested array in the form
         //
         return $students_ar;
+    }
+
+    /**
+     * Gets users lists, when an ajax call is made
+     * by the datatable server-side processing
+     *
+     * @param array $field_list_ar
+     * @param int $userType
+     *
+     * @return \Lynxlab\ADA\Main\AMA\AMADatatables
+     */
+    public function getAjaxUsersList($field_list_ar, $userType = AMA_TYPE_STUDENT)
+    {
+        switch ($userType) {
+            case AMA_TYPE_AUTHOR:
+                $sql = $this->getAuthorsList($field_list_ar, true);
+                break;
+            case AMA_TYPE_TUTOR:
+                $sql = $this->getTutorsList($field_list_ar, true);
+                if (defined('AMA_TYPE_SUPERTUTOR')) {
+                    $sql = preg_replace(
+                        '/tipo=[' . AMA_TYPE_TUTOR . ',' . AMA_TYPE_SUPERTUTOR . ']/',
+                        '(tipo=' . AMA_TYPE_TUTOR . ' OR tipo=' . AMA_TYPE_SUPERTUTOR . ')',
+                        $sql
+                    );
+                }
+                break;
+            case AMA_TYPE_STUDENT:
+            default:
+                $sql = $this->getStudentsList($field_list_ar, true);
+                break;
+        }
+        $dt = new AMADatatables(AMADatatablesPDO::create($this->getConnection()->connectionObject()));
+        $dt->query(
+            str_replace(
+                'select id_utente',
+                'select "FAKE" as `fake`, `id_utente`',
+                $sql
+            )
+        );
+        return $dt->generate();
     }
 
     /**
@@ -7650,7 +7699,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      * @param $field_list_ar an array containing the desired fields' names
      *        possible values are: nome, cognome, e-mail, username, password, telefono, profilo, tariffa
      *
-     * @return a nested array containing the list, or an AMAError object or a DB_Error object if something goes wrong
+     * @return array nested array containing the list, or an AMAError object or a DB_Error object if something goes wrong
      * The form of the nested array is:
      *     array(array(ID1, 'field_1_1', 'field_1_2'),
      *           array(ID2, 'field_2_1', 'field_2_2'),
@@ -7658,9 +7707,9 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      *
      * @see find_tutors_list
      */
-    public function &getTutorsList($field_list_ar)
+    public function &getTutorsList($field_list_ar, $getQuery = false)
     {
-        return $this->findTutorsList($field_list_ar, '', false);
+        return $this->findTutorsList($field_list_ar, '', false, $getQuery);
     }
 
     /**
@@ -7671,7 +7720,7 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      * @param $field_list_ar an array containing the desired fields' names
      *        possible values are: nome, cognome, e-mail, username, password, telefono, profilo, tariffa
      *
-     * @return a nested array containing the list, or an AMAError object or a DB_Error object if something goes wrong
+     * @return array nested array containing the list, or an AMAError object or a DB_Error object if something goes wrong
      * The form of the nested array is:
      *     array(array(ID1, 'field_1_1', 'field_1_2'),
      *           array(ID2, 'field_2_1', 'field_2_2'),
@@ -7708,13 +7757,13 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      *
      * @param  clause the clause string which will be added to the select
      *
-     * @return a nested array containing the list, or an AMAError object or a DB_Error object if something goes wrong
+     * @return array nested array containing the list, or an AMAError object or a DB_Error object if something goes wrong
      * The form of the nested array is:
      *     array(array(ID1, 'field_1_1', 'field_1_2'),
      *           array(ID2, 'field_2_1', 'field_2_2'),
      *           array(ID3, 'field_3_1', 'field_3_2'))
      */
-    public function &findTutorsList($field_list_ar, $clause = '', $supertutors = false)
+    public function &findTutorsList($field_list_ar, $clause = '', $supertutors = false, $getQuery = false)
     {
         // build comma separated string out of $field_list_ar array
         if (count($field_list_ar)) {
@@ -7728,6 +7777,9 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         // do the query
         $sql_query = "select id_utente$more_fields from utente, tutor where  tipo=" .
             ($supertutors ? AMA_TYPE_SUPERTUTOR : AMA_TYPE_TUTOR) . " and id_utente=id_utente_tutor$clause";
+        if ($getQuery) {
+            return $sql_query;
+        }
         $tutors_ar =  $this->getAllPrepared($sql_query, [], AMA_FETCH_DEFAULT);
         if (AMADB::isError($tutors_ar)) {
             return new AMAError(AMA_ERR_GET);

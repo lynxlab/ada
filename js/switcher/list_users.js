@@ -5,8 +5,8 @@
  */
 var oTable = null;
 
-function initDoc(){
-    createDataTable();
+function initDoc(userType = null, serverSide = false){
+    createDataTable(userType, serverSide);
     initToolTips();
 }
 
@@ -56,24 +56,48 @@ function toggleDetails(user_id,imgObj) {
 }
 
 
-function createDataTable() {
+function createDataTable(userType = null, serverSide = false) {
 
-    oTable = $j('#table_users').DataTable({
-        "bFilter": true,
-        "bInfo": true,
-        "bSort": true,
-        "bAutoWidth": true,
+    dtOptions = {
+        searching: true,
+        info: true,
+        ordering: true,
+        autoWidth: true,
+        processing: serverSide,
         stateSave: true,
-        "aaSorting": [[ 1, "asc" ]],
-        'aoColumnDefs': [{"bSortable": false, "bSearchable": false, "aTargets": [ 0 ],"sClass":"expandCol"},
-        				 {"bSortable": false, "bSearchable": false, "aTargets": [ 5 ],"sClass":"actionCol" },
-        				 {"aTargets": [ 6 ],"sClass":"confirmCol" }],
-        "oLanguage":
-        {
-            "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
-        }
+        stateSaveCallback: (settings, data)  => {
+            localStorage.setItem(
+                `DataTables_${settings.sInstance}.${userType ?? ''}`,
+                JSON.stringify(data)
+            );
+        },
+        stateLoadCallback: (settings) => {
+            return JSON.parse(localStorage.getItem(`DataTables_${settings.sInstance}.${userType ?? ''}`));
+        },
+        order: [[ 1, "asc" ]],
+        columnDefs: [
+            { targets: [0, -2], searchable: false, orderable: false, },
+            { targets: [0], className: 'expandCol', },
+            { targets: [-1], className: 'confirmCol', },
+            { targets: [-2], className: 'actionCol', },
+        ],
+        language: {
+            url: HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
+        },
+        serverSide: serverSide,
+    };
 
-    });
+    if (dtOptions.serverSide) {
+        dtOptions.ajax = {
+            url: `${HTTP_ROOT_DIR}/switcher/ajax/listUsers.php`,
+            type: 'POST',
+            data: {
+                list: userType,
+            },
+        };
+    }
+
+    oTable = $j(`#table_users`).DataTable(dtOptions);
 }
 
   function fnFormatDetails ( idUser )

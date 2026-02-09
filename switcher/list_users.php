@@ -2,7 +2,6 @@
 
 use Lynxlab\ADA\CORE\html4\CDOMElement;
 use Lynxlab\ADA\CORE\html4\CText;
-use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\Helper\SwitcherHelper;
@@ -11,9 +10,6 @@ use Lynxlab\ADA\Main\Output\ARE;
 use Lynxlab\ADA\Main\Utilities;
 use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
 use Lynxlab\ADA\Module\EventDispatcher\Events\ActionsEvent;
-use Lynxlab\ADA\Module\Impersonate\AMAImpersonateDataHandler;
-use Lynxlab\ADA\Module\Impersonate\ImpersonateException;
-use Lynxlab\ADA\Module\Impersonate\Utils;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
@@ -74,194 +70,96 @@ $self = Utilities::whoami();  // = admin!
  */
 SwitcherHelper::init($neededObjAr);
 
-/*
- * YOUR CODE HERE
+/**
+ * enable server side datatable only if ENCRYPT module is not loaded
+ * because filtering and ordering will not work with encrypted data
  */
+$serverSide = !ModuleLoaderHelper::isLoaded('ENCRYPT');
 
-$usersType = DataValidator::validateNotEmptyString($_GET['list']);
+$usersType = DataValidator::checkInputValues('list', 'Value', INPUT_GET, 'students');
 $fieldsAr = ['nome', 'cognome', 'username', 'tipo', 'stato'];
-$amaUserType = AMA_TYPE_VISITOR;
 switch ($usersType) {
     case 'authors':
-        $usersAr = $dh->getAuthorsList($fieldsAr);
         $profilelist = translateFN('lista degli autori');
         $amaUserType = AMA_TYPE_AUTHOR;
         break;
     case 'tutors':
-        $usersAr = $dh->getTutorsList($fieldsAr);
-        if (defined('AMA_TYPE_SUPERTUTOR')) {
-            $usersAr = array_merge($usersAr, $dh->getSupertutorsList($fieldsAr));
-        }
         $profilelist = translateFN('lista dei tutors');
-        /**
-         * @author steve 28/mag/2020
-         *
-         * adding link to Tutor Subscrition from file
-         */
-        $buttonSubscriptions = CDOMElement::create('button', 'class:Subscription_Button');
-        $buttonSubscriptions->setAttribute('onclick', 'javascript:goToSubscription(\'tutor_subscriptions\');');
-        $buttonSubscriptions->addChild(new CText(translateFN('Carica da file') . '...'));
         $amaUserType = AMA_TYPE_TUTOR;
         break;
     case 'students':
     default:
-        /**
-         * @author giorgio 29/mag/2013
-         *
-         * if we're listing students, let's add the stato field as well
-         */
-        $usersAr = $dh->getStudentsList($fieldsAr);
         $profilelist = translateFN('lista degli studenti');
         $amaUserType = AMA_TYPE_STUDENT;
         break;
 }
 
-if (ModuleLoaderHelper::isLoaded('IMPERSONATE')) {
-    // get the list of users linked to the current listed type
-    $impDH = AMAImpersonateDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+$thead_data = [
+    null,
+    translateFN('id'),
+    translateFN('nome'),
+    translateFN('cognome'),
+    translateFN('username'),
+    translateFN('azioni'),
+    translateFN('Confermato'),
+];
+
+if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+    $event = ADAEventDispatcher::buildEventAndDispatch(
+        [
+            'eventClass' => ActionsEvent::class,
+            'eventName' => ActionsEvent::LIST_USERS,
+        ],
+        ['userType' => $amaUserType],
+        ['thead' => $thead_data]
+    );
     try {
-        $linkedUsers = $impDH->findBy('LinkedUsers', [
-            'source_type' => $amaUserType,
-            'is_active' => true,
-        ]);
-    } catch (ImpersonateException) {
-        $linkedUsers = [];
+        $thead_data = $event->getArgument('thead');
+    } catch (InvalidArgumentException) {
+        // do nothing
     }
 }
 
-if (is_array($usersAr) && count($usersAr) > 0) {
-    $UserNum = count($usersAr);
-    $thead_data = [
-        null,
-        translateFN('id'),
-        translateFN('nome'),
-        translateFN('cognome'),
-        translateFN('username'),
-        translateFN('azioni'),
-        translateFN('Confermato'),
-    ];
-    /**
-     * @author giorgio 29/mag/2013
-     *
-     * if we're listing students, let's add the stato field as well
-     */
-
-    $tbody_data = [];
-    $edit_img = CDOMElement::create('img', 'src:img/edit.png,alt:edit');
-    $view_img = CDOMElement::create('img', 'src:img/zoom.png,alt:view');
-    $delete_img = CDOMElement::create('img', 'src:img/trash.png,alt:delete');
-    $undelete_img = CDOMElement::create('img', 'src:img/revert.png,alt:undelete');
-
-    foreach ($usersAr as $user) {
-        $userId = $user[0];
-        if ($user[4] == AMA_TYPE_SUPERTUTOR) {
-            $imgDetails = CDOMElement::create('img', 'src:' . HTTP_ROOT_DIR . '/layout/' . $_SESSION['sess_template_family'] . '/img/supertutoricon.png');
-            $imgDetails->setAttribute('title', translateFN('Super Tutor'));
-        } elseif ($user[5] == ADA_STATUS_REGISTERED || $user[5] == ADA_STATUS_ANONYMIZED) {
-            $imgDetails = CDOMElement::create('img', 'src:' . HTTP_ROOT_DIR . '/layout/' . $_SESSION['sess_template_family'] . '/img/details_open.png');
-            $imgDetails->setAttribute('title', translateFN('visualizza/nasconde i dettagli dell\'utente'));
-            $imgDetails->setAttribute('onclick', "toggleDetails($userId,this);");
-            $imgDetails->setAttribute('style', 'cursor:pointer;');
-        }
-        if (isset($imgDetails)) {
-            $imgDetails->setAttribute('class', 'imgDetls tooltip');
-        } else {
-            $imgDetails = CDOMElement::create('span');
-        }
-
-
-        $User_firstname = CDOMElement::create('span');
-        $User_firstname->setAttribute('class', 'fullname');
-        $User_firstname->addChild(new CText($user[1]));
-
-        $User_lastname = CDOMElement::create('span');
-        $User_lastname->setAttribute('class', 'fullname');
-        $User_lastname->addChild(new CText($user[2]));
-
-        $span_UserName = CDOMElement::create('span');
-        $span_UserName->setAttribute('class', 'UserName');
-        $span_UserName->addChild(new CText($user[3]));
-
-        $actionsArr = [];
-
-        if ($user[5] != ADA_STATUS_ANONYMIZED) {
-            $edit_link = BaseHtmlLib::link("edit_user.php?id_user=$userId&usertype=" . $user[4], $edit_img->getHtml());
-            $edit_link->setAttribute('class', 'tooltip');
-            $edit_link->setAttribute('title', translateFN('Modifica dati utente'));
-            $actionsArr[] = $edit_link;
-        } else {
-            $view_link = BaseHtmlLib::link("view_user.php?id_user=$userId", $view_img->getHtml());
-            $view_link->setAttribute('class', 'tooltip');
-            $view_link->setAttribute('title', translateFN('Visualizza dati utente'));
-            $actionsArr[] = $view_link;
-        }
-
-        if ($user[5] == ADA_STATUS_REGISTERED) {
-            $delete_link = BaseHtmlLib::link("delete_user.php?id_user=$userId", $delete_img->getHtml());
-            $delete_link->setAttribute('class', 'tooltip');
-            $delete_link->setAttribute('title', translateFN('Cancella utente'));
-            $actionsArr[] = $delete_link;
-        } elseif ($user[5] != ADA_STATUS_ANONYMIZED) {
-            $undelete_link = BaseHtmlLib::link("delete_user.php?restore=1&id_user=$userId", $undelete_img->getHtml());
-            $undelete_link->setAttribute('class', 'tooltip');
-            $undelete_link->setAttribute('title', translateFN('Ripristina utente'));
-            $actionsArr[] = $undelete_link;
-        }
-
-        if (ModuleLoaderHelper::isLoaded('IMPERSONATE') && $user[5] == ADA_STATUS_REGISTERED) {
-            $impActions = Utils::buildActionsLinks($userId, $user[4], $linkedUsers);
-            if (is_array($impActions) && count($impActions) > 0) {
-                $actionsArr =  array_merge($actionsArr, $impActions);
-            }
-        }
-
-        $actions = BaseHtmlLib::plainListElement('class:inline_menu', $actionsArr);
-        /**
-         * @author giorgio 11/apr/2018
-         *
-         * add the stato field for all user types
-         */
-        $isConfirmed = ($user[5] == ADA_STATUS_REGISTERED) ? translateFN("Si") : translateFN("No");
-
-        $tmpArray = [$imgDetails->getHtml(), $userId, $User_firstname->getHtml(), $User_lastname->getHtml(), $span_UserName->getHtml(), $actions, $isConfirmed];
-        unset($imgDetails);
-
-        $tbody_data[] = $tmpArray;
+if (!$serverSide) {
+    $usersCount = 0;
+    $tbody_data = require_once('ajax/listUsers.php');
+    if (is_array($tbody_data) && count($tbody_data) > 0) {
+        $usersCount = count($tbody_data);
+    } else {
+        $data = CDOMElement::create('span');
+        $data->addChild(new CText(translateFN('Non sono stati trovati utenti')));
     }
-    if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
-        $event = ADAEventDispatcher::buildEventAndDispatch(
-            [
-                'eventClass' => ActionsEvent::class,
-                'eventName' => ActionsEvent::LIST_USERS,
-            ],
-            ['userType' => $amaUserType],
-            ['thead' => $thead_data, 'tbody' => $tbody_data]
-        );
-        try {
-            $thead_data = $event->getArgument('thead');
-            $tbody_data = $event->getArgument('tbody');
-        } catch (InvalidArgumentException) {
-            // do nothing
-        }
-    }
-    $data = BaseHtmlLib::tableElement('id:table_users', $thead_data, $tbody_data);
-    $data->setAttribute('class', $data->getAttribute('class') . ' ' . ADA_SEMANTICUI_TABLECLASS);
 } else {
-    $data = CDOMElement::create('span');
-    $data->addChild(new CText(translateFN('Non sono stati trovati utenti')));
+    $tbody_data = [];
 }
+
+$data = BaseHtmlLib::tableElement('id:table_users', $thead_data, $tbody_data);
+$data->setAttribute('class', $data->getAttribute('class') . ' ' . ADA_SEMANTICUI_TABLECLASS);
 
 $label = $profilelist;
+if (!$serverSide && $usersCount > 0) {
+    $helpSpan = CDOMElement::create('span');
+    $helpSpan->addChild(new CText(ucfirst(translateFN($profilelist . ' presenti nel provider') . ': ')));
+    $helpSpan->addChild(new CText($usersCount ?? 0));
+} else {
+    $helpSpan = null;
+}
 
-$helpSpan = CDOMElement::create('span');
-$helpSpan->addChild(new CText(ucfirst(translateFN($profilelist . ' presenti nel provider') . ': ')));
-$helpSpan->addChild(new CText($UserNum ?? 0));
 /**
  * @author steve 28/mag/2020
  *
  * adding link to Tutor Subscrition from file
  */
 if ($usersType == 'tutors') {
+    /**
+     * @author steve 28/mag/2020
+     *
+     * adding link to Tutor Subscrition from file
+     */
+    $buttonSubscriptions = CDOMElement::create('button', 'class:Subscription_Button');
+    $buttonSubscriptions->setAttribute('onclick', 'javascript:goToSubscription(\'tutor_subscriptions\');');
+    $buttonSubscriptions->addChild(new CText(translateFN('Carica da file') . '...'));
+    $helpSpan = CDOMElement::create('span');
     $helpSpan->addChild($buttonSubscriptions);
 }
 
@@ -270,7 +168,7 @@ $content_dataAr = [
     'user_type' => $user_type,
     'status' => $status,
     'label' => $label,
-    'help' => $helpSpan->getHtml(),
+    'help' => $helpSpan?->getHtml(),
     'data' => $data->getHtml(),
     'edit_profile' => $userObj->getEditProfilePage(),
     'module' => $module ?? '',
@@ -292,7 +190,7 @@ $layout_dataAr['CSS_filename'] = [
     SEMANTICUI_DATATABLE_CSS,
 ];
 $render = null;
-$optionsAr['onload_func'] = 'initDoc();';
+$optionsAr['onload_func'] = 'initDoc(\'' . $usersType . '\', ' . ($serverSide ? 'true' : 'false') . ');';
 if (ModuleLoaderHelper::isLoaded('IMPERSONATE')) {
     $layout_dataAr['JS_filename'][] = MODULES_IMPERSONATE_PATH . '/js/impersonateAPI.js';
     $layout_dataAr['CSS_filename'][] = MODULES_IMPERSONATE_PATH . '/layout/css/showHideDiv.css';
