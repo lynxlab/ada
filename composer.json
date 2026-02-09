@@ -31,6 +31,7 @@
         "nyholm/psr7": "^1.8",
         "nyholm/psr7-server": "^1.1",
         "oomphinc/composer-installers-extender": "^2.0",
+        "ozdemir/datatables": "^2.3",
         "php-di/php-di": "^7.0",
         "phpmailer/phpmailer": "^6.9",
         "platforg/adobe-connect": "^0.2.4",
