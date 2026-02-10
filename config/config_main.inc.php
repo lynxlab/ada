@@ -348,7 +348,7 @@ define('JS_VENDOR_DIR', ROOT_DIR . '/js/vendor');
 define('JQUERY', JS_VENDOR_DIR . '/jquery/dist/jquery.min.js');
 define('JQUERY_MIGRATE', JS_VENDOR_DIR . '/jquery-migrate/dist/jquery-migrate.min.js');
 define('JQUERY_UI', JS_VENDOR_DIR . '/jquery-ui/dist/jquery-ui.min.js');
-define('JQUERY_DATATABLE', JS_VENDOR_DIR . '/datatables.net/js/jquery.dataTables.js');
+define('JQUERY_DATATABLE', JS_VENDOR_DIR . '/datatables.net/js/jquery.dataTables.min.js');
 define('SEMANTICUI_DATATABLE', JS_VENDOR_DIR . '/datatables.net-se/js/dataTables.semanticui.js');
 define('JQUERY_MASKEDINPUT', JS_VENDOR_DIR . '/jquery.maskedinput/dist/jquery.maskedinput.min.js');
 define('JQUERY_DATATABLE_CSS', JS_VENDOR_DIR . '/datatables.net-dt/css/jquery.dataTables.min.css');
