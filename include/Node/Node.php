@@ -659,7 +659,7 @@ class Node
         return $index;
     }
 
-    public function getAllChildrenFN($depth, $user_level, $id_parent, $dataAr, $id_profile)
+    public static function getAllChildrenFN($depth, $user_level, $id_parent, $dataAr, $id_profile)
     {
         // recursive
         //global $dh,$id_course,$sess_id_course_instance,$sess_id_course;
@@ -749,7 +749,7 @@ class Node
                         $dataAr[$depth][$childnumber] = "<img name=\"nodo\" alt=\"$alt\" src=\"img/$icon\">" . $child_dataHa['name'];
                     }
                     $dataAr[$depth][$childnumber] = "<img name=gruppo alt=\"Nodo inferiore\" src=\"img/$icon\"> <a href=view.php?id_node=" . $id_child . ">" . $child_dataHa['name'] . "</a>";
-                    Node::getAllChildrenFN($depth, $user_level, $id_child, $dataAr, $id_profile);
+                    static::getAllChildrenFN($depth, $user_level, $id_child, $dataAr, $id_profile);
                 }
             }
         } else {
