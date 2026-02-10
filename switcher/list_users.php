@@ -74,7 +74,7 @@ SwitcherHelper::init($neededObjAr);
  * enable server side datatable only if ENCRYPT module is not loaded
  * because filtering and ordering will not work with encrypted data
  */
-$serverSide = !ModuleLoaderHelper::isLoaded('ENCRYPT');
+$serverSide = !ModuleLoaderHelper::isLoaded('ENCRYPTFIELDS');
 
 $usersType = DataValidator::checkInputValues('list', 'Value', INPUT_GET, 'students');
 $fieldsAr = ['nome', 'cognome', 'username', 'tipo', 'stato'];

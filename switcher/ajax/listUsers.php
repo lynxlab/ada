@@ -114,13 +114,11 @@ if (ModuleLoaderHelper::isLoaded('IMPERSONATE')) {
     }
 }
 
-$usersAr = $dh->getAjaxUsersList($fieldsAr, $amaUserType);
+$usersAr = $dh->getAjaxUsersList($fieldsAr, $amaUserType, $serverSide);
 
 if ($usersAr instanceof AMADatatables) {
     $response = $usersAr->generate()->toArray();
     $usersAr = $response['data'] ?? [];
-} else {
-    $usersAr = [];
 }
 
 if (is_array($usersAr) && count($usersAr) > 0) {
@@ -132,6 +130,7 @@ if (is_array($usersAr) && count($usersAr) > 0) {
 
     foreach ($usersAr as $userKey => $user) {
         array_shift($user); // shift fake field added for the datatable to work
+        $user = array_values($user);
         $userId = $user[0];
         if ($user[4] == AMA_TYPE_SUPERTUTOR) {
             $imgDetails = CDOMElement::create('img', 'src:' . $imgHttp . '/img/supertutoricon.png');

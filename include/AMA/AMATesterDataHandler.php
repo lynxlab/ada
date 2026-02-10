@@ -7427,10 +7427,11 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
      *
      * @param array $field_list_ar
      * @param int $userType
+     * @param bool $serverSide true if called by a server side datatable
      *
      * @return \Lynxlab\ADA\Main\AMA\AMADatatables
      */
-    public function getAjaxUsersList($field_list_ar, $userType = AMA_TYPE_STUDENT)
+    public function getAjaxUsersList($field_list_ar, $userType = AMA_TYPE_STUDENT, $serverSide = false)
     {
         switch ($userType) {
             case AMA_TYPE_AUTHOR:
@@ -7451,15 +7452,17 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
                 $sql = $this->getStudentsList($field_list_ar, true);
                 break;
         }
-        $dt = new AMADatatables(AMADatatablesPDO::create($this->getConnection()->connectionObject()));
-        $dt->query(
-            str_replace(
-                'select id_utente',
-                'select "FAKE" as `fake`, `id_utente`',
-                $sql
-            )
+        $sql = str_replace(
+            'select id_utente',
+            'select "FAKE" as `fake`, `id_utente`',
+            $sql
         );
-        return $dt->generate();
+        if ($serverSide) {
+            $dt = new AMADatatables(AMADatatablesPDO::create($this->getConnection()->connectionObject()));
+            return $dt->query($sql)->generate();
+        } else {
+            return $this->getAllPrepared($sql, [], AMA_FETCH_ASSOC);
+        }
     }
 
     /**
