@@ -354,6 +354,9 @@ class ADAUser extends ADAAbstractUser
             //     'label' => 'Esempio',
             //     'required' => false,
             //     'validator' => FormValidator::NOT_EMPTY_STRING_VALIDATOR,
+            //     'addMethod' => 'addCheckBoxes',
+            //     'addCallback' => fn (FForm $theForm, $fieldname, $fieldlabel) =>
+            //        FormControl::create(FormControl::INPUT_CHECKBOX, $fieldname, $fieldlabel)->withData(1),
             // ],
         ];
     }
