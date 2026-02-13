@@ -71,7 +71,17 @@ class UserExtraForm extends FForm
     {
         $eprops = ADAUser::getExtraFieldsProps();
         foreach ($eprops as $fieldname => $fieldprops) {
-            $f = $theForm->addTextInput($fieldname, translateFN($fieldprops['label']));
+            if (array_key_exists('addMethod', $fieldprops) && method_exists($theForm, $fieldprops['addMethod'])) {
+                $addMethod = $fieldprops['addMethod'];
+            } elseif (array_key_exists('addCallback', $fieldprops) && is_callable($fieldprops['addCallback'])) {
+                $f = $fieldprops['addCallback']($theForm, $fieldname, translateFN($fieldprops['label']));
+                $theForm->addControl($f);
+            } else {
+                $addMethod = 'addTextInput';
+            }
+            if (!isset($f)) {
+                $f = $theForm->{$addMethod}($fieldname, translateFN($fieldprops['label']));
+            }
             if ($fieldprops['required'] === true) {
                 $f->setRequired();
             }

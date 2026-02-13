@@ -231,10 +231,17 @@ function initUserRegistrationForm(hasTabs, useAjax) {
 
                 if (hasTabs) theId = $j(this).closest("div[role='tabpanel']").attr('id').replace(/^\D+/g, '');
 
+                var formData = $j(this).serialize();
+                // include unchecked checkboxes. use filter to only include unchecked boxes.
+                $j(this).find(':checkbox:not(:checked)').map(function (i,el) {
+                    // formData += '&' + $j(el).attr('name') + '=' + '';
+                    formData += `&${$j(el).attr('name')}=`;
+                });
+
                 $j.ajax({
                     type: 'POST',
                     url: HTTP_ROOT_DIR + '/browsing/ajax/' + phpSaveFile,
-                    data: $j(this).serialize(),
+                    data: formData,
                     dataType: 'json',
                     async: false
                 })
