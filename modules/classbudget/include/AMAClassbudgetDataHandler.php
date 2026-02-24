@@ -92,9 +92,10 @@ class AMAClassbudgetDataHandler extends AMADataHandler
         $sql = 'SELECT SUM((CAL.end-CAL.start)) as `totaltime`, CAL.`id_utente_tutor` AS `id_tutor`, ' .
             'USER.`nome` as `name`, USER.`cognome` AS `lastname`, TUTORS.`tariffa` AS `default_rate`, ' .
             'TUTORCOST.`hourly_rate` AS `cost_rate`, TUTORCOST.`cost_tutor_id` ' .
-            'FROM `module_classagenda_calendars` AS CAL ' .
+            'FROM `' . AMAClassagendaDataHandler::$PREFIX . 'calendars` AS CAL ' .
             'JOIN `tutor` AS TUTORS ON CAL.`id_utente_tutor` = TUTORS.`id_utente_tutor` ' .
-            'LEFT JOIN `module_classbudget_cost_tutor` AS TUTORCOST ON CAL.`id_utente_tutor` = TUTORCOST.`id_tutor` ' .
+            'LEFT JOIN `' . self::$PREFIX . 'cost_tutor` AS TUTORCOST ON CAL.`id_utente_tutor` = TUTORCOST.`id_tutor` ' .
+            'AND CAL.`id_istanza_corso` = TUTORCOST.`id_istanza_corso` ' .
             'JOIN `utente` AS USER ON USER.`id_utente`= TUTORS.`id_utente_tutor` ' .
             'WHERE CAL.`id_istanza_corso` = ? ' .
             'GROUP BY (CAL.`id_utente_tutor`)';
@@ -227,13 +228,13 @@ class AMAClassbudgetDataHandler extends AMADataHandler
                 'IC.`title` AS instancetitle, CAL.`id_utente_tutor` AS `id_tutor`, USER.`nome` as `name`, ' .
                 'USER.`cognome` AS `lastname`, TUTORS.`tariffa` AS `default_rate`, ' .
                 'CAL.`start`, CAL.`end`, ' .
-                'TUTORCOST.`hourly_rate` AS `cost_rate` FROM `module_classagenda_calendars` AS CAL ' .
+                'TUTORCOST.`hourly_rate` AS `cost_rate` FROM `' . AMAClassagendaDataHandler::$PREFIX . 'calendars` AS CAL ' .
                 'LEFT JOIN `istanza_corso` AS IC ON IC.`id_istanza_corso` = CAL.id_istanza_corso ' .
                 'LEFT JOIN `modello_corso` AS C ON C.`id_corso` = IC.`id_corso` ' .
                 'JOIN `tutor` AS TUTORS ON CAL.`id_utente_tutor` = TUTORS.`id_utente_tutor` ' .
-                'LEFT JOIN `module_classbudget_cost_tutor` AS TUTORCOST ON CAL.`id_utente_tutor` = TUTORCOST.`id_tutor` ' .
+                'LEFT JOIN `' . self::$PREFIX . 'cost_tutor` AS TUTORCOST ON CAL.`id_utente_tutor` = TUTORCOST.`id_tutor` ' .
                 'JOIN `utente` AS USER ON USER.`id_utente`= TUTORS.`id_utente_tutor` ' .
-                'WHERE CAL.`module_classagenda_calendars_id` IN (' . implode(',', array_fill(0, count($ids), '?'))  . ');';
+                'WHERE CAL.`' . AMAClassagendaDataHandler::$PREFIX . 'calendars_id` IN (' . implode(',', array_fill(0, count($ids), '?'))  . ');';
             $tutorCosts = $this->getAllPrepared($sql, $ids, AMA_FETCH_ASSOC);
             if (!AMADB::isError($tutorCosts)) {
                 return $tutorCosts;
@@ -257,13 +258,13 @@ class AMAClassbudgetDataHandler extends AMADataHandler
                 'VENUES.`name` as `venuename`, ROOMS.`name` AS `roomname`, ROOMS.`hourly_rate` AS `default_rate`, ' .
                 'CAL.`start`, CAL.`end`, ' .
                 'ROOMCOST.`hourly_rate` AS `cost_rate`, ROOMCOST.`cost_classroom_id` ' .
-                'FROM `module_classagenda_calendars` AS CAL ' .
+                'FROM `' . AMAClassagendaDataHandler::$PREFIX . 'calendars` AS CAL ' .
                 'LEFT JOIN `istanza_corso` AS IC ON IC.`id_istanza_corso` = CAL.id_istanza_corso ' .
                 'LEFT JOIN `modello_corso` AS C ON C.`id_corso` = IC.`id_corso` ' .
                 'JOIN `module_classroom_classrooms` AS ROOMS ON CAL.`id_classroom` = ROOMS.`id_classroom` ' .
-                'LEFT JOIN `module_classbudget_cost_classroom` AS ROOMCOST ON CAL.`id_classroom` = ROOMCOST.`id_classroom` ' .
+                'LEFT JOIN `' . self::$PREFIX . 'cost_classroom` AS ROOMCOST ON CAL.`id_classroom` = ROOMCOST.`id_classroom` ' .
                 'JOIN `module_classroom_venues` AS VENUES ON VENUES.`id_venue`= ROOMS.`id_venue` ' .
-                'WHERE CAL.`module_classagenda_calendars_id` IN (' . implode(',', array_fill(0, count($ids), '?'))  . ');';
+                'WHERE CAL.`' . AMAClassagendaDataHandler::$PREFIX . 'calendars_id` IN (' . implode(',', array_fill(0, count($ids), '?'))  . ');';
             $classCosts = $this->getAllPrepared($sql, $ids, AMA_FETCH_ASSOC);
             if (!AMADB::isError($classCosts)) {
                 return $classCosts;
@@ -286,9 +287,10 @@ class AMAClassbudgetDataHandler extends AMADataHandler
         $sql = 'SELECT SUM((CAL.end-CAL.start)) as `totaltime`, CAL.`id_classroom`, ' .
             'VENUES.`name` as `venuename`, ROOMS.`name` AS `roomname`, ROOMS.`hourly_rate` AS `default_rate`, ' .
             'ROOMCOST.`hourly_rate` AS `cost_rate`, ROOMCOST.`cost_classroom_id` ' .
-            'FROM `module_classagenda_calendars` AS CAL ' .
+            'FROM `' . AMAClassagendaDataHandler::$PREFIX . 'calendars` AS CAL ' .
             'JOIN `module_classroom_classrooms` AS ROOMS ON CAL.`id_classroom` = ROOMS.`id_classroom` ' .
-            'LEFT JOIN `module_classbudget_cost_classroom` AS ROOMCOST ON CAL.`id_classroom` = ROOMCOST.`id_classroom` ' .
+            'LEFT JOIN `' . self::$PREFIX . 'cost_classroom` AS ROOMCOST ON CAL.`id_classroom` = ROOMCOST.`id_classroom` ' .
+            'AND CAL.`id_istanza_corso` = ROOMCOST.`id_istanza_corso` ' .
             'JOIN `module_classroom_venues` AS VENUES ON VENUES.`id_venue`= ROOMS.`id_venue` ' .
             'WHERE CAL.`id_istanza_corso` = ? ' .
             'GROUP BY (CAL.`id_classroom`)';
