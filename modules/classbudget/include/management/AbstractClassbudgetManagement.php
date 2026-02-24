@@ -241,13 +241,7 @@ abstract class AbstractClassbudgetManagement
                          * if a rate relative to the passed istance has been returned
                          * use it, else use the default coming from the classroom table
                          */
-                        if (!is_null($row['cost_rate']) && floatval($row['cost_rate']) > 0) {
-                            $retval[$id]['unitprice'] = floatval($row['cost_rate']);
-                        } elseif (!is_null($value) && floatval($value) > 0) {
-                            $retval[$id]['unitprice'] = floatval($value);
-                        } else {
-                            $retval[$id]['unitprice'] = floatval(0);
-                        }
+                        $retval[$id]['unitprice'] = static::getActualCostRate($row);
                         break;
                     default:
                         break;
@@ -255,6 +249,24 @@ abstract class AbstractClassbudgetManagement
             } // foreach $row
         } // foreach $res
         return $retval;
+    }
+
+    /**
+     * if a rate relative to the passed istance has been returned
+     * use it, else use the default coming from the classroom table
+     *
+     * @param array $data must have 'cost_rate' and 'default_rate' keys
+     * @return float
+     */
+    public static function getActualCostRate($row)
+    {
+        if (!is_null($row['cost_rate'] ?? null) && floatval($row['cost_rate']) > 0) {
+            return floatval($row['cost_rate']);
+        } elseif (!is_null($row['default_rate'] ?? null) && floatval($row['default_rate']) > 0) {
+            return floatval($row['default_rate']);
+        } else {
+            return floatval(0);
+        }
     }
 
     /**
