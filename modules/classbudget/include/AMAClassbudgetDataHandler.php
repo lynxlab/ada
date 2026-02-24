@@ -233,6 +233,7 @@ class AMAClassbudgetDataHandler extends AMADataHandler
                 'LEFT JOIN `modello_corso` AS C ON C.`id_corso` = IC.`id_corso` ' .
                 'JOIN `tutor` AS TUTORS ON CAL.`id_utente_tutor` = TUTORS.`id_utente_tutor` ' .
                 'LEFT JOIN `' . self::$PREFIX . 'cost_tutor` AS TUTORCOST ON CAL.`id_utente_tutor` = TUTORCOST.`id_tutor` ' .
+                'AND CAL.`id_istanza_corso` = TUTORCOST.`id_istanza_corso` ' .
                 'JOIN `utente` AS USER ON USER.`id_utente`= TUTORS.`id_utente_tutor` ' .
                 'WHERE CAL.`' . AMAClassagendaDataHandler::$PREFIX . 'calendars_id` IN (' . implode(',', array_fill(0, count($ids), '?'))  . ');';
             $tutorCosts = $this->getAllPrepared($sql, $ids, AMA_FETCH_ASSOC);
@@ -263,6 +264,7 @@ class AMAClassbudgetDataHandler extends AMADataHandler
                 'LEFT JOIN `modello_corso` AS C ON C.`id_corso` = IC.`id_corso` ' .
                 'JOIN `module_classroom_classrooms` AS ROOMS ON CAL.`id_classroom` = ROOMS.`id_classroom` ' .
                 'LEFT JOIN `' . self::$PREFIX . 'cost_classroom` AS ROOMCOST ON CAL.`id_classroom` = ROOMCOST.`id_classroom` ' .
+                'AND CAL.`id_istanza_corso` = ROOMCOST.`id_istanza_corso` ' .
                 'JOIN `module_classroom_venues` AS VENUES ON VENUES.`id_venue`= ROOMS.`id_venue` ' .
                 'WHERE CAL.`' . AMAClassagendaDataHandler::$PREFIX . 'calendars_id` IN (' . implode(',', array_fill(0, count($ids), '?'))  . ');';
             $classCosts = $this->getAllPrepared($sql, $ids, AMA_FETCH_ASSOC);
