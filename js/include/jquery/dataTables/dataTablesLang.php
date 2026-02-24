@@ -33,6 +33,7 @@ $allowedUsersAr = [AMA_TYPE_VISITOR, AMA_TYPE_STUDENT, AMA_TYPE_TUTOR, AMA_TYPE_
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
 
+header('Content-Type: application/json');
 echo '{
     "sEmptyTable":     "' . translateFN("Nessun dato presente nella tabella") . '",
     "sInfo":           "' . sprintf(translateFN("Vista da %s a %s di %s elementi"), '_START_', '_END_', '_TOTAL_') . '",
@@ -61,4 +62,5 @@ echo '{
             "0": "' . translateFN('Clicca una riga per selezionarla') . '",
             "1": "' . translateFN('Una riga selezionata') . '"
         }
+    }
 }';
