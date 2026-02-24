@@ -206,14 +206,14 @@ class EventSubscriber implements EventSubscriberInterface, ADAMethodSubscriberIn
                         foreach ($decode as $table => $fields) {
                             foreach ($fields as $fData) {
                                 // DECRYPT PDO::FETCH_ASSOC ELEMENTS
-                                if (array_key_exists($fData['name'], $el)) {
+                                if (array_key_exists($fData['name'], $el) && !empty($el[$fData['name']])) {
                                     if (!array_key_exists($el[$fData['name']], $this->decodeCache)) {
                                         $this->decodeCache[$el[$fData['name']]] = $cUtils->decrypt($el[$fData['name']]);
                                     }
                                     $el[$fData['name']] = $this->decodeCache[$el[$fData['name']]];
                                 }
                                 // DECRYPT PDO::FETCH_NUM ELEMENTS
-                                if (array_key_exists($fData['index'], $el)) {
+                                if (array_key_exists($fData['index'], $el) && !empty($el[$fData['index']])) {
                                     if (!array_key_exists($el[$fData['index']], $this->decodeCache)) {
                                         $this->decodeCache[$el[$fData['index']]] = $cUtils->decrypt($el[$fData['index']]);
                                     }
