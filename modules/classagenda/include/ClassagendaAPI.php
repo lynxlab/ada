@@ -53,4 +53,21 @@ class ClassagendaAPI
     {
         return $this->dh->getClassRoomEventsForCourseInstance($courseInstanceId, $venueID, $start, $end);
     }
+
+    public function getStudentsInEvents($eventIDs)
+    {
+        return $this->dh->getStudentsInEvents($eventIDs);
+    }
+
+    public function getEventRecordsByIds(int|array $ids)
+    {
+        if (empty($ids)) {
+            return [];
+        }
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+        $retarr = $this->dh->getEventRecordsByIds($ids);
+        return array_combine($ids, $retarr);
+    }
 }
