@@ -16,8 +16,5 @@
                 "include/management"
             ]
         }
-    },
-    "require": {
-        "fatturaelettronicaphp/fattura-elettronica": "^2.8"
     }
 }
