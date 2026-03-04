@@ -737,4 +737,18 @@ class AMAClassagendaDataHandler extends AMADataHandler
         }
         return [];
     }
+
+    /**
+     * Gets event records (aka db rows) by id
+     *
+     * @param array $eventIDS
+     * @return array|AMAError
+     */
+    public function getEventRecordsByIds($eventIDS)
+    {
+        $sql = 'SELECT *, (`end` - `start`) AS `duration` FROM ' . self::$PREFIX . 'calendars ' .
+               'WHERE `' . self::$PREFIX . 'calendars_id` IN (' .
+                implode(',', array_fill(0, count($eventIDS), '?')) . ')';
+        return $this->getAllPrepared($sql, $eventIDS, AMA_FETCH_ASSOC);
+    }
 }
