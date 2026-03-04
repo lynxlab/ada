@@ -154,7 +154,7 @@ class AMAClassbudgetDataHandler extends AMADataHandler
                     'course' => [
                         'id' => $item['id_corso'],
                         'title' => $item['coursetitle'],
-                        'code' => $item['coursename'],
+                        'code' => strtoupper($item['coursename']),
                     ],
                 ];
             }
