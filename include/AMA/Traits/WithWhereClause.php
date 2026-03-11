@@ -35,7 +35,11 @@ trait WithWhereClause
         $sql  = '';
         $newWhere = [];
         if (!is_null($whereArr) && count($whereArr) > 0) {
-            $invalidProperties = array_diff(array_keys($whereArr), $properties);
+            $whereProperties = array_map(
+                fn ($line) => preg_match('/\(\s*(`?)([^)]+?)\1\s*\)/', $line, $matches) ? $matches[2] : $line,
+                array_keys($whereArr)
+            );
+            $invalidProperties = array_diff($whereProperties, $properties);
             if (count($invalidProperties) > 0) {
                 throw static::whereClauseException(translateFN('Proprietà WHERE non valide: ') . implode(', ', $invalidProperties));
             } else {
@@ -54,7 +58,8 @@ trait WithWhereClause
                                 if (strlen($retStr) > 0) {
                                     $retStr = $retStr . ' AND ';
                                 }
-                                $retStr .= "`$el` " . $opArr['op'] . ' ' . $opArr['value'];
+                                $thick = str_contains($el, '`') ? '' : '`';
+                                $retStr .= "{$thick}{$el}{$thick} {$opArr['op']} {$opArr['value']}";
                             }
                             unset($whereArr[$el]);
                             return '(' . $retStr . ')';
