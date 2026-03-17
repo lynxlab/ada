@@ -13,6 +13,7 @@
 
 namespace Lynxlab\ADA\Main\Forms;
 
+use Lynxlab\ADA\Main\DataValidator;
 use Lynxlab\ADA\Main\Forms\lib\classes\FormValidator;
 use Lynxlab\ADA\Main\Forms\UserRegistrationForm;
 use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
@@ -24,6 +25,13 @@ class UserSubscriptionForm extends UserRegistrationForm
     public function __construct()
     {
         parent::__construct();
+        $tipo = DataValidator::checkInputValues('tipo', 'Integer');
+        if (false === $tipo) {
+            $tipo = DataValidator::checkInputValues('tipo', 'Integer', INPUT_POST);
+        }
+        if (!in_array($tipo, [AMA_TYPE_AUTHOR, AMA_TYPE_STUDENT, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR])) {
+            $tipo = 0;
+        }
 
         if (!(ModuleLoaderHelper::isLoaded('SECRETQUESTION') === true)) {
             $this->addTextInput('username', translateFN('Nome utente'))
@@ -49,7 +57,7 @@ class UserSubscriptionForm extends UserRegistrationForm
                     AMA_TYPE_TUTOR => translateFN('Tutor'),
                     AMA_TYPE_SUPERTUTOR => translateFN('Super Tutor'),
                     ],
-            0
+            $tipo
         )
              ->setRequired()
              ->setValidator(FormValidator::POSITIVE_NUMBER_VALIDATOR);
