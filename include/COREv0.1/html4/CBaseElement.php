@@ -15,6 +15,7 @@ namespace Lynxlab\ADA\CORE\html4;
  *
  * @author vito
  */
+#[\AllowDynamicProperties]
 abstract class CBaseElement extends CBase
 {
     /**
