@@ -44,7 +44,7 @@ class TutorBudgetManagement extends AbstractClassbudgetManagement
         ];
         $this->tableCaption = translateFN('Costi Tutor');
 
-        $res = $GLOBALS['dh']->getTutorCostForInstance($this->id_course_instance);
+        $res = $GLOBALS['dh']->getTutorCostForInstance($this->id_course_instance, true);
 
         if (!AMADB::isError($res)) {
             $this->dataCostsArr = $this->buildCostArrayFromRes($res);

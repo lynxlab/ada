@@ -87,7 +87,7 @@ class AMAClassbudgetDataHandler extends AMADataHandler
      *
      * @access public
      */
-    public function getTutorCostForInstance($id_course_instance)
+    public function getTutorCostForInstance($id_course_instance, $addNoEvents = false)
     {
         $sql = 'SELECT SUM((CAL.end-CAL.start)) as `totaltime`, CAL.`id_utente_tutor` AS `id_tutor`, ' .
             'USER.`nome` as `name`, USER.`cognome` AS `lastname`, TUTORS.`tariffa` AS `default_rate`, ' .
@@ -101,6 +101,24 @@ class AMAClassbudgetDataHandler extends AMADataHandler
             'GROUP BY (CAL.`id_utente_tutor`)';
 
         $res = $this->getAllPrepared($sql, $id_course_instance, AMA_FETCH_ASSOC);
+
+        if (!AMADB::isError($res) && $addNoEvents) {
+            // ADD TUTORS COST WITH NO EVENTS IN THE CALENDAR, LINKED TO THE ISTANCE
+            $moreSql = 'SELECT 0 AS `totaltime`, TS.`id_utente_tutor` AS `id_tutor`, ' .
+                'USER.`nome` as `name`, USER.`cognome` AS `lastname`, TUTORS.`tariffa` AS `default_rate`, ' .
+                'TUTORCOST.`hourly_rate` AS `cost_rate`, TUTORCOST.`cost_tutor_id` ' .
+                'FROM `tutor_studenti` AS TS ' .
+                'LEFT JOIN `' . self::$PREFIX . 'cost_tutor` AS TUTORCOST ON TS.`id_utente_tutor` = TUTORCOST.`id_tutor`' .
+                'JOIN `tutor` AS TUTORS ON TS.`id_utente_tutor` = TUTORS.`id_utente_tutor` ' .
+                'JOIN `utente` AS USER ON USER.`id_utente`= TUTORS.`id_utente_tutor` ' .
+                'WHERE TS.`id_utente_tutor` NOT IN (' .
+                implode(',', array_map(fn($el) => $el['id_tutor'], $res))
+                . ') AND TS.`id_istanza_corso` = ?';
+            $moreRes = $this->getAllPrepared($moreSql, $id_course_instance, AMA_FETCH_ASSOC);
+            if (!AMADB::isError($moreRes) && is_array($moreRes) && count($moreRes) > 0) {
+                $res = array_merge($res, $moreRes);
+            }
+        }
 
         /**
          * if the number of returned rows is less than all rows in
@@ -471,7 +489,7 @@ class AMAClassbudgetDataHandler extends AMADataHandler
             if (count($toDelArray) > 0) {
                 $sql = 'DELETE FROM `' . self::$PREFIX . 'cost_' . $type . '` ' .
                     ' WHERE `cost_' . $type . '_id` NOT IN (' . implode(',', $toDelArray) . ')';
-                $this->executeCritical($sql);
+                $this->executeCriticalPrepared($sql);
             }
         }
     }
