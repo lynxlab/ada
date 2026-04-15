@@ -112,7 +112,7 @@ class AMAClassbudgetDataHandler extends AMADataHandler
                 'JOIN `tutor` AS TUTORS ON TS.`id_utente_tutor` = TUTORS.`id_utente_tutor` ' .
                 'JOIN `utente` AS USER ON USER.`id_utente`= TUTORS.`id_utente_tutor` ' .
                 'WHERE TS.`id_utente_tutor` NOT IN (' .
-                implode(',', array_map(fn($el) => $el['id_tutor'], $res))
+                implode(',', array_map(fn ($el) => $el['id_tutor'], $res))
                 . ') AND TS.`id_istanza_corso` = ?';
             $moreRes = $this->getAllPrepared($moreSql, $id_course_instance, AMA_FETCH_ASSOC);
             if (!AMADB::isError($moreRes) && is_array($moreRes) && count($moreRes) > 0) {
