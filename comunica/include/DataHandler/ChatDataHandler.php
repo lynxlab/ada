@@ -366,6 +366,7 @@ class ChatDataHandler extends AbstractAMADataHandler
             // in case manual rollback works return an update error
             return new AMAError(AMA_ERR_UPDATE);
         }
+        return !AMADB::isError($res);
     }
 
     /**
