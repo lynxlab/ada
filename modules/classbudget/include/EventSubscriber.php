@@ -93,7 +93,7 @@ class EventSubscriber implements EventSubscriberInterface, ADAMethodSubscriberIn
     {
         if (false !== stristr(realpath($_SERVER['SCRIPT_FILENAME']), MODULES_CLASSBUDGET_PATH)) {
             $baseItem = [
-                'item_id' => null,
+                'item_id' => '',
                 'label' => '',
                 'extraHTML' => null,
                 'icon' => '',
