@@ -9,13 +9,15 @@
 
 namespace Lynxlab\ADA\CORE\html4;
 
+use AllowDynamicProperties;
+
 /**
  * abstract class CBaseElement: this class defines base methods common to all
  * of the DOM elements.
  *
  * @author vito
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 abstract class CBaseElement extends CBase
 {
     /**
