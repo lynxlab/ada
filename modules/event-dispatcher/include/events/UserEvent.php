@@ -96,4 +96,15 @@ final class UserEvent extends GenericEvent
      * @var string
      */
     public const POSTREMOVEUSEREXTRAROW = self::NAMESPACE . '.postremoveuserextrarow';
+
+    /**
+     * The POSTLOGIN event occurs as soon as the ADALoggableUser::setSessionAndRedirect
+     * (that is the entrypoint common to all types of ADA user) method is called,
+     * before opening the session for the user.
+     *
+     * @GenericEvent
+     *
+     * @var string
+     */
+    public const POSTLOGIN = self::NAMESPACE . '.postlogin';
 }
