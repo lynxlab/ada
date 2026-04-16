@@ -29,6 +29,8 @@ use Lynxlab\ADA\Main\Helper\ModuleLoaderHelper;
 use Lynxlab\ADA\Main\HtmlLibrary\BaseHtmlLib;
 use Lynxlab\ADA\Main\User\ADAGenericUser;
 use Lynxlab\ADA\Main\Utilities;
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher;
+use Lynxlab\ADA\Module\EventDispatcher\Events\UserEvent;
 use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
 use TypeError;
@@ -652,6 +654,21 @@ abstract class ADALoggableUser extends ADAGenericUser
     public static function setSessionAndRedirect($userObj, $remindMe, $language, $loginProviderObj = null, $redirectURL = null, $forceRedirect = true)
     {
         if ($userObj->getStatus() == ADA_STATUS_REGISTERED) {
+
+            if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
+                $event = ADAEventDispatcher::buildEventAndDispatch(
+                    [
+                        'eventClass' => UserEvent::class,
+                        'eventName' => UserEvent::POSTLOGIN,
+                    ],
+                    $userObj
+
+                );
+                foreach ($event->getArguments() as $key => $val) {
+                    ${$key} = $val;
+                }
+            }
+
             /**
              * @author giorgio 12/dic/2013
              * when a user sucessfully logs in, regenerate her session id.
