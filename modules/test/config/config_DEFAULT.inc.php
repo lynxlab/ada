@@ -126,6 +126,8 @@ define('ADA_REDIRECT_TO_TEST', true);
  */
 define('ADA_SURVEY_TO_CSV', false);
 
+define('TEST_MAX_BARRIER_LEVEL', 25);
+
 if (ModuleLoaderHelper::isLoaded('MODULES_EVENTDISPATCHER')) {
     ADAEventDispatcher::getInstance()->addSubscriber(new EventSubscriber());
 }

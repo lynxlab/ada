@@ -59,7 +59,7 @@ class TestFormTest extends RootFormTest
 
 
         //livello
-        for ($i = 0; $i <= 25; $i++) {
+        for ($i = 0; $i <= TEST_MAX_BARRIER_LEVEL; $i++) {
             $options[$i] = $i;
         }
         $options[0] = translateFN('Nessun livello');
