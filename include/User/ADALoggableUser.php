@@ -654,7 +654,6 @@ abstract class ADALoggableUser extends ADAGenericUser
     public static function setSessionAndRedirect($userObj, $remindMe, $language, $loginProviderObj = null, $redirectURL = null, $forceRedirect = true)
     {
         if ($userObj->getStatus() == ADA_STATUS_REGISTERED) {
-
             if (ModuleLoaderHelper::isLoaded('EVENTDISPATCHER')) {
                 $event = ADAEventDispatcher::buildEventAndDispatch(
                     [
@@ -662,7 +661,6 @@ abstract class ADALoggableUser extends ADAGenericUser
                         'eventName' => UserEvent::POSTLOGIN,
                     ],
                     $userObj
-
                 );
                 foreach ($event->getArguments() as $key => $val) {
                     ${$key} = $val;
