@@ -476,8 +476,10 @@ class Utilities
  */
     public static function redirect($url)
     {
-        header('Location: ' . $url);
-        exit();
+        if (!ADA_CLI) {
+            header('Location: ' . $url);
+            exit();
+        }
     }
 
     public static function getCallingMethodName($backTrace = 2)
