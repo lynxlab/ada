@@ -117,7 +117,7 @@ class EventSubscriber implements EventSubscriberInterface, ADAMethodSubscriberIn
         $menu = $event->getSubject();
         $left = $menu->getLeftItemsArray() ?? [];
         $baseItem = [
-            'item_id' => null,
+            'item_id' => '',
             'label' => '',
             'extraHTML' => null,
             'icon' => '',
