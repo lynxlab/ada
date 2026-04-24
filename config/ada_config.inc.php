@@ -105,19 +105,21 @@ if (!MULTIPROVIDER && isset($client) && !empty($client) && is_readable(ROOT_DIR 
 /**
  * each php script includes this file, set general cookie params here
  */
-$pieces = parse_url(HTTP_ROOT_DIR);
-$domain = $pieces['host'] ?? '';
-$secure = isset($pieces['scheme']) && ($pieces['scheme'] === 'https');
-$path = isset($pieces['path']) ? '/' . trim($pieces['path'], '/') : '/';
-if (strlen($domain) > 0) {
-    session_set_cookie_params(
-        0, // lifetime: ends when browser closes
-        $path . '; samesite=' . ($secure ? 'None' : 'Lax'),
-        $domain,
-        $secure,
-        false // http only
-    );
+if (!ADA_CLI) {
+    $pieces = parse_url(HTTP_ROOT_DIR);
+    $domain = $pieces['host'] ?? '';
+    $secure = isset($pieces['scheme']) && ($pieces['scheme'] === 'https');
+    $path = isset($pieces['path']) ? '/' . trim($pieces['path'], '/') : '/';
+    if (strlen($domain) > 0) {
+        session_set_cookie_params(
+            0, // lifetime: ends when browser closes
+            $path . '; samesite=' . ($secure ? 'None' : 'Lax'),
+            $domain,
+            $secure,
+            false // http only
+        );
+    }
+    unset($domain);
+    unset($pieces);
+    unset($secure);
 }
-unset($domain);
-unset($pieces);
-unset($secure);

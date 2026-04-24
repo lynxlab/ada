@@ -7500,7 +7500,8 @@ abstract class AMATesterDataHandler extends AbstractAMADataHandler
         }
 
         if (AMADB::isError($students_ar)) {
-            return new AMAError(AMA_ERR_GET);
+            $err = new AMAError(AMA_ERR_GET);
+            return $err;
         }
         //
         // return nested array in the form

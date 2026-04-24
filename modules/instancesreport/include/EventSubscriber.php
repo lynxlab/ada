@@ -73,7 +73,7 @@ class EventSubscriber implements EventSubscriberInterface, ADAScriptSubscriberIn
             $itemkey = key($item);
 
             $additem = [
-                'item_id' => null,
+                'item_id' => '',
                 'label' => translateFN('Report classi'),
                 'extraHTML' => null,
                 'icon' => 'download disk',
