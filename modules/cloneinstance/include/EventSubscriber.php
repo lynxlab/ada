@@ -55,7 +55,7 @@ class EventSubscriber implements EventSubscriberInterface
             $menu = $event->getSubject();
             $left = $menu->getLeftItemsArray() ?? [];
             $item = [
-                'item_id' => null,
+                'item_id' => '',
                 'label' => 'Indietro',
                 'extraHTML' => null,
                 'icon' => 'circle left',
