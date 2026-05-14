@@ -36,8 +36,11 @@ class ADAPHPMailer extends PHPMailer
                     ADAFileLogger::log("$level: message: $str", $logFile);
                 };
             }
-        } else {
+        } elseif (function_exists('popen')) {
+            // using sendmail require popen function to be enabled
             $this->isSendmail();
+        } else {
+            $this->isMail();
         }
     }
 
