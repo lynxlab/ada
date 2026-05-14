@@ -17,6 +17,7 @@
 
 namespace Lynxlab\ADA\Main\User;
 
+use AllowDynamicProperties;
 use DateTimeImmutable;
 use Lynxlab\ADA\Main\AMA\MultiPort;
 use Lynxlab\ADA\Main\DataValidator;
@@ -25,6 +26,7 @@ use Throwable;
 
 use function Lynxlab\ADA\Main\Output\Functions\translateFN;
 
+#[AllowDynamicProperties]
 abstract class ADAGenericUser
 {
     /**
